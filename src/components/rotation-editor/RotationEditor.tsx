@@ -3,7 +3,7 @@ import { useRotationEditor } from "../../hooks/useRotationEditor"
 import { characters } from "../../data/characters"
 import { sharedColumns } from "../../data/columnSets"
 import type { ColumnDef } from "../../types/tables"
-import type { Character, Action } from "../../types/characters"
+import type { Character, Action } from "../../types/characters";
 import type { Snapshot } from "../../types/snapshots"
 
 type RotationEditorPageProps = {
@@ -197,3 +197,7 @@ export default function RotationEditorPage({ selectedCharacters }: RotationEdito
     </div>
   )
 }
+
+
+
+
