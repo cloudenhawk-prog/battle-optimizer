@@ -1,0 +1,94 @@
+:root {
+  --table-header-color: #f9fafb;
+  --table-line-color: #ebe9e5;
+}
+
+.pageWrapper {
+  padding: 1rem;
+}
+
+.heading {
+  font-size: 1.5rem;
+  font-weight: 700;
+  margin-bottom: 1rem;
+}
+
+.tableWrapper {
+  overflow-x: auto;
+  border: 1px solid var(--table-line-color);
+  border-radius: 0.5rem;
+  box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+}
+
+.tableBase {
+  min-width: 100%;
+  border-collapse: collapse;
+}
+
+.tableHeader {
+  background-color: var(--table-header-color);
+}
+
+.tableBody {
+  background-color: #ffffff;
+}
+
+.tableBody tr:hover {
+  background-color: #f3f4f6;
+  cursor: pointer;
+}
+
+.tableCellHeader {
+  padding: 0.5rem 1rem;
+  text-align: left;
+  font-size: 0.875rem;
+  font-weight: 500;
+  color: #374151;
+}
+
+.tableCellBody {
+  padding: 0.5rem 1rem;
+}
+
+.lastRowClass {
+  
+}
+
+.selectInput {
+  border: 1px solid var(--table-line-color);
+  border-radius: 0.25rem;
+  padding: 0.25rem 0.5rem;
+}
+
+.charGroupBody {
+  border-left: 1px solid var(--table-line-color);
+}
+
+.charGroupHeader {
+  border-left: 1px solid var(--table-line-color);
+  background-color: var(--table-header-color);
+  font-weight: 600;
+}
+
+.groupHeader {
+  position: relative;
+  text-align: center;
+  padding-top: 8px;
+  padding-bottom: 12px;
+  border-right: 1px solid var(--table-line-color);
+  font-weight: 620;
+}
+
+.groupHeader:last-child {
+  border-right: none;
+}
+
+.groupHeader::after {
+  content: "";
+  position: absolute;
+  bottom: 0px;
+  left: 20px;
+  right: 20px;
+  height: 1px;
+  background-color: var(--table-line-color);
+}
