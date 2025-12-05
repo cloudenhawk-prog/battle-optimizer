@@ -15,7 +15,7 @@ interface Snapshot {
   fusionBurn?: number
   glacioFreeze?: number
   havocCorrosion?: number
-  
+
   // Character-specific
   energy: number
   concerto: number

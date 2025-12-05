@@ -1,10 +1,10 @@
-import { Routes, Route } from "react-router-dom";
-import AppLayout from "./components/AppLayout";
-import HomePage from "./pages/HomePage";
-import RotationEditorPage from "./pages/RotationEditorPage";
-import AnalyticsPage from "./pages/AnalyticsPage";
-import SettingsPage from "./pages/SettingsPage";
-import NotFoundPage from "./pages/NotFoundPage";
+import { Routes, Route } from "react-router-dom"
+import AppLayout from "./components/AppLayout"
+import HomePage from "./pages/HomePage"
+import RotationEditorPage from "./pages/RotationEditorPage"
+import AnalyticsPage from "./pages/AnalyticsPage"
+import SettingsPage from "./pages/SettingsPage"
+import NotFoundPage from "./pages/NotFoundPage"
 
 export default function App() {
   return (
