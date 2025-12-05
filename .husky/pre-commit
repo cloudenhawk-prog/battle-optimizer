@@ -1,5 +1,0 @@
-#!/usr/bin/env sh
-. "$(dirname -- "$0")/_/husky.sh"
-
-# allow commits to pass freely
-echo "Commit allowed (no linting at commit time)"
