@@ -9,7 +9,7 @@ type UseRotationEditorProps = {
 
 export function useRotationEditor({ charactersInBattle, tableConfig }: UseRotationEditorProps) {
   const charactersMap = Object.fromEntries(charactersInBattle.map(c => [c.name, c]))
-  const characterColumnsMap = Object.fromEntries(tableConfig.characters.map(c => [c.label, c.columns.map(col => col.key.split('_')[1])]))
+  const characterColumnsMap = Object.fromEntries(tableConfig.characters.map(c => [c.label, c.columns.map(col => col.key.split("_")[1])]))
   const globalColumns = {
     basic: tableConfig.basic.columns.map(col => col.key),          // ['fromTime', 'toTime', 'damage', 'dps']
     buffs: tableConfig.buffs.columns.map(col => col.key),
