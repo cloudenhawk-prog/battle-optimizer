@@ -1,42 +1,106 @@
 import type { Character } from "../types/characters"
-import type { Snapshot } from "../types/snapshots"
 
-// TODO: Fetch this data from backend later
-export const characters: Character[] = [
+export const characters: Character[] =
+[
   {
     name: "Mage",
     actions: [
-      { name: "Fireball", duration: 2, damage: 800 },
-      { name: "Ice Spike", duration: 1.5, damage: 600 },
+      {
+        name: "Fireball",
+        time: 2,
+        damage: 800,
+        energy: 50,
+        concerto: 10,
+        forte: 0,
+        specialEnergyGenerated: {},
+        negativeStatusesApplied: [],
+        buffsApplied: [],
+        debuffsApplied: [],
+      },
+      {
+        name: "Ice Spike",
+        time: 1.5,
+        damage: 600,
+        energy: 30,
+        concerto: 0,
+        forte: 0,
+        specialEnergyGenerated: {},
+        negativeStatusesApplied: [],
+        buffsApplied: [],
+        debuffsApplied: [],
+      },
     ],
-    negativeStatuses: []
+    negativeStatuses: [],
+    buffs: ["Arcane Power"],
+    debuffs: [],
+    specialEnergy: [],
   },
+
   {
     name: "Rogue",
     actions: [
-      { name: "Backstab", duration: 1, damage: 400 },
-      { name: "Poison", duration: 2.5, damage: 300 },
+      {
+        name: "Backstab",
+        time: 1,
+        damage: 400,
+        energy: 40,
+        concerto: 15,
+        forte: 0,
+        specialEnergyGenerated: {},
+        negativeStatusesApplied: [],
+        buffsApplied: [],
+        debuffsApplied: [],
+      },
+      {
+        name: "Poison",
+        time: 2.5,
+        damage: 300,
+        energy: 25,
+        concerto: 0,
+        forte: 0,
+        specialEnergyGenerated: {},
+        negativeStatusesApplied: [],
+        buffsApplied: [],
+        debuffsApplied: [],
+      },
     ],
-    negativeStatuses: []
+    negativeStatuses: [],
+    buffs: [],
+    debuffs: ["Poisoned", "Bleeding"],
+    specialEnergy: [],
   },
+
   {
     name: "Cartethyia",
     actions: [
-      { name: "Fleurdelys Strike", duration: 0.5, damage: 700 },
-      { name: "Liberation", duration: 3, damage: 1200 },
+      {
+        name: "Fleurdelys Strike",
+        time: 0.5,
+        damage: 700,
+        energy: 20,
+        concerto: 5,
+        forte: 0,
+        specialEnergyGenerated: { Conviction: 10 },
+        negativeStatusesApplied: [],
+        buffsApplied: [],
+        debuffsApplied: [],
+      },
+      {
+        name: "Liberation",
+        time: 3,
+        damage: 1200,
+        energy: 60,
+        concerto: 0,
+        forte: 15,
+        specialEnergyGenerated: { Rage: 20 },
+        negativeStatusesApplied: [],
+        buffsApplied: [],
+        debuffsApplied: [],
+      },
     ],
     negativeStatuses: ["Aero Erosion", "Spectro Frazzle"],
-    dynamicColumns: [
-      {
-        key: "conviction",
-        label: "Conviction",
-        render: (snapshot: Snapshot) => snapshot.specialEnergy?.conviction ?? 0,
-      },
-      {
-        key: "rage",
-        label: "Rage",
-        render: (snapshot: Snapshot) => snapshot.specialEnergy?.rage ?? 0,
-      },
-    ],
+    buffs: [],
+    debuffs: [],
+    specialEnergy: ["Conviction", "Rage"],
   },
 ]

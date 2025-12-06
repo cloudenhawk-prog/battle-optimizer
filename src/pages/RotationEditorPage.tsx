@@ -4,7 +4,7 @@ import { characters } from "../data/characters"
 export default function RotationEditorPage() {
   return (
     <div>
-      <RotationEditor selectedCharacters={characters} />
+      <RotationEditor charactersInBattle={characters} />
     </div>
   )
 }
