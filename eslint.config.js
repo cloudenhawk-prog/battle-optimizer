@@ -23,6 +23,7 @@ export default defineConfig([
       "no-trailing-spaces": "warn",     // catches extra spaces at end of line
       "semi": ["warn", "never"],        // disallow semicolons
       "quotes": ["warn", "double"],     // enforce double quotes (optional)
+      "@typescript-eslint/no-explicit-any": "off", // allow use of 'any' type
     },
   },
 ])

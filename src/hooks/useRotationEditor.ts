@@ -11,7 +11,7 @@ export function useRotationEditor({ charactersInBattle, tableConfig }: UseRotati
   const charactersMap = Object.fromEntries(charactersInBattle.map(c => [c.name, c]))
   const characterColumnsMap = Object.fromEntries(tableConfig.characters.map(c => [c.label, c.columns.map(col => col.key.split("_")[1])]))
   const globalColumns = {
-    basic: tableConfig.basic.columns.map(col => col.key),          // ['fromTime', 'toTime', 'damage', 'dps']
+    basic: tableConfig.basic.columns.map(col => col.key),
     buffs: tableConfig.buffs.columns.map(col => col.key),
     debuffs: tableConfig.debuffs.columns.map(col => col.key),
     negativeStatuses: tableConfig.negativeStatuses.columns.map(col => col.key)
@@ -33,52 +33,40 @@ export function useRotationEditor({ charactersInBattle, tableConfig }: UseRotati
   // TODO trigger reCalcTimeline when editing previous rows
   const handleActionSelect = (snapshotId: number, actionName: string) => {
     setSnapshots((prevSnapshots) => {
-      const updatedSnapshots = [...prevSnapshots]
-      const index = updatedSnapshots.findIndex((s) => s.id === snapshotId)
-      if (index === -1) return prevSnapshots
+      let updated = [...prevSnapshots]
 
-      const snapshot = updatedSnapshots[index]
-      const characterData = charactersMap[snapshot.character]
-      if (!characterData) return prevSnapshots
+      if (snapshotId > 0) {
+        const prevRow = updated[snapshotId - 1]
+        const prevChar = prevRow.character
+        const prevConcerto = prevRow.charactersEnergies[prevChar].concerto
 
-      const action = characterData.actions.find((a) => a.name === actionName)
-      if (!action) return prevSnapshots
+        const currChar = updated[snapshotId].character
 
-      const previousSnapshot = updatedSnapshots[index - 1] ?? updatedSnapshots[0]
+        if (prevConcerto === 100 && prevChar !== currChar) {
+          updated[snapshotId] = {
+            ...updated[snapshotId],
+            character: prevChar,
+          }
 
-      // Update basic
-      const fromTime = extractNumericValueByKey(previousSnapshot, "toTime")
-      const cumulativeDamage = extractNumericValueByKey(previousSnapshot, "damage") + action.damage
-      const toTime = fromTime + action.time
-      const dps = cumulativeDamage / toTime
+          updated = updateSnapshotsWithAction(updated, snapshotId, "Outro", charactersMap, characterColumnsMap, globalColumns)
 
-      // Update character energies
+          const introId = snapshotId + 1
 
+          updated[introId] = {...updated[introId], character: currChar,}
 
-      // Update global buffs, debuffs, negative statuses
+          updated = updateSnapshotsWithAction(updated, introId, "Intro", charactersMap, characterColumnsMap, globalColumns)
 
-      const newSnapshot = {
-        ...snapshot,
-        action: action.name,
-        fromTime,
-        toTime,
-        damage: cumulativeDamage,
-        dps,
+          snapshotId += 2
+
+          updated[snapshotId] = {...updated[snapshotId], character: currChar,
+          }
+        }
       }
 
-      if (index === updatedSnapshots.length - 1) {
-        const newEmptySnapshot = createEmptySnapshot(charactersMap, characterColumnsMap, globalColumns)
-        newEmptySnapshot.id = updatedSnapshots.length
-        updatedSnapshots.push(newEmptySnapshot)
-      }
+      updated = updateSnapshotsWithAction(updated, snapshotId, actionName, charactersMap, characterColumnsMap, globalColumns)
 
-      updatedSnapshots[index] = newSnapshot
-      return updatedSnapshots
+      return updated
     })
-  }
-
-  const recalcTimeline = () => {
-    // TODO: Implement timeline recalculation when editing previous rows
   }
 
   return { snapshots, handleCharacterSelect, handleActionSelect, recalcTimeline }
@@ -121,8 +109,6 @@ function createEmptySnapshot(
     ])
   )
 
-  console.log("charactersEnergies", charactersEnergies)
-
   const basicValues = Object.fromEntries(globalColumns.basic.map(col => [col, 0]))
   const buffs = Object.fromEntries(globalColumns.buffs.map(col => [col, 0]))
   const debuffs = Object.fromEntries(globalColumns.debuffs.map(col => [col, 0]))
@@ -139,3 +125,111 @@ function createEmptySnapshot(
     negativeStatuses
   }
 }
+
+function createSnapshot(
+  previousSnapshot: any,
+  charactersMap: Record<string, Character>,
+  characterColumnsMap: Record<string, string[]>,
+  globalColumns: {
+    basic: string[]
+    buffs: string[]
+    debuffs: string[]
+    negativeStatuses: string[]
+  }
+) {
+  const charactersEnergies = Object.fromEntries(
+    Object.keys(charactersMap).map(charName => [
+      charName,
+      { ...previousSnapshot.charactersEnergies[charName] }
+    ])
+  )
+  // TODO: if we copy over values for basics we might simplify some calculations later ; dont carry over buffs/debuffs/negStatuses since we need to check if they've expired anyway
+  const basicValues = Object.fromEntries(globalColumns.basic.map(col => [col, 0]))
+  const buffs = Object.fromEntries(globalColumns.buffs.map(col => [col, 0]))
+  const debuffs = Object.fromEntries(globalColumns.debuffs.map(col => [col, 0]))
+  const negativeStatuses = Object.fromEntries(globalColumns.negativeStatuses.map(col => [col, 0]))
+
+  return {
+    id: previousSnapshot.id + 1,
+    character: "",
+    action: "",
+    ...basicValues,
+    charactersEnergies,
+    buffs,
+    debuffs,
+    negativeStatuses
+  }
+}
+
+const updateSnapshotsWithAction = (
+  snapshots: any,
+  snapshotId: number,
+  actionName: string,
+  charactersMap: Record<string, Character>,
+  characterColumnsMap: Record<string, string[]>,
+  globalColumns: any
+) => {
+  console.log("Updating snapshot", snapshotId, "with action", actionName)
+  const updatedSnapshots = [...snapshots]
+  const index = updatedSnapshots.findIndex((s) => s.id === snapshotId)
+  if (index === -1) return snapshots
+
+  const snapshot = updatedSnapshots[index]
+  const characterData = charactersMap[snapshot.character]
+  if (!characterData) return snapshots
+
+  const action = characterData.actions.find((a) => a.name === actionName)
+  if (!action) return snapshots
+
+  const previousSnapshot = updatedSnapshots[index - 1] ?? updatedSnapshots[0]
+
+  // Basic calculations
+  const fromTime = extractNumericValueByKey(previousSnapshot, "toTime")
+  const cumulativeDamage = extractNumericValueByKey(previousSnapshot, "damage") + action.damage
+  const toTime = fromTime + action.time
+  const dps = cumulativeDamage / toTime
+
+  // Energies calculations
+  const characterName = snapshot.character
+  const prevEnergies = previousSnapshot.charactersEnergies[characterName]
+  const currEnergies = snapshot.charactersEnergies[characterName]
+  const maxEnergies = characterData.maxEnergies
+
+  for (const [key, generated] of Object.entries(action.energyGenerated)) {
+    if (currEnergies[key] !== undefined && maxEnergies[key] !== undefined) {
+      currEnergies[key] = Math.min(prevEnergies[key] + generated, maxEnergies[key])
+    }
+  }
+
+  if (action.name === "Outro" && currEnergies.concerto !== undefined) {
+    currEnergies.concerto = 0
+  }
+
+  const newSnapshot = {
+    ...snapshot,
+    action: action.name,
+    fromTime,
+    toTime,
+    damage: cumulativeDamage,
+    dps,
+  }
+
+  updatedSnapshots[index] = newSnapshot
+
+  // Add new empty snapshot if this is the last one (TODO: this could be its own function)
+  if (index === updatedSnapshots.length - 1) {
+    const newSnapshot = createSnapshot(
+      updatedSnapshots[updatedSnapshots.length - 1], // previous snapshot
+      charactersMap,
+      characterColumnsMap,
+      globalColumns
+    )
+    updatedSnapshots.push(newSnapshot)
+  }
+
+  return updatedSnapshots
+}
+
+const recalcTimeline = () => {
+    // TODO: Implement timeline recalculation when editing previous rows
+  }
