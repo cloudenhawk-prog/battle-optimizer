@@ -1,5 +1,6 @@
 import type { Character } from "../../../types/characters"
 import type { ColumnGroup, ColumnDef } from "../../../types/tableDefinitions"
+import type { Snapshot } from "../../../types/snapshot"
 
 export function buildBuffColumns(selectedCharacters: Character[]): ColumnGroup {
   const activeBuffs = Array.from(
@@ -11,7 +12,7 @@ export function buildBuffColumns(selectedCharacters: Character[]): ColumnGroup {
     return {
       key,
       label: buff,
-      render: (snapshot: Record<string, number | string | Record<string, Record<string, number>> | Record<string, number>>) => {
+      render: (snapshot: Snapshot) => {
         const buffs = snapshot.buffs as Record<string, number> | undefined
         return buffs?.[key]
       },

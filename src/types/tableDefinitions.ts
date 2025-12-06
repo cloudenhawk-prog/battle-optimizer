@@ -1,3 +1,5 @@
+import type { Snapshot } from "./snapshot"
+
 export type TableConfig = {
   basic: ColumnGroup
   characters: ColumnGroup[]
@@ -14,6 +16,6 @@ export type ColumnGroup = {
 export type ColumnDef = {
   key: string
   label: string
-  render: (snapshot: Record<string, number | string | Record<string, Record<string, number>> | Record<string, number>>) => React.ReactNode
+  render: (snapshot: Snapshot) => React.ReactNode
 }
 

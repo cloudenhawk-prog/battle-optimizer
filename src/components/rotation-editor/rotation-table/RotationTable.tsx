@@ -2,9 +2,10 @@ import { HeaderRow } from "./HeaderRow"
 import { BodyRow } from "./BodyRows"
 import type { TableConfig } from "../../../types/tableDefinitions"
 import type { Character } from "../../../types/characters"
+import type { Snapshot } from "../../../types/snapshot"
 
 type RotationTableProps = {
-  snapshots: Array<Record<string, number | string | Record<string, Record<string, number>> | Record<string, number>>>
+  snapshots: Array<Snapshot>
   charactersInBattle: Character[]
   tableConfig: TableConfig
   onSelectCharacter: (snapshotId: number, characterName: string) => void

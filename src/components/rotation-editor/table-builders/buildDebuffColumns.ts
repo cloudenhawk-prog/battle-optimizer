@@ -1,5 +1,6 @@
 import type { Character } from "../../../types/characters"
 import type { ColumnGroup, ColumnDef } from "../../../types/tableDefinitions"
+import type { Snapshot } from "../../../types/snapshot"
 
 export function buildDebuffColumns(selectedCharacters: Character[]): ColumnGroup {
   const activeDebuffs = Array.from(
@@ -11,7 +12,7 @@ export function buildDebuffColumns(selectedCharacters: Character[]): ColumnGroup
     return {
       key,
       label: debuff,
-      render: (snapshot: Record<string, number | string | Record<string, Record<string, number>> | Record<string, number>>) => {
+      render: (snapshot: Snapshot) => {
         const debuffs = snapshot.debuffs as Record<string, number> | undefined
         return debuffs?.[key]
       },
