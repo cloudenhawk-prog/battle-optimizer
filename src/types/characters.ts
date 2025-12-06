@@ -3,15 +3,11 @@ export type Action = {
   name: string
   time: number
   damage: number
+  energyGenerated: Record<string, number>
 
-  energy: number
-  concerto: number
-  forte: number
-  specialEnergyGenerated: Record<string, number>
-
-  negativeStatusesApplied: string[] // TODO
-  buffsApplied: string[] // TODO
-  debuffsApplied: string[] // TODO
+  negativeStatusesApplied: string[]
+  buffsApplied: string[]
+  debuffsApplied: string[]
 }
 
 export type Character = {
@@ -20,5 +16,5 @@ export type Character = {
   negativeStatuses: string[]
   buffs: string[]
   debuffs: string[]
-  specialEnergy: string[]
+  maxEnergies: Record<string, number>
 }

@@ -42,7 +42,7 @@ export function useRotationEditor({ charactersInBattle, tableConfig }: UseRotati
 
         const currChar = updated[snapshotId].character
 
-        if (prevConcerto === 0 && prevChar !== currChar) {
+        if (prevConcerto === 100 && prevChar !== currChar) {
           updated[snapshotId] = {
             ...updated[snapshotId],
             character: prevChar,
@@ -126,6 +126,41 @@ function createEmptySnapshot(
   }
 }
 
+function createSnapshot(
+  previousSnapshot: any,
+  charactersMap: Record<string, Character>,
+  characterColumnsMap: Record<string, string[]>,
+  globalColumns: {
+    basic: string[]
+    buffs: string[]
+    debuffs: string[]
+    negativeStatuses: string[]
+  }
+) {
+  const charactersEnergies = Object.fromEntries(
+    Object.keys(charactersMap).map(charName => [
+      charName,
+      { ...previousSnapshot.charactersEnergies[charName] }
+    ])
+  )
+  // TODO: if we copy over values for basics we might simplify some calculations later ; dont carry over buffs/debuffs/negStatuses since we need to check if they've expired anyway
+  const basicValues = Object.fromEntries(globalColumns.basic.map(col => [col, 0]))
+  const buffs = Object.fromEntries(globalColumns.buffs.map(col => [col, 0]))
+  const debuffs = Object.fromEntries(globalColumns.debuffs.map(col => [col, 0]))
+  const negativeStatuses = Object.fromEntries(globalColumns.negativeStatuses.map(col => [col, 0]))
+
+  return {
+    id: previousSnapshot.id + 1,
+    character: "",
+    action: "",
+    ...basicValues,
+    charactersEnergies,
+    buffs,
+    debuffs,
+    negativeStatuses
+  }
+}
+
 const updateSnapshotsWithAction = (
   snapshots: any,
   snapshotId: number,
@@ -154,6 +189,22 @@ const updateSnapshotsWithAction = (
   const toTime = fromTime + action.time
   const dps = cumulativeDamage / toTime
 
+  // Energies calculations
+  const characterName = snapshot.character
+  const prevEnergies = previousSnapshot.charactersEnergies[characterName]
+  const currEnergies = snapshot.charactersEnergies[characterName]
+  const maxEnergies = characterData.maxEnergies
+
+  for (const [key, generated] of Object.entries(action.energyGenerated)) {
+    if (currEnergies[key] !== undefined && maxEnergies[key] !== undefined) {
+      currEnergies[key] = Math.min(prevEnergies[key] + generated, maxEnergies[key])
+    }
+  }
+
+  if (action.name === "Outro" && currEnergies.concerto !== undefined) {
+    currEnergies.concerto = 0
+  }
+
   const newSnapshot = {
     ...snapshot,
     action: action.name,
@@ -167,9 +218,13 @@ const updateSnapshotsWithAction = (
 
   // Add new empty snapshot if this is the last one (TODO: this could be its own function)
   if (index === updatedSnapshots.length - 1) {
-    const newEmptySnapshot = createEmptySnapshot(charactersMap, characterColumnsMap, globalColumns)
-    newEmptySnapshot.id = updatedSnapshots.length
-    updatedSnapshots.push(newEmptySnapshot)
+    const newSnapshot = createSnapshot(
+      updatedSnapshots[updatedSnapshots.length - 1], // previous snapshot
+      charactersMap,
+      characterColumnsMap,
+      globalColumns
+    )
+    updatedSnapshots.push(newSnapshot)
   }
 
   return updatedSnapshots
