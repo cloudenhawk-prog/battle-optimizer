@@ -25,8 +25,10 @@ export function RotationTable({
   // TODO: Use util function or helper function? To not make our components ugly?
   // Check and clean up the RotationEditor CSS which makes the animation
   // Check and clean up BodyRows in case our new implementation is ugly - although it SHOULD just be a new prop and classname?
+
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   useEffect(() => {
-    if (!snapshots.length) return;
+    if (!snapshots.length) return
 
     const last4 = snapshots.slice(-4)
     const idsToHighlight: number[] = []
@@ -51,7 +53,7 @@ export function RotationTable({
     return () => {
       clearTimeout(asyncSet)
       clearTimeout(clearHighlight)
-    };
+    }
   }, [snapshots.length])
 
   return (
