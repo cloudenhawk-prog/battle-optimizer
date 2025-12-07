@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react"
+import { useState, useEffect, useRef } from "react"
 import { HeaderRow } from "./HeaderRow"
 import { BodyRow } from "./BodyRows"
 import type { TableConfig } from "../../../types/tableDefinitions"
@@ -26,8 +26,19 @@ export function RotationTable({
   // Check and clean up the RotationEditor CSS which makes the animation
   // Check and clean up BodyRows in case our new implementation is ugly - although it SHOULD just be a new prop and classname?
 
+  const lastMaxId = useRef(0)
+
   useEffect(() => {
     if (!snapshots.length) return
+
+    const currentMaxId = Math.max(...snapshots.map(s => Number(s.id)))
+
+    if (currentMaxId <= lastMaxId.current) {
+      lastMaxId.current = currentMaxId
+      return
+    }
+
+    lastMaxId.current = currentMaxId
 
     const last4 = snapshots.slice(-4)
     const idsToHighlight: number[] = []
@@ -46,14 +57,13 @@ export function RotationTable({
     }
 
     const asyncSet = setTimeout(() => setHighlightIds(new Set(idsToHighlight)), 0)
-
     const clearHighlight = setTimeout(() => setHighlightIds(new Set()), 1500)
 
     return () => {
       clearTimeout(asyncSet)
       clearTimeout(clearHighlight)
     }
-  }, [snapshots.length])
+  }, [snapshots])
 
   return (
     <div className="tableWrapper">
