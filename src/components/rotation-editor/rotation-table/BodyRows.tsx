@@ -1,5 +1,6 @@
 import type { Character } from "../../../types/characters"
 import type { ColumnGroup } from "../../../types/tableDefinitions"
+import { buildActionOptions } from "../../../utils/optionBuilders"
 
 type BodyRowProps = {
   snapshot: Record<
@@ -55,9 +56,11 @@ export function BodyRow({
           disabled={!character}
         >
           <option value="">-- Select Action --</option>
-          {charactersInBattle.find(c => c.name === character)?.actions.map(a => (
-            <option key={a.name} value={a.name}>{a.name}</option>
-          ))}
+
+          {buildActionOptions(
+            charactersInBattle.find(c => c.name === character)?.actions ?? [],
+            snapshot.actionName as any
+          )}
         </select>
       </td>
 

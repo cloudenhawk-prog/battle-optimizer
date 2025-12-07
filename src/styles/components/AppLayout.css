@@ -1,0 +1,24 @@
+.Logo {
+  display: block;
+  width: 80px;           /* control the size */
+  height: auto;          /* maintain aspect ratio */
+  margin: 20px auto;     /* center horizontally */
+  transition: transform 2s ease, filter 2s ease, drop-shadow 2s ease;
+  cursor: pointer;
+}
+
+/* Subtle hover effect on the icon itself */
+.Logo:hover {
+  transform: scale(1.1);  
+  filter: drop-shadow(0 4px 12px rgba(0, 0, 0, 1)); /* soft shadow for depth */
+}
+
+/* Smooth fade-in on load */
+.Logo {
+  opacity: 0%;
+  animation: fadeIn 2s forwards;
+}
+
+@keyframes fadeIn {
+  to { opacity: 0.9; }
+}
