@@ -18,6 +18,7 @@ type BodyRowProps = {
   onSelectCharacter: (snapshotId: number, characterName: string) => void
   onSelectAction: (snapshotId: number, actionName: string) => void
   isLastRow?: boolean
+  isNewRow?: boolean
 }
 
 export function BodyRow({
@@ -27,13 +28,16 @@ export function BodyRow({
   onSelectCharacter,
   onSelectAction,
   isLastRow = false,
+  isNewRow = false
 }: BodyRowProps) {
   const snapshotId = snapshot.id as number
   const character = snapshot.character as string
   const action = snapshot.action as string
 
+  console.log(`BodyRow render: ${snapshot.id} isNewRow = ${isNewRow}`)
+
   return (
-    <tr className={isLastRow ? "lastRowClass" : ""}>
+    <tr className={`${isLastRow ? "lastRowClass" : ""} ${isNewRow ? "rowHighlight" : ""}`}>
 
       {/* Character select */}
       <td className="tableCellBody">
