@@ -26,7 +26,6 @@ export function RotationTable({
   // Check and clean up the RotationEditor CSS which makes the animation
   // Check and clean up BodyRows in case our new implementation is ugly - although it SHOULD just be a new prop and classname?
 
-  // eslint-disable-next-line react-hooks/exhaustive-deps
   useEffect(() => {
     if (!snapshots.length) return
 
