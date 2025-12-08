@@ -1,16 +1,6 @@
 DnD (drag and drop) kolonner for at ændre rækkefølge hvis man ønsker?
 Option til at "hide" kolonner hvis man ikke ønsker at se dem - de bruges dog stadig til beregninger
-
-Material UI og lignende til styling?
-
-
-
-Sammenlign HUSKY
-Sammenlign eslint
-
-Sammenlign Ohh my posh
-
-
+Vil gerne have Ohh my posh - kan jeg få mine indstillinger fra arbejds pc? YouTube Tutorial?
 
 
 
