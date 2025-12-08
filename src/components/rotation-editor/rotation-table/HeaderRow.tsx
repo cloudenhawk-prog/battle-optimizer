@@ -9,11 +9,10 @@ export function HeaderRow({ tableConfig }: HeaderRowProps) {
     <thead className="tableHeader">
       {/* Top-level group headers */}
       <tr>
-
         {/* Group: Basic Columns */}
         <th
           className="groupHeader"
-          colSpan={2 + tableConfig.basic.columns.length}
+          colSpan={2 + tableConfig.basic.columns.length} // Character + Action + basic columns
           style={{ textAlign: "center" }}
         >
           Basic
@@ -57,7 +56,6 @@ export function HeaderRow({ tableConfig }: HeaderRowProps) {
         >
           {tableConfig.debuffs.label}
         </th>
-
       </tr>
 
       {/* Column labels */}
@@ -68,12 +66,12 @@ export function HeaderRow({ tableConfig }: HeaderRowProps) {
         {/* Action */}
         <th className="tableCellHeader">Action</th>
 
-        {/* Basic */}
+        {/* Basic Columns */}
         {tableConfig.basic.columns.map(col => (
           <th key={col.key} className="tableCellHeader">{col.label}</th>
         ))}
 
-        {/* Character-specific */}
+        {/* Character-specific Columns (dynamic energies included) */}
         {tableConfig.characters.flatMap(group =>
           group.columns.map((col, idx) => (
             <th key={col.key} className={`tableCellHeader ${idx === 0 ? "charGroupHeader" : ""}`}>
@@ -82,21 +80,21 @@ export function HeaderRow({ tableConfig }: HeaderRowProps) {
           ))
         )}
 
-        {/* Negative Status */}
+        {/* Negative Status Columns */}
         {tableConfig.negativeStatuses.columns.map((col, idx) => (
           <th key={col.key} className={`tableCellHeader ${idx === 0 ? "charGroupHeader" : ""}`}>
             {col.label}
           </th>
         ))}
 
-        {/* Buff */}
+        {/* Buff Columns */}
         {tableConfig.buffs.columns.map((col, idx) => (
           <th key={col.key} className={`tableCellHeader ${idx === 0 ? "charGroupHeader" : ""}`}>
             {col.label}
           </th>
         ))}
 
-        {/* Debuff */}
+        {/* Debuff Columns */}
         {tableConfig.debuffs.columns.map((col, idx) => (
           <th key={col.key} className={`tableCellHeader ${idx === 0 ? "charGroupHeader" : ""}`}>
             {col.label}

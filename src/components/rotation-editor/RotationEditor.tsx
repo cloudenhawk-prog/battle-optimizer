@@ -1,5 +1,5 @@
 import "../../styles/components/RotationEditor.css"
-import { useRotationEditor } from "../../hooks/useRotationEditor"
+import { useRotationEditor } from "../../hooks/rotation-editor/useRotationEditor"
 import { buildTableConfig } from "./table-builders/buildTableConfig"
 import { RotationTable } from "./rotation-table/RotationTable"
 import type { Character } from "../../types/characters"

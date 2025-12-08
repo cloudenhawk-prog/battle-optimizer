@@ -20,32 +20,28 @@ export function RotationTable({
   onSelectCharacter,
   onSelectAction,
 }: RotationTableProps) {
-  const [highlightIds, setHighlightIds] = useState<Set<number>>(new Set())
-
   // TODO: Use util function or helper function? To not make our components ugly?
   // Check and clean up the RotationEditor CSS which makes the animation
   // Check and clean up BodyRows in case our new implementation is ugly - although it SHOULD just be a new prop and classname?
 
+  const [highlightIds, setHighlightIds] = useState<Set<number>>(new Set())
   const lastMaxId = useRef(0)
 
   useEffect(() => {
     if (!snapshots.length) return
 
     const currentMaxId = Math.max(...snapshots.map(s => Number(s.id)))
-
     if (currentMaxId <= lastMaxId.current) {
       lastMaxId.current = currentMaxId
       return
     }
-
     lastMaxId.current = currentMaxId
 
     const last4 = snapshots.slice(-4)
     const idsToHighlight: number[] = []
 
     if (last4.length >= 2) {
-      const secondLast = last4[last4.length - 2]
-      idsToHighlight.push(Number(secondLast.id))
+      idsToHighlight.push(Number(last4[last4.length - 2].id))
     }
 
     const outroRow = [...last4].reverse().find(s => s.action === "Outro")
@@ -70,16 +66,16 @@ export function RotationTable({
       <table className="tableBase">
         <HeaderRow tableConfig={tableConfig} />
         <tbody className="tableBody">
-          {snapshots.map((s, idx) => (
+          {snapshots.map((snapshot, idx) => (
             <BodyRow
-              key={s.id as number}
-              snapshot={s}
+              key={Number(snapshot.id)}
+              snapshot={snapshot}
               charactersInBattle={charactersInBattle}
               tableConfig={tableConfig}
               onSelectCharacter={onSelectCharacter}
               onSelectAction={onSelectAction}
               isLastRow={idx === snapshots.length - 1}
-              isNewRow={highlightIds.has(s.id as number)}
+              isNewRow={highlightIds.has(Number(snapshot.id))}
             />
           ))}
         </tbody>

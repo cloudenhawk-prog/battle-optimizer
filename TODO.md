@@ -14,7 +14,7 @@ interface Snapshot {
   negativeStatuses: Record<string, number>
 }
 
-Måske:
+Maybe:
 type EnergyKeys<T extends Record<string, any>> = keyof T extends string ? keyof T['maxEnergies'] : never;
 
 
