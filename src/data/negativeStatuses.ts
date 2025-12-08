@@ -49,7 +49,7 @@ export const negativeStatuses: Record<string, NegativeStatus> = {
     // boolean : trigger dmg on stack reduction or not           (true = damage dealt)
     // bolean  : timer reset on application or not               (false = timer based on the very first stack)
 
-    // Remember to check which occured first in a snapshot: Did stacks disappear/reduce or did a proc occur 
+    // Remember to check which occured first in a snapshot: Did stacks disappear/reduce or did a proc occur
 
 // Aero Erosion:
     // 100
