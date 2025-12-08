@@ -90,7 +90,7 @@ function updateSnapshotsWithAction(
 
   const snapshot = updatedSnapshots[index]
   if (!snapshot.character) return snapshots
-  
+
   const characterData = charactersMap[snapshot.character]
   if (!characterData) return snapshots
 

@@ -10,7 +10,7 @@ type UseRotationEditorProps = {
 }
 
 export function useRotationEditor({ charactersInBattle, tableConfig }: UseRotationEditorProps) {
-  const { snapshots, setSnapshots, createEmptySnapshot } = useSnapshots(charactersInBattle, tableConfig)
+  const { snapshots, setSnapshots } = useSnapshots(charactersInBattle, tableConfig)
   const { handleCharacterSelect, handleActionSelect } = useCharacterActions(snapshots, setSnapshots, charactersInBattle, tableConfig)
   const { tableConfigWithRenderers } = useTableUpdates(snapshots, tableConfig)
 
