@@ -6,8 +6,6 @@ Vil gerne have Ohh my posh - kan jeg få mine indstillinger fra arbejds pc? YouT
 
 
 
-
-
 | Framework / Package          | Kommentar / Formål                                                             |
 | ---------------------------- | ------------------------------------------------------------------------------ |
 | `@mui/material`              | Material UI komponentbibliotek til React, giver færdigbyggede UI-komponenter.  |

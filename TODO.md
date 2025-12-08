@@ -1,21 +1,62 @@
-1. Lav en konkret Snapshot interface med alle felter (ét centraliseret sted at opdatere type)
 
-interface Snapshot {
-  id: string
-  character?: string
-  action?: string
-  fromTime: number
-  toTime: number
-  damage: number
-  dps: number
-  charactersEnergies: Record<string, Record<'energy' | 'concerto' | 'forte', number>> (OBS: tilføjer jeg bare andre som de kommer, eller kan jeg gøre noget smart så typer selv oprettes på baggrund af energy data)
-  buffs: Record<string, number>
-  debuffs: Record<string, number>
-  negativeStatuses: Record<string, number>
-}
 
-Maybe:
-type EnergyKeys<T extends Record<string, any>> = keyof T extends string ? keyof T['maxEnergies'] : never;
+
+
+
+
+
+
+Priority
+
+--------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+
+
+
+1. Fix basics
+Energy needs to be reduced on cast (use negative values in action energy data?)
+Create Stats and Enemies (for now default and hardcoded like characters)
+Fix damage calculator (add damage type, element to actions etc as needed)
+Log damage (used for statistics)
+When deleting rows, set TODO: updated damage logs (unless damage logs are saved in snapshot? Despite not being shown in table)
+Consider: when deleting rows, red highlight-fadeout effect before they are deleted
+
+
+
+Rows should have ON-CLICK that inspects the data associated with snapshot/logged damage
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+Future refactor:
+
+--------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+
+
+
+1. State management
+
+Overvej at bruge Zustand eller React Context:
+   - snapshots og charactersInBattle som global state
+   - Reducer-style handlinger: ADD_SNAPSHOT, UPDATE_ACTION, RESET_CONCERTO
+Dette gør undo/redo og multi-component updates lettere
+
+
 
 
 --------------------------------------------------------------------------------------------------------------------------------------------------------------------------
@@ -23,11 +64,13 @@ type EnergyKeys<T extends Record<string, any>> = keyof T extends string ? keyof 
 
 
 
-2. Split useRotationEditor.ts i mindre hooks:
+2. Performance og andet
 
-useSnapshots
-useCharacterActions
-useTableUpdates
+Virtualized table: Brug @tanstack/react-virtual til BodyRows
+Memoize:
+- tableConfig via useMemo
+- Render-funktioner for kolonner
+Lazy load tunge sider: RotationEditor, Analytics
 
 
 
@@ -37,7 +80,29 @@ useTableUpdates
 
 
 
-3. Erstat <table> og <select> med MUI:
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+Future styling:
+
+--------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+
+
+
+1. Erstat <table> og <select> med MUI:
 
 <TableContainer>, <Table>, <TableHead>, <TableBody>, <TableRow>, <TableCell>
 
@@ -59,7 +124,7 @@ Implementer MUI Theme (farver, typography, spacing) for konsistens
 
 
 
-4. Styling
+2. Styling
 
 Nu:
 Tailwind CSS + custom CSS
@@ -72,19 +137,14 @@ Brug MUI tokens (palette, spacing, typography) i stedet for hardcoded CSS
 
 
 
---------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 
 
 
 
-5. State management
-
-Overvej at bruge Zustand eller React Context:
-   - snapshots og charactersInBattle som global state
-   - Reducer-style handlinger: ADD_SNAPSHOT, UPDATE_ACTION, RESET_CONCERTO
-Dette gør undo/redo og multi-component updates lettere
 
 
+
+Future testing:
 
 
 --------------------------------------------------------------------------------------------------------------------------------------------------------------------------
@@ -92,23 +152,7 @@ Dette gør undo/redo og multi-component updates lettere
 
 
 
-6. Performance og andet
-
-Virtualized table: Brug @tanstack/react-virtual til BodyRows
-Memoize:
-- tableConfig via useMemo
-- Render-funktioner for kolonner
-Lazy load tunge sider: RotationEditor, Analytics
-
-
-
-
---------------------------------------------------------------------------------------------------------------------------------------------------------------------------
-
-
-
-
-7. Developer Experience
+3. Developer Experience
 
 Storybook til komponentudvikling (tables, dropdowns, lightbox)
 Vitest til unit tests af engine-moduler (damageCalculator, buffManager)
@@ -119,6 +163,28 @@ Eventuelt Zod til runtime validation af snapshots og actions
 
 
 --------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 

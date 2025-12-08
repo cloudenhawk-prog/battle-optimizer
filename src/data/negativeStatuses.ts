@@ -22,21 +22,55 @@ export const negativeStatuses: Record<string, NegativeStatus> = {
     },
     spectroFrazzle: {
         name: "Spectro Frazzle",
-        duration: 10, // TODO
-        maxStacksDefault: 10, // TODO
-        frequency: 1, // TODO
-        damage: { // TODO
-            1: 500,
-            2: 1000,
-            3: 1500,
-            4: 2000,
-            5: 2500,
-            6: 3000,
-            7: 3500,
-            8: 4000,
-            9: 4500,
-            10: 5000,
+        duration: 12,
+        maxStacksDefault: 10,
+        frequency: 3,
+        damage: {
+            1: 1225,
+            2: 2223,
+            3: 2896,
+            4: 3792,
+            5: 4688,
+            6: 5584,
+            7: 6480,
+            8: 8196,
+            9: 9192,
+            10: 10188,
         },
         element: "Spectro"
     }
 }
+
+
+// Cant implement until ELEMENT is implemented - also pass through seperate damage calculator than normally - relies on fewer things
+
+// TODO - define a reduction strategy?
+    // number  : X stacks down per time                          (100 = default for wiping all stacks)
+    // boolean : trigger dmg on stack reduction or not           (true = damage dealt)
+    // bolean  : timer reset on application or not               (false = timer based on the very first stack)
+
+    // Remember to check which occured first in a snapshot: Did stacks disappear/reduce or did a proc occur 
+
+// Aero Erosion:
+    // 100
+    // false
+    // true
+
+    // 1 stack down
+    // Damage only trigger every 3 seconds from the first stack is applied
+    // On application, the duration resets, but the interval is unaffected
+    // Interval unaffected
+
+
+
+// Spectro Frazze:
+    // 1
+    // true
+    // false
+
+
+    // 1 stack down
+    // Damage trigger on reduction (before the reduction happen, i.e. with the previous amount of stacks)
+    // on application, stacks goes up but the 3 second timer interval is unaffected
+    // Interval unaffected
+
