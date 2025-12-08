@@ -1,11 +1,10 @@
 import type { Character } from "../../../types/characters"
 import type { ColumnGroup } from "../../../types/tableDefinitions"
+import type { Snapshot } from "../../../types/snapshot"
+import { buildActionOptions } from "../../../utils/optionBuilders"
 
 type BodyRowProps = {
-  snapshot: Record<
-    string,
-    number | string | Record<string, Record<string, number>> | Record<string, number>
-  >
+  snapshot: Snapshot
   charactersInBattle: Character[]
   tableConfig: {
     basic: ColumnGroup
@@ -17,6 +16,7 @@ type BodyRowProps = {
   onSelectCharacter: (snapshotId: number, characterName: string) => void
   onSelectAction: (snapshotId: number, actionName: string) => void
   isLastRow?: boolean
+  isNewRow?: boolean
 }
 
 export function BodyRow({
@@ -26,20 +26,19 @@ export function BodyRow({
   onSelectCharacter,
   onSelectAction,
   isLastRow = false,
+  isNewRow = false
 }: BodyRowProps) {
-  const snapshotId = snapshot.id as number
-  const character = snapshot.character as string
-  const action = snapshot.action as string
+  const snapshotId = Number(snapshot.id)
+  const character = snapshot.character ?? ""
+  const action = snapshot.action ?? ""
+
+  console.log(`BodyRow render: ${snapshotId} isNewRow = ${isNewRow}`)
 
   return (
-    <tr className={isLastRow ? "lastRowClass" : ""}>
-
+    <tr className={`${isLastRow ? "lastRowClass" : ""} ${isNewRow ? "rowHighlight" : ""}`}>
       {/* Character select */}
       <td className="tableCellBody">
-        <select
-          value={character}
-          onChange={(e) => onSelectCharacter(snapshotId, e.target.value)}
-        >
+        <select value={character} onChange={e => onSelectCharacter(snapshotId, e.target.value)}>
           <option value="">-- Select Character --</option>
           {charactersInBattle.map(c => (
             <option key={c.name} value={c.name}>{c.name}</option>
@@ -51,13 +50,14 @@ export function BodyRow({
       <td className="tableCellBody">
         <select
           value={action}
-          onChange={(e) => onSelectAction(snapshotId, e.target.value)}
+          onChange={e => onSelectAction(snapshotId, e.target.value)}
           disabled={!character}
         >
           <option value="">-- Select Action --</option>
-          {charactersInBattle.find(c => c.name === character)?.actions.map(a => (
-            <option key={a.name} value={a.name}>{a.name}</option>
-          ))}
+          {buildActionOptions(
+            charactersInBattle.find(c => c.name === character)?.actions ?? [],
+            action
+          )}
         </select>
       </td>
 
@@ -68,7 +68,7 @@ export function BodyRow({
         </td>
       ))}
 
-      {/* Character-specific columns */}
+      {/* Character-specific columns (dynamic energies included) */}
       {tableConfig.characters.flatMap(group =>
         group.columns.map((col, idx) => (
           <td key={col.key} className={`tableCellBody ${idx === 0 ? "charGroupBody" : ""}`}>
@@ -92,12 +92,11 @@ export function BodyRow({
       ))}
 
       {/* Debuff columns */}
-        {tableConfig.debuffs.columns.map((col, idx) => (
-          <td key={col.key} className={`tableCellBody ${idx === 0 ? "charGroupBody" : ""}`}>
-        {character && action ? col.render(snapshot) : ""}
-      </td>
+      {tableConfig.debuffs.columns.map((col, idx) => (
+        <td key={col.key} className={`tableCellBody ${idx === 0 ? "charGroupBody" : ""}`}>
+          {character && action ? col.render(snapshot) : ""}
+        </td>
       ))}
-
     </tr>
   )
 }

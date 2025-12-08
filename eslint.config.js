@@ -24,6 +24,7 @@ export default defineConfig([
       "semi": ["warn", "never"],        // disallow semicolons
       "quotes": ["warn", "double"],     // enforce double quotes (optional)
       "@typescript-eslint/no-explicit-any": "off", // allow use of 'any' type
+      "react-hooks/exhaustive-deps": "off" // allow effects to selectively skip dependencies (like snapshot highlighting)
     },
   },
 ])

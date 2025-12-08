@@ -1,5 +1,7 @@
 import type { ReactNode } from "react"
 import { Link, useLocation } from "react-router-dom"
+import roverIconUrl from "../assets/rover-region.svg"
+import "../styles/components/AppLayout.css"
 
 interface AppLayoutProps {
   children: ReactNode
@@ -18,7 +20,9 @@ export default function AppLayout({ children }: AppLayoutProps) {
   return (
     <div className="app-container">
       <aside className="sidebar">
-        <div>[Icon_01]</div>
+        <div>
+          <img src={roverIconUrl} alt="Rover" className="Logo" />
+        </div>
 
         <nav className="nav">
           {navItems.map((item) => (

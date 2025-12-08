@@ -14,9 +14,23 @@
     "prepare": "husky"
   },
   "dependencies": {
+    "@dnd-kit/core": "^6.3.1",
+    "@dnd-kit/sortable": "^10.0.0",
+    "@emotion/react": "^11.14.0",
+    "@emotion/styled": "^11.14.1",
+    "@mui/icons-material": "^7.3.6",
+    "@mui/material": "^7.3.6",
+    "@mui/x-date-pickers": "^8.21.0",
+    "@tanstack/react-virtual": "^3.13.13",
+    "mdi-material-ui": "^7.9.4",
     "react": "^19.2.0",
+    "react-color": "^2.19.3",
+    "react-colorful": "^5.6.1",
     "react-dom": "^19.2.0",
-    "react-router-dom": "^7.10.1"
+    "react-minimal-pie-chart": "^9.1.2",
+    "react-router-dom": "^7.10.1",
+    "react-virtualized": "^9.22.6",
+    "yet-another-react-lightbox": "^3.26.0"
   },
   "devDependencies": {
     "@eslint/js": "^9.39.1",

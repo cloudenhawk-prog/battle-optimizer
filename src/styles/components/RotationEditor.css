@@ -92,3 +92,24 @@
   height: 1px;
   background-color: var(--table-line-color);
 }
+
+
+
+
+
+
+.rowHighlight {
+  animation: highlightRow 1.5s ease-out;
+}
+
+@keyframes highlightRow {
+  0% {
+    background-color: rgba(72, 177, 70, 0.3); /* soft pastel green */
+  }
+  50% {
+    background-color: rgba(72, 177, 70, 0.2); /* lighter mid-point */
+  }
+  100% {
+    background-color: transparent;
+  }
+}
