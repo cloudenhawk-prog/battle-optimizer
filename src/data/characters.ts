@@ -32,6 +32,19 @@ export const characters: Character[] =
         debuffsApplied: [],
       },
       {
+        name: "Liberating Lightning",
+        time: 4.5,
+        damage: 8000,
+        energyGenerated: {
+          energy: -100,
+          concerto: 50,
+          forte: 50
+        },
+        negativeStatusesApplied: [],
+        buffsApplied: [],
+        debuffsApplied: [],
+      },
+      {
         name: "Intro",
         time: 1,
         damage: 1000,
