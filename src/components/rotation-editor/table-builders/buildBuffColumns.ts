@@ -1,4 +1,4 @@
-import type { Character } from "../../../types/characters"
+import type { Character } from "../../../types/character"
 import type { ColumnGroup, ColumnDef } from "../../../types/tableDefinitions"
 import type { Snapshot } from "../../../types/snapshot"
 

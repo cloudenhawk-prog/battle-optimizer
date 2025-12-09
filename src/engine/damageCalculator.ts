@@ -23,6 +23,10 @@ export function calculateDamageNegativeStatus(damage: number): number {
   return damage * 0.5
 }
 
+function convertLevelToDefense(level: number): number {
+  // Placeholder conversion formula
+  return level * 5
+}
 
 // When a damage calculator returns damage dealt, the value should be logged: Character / Damage Type / Element / Source / timestamp
 // ... so that we can do statistics, show graphic timeline with "action icons"

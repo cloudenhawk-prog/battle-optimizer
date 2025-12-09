@@ -1,12 +1,14 @@
 import type { Snapshot } from "../../types/snapshot"
-import type { Character } from "../../types/characters"
+import type { Character } from "../../types/character"
 import { createSnapshot } from "./useSnapshots"
 import type { Dispatch, SetStateAction } from "react"
+import type { Enemy } from "../../types/enemy"
 
-export function useCharacterActions(
-  snapshots: Snapshot[],
-  setSnapshots: Dispatch<SetStateAction<Snapshot[]>>,
-  characters: Character[],
+type UseCharacterActionsProps = {
+  snapshots: Snapshot[]
+  setSnapshots: Dispatch<SetStateAction<Snapshot[]>>
+  charactersInBattle: Character[]
+  enemy: Enemy
   tableConfig: {
     basic: { columns: { key: string }[] }
     buffs: { columns: { key: string }[] }
@@ -14,8 +16,10 @@ export function useCharacterActions(
     negativeStatuses: { columns: { key: string }[] }
     characters: { label: string; columns: { key: string }[] }[]
   }
-) {
-  const charactersMap: Record<string, Character> = Object.fromEntries(characters.map(c => [c.name, c]))
+}
+
+export function useCharacterActions({ snapshots, setSnapshots, charactersInBattle, enemy, tableConfig }: UseCharacterActionsProps) {
+  const charactersMap: Record<string, Character> = Object.fromEntries(charactersInBattle.map(c => [c.name, c]))
   const characterColumnsMap: Record<string, string[]> = Object.fromEntries(
     tableConfig.characters.map(c => [c.label, c.columns.map(col => col.key.split("_")[1])])
   )

@@ -1,21 +1,26 @@
 import { useState } from "react"
-import type { Character } from "../../types/characters"
+import type { Character } from "../../types/character"
 import type { TableConfig } from "../../types/tableDefinitions"
 import type { Snapshot } from "../../types/snapshot"
 
-type GlobalColumns = {
+type GlobalColumns = { // TODO: is it necessary to make a subtype like this of TableConfig?
   basic: string[]
   buffs: string[]
   debuffs: string[]
   negativeStatuses: string[]
 }
 
-export function useSnapshots(characters: Character[], tableConfig: TableConfig) {
-  const charactersMap = Object.fromEntries(characters.map(c => [c.name, c]))
+type UseSnapshotsProps = {
+  charactersInBattle: Character[]
+  tableConfig: TableConfig
+}
+
+export function useSnapshots({ charactersInBattle, tableConfig }: UseSnapshotsProps) {
+  const charactersMap = Object.fromEntries(charactersInBattle.map(c => [c.name, c]))
 
   // Map character -> array of energy keys dynamically from maxEnergies
   const characterColumnsMap = Object.fromEntries(
-    characters.map(c => [c.name, Object.keys(c.maxEnergies)])
+    charactersInBattle.map(c => [c.name, Object.keys(c.maxEnergies)])
   )
 
   const globalColumns: GlobalColumns = {
