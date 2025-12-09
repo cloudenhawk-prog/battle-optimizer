@@ -2,15 +2,17 @@ import "../../styles/components/RotationEditor.css"
 import { useRotationEditor } from "../../hooks/rotation-editor/useRotationEditor"
 import { buildTableConfig } from "./table-builders/buildTableConfig"
 import { RotationTable } from "./rotation-table/RotationTable"
-import type { Character } from "../../types/characters"
+import type { Character } from "../../types/character"
+import type { Enemy } from "../../types/enemy"
 
 type RotationEditorPageProps = {
   charactersInBattle: Character[]
+  enemy: Enemy
 }
 
-export default function RotationEditorPage({ charactersInBattle }: RotationEditorPageProps) {
+export default function RotationEditorPage({ charactersInBattle, enemy }: RotationEditorPageProps) {
   const tableConfig = buildTableConfig(charactersInBattle)
-  const { snapshots, handleCharacterSelect, handleActionSelect } = useRotationEditor({ charactersInBattle, tableConfig })
+  const { snapshots, handleCharacterSelect, handleActionSelect } = useRotationEditor({ charactersInBattle, tableConfig, enemy })
 
   return (
     <div className="pageWrapper">

@@ -1,4 +1,4 @@
-import type { Character } from "../../../types/characters"
+import type { Character } from "../../../types/character"
 import type { ColumnGroup } from "../../../types/tableDefinitions"
 import type { Snapshot } from "../../../types/snapshot"
 import { buildActionOptions } from "../../../utils/optionBuilders"

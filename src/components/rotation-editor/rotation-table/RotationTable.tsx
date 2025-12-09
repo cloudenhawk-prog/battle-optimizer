@@ -2,7 +2,7 @@ import { useState, useEffect, useRef } from "react"
 import { HeaderRow } from "./HeaderRow"
 import { BodyRow } from "./BodyRows"
 import type { TableConfig } from "../../../types/tableDefinitions"
-import type { Character } from "../../../types/characters"
+import type { Character } from "../../../types/character"
 import type { Snapshot } from "../../../types/snapshot"
 
 type RotationTableProps = {

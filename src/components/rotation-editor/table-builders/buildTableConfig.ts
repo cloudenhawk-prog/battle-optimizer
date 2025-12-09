@@ -1,4 +1,4 @@
-import type { Character } from "../../../types/characters"
+import type { Character } from "../../../types/character"
 import type { TableConfig } from "../../../types/tableDefinitions"
 import { buildBasicColumns } from "./buildBasicColumns"
 import { buildCharacterGroupsColumns } from "./buildCharacterGroupedColumns"

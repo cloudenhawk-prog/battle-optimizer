@@ -24,8 +24,8 @@ Consider: when deleting rows, red highlight-fadeout effect before they are delet
 
 
 Rows should have ON-CLICK that inspects the data associated with snapshot/logged damage
-
-
+Allow multi-instance battle timeline -> Track boss HP - when dead, automatically proceed to next boss in the list.
+Take the new 3.0 break mechanic into account
 
 
 

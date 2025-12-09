@@ -1,3 +1,4 @@
+import type { CharacterStats } from "./stats"
 
 export type Action = {
   name: string
@@ -16,5 +17,6 @@ export type Character = {
   negativeStatuses: string[]
   buffs: string[]
   debuffs: string[]
-  maxEnergies: Record<string, number>
+  maxEnergies: Record<string, number>,
+  stats: CharacterStats
 }
