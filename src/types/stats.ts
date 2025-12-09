@@ -1,6 +1,6 @@
 
 export type CharacterStats = {
-  level: number 
+  level: number
 
   baseATK: number
   flatATK: number
@@ -36,7 +36,7 @@ export type CharacterStats = {
   glacioChafeDMG: number
   fusionBurstDMG: number
   electroFlareDMG: number
-  
+
   spectro: number
   fusion: number
   aero: number
