@@ -1,6 +1,5 @@
 import type { Snapshot } from "../types/snapshot"
 import type { Character } from "../types/character"
-import type { TableConfig } from "../types/tableDefinitions"
 
 
 /* ============================
