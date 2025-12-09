@@ -32,8 +32,6 @@ export function BodyRow({
   const character = snapshot.character ?? ""
   const action = snapshot.action ?? ""
 
-  console.log(`BodyRow render: ${snapshotId} isNewRow = ${isNewRow}`)
-
   return (
     <tr className={`${isLastRow ? "lastRowClass" : ""} ${isNewRow ? "rowHighlight" : ""}`}>
       {/* Character select */}

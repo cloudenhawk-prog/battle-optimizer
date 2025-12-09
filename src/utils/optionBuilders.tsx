@@ -1,5 +1,5 @@
 
-import type { Action, Character } from "../types/characters"
+import type { Action, Character } from "../types/character"
 
 // TODO - would be nice if we toggle on/off an "insufficient energy" tooltip on the option (dont change its name though)
 export function buildActionOptions(
@@ -12,12 +12,9 @@ export function buildActionOptions(
     const isSpecial = a.name === "Intro" || a.name === "Outro"
     const isCurrent = a.name === currentAction
 
-    // Check if action is unaffordable
     let isUnaffordable = false
     if (character && currentEnergies) {
-      // Check each energy type in the action's energyGenerated
       for (const [energyType, energyChange] of Object.entries(a.energyGenerated)) {
-        // If the energy change is negative (a cost) and we don't have enough current energy
         if (energyChange < 0 && (currentEnergies[energyType] ?? 0) < Math.abs(energyChange)) {
           isUnaffordable = true
           break
@@ -25,7 +22,6 @@ export function buildActionOptions(
       }
     }
 
-    // Hide Intro/Outro unless they're current
     if (isSpecial && !isCurrent) {
       return (
         <option key={a.name} value={a.name} hidden disabled>
@@ -34,7 +30,6 @@ export function buildActionOptions(
       )
     }
 
-    // Disable unaffordable actions (but keep them visible and greyed out)
     if (isUnaffordable && !isCurrent) {
       return (
         <option key={a.name} value={a.name} disabled>

@@ -17,12 +17,9 @@ type UseSnapshotsProps = {
 
 export function useSnapshots({ charactersInBattle, tableConfig }: UseSnapshotsProps) {
   const charactersMap = Object.fromEntries(charactersInBattle.map(c => [c.name, c]))
-
-  // Map character -> array of energy keys dynamically from maxEnergies
   const characterColumnsMap = Object.fromEntries(
     charactersInBattle.map(c => [c.name, Object.keys(c.maxEnergies)])
   )
-
   const globalColumns: GlobalColumns = {
     basic: tableConfig.basic.columns.map(col => col.key),
     buffs: tableConfig.buffs.columns.map(col => col.key),
@@ -30,9 +27,7 @@ export function useSnapshots({ charactersInBattle, tableConfig }: UseSnapshotsPr
     negativeStatuses: tableConfig.negativeStatuses.columns.map(col => col.key),
   }
 
-  const [snapshots, setSnapshots] = useState<Snapshot[]>([
-    createEmptySnapshot(charactersMap, characterColumnsMap, globalColumns),
-  ])
+  const [snapshots, setSnapshots] = useState<Snapshot[]>([createEmptySnapshot(charactersMap, characterColumnsMap, globalColumns)])
 
   return { snapshots, setSnapshots, createEmptySnapshot }
 }
