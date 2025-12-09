@@ -56,7 +56,9 @@ export function BodyRow({
           <option value="">-- Select Action --</option>
           {buildActionOptions(
             charactersInBattle.find(c => c.name === character)?.actions ?? [],
-            action
+            action,
+            charactersInBattle.find(c => c.name === character),
+            snapshot.charactersEnergies[character]
           )}
         </select>
       </td>
