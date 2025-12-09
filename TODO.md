@@ -14,7 +14,7 @@ Priority
 
 
 1. Fix basics
-Energy needs to be reduced on cast (use negative values in action energy data?)
+(Done) Energy needs to be reduced on cast and unvailable to cast
 Create Stats and Enemies (for now default and hardcoded like characters)
 Fix damage calculator (add damage type, element to actions etc as needed)
 Log damage (used for statistics)
