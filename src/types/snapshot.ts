@@ -15,12 +15,14 @@ export interface Snapshot {
 }
 
 export type DamageEvent = {
-  snapshotId: string
+  snapshotId: number
   dealer: string
   target: string
   element: Action["element"]
   dmgType: Action["dmgType"]
   scaling: Action["scaling"]
-  multiplier: number
-  calculatedDamage: number
+  actionName: string
+  normalStrike: number
+  criticalStrike: number
+  average: number
 }

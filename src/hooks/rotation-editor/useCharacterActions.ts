@@ -3,8 +3,9 @@ import type { Character } from "../../types/character"
 import { createSnapshot } from "./useSnapshots"
 import type { Dispatch, SetStateAction } from "react"
 import type { Enemy } from "../../types/enemy"
-import { getSnapshotIndex, getPrevSnapshot, getNumeric, getCharacter, getActionFromCharacter, getCharacterEnergyState, updateEnergyValue, copySnapshots, getPrevCharacter, getSnapshotById, getConcertoValue, assignCharacterToRow } from "../../utils/shared"
+import { getSnapshotIndex, getPrevSnapshot, getCharacter, getActionFromCharacter, getCharacterEnergyState, updateEnergyValue, copySnapshots, getPrevCharacter, getSnapshotById, getConcertoValue, assignCharacterToRow } from "../../utils/shared"
 import type { DamageEvent } from "../../types/snapshot"
+import { calculateDamage } from "../../engine/damageCalculator"
 
 type UseCharacterActionsProps = {
   snapshots: Snapshot[]
@@ -79,32 +80,35 @@ function updateSnapshotsWithAction(params: {
   // -------- Validate Input --------
   const validated = validateActionInputs(params)
   if (!validated) return params.snapshots
-
   const { index, snapshot, character, action, prev } = validated
   const updated = copySnapshots(params.snapshots)
 
-  // -------- Time & Damage --------
-  const fromTime = getNumeric(prev, "toTime")
-  const cumulativeDamage = getNumeric(prev, "damage") + action.multiplier
+  // -------- Timeline --------
+  const fromTime = prev.toTime
   const toTime = fromTime + action.castTime
-  const dps = cumulativeDamage / toTime
 
   // -------- Energy Updates --------
   const energiesPrev = getCharacterEnergyState(prev, snapshot.character!)
   const energiesCurr = getCharacterEnergyState(snapshot, snapshot.character!)
   const maxEnergies = character.maxEnergies
-
   for (const [key, generated] of Object.entries(action.energyGenerated)) {
-    if (key in energiesCurr) {
-      energiesCurr[key] = updateEnergyValue(energiesPrev[key], generated, maxEnergies[key])
-    }
+    if (key in energiesCurr) energiesCurr[key] = updateEnergyValue(energiesPrev[key], generated, maxEnergies[key])
   }
+  if (action.name === "Outro" && energiesCurr.concerto !== undefined) energiesCurr.concerto = 0
 
-  if (action.name === "Outro" && energiesCurr.concerto !== undefined) {
-    energiesCurr.concerto = 0
-  }
+  // -------- Buffs/Debuffs/Negative Statuses --------
+  // TODO: apply action effects, propagate previous snapshot values
 
+  // -------- Time & Damage --------
+  const { average, damageEvent } = calculateDamage({ snapshot, prev, action, character, enemy: params.enemy, snapshotId: index })
+  const cumulativeDamage = prev.damage + average
+  const dps = cumulativeDamage / toTime
+
+  // -------- Update snapshot --------
   updated[index] = { ...snapshot, action: action.name, fromTime, toTime, damage: cumulativeDamage, dps }
+
+  // -------- Update global damage events --------
+  params.setDamageEvents(prevEvents => [...prevEvents, damageEvent]);
 
   // -------- Create Next Blank Snapshot --------
   if (index === updated.length - 1) {

@@ -12,13 +12,14 @@ type RotationEditorPageProps = {
 
 export default function RotationEditorPage({ charactersInBattle, enemy }: RotationEditorPageProps) {
   const tableConfig = buildTableConfig(charactersInBattle)
-  const { snapshots, handleCharacterSelect, handleActionSelect } = useRotationEditor({ charactersInBattle, tableConfig, enemy })
+  const { snapshots, damageEvents, handleCharacterSelect, handleActionSelect } = useRotationEditor({ charactersInBattle, tableConfig, enemy })
+  // TODO: pass damageEvents to table so we can implement rows on-click overlay data breakdown
 
   return (
     <div className="pageWrapper">
       <h1 className="heading">Rotation Editor</h1>
       <RotationTable
-        snapshots={snapshots}
+        snapshots={snapshots} // TODO: send damageEvents to Table
         charactersInBattle={charactersInBattle}
         tableConfig={tableConfig}
         onSelectCharacter={handleCharacterSelect}

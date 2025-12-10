@@ -109,15 +109,3 @@ export function updateEnergyValue(
 ) {
   return Math.min((prev ?? 0) + generated, max)
 }
-
-
-/* ============================
-   SAFE VALUE GETTERS
-   ============================ */
-
-export function getNumeric(snapshot: Snapshot, key: string): number {
-  const value = (snapshot as any)[key]
-  if (typeof value !== "number")
-    throw new Error(`Expected numeric key "${key}" on snapshot`)
-  return value
-}

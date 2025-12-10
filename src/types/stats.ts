@@ -19,6 +19,7 @@ export type CharacterStats = {
 
   dmgAmplification: number
   defIgnore: number
+  elementalResPEN: number
   resistancePEN: number
 
   basicDMG: number

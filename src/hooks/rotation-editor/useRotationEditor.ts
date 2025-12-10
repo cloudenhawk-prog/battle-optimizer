@@ -24,6 +24,6 @@ export function useRotationEditor({ charactersInBattle, tableConfig, enemy }: Us
     damageEvents,
     handleCharacterSelect,
     handleActionSelect,
-    tableConfig: tableConfigWithRenderers
+    tableConfig: tableConfigWithRenderers,
   }
 }

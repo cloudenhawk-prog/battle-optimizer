@@ -14,16 +14,31 @@ Priority
 
 
 1. Fix basics
-(Done) Energy needs to be reduced on cast and unvailable to cast
-Create Stats and Enemies (for now default and hardcoded like characters)
-Fix damage calculator (add damage type, element to actions etc as needed)
-Log damage (used for statistics)
-When deleting rows, set TODO: updated damage logs (unless damage logs are saved in snapshot? Despite not being shown in table)
-Consider: when deleting rows, red highlight-fadeout effect before they are deleted
+(Pending) Update character/action types if needed - only actions need to track which negative statuses they can apply - table builders should simply get them from actions rather than character.negStatus
+
+(Pending) Implement Negative Statuses (Aero + Spectro for now) damage/stack tracking - might need a global state that tracks when it was applied, last proc, etc - might need a new DamageEvent for this (maybe a new type that includes ALL negative statuses) 
+
+(Pending) Find all types of buffs/debuffs in the game and implement helper functions (in their own file?) to handle them - that let's us several buffs with different names, as long as we give them an effect that matches some expected behaviour
 
 
 
-Rows should have ON-CLICK that inspects the data associated with snapshot/logged damage
+
+
+(Pending) Implement tests on all functions that can be reasonably tested
+
+(Pending) Graphs that show the current performance in real-time (timeline up-down line graph & pie-charts)
+
+(Pending) When deleting rows, set TODO: updated damage logs (unless damage logs are saved in snapshot? Despite not being shown in table)
+(Pending) Consider: when deleting rows, red highlight-fadeout effect before they are deleted
+(Pending) Rows should have ON-CLICK that inspects the data associated with snapshot/logged damage
+
+
+
+
+
+
+
+
 Allow multi-instance battle timeline -> Track boss HP - when dead, automatically proceed to next boss in the list.
 Take the new 3.0 break mechanic into account
 
