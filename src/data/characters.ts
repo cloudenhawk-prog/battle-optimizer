@@ -7,8 +7,12 @@ export const characters: Character[] =
     actions: [
       {
         name: "Fireball",
-        time: 2,
-        damage: 800,
+        castTime: 2,
+        multiplier: 0.80,
+        scaling: "ATK",
+        element: "FUSION",
+        dmgType: "SKILL",
+        cooldown: 0,
         energyGenerated: {
           energy: 50,
           concerto: 10,
@@ -20,8 +24,12 @@ export const characters: Character[] =
       },
       {
         name: "Ice Spike",
-        time: 1.5,
-        damage: 600,
+        castTime: 1.5,
+        multiplier: 1.20,
+        scaling: "ATK",
+        element: "GLACIO",
+        dmgType: "SKILL",
+        cooldown: 5,
         energyGenerated: {
           energy: 30,
           concerto: 20,
@@ -33,8 +41,12 @@ export const characters: Character[] =
       },
       {
         name: "Liberating Lightning",
-        time: 4.5,
-        damage: 8000,
+        castTime: 4.5,
+        multiplier: 8.00,
+        scaling: "ATK",
+        element: "ELECTRO",
+        dmgType: "LIBERATION",
+        cooldown: 0,
         energyGenerated: {
           energy: -100,
           concerto: 50,
@@ -46,8 +58,12 @@ export const characters: Character[] =
       },
       {
         name: "Intro",
-        time: 1,
-        damage: 1000,
+        castTime: 1,
+        multiplier: 1.00,
+        scaling: "ATK",
+        element: "FUSION",
+        dmgType: "INTRO",
+        cooldown: 0,
         energyGenerated: {
           energy: 10,
           concerto: 10,
@@ -59,8 +75,12 @@ export const characters: Character[] =
       },
       {
         name: "Outro",
-        time: 0,
-        damage: 100,
+        castTime: 0,
+        multiplier: 1.00,
+        scaling: "ATK",
+        element: "FUSION",
+        dmgType: "OUTRO",
+        cooldown: 0,
         energyGenerated: {
           energy: 10,
           concerto: 0,
@@ -123,8 +143,12 @@ export const characters: Character[] =
     actions: [
       {
         name: "Backstab",
-        time: 1,
-        damage: 400,
+        castTime: 1,
+        multiplier: 1.00,
+        scaling: "ATK",
+        element: "HAVOC",
+        dmgType: "BASIC",
+        cooldown: 0,
         energyGenerated: {
           energy: 20,
           concerto: 25,
@@ -136,8 +160,12 @@ export const characters: Character[] =
       },
       {
         name: "Poison",
-        time: 2.5,
-        damage: 300,
+        castTime: 2.5,
+        multiplier: 3.00,
+        scaling: "ATK",
+        element: "HAVOC",
+        dmgType: "SKILL",
+        cooldown: 5,
         energyGenerated: {
           energy: 25,
           concerto: 20,
@@ -149,8 +177,12 @@ export const characters: Character[] =
       },
       {
         name: "Intro",
-        time: 1,
-        damage: 1000,
+        castTime: 1,
+        multiplier: 1.00,
+        scaling: "ATK",
+        element: "HAVOC",
+        dmgType: "INTRO",
+        cooldown: 0,
         energyGenerated: {
           energy: 10,
           concerto: 10,
@@ -162,8 +194,12 @@ export const characters: Character[] =
       },
       {
         name: "Outro",
-        time: 0,
-        damage: 100,
+        castTime: 0,
+        multiplier: 1.00,
+        scaling: "ATK",
+        element: "HAVOC",
+        dmgType: "OUTRO",
+        cooldown: 0,
         energyGenerated: {
           energy: 10,
           concerto: 0,
@@ -226,11 +262,15 @@ export const characters: Character[] =
     actions: [
       {
         name: "Fleurdelys Strike",
-        time: 0.5,
-        damage: 700,
+        castTime: 0.5,
+        multiplier: 2.00,
+        scaling: "HP",
+        element: "AERO",
+        dmgType: "BASIC",
+        cooldown: 0,
         energyGenerated: {
-          energy: 20,
-          concerto: 5,
+          energy: 35,
+          concerto: 25,
           forte: 1,
           conviction: 50
         },
@@ -240,13 +280,17 @@ export const characters: Character[] =
       },
       {
         name: "Liberation",
-        time: 3,
-        damage: 1200,
+        castTime: 3,
+        multiplier: 12.00,
+        scaling: "HP",
+        element: "AERO",
+        dmgType: "LIBERATION",
+        cooldown: 0,
         energyGenerated: {
-          energy: 60,
-          concerto: 25,
+          energy: -100,
+          concerto: 50,
           forte: 1,
-          rage: 35
+          rage: 75
         },
         negativeStatusesApplied: [],
         buffsApplied: [],
@@ -254,8 +298,12 @@ export const characters: Character[] =
       },
       {
         name: "Intro",
-        time: 1,
-        damage: 1000,
+        castTime: 1,
+        multiplier: 1.00,
+        scaling: "HP",
+        element: "AERO",
+        dmgType: "INTRO",
+        cooldown: 0,
         energyGenerated: {
           energy: 10,
           concerto: 10,
@@ -267,8 +315,12 @@ export const characters: Character[] =
       },
       {
         name: "Outro",
-        time: 0,
-        damage: 100,
+        castTime: 0,
+        multiplier: 1.00,
+        scaling: "HP",
+        element: "AERO",
+        dmgType: "OUTRO",
+        cooldown: 0,
         energyGenerated: {
           energy: 10,
           concerto: 0,
