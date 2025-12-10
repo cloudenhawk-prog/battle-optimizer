@@ -19,13 +19,13 @@ export function buildBasicColumns(): ColumnGroup {
       key: "damage",
       label: "Damage",
       render: (snapshot: Snapshot) =>
-        snapshot.damage as number
+        (snapshot.damage as number).toFixed(0)
     },
     {
       key: "dps",
       label: "DPS",
       render: (snapshot: Snapshot) =>
-        (snapshot.dps as number).toFixed(1)
+        (snapshot.dps as number).toFixed(0)
     },
   ]
 
