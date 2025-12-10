@@ -2,8 +2,13 @@ import type { CharacterStats } from "./stats"
 
 export type Action = {
   name: string
-  time: number
-  damage: number
+  castTime: number
+  multiplier: number
+  scaling: "ATK" | "HP" | "DEF"
+  element: "AERO" | "SPECTRO" | "HAVOC" | "GLACIO" | "FUSION" | "ELECTRO"
+  dmgType: "BASIC" | "HEAVY" | "SKILL" | "LIBERATION" | "COORDINATED" | "ECHO" | "INTRO" | "OUTRO"
+  cooldown: number
+
   energyGenerated: Record<string, number>
 
   negativeStatusesApplied: string[]
