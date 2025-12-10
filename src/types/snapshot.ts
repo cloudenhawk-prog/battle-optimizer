@@ -1,3 +1,5 @@
+import type { Action } from "./character"
+
 export interface Snapshot {
   id: string
   character?: string
@@ -10,4 +12,15 @@ export interface Snapshot {
   buffs: Record<string, number>
   debuffs: Record<string, number>
   negativeStatuses: Record<string, number>
+}
+
+export type DamageEvent = {
+  snapshotId: string
+  dealer: string
+  target: string
+  element: Action["element"]
+  dmgType: Action["dmgType"]
+  scaling: Action["scaling"]
+  multiplier: number
+  calculatedDamage: number
 }

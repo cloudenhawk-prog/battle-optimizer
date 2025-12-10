@@ -4,6 +4,7 @@ import { createSnapshot } from "./useSnapshots"
 import type { Dispatch, SetStateAction } from "react"
 import type { Enemy } from "../../types/enemy"
 import { getSnapshotIndex, getPrevSnapshot, getNumeric, getCharacter, getActionFromCharacter, getCharacterEnergyState, updateEnergyValue, copySnapshots, getPrevCharacter, getSnapshotById, getConcertoValue, assignCharacterToRow } from "../../utils/shared"
+import type { DamageEvent } from "../../types/snapshot"
 
 type UseCharacterActionsProps = {
   snapshots: Snapshot[]
@@ -17,9 +18,11 @@ type UseCharacterActionsProps = {
     negativeStatuses: { columns: { key: string }[] }
     characters: { label: string; columns: { key: string }[] }[]
   }
+  damageEvents: DamageEvent[]
+  setDamageEvents: Dispatch<SetStateAction<DamageEvent[]>>
 }
 
-export function useCharacterActions({ snapshots, setSnapshots, charactersInBattle, enemy, tableConfig }: UseCharacterActionsProps) {
+export function useCharacterActions({ snapshots, setSnapshots, charactersInBattle, enemy, tableConfig, damageEvents, setDamageEvents }: UseCharacterActionsProps) {
   const charactersMap: Record<string, Character> = Object.fromEntries(charactersInBattle.map(c => [c.name, c]))
   const characterColumnsMap: Record<string, string[]> = Object.fromEntries(
     tableConfig.characters.map(c => [c.label, c.columns.map(col => col.key.split("_")[1])])
@@ -44,11 +47,11 @@ export function useCharacterActions({ snapshots, setSnapshots, charactersInBattl
       let updated = copySnapshots(prevSnapshots)
 
       if (shouldTriggerOutroIntro(updated, snapshotId)) {
-        updated = handleOutroIntroFlow(updated, snapshotId, charactersMap, characterColumnsMap, globalColumns)
+        updated = handleOutroIntroFlow({ snapshots: updated, snapshotId, charactersMap, characterColumnsMap, globalColumns, enemy, damageEvents, setDamageEvents })
         snapshotId += 2
       }
 
-      updated = updateSnapshotsWithAction(updated, snapshotId, actionName, charactersMap, characterColumnsMap, globalColumns)
+      updated = updateSnapshotsWithAction({ snapshots: updated, snapshotId, actionName, charactersMap, characterColumnsMap, globalColumns, enemy, damageEvents, setDamageEvents })
 
       return updated
     })
@@ -62,39 +65,33 @@ export function useCharacterActions({ snapshots, setSnapshots, charactersInBattl
    Internal Helpers
    ========================================================================================================================== */
 
-function updateSnapshotsWithAction(
-  snapshots: Snapshot[],
-  snapshotId: number,
-  actionName: string,
-  charactersMap: Record<string, Character>,
-  characterColumnsMap: Record<string, string[]>,
+function updateSnapshotsWithAction(params: {
+  snapshots: Snapshot[]
+  snapshotId: number
+  actionName: string
+  charactersMap: Record<string, Character>
+  characterColumnsMap: Record<string, string[]>
   globalColumns: { basic: string[]; buffs: string[]; debuffs: string[]; negativeStatuses: string[] }
-): Snapshot[] {
-  // -------- Check if expected state --------
-  const updated = copySnapshots(snapshots)
-  const index = getSnapshotIndex(updated, snapshotId)
-  if (index === -1) return snapshots
+  enemy: Enemy
+  damageEvents: DamageEvent[]
+  setDamageEvents: Dispatch<SetStateAction<DamageEvent[]>>
+}): Snapshot[] {
+  // -------- Validate Input --------
+  const validated = validateActionInputs(params)
+  if (!validated) return params.snapshots
 
-  const snapshot = updated[index]
-  if (!snapshot.character) return snapshots
-
-  const character = getCharacter(charactersMap, snapshot.character)
-  if (!character) return snapshots
-
-  const action = getActionFromCharacter(charactersMap, snapshot.character, actionName)
-  if (!action) return snapshots
-
-  const prev = getPrevSnapshot(updated, index)
+  const { index, snapshot, character, action, prev } = validated
+  const updated = copySnapshots(params.snapshots)
 
   // -------- Time & Damage --------
   const fromTime = getNumeric(prev, "toTime")
-  const cumulativeDamage = getNumeric(prev, "damage") + action.damage
-  const toTime = fromTime + action.time
+  const cumulativeDamage = getNumeric(prev, "damage") + action.multiplier
+  const toTime = fromTime + action.castTime
   const dps = cumulativeDamage / toTime
 
   // -------- Energy Updates --------
-  const energiesPrev = getCharacterEnergyState(prev, snapshot.character)
-  const energiesCurr = getCharacterEnergyState(snapshot, snapshot.character)
+  const energiesPrev = getCharacterEnergyState(prev, snapshot.character!)
+  const energiesCurr = getCharacterEnergyState(snapshot, snapshot.character!)
   const maxEnergies = character.maxEnergies
 
   for (const [key, generated] of Object.entries(action.energyGenerated)) {
@@ -107,15 +104,16 @@ function updateSnapshotsWithAction(
     energiesCurr.concerto = 0
   }
 
-  updated[index] = {...snapshot, action: action.name, fromTime, toTime, damage: cumulativeDamage, dps}
+  updated[index] = { ...snapshot, action: action.name, fromTime, toTime, damage: cumulativeDamage, dps }
 
   // -------- Create Next Blank Snapshot --------
   if (index === updated.length - 1) {
-    updated.push(createSnapshot(updated[updated.length - 1], charactersMap, characterColumnsMap, globalColumns))
+    updated.push(createSnapshot(updated[updated.length - 1], params.charactersMap, params.characterColumnsMap, params.globalColumns))
   }
 
   return updated
 }
+
 
 // =============================================================================================================================
 
@@ -133,13 +131,18 @@ function shouldTriggerOutroIntro(snapshots: Snapshot[], snapshotId: number): boo
   return prevConcerto === 100
 }
 
-function handleOutroIntroFlow(
+function handleOutroIntroFlow(params: {
   snapshots: Snapshot[],
   snapshotId: number,
   charactersMap: Record<string, Character>,
   characterColumnsMap: Record<string, string[]>,
-  globalColumns: any
-): Snapshot[] {
+  globalColumns: any,
+  enemy: Enemy,
+  damageEvents: DamageEvent[],
+  setDamageEvents: Dispatch<SetStateAction<DamageEvent[]>>
+}): Snapshot[] {
+  const { snapshots, snapshotId, charactersMap, characterColumnsMap, globalColumns, enemy, damageEvents, setDamageEvents } = params
+
   let updated = copySnapshots(snapshots)
 
   const prevChar = getPrevCharacter(updated, snapshotId)!
@@ -147,17 +150,49 @@ function handleOutroIntroFlow(
 
   // Force Outro row
   updated[snapshotId] = assignCharacterToRow(updated[snapshotId], prevChar)
-  updated = updateSnapshotsWithAction(updated, snapshotId, "Outro", charactersMap, characterColumnsMap, globalColumns)
+  updated = updateSnapshotsWithAction({ snapshots: updated, snapshotId, actionName: "Outro", charactersMap, characterColumnsMap, globalColumns, enemy, damageEvents, setDamageEvents })
 
   // Insert Intro row
   const introId = snapshotId + 1
   updated[introId] = assignCharacterToRow(updated[introId], currChar)
-  updated = updateSnapshotsWithAction( updated, introId, "Intro", charactersMap, characterColumnsMap, globalColumns)
+  updated = updateSnapshotsWithAction({ snapshots: updated, snapshotId: introId, actionName: "Intro", charactersMap, characterColumnsMap, globalColumns, enemy, damageEvents, setDamageEvents })
 
   // Prepare the next blank row for the real action
   const nextId = introId + 1
   updated[nextId] = assignCharacterToRow(updated[nextId], currChar)
 
   return updated
+}
+
+// =============================================================================================================================
+
+function validateActionInputs(params: {
+  snapshots: Snapshot[]
+  snapshotId: number
+  actionName: string
+  charactersMap: Record<string, Character>
+  characterColumnsMap: Record<string, string[]>
+  globalColumns: { basic: string[]; buffs: string[]; debuffs: string[]; negativeStatuses: string[] }
+  enemy: Enemy
+  damageEvents: DamageEvent[]
+  setDamageEvents: Dispatch<SetStateAction<DamageEvent[]>>
+}) {
+  const { snapshots, snapshotId, actionName, charactersMap } = params
+
+  const index = getSnapshotIndex(snapshots, snapshotId)
+  if (index === -1) return null
+
+  const snapshot = snapshots[index]
+  if (!snapshot.character) return null
+
+  const character = getCharacter(charactersMap, snapshot.character)
+  if (!character) return null
+
+  const action = getActionFromCharacter(charactersMap, snapshot.character, actionName)
+  if (!action) return null
+
+  const prev = getPrevSnapshot(snapshots, index)
+
+  return { index, snapshot, character, action, prev }
 }
 
