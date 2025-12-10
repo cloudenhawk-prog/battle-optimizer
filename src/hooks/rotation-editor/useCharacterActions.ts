@@ -108,7 +108,7 @@ function updateSnapshotsWithAction(params: {
   updated[index] = { ...snapshot, action: action.name, fromTime, toTime, damage: cumulativeDamage, dps }
 
   // -------- Update global damage events --------
-  params.setDamageEvents(prevEvents => [...prevEvents, damageEvent]);
+  params.setDamageEvents(prevEvents => [...prevEvents, damageEvent])
 
   // -------- Create Next Blank Snapshot --------
   if (index === updated.length - 1) {

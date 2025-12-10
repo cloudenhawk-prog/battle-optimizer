@@ -149,10 +149,10 @@ export function calculateDamageNegativeStatus(damage: number): number {
 }
 
 function getResMultiplier(resistancePEN: number, resistance: number): number {
-  const resDiff = resistance - resistancePEN;
-  if (resDiff < 0) return 1 - resDiff / 2;
-  if (resDiff < 0.8) return 1 - resDiff;
-  return 1 / (1 + 5 * resDiff);
+  const resDiff = resistance - resistancePEN
+  if (resDiff < 0) return 1 - resDiff / 2
+  if (resDiff < 0.8) return 1 - resDiff
+  return 1 / (1 + 5 * resDiff)
 }
 
 function convertLevelToDefense(enLevel: number): number {
