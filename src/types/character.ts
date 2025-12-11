@@ -11,7 +11,7 @@ export type Action = {
 
   energyGenerated: Record<string, number>
 
-  negativeStatusesApplied: string[]
+  negativeStatusesApplied: Record<string, number>
   buffsApplied: string[]
   debuffsApplied: string[]
 }
@@ -19,7 +19,6 @@ export type Action = {
 export type Character = {
   name: string
   actions: Action[]
-  negativeStatuses: string[]
   buffs: string[]
   debuffs: string[]
   maxEnergies: Record<string, number>,

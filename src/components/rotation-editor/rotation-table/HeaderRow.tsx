@@ -81,22 +81,22 @@ export function HeaderRow({ tableConfig }: HeaderRowProps) {
         )}
 
         {/* Negative Status Columns */}
-        {tableConfig.negativeStatuses.columns.map((col, idx) => (
-          <th key={col.key} className={`tableCellHeader ${idx === 0 ? "charGroupHeader" : ""}`}>
+        {tableConfig.negativeStatuses.columns.map(col => (
+          <th key={col.key} className="tableCellHeader">
             {col.label}
           </th>
         ))}
 
         {/* Buff Columns */}
-        {tableConfig.buffs.columns.map((col, idx) => (
-          <th key={col.key} className={`tableCellHeader ${idx === 0 ? "charGroupHeader" : ""}`}>
+        {tableConfig.buffs.columns.map(col => (
+          <th key={col.key} className="tableCellHeader">
             {col.label}
           </th>
         ))}
 
         {/* Debuff Columns */}
-        {tableConfig.debuffs.columns.map((col, idx) => (
-          <th key={col.key} className={`tableCellHeader ${idx === 0 ? "charGroupHeader" : ""}`}>
+        {tableConfig.debuffs.columns.map(col => (
+          <th key={col.key} className="tableCellHeader">
             {col.label}
           </th>
         ))}
