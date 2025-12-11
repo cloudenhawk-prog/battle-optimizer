@@ -4,7 +4,11 @@ import type { Snapshot } from "../../../types/snapshot"
 
 export function buildNegativeStatusColumns(selectedCharacters: Character[]): ColumnGroup {
   const activeStatuses = Array.from(
-    new Set(selectedCharacters.flatMap(c => c.negativeStatuses))
+    new Set(
+      selectedCharacters.flatMap(c => 
+        c.actions.flatMap(action => Object.keys(action.negativeStatusesApplied))
+      )
+    )
   )
 
   const columns: ColumnDef[] = activeStatuses.map(status => {

@@ -18,7 +18,7 @@ export const characters: Character[] =
           concerto: 10,
           forte: 10
         },
-        negativeStatusesApplied: [],
+        negativeStatusesApplied: {},
         buffsApplied: [],
         debuffsApplied: [],
       },
@@ -35,7 +35,7 @@ export const characters: Character[] =
           concerto: 20,
           forte: 30
         },
-        negativeStatusesApplied: [],
+        negativeStatusesApplied: {},
         buffsApplied: [],
         debuffsApplied: [],
       },
@@ -52,7 +52,7 @@ export const characters: Character[] =
           concerto: 50,
           forte: 50
         },
-        negativeStatusesApplied: [],
+        negativeStatusesApplied: { "SpectroFrazzle": 3 },
         buffsApplied: [],
         debuffsApplied: [],
       },
@@ -69,7 +69,7 @@ export const characters: Character[] =
           concerto: 10,
           forte: 10
         },
-        negativeStatusesApplied: [],
+        negativeStatusesApplied: {},
         buffsApplied: [],
         debuffsApplied: [],
       },
@@ -86,12 +86,11 @@ export const characters: Character[] =
           concerto: 0,
           forte: 10
         },
-        negativeStatusesApplied: [],
+        negativeStatusesApplied: {},
         buffsApplied: [],
         debuffsApplied: [],
       }
     ],
-    negativeStatuses: [],
     buffs: ["Arcane Power"],
     debuffs: [],
     maxEnergies: {
@@ -155,7 +154,7 @@ export const characters: Character[] =
           concerto: 25,
           forte: 40
         },
-        negativeStatusesApplied: [],
+        negativeStatusesApplied: {},
         buffsApplied: [],
         debuffsApplied: [],
       },
@@ -172,7 +171,7 @@ export const characters: Character[] =
           concerto: 20,
           forte: 20
         },
-        negativeStatusesApplied: [],
+        negativeStatusesApplied: {},
         buffsApplied: [],
         debuffsApplied: [],
       },
@@ -189,7 +188,7 @@ export const characters: Character[] =
           concerto: 10,
           forte: 10
         },
-        negativeStatusesApplied: [],
+        negativeStatusesApplied: {},
         buffsApplied: [],
         debuffsApplied: [],
       },
@@ -206,12 +205,11 @@ export const characters: Character[] =
           concerto: 0,
           forte: 10
         },
-        negativeStatusesApplied: [],
+        negativeStatusesApplied: {},
         buffsApplied: [],
         debuffsApplied: [],
       }
     ],
-    negativeStatuses: ["Spectro Frazzle"],
     buffs: [],
     debuffs: ["Poisoned", "Bleeding"],
     maxEnergies: {
@@ -276,7 +274,7 @@ export const characters: Character[] =
           forte: 1,
           conviction: 50
         },
-        negativeStatusesApplied: [],
+        negativeStatusesApplied: { "AeroErosion": 1 },
         buffsApplied: [],
         debuffsApplied: [],
       },
@@ -294,7 +292,7 @@ export const characters: Character[] =
           forte: 1,
           rage: 75
         },
-        negativeStatusesApplied: [],
+        negativeStatusesApplied: {},
         buffsApplied: [],
         debuffsApplied: [],
       },
@@ -311,7 +309,7 @@ export const characters: Character[] =
           concerto: 10,
           forte: 1
         },
-        negativeStatusesApplied: [],
+        negativeStatusesApplied: {},
         buffsApplied: [],
         debuffsApplied: [],
       },
@@ -328,12 +326,11 @@ export const characters: Character[] =
           concerto: 0,
           forte: 0
         },
-        negativeStatusesApplied: [],
+        negativeStatusesApplied: {},
         buffsApplied: [],
         debuffsApplied: [],
       }
     ],
-    negativeStatuses: ["Aero Erosion"],
     buffs: [],
     debuffs: [],
     maxEnergies: {
