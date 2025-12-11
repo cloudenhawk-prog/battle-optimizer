@@ -66,8 +66,6 @@
 
 .charGroupHeader {
   border-left: 1px solid var(--table-line-color);
-  background-color: var(--table-header-color);
-  font-weight: 600;
 }
 
 .groupHeader {
