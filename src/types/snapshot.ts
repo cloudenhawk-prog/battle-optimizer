@@ -1,4 +1,5 @@
 import type { Action } from "./character"
+import type { NegativeStatusDamageEvent } from "./negativeStatus"
 
 export interface Snapshot {
   id: string
@@ -25,4 +26,5 @@ export type DamageEvent = {
   normalStrike: number
   criticalStrike: number
   average: number
+  negativeStatusDamageEvent?: NegativeStatusDamageEvent
 }

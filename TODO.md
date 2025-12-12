@@ -16,12 +16,11 @@ Priority
 
 
 1. Fix basics
-(Done) Update character/action types if needed - only actions need to track which negative statuses they can apply - table builders should simply get them from actions rather than character.negStatus
-
-(Pending) Implement Negative Statuses (Aero + Spectro for now) damage/stack tracking - might need a global state that tracks when it was applied, last proc, etc - might need a new DamageEvent for this (maybe a new type that includes ALL negative statuses) 
-
 (Pending) Find all types of buffs/debuffs in the game and implement helper functions (in their own file?) to handle them - that let's us several buffs with different names, as long as we give them an effect that matches some expected behaviour
 
+OR
+
+(Pending) Clean up and Refactor code
 
 
 

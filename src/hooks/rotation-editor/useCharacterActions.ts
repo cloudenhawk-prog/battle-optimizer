@@ -5,7 +5,12 @@ import type { Dispatch, SetStateAction } from "react"
 import type { Enemy } from "../../types/enemy"
 import { getSnapshotIndex, getPrevSnapshot, getCharacter, getActionFromCharacter, getCharacterEnergyState, updateEnergyValue, copySnapshots, getPrevCharacter, getSnapshotById, getConcertoValue, assignCharacterToRow } from "../../utils/shared"
 import type { DamageEvent } from "../../types/snapshot"
-import { calculateDamage } from "../../engine/damageCalculator"
+import { calculateDamage, calculateDamageNegativeStatus } from "../../engine/damageCalculator"
+import { useRef } from "react"
+import type { NegativeStatusInAction } from "../../types/negativeStatus"
+import { negativeStatuses as negativeStatusesData } from "../../data/negativeStatuses"
+import type { Action } from "../../types/character"
+import type { NegativeStatusDamageEvent } from "../../types/negativeStatus"
 
 type UseCharacterActionsProps = {
   snapshots: Snapshot[]
@@ -34,6 +39,15 @@ export function useCharacterActions({ snapshots, setSnapshots, charactersInBattl
     debuffs: tableConfig.debuffs.columns.map(col => col.key),
     negativeStatuses: tableConfig.negativeStatuses.columns.map(col => col.key)
   }
+  const negativeStatusesInAction = useRef<NegativeStatusInAction[]>(
+    Object.values(negativeStatusesData).map(status => ({
+      negativeStatus: status,
+      applicationTime: -1,
+      timeLeft: 0,
+      currentStacks: 0,
+      lastDamageTime: 0,
+    }))
+  )
 
   const handleCharacterSelect = (snapshotId: number, characterName: string) => {
     setSnapshots((prev) =>
@@ -48,11 +62,11 @@ export function useCharacterActions({ snapshots, setSnapshots, charactersInBattl
       let updated = copySnapshots(prevSnapshots)
 
       if (shouldTriggerOutroIntro(updated, snapshotId)) {
-        updated = handleOutroIntroFlow({ snapshots: updated, snapshotId, charactersMap, characterColumnsMap, globalColumns, enemy, damageEvents, setDamageEvents })
+        updated = handleOutroIntroFlow({ snapshots: updated, snapshotId, charactersMap, characterColumnsMap, globalColumns, enemy, damageEvents, setDamageEvents, negativeStatusesInAction })
         snapshotId += 2
       }
 
-      updated = updateSnapshotsWithAction({ snapshots: updated, snapshotId, actionName, charactersMap, characterColumnsMap, globalColumns, enemy, damageEvents, setDamageEvents })
+      updated = updateSnapshotsWithAction({ snapshots: updated, snapshotId, actionName, charactersMap, characterColumnsMap, globalColumns, enemy, damageEvents, setDamageEvents, negativeStatusesInAction })
 
       return updated
     })
@@ -76,6 +90,7 @@ function updateSnapshotsWithAction(params: {
   enemy: Enemy
   damageEvents: DamageEvent[]
   setDamageEvents: Dispatch<SetStateAction<DamageEvent[]>>
+  negativeStatusesInAction: React.MutableRefObject<NegativeStatusInAction[]>
 }): Snapshot[] {
   // -------- Validate Input --------
   const validated = validateActionInputs(params)
@@ -87,6 +102,9 @@ function updateSnapshotsWithAction(params: {
   const fromTime = prev.toTime
   const toTime = fromTime + action.castTime
 
+  snapshot.fromTime = fromTime
+  snapshot.toTime = toTime
+
   // -------- Energy Updates --------
   const energiesPrev = getCharacterEnergyState(prev, snapshot.character!)
   const energiesCurr = getCharacterEnergyState(snapshot, snapshot.character!)
@@ -96,16 +114,54 @@ function updateSnapshotsWithAction(params: {
   }
   if (action.name === "Outro" && energiesCurr.concerto !== undefined) energiesCurr.concerto = 0
 
-  // -------- Buffs/Debuffs/Negative Statuses --------
-  // TODO: apply action effects, propagate previous snapshot values
+  // -------- Buffs/Debuffs --------
+  // TODO
+
+
+
+
+  // -------- Negative Statuses --------
+
+  const stacksPrev = getNegativeStatusStacks(prev)
+  const {damages, stacksCurr} = processNegativeStatusStacks(params.negativeStatusesInAction.current, fromTime, toTime, stacksPrev, params.enemy)
+  updateNegativeStatusStacks(snapshot, stacksCurr, action, params.negativeStatusesInAction.current)
+
+  const totalDmgNegativeStatuses = Object.values(damages).flat().reduce((sum, dmg) => sum + dmg, 0)
+
+  console.log("Damages: ", damages)
+  console.log("negativeStatusesInAction: ", params.negativeStatusesInAction)
+
+
+  const nsDamageEvents: NegativeStatusDamageEvent[] = []
+
+  Object.keys(damages).forEach(statusName => {
+    // Find the corresponding entry
+    const statusEntry = params.negativeStatusesInAction.current.find(
+      entry => entry.negativeStatus.name === statusName
+    );
+
+    if (statusEntry) {
+      const element = statusEntry.negativeStatus.element;
+
+      // For each damage value for this status, create an event
+      damages[statusName].forEach(damage => {
+        const event = createNegativeStatusDamageEvent(statusName, element, damage)
+        nsDamageEvents.push(event)
+      })
+    }
+  })
+
+  console.log("nsDamageEvents: ", nsDamageEvents)
 
   // -------- Time & Damage --------
-  const { average, damageEvent } = calculateDamage({ snapshot, prev, action, character, enemy: params.enemy, snapshotId: index })
-  const cumulativeDamage = prev.damage + average
+  const { average, damageEvent } = calculateDamage({ snapshot, prev, action, character, enemy: params.enemy, snapshotId: index, nsDamageEvents })
+  const cumulativeDamage = prev.damage + average + totalDmgNegativeStatuses
   const dps = cumulativeDamage / toTime
 
+  console.log("Damage Event: ", damageEvent)
+
   // -------- Update snapshot --------
-  updated[index] = { ...snapshot, action: action.name, fromTime, toTime, damage: cumulativeDamage, dps }
+  updated[index] = { ...snapshot, action: action.name, damage: cumulativeDamage, dps }
 
   // -------- Update global damage events --------
   params.setDamageEvents(prevEvents => [...prevEvents, damageEvent])
@@ -117,7 +173,6 @@ function updateSnapshotsWithAction(params: {
 
   return updated
 }
-
 
 // =============================================================================================================================
 
@@ -143,9 +198,10 @@ function handleOutroIntroFlow(params: {
   globalColumns: any,
   enemy: Enemy,
   damageEvents: DamageEvent[],
-  setDamageEvents: Dispatch<SetStateAction<DamageEvent[]>>
+  setDamageEvents: Dispatch<SetStateAction<DamageEvent[]>>,
+  negativeStatusesInAction: React.MutableRefObject<NegativeStatusInAction[]>
 }): Snapshot[] {
-  const { snapshots, snapshotId, charactersMap, characterColumnsMap, globalColumns, enemy, damageEvents, setDamageEvents } = params
+  const { snapshots, snapshotId, charactersMap, characterColumnsMap, globalColumns, enemy, damageEvents, setDamageEvents, negativeStatusesInAction } = params
 
   let updated = copySnapshots(snapshots)
 
@@ -154,12 +210,12 @@ function handleOutroIntroFlow(params: {
 
   // Force Outro row
   updated[snapshotId] = assignCharacterToRow(updated[snapshotId], prevChar)
-  updated = updateSnapshotsWithAction({ snapshots: updated, snapshotId, actionName: "Outro", charactersMap, characterColumnsMap, globalColumns, enemy, damageEvents, setDamageEvents })
+  updated = updateSnapshotsWithAction({ snapshots: updated, snapshotId, actionName: "Outro", charactersMap, characterColumnsMap, globalColumns, enemy, damageEvents, setDamageEvents, negativeStatusesInAction })
 
   // Insert Intro row
   const introId = snapshotId + 1
   updated[introId] = assignCharacterToRow(updated[introId], currChar)
-  updated = updateSnapshotsWithAction({ snapshots: updated, snapshotId: introId, actionName: "Intro", charactersMap, characterColumnsMap, globalColumns, enemy, damageEvents, setDamageEvents })
+  updated = updateSnapshotsWithAction({ snapshots: updated, snapshotId: introId, actionName: "Intro", charactersMap, characterColumnsMap, globalColumns, enemy, damageEvents, setDamageEvents, negativeStatusesInAction })
 
   // Prepare the next blank row for the real action
   const nextId = introId + 1
@@ -200,3 +256,149 @@ function validateActionInputs(params: {
   return { index, snapshot, character, action, prev }
 }
 
+// =============================================================================================================================
+
+function getNegativeStatusStacks(snapshot: Snapshot): Record<string, number> {
+  return { ...snapshot.negativeStatuses }
+}
+
+// =============================================================================================================================
+
+function updateNegativeStatusStacks(snapshot: Snapshot, stacksCurr: Record<string, number>, action: Action, negativeStatusesInAction: NegativeStatusInAction[]): void {
+  for (const [name, count] of Object.entries(action.negativeStatusesApplied)) {
+    const nsInQuestion = negativeStatusesInAction.find(nsInAction => nsInAction.negativeStatus.name === name)
+    const maxStacks = nsInQuestion.negativeStatus.maxStacksDefault
+
+    // Update stacks in stacksCurr
+    stacksCurr[name] += count
+    stacksCurr[name] = Math.min(stacksCurr[name], maxStacks)
+
+    // Update stacks in NegativeStatusInAction
+    const statusInAction = negativeStatusesInAction.find(nsa => nsa.negativeStatus.name === name)
+    if (statusInAction) {
+      statusInAction.currentStacks = stacksCurr[name];
+
+      // If this status is being applied for the first time
+      if (statusInAction.applicationTime === -1) {
+        statusInAction.applicationTime = snapshot.toTime
+        statusInAction.timeLeft = statusInAction.negativeStatus.duration
+        statusInAction.lastDamageTime = snapshot.toTime
+      }
+    }
+  }
+
+  snapshot.negativeStatuses = { ...stacksCurr }
+}
+
+// =============================================================================================================================
+
+function processNegativeStatusStacks(
+  negativeStatusesInAction: NegativeStatusInAction[],
+  fromTime: number,
+  toTime: number,
+  stacksPrev: Record<string, number>,
+  enemy: Enemy
+): {
+  damages: Record<string, number[]>;
+  stacksCurr: Record<string, number>;
+} {
+  const damages: Record<string, number[]> = {}
+  const stacksCurr: Record<string, number> = {}
+
+  for (const nsa of negativeStatusesInAction) {
+    if (nsa.applicationTime === -1) {
+      stacksCurr[nsa.negativeStatus.name] = 0
+      continue
+    }
+
+    const reducStrat = nsa.negativeStatus.reductionStrategy
+
+    if (reducStrat.resetTimerOnApplication === true) { // AERO EROSION FOR NOW
+      const name = nsa.negativeStatus.name
+      const currStacks = nsa.currentStacks
+      const element = nsa.negativeStatus.element
+
+      let lastDamageTime = nsa.lastDamageTime
+      const frequency = nsa.negativeStatus.frequency
+      let timeLeft = nsa.timeLeft
+
+      while (lastDamageTime + frequency <= toTime && timeLeft - frequency >= 0) {
+        lastDamageTime += frequency
+        timeLeft -= frequency
+
+        if (!damages[name]) {
+          damages[name] = []
+        }
+
+        damages[name].push(calculateDamageNegativeStatus(currStacks, element, enemy, name))
+      }
+
+      if (timeLeft <= 0) {
+        nsa.applicationTime = -1
+        nsa.timeLeft = 0
+        nsa.currentStacks = 0
+        nsa.lastDamageTime = 0
+      } else {
+        nsa.lastDamageTime = lastDamageTime
+        nsa.timeLeft = timeLeft
+      }
+
+      stacksCurr[name] = currStacks
+    }
+
+    else if (reducStrat.resetTimerOnApplication === false) { // SPECTRO FRAZZLE FOR NOW
+      const name = nsa.negativeStatus.name
+      const element = nsa.negativeStatus.element
+
+      let lastDamageTime = nsa.lastDamageTime
+      const frequency = nsa.negativeStatus.frequency
+      let timeLeft = nsa.timeLeft
+      let currStacks = nsa.currentStacks
+      const stackConsume = reducStrat.stackConsumption
+
+      while (lastDamageTime + frequency <= toTime && currStacks >= stackConsume) {
+        lastDamageTime += frequency
+        timeLeft -= frequency
+
+        if (!damages[name]) {
+          damages[name] = []
+        }
+
+        damages[name].push(calculateDamageNegativeStatus(currStacks, element, enemy, name))
+
+        if (timeLeft <= 0) {
+          currStacks -= stackConsume
+        }
+      }
+
+      if (currStacks <= 0) {
+        nsa.applicationTime = -1
+        nsa.timeLeft = 0
+        nsa.currentStacks = 0
+        nsa.lastDamageTime = 0
+      } else {
+        nsa.lastDamageTime = lastDamageTime
+        nsa.timeLeft = timeLeft
+        nsa.currentStacks = currStacks
+      }
+
+      stacksCurr[name] = currStacks
+    }
+  }
+
+  return { damages, stacksCurr }
+}
+
+// =============================================================================================================================
+
+function createNegativeStatusDamageEvent(
+  statusName: string,
+  element: Action["element"],
+  damage: number
+): NegativeStatusDamageEvent {
+  return {
+    name: statusName,
+    element: element,
+    damage: damage,
+  }
+}
