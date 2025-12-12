@@ -95,57 +95,59 @@ export function calculateDamage(params: CalculateDamageParams): CalculateDamageR
     average
   }
 
-  console.log(
-    "Snapshot ID:", snapshotId,
-    "\nSnapshot:", snapshot,
-    "\nAction:", action,
-    "\nCharacter:", character,
-    "\nEnemy:", enemy,
-    "\nStats:", stats,
-    "\nScaling Stat:", scalingStat,
-    "\nDMG Type:", dmgType,
-    "\nElement:", element,
-    "\nEnemy Stats:", enemyStats,
-    "\nAction Multiplier:", actionMultiplier,
-    "\nLevel:", level,
-    "\nScaling Stat Value:", scalingStatVal,
-    "\nCrit Rate:", critRate,
-    "\nCrit Damage:", critDamage,
-    "\nDamage Amplification:", dmgAmplification,
-    "\nDef Ignore:", defIgnore,
-    "\nElemental Res PEN:", elementalResPEN,
-    "\nResistance PEN:", resistancePEN,
-    "\nDMG Type Value:", dmgTypeVal,
-    "\nElement Value:", elementVal,
-    "\nEnemy Level:", enLevel,
-    "\nEnemy Element RES:", enElementRES,
-    "\nEnemy Resistance:", enResistance,
-    "\nEnemy Damage Reduction:", enDamageReduction,
-    "\nEnemy Defense:", enDefense,
-    "\nBase DMG:", baseDMG,
-    "\nRes Multiplier:", resMultiplier,
-    "\nDefense Multiplier:", defenseMultiplier,
-    "\nDamage Reduction Multiplier:", damageReductionMultiplier,
-    "\nElemental Res Multiplier:", elementalResMultiplier,
-    "\nDamage RES:", damageRES,
-    "\nElemental DMG Multiplier:", elementalDmgMultiplier,
-    "\nDMG Type Multiplier:", dmgTypeMultiplier,
-    "\nDMG Amplification Multiplier:", dmgAmplificationMultiplier,
-    "\nBonus DMG:", bonusDMG,
-    "\nCrit Bonus DMG:", critBonusDMG,
-    "\nNormal Strike:", normalStrike,
-    "\nCritical Strike:", criticalStrike,
-    "\nAverage Damage:", average,
-    "\nDamage Event:", damageEvent
-  )
+  // console.log(
+  //   "Snapshot ID:", snapshotId,
+  //   "\nSnapshot:", snapshot,
+  //   "\nAction:", action,
+  //   "\nCharacter:", character,
+  //   "\nEnemy:", enemy,
+  //   "\nStats:", stats,
+  //   "\nScaling Stat:", scalingStat,
+  //   "\nDMG Type:", dmgType,
+  //   "\nElement:", element,
+  //   "\nEnemy Stats:", enemyStats,
+  //   "\nAction Multiplier:", actionMultiplier,
+  //   "\nLevel:", level,
+  //   "\nScaling Stat Value:", scalingStatVal,
+  //   "\nCrit Rate:", critRate,
+  //   "\nCrit Damage:", critDamage,
+  //   "\nDamage Amplification:", dmgAmplification,
+  //   "\nDef Ignore:", defIgnore,
+  //   "\nElemental Res PEN:", elementalResPEN,
+  //   "\nResistance PEN:", resistancePEN,
+  //   "\nDMG Type Value:", dmgTypeVal,
+  //   "\nElement Value:", elementVal,
+  //   "\nEnemy Level:", enLevel,
+  //   "\nEnemy Element RES:", enElementRES,
+  //   "\nEnemy Resistance:", enResistance,
+  //   "\nEnemy Damage Reduction:", enDamageReduction,
+  //   "\nEnemy Defense:", enDefense,
+  //   "\nBase DMG:", baseDMG,
+  //   "\nRes Multiplier:", resMultiplier,
+  //   "\nDefense Multiplier:", defenseMultiplier,
+  //   "\nDamage Reduction Multiplier:", damageReductionMultiplier,
+  //   "\nElemental Res Multiplier:", elementalResMultiplier,
+  //   "\nDamage RES:", damageRES,
+  //   "\nElemental DMG Multiplier:", elementalDmgMultiplier,
+  //   "\nDMG Type Multiplier:", dmgTypeMultiplier,
+  //   "\nDMG Amplification Multiplier:", dmgAmplificationMultiplier,
+  //   "\nBonus DMG:", bonusDMG,
+  //   "\nCrit Bonus DMG:", critBonusDMG,
+  //   "\nNormal Strike:", normalStrike,
+  //   "\nCritical Strike:", criticalStrike,
+  //   "\nAverage Damage:", average,
+  //   "\nDamage Event:", damageEvent
+  // )
 
   return { average, damageEvent }
 }
 
+export function calculateDamageNegativeStatus(currStacks: number, element: string, enemy: Enemy): number {
+  
 
-export function calculateDamageNegativeStatus(damage: number): number {
-  // Placeholder – returns unchanged damage
-  return damage * 0.5
+
+
+  return currStacks * 5
 }
 
 function getResMultiplier(resistancePEN: number, resistance: number): number {

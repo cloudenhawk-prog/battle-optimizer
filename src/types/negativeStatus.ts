@@ -5,8 +5,22 @@ type NegativeStatus = {
     maxStacksDefault: number,
     frequency: number,
     damage: Record<number, number>,
-    element: string
-    // TODO: debuffs or other mechanics
+    element: "AERO" | "SPECTRO" | "HAVOC" | "GLACIO" | "FUSION" | "ELECTRO",
+    reductionStrategy: ReductionStrategy
 }
 
-export type { NegativeStatus }
+type ReductionStrategy = {
+    stackConsumption: number,
+    triggerDmgOnReduction: boolean,
+    resetTimerOnApplication: boolean,
+}
+
+type NegativeStatusInAction = {
+  negativeStatus: NegativeStatus,
+  applicationTime: number,
+  timeLeft: number,
+  currentStacks: number,
+  lastDamageTime: number,
+}
+
+export type { NegativeStatus, ReductionStrategy, NegativeStatusInAction }

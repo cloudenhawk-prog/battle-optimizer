@@ -12,7 +12,7 @@ export function buildNegativeStatusColumns(selectedCharacters: Character[]): Col
   )
 
   const columns: ColumnDef[] = activeStatuses.map(status => {
-    const key = status.replace(/\s+/g, "")
+    const key = status
     return {
       key,
       label: status,

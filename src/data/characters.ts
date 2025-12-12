@@ -52,7 +52,7 @@ export const characters: Character[] =
           concerto: 50,
           forte: 50
         },
-        negativeStatusesApplied: { "SpectroFrazzle": 3 },
+        negativeStatusesApplied: { "Spectro Frazzle": 3 },
         buffsApplied: [],
         debuffsApplied: [],
       },
@@ -274,7 +274,7 @@ export const characters: Character[] =
           forte: 1,
           conviction: 50
         },
-        negativeStatusesApplied: { "AeroErosion": 1 },
+        negativeStatusesApplied: { "Aero Erosion": 1 },
         buffsApplied: [],
         debuffsApplied: [],
       },

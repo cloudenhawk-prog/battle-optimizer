@@ -18,7 +18,12 @@ export const negativeStatuses: Record<string, NegativeStatus> = {
             8: 28938,
             9: 33072,
         },
-        element: "Aero"
+        element: "AERO",
+        reductionStrategy: {
+            stackConsumption: 999,
+            triggerDmgOnReduction: false,
+            resetTimerOnApplication: true,
+        }
     },
     spectroFrazzle: {
         name: "Spectro Frazzle",
@@ -37,7 +42,12 @@ export const negativeStatuses: Record<string, NegativeStatus> = {
             9: 9192,
             10: 10188,
         },
-        element: "Spectro"
+        element: "SPECTRO",
+        reductionStrategy: {
+            stackConsumption: 1,
+            triggerDmgOnReduction: true,
+            resetTimerOnApplication: false,
+        }
     }
 }
 
