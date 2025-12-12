@@ -143,9 +143,6 @@ export function calculateDamage(params: CalculateDamageParams): CalculateDamageR
 }
 
 export function calculateDamageNegativeStatus(currStacks: number, element: string, enemy: Enemy): number {
-  
-
-
 
   return currStacks * 5
 }
