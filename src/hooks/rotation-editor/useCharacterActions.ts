@@ -1,4 +1,3 @@
-import { negativeStatuses } from './../../data/negativeStatuses';
 import type { Snapshot } from "../../types/snapshot"
 import type { Character } from "../../types/character"
 import { createSnapshot } from "./useSnapshots"
@@ -11,6 +10,7 @@ import { useRef } from "react"
 import type { NegativeStatusInAction } from "../../types/negativeStatus"
 import { negativeStatuses as negativeStatusesData } from "../../data/negativeStatuses"
 import type { Action } from "../../types/character"
+import type { NegativeStatusDamageEvent } from "../../types/negativeStatus"
 
 type UseCharacterActionsProps = {
   snapshots: Snapshot[]
@@ -122,16 +122,43 @@ function updateSnapshotsWithAction(params: {
 
   // -------- Negative Statuses --------
 
-  const stacksPrev = getNegativeStatusStacks(prev) // TODO: an error happens when I use an action that doesnt have a negative status
+  const stacksPrev = getNegativeStatusStacks(prev)
   const {damages, stacksCurr} = processNegativeStatusStacks(params.negativeStatusesInAction.current, fromTime, toTime, stacksPrev, params.enemy)
   updateNegativeStatusStacks(snapshot, stacksCurr, action, params.negativeStatusesInAction.current)
 
-  // TODO: negativeStatusEvents = createNegativeStatusEvents(damages, params.negativeStatusesInAction)
+  const totalDmgNegativeStatuses = Object.values(damages).flat().reduce((sum, dmg) => sum + dmg, 0)
+
+  console.log("Damages: ", damages)
+  console.log("negativeStatusesInAction: ", params.negativeStatusesInAction)
+
+
+  const nsDamageEvents: NegativeStatusDamageEvent[] = []
+
+  Object.keys(damages).forEach(statusName => {
+    // Find the corresponding entry
+    const statusEntry = params.negativeStatusesInAction.current.find(
+      entry => entry.negativeStatus.name === statusName
+    );
+
+    if (statusEntry) {
+      const element = statusEntry.negativeStatus.element;
+
+      // For each damage value for this status, create an event
+      damages[statusName].forEach(damage => {
+        const event = createNegativeStatusDamageEvent(statusName, element, damage)
+        nsDamageEvents.push(event)
+      })
+    }
+  })
+
+  console.log("nsDamageEvents: ", nsDamageEvents)
 
   // -------- Time & Damage --------
-  const { average, damageEvent } = calculateDamage({ snapshot, prev, action, character, enemy: params.enemy, snapshotId: index })
-  const cumulativeDamage = prev.damage + average
+  const { average, damageEvent } = calculateDamage({ snapshot, prev, action, character, enemy: params.enemy, snapshotId: index, nsDamageEvents })
+  const cumulativeDamage = prev.damage + average + totalDmgNegativeStatuses
   const dps = cumulativeDamage / toTime
+
+  console.log("Damage Event: ", damageEvent)
 
   // -------- Update snapshot --------
   updated[index] = { ...snapshot, action: action.name, damage: cumulativeDamage, dps }
@@ -254,7 +281,7 @@ function updateNegativeStatusStacks(snapshot: Snapshot, stacksCurr: Record<strin
       // If this status is being applied for the first time
       if (statusInAction.applicationTime === -1) {
         statusInAction.applicationTime = snapshot.toTime
-        statusInAction.timeLeft = statusInAction.negativeStatus.duration // TODO: are we actually updating our negativeStatusesInAction or only a temp variable?
+        statusInAction.timeLeft = statusInAction.negativeStatus.duration
         statusInAction.lastDamageTime = snapshot.toTime
       }
     }
@@ -303,7 +330,7 @@ function processNegativeStatusStacks(
           damages[name] = []
         }
 
-        damages[name].push(calculateDamageNegativeStatus(currStacks, element, enemy))
+        damages[name].push(calculateDamageNegativeStatus(currStacks, element, enemy, name))
       }
 
       if (timeLeft <= 0) {
@@ -337,7 +364,7 @@ function processNegativeStatusStacks(
           damages[name] = []
         }
 
-        damages[name].push(calculateDamageNegativeStatus(currStacks, element, enemy))
+        damages[name].push(calculateDamageNegativeStatus(currStacks, element, enemy, name))
 
         if (timeLeft <= 0) {
           currStacks -= stackConsume
@@ -360,4 +387,18 @@ function processNegativeStatusStacks(
   }
 
   return { damages, stacksCurr }
+}
+
+// =============================================================================================================================
+
+function createNegativeStatusDamageEvent(
+  statusName: string,
+  element: Action["element"],
+  damage: number
+): NegativeStatusDamageEvent {
+  return {
+    name: statusName,
+    element: element,
+    damage: damage,
+  }
 }

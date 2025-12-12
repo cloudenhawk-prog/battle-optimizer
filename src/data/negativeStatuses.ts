@@ -1,6 +1,5 @@
 import type { NegativeStatus } from "../types/negativeStatus"
 
-// Damage affectected by DEF, RES, Damage Reduction (and AERO EROSION dmg boost from Ciaconna)
 export const negativeStatuses: Record<string, NegativeStatus> = {
     aeroErosion: {
         name: "Aero Erosion",

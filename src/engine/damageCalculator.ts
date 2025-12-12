@@ -1,6 +1,8 @@
 import type { Snapshot, DamageEvent } from "../types/snapshot"
 import type { Character, Action } from "../types/character"
 import type { Enemy } from "../types/enemy"
+import { negativeStatuses } from "../data/negativeStatuses"
+import type { NegativeStatusDamageEvent } from "../types/negativeStatus"
 
 type CalculateDamageParams = {
   snapshot: Snapshot      // The current snapshot being calculated
@@ -9,6 +11,7 @@ type CalculateDamageParams = {
   character: Character    // The character performing the action
   enemy: Enemy            // The target enemy
   snapshotId: number      // ID of the snapshot (can also be number if you prefer)
+  nsDamageEvents: NegativeStatusDamageEvent[]
 }
 
 type CalculateDamageResult = {
@@ -30,7 +33,7 @@ type CalculateDamageResult = {
  * and produce the final damage number.
  */
 export function calculateDamage(params: CalculateDamageParams): CalculateDamageResult {
-  const { snapshot, prev, action, character, enemy, snapshotId } = params
+  const { snapshot, prev, action, character, enemy, snapshotId, nsDamageEvents } = params
   // TODO: based on prev snapshot, apply buffs, debuffs that can affect dmg
   // TODO: calculate negative status damage and create another damageEvent?
 
@@ -92,59 +95,40 @@ export function calculateDamage(params: CalculateDamageParams): CalculateDamageR
     actionName: action.name,
     normalStrike,
     criticalStrike,
-    average
+    average,
+    nsDamageEvents
   }
 
-  // console.log(
-  //   "Snapshot ID:", snapshotId,
-  //   "\nSnapshot:", snapshot,
-  //   "\nAction:", action,
-  //   "\nCharacter:", character,
-  //   "\nEnemy:", enemy,
-  //   "\nStats:", stats,
-  //   "\nScaling Stat:", scalingStat,
-  //   "\nDMG Type:", dmgType,
-  //   "\nElement:", element,
-  //   "\nEnemy Stats:", enemyStats,
-  //   "\nAction Multiplier:", actionMultiplier,
-  //   "\nLevel:", level,
-  //   "\nScaling Stat Value:", scalingStatVal,
-  //   "\nCrit Rate:", critRate,
-  //   "\nCrit Damage:", critDamage,
-  //   "\nDamage Amplification:", dmgAmplification,
-  //   "\nDef Ignore:", defIgnore,
-  //   "\nElemental Res PEN:", elementalResPEN,
-  //   "\nResistance PEN:", resistancePEN,
-  //   "\nDMG Type Value:", dmgTypeVal,
-  //   "\nElement Value:", elementVal,
-  //   "\nEnemy Level:", enLevel,
-  //   "\nEnemy Element RES:", enElementRES,
-  //   "\nEnemy Resistance:", enResistance,
-  //   "\nEnemy Damage Reduction:", enDamageReduction,
-  //   "\nEnemy Defense:", enDefense,
-  //   "\nBase DMG:", baseDMG,
-  //   "\nRes Multiplier:", resMultiplier,
-  //   "\nDefense Multiplier:", defenseMultiplier,
-  //   "\nDamage Reduction Multiplier:", damageReductionMultiplier,
-  //   "\nElemental Res Multiplier:", elementalResMultiplier,
-  //   "\nDamage RES:", damageRES,
-  //   "\nElemental DMG Multiplier:", elementalDmgMultiplier,
-  //   "\nDMG Type Multiplier:", dmgTypeMultiplier,
-  //   "\nDMG Amplification Multiplier:", dmgAmplificationMultiplier,
-  //   "\nBonus DMG:", bonusDMG,
-  //   "\nCrit Bonus DMG:", critBonusDMG,
-  //   "\nNormal Strike:", normalStrike,
-  //   "\nCritical Strike:", criticalStrike,
-  //   "\nAverage Damage:", average,
-  //   "\nDamage Event:", damageEvent
-  // )
-
+  console.log("Character Damage: ", average.toFixed(0))
   return { average, damageEvent }
 }
 
-export function calculateDamageNegativeStatus(currStacks: number, element: string, enemy: Enemy): number {
+// Damage affectected by DEF, RES, Damage Reduction (and AERO EROSION dmg boost from Ciaconna)
+export function calculateDamageNegativeStatus(currStacks: number, element: string, enemy: Enemy, name: string): number {
 
-  return currStacks * 5
+  // Enemy Stats
+  const enemyStats = enemy.stats
+  const level = enemyStats.level
+  const defense = convertLevelToDefense(level)
+  const res = enemyStats.resistance
+  const elementRES = enemyStats[`${element.toLowerCase()}RES` as keyof typeof enemyStats]
+  const damageReduction = enemyStats.damageReduction
+
+  // Damage Calculations
+  const statusIdentifier = Object.entries(negativeStatuses).find(([key, status]) => status.name === name)?.[0]
+
+  const baseDMG = negativeStatuses[statusIdentifier].damage[currStacks]
+
+  const resMultiplier = getResMultiplier(0, res)
+  const defenseMultiplier = getDefenseMultiplier(level, defense, 0)
+  const damageReductionMultiplier = 1 - damageReduction
+  const elementalResMultiplier = 1 - (elementRES - 0)
+  const damageRES = resMultiplier * defenseMultiplier * damageReductionMultiplier * elementalResMultiplier
+
+  const damage = baseDMG * damageRES
+
+  console.log("Negative Status Damge: ", damage.toFixed(0))
+  return damage
 }
 
 function getResMultiplier(resistancePEN: number, resistance: number): number {

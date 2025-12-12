@@ -1,3 +1,4 @@
+import type { Action } from "./character"
 
 type NegativeStatus = {
     name: string
@@ -23,4 +24,10 @@ type NegativeStatusInAction = {
   lastDamageTime: number,
 }
 
-export type { NegativeStatus, ReductionStrategy, NegativeStatusInAction }
+type NegativeStatusDamageEvent = {
+  name: string,
+  element: Action["element"],
+  damage: number
+}
+
+export type { NegativeStatus, ReductionStrategy, NegativeStatusInAction, NegativeStatusDamageEvent }
