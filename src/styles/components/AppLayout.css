@@ -1,6 +1,6 @@
 .app-container {
   display: flex;
-  min-height: 100vh;
+  min-height: 90vh;
 }
 
 /* Main content */
@@ -17,5 +17,5 @@
 }
 
 .sidebar.collapsed ~ .main-content {
-  margin-left: calc(-1 * (var(--sidebar-width) - var(--sidebar-icon-size) - 10px));
+  margin-left: calc(-1 * (var(--sidebar-width) - var(--icon-size) + 15px));
 }

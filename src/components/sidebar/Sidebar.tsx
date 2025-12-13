@@ -1,11 +1,9 @@
 import { useLocation } from "react-router-dom"
-import SidebarButton from "./SidebarButton"
 import NavItem from "./NavItem"
 import "../../styles/sidebar/Sidebar.css"
 
 interface SidebarProps {
   collapsed: boolean
-  onToggle: () => void
 }
 
 const navItems = [
@@ -15,16 +13,18 @@ const navItems = [
   { path: "/settings", label: "Settings" },
 ]
 
-export default function Sidebar({ collapsed, onToggle }: SidebarProps) {
+export default function Sidebar({ collapsed }: SidebarProps) {
   const location = useLocation()
 
   return (
     <aside className={`sidebar ${collapsed ? "collapsed" : "expanded"}`}>
-      {/* Ghost toggle button */}
-      <SidebarButton collapsed={collapsed} onClick={onToggle} icon="/assets/circle-icon.svg" />
-
       {/* Top section / future image */}
       <div className="sidebar-top" />
+
+      {/* Horizontal lines (no button here) */}
+      <span className="line line-left" />
+      <span className="line line-right" />
+
 
       {/* Navigation */}
       <nav className="nav">

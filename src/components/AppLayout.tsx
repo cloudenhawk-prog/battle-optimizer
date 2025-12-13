@@ -1,5 +1,6 @@
 import { useState, type ReactNode } from "react"
 import Sidebar from "./sidebar/Sidebar"
+import SidebarButton from "./sidebar/SidebarButton"
 import "../styles/components/AppLayout.css"
 
 interface AppLayoutProps {
@@ -8,12 +9,21 @@ interface AppLayoutProps {
 
 export default function AppLayout({ children }: AppLayoutProps) {
   const [collapsed, setCollapsed] = useState(false)
-
   const toggleSidebar = () => setCollapsed((s) => !s)
 
   return (
     <div className="app-container">
-      <Sidebar collapsed={collapsed} onToggle={toggleSidebar} />
+      {/* Sidebar */}
+      <Sidebar collapsed={collapsed} />
+
+      {/* Ghost toggle button outside sidebar */}
+      <SidebarButton
+        collapsed={collapsed}
+        onClick={toggleSidebar}
+        icon="/assets/circle-icon.svg"
+      />
+
+      {/* Main content */}
       <main className="main-content">{children}</main>
     </div>
   )
