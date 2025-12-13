@@ -15,9 +15,13 @@
 
 .sidebar {
   width: var(--sidebar-width);
-  background: linear-gradient(180deg, #0f172a, #071029);
+  background: linear-gradient(145deg, #bb7a40 0%, #d29c5c 30%, #bb7a40 70%, #e0b17d 100%);
   color: #fff;
-  transition: transform 280ms cubic-bezier(.2,.9,.2,1), box-shadow 280ms ease;
+  border-radius: 0 8px 8px 0; /* rounded corners on the right side */
+  box-shadow: 
+    inset 0 2px 6px rgba(255,255,255,0.12), /* subtle inner highlight */
+    0 8px 20px rgba(0,0,0,0.25); /* outer shadow for depth */
+  transition: transform 280ms cubic-bezier(.2,.9,.2,1), box-shadow 280ms ease, background 500ms ease;
   display: flex;
   flex-direction: column;
   align-items: stretch;
@@ -38,7 +42,10 @@
 
 .sidebar.expanded {
   transform: translateX(0);
-  box-shadow: 0 24px 48px rgba(2,6,23,0.6), 0 2px 8px rgba(2,6,23,0.5);
+  box-shadow: 
+    inset 0 2px 6px rgba(255,255,255,0.12),
+    0 24px 48px rgba(2,6,23,0.6), 
+    0 2px 8px rgba(2,6,23,0.5);
   transform-origin: left center;
   perspective: 1200px;
   transform: translateX(0) rotateY(0deg);

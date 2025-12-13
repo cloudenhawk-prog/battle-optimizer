@@ -27,14 +27,14 @@ export default function AppLayout({ children }: AppLayoutProps) {
     <div className="app-container">
       {/* floating ghost button (shows when sidebar is collapsed) */}
       <button
-  className={`sidebar-ghost ${collapsed ? "collapsed" : ""}`}
-  onClick={toggleSidebar}
-  aria-label={collapsed ? "Open menu" : "Close menu"}
-  aria-expanded={!collapsed}
-  title={collapsed ? "Open menu" : "Close menu"}
->
-  <img src={roverIconUrl} alt="menu" />
-</button>
+        className={`sidebar-ghost ${collapsed ? "collapsed" : ""}`}
+        onClick={toggleSidebar}
+        aria-label={collapsed ? "Open menu" : "Close menu"}
+        aria-expanded={!collapsed}
+        title={collapsed ? "Open menu" : "Close menu"}
+      >
+        <img src={roverIconUrl} alt="menu" />
+      </button>
 
       <aside className={"sidebar " + (collapsed ? "collapsed" : "expanded")}>
         <div className="sidebar-top" />
