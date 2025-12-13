@@ -16,6 +16,10 @@ Priority
 
 
 1. Fix basics
+(In Progress) Design table: use cool icons. Make them clickable like the Sidebar (show/hide certain columns or groups of the table?)
+(In Progress) Style the sidebar to look more like the table
+
+
 (Pending) Find all types of buffs/debuffs in the game and implement helper functions (in their own file?) to handle them - that let's us several buffs with different names, as long as we give them an effect that matches some expected behaviour
 
 OR
@@ -24,6 +28,8 @@ OR
 
 
 
+
+(Pending) use custom component for the 2 table Selectors - that way we can style them EXACTLY like we want, for example making them transparent
 
 (Pending) Implement tests on all functions that can be reasonably tested
 

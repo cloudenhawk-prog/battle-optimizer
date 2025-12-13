@@ -37,7 +37,7 @@
 
 /* Expanded state */
 .sidebar-ghost.expanded {
-  left: calc(var(--sidebar-width) / 2 - var(--icon-size) / 2 + 6px);
+  left: calc(var(--sidebar-width) / 2 - var(--icon-size) / 2 + 9px);
   top: var(--icon-y);
   transform: scale(1.1);
 }

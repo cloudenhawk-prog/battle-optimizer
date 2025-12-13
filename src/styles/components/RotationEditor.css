@@ -1,111 +1,178 @@
 :root {
-  --table-header-color: #f9fafb;
-  --table-line-color: #ebe9e5;
+  /* Colors */
+  --table-bg-color: 30, 30, 40;          /* main table RGB */
+  --table-header-color: 255, 255, 255;
+  --table-line-color: 255, 255, 255;
+  --table-text-color: 243, 244, 246;
+
+  /* Transparency / alpha */
+  --table-bg-alpha: 0.9;        /* table panel background */
+  --table-header-alpha: 0.08;    /* header slightly more opaque than body */
+  --table-line-alpha: 0.08;      /* lines, edges, subtle glows */
+  --table-hover-alpha: 0.12;     /* row hover / highlight */
 }
 
-.pageWrapper {
-  padding: 1rem;
-}
-
-.heading {
-  font-size: 1.5rem;
-  font-weight: 700;
-  margin-bottom: 1rem;
-}
-
+/* =========================
+   Table Wrapper / Container
+   ========================= */
 .tableWrapper {
-  overflow-x: auto;
-  border: 1px solid var(--table-line-color);
-  border-radius: 0.5rem;
-  box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+  position: relative;
+  overflow-x: visible;
+  border-radius: 14px;
+
+  background: rgba(var(--table-bg-color), var(--table-bg-alpha));
+  backdrop-filter: blur(6px);
+
+  box-shadow:
+    inset 0 1px 1px rgba(var(--table-line-color), var(--table-line-alpha)),
+    0 30px 60px rgba(0,0,0,0.6),
+    0 0 40px rgba(255,150,150,var(--table-line-alpha));
+
+  border: 1px solid rgba(var(--table-line-color), var(--table-line-alpha));
 }
 
+.tableWrapper::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  pointer-events: none;
+
+  box-shadow:
+    inset 0 0 0 1px rgba(var(--table-line-color), var(--table-line-alpha)),
+    inset 0 0 40px rgba(255,200,200,var(--table-line-alpha));
+}
+
+/* =========================
+   Base Table
+   ========================= */
 .tableBase {
-  min-width: 100%;
+  width: 100%;
+  min-width: 0;
+  table-layout: fixed;
   border-collapse: collapse;
+  background: transparent;
+  overflow: hidden; 
+  border-radius: inherit;
 }
 
+/* =========================
+   Header
+   ========================= */
 .tableHeader {
-  background-color: var(--table-header-color);
-}
-
-.tableBody {
-  background-color: #ffffff;
-}
-
-.tableBody tr:hover {
-  background-color: #f3f4f6;
-  cursor: pointer;
+  background: linear-gradient(
+    to bottom,
+    rgba(var(--table-header-color), var(--table-header-alpha)),
+    rgba(var(--table-header-color), 0)
+  );
 }
 
 .tableCellHeader {
-  padding: 0.5rem 1rem;
+  padding: 12px 16px;
   text-align: left;
-  font-size: 0.875rem;
-  font-weight: 550;
-  color: #374151;
+  font-size: 0.8rem;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  font-weight: 600;
+  color: rgba(var(--table-header-color), 0.75);
+
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+/* =========================
+   Body
+   ========================= */
+.tableBody {
+  background: transparent;
 }
 
 .tableCellBody {
-  padding: 0.5rem 1rem;
+  padding: 10px 16px;
+  font-size: 0.875rem;
+  color: rgba(var(--table-text-color), 1);
+
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
 }
 
-.lastRowClass {
-  
+.tableBody tr {
+  border-bottom: 1px solid rgba(var(--table-line-color), var(--table-line-alpha));
+  transition: background 0.2s ease, box-shadow 0.2s ease;
 }
 
-.selectInput {
-  border: 1px solid var(--table-line-color);
-  border-radius: 0.25rem;
-  padding: 0.25rem 0.5rem;
+.tableBody tr:last-child {
+  border-bottom: none;
 }
 
+.tableBody tr:hover {
+  background: rgba(255,140,140,var(--table-hover-alpha));
+  box-shadow: inset 0 0 0 1px rgba(255,180,180,var(--table-line-alpha));
+  cursor: pointer;
+}
+
+/* =========================
+   Grouping / Column Dividers
+   ========================= */
+.charGroupHeader,
 .charGroupBody {
-  border-left: 1px solid var(--table-line-color);
-}
-
-.charGroupHeader {
-  border-left: 1px solid var(--table-line-color);
+  border-left: 1px solid rgba(var(--table-line-color), var(--table-line-alpha));
 }
 
 .groupHeader {
   position: relative;
   text-align: center;
-  padding-top: 10px;
-  padding-bottom: 10px;
-  border-right: 1px solid var(--table-line-color);
-  font-weight: 575;
-}
-
-.groupHeader:last-child {
-  border-right: none;
+  padding: 10px 0;
+  font-weight: 600;
+  color: rgba(var(--table-header-color), 0.75);
+  background: rgba(var(--table-header-color), var(--table-header-alpha));
 }
 
 .groupHeader::after {
   content: "";
   position: absolute;
-  bottom: 0px;
+  bottom: 0;
   left: 20px;
   right: 20px;
   height: 1px;
-  background-color: var(--table-line-color);
+  background-color: rgba(var(--table-line-color), var(--table-line-alpha));
 }
 
+/* =========================
+   Select Input
+   ========================= */
+.selectInput {
+  background: rgba(var(--table-header-color), var(--table-header-alpha));
+  border: 1px solid rgba(var(--table-line-color), var(--table-line-alpha));
+  border-radius: 6px;
+  padding: 4px 8px;
 
+  font-size: 0.85rem;
+  color: rgba(var(--table-text-color),1);
 
+  box-shadow: inset 0 1px 2px rgba(var(--table-line-color), var(--table-line-alpha));
+}
 
+.selectInput option {
+  color: rgba(var(--table-text-color), 1);
+  background-color: rgba(var(--table-bg-color), var(--table-bg-alpha));
+}
 
-
+/* =========================
+   Row Highlight Animation
+   ========================= */
 .rowHighlight {
   animation: highlightRow 1.5s ease-out;
 }
 
 @keyframes highlightRow {
   0% {
-    background-color: rgba(72, 177, 70, 0.3); /* soft pastel green */
+    background-color: rgba(255,180,180,var(--table-hover-alpha));
   }
-  50% {
-    background-color: rgba(72, 177, 70, 0.2); /* lighter mid-point */
+  60% {
+    background-color: rgba(255,200,200,var(--table-hover-alpha));
   }
   100% {
     background-color: transparent;
