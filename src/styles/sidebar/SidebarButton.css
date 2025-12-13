@@ -1,0 +1,49 @@
+.sidebar-ghost {
+  position: absolute;
+  left: calc(var(--sidebar-width) / 2 - var(--icon-size) / 2 - 10px);
+  z-index: 60;
+  background: none;
+  border: none;
+  cursor: pointer;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  transition: 
+    transform var(--animation-duration) cubic-bezier(.2,.9,.2,1),
+    left var(--animation-duration) cubic-bezier(.2,.9,.2,1),
+    top var(--animation-duration) cubic-bezier(.2,.9,.2,1),
+    width var(--animation-duration) ease,
+    height var(--animation-duration) ease;
+}
+
+.sidebar-ghost img {
+  width: var(--icon-size);
+  height: var(--icon-size);
+  pointer-events: none;
+  transition: transform var(--animation-duration) cubic-bezier(.2,.9,.2,1),
+              width var(--animation-duration) ease,
+              height var(--animation-duration) ease,
+              filter var(--animation-duration) ease;
+}
+
+/* Collapsed state */
+.sidebar-ghost.collapsed {
+  left: 20px;
+  top: 42px;
+  transform: scale(0.7);
+}
+
+/* Expanded state */
+.sidebar-ghost.expanded {
+  left: calc(var(--sidebar-width) / 2 - var(--icon-size) / 2 + 6px);
+  top: var(--icon-y);
+  transform: scale(1.1);
+}
+
+/* Hover effect */
+.sidebar-ghost:hover {
+  transform: scale(0.85);
+  filter: brightness(1.4);
+}

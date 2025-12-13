@@ -17,7 +17,7 @@ export default function RotationEditorPage({ charactersInBattle, enemy }: Rotati
 
   return (
     <div className="pageWrapper">
-      <h1 className="heading">Rotation Editor</h1>
+      <h1 className="heading"></h1>
       <RotationTable
         snapshots={snapshots} // TODO: send damageEvents to Table
         charactersInBattle={charactersInBattle}

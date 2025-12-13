@@ -1,24 +1,21 @@
-.Logo {
-  display: block;
-  width: 80px;           /* control the size */
-  height: auto;          /* maintain aspect ratio */
-  margin: 20px auto;     /* center horizontally */
-  transition: transform 2s ease, filter 2s ease, drop-shadow 2s ease;
-  cursor: pointer;
+.app-container {
+  display: flex;
+  min-height: 90vh;
 }
 
-/* Subtle hover effect on the icon itself */
-.Logo:hover {
-  transform: scale(1.1);  
-  filter: drop-shadow(0 4px 12px rgba(0, 0, 0, 1)); /* soft shadow for depth */
+/* Main content */
+.main-content {
+  flex: 1 1 auto;
+  padding: 20px;
+  transition: margin-left 500ms cubic-bezier(.2,.9,.2,1);
+  margin-left: 0; 
 }
 
-/* Smooth fade-in on load */
-.Logo {
-  opacity: 0%;
-  animation: fadeIn 2s forwards;
+/* Push main content based on sidebar state */
+.sidebar.expanded ~ .main-content {
+  margin-left: 0px;
 }
 
-@keyframes fadeIn {
-  to { opacity: 0.9; }
+.sidebar.collapsed ~ .main-content {
+  margin-left: calc(-1 * (var(--sidebar-width) - var(--icon-size) + 15px));
 }
