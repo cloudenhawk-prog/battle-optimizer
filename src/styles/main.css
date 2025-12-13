@@ -28,7 +28,7 @@ html, body, #root {
   flex: 1;
   padding: 24px;
   overflow: auto;
-  background-color: rgba(34, 35, 39);
+  background-color: transparent;
 }
 
 /* =======================

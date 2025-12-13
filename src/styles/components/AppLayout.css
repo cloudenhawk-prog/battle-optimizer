@@ -1,6 +1,11 @@
 :root {
   --sidebar-width: 260px;
   --sidebar-icon-size: 55px;
+
+  --img-x: -55px;       /* horizontal position */
+  --img-y: 300px;       /* vertical position */
+  --img-width: 400px; /* image width */
+  --img-height: auto; /* keep aspect ratio; can also use px */
 }
 
 @keyframes fadeIn {
@@ -14,42 +19,41 @@
 }
 
 .sidebar {
-  width: var(--sidebar-width);
-  background: linear-gradient(145deg, #bb7a40 0%, #d29c5c 30%, #bb7a40 70%, #e0b17d 100%);
-  color: #fff;
-  border-radius: 0 8px 8px 0; /* rounded corners on the right side */
-  box-shadow: 
-    inset 0 2px 6px rgba(255,255,255,0.12), /* subtle inner highlight */
-    0 8px 20px rgba(0,0,0,0.25); /* outer shadow for depth */
-  transition: transform 280ms cubic-bezier(.2,.9,.2,1), box-shadow 280ms ease, background 500ms ease;
-  display: flex;
-  flex-direction: column;
-  align-items: stretch;
-  overflow: hidden;
-  box-sizing: border-box;
-  position: fixed;
-  left: 0;
-  top: 0;
-  height: 100vh;
-  transform: translateX(-110%);
-  z-index: 40;
-  will-change: transform;
+  border-radius: 0 8px 8px 0;
 }
 
 .sidebar.collapsed {
   transform: translateX(-110%);
+
+  background-image: url('/assets/phrolova.png');
+  background-repeat: no-repeat;
+  background-size: var(--img-width) var(--img-height);
+  background-position: var(--img-x) var(--img-y);
 }
 
 .sidebar.expanded {
+  background: rgba(34, 35, 39, 0.1);
+  backdrop-filter: blur(40px);
+
   transform: translateX(0);
   box-shadow: 
-    inset 0 2px 6px rgba(255,255,255,0.12),
-    0 24px 48px rgba(2,6,23,0.6), 
+    inset 0 2px 6px rgba(255, 253, 253, 0.12),
+    0 24px 12px rgba(225, 197, 197, 0.6), 
     0 2px 8px rgba(2,6,23,0.5);
   transform-origin: left center;
   perspective: 1200px;
   transform: translateX(0) rotateY(0deg);
+
+  position: relative;
+  overflow: hidden;
+
+  background-image: url('/assets/phrolova.png');
+  background-repeat: no-repeat;
+  background-size: var(--img-width) var(--img-height);
+  background-position: var(--img-x) var(--img-y);
+
 }
+
 
 .sidebar-top {
   display: flex;
@@ -57,8 +61,6 @@
   justify-content: space-between;
   padding: 12px;
 }
-
-/* sidebar-toggle removed (control moved to floating ghost button) */
 
 .nav {
   display: flex;
@@ -133,7 +135,7 @@
 .sidebar-ghost {
   position: fixed;
   top: 25px;
-  left: calc(var(--sidebar-width) / 2 - var(--sidebar-icon-size) / 2 - 10px);
+  left: calc(var(--sidebar-width) / 2 - var(--sidebar-icon-size) / 2);
   z-index: 60;
 
   background: none;
