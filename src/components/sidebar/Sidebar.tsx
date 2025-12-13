@@ -40,7 +40,7 @@ export default function Sidebar({ collapsed }: SidebarProps) {
       </nav>
 
       {/* Footer */}
-      <div className="sidebar-footer">v0.0.1</div>
+      <div className="sidebar-footer">v0.3.2</div>
     </aside>
   )
 }
