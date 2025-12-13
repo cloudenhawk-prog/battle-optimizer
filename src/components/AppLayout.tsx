@@ -1,5 +1,5 @@
 import { useState, type ReactNode } from "react"
-import Sidebar from "./sidebar"
+import Sidebar from "./sidebar/Sidebar"
 import "../styles/components/AppLayout.css"
 
 interface AppLayoutProps {

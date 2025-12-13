@@ -1,0 +1,40 @@
+.sidebar-ghost {
+  position: fixed;
+  top: 25px;
+  left: calc(var(--sidebar-width) / 2 - var(--sidebar-icon-size) / 2);
+  z-index: 60;
+  background: none;
+  border: none;
+  cursor: pointer;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  transition: transform 280ms cubic-bezier(.2,.9,.2,1),
+              left 280ms cubic-bezier(.2,.9,.2,1),
+              width 280ms ease,
+              height 280ms ease;
+}
+
+.sidebar-ghost img {
+  width: var(--sidebar-icon-size);
+  height: var(--sidebar-icon-size);
+  pointer-events: none;
+
+  transition: transform 280ms cubic-bezier(.2,.9,.2,1),
+              left 280ms cubic-bezier(.2,.9,.2,1),
+              width 280ms ease,
+              height 280ms ease,
+              filter 280ms ease;
+}
+
+.sidebar-ghost.collapsed {
+  left: 15px;
+  transform: scale(0.7);
+}
+
+.sidebar-ghost:hover {
+  transform: scale(0.85);
+  filter: brightness(1.4);
+}
