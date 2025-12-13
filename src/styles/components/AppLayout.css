@@ -1,24 +1,174 @@
-.Logo {
-  display: block;
-  width: 80px;           /* control the size */
-  height: auto;          /* maintain aspect ratio */
-  margin: 20px auto;     /* center horizontally */
-  transition: transform 2s ease, filter 2s ease, drop-shadow 2s ease;
-  cursor: pointer;
-}
-
-/* Subtle hover effect on the icon itself */
-.Logo:hover {
-  transform: scale(1.1);  
-  filter: drop-shadow(0 4px 12px rgba(0, 0, 0, 1)); /* soft shadow for depth */
-}
-
-/* Smooth fade-in on load */
-.Logo {
-  opacity: 0%;
-  animation: fadeIn 2s forwards;
+:root {
+  --sidebar-width: 260px;
+  --sidebar-icon-size: 55px;
 }
 
 @keyframes fadeIn {
   to { opacity: 0.9; }
+}
+
+/* Layout and sidebar rollout styles */
+.app-container {
+  display: flex;
+  min-height: 100vh;
+}
+
+.sidebar {
+  width: var(--sidebar-width);
+  background: linear-gradient(180deg, #0f172a, #071029);
+  color: #fff;
+  transition: transform 280ms cubic-bezier(.2,.9,.2,1), box-shadow 280ms ease;
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
+  overflow: hidden;
+  box-sizing: border-box;
+  position: fixed;
+  left: 0;
+  top: 0;
+  height: 100vh;
+  transform: translateX(-110%);
+  z-index: 40;
+  will-change: transform;
+}
+
+.sidebar.collapsed {
+  transform: translateX(-110%);
+}
+
+.sidebar.expanded {
+  transform: translateX(0);
+  box-shadow: 0 24px 48px rgba(2,6,23,0.6), 0 2px 8px rgba(2,6,23,0.5);
+  transform-origin: left center;
+  perspective: 1200px;
+  transform: translateX(0) rotateY(0deg);
+}
+
+.sidebar-top {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 12px;
+}
+
+/* sidebar-toggle removed (control moved to floating ghost button) */
+
+.nav {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  padding: 12px;
+}
+
+.nav a {
+  color: #cbd5e1;
+  text-decoration: none;
+  padding: 10px 12px;
+  border-radius: 6px;
+  display: flex;
+  align-items: center;
+  width: 100%;
+  box-sizing: border-box;
+}
+
+.nav a.active {
+  background: rgba(255,255,255,0.04);
+  color: #fff;
+}
+
+.nav a .label {
+  margin-left: 8px;
+  transition: opacity 200ms ease, transform 200ms ease;
+  white-space: nowrap;
+}
+
+.sidebar.collapsed .nav a .label {
+  opacity: 0;
+  transform: translateX(-6px);
+  pointer-events: none;
+}
+
+.sidebar-footer {
+  margin-top: auto;
+  padding: 12px;
+  font-size: 12px;
+  color: #94a3b8;
+}
+
+.main-content {
+  flex: 1 1 auto;
+  padding: 20px;
+  transition: margin-left 500ms cubic-bezier(.2,.9,.2,1);
+  margin-left: 0; /* default: no offset */
+}
+
+/* When the sidebar is expanded, push the main content over so it gets the full usable width */
+.sidebar.expanded ~ .main-content {
+  margin-left: 0px;
+}
+
+.sidebar.collapsed ~ .main-content {
+  margin-left: calc(-1 * (var(--sidebar-width) - var(--sidebar-icon-size) - 10px));
+}
+
+/* Prevent large hover scale from causing overflow when sidebar is narrow */
+.sidebar .Logo {
+  max-width: 100%;
+}
+
+/* Keep active highlight but don't change layout */
+.nav a.active {
+  background: rgba(255,255,255,0.04);
+  color: #fff;
+  box-shadow: none;
+}
+
+.sidebar-ghost {
+  position: fixed;
+  top: 25px;
+  left: calc(var(--sidebar-width) / 2 - var(--sidebar-icon-size) / 2 - 10px);
+  z-index: 60;
+
+  background: none;
+  border: none;
+  cursor: pointer;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  transition: transform 280ms cubic-bezier(.2,.9,.2,1), left 280ms cubic-bezier(.2,.9,.2,1), width 280ms ease, height 280ms ease;
+}
+
+.sidebar-ghost img {
+  width: var(--sidebar-icon-size);
+  height: var(--sidebar-icon-size);
+  pointer-events: none;
+  transition: transform 280ms cubic-bezier(.2,.9,.2,1),
+              left 280ms cubic-bezier(.2,.9,.2,1),
+              width 280ms ease,
+              height 280ms ease,
+              filter 280ms ease;
+}
+
+/* collapsed state: shrink + move a little to the left */
+.sidebar-ghost.collapsed {
+  left: 15px; /* small distance from the left edge */
+  transform: scale(0.7);
+}
+
+.sidebar-ghost.collapsed img {
+  width: calc(var(--sidebar-icon-size));
+  height: calc(var(--sidebar-icon-size));
+}
+
+.sidebar-ghost:hover {
+  /* Scale slightly bigger than current size */
+  transform: scale(0.85);
+  filter: brightness(1.4);
+}
+
+/* small responsive tweak */
+@media (max-width: 640px) {
+  .sidebar { width: 84%; }
 }

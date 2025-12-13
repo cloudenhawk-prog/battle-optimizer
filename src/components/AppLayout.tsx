@@ -1,4 +1,5 @@
 import type { ReactNode } from "react"
+import { useState } from "react"
 import { Link, useLocation } from "react-router-dom"
 import roverIconUrl from "../assets/rover-region.svg"
 import "../styles/components/AppLayout.css"
@@ -16,22 +17,37 @@ const navItems = [
 
 export default function AppLayout({ children }: AppLayoutProps) {
   const location = useLocation()
+  const [collapsed, setCollapsed] = useState(false)
+
+  function toggleSidebar() {
+    setCollapsed((s) => !s)
+  }
 
   return (
     <div className="app-container">
-      <aside className="sidebar">
-        <div>
-          <img src={roverIconUrl} alt="Rover" className="Logo" />
-        </div>
+      {/* floating ghost button (shows when sidebar is collapsed) */}
+      <button
+  className={`sidebar-ghost ${collapsed ? "collapsed" : ""}`}
+  onClick={toggleSidebar}
+  aria-label={collapsed ? "Open menu" : "Close menu"}
+  aria-expanded={!collapsed}
+  title={collapsed ? "Open menu" : "Close menu"}
+>
+  <img src={roverIconUrl} alt="menu" />
+</button>
+
+      <aside className={"sidebar " + (collapsed ? "collapsed" : "expanded")}>
+        <div className="sidebar-top" />
 
         <nav className="nav">
           {navItems.map((item) => (
             <Link
               key={item.path}
               to={item.path}
+              title={item.label}
               className={location.pathname === item.path ? "active" : ""}
             >
-              {item.label}
+              <span className="label">{item.label}</span>
             </Link>
           ))}
         </nav>
