@@ -9,6 +9,7 @@ export function buildCharacterGroupsColumns(selectedCharacters: Character[]): Co
     const columns: ColumnDef[] = allEnergyKeys.map(key => ({
       key: `${c.name}_${key}`,
       label: key.charAt(0).toUpperCase() + key.slice(1),
+      icon: `/assets/${key}.png`,
       render: snapshot => {
         const energies = snapshot.charactersEnergies as Record<string, Record<string, number>> | undefined // TODO: update tableBuilders, we can now use the Snapshot type for safety and thus make the implementation here simpler
         return energies?.[c.name]?.[key]
@@ -17,6 +18,7 @@ export function buildCharacterGroupsColumns(selectedCharacters: Character[]): Co
 
     return {
       label: c.name,
+      icon: `/assets/character_${c.name.toLowerCase()}.png`,
       columns,
     }
   })

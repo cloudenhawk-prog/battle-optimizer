@@ -10,12 +10,14 @@ export type TableConfig = {
 
 export type ColumnGroup = {
   label: string
+  icon:string
   columns: ColumnDef[]
 }
 
 export type ColumnDef = {
   key: string
   label: string
+  icon: string
   render: (snapshot: Snapshot) => React.ReactNode
 }
 
