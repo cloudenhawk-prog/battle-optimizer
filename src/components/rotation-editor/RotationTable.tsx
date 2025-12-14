@@ -1,9 +1,10 @@
+import "../../styles/rotation-editor/RotationTable.css"
 import { useState, useEffect, useRef } from "react"
 import { HeaderRow } from "./HeaderRow"
 import { BodyRow } from "./BodyRows"
-import type { TableConfig } from "../../../types/tableDefinitions"
-import type { Character } from "../../../types/character"
-import type { Snapshot } from "../../../types/snapshot"
+import type { TableConfig } from "../../types/tableDefinitions"
+import type { Character } from "../../types/character"
+import type { Snapshot } from "../../types/snapshot"
 
 type RotationTableProps = {
   snapshots: Array<Snapshot>
@@ -65,7 +66,6 @@ export function RotationTable({
     <div className="tableWrapper">
       <table className="tableBase">
         <HeaderRow tableConfig={tableConfig} />
-        <tbody className="tableBody">
           {snapshots.map((snapshot, idx) => (
             <BodyRow
               key={Number(snapshot.id)}
@@ -78,7 +78,6 @@ export function RotationTable({
               isNewRow={highlightIds.has(Number(snapshot.id))}
             />
           ))}
-        </tbody>
       </table>
     </div>
   )

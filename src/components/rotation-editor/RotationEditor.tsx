@@ -1,7 +1,7 @@
-import "../../styles/components/RotationEditor.css"
+import "../../styles/rotation-editor/RotationEditor.css"
 import { useRotationEditor } from "../../hooks/rotation-editor/useRotationEditor"
 import { buildTableConfig } from "./table-builders/buildTableConfig"
-import { RotationTable } from "./rotation-table/RotationTable"
+import { RotationTable } from "./RotationTable"
 import type { Character } from "../../types/character"
 import type { Enemy } from "../../types/enemy"
 

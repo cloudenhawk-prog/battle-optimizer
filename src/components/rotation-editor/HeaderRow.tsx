@@ -1,4 +1,5 @@
-import type { TableConfig } from "../../../types/tableDefinitions"
+import "../../styles/rotation-editor/HeaderRow.css"
+import type { TableConfig } from "../../types/tableDefinitions"
 
 type HeaderRowProps = {
   tableConfig: TableConfig

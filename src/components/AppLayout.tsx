@@ -1,7 +1,7 @@
 import { useState, type ReactNode } from "react"
 import Sidebar from "./sidebar/Sidebar"
 import SidebarButton from "./sidebar/SidebarButton"
-import "../styles/components/AppLayout.css"
+import "../styles/AppLayout.css"
 
 interface AppLayoutProps {
   children: ReactNode

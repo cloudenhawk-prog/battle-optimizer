@@ -1,7 +1,8 @@
-import type { Character } from "../../../types/character"
-import type { ColumnGroup } from "../../../types/tableDefinitions"
-import type { Snapshot } from "../../../types/snapshot"
-import { buildActionOptions } from "../../../utils/optionBuilders"
+import "../../styles/rotation-editor/BodyRows.css"
+import type { Character } from "../../types/character"
+import type { ColumnGroup } from "../../types/tableDefinitions"
+import type { Snapshot } from "../../types/snapshot"
+import { buildActionOptions } from "../../utils/optionBuilders"
 
 type BodyRowProps = {
   snapshot: Snapshot
@@ -33,7 +34,7 @@ export function BodyRow({
   const action = snapshot.action ?? ""
 
   return (
-    <tr className={`${isLastRow ? "lastRowClass" : ""} ${isNewRow ? "rowHighlight" : ""}`}>
+    <tr className={`tableBody ${isLastRow ? "lastRowClass" : ""} ${isNewRow ? "rowHighlight" : ""}`}>
       {/* Character select */}
       <td className="tableCellBody">
         <select
