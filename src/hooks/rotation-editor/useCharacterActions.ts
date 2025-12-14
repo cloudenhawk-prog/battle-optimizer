@@ -12,6 +12,13 @@ import { negativeStatuses as negativeStatusesData } from "../../data/negativeSta
 import type { Action } from "../../types/character"
 import type { NegativeStatusDamageEvent } from "../../types/negativeStatus"
 
+type GlobalColumns = { // TODO: is it necessary to make a subtype like this of TableConfig?
+  basic: string[]
+  buffs: string[]
+  debuffs: string[]
+  negativeStatuses: string[]
+}
+
 type UseCharacterActionsProps = {
   snapshots: Snapshot[]
   setSnapshots: Dispatch<SetStateAction<Snapshot[]>>
@@ -33,12 +40,13 @@ export function useCharacterActions({ snapshots, setSnapshots, charactersInBattl
   const characterColumnsMap: Record<string, string[]> = Object.fromEntries(
     tableConfig.characters.map(c => [c.label, c.columns.map(col => col.key.split("_")[1])])
   )
-  const globalColumns = {
-    basic: tableConfig.basic.columns.map(col => col.key),
-    buffs: tableConfig.buffs.columns.map(col => col.key),
-    debuffs: tableConfig.debuffs.columns.map(col => col.key),
-    negativeStatuses: tableConfig.negativeStatuses.columns.map(col => col.key)
-  }
+  const globalColumns: GlobalColumns = {
+  basic: tableConfig.basic.columns.map(col => col.key),
+  buffs: tableConfig.buffs?.columns.map(col => col.key) ?? [],
+  debuffs: tableConfig.debuffs?.columns.map(col => col.key) ?? [],
+  negativeStatuses: tableConfig.negativeStatuses?.columns.map(col => col.key) ?? [],
+}
+
   const negativeStatusesInAction = useRef<NegativeStatusInAction[]>(
     Object.values(negativeStatusesData).map(status => ({
       negativeStatus: status,

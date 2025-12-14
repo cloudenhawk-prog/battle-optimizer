@@ -8,34 +8,57 @@
 
   --animation-duration: 500ms;
 
-  --nav-y: calc(var(--icon-y) - 10px);
-
   --icon-size: 55px;
   --icon-y: 495px;
+  --icon-x: 10px;
+
+  --nav-y: calc(var(--icon-y) - 10px);
 }
 
+/* =======================
+   Sidebar
+   ======================= */
 .sidebar {
   width: var(--sidebar-width);
   min-height: calc(95vh + 12px);
+  display: flex;
+  flex-direction: column;
+  padding: 24px 16px;
+  position: relative;
+  z-index: 10;
   border-radius: 0 8px 8px 0;
-  transition: transform 0.3s ease, background 0.3s ease;
+  border: 2px solid rgb(255, 255, 255);
+  border-left: none;
+  transition: transform 0.3s ease, background 0.3s ease, all 0.3s ease;
+  box-shadow: 8px 0 24px rgba(0, 0, 0, 0.4);
+}
+
+/* Sidebar header / logo */
+.sidebar > div:first-child {
+  font-size: 1.5rem;
+  font-weight: bold;
+  margin-bottom: 32px;
+  text-align: center;
+  letter-spacing: 0.5px;
+}
+
+/* Sidebar top section */
+.sidebar-top { 
+  display: flex; 
+  align-items: center; 
+  justify-content: space-between; 
+  padding: 12px; 
 }
 
 /* Expanded / Collapsed states */
 .sidebar.expanded {
   transform: translateX(0);
-
   background: rgba(229, 229, 233, 0.15);
   backdrop-filter: blur(3px);
-
-
   box-shadow: 
-    inset 0  1px 2px rgb(255, 252, 252),
-          0 -1px 2px rgba(255, 233, 233, 0.792), 
-          0 24px 8px rgb(255, 195, 195);
-
-
-    
+    inset 0 1px 2px rgb(255, 252, 252),
+    0 -1px 2px rgba(255, 233, 233, 0.792), 
+    0 24px 8px rgb(255, 195, 195);
   background-image: url('/assets/phrolova.png');
   background-repeat: no-repeat;
   background-size: var(--img-width) var(--img-height);
@@ -52,9 +75,7 @@
   background-position: var(--img-x) var(--img-y);
 }
 
-/* Top section, nav links, footer */
-.sidebar-top { display: flex; align-items: center; justify-content: space-between; padding: 12px; }
-
+/* Sidebar navigation */
 .nav {
   display: flex;
   flex-direction: column;
@@ -63,20 +84,27 @@
 }
 
 .nav a {
-  color: #cbd5e1;
   text-decoration: none;
+  color: #cbd5e1;
   padding: 10px 12px;
   border-radius: 6px;
   display: flex;
   align-items: center;
   width: 100%;
   box-sizing: border-box;
-  transition: background 0.2s ease;
+  transition: background 0.2s ease, box-shadow 0.2s, transform 0.2s;
+}
+
+.nav a:hover {
+  box-shadow: 0 0 8px 2px rgba(255, 255, 255, 0.4);
+  transform: translateX(2px);
 }
 
 .nav a.active {
   background: rgba(255,255,255,0.04);
   color: #fff;
+  font-weight: 600;
+  box-shadow: 0 0 10px 3px rgba(255, 255, 255, 0.5);
 }
 
 .nav a .label {
@@ -91,23 +119,17 @@
   pointer-events: none;
 }
 
+/* Sidebar footer */
 .sidebar-footer {
   margin-top: auto;
   padding: 12px;
   font-size: 12px;
+  text-align: center;
   color: #94a3b8;
+  border-top: 1px solid rgb(228, 229, 255);
 }
 
-/* Responsive tweak */
-@media (max-width: 640px) {
-  .sidebar { width: 84%; }
-}
-
-
-
-
-
-/* Shared styling for both lines */
+/* Sidebar decorative lines */
 .sidebar .line {
   position: absolute;
   height: 1px;
@@ -116,7 +138,6 @@
   border-radius: 1px;
 }
 
-/* Left line positioning */
 .sidebar .line-left {
   top: calc(var(--icon-y) + 26px);
   left: 0;
@@ -124,10 +145,14 @@
   margin-right: calc(32px + 15px);
 }
 
-/* Right line positioning */
 .sidebar .line-right {
   top: calc(var(--icon-y) + 26px);
   left: 50%;
   right: 0;
   margin-left: calc(32px + 15px);
+}
+
+/* Responsive tweak */
+@media (max-width: 640px) {
+  .sidebar { width: 84%; }
 }

@@ -1,8 +1,9 @@
 import type { Character } from "../../../types/character"
 import type { ColumnGroup, ColumnDef } from "../../../types/tableDefinitions"
 import type { Snapshot } from "../../../types/snapshot"
+import { createOptionalGroup } from "../../../utils/tableBuilders"
 
-export function buildNegativeStatusColumns(selectedCharacters: Character[]): ColumnGroup {
+export function buildNegativeStatusColumns(selectedCharacters: Character[]): ColumnGroup | null {
   const activeStatuses = Array.from(
     new Set(
       selectedCharacters.flatMap(c => 
@@ -16,15 +17,12 @@ export function buildNegativeStatusColumns(selectedCharacters: Character[]): Col
     return {
       key,
       label: status,
+      icon: `/assets/${key.toLowerCase().replace(/\s+/g, "_")}.png`,
       render: (snapshot: Snapshot) => {
         const negativeStatuses = snapshot.negativeStatuses as Record<string, number> | undefined
         return negativeStatuses?.[key]
       },
     }
   })
-
-  return {
-    label: "Negative Statuses",
-    columns
-  }
+  return createOptionalGroup({ label: "Negative Statuses", icon: "assets/negativeStatuses.png" }, columns)
 }

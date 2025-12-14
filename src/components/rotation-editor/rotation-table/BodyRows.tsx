@@ -36,7 +36,12 @@ export function BodyRow({
     <tr className={`${isLastRow ? "lastRowClass" : ""} ${isNewRow ? "rowHighlight" : ""}`}>
       {/* Character select */}
       <td className="tableCellBody">
-        <select value={character} onChange={e => onSelectCharacter(snapshotId, e.target.value)}>
+        <select
+        className="selectInput"
+        value={character}
+        onChange={e =>
+        onSelectCharacter(snapshotId, e.target.value)}
+        >
           <option value="">-- Select Character --</option>
           {charactersInBattle.map(c => (
             <option key={c.name} value={c.name}>{c.name}</option>
@@ -47,6 +52,7 @@ export function BodyRow({
       {/* Action select */}
       <td className="tableCellBody">
         <select
+          className="selectInput"
           value={action}
           onChange={e => onSelectAction(snapshotId, e.target.value)}
           disabled={!character}
@@ -78,21 +84,21 @@ export function BodyRow({
       )}
 
       {/* Negative status columns */}
-      {tableConfig.negativeStatuses.columns.map((col, idx) => (
+      {tableConfig.negativeStatuses?.columns.map((col, idx) => (
         <td key={col.key} className={`tableCellBody ${idx === 0 ? "charGroupBody" : ""}`}>
           {character && action ? col.render(snapshot) : ""}
         </td>
       ))}
 
       {/* Buff columns */}
-      {tableConfig.buffs.columns.map((col, idx) => (
+      {tableConfig.buffs?.columns.map((col, idx) => (
         <td key={col.key} className={`tableCellBody ${idx === 0 ? "charGroupBody" : ""}`}>
           {character && action ? col.render(snapshot) : ""}
         </td>
       ))}
 
       {/* Debuff columns */}
-      {tableConfig.debuffs.columns.map((col, idx) => (
+      {tableConfig.debuffs?.columns.map((col, idx) => (
         <td key={col.key} className={`tableCellBody ${idx === 0 ? "charGroupBody" : ""}`}>
           {character && action ? col.render(snapshot) : ""}
         </td>

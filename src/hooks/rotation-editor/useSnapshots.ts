@@ -22,9 +22,9 @@ export function useSnapshots({ charactersInBattle, tableConfig }: UseSnapshotsPr
   )
   const globalColumns: GlobalColumns = {
     basic: tableConfig.basic.columns.map(col => col.key),
-    buffs: tableConfig.buffs.columns.map(col => col.key),
-    debuffs: tableConfig.debuffs.columns.map(col => col.key),
-    negativeStatuses: tableConfig.negativeStatuses.columns.map(col => col.key),
+    buffs: tableConfig.buffs?.columns.map(col => col.key) ?? [],
+    debuffs: tableConfig.debuffs?.columns.map(col => col.key) ?? [],
+    negativeStatuses: tableConfig.negativeStatuses?.columns.map(col => col.key) ?? [],
   }
 
   const [snapshots, setSnapshots] = useState<Snapshot[]>([createEmptySnapshot(charactersMap, characterColumnsMap, globalColumns)])
