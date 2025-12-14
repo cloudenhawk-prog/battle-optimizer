@@ -21,7 +21,7 @@ function HeaderContent({ label, icon }: { label: string; icon?: string }) {
 export function HeaderRow({ tableConfig }: HeaderRowProps) {
   return (
     <thead className="tableHeader">
-      {/* Top-level group headers */} 
+      {/* Top-level group headers */}
       <tr>
         {/* Group: Basic Columns */}
         <th
@@ -43,28 +43,43 @@ export function HeaderRow({ tableConfig }: HeaderRowProps) {
         ))}
 
         {/* Group: Negative Statuses */}
-        <th
-          className="groupHeader"
-          colSpan={tableConfig.negativeStatuses.columns.length}
-        >
-          <HeaderContent label={tableConfig.negativeStatuses.label} icon={tableConfig.negativeStatuses.icon} />
-        </th>
+        {tableConfig.negativeStatuses && (
+          <th
+            className="groupHeader"
+            colSpan={tableConfig.negativeStatuses.columns.length}
+          >
+            <HeaderContent
+              label={tableConfig.negativeStatuses.label}
+              icon={tableConfig.negativeStatuses.icon}
+            />
+          </th>
+        )}
 
         {/* Group: Buffs */}
-        <th
-          className="groupHeader"
-          colSpan={tableConfig.buffs.columns.length}
-        >
-          <HeaderContent label={tableConfig.buffs.label} icon={tableConfig.buffs.icon} />
-        </th>
+        {tableConfig.buffs && (
+          <th
+            className="groupHeader"
+            colSpan={tableConfig.buffs.columns.length}
+          >
+            <HeaderContent
+              label={tableConfig.buffs.label}
+              icon={tableConfig.buffs.icon}
+            />
+          </th>
+        )}
 
         {/* Group: Debuffs */}
-        <th
-          className="groupHeader"
-          colSpan={tableConfig.debuffs.columns.length}
-        >
-          <HeaderContent label={tableConfig.debuffs.label} icon={tableConfig.debuffs.icon} />
-        </th>
+        {tableConfig.debuffs && (
+          <th
+            className="groupHeader"
+            colSpan={tableConfig.debuffs.columns.length}
+          >
+            <HeaderContent
+              label={tableConfig.debuffs.label}
+              icon={tableConfig.debuffs.icon}
+            />
+          </th>
+        )}
       </tr>
 
       {/* Column labels */}
@@ -95,9 +110,9 @@ export function HeaderRow({ tableConfig }: HeaderRowProps) {
           </th>
         ))}
 
-        {/* Character-specific Columns (dynamic energies included) */}
+        {/* Character-specific Columns */}
         {tableConfig.characters.flatMap(group =>
-            group.columns.map((col, idx) => (
+          group.columns.map((col, idx) => (
             <th key={col.key} className={`tableCellHeader ${idx === 0 ? "charGroupHeader" : ""}`}>
               <div className="header-cell-content">
                 <IconRenderer icon={col.icon} alt={col.label} />
@@ -108,7 +123,7 @@ export function HeaderRow({ tableConfig }: HeaderRowProps) {
         )}
 
         {/* Negative Status Columns */}
-        {tableConfig.negativeStatuses.columns.map((col, idx) => (
+        {tableConfig.negativeStatuses?.columns.map((col, idx) => (
           <th key={col.key} className={`tableCellHeader ${idx === 0 ? "charGroupHeader" : ""}`}>
             <div className="header-cell-content">
               <IconRenderer icon={col.icon} alt={col.label} />
@@ -118,7 +133,7 @@ export function HeaderRow({ tableConfig }: HeaderRowProps) {
         ))}
 
         {/* Buff Columns */}
-        {tableConfig.buffs.columns.map((col, idx) => (
+        {tableConfig.buffs?.columns.map((col, idx) => (
           <th key={col.key} className={`tableCellHeader ${idx === 0 ? "charGroupHeader" : ""}`}>
             <div className="header-cell-content">
               <IconRenderer icon={col.icon} alt={col.label} />
@@ -128,9 +143,9 @@ export function HeaderRow({ tableConfig }: HeaderRowProps) {
         ))}
 
         {/* Debuff Columns */}
-        {tableConfig.debuffs.columns.map((col, idx) => (
+        {tableConfig.debuffs?.columns.map((col, idx) => (
           <th key={col.key} className={`tableCellHeader ${idx === 0 ? "charGroupHeader" : ""}`}>
-            <div className="flex items-center">
+            <div className="header-cell-content">
               <IconRenderer icon={col.icon} alt={col.label} />
               <span>{col.label}</span>
             </div>
@@ -140,3 +155,4 @@ export function HeaderRow({ tableConfig }: HeaderRowProps) {
     </thead>
   )
 }
+

@@ -84,21 +84,21 @@ export function BodyRow({
       )}
 
       {/* Negative status columns */}
-      {tableConfig.negativeStatuses.columns.map((col, idx) => (
+      {tableConfig.negativeStatuses?.columns.map((col, idx) => (
         <td key={col.key} className={`tableCellBody ${idx === 0 ? "charGroupBody" : ""}`}>
           {character && action ? col.render(snapshot) : ""}
         </td>
       ))}
 
       {/* Buff columns */}
-      {tableConfig.buffs.columns.map((col, idx) => (
+      {tableConfig.buffs?.columns.map((col, idx) => (
         <td key={col.key} className={`tableCellBody ${idx === 0 ? "charGroupBody" : ""}`}>
           {character && action ? col.render(snapshot) : ""}
         </td>
       ))}
 
       {/* Debuff columns */}
-      {tableConfig.debuffs.columns.map((col, idx) => (
+      {tableConfig.debuffs?.columns.map((col, idx) => (
         <td key={col.key} className={`tableCellBody ${idx === 0 ? "charGroupBody" : ""}`}>
           {character && action ? col.render(snapshot) : ""}
         </td>

@@ -91,7 +91,7 @@ export const characters: Character[] =
         debuffsApplied: [],
       }
     ],
-    buffs: ["Arcane Power"],
+    buffs: [],
     debuffs: [],
     maxEnergies: {
       energy: 100,
@@ -211,7 +211,7 @@ export const characters: Character[] =
       }
     ],
     buffs: [],
-    debuffs: ["Poisoned", "Bleeding"],
+    debuffs: [],
     maxEnergies: {
       energy: 100,
       concerto: 100,

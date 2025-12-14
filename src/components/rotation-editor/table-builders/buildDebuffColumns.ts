@@ -1,8 +1,9 @@
 import type { Character } from "../../../types/character"
 import type { ColumnGroup, ColumnDef } from "../../../types/tableDefinitions"
 import type { Snapshot } from "../../../types/snapshot"
+import { createOptionalGroup } from "../../../utils/tableBuilders"
 
-export function buildDebuffColumns(selectedCharacters: Character[]): ColumnGroup {
+export function buildDebuffColumns(selectedCharacters: Character[]): ColumnGroup | null {
   const activeDebuffs = Array.from(
     new Set(selectedCharacters.flatMap(c => c.debuffs))
   )
@@ -12,6 +13,7 @@ export function buildDebuffColumns(selectedCharacters: Character[]): ColumnGroup
     return {
       key,
       label: debuff,
+      icon: `/assets/${key}.png`,
       render: (snapshot: Snapshot) => {
         const debuffs = snapshot.debuffs as Record<string, number> | undefined
         return debuffs?.[key]
@@ -19,8 +21,5 @@ export function buildDebuffColumns(selectedCharacters: Character[]): ColumnGroup
     }
   })
 
-  return {
-    label: "Debuffs",
-    columns,
-  }
+  return createOptionalGroup({ label: "Debuffs", icon: "assets/debuffs.png" }, columns)
 }
