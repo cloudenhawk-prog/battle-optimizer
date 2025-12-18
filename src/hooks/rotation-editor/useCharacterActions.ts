@@ -144,16 +144,21 @@ function updateSnapshotsWithAction(params: {
   console.log("Context after resolveDamage: ", context)
   console.log("Snapshot after resolveDamage: ", context.current)
 
-  // Step 5: resolveSideEffects
+  // Step 5: resolveSideEffectDamage - damage if action triggers aero erosion proc or anything like that
 
 
-  // Step 6: resolveSecondaryDamage
+  // Step 6: resolveSideEffects - updates buffs, debuffs etc if they are still active or get more stacks
 
 
-  // Step 7: resolveResources
+  // Step 7: resolveNegativeStatuses - handles everything related to negative statuses
 
 
-  // Step 8: 
+  // Step 8: resolveResources - update all types of energies
+
+
+  // Step 9: freezeSnapshot - updates snapshot, grabs logs/events etc
+
+
 
 
   // PULL-BASED resolver flow : snapshot already knows the state, so resolvers just need to know which things to pull (data-driven) and handle it generically
