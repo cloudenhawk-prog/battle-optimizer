@@ -1,15 +1,15 @@
-import type { Snapshot, DamageEvent } from "../types/snapshot"
-import type { Character, Action } from "../types/character"
+import type { DamageEvent } from "../types/snapshot"
+import type { Action } from "../types/character"
 import type { Enemy } from "../types/enemy"
+import type { CharacterStats } from "../types/stats"
 import { negativeStatuses } from "../data/negativeStatuses"
-import type { NegativeStatusDamageEvent } from "../types/negativeStatus"
 
 type CalculateDamageParams = {
   action: Action          // The action being performed
-  character: Character    // The character performing the action
+  name: string            // The name of the character
+  stats: CharacterStats   // The stats of the character at the time of attacking
   enemy: Enemy            // The target enemy
   snapshotId: number      // ID of the snapshot (can also be number if you prefer)
-  nsDamageEvents: NegativeStatusDamageEvent[]
 }
 
 type CalculateDamageResult = {
@@ -31,11 +31,10 @@ type CalculateDamageResult = {
  * and produce the final damage number.
  */
 export function calculateDamage(params: CalculateDamageParams): CalculateDamageResult {
-  const { action, character, enemy, snapshotId, nsDamageEvents } = params
+  const { action, name, stats, enemy, snapshotId } = params
   // TODO: based on prev snapshot, apply buffs, debuffs that can affect dmg
   // TODO: calculate negative status damage and create another damageEvent?
 
-  const stats = character.stats
   const scalingStat = action.scaling
   const dmgType = action.dmgType
   const element = action.element
@@ -85,7 +84,7 @@ export function calculateDamage(params: CalculateDamageParams): CalculateDamageR
 
   const damageEvent = {
     snapshotId,
-    dealer: character.name,
+    dealer: name,
     target: enemy.name,
     element,
     dmgType,
@@ -93,8 +92,7 @@ export function calculateDamage(params: CalculateDamageParams): CalculateDamageR
     actionName: action.name,
     normalStrike,
     criticalStrike,
-    average,
-    nsDamageEvents
+    average
   }
 
   return { average, damageEvent }

@@ -106,7 +106,7 @@ function updateSnapshotsWithAction(params: {
   const validated = validateActionInputs(params)
   if (!validated) return params.snapshots
   const { index, character, action, current, prev } = validated
-  const updated = copySnapshots(params.snapshots)
+  const updatedSnapshots = copySnapshots(params.snapshots)
 
 
 
@@ -139,9 +139,21 @@ function updateSnapshotsWithAction(params: {
   console.log("Context after resolveDamageModifiers: ", context)
   console.log("Snapshot after resolveDamageModifiers: ", context.current)
 
-  // step 4: resolveDamage
-  resolveDamage(context)
-  console.log()
+  // Step 4: resolveDamage
+  resolveDamage(context, params.setDamageEvents)
+  console.log("Context after resolveDamage: ", context)
+  console.log("Snapshot after resolveDamage: ", context.current)
+
+  // Step 5: resolveSideEffects
+
+
+  // Step 6: resolveSecondaryDamage
+
+
+  // Step 7: resolveResources
+
+
+  // Step 8: 
 
 
   // PULL-BASED resolver flow : snapshot already knows the state, so resolvers just need to know which things to pull (data-driven) and handle it generically
@@ -187,11 +199,8 @@ function updateSnapshotsWithAction(params: {
 
 
   // -------- Timeline --------
-  const fromTime = prev.toTime
-  const toTime = fromTime + action.castTime
-
-  current.fromTime = fromTime
-  current.toTime = toTime
+  const fromTime = context.fromTime
+  const toTime = context.toTime
 
   // -------- Energy Updates --------
   const energiesPrev = getCharacterEnergyState(prev, current.character!)
@@ -202,14 +211,7 @@ function updateSnapshotsWithAction(params: {
   }
   if (action.name === "Outro" && energiesCurr.concerto !== undefined) energiesCurr.concerto = 0
 
-  // -------- Buffs/Debuffs --------
-  // TODO
-
-
-
-
   // -------- Negative Statuses --------
-
   const stacksPrev = getNegativeStatusStacks(prev)
   const {damages, stacksCurr} = processNegativeStatusStacks(params.negativeStatusesInAction.current, fromTime, toTime, stacksPrev, params.enemy)
   updateNegativeStatusStacks(current, stacksCurr, action, params.negativeStatusesInAction.current)
@@ -241,25 +243,30 @@ function updateSnapshotsWithAction(params: {
 
   console.log("nsDamageEvents: ", nsDamageEvents)
 
-  // -------- Time & Damage --------
-  const { average, damageEvent } = calculateDamage({ action, character, enemy: params.enemy, snapshotId: index, nsDamageEvents })
-  const cumulativeDamage = prev.damage + average + totalDmgNegativeStatuses
-  const dps = cumulativeDamage / toTime
 
-  console.log("Damage Event: ", damageEvent)
+
+
+
+
+
+
+
+
+
+
+
+
 
   // -------- Update snapshot --------
-  updated[index] = { ...current, action: action.name, damage: cumulativeDamage, dps }
-
-  // -------- Update global damage events --------
-  params.setDamageEvents(prevEvents => [...prevEvents, damageEvent])
+  context.current.action = action.name
+  updatedSnapshots[index] = { ...context.current }
 
   // -------- Create Next Blank Snapshot --------
-  if (index === updated.length - 1) {
-    updated.push(createSnapshot(updated[updated.length - 1], params.charactersMap, params.characterColumnsMap, params.globalColumns))
+  if (index === updatedSnapshots.length - 1) {
+    updatedSnapshots.push(createSnapshot(updatedSnapshots[updatedSnapshots.length - 1], params.charactersMap, params.characterColumnsMap, params.globalColumns))
   }
 
-  return updated
+  return updatedSnapshots
 }
 
 // =============================================================================================================================
@@ -644,16 +651,32 @@ function resolveDamageModifiers(ctx: StepContext) {
 
 // =============================================================================================================================
 
-function resolveDamage(ctx: StepContext): void {
-  const { average, damageEvent } = calculateDamage({ current, prev, action, character, enemy: params.enemy, snapshotId: index, nsDamageEvents })
+function resolveDamage(ctx: StepContext, setDamageEvents: Dispatch<SetStateAction<DamageEvent[]>>): void {
+  console.log("   RESOLVING DAMAGE!")
+  console.log("  Stats: ", ctx.characterStats)
+  // TODO - error checking
 
-}
+  const action = ctx.action
+  const name = ctx.character.name
+  const stats = ctx.characterStats
+  const enemy = ctx.enemy
+  const snapshotId = ctx.snapshotId
+  const prev = ctx.prev
+  const current = ctx.current
+  const toTime = ctx.toTime
 
+  const { average, damageEvent } = calculateDamage({ action, name, stats, enemy, snapshotId })
+  setDamageEvents(prevEvents => [...prevEvents, damageEvent])
 
-
-// -------- Time & Damage --------
-  const { average, damageEvent } = calculateDamage({ current, prev, action, character, enemy: params.enemy, snapshotId: index, nsDamageEvents })
-  const cumulativeDamage = prev.damage + average + totalDmgNegativeStatuses
+  const cumulativeDamage = prev.damage + average
   const dps = cumulativeDamage / toTime
 
-  console.log("Damage Event: ", damageEvent)
+  current.damage = cumulativeDamage
+  current.dps = dps
+
+  ctx.logs.push({
+    resolver: "resolveDamage",
+    message: `Damage resolved for snapshot ${snapshotId}: +${average} dmg, cumulative ${cumulativeDamage}`,
+    details: { damageEvent }
+  })
+}
