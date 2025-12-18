@@ -11,6 +11,8 @@ import type { NegativeStatusInAction } from "../../types/negativeStatus"
 import { negativeStatuses as negativeStatusesData } from "../../data/negativeStatuses"
 import type { Action } from "../../types/character"
 import type { NegativeStatusDamageEvent } from "../../types/negativeStatus"
+import type { StepContext, DamageModifier } from "../../types/resolver"
+import type { CharacterStats, EnemyStats } from "../../types/stats"
 
 type GlobalColumns = { // TODO: is it necessary to make a subtype like this of TableConfig?
   basic: string[]
@@ -103,19 +105,97 @@ function updateSnapshotsWithAction(params: {
   // -------- Validate Input --------
   const validated = validateActionInputs(params)
   if (!validated) return params.snapshots
-  const { index, snapshot, character, action, prev } = validated
+  const { index, character, action, current, prev } = validated
   const updated = copySnapshots(params.snapshots)
+
+
+
+
+
+
+  console.log("updateSnapshotsWithAction called:")
+  console.log(" index: ", index)
+  console.log(" current: ", current)
+  console.log(" prev: ", prev)
+
+
+
+  // // -------- Resolvers --------
+
+  // TEST STEPS 1-3 BEFORE MOVING ON
+
+  // Step 1: Build the step context
+  const context = buildStepContext(index, current, prev, character, action, params.enemy, params.negativeStatusesInAction.current)
+  console.log("Context START: ", context)
+  console.log("Snapshot START: ", context.current)
+
+  // Step 2: Resolve Time
+  resolveTime(context)
+  console.log("Context after resolveTime: ", context)
+  console.log("Snapshot after resolveTime: ", context.current)
+
+  // Step 3: resolveDamageModifiers
+  resolveDamageModifiers(context)
+  console.log("Context after resolveDamageModifiers: ", context)
+  console.log("Snapshot after resolveDamageModifiers: ", context.current)
+
+  // step 4: resolveDamage
+  resolveDamage(context)
+  console.log()
+
+
+  // PULL-BASED resolver flow : snapshot already knows the state, so resolvers just need to know which things to pull (data-driven) and handle it generically
+  // DATA-DRIVEN: data should describe behaviour - not endless specific if-else blocks
+
+  // buildStepContext(...): ctx -> collects active effects that will be used by resolvers
+  // resolveTime(ctx) -> just calculates time
+  // resolveActionIntent(ctx) -> just takes info on action etc
+  // resolveDamageModifiers(ctx) -> might find all "damageModifier" targeters and aggregate them
+  // resolveDamage(ctx) -> easy if prev step works
+  // resolveSideEffects(ctx) -> might find all "sideEffect" targeters and process them
+  // resolveSecondaryDamage(ctx) -> easy if prev step works
+  // resolveResources(ctx) -> might find all "resource" targeters and aggregate them
+  // resolveStatuses(ctx) -> might find all "negativeStatus" targeters and aggregate them
+  // freezeSnapshot(ctx) -> updates snapshot, grabs/creates logs etc
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
   // -------- Timeline --------
   const fromTime = prev.toTime
   const toTime = fromTime + action.castTime
 
-  snapshot.fromTime = fromTime
-  snapshot.toTime = toTime
+  current.fromTime = fromTime
+  current.toTime = toTime
 
   // -------- Energy Updates --------
-  const energiesPrev = getCharacterEnergyState(prev, snapshot.character!)
-  const energiesCurr = getCharacterEnergyState(snapshot, snapshot.character!)
+  const energiesPrev = getCharacterEnergyState(prev, current.character!)
+  const energiesCurr = getCharacterEnergyState(current, current.character!)
   const maxEnergies = character.maxEnergies
   for (const [key, generated] of Object.entries(action.energyGenerated)) {
     if (key in energiesCurr) energiesCurr[key] = updateEnergyValue(energiesPrev[key], generated, maxEnergies[key])
@@ -132,7 +212,7 @@ function updateSnapshotsWithAction(params: {
 
   const stacksPrev = getNegativeStatusStacks(prev)
   const {damages, stacksCurr} = processNegativeStatusStacks(params.negativeStatusesInAction.current, fromTime, toTime, stacksPrev, params.enemy)
-  updateNegativeStatusStacks(snapshot, stacksCurr, action, params.negativeStatusesInAction.current)
+  updateNegativeStatusStacks(current, stacksCurr, action, params.negativeStatusesInAction.current)
 
   const totalDmgNegativeStatuses = Object.values(damages).flat().reduce((sum, dmg) => sum + dmg, 0)
 
@@ -162,14 +242,14 @@ function updateSnapshotsWithAction(params: {
   console.log("nsDamageEvents: ", nsDamageEvents)
 
   // -------- Time & Damage --------
-  const { average, damageEvent } = calculateDamage({ snapshot, prev, action, character, enemy: params.enemy, snapshotId: index, nsDamageEvents })
+  const { average, damageEvent } = calculateDamage({ action, character, enemy: params.enemy, snapshotId: index, nsDamageEvents })
   const cumulativeDamage = prev.damage + average + totalDmgNegativeStatuses
   const dps = cumulativeDamage / toTime
 
   console.log("Damage Event: ", damageEvent)
 
   // -------- Update snapshot --------
-  updated[index] = { ...snapshot, action: action.name, damage: cumulativeDamage, dps }
+  updated[index] = { ...current, action: action.name, damage: cumulativeDamage, dps }
 
   // -------- Update global damage events --------
   params.setDamageEvents(prevEvents => [...prevEvents, damageEvent])
@@ -250,18 +330,18 @@ function validateActionInputs(params: {
   const index = getSnapshotIndex(snapshots, snapshotId)
   if (index === -1) return null
 
-  const snapshot = snapshots[index]
-  if (!snapshot.character) return null
+  const current = snapshots[index]
+  if (!current.character) return null
 
-  const character = getCharacter(charactersMap, snapshot.character)
+  const character = getCharacter(charactersMap, current.character)
   if (!character) return null
 
-  const action = getActionFromCharacter(charactersMap, snapshot.character, actionName)
+  const action = getActionFromCharacter(charactersMap, current.character, actionName)
   if (!action) return null
 
   const prev = getPrevSnapshot(snapshots, index)
 
-  return { index, snapshot, character, action, prev }
+  return { index, character, action, current, prev }
 }
 
 // =============================================================================================================================
@@ -410,3 +490,170 @@ function createNegativeStatusDamageEvent(
     damage: damage,
   }
 }
+
+// =============================================================================================================================
+
+function buildStepContext(
+  snapshotId: number,
+  current: Snapshot,
+  prev: Snapshot,
+  character: Character,
+  action: Action,
+  enemy: Enemy,
+  negativeStatusesInAction: NegativeStatusInAction[]
+): StepContext {
+  const fromTime = prev.toTime
+  const toTime = fromTime + action.castTime
+
+  return {
+    snapshotId,
+
+    current,
+    prev,
+
+    character,
+    action,
+    enemy,
+
+    fromTime,
+    toTime,
+
+    negativeStatusesInAction,
+
+    logs: []
+  }
+}
+
+// =============================================================================================================================
+
+function resolveTime(ctx: StepContext): void {
+  if (ctx.fromTime == null || ctx.toTime == null || ctx.fromTime > ctx.toTime || ctx.snapshotId !== Number(ctx.current.id)) {
+    throw Error(`Resolver: resolveTime failed for snapshot ${ctx.current.id} with snapshotId=${ctx.snapshotId}, fromTime=${ctx.fromTime}, toTime=${ctx.toTime}`)
+  }
+
+  ctx.current.fromTime = ctx.prev.toTime
+  ctx.current.toTime = ctx.prev.toTime + ctx.action.castTime
+
+  ctx.logs.push({
+    resolver: "resolveTime",
+    message: `Snapshot with id: ${ctx.snapshotId}: from ${ctx.current.fromTime}s to ${ctx.current.toTime}s`,
+    details: { action: ctx.action.name }
+  })
+}
+
+// =============================================================================================================================
+
+function resolveDamageModifiers(ctx: StepContext) {
+  // Start with base stats
+  const aggregatedCharacterStats: CharacterStats = { ...ctx.character.stats }
+  const aggregatedEnemyStats: EnemyStats = { ...ctx.enemy.stats }
+
+  // Collect all damage modifiers from character, action, and negative statuses
+  const allModifiers: DamageModifier[] = [
+    ...ctx.character.damageModifiers,
+    ...ctx.action.damageModifiers,
+    ...ctx.negativeStatusesInAction.flatMap(ns => ns.negativeStatus.damageModifiers)
+  ]
+
+  // -------- Apply modifiers --------
+  // We'll first sum additive effects, then apply multiplicative with linear stacking
+  const charAdditive: Partial<CharacterStats> = {}
+  const charMultiplicative: Partial<CharacterStats> = {}
+
+  const enemyAdditive: Partial<EnemyStats> = {}
+  const enemyMultiplicative: Partial<EnemyStats> = {}
+
+  allModifiers.forEach(modifier => {
+    const times = modifier.condition?.(ctx) ?? 1
+    console.log("Modifier:", modifier.source, "times:", times)
+    if (times === 0) return // skip if condition not met
+
+    // -------- Character Stats --------
+    if (modifier.characterStats) {
+      // Additive
+      if (modifier.characterStats.add) {
+        Object.entries(modifier.characterStats.add).forEach(([key, value]) => {
+          charAdditive[key as keyof CharacterStats] =
+            (charAdditive[key as keyof CharacterStats] ?? 0) + (value as number) * times
+        })
+      }
+
+      // Multiplicative (linear stacking)
+      if (modifier.characterStats.multiply) {
+        Object.entries(modifier.characterStats.multiply).forEach(([key, value]) => {
+          charMultiplicative[key as keyof CharacterStats] =
+            (charMultiplicative[key as keyof CharacterStats] ?? 1) * (1 + ((value as number) - 1) * times)
+        })
+      }
+    }
+
+    // -------- Enemy Stats --------
+    if (modifier.enemyStats) {
+      if (modifier.enemyStats.add) {
+        Object.entries(modifier.enemyStats.add).forEach(([key, value]) => {
+          enemyAdditive[key as keyof EnemyStats] =
+            (enemyAdditive[key as keyof EnemyStats] ?? 0) + (value as number) * times
+        })
+      }
+      if (modifier.enemyStats.multiply) {
+        Object.entries(modifier.enemyStats.multiply).forEach(([key, value]) => {
+          enemyMultiplicative[key as keyof EnemyStats] =
+            (enemyMultiplicative[key as keyof EnemyStats] ?? 1) * (1 + ((value as number) - 1) * times)
+        })
+      }
+    }
+
+    // Logging
+    ctx.logs.push({
+      resolver: "resolveDamageModifiers",
+      message: `Applied modifier from ${modifier.source} with times ${times}`,
+      details: { modifier }
+    })
+  })
+
+  // -------- Apply aggregated effects --------
+  // Character
+  Object.entries(charAdditive).forEach(([key, value]) => {
+    ;(aggregatedCharacterStats as any)[key] += value
+  })
+  Object.entries(charMultiplicative).forEach(([key, value]) => {
+    ;(aggregatedCharacterStats as any)[key] *= value
+  })
+
+  // Enemy
+  Object.entries(enemyAdditive).forEach(([key, value]) => {
+    ;(aggregatedEnemyStats as any)[key] += value
+  })
+  Object.entries(enemyMultiplicative).forEach(([key, value]) => {
+    ;(aggregatedEnemyStats as any)[key] *= value
+  })
+
+  // Attach final stats to context
+  ctx.characterStats = aggregatedCharacterStats
+  ctx.enemyStats = aggregatedEnemyStats
+
+  ctx.logs.push({
+    resolver: "resolveDamageModifiers",
+    message: "Final aggregated stats after all modifiers",
+    details: {
+      characterStats: aggregatedCharacterStats,
+      enemyStats: aggregatedEnemyStats
+    }
+  })
+}
+
+// =============================================================================================================================
+
+function resolveDamage(ctx: StepContext): void {
+  const { average, damageEvent } = calculateDamage({ current, prev, action, character, enemy: params.enemy, snapshotId: index, nsDamageEvents })
+
+}
+
+
+
+// -------- Time & Damage --------
+  const { average, damageEvent } = calculateDamage({ current, prev, action, character, enemy: params.enemy, snapshotId: index, nsDamageEvents })
+  const cumulativeDamage = prev.damage + average + totalDmgNegativeStatuses
+  const dps = cumulativeDamage / toTime
+
+  console.log("Damage Event: ", damageEvent)

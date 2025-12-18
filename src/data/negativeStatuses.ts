@@ -22,7 +22,8 @@ export const negativeStatuses: Record<string, NegativeStatus> = {
             stackConsumption: 999,
             triggerDmgOnReduction: false,
             resetTimerOnApplication: true,
-        }
+        },
+        damageModifiers: []
     },
     spectroFrazzle: {
         name: "Spectro Frazzle",
@@ -46,7 +47,8 @@ export const negativeStatuses: Record<string, NegativeStatus> = {
             stackConsumption: 1,
             triggerDmgOnReduction: true,
             resetTimerOnApplication: false,
-        }
+        },
+        damageModifiers: []
     }
 }
 

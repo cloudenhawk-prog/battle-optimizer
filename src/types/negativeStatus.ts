@@ -1,3 +1,4 @@
+import type { DamageModifier } from "./resolver"
 import type { Action } from "./character"
 
 type NegativeStatus = {
@@ -7,7 +8,8 @@ type NegativeStatus = {
     frequency: number,
     damage: Record<number, number>,
     element: "AERO" | "SPECTRO" | "HAVOC" | "GLACIO" | "FUSION" | "ELECTRO",
-    reductionStrategy: ReductionStrategy
+    reductionStrategy: ReductionStrategy,
+    damageModifiers: DamageModifier[]
 }
 
 type ReductionStrategy = {

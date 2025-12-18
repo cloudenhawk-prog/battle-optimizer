@@ -1,4 +1,5 @@
 import type { Character } from "../types/character"
+import { stacksOf } from "../engine/conditions"
 
 export const characters: Character[] =
 [
@@ -21,6 +22,7 @@ export const characters: Character[] =
         negativeStatusesApplied: {},
         buffsApplied: [],
         debuffsApplied: [],
+        damageModifiers: []
       },
       {
         name: "Ice Spike",
@@ -38,6 +40,7 @@ export const characters: Character[] =
         negativeStatusesApplied: {},
         buffsApplied: [],
         debuffsApplied: [],
+        damageModifiers: []
       },
       {
         name: "Liberating Lightning",
@@ -55,6 +58,7 @@ export const characters: Character[] =
         negativeStatusesApplied: { "Spectro Frazzle": 3 },
         buffsApplied: [],
         debuffsApplied: [],
+        damageModifiers: []
       },
       {
         name: "Intro",
@@ -72,6 +76,7 @@ export const characters: Character[] =
         negativeStatusesApplied: {},
         buffsApplied: [],
         debuffsApplied: [],
+        damageModifiers: []
       },
       {
         name: "Outro",
@@ -89,6 +94,7 @@ export const characters: Character[] =
         negativeStatusesApplied: {},
         buffsApplied: [],
         debuffsApplied: [],
+        damageModifiers: []
       }
     ],
     buffs: [],
@@ -136,7 +142,8 @@ export const characters: Character[] =
       electro: 0.00,
       havoc: 0.00,
       energyPercent: 0.00
-    }
+    },
+    damageModifiers: []
   },
   {
     name: "Rogue",
@@ -157,6 +164,7 @@ export const characters: Character[] =
         negativeStatusesApplied: {},
         buffsApplied: [],
         debuffsApplied: [],
+        damageModifiers: []
       },
       {
         name: "Poison",
@@ -174,6 +182,7 @@ export const characters: Character[] =
         negativeStatusesApplied: {},
         buffsApplied: [],
         debuffsApplied: [],
+        damageModifiers: []
       },
       {
         name: "Intro",
@@ -191,6 +200,7 @@ export const characters: Character[] =
         negativeStatusesApplied: {},
         buffsApplied: [],
         debuffsApplied: [],
+        damageModifiers: []
       },
       {
         name: "Outro",
@@ -208,6 +218,7 @@ export const characters: Character[] =
         negativeStatusesApplied: {},
         buffsApplied: [],
         debuffsApplied: [],
+        damageModifiers: []
       }
     ],
     buffs: [],
@@ -255,7 +266,8 @@ export const characters: Character[] =
       electro: 0.00,
       havoc: 0.00,
       energyPercent: 0.00
-    }
+    },
+    damageModifiers: []
   },
   {
     name: "Cartethyia",
@@ -277,6 +289,17 @@ export const characters: Character[] =
         negativeStatusesApplied: { "Aero Erosion": 1 },
         buffsApplied: [],
         debuffsApplied: [],
+        damageModifiers: [
+          {
+            source: "Fleurdelys Strike – Aero Erosion scaling",
+            condition: stacksOf("Aero Erosion"),
+            characterStats: {
+              multiply: {
+                dmgAmplification: 1.1
+              }
+            }
+          }
+        ]
       },
       {
         name: "Liberation",
@@ -295,6 +318,7 @@ export const characters: Character[] =
         negativeStatusesApplied: {},
         buffsApplied: [],
         debuffsApplied: [],
+        damageModifiers: []
       },
       {
         name: "Intro",
@@ -312,6 +336,7 @@ export const characters: Character[] =
         negativeStatusesApplied: {},
         buffsApplied: [],
         debuffsApplied: [],
+        damageModifiers: []
       },
       {
         name: "Outro",
@@ -329,6 +354,7 @@ export const characters: Character[] =
         negativeStatusesApplied: {},
         buffsApplied: [],
         debuffsApplied: [],
+        damageModifiers: []
       }
     ],
     buffs: [],
@@ -344,40 +370,41 @@ export const characters: Character[] =
       level: 90,
       baseATK: 774,
       flatATK: 100,
-      percentATK: 0.24,
+      percentATK: 1.24,
       baseHP: 14800,
       flatHP: 0,
-      percentHP: 0.00,
+      percentHP: 1.00,
       baseDEF: 611,
       flatDEF: 100,
-      percentDEF: 0.00,
+      percentDEF: 1.00,
       critRate: 0.49,
       critDamage: 2.30,
-      dmgAmplification: 0.00,
+      dmgAmplification: 1.00,
       defIgnore: 0.00,
       elementalResPEN: 0.00,
       resistancePEN: 0.00,
-      basicDMG: 0.00,
-      heavyDMG: 0.00,
-      skillDMG: 0.00,
-      liberationDMG: 0.00,
-      coordinatedDMG: 0.00,
-      echoDMG: 0.00,
-      introDMG: 0.00,
-      outroDMG: 0.00,
-      aeroErosionDMG: 0.00,
-      spectroFrazzleDMG: 0.00,
-      havocBaneDMG: 0.00,
-      glacioChafeDMG: 0.00,
-      fusionBurstDMG: 0.00,
-      electroFlareDMG: 0.00,
-      spectro: 0.00,
-      fusion: 0.00,
-      aero: 0.30,
-      glacio: 0.00,
-      electro: 0.00,
-      havoc: 0.00,
-      energyPercent: 0.00
-    }
+      basicDMG: 1.00,
+      heavyDMG: 1.00,
+      skillDMG: 1.00,
+      liberationDMG: 1.00,
+      coordinatedDMG: 1.00,
+      echoDMG: 1.00,
+      introDMG: 1.00,
+      outroDMG: 1.00,
+      aeroErosionDMG: 1.00,
+      spectroFrazzleDMG: 1.00,
+      havocBaneDMG: 1.00,
+      glacioChafeDMG: 1.00,
+      fusionBurstDMG: 1.00,
+      electroFlareDMG: 1.00,
+      spectro: 1.00,
+      fusion: 1.00,
+      aero: 1.30,
+      glacio: 1.00,
+      electro: 1.00,
+      havoc: 1.00,
+      energyPercent: 1.00
+    },
+    damageModifiers: [] // TODO
   },
 ]

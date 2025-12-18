@@ -1,4 +1,5 @@
 import type { CharacterStats } from "./stats"
+import type { DamageModifier } from "./resolver"
 
 export type Action = {
   name: string
@@ -14,13 +15,16 @@ export type Action = {
   negativeStatusesApplied: Record<string, number>
   buffsApplied: string[]
   debuffsApplied: string[]
+
+  damageModifiers: DamageModifier[]
 }
 
 export type Character = {
   name: string
   actions: Action[]
-  buffs: string[]
-  debuffs: string[]
+  buffs: string[] // define buffs with damageEffects
+  debuffs: string[] // define debuffs with damageEffects
   maxEnergies: Record<string, number>,
   stats: CharacterStats
+  damageModifiers: DamageModifier[]
 }

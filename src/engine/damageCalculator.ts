@@ -5,8 +5,6 @@ import { negativeStatuses } from "../data/negativeStatuses"
 import type { NegativeStatusDamageEvent } from "../types/negativeStatus"
 
 type CalculateDamageParams = {
-  snapshot: Snapshot      // The current snapshot being calculated
-  prev: Snapshot          // The previous snapshot (for buffs, debuffs, energy, etc.)
   action: Action          // The action being performed
   character: Character    // The character performing the action
   enemy: Enemy            // The target enemy
@@ -33,7 +31,7 @@ type CalculateDamageResult = {
  * and produce the final damage number.
  */
 export function calculateDamage(params: CalculateDamageParams): CalculateDamageResult {
-  const { snapshot, prev, action, character, enemy, snapshotId, nsDamageEvents } = params
+  const { action, character, enemy, snapshotId, nsDamageEvents } = params
   // TODO: based on prev snapshot, apply buffs, debuffs that can affect dmg
   // TODO: calculate negative status damage and create another damageEvent?
 
@@ -48,7 +46,7 @@ export function calculateDamage(params: CalculateDamageParams): CalculateDamageR
 
   // Character Stats
   const level             = stats.level
-  const scalingStatVal    = stats[`base${scalingStat}`] * (1 + stats[`percent${scalingStat}`]) + stats[`flat${scalingStat}`]
+  const scalingStatVal    = stats[`base${scalingStat}`] * stats[`percent${scalingStat}`] + stats[`flat${scalingStat}`]
   const critRate          = stats.critRate
   const critDamage        = stats.critDamage
   const dmgAmplification  = stats.dmgAmplification
@@ -74,9 +72,9 @@ export function calculateDamage(params: CalculateDamageParams): CalculateDamageR
   const elementalResMultiplier = 1 - (enElementRES - elementalResPEN)
   const damageRES = resMultiplier * defenseMultiplier * damageReductionMultiplier * elementalResMultiplier
 
-  const elementalDmgMultiplier = 1 + elementVal
-  const dmgTypeMultiplier = 1 + dmgTypeVal
-  const dmgAmplificationMultiplier = 1 + dmgAmplification
+  const elementalDmgMultiplier = elementVal
+  const dmgTypeMultiplier = dmgTypeVal
+  const dmgAmplificationMultiplier = dmgAmplification
   const bonusDMG = elementalDmgMultiplier * dmgTypeMultiplier * dmgAmplificationMultiplier
 
   const critBonusDMG = 1 + critRate * (critDamage - 1)
@@ -99,7 +97,6 @@ export function calculateDamage(params: CalculateDamageParams): CalculateDamageR
     nsDamageEvents
   }
 
-  console.log("Character Damage: ", average.toFixed(0))
   return { average, damageEvent }
 }
 
@@ -127,7 +124,6 @@ export function calculateDamageNegativeStatus(currStacks: number, element: strin
 
   const damage = baseDMG * damageRES
 
-  console.log("Negative Status Damge: ", damage.toFixed(0))
   return damage
 }
 

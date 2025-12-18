@@ -28,6 +28,7 @@ export function RotationTable({
   const [highlightIds, setHighlightIds] = useState<Set<number>>(new Set())
   const lastMaxId = useRef(0)
 
+  // Highlight latest rows
   useEffect(() => {
     if (!snapshots.length) return
 
@@ -66,6 +67,7 @@ export function RotationTable({
     <div className="tableWrapper">
       <table className="tableBase">
         <HeaderRow tableConfig={tableConfig} />
+        <tbody>
           {snapshots.map((snapshot, idx) => (
             <BodyRow
               key={Number(snapshot.id)}
@@ -78,6 +80,7 @@ export function RotationTable({
               isNewRow={highlightIds.has(Number(snapshot.id))}
             />
           ))}
+        </tbody>
       </table>
     </div>
   )
