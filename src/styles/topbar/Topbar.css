@@ -1,0 +1,27 @@
+
+.topbarWrapper {
+  position: relative;
+  margin: 0 var(--content-column-width-free-space);
+  border-radius: 0 0 var(--table-overall-corner-radius) var(--table-overall-corner-radius);
+
+  background: rgba(var(--table-overall-bg-color), var(--table-overall-bg-transparency));
+  backdrop-filter: var(--table-overall-blur);
+
+  box-shadow:
+    inset 0 1px 1px rgba(var(--table-overall-lines-color), var(--table-overall-lines-transparency)),
+    0 30px 60px rgba(0,0,0,0.6),
+    0 0 40px rgba(255,150,150,var(--table-overall-lines-transparency));
+
+  border-left: 1px solid rgba(var(--table-overall-lines-color), var(--table-overall-lines-transparency));
+  border-right: 1px solid rgba(var(--table-overall-lines-color), var(--table-overall-lines-transparency));
+  border-bottom: 1px solid rgba(var(--table-overall-lines-color), var(--table-overall-lines-transparency));
+}
+
+.topbarBase {
+  height: 68px;
+  padding: 0 20px;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+

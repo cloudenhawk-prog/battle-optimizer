@@ -30,8 +30,8 @@
 
 /* Collapsed state */
 .sidebar-ghost.collapsed {
-  left: 20px;
-  top: 42px;
+  left: calc(var(--content-column-width-free-space) + 5px);
+  top: 6px;
   transform: scale(0.7);
 }
 
