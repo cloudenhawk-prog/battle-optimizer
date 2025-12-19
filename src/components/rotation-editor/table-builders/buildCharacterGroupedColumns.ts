@@ -1,19 +1,16 @@
-import type { Character } from "../../../types/character"
+import type { Character, EnergyType } from "../../../types/character"
 import type { ColumnDef } from "../../../types/tableDefinitions"
 import type { ColumnGroup } from "../../../types/tableDefinitions"
 
 export function buildCharacterGroupsColumns(selectedCharacters: Character[]): ColumnGroup[] {
   return selectedCharacters.map(c => {
-    const allEnergyKeys = Object.keys(c.maxEnergies)
+    const allEnergyKeys = Object.keys(c.maxEnergies) as EnergyType[]
 
     const columns: ColumnDef[] = allEnergyKeys.map(key => ({
       key: `${c.name}_${key}`,
       label: key.charAt(0).toUpperCase() + key.slice(1),
       icon: `/assets/${key}.png`,
-      render: snapshot => {
-        const energies = snapshot.charactersEnergies as Record<string, Record<string, number>> | undefined // TODO: update tableBuilders, we can now use the Snapshot type for safety and thus make the implementation here simpler
-        return energies?.[c.name]?.[key]
-      }
+      render: snapshot => snapshot.charactersEnergies?.[c.name]?.[key]
     }))
 
     return {
@@ -24,3 +21,7 @@ export function buildCharacterGroupsColumns(selectedCharacters: Character[]): Co
   })
 }
 
+
+
+
+// TODO: update tableBuilders, we can now use the Snapshot type for safety and thus make the implementation here simpler

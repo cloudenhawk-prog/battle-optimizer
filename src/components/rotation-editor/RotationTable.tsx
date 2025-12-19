@@ -1,9 +1,10 @@
+import "../../styles/rotation-editor/RotationTable.css"
 import { useState, useEffect, useRef } from "react"
 import { HeaderRow } from "./HeaderRow"
 import { BodyRow } from "./BodyRows"
-import type { TableConfig } from "../../../types/tableDefinitions"
-import type { Character } from "../../../types/character"
-import type { Snapshot } from "../../../types/snapshot"
+import type { TableConfig } from "../../types/tableDefinitions"
+import type { Character } from "../../types/character"
+import type { Snapshot } from "../../types/snapshot"
 
 type RotationTableProps = {
   snapshots: Array<Snapshot>
@@ -27,6 +28,7 @@ export function RotationTable({
   const [highlightIds, setHighlightIds] = useState<Set<number>>(new Set())
   const lastMaxId = useRef(0)
 
+  // Highlight latest rows
   useEffect(() => {
     if (!snapshots.length) return
 
@@ -65,7 +67,7 @@ export function RotationTable({
     <div className="tableWrapper">
       <table className="tableBase">
         <HeaderRow tableConfig={tableConfig} />
-        <tbody className="tableBody">
+        <tbody>
           {snapshots.map((snapshot, idx) => (
             <BodyRow
               key={Number(snapshot.id)}

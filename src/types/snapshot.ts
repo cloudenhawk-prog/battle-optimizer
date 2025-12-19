@@ -1,5 +1,5 @@
 import type { Action } from "./character"
-import type { NegativeStatusDamageEvent } from "./negativeStatus"
+import type { EnergyType } from "./character"
 
 export interface Snapshot {
   id: string
@@ -9,7 +9,7 @@ export interface Snapshot {
   toTime: number
   damage: number
   dps: number
-  charactersEnergies: Record<string, Record<string, number>>
+  charactersEnergies: Partial<Record<EnergyType, number>>
   buffs: Record<string, number>
   debuffs: Record<string, number>
   negativeStatuses: Record<string, number>
@@ -26,5 +26,4 @@ export type DamageEvent = {
   normalStrike: number
   criticalStrike: number
   average: number
-  negativeStatusDamageEvent?: NegativeStatusDamageEvent
 }

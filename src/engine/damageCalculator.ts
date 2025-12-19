@@ -1,17 +1,15 @@
-import type { Snapshot, DamageEvent } from "../types/snapshot"
-import type { Character, Action } from "../types/character"
+import type { DamageEvent } from "../types/snapshot"
+import type { Action } from "../types/character"
 import type { Enemy } from "../types/enemy"
+import type { CharacterStats } from "../types/stats"
 import { negativeStatuses } from "../data/negativeStatuses"
-import type { NegativeStatusDamageEvent } from "../types/negativeStatus"
 
 type CalculateDamageParams = {
-  snapshot: Snapshot      // The current snapshot being calculated
-  prev: Snapshot          // The previous snapshot (for buffs, debuffs, energy, etc.)
   action: Action          // The action being performed
-  character: Character    // The character performing the action
+  name: string            // The name of the character
+  stats: CharacterStats   // The stats of the character at the time of attacking
   enemy: Enemy            // The target enemy
   snapshotId: number      // ID of the snapshot (can also be number if you prefer)
-  nsDamageEvents: NegativeStatusDamageEvent[]
 }
 
 type CalculateDamageResult = {
@@ -33,11 +31,10 @@ type CalculateDamageResult = {
  * and produce the final damage number.
  */
 export function calculateDamage(params: CalculateDamageParams): CalculateDamageResult {
-  const { snapshot, prev, action, character, enemy, snapshotId, nsDamageEvents } = params
+  const { action, name, stats, enemy, snapshotId } = params
   // TODO: based on prev snapshot, apply buffs, debuffs that can affect dmg
   // TODO: calculate negative status damage and create another damageEvent?
 
-  const stats = character.stats
   const scalingStat = action.scaling
   const dmgType = action.dmgType
   const element = action.element
@@ -48,7 +45,7 @@ export function calculateDamage(params: CalculateDamageParams): CalculateDamageR
 
   // Character Stats
   const level             = stats.level
-  const scalingStatVal    = stats[`base${scalingStat}`] * (1 + stats[`percent${scalingStat}`]) + stats[`flat${scalingStat}`]
+  const scalingStatVal    = stats[`base${scalingStat}`] * stats[`percent${scalingStat}`] + stats[`flat${scalingStat}`]
   const critRate          = stats.critRate
   const critDamage        = stats.critDamage
   const dmgAmplification  = stats.dmgAmplification
@@ -74,9 +71,9 @@ export function calculateDamage(params: CalculateDamageParams): CalculateDamageR
   const elementalResMultiplier = 1 - (enElementRES - elementalResPEN)
   const damageRES = resMultiplier * defenseMultiplier * damageReductionMultiplier * elementalResMultiplier
 
-  const elementalDmgMultiplier = 1 + elementVal
-  const dmgTypeMultiplier = 1 + dmgTypeVal
-  const dmgAmplificationMultiplier = 1 + dmgAmplification
+  const elementalDmgMultiplier = elementVal
+  const dmgTypeMultiplier = dmgTypeVal
+  const dmgAmplificationMultiplier = dmgAmplification
   const bonusDMG = elementalDmgMultiplier * dmgTypeMultiplier * dmgAmplificationMultiplier
 
   const critBonusDMG = 1 + critRate * (critDamage - 1)
@@ -87,7 +84,7 @@ export function calculateDamage(params: CalculateDamageParams): CalculateDamageR
 
   const damageEvent = {
     snapshotId,
-    dealer: character.name,
+    dealer: name,
     target: enemy.name,
     element,
     dmgType,
@@ -95,11 +92,10 @@ export function calculateDamage(params: CalculateDamageParams): CalculateDamageR
     actionName: action.name,
     normalStrike,
     criticalStrike,
-    average,
-    nsDamageEvents
+    average
   }
 
-  console.log("Character Damage: ", average.toFixed(0))
+  console.log("     DAMAGE (", action.name, "): ", average)
   return { average, damageEvent }
 }
 
@@ -127,7 +123,9 @@ export function calculateDamageNegativeStatus(currStacks: number, element: strin
 
   const damage = baseDMG * damageRES
 
-  console.log("Negative Status Damge: ", damage.toFixed(0))
+  console.log("BaseDamage: ", baseDMG)
+  console.log("DamageRes: ", damageRES)
+
   return damage
 }
 

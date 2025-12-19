@@ -1,4 +1,5 @@
 import type { CharacterStats } from "./stats"
+import type { DamageModifier } from "./resolver"
 
 export type Action = {
   name: string
@@ -9,18 +10,37 @@ export type Action = {
   dmgType: "BASIC" | "HEAVY" | "SKILL" | "LIBERATION" | "COORDINATED" | "ECHO" | "INTRO" | "OUTRO"
   cooldown: number
 
-  energyGenerated: Record<string, number>
+  energyGenerated: EnergyGeneration[]
+  energyCost: EnergyCost[]
 
   negativeStatusesApplied: Record<string, number>
   buffsApplied: string[]
   debuffsApplied: string[]
+
+  damageModifiers: DamageModifier[]
 }
 
 export type Character = {
   name: string
   actions: Action[]
-  buffs: string[]
-  debuffs: string[]
-  maxEnergies: Record<string, number>,
+  buffs: string[] // define buffs with damageEffects
+  debuffs: string[] // define debuffs with damageEffects
+  maxEnergies: Partial<Record<EnergyType, number>>;
   stats: CharacterStats
+  damageModifiers: DamageModifier[]
+}
+
+
+export type EnergyType = 'energy' | 'forte' | 'concerto' | 'rage' | 'conviction'
+
+export type EnergyGeneration = {
+  energyType: EnergyType
+  amount: number
+  share: number
+  scalingStat?: string
+}
+
+export type EnergyCost = {
+  energyType: EnergyType
+  amount: number
 }

@@ -1,0 +1,84 @@
+
+:root {
+  /* Colors */
+  --table-text-color: 243, 244, 246;
+
+  /* Shared */
+  --table-overall-corner-radius: 14px;
+  --table-overall-blur: blur(5px);
+  --table-overall-bg-color: 30, 30, 40;
+  --table-overall-bg-transparency: 0.9; 
+  --table-overall-lines-color: 255, 255, 255;
+  --table-overall-lines-transparency: 0.08;
+
+  --table-headers-color: 255, 255, 255;
+  --table-headers-transparency: 0.08;
+
+  /* Icons */
+  --table-icon-size: 35px;
+  --table-icon-top: 0px;
+  --table-icon-bottom: 12px;
+  --table-icon-transparency: 0.95;
+  --table-icon-padding: 2px;
+  --table-icon-shape: 50%;
+  --table-icon-highlight: 0.10;
+  --table-icon-animation-speed: 120ms;
+  --table-icon-box-strength: 0.2;
+  --table-icon-hover-fade-out: 0.8;
+  --table-icon-hover-box-strength: 0.04;
+  --table-icon-hover-size: 1.02;
+  --table-icon-hover-y-jump: -2px;
+  --table-icon-clicked-size: 0.95;
+
+  /* Group Headers */
+  --group-padding-top: 15px;
+  --group-padding-bottom: 12px;
+  --group-text-weight: 625;
+  --group-text-transparency: 0.75;
+  --group-bottom-line-height: 1px;
+  --group-bottom-line-middle-gap: 0px;
+  
+  /* Column Headers */
+  --column-headers-top-space: 12px;
+  --column-headers-text-size: 0.8rem;
+  --column-headers-text-spacing: 0.06em;
+  --column-headers-text-weight: 600;
+  --column-headers-text-transparency: 0.75;
+
+  /* rows */
+  --rows-space-between: 10px;
+  --rows-text-size: 0.875rem;
+  --rows-text-transparency: 1.00;
+  --rows-hover-transparency: 0.12;
+  --rows-hover-color: 255,255,255;
+  --rows-selectors-transparency: 0.08;
+  --rows-selectors-color: 255, 255, 255;
+  --rows-selectors-corner-radius: 6px;
+  --rows-selectors-height: 4px;
+  --rows-selectors-text-left-space: 4px;
+  --rows-selectors-text-size: 0.80rem;
+  --rows-selectors-text-transparency: 1.0;
+  --rows-added-animation-speed: 1s;
+
+}
+
+
+
+
+/* 
+
+
+
+.pageWrapper {
+
+}
+
+.heading {
+
+}
+
+
+
+
+*/
+

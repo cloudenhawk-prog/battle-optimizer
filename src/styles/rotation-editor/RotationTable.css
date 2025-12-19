@@ -1,0 +1,52 @@
+
+/* -------------- Table Wrappers -------------- */
+.tableWrapper {
+  position: relative;
+  overflow-x: visible;
+  border-radius: var(--table-overall-corner-radius);
+
+  background: rgba(var(--table-overall-bg-color), var(--table-overall-bg-transparency));
+  backdrop-filter: var(--table-overall-blur);
+
+  box-shadow:
+    inset 0 1px 1px rgba(var(--table-overall-lines-color), var(--table-overall-lines-transparency)),
+    0 30px 60px rgba(0,0,0,0.6),
+    0 0 40px rgba(255,150,150,var(--table-overall-lines-transparency));
+
+  border: 1px solid rgba(var(--table-overall-lines-color), var(--table-overall-lines-transparency));
+}
+
+.tableWrapper::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  pointer-events: none;
+
+  box-shadow:
+    inset 0 0 0 1px rgba(var(--table-overall-lines-color), var(--table-overall-lines-transparency)),
+    inset 0 0 40px rgba(255,200,200,var(--table-overall-lines-transparency));
+}
+
+/* -------------- Table Behaviour -------------- */
+.tableBase {
+  width: 100%;
+  min-width: 0;
+  table-layout: fixed;
+  border-collapse: collapse;
+  background: transparent;
+  overflow: hidden; 
+  border-radius: inherit;
+}
+
+/* -------------- Table Column Seperators -------------- */
+.charGroupHeader,
+.charGroupBody, .groupHeader {
+  border-left: 1px solid rgba(var(--table-overall-lines-color), var(--table-overall-lines-transparency));
+}
+
+/* -------------- No Effect -------------- */
+
+/* .tableBody {
+  background: transparent;
+} */
