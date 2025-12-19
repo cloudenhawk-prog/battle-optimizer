@@ -1,3 +1,5 @@
+import { Character } from './../../types/character';
+import { negativeStatuses } from './../../data/negativeStatuses';
 import type { Snapshot } from "../../types/snapshot"
 import type { Character } from "../../types/character"
 import { createSnapshot } from "./useSnapshots"
@@ -122,7 +124,7 @@ function updateSnapshotsWithAction(params: {
 
   // // -------- Resolvers --------
 
-  // TEST STEPS 1-3 BEFORE MOVING ON
+  // Create a step that creates references to all the different effects, so each step doesn't need to go through context?
 
   // Step 1: Build the step context
   const context = buildStepContext(index, current, prev, character, action, params.enemy, params.negativeStatusesInAction.current)
@@ -144,19 +146,49 @@ function updateSnapshotsWithAction(params: {
   console.log("Context after resolveDamage: ", context)
   console.log("Snapshot after resolveDamage: ", context.current)
 
-  // Step 5: resolveSideEffectDamage - damage if action triggers aero erosion proc or anything like that
-
-
-  // Step 6: resolveSideEffects - updates buffs, debuffs etc if they are still active or get more stacks
-
-
   // Step 7: resolveNegativeStatuses - handles everything related to negative statuses
-
+    // Procs damage and proceed time - each nsEvent should tell you when the damage technically occured
+  resolveNegativeStatuses(context)
+  console.log("Context after resolveNegativeStatuses: ", context)
+  console.log("Snapshot after resolveNegativeStatuses: ", context.current)
 
   // Step 8: resolveResources - update all types of energies
+    // Needs a new type - that way everything can update energy more dynamically - should also update tables based on this (collect all names and which character it belongs to)
+    // !!! The type should also include whether it shares or not - for example Energy also gives 50 % of the value to allies
+    // !!! The type should also include whether it's affected by Energy %
 
+  resolveResources(context)
 
   // Step 9: freezeSnapshot - updates snapshot, grabs logs/events etc
+    // Does anything else needs to be updated?
+    // Do we need to store logs anywhere?
+    // What about damageEvents and nsDamageEvents?
+
+
+
+
+
+  // SKIP FOR NOW:
+
+  // Step 5: resolveSideEffectDamage - damage if action triggers aero erosion proc or anything like that
+    // Needs a new type, SideEffectDamage - might need to also tell you which stats it scales with (maybe use types so you dont need to type everything - including a standard type that means 'everything')
+
+  // Step 6: resolveSideEffects - updates buffs, debuffs etc if they are still active or get more stacks
+    // Only needs logic, as long as buffs/debuffs have 'duration'
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -195,18 +227,6 @@ function updateSnapshotsWithAction(params: {
 
 
 
-
-
-
-
-
-
-
-
-  // -------- Timeline --------
-  const fromTime = context.fromTime
-  const toTime = context.toTime
-
   // -------- Energy Updates --------
   const energiesPrev = getCharacterEnergyState(prev, current.character!)
   const energiesCurr = getCharacterEnergyState(current, current.character!)
@@ -215,52 +235,6 @@ function updateSnapshotsWithAction(params: {
     if (key in energiesCurr) energiesCurr[key] = updateEnergyValue(energiesPrev[key], generated, maxEnergies[key])
   }
   if (action.name === "Outro" && energiesCurr.concerto !== undefined) energiesCurr.concerto = 0
-
-  // -------- Negative Statuses --------
-  const stacksPrev = getNegativeStatusStacks(prev)
-  const {damages, stacksCurr} = processNegativeStatusStacks(params.negativeStatusesInAction.current, fromTime, toTime, stacksPrev, params.enemy)
-  updateNegativeStatusStacks(current, stacksCurr, action, params.negativeStatusesInAction.current)
-
-  const totalDmgNegativeStatuses = Object.values(damages).flat().reduce((sum, dmg) => sum + dmg, 0)
-
-  console.log("Damages: ", damages)
-  console.log("negativeStatusesInAction: ", params.negativeStatusesInAction)
-
-
-  const nsDamageEvents: NegativeStatusDamageEvent[] = []
-
-  Object.keys(damages).forEach(statusName => {
-    // Find the corresponding entry
-    const statusEntry = params.negativeStatusesInAction.current.find(
-      entry => entry.negativeStatus.name === statusName
-    );
-
-    if (statusEntry) {
-      const element = statusEntry.negativeStatus.element;
-
-      // For each damage value for this status, create an event
-      damages[statusName].forEach(damage => {
-        const event = createNegativeStatusDamageEvent(statusName, element, damage)
-        nsDamageEvents.push(event)
-      })
-    }
-  })
-
-  console.log("nsDamageEvents: ", nsDamageEvents)
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
   // -------- Update snapshot --------
   context.current.action = action.name
@@ -376,7 +350,7 @@ function updateNegativeStatusStacks(snapshot: Snapshot, stacksCurr: Record<strin
     // Update stacks in NegativeStatusInAction
     const statusInAction = negativeStatusesInAction.find(nsa => nsa.negativeStatus.name === name)
     if (statusInAction) {
-      statusInAction.currentStacks = stacksCurr[name];
+      statusInAction.currentStacks = stacksCurr[name]
 
       // If this status is being applied for the first time
       if (statusInAction.applicationTime === -1) {
@@ -657,8 +631,6 @@ function resolveDamageModifiers(ctx: StepContext) {
 // =============================================================================================================================
 
 function resolveDamage(ctx: StepContext, setDamageEvents: Dispatch<SetStateAction<DamageEvent[]>>): void {
-  console.log("   RESOLVING DAMAGE!")
-  console.log("  Stats: ", ctx.characterStats)
   // TODO - error checking
 
   const action = ctx.action
@@ -684,4 +656,71 @@ function resolveDamage(ctx: StepContext, setDamageEvents: Dispatch<SetStateActio
     message: `Damage resolved for snapshot ${snapshotId}: +${average} dmg, cumulative ${cumulativeDamage}`,
     details: { damageEvent }
   })
+}
+
+// =============================================================================================================================
+
+function resolveNegativeStatuses(ctx: StepContext): void {
+  // TODO - error checking
+
+  const prev = ctx.prev
+  const current = ctx.current
+  const negativeStatusesInAction = ctx.negativeStatusesInAction
+  const fromTime = ctx.fromTime
+  const toTime = ctx.toTime
+  const enemy = ctx.enemy
+  const action = ctx.action
+
+  const stacksPrev = getNegativeStatusStacks(prev)
+  const {damages, stacksCurr} = processNegativeStatusStacks(negativeStatusesInAction, fromTime, toTime, stacksPrev, enemy)
+  updateNegativeStatusStacks(current, stacksCurr, action, negativeStatusesInAction)
+
+  const totalDmgNegativeStatuses = Object.values(damages).flat().reduce((sum, dmg) => sum + dmg, 0)
+  current.damage += totalDmgNegativeStatuses
+
+
+  const nsDamageEvents: NegativeStatusDamageEvent[] = []
+  Object.keys(damages).forEach(statusName => {
+    const statusEntry = negativeStatusesInAction.find(
+      entry => entry.negativeStatus.name === statusName
+    )
+
+    if (statusEntry) {
+      const element = statusEntry.negativeStatus.element
+
+      damages[statusName].forEach(damage => {
+        const event = createNegativeStatusDamageEvent(statusName, element, damage)
+        nsDamageEvents.push(event)
+      })
+    }
+  })
+
+  console.log("nsDamageEvents: ", nsDamageEvents)
+  nsDamageEvents.forEach(entry => {
+    console.log("     DAMAGE (", entry.name, "): ", entry.damage)
+  })
+
+  // TODO create a state and use it to update with the new NegativeStatusDamageEvent - make sure they are defined in a way they dont rerender the DOM (also check the normal Damage Events)
+}
+
+// =============================================================================================================================
+
+function resolveResources(ctx: StepContext): void {
+  const prev = ctx.prev
+  const current = ctx.current
+  const character = ctx.character
+  const action = ctx.action
+
+  // Invent new type
+
+  const energiesPrev = getCharacterEnergyState(prev, current.character!)
+  const energiesCurr = getCharacterEnergyState(current, current.character!)
+  const maxEnergies = character.maxEnergies
+  for (const [key, generated] of Object.entries(action.energyGenerated)) {
+    if (key in energiesCurr) energiesCurr[key] = updateEnergyValue(energiesPrev[key], generated, maxEnergies[key])
+  }
+  if (action.name === "Outro" && energiesCurr.concerto !== undefined) energiesCurr.concerto = 0
+
+
+
 }

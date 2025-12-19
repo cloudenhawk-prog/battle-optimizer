@@ -95,6 +95,7 @@ export function calculateDamage(params: CalculateDamageParams): CalculateDamageR
     average
   }
 
+  console.log("     DAMAGE (", action.name, "): ", average)
   return { average, damageEvent }
 }
 
@@ -121,6 +122,9 @@ export function calculateDamageNegativeStatus(currStacks: number, element: strin
   const damageRES = resMultiplier * defenseMultiplier * damageReductionMultiplier * elementalResMultiplier
 
   const damage = baseDMG * damageRES
+
+  console.log("BaseDamage: ", baseDMG)
+  console.log("DamageRes: ", damageRES)
 
   return damage
 }
