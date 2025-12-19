@@ -118,55 +118,17 @@ function updateSnapshotsWithAction(params: {
 
 
 
-  // // -------- Resolvers --------
 
-  // Create a step that creates references to all the different effects, so each step doesn't need to go through context?
+  // TODO: Create a step that creates references to all the different effects, so each step doesn't need to go through context?
 
-  // Step 1: Build the step context
+  // -------- Resolvers -------------------------
   const context = buildStepContext(index, current, prev, character, action, params.enemy, params.negativeStatusesInAction.current, params.charactersMap)
-  console.log("Context START: ", context)
-  console.log("Snapshot START: ", context.current)
 
-  // Step 2: Resolve Time
   resolveTime(context)
-  console.log("Context after resolveTime: ", context)
-  console.log("Snapshot after resolveTime: ", context.current)
 
-  // Step 3: resolveDamageModifiers
   resolveDamageModifiers(context)
-  console.log("Context after resolveDamageModifiers: ", context)
-  console.log("Snapshot after resolveDamageModifiers: ", context.current)
 
-  // Step 4: resolveDamage
   resolveDamage(context, params.setDamageEvents)
-  console.log("Context after resolveDamage: ", context)
-  console.log("Snapshot after resolveDamage: ", context.current)
-
-  // Step 7: resolveNegativeStatuses - handles everything related to negative statuses
-    // Procs damage and proceed time - each nsEvent should tell you when the damage technically occured
-  resolveNegativeStatuses(context)
-  console.log("Context after resolveNegativeStatuses: ", context)
-  console.log("Snapshot after resolveNegativeStatuses: ", context.current)
-
-  // Step 8: resolveResources - update all types of energies
-    // Needs a new type - that way everything can update energy more dynamically - should also update tables based on this (collect all names and which character it belongs to)
-    // !!! The type should also include whether it shares or not - for example Energy also gives 50 % of the value to allies
-    // !!! The type should also include whether it's affected by Energy %
-
-  resolveResources(context)
-  console.log("Context after resolveResources: ", context)
-  console.log("Snapshot after resolveResources: ", context.current)
-
-  // Step 9: freezeSnapshot - updates snapshot, grabs logs/events etc
-    // Does anything else needs to be updated?
-    // Do we need to store logs anywhere?
-    // What about damageEvents and nsDamageEvents?
-
-
-
-
-
-  // SKIP FOR NOW:
 
   // Step 5: resolveSideEffectDamage - damage if action triggers aero erosion proc or anything like that
     // Needs a new type, SideEffectDamage - might need to also tell you which stats it scales with (maybe use types so you dont need to type everything - including a standard type that means 'everything')
@@ -174,45 +136,16 @@ function updateSnapshotsWithAction(params: {
   // Step 6: resolveSideEffects - updates buffs, debuffs etc if they are still active or get more stacks
     // Only needs logic, as long as buffs/debuffs have 'duration'
 
+  resolveNegativeStatuses(context)
 
+  resolveResources(context)
 
+  // Step 9: collectEvents - grabs logs/events etc
+    // Does anything else needs to be updated?
+    // Do we need to store logs anywhere?
+    // What about damageEvents and nsDamageEvents?
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-  // PULL-BASED resolver flow : snapshot already knows the state, so resolvers just need to know which things to pull (data-driven) and handle it generically
-  // DATA-DRIVEN: data should describe behaviour - not endless specific if-else blocks
-
-  // buildStepContext(...): ctx -> collects active effects that will be used by resolvers
-  // resolveTime(ctx) -> just calculates time
-  // resolveActionIntent(ctx) -> just takes info on action etc
-  // resolveDamageModifiers(ctx) -> might find all "damageModifier" targeters and aggregate them
-  // resolveDamage(ctx) -> easy if prev step works
-  // resolveSideEffects(ctx) -> might find all "sideEffect" targeters and process them
-  // resolveSecondaryDamage(ctx) -> easy if prev step works
-  // resolveResources(ctx) -> might find all "resource" targeters and aggregate them
-  // resolveStatuses(ctx) -> might find all "negativeStatus" targeters and aggregate them
-  // freezeSnapshot(ctx) -> updates snapshot, grabs/creates logs etc
-
-
-
-
-
-
-
-  // -------- Update snapshot --------
-  context.current.action = action.name
+  // -------- Update snapshot -------------------
   updatedSnapshots[index] = { ...context.current }
 
   // -------- Create Next Blank Snapshot --------
@@ -466,6 +399,7 @@ function buildStepContext(
 ): StepContext {
   const fromTime = prev.toTime
   const toTime = fromTime + action.castTime
+  current.action = action.name
 
   const allies = []
   for (const [name, char] of Object.entries(characterMap)) {
@@ -691,13 +625,13 @@ function resolveNegativeStatuses(ctx: StepContext): void {
 // =============================================================================================================================
 
 function resolveResources(ctx: StepContext): void {
-  const prev = ctx.prev
+  // TODO - error checking
+
   const current = ctx.current
   const character = ctx.character
   const action = ctx.action
   const allies = ctx.allies
 
-  const energiesPrev = getCharacterEnergyState(prev, current.character!)
   const energiesCurr = getCharacterEnergyState(current, current.character!)
   const maxEnergies = character.maxEnergies
 
@@ -751,3 +685,5 @@ function resolveResources(ctx: StepContext): void {
     energiesCurr.concerto = 0
   }
 }
+
+
