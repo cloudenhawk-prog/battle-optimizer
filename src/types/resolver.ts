@@ -17,8 +17,10 @@ export type StepContext = {
   prev: Snapshot
 
   character: Character
-  action: Action
+  allies: Character[]
   enemy: Enemy
+
+  action: Action
 
   fromTime: number
   toTime: number

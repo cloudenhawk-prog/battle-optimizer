@@ -10,7 +10,8 @@ export type Action = {
   dmgType: "BASIC" | "HEAVY" | "SKILL" | "LIBERATION" | "COORDINATED" | "ECHO" | "INTRO" | "OUTRO"
   cooldown: number
 
-  energyGenerated: Record<string, number>
+  energyGenerated: EnergyGeneration[]
+  energyCost: EnergyCost[]
 
   negativeStatusesApplied: Record<string, number>
   buffsApplied: string[]
@@ -24,7 +25,7 @@ export type Character = {
   actions: Action[]
   buffs: string[] // define buffs with damageEffects
   debuffs: string[] // define debuffs with damageEffects
-  maxEnergies: Record<string, number>,
+  maxEnergies: Partial<Record<EnergyType, number>>;
   stats: CharacterStats
   damageModifiers: DamageModifier[]
 }
@@ -35,5 +36,11 @@ export type EnergyType = 'energy' | 'forte' | 'concerto' | 'rage' | 'conviction'
 export type EnergyGeneration = {
   energyType: EnergyType
   amount: number
-  share: boolean
+  share: number
+  scalingStat?: string
+}
+
+export type EnergyCost = {
+  energyType: EnergyType
+  amount: number
 }

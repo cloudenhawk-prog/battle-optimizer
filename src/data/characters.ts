@@ -14,11 +14,25 @@ export const characters: Character[] =
         element: "FUSION",
         dmgType: "SKILL",
         cooldown: 0,
-        energyGenerated: {
-          energy: 50,
-          concerto: 10,
-          forte: 10
-        },
+        energyGenerated: [
+          {
+            energyType: "energy",
+            amount: 50,
+            share: 0.50,
+            scalingStat: "energyPercent"
+          },
+          {
+            energyType: "concerto",
+            amount: 10,
+            share: 0
+          },
+          {
+            energyType: "forte",
+            amount: 10,
+            share: 0
+          }
+        ],
+        energyCost: [],
         negativeStatusesApplied: {},
         buffsApplied: [],
         debuffsApplied: [],
@@ -32,11 +46,25 @@ export const characters: Character[] =
         element: "GLACIO",
         dmgType: "SKILL",
         cooldown: 5,
-        energyGenerated: {
-          energy: 30,
-          concerto: 20,
-          forte: 30
-        },
+        energyGenerated: [
+          {
+            energyType: "energy",
+            amount: 30,
+            share: 0.50,
+            scalingStat: "energyPercent"
+          },
+          {
+            energyType: "concerto",
+            amount: 20,
+            share: 0
+          },
+          {
+            energyType: "forte",
+            amount: 30,
+            share: 0
+          }
+        ],
+        energyCost: [],
         negativeStatusesApplied: {},
         buffsApplied: [],
         debuffsApplied: [],
@@ -50,11 +78,30 @@ export const characters: Character[] =
         element: "ELECTRO",
         dmgType: "LIBERATION",
         cooldown: 0,
-        energyGenerated: {
-          energy: -100,
-          concerto: 50,
-          forte: 50
-        },
+        energyGenerated: [
+          {
+            energyType: "energy",
+            amount: 25,
+            share: 0.50,
+            scalingStat: "energyPercent"
+          },
+          {
+            energyType: "concerto",
+            amount: 50,
+            share: 0
+          },
+          {
+            energyType: "forte",
+            amount: 50,
+            share: 0
+          }
+        ],
+        energyCost: [
+          {
+            energyType: "energy",
+            amount: 100,
+          }
+        ],
         negativeStatusesApplied: { "Spectro Frazzle": 3 },
         buffsApplied: [],
         debuffsApplied: [],
@@ -68,11 +115,25 @@ export const characters: Character[] =
         element: "FUSION",
         dmgType: "INTRO",
         cooldown: 0,
-        energyGenerated: {
-          energy: 10,
-          concerto: 10,
-          forte: 10
-        },
+        energyGenerated: [
+          {
+            energyType: "energy",
+            amount: 10,
+            share: 0.50,
+            scalingStat: "energyPercent"
+          },
+          {
+            energyType: "concerto",
+            amount: 10,
+            share: 0
+          },
+          {
+            energyType: "forte",
+            amount: 10,
+            share: 0
+          }
+        ],
+        energyCost: [],
         negativeStatusesApplied: {},
         buffsApplied: [],
         debuffsApplied: [],
@@ -86,11 +147,25 @@ export const characters: Character[] =
         element: "FUSION",
         dmgType: "OUTRO",
         cooldown: 0,
-        energyGenerated: {
-          energy: 10,
-          concerto: 0,
-          forte: 10
-        },
+        energyGenerated: [
+          {
+            energyType: "energy",
+            amount: 10,
+            share: 0.50,
+            scalingStat: "energyPercent"
+          },
+          {
+            energyType: "concerto",
+            amount: 0,
+            share: 0
+          },
+          {
+            energyType: "forte",
+            amount: 10,
+            share: 0
+          }
+        ],
+        energyCost: [],
         negativeStatusesApplied: {},
         buffsApplied: [],
         debuffsApplied: [],
@@ -108,40 +183,40 @@ export const characters: Character[] =
       level: 90,
       baseATK: 774,
       flatATK: 100,
-      percentATK: 0.24,
+      percentATK: 1.24,
       baseHP: 14800,
       flatHP: 0,
-      percentHP: 0.00,
+      percentHP: 1.00,
       baseDEF: 611,
       flatDEF: 100,
-      percentDEF: 0.00,
+      percentDEF: 1.00,
       critRate: 0.49,
-      critDamage: 1.70,
-      dmgAmplification: 0.00,
+      critDamage: 2.30,
+      dmgAmplification: 1.00,
       defIgnore: 0.00,
       elementalResPEN: 0.00,
       resistancePEN: 0.00,
-      basicDMG: 0.00,
-      heavyDMG: 0.00,
-      skillDMG: 0.00,
-      liberationDMG: 0.00,
-      coordinatedDMG: 0.00,
-      echoDMG: 0.00,
-      introDMG: 0.00,
-      outroDMG: 0.00,
-      aeroErosionDMG: 0.00,
-      spectroFrazzleDMG: 0.00,
-      havocBaneDMG: 0.00,
-      glacioChafeDMG: 0.00,
-      fusionBurstDMG: 0.00,
-      electroFlareDMG: 0.00,
-      spectro: 0.00,
-      fusion: 0.00,
-      aero: 0.30,
-      glacio: 0.00,
-      electro: 0.00,
-      havoc: 0.00,
-      energyPercent: 0.00
+      basicDMG: 1.00,
+      heavyDMG: 1.00,
+      skillDMG: 1.00,
+      liberationDMG: 1.00,
+      coordinatedDMG: 1.00,
+      echoDMG: 1.00,
+      introDMG: 1.00,
+      outroDMG: 1.00,
+      aeroErosionDMG: 1.00,
+      spectroFrazzleDMG: 1.00,
+      havocBaneDMG: 1.00,
+      glacioChafeDMG: 1.00,
+      fusionBurstDMG: 1.00,
+      electroFlareDMG: 1.00,
+      spectro: 1.00,
+      fusion: 1.00,
+      aero: 1.30,
+      glacio: 1.00,
+      electro: 1.00,
+      havoc: 1.00,
+      energyPercent: 1.0
     },
     damageModifiers: []
   },
@@ -156,11 +231,25 @@ export const characters: Character[] =
         element: "HAVOC",
         dmgType: "BASIC",
         cooldown: 0,
-        energyGenerated: {
-          energy: 20,
-          concerto: 25,
-          forte: 40
-        },
+        energyGenerated: [
+          {
+            energyType: "energy",
+            amount: 20,
+            share: 0.50,
+            scalingStat: "energyPercent"
+          },
+          {
+            energyType: "concerto",
+            amount: 25,
+            share: 0
+          },
+          {
+            energyType: "forte",
+            amount: 40,
+            share: 0
+          }
+        ],
+        energyCost: [],
         negativeStatusesApplied: {},
         buffsApplied: [],
         debuffsApplied: [],
@@ -174,11 +263,24 @@ export const characters: Character[] =
         element: "HAVOC",
         dmgType: "SKILL",
         cooldown: 5,
-        energyGenerated: {
-          energy: 25,
-          concerto: 20,
-          forte: 20
-        },
+        energyGenerated: [
+          {
+            energyType: "energy",
+            amount: 25,
+            share: 0.50
+          },
+          {
+            energyType: "concerto",
+            amount: 20,
+            share: 0
+          },
+          {
+            energyType: "forte",
+            amount: 20,
+            share: 0
+          }
+        ],
+        energyCost: [],
         negativeStatusesApplied: {},
         buffsApplied: [],
         debuffsApplied: [],
@@ -192,11 +294,25 @@ export const characters: Character[] =
         element: "HAVOC",
         dmgType: "INTRO",
         cooldown: 0,
-        energyGenerated: {
-          energy: 10,
-          concerto: 10,
-          forte: 10
-        },
+        energyGenerated: [
+          {
+            energyType: "energy",
+            amount: 10,
+            share: 0.50,
+            scalingStat: "energyPercent"
+          },
+          {
+            energyType: "concerto",
+            amount: 10,
+            share: 0
+          },
+          {
+            energyType: "forte",
+            amount: 10,
+            share: 0
+          }
+        ],
+        energyCost: [],
         negativeStatusesApplied: {},
         buffsApplied: [],
         debuffsApplied: [],
@@ -210,11 +326,25 @@ export const characters: Character[] =
         element: "HAVOC",
         dmgType: "OUTRO",
         cooldown: 0,
-        energyGenerated: {
-          energy: 10,
-          concerto: 0,
-          forte: 10
-        },
+        energyGenerated: [
+          {
+            energyType: "energy",
+            amount: 10,
+            share: 0.50,
+            scalingStat: "energyPercent"
+          },
+          {
+            energyType: "concerto",
+            amount: 0,
+            share: 0
+          },
+          {
+            energyType: "forte",
+            amount: 10,
+            share: 0
+          }
+        ],
+        energyCost: [],
         negativeStatusesApplied: {},
         buffsApplied: [],
         debuffsApplied: [],
@@ -232,40 +362,40 @@ export const characters: Character[] =
       level: 90,
       baseATK: 774,
       flatATK: 100,
-      percentATK: 0.24,
+      percentATK: 1.24,
       baseHP: 14800,
       flatHP: 0,
-      percentHP: 0.00,
+      percentHP: 1.00,
       baseDEF: 611,
       flatDEF: 100,
-      percentDEF: 0.00,
+      percentDEF: 1.00,
       critRate: 0.49,
-      critDamage: 1.70,
-      dmgAmplification: 0.00,
+      critDamage: 2.30,
+      dmgAmplification: 1.00,
       defIgnore: 0.00,
       elementalResPEN: 0.00,
       resistancePEN: 0.00,
-      basicDMG: 0.00,
-      heavyDMG: 0.00,
-      skillDMG: 0.00,
-      liberationDMG: 0.00,
-      coordinatedDMG: 0.00,
-      echoDMG: 0.00,
-      introDMG: 0.00,
-      outroDMG: 0.00,
-      aeroErosionDMG: 0.00,
-      spectroFrazzleDMG: 0.00,
-      havocBaneDMG: 0.00,
-      glacioChafeDMG: 0.00,
-      fusionBurstDMG: 0.00,
-      electroFlareDMG: 0.00,
-      spectro: 0.00,
-      fusion: 0.00,
-      aero: 0.30,
-      glacio: 0.00,
-      electro: 0.00,
-      havoc: 0.00,
-      energyPercent: 0.00
+      basicDMG: 1.00,
+      heavyDMG: 1.00,
+      skillDMG: 1.00,
+      liberationDMG: 1.00,
+      coordinatedDMG: 1.00,
+      echoDMG: 1.00,
+      introDMG: 1.00,
+      outroDMG: 1.00,
+      aeroErosionDMG: 1.00,
+      spectroFrazzleDMG: 1.00,
+      havocBaneDMG: 1.00,
+      glacioChafeDMG: 1.00,
+      fusionBurstDMG: 1.00,
+      electroFlareDMG: 1.00,
+      spectro: 1.00,
+      fusion: 1.00,
+      aero: 1.30,
+      glacio: 1.00,
+      electro: 1.00,
+      havoc: 1.00,
+      energyPercent: 1.0
     },
     damageModifiers: []
   },
@@ -280,19 +410,37 @@ export const characters: Character[] =
         element: "AERO",
         dmgType: "BASIC",
         cooldown: 0,
-        energyGenerated: {
-          energy: 50,
-          concerto: 25,
-          forte: 1,
-          conviction: 50
-        },
+        energyGenerated: [
+          {
+            energyType: "energy",
+            amount: 50,
+            share: 0.50,
+            scalingStat: "energyPercent"
+          },
+          {
+            energyType: "concerto",
+            amount: 25,
+            share: 0
+          },
+          {
+            energyType: "forte",
+            amount: 1,
+            share: 0
+          },
+          {
+            energyType: "conviction",
+            amount: 50,
+            share: 0
+          }
+        ],
+        energyCost: [],
         negativeStatusesApplied: { "Aero Erosion": 1 },
         buffsApplied: [],
         debuffsApplied: [],
         damageModifiers: [
           {
             source: "Fleurdelys Strike – Aero Erosion scaling",
-            condition: stacksOf("Aero Erosion"),
+            condition: stacksOf("Aero Erosion"), //TODO : could set up types and a smart resolver that makes it easier to write conditions in a more intuitive way
             characterStats: {
               multiply: {
                 dmgAmplification: 1.1
@@ -309,12 +457,35 @@ export const characters: Character[] =
         element: "AERO",
         dmgType: "LIBERATION",
         cooldown: 0,
-        energyGenerated: {
-          energy: -100,
-          concerto: 50,
-          forte: 1,
-          rage: 75
-        },
+        energyGenerated: [
+          {
+            energyType: "energy",
+            amount: 10,
+            share: 0.50,
+            scalingStat: "energyPercent"
+          },
+          {
+            energyType: "concerto",
+            amount: 50,
+            share: 0
+          },
+          {
+            energyType: "forte",
+            amount: 1,
+            share: 0
+          },
+          {
+            energyType: "rage",
+            amount: 75,
+            share: 0
+          }
+        ],
+        energyCost: [
+          {
+            energyType: "energy",
+            amount: 100,
+          }
+        ],
         negativeStatusesApplied: {},
         buffsApplied: [],
         debuffsApplied: [],
@@ -328,11 +499,25 @@ export const characters: Character[] =
         element: "AERO",
         dmgType: "INTRO",
         cooldown: 0,
-        energyGenerated: {
-          energy: 10,
-          concerto: 10,
-          forte: 1
-        },
+        energyGenerated: [
+          {
+            energyType: "energy",
+            amount: 10,
+            share: 0.50,
+            scalingStat: "energyPercent"
+          },
+          {
+            energyType: "concerto",
+            amount: 10,
+            share: 0
+          },
+          {
+            energyType: "forte",
+            amount: 1,
+            share: 0
+          }
+        ],
+        energyCost: [],
         negativeStatusesApplied: {},
         buffsApplied: [],
         debuffsApplied: [],
@@ -346,11 +531,25 @@ export const characters: Character[] =
         element: "AERO",
         dmgType: "OUTRO",
         cooldown: 0,
-        energyGenerated: {
-          energy: 10,
-          concerto: 0,
-          forte: 0
-        },
+        energyGenerated: [
+          {
+            energyType: "energy",
+            amount: 10,
+            share: 0.50
+          },
+          {
+            energyType: "concerto",
+            amount: 0,
+            share: 0
+          },
+          {
+            energyType: "forte",
+            amount: 0,
+            share: 0,
+            scalingStat: "energyPercent"
+          }
+        ],
+        energyCost: [],
         negativeStatusesApplied: {},
         buffsApplied: [],
         debuffsApplied: [],
@@ -403,7 +602,7 @@ export const characters: Character[] =
       glacio: 1.00,
       electro: 1.00,
       havoc: 1.00,
-      energyPercent: 1.00
+      energyPercent: 1.50
     },
     damageModifiers: [] // TODO
   },

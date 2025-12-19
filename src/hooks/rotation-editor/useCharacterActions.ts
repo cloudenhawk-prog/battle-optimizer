@@ -1,4 +1,3 @@
-import { Character } from './../../types/character';
 import { negativeStatuses } from './../../data/negativeStatuses';
 import type { Snapshot } from "../../types/snapshot"
 import type { Character } from "../../types/character"
@@ -112,9 +111,6 @@ function updateSnapshotsWithAction(params: {
 
 
 
-
-
-
   console.log("updateSnapshotsWithAction called:")
   console.log(" index: ", index)
   console.log(" current: ", current)
@@ -127,7 +123,7 @@ function updateSnapshotsWithAction(params: {
   // Create a step that creates references to all the different effects, so each step doesn't need to go through context?
 
   // Step 1: Build the step context
-  const context = buildStepContext(index, current, prev, character, action, params.enemy, params.negativeStatusesInAction.current)
+  const context = buildStepContext(index, current, prev, character, action, params.enemy, params.negativeStatusesInAction.current, params.charactersMap)
   console.log("Context START: ", context)
   console.log("Snapshot START: ", context.current)
 
@@ -158,6 +154,8 @@ function updateSnapshotsWithAction(params: {
     // !!! The type should also include whether it's affected by Energy %
 
   resolveResources(context)
+  console.log("Context after resolveResources: ", context)
+  console.log("Snapshot after resolveResources: ", context.current)
 
   // Step 9: freezeSnapshot - updates snapshot, grabs logs/events etc
     // Does anything else needs to be updated?
@@ -212,29 +210,6 @@ function updateSnapshotsWithAction(params: {
 
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-  // -------- Energy Updates --------
-  const energiesPrev = getCharacterEnergyState(prev, current.character!)
-  const energiesCurr = getCharacterEnergyState(current, current.character!)
-  const maxEnergies = character.maxEnergies
-  for (const [key, generated] of Object.entries(action.energyGenerated)) {
-    if (key in energiesCurr) energiesCurr[key] = updateEnergyValue(energiesPrev[key], generated, maxEnergies[key])
-  }
-  if (action.name === "Outro" && energiesCurr.concerto !== undefined) energiesCurr.concerto = 0
 
   // -------- Update snapshot --------
   context.current.action = action.name
@@ -486,10 +461,18 @@ function buildStepContext(
   character: Character,
   action: Action,
   enemy: Enemy,
-  negativeStatusesInAction: NegativeStatusInAction[]
+  negativeStatusesInAction: NegativeStatusInAction[],
+  characterMap: Record<string, Character>
 ): StepContext {
   const fromTime = prev.toTime
   const toTime = fromTime + action.castTime
+
+  const allies = []
+  for (const [name, char] of Object.entries(characterMap)) {
+    if (name !== character.name) {
+      allies.push(char)
+    }
+  }
 
   return {
     snapshotId,
@@ -498,8 +481,10 @@ function buildStepContext(
     prev,
 
     character,
-    action,
+    allies,
     enemy,
+
+    action,
 
     fromTime,
     toTime,
@@ -710,17 +695,59 @@ function resolveResources(ctx: StepContext): void {
   const current = ctx.current
   const character = ctx.character
   const action = ctx.action
-
-  // Invent new type
+  const allies = ctx.allies
 
   const energiesPrev = getCharacterEnergyState(prev, current.character!)
   const energiesCurr = getCharacterEnergyState(current, current.character!)
   const maxEnergies = character.maxEnergies
-  for (const [key, generated] of Object.entries(action.energyGenerated)) {
-    if (key in energiesCurr) energiesCurr[key] = updateEnergyValue(energiesPrev[key], generated, maxEnergies[key])
+
+  // Subtract Energy Cost
+  for (const cost of action.energyCost) {
+    const key = cost.energyType
+    const maxValue = maxEnergies?.[key] ?? Infinity
+    const prevValue = energiesCurr![key] ?? 0
+
+    energiesCurr![key] = updateEnergyValue(prevValue, -cost.amount, maxValue)
   }
-  if (action.name === "Outro" && energiesCurr.concerto !== undefined) energiesCurr.concerto = 0
 
+  // Update Character Energy
+  for (const generated of action.energyGenerated) {
+    const key = generated.energyType
+    const maxValue = maxEnergies?.[key] ?? Infinity
+    let amount = generated.amount
 
+    if (amount > 0 && generated.scalingStat) {
+      const scaling = character.stats?.[generated.scalingStat] ?? 1
+      amount *= scaling
+    }
 
+    const prevValue = energiesCurr![key] ?? 0
+    energiesCurr![key] = updateEnergyValue(prevValue, amount, maxValue)
+  }
+
+  // Update Allies Energy
+  for (const ally of allies) {
+    const allyEnergies = getCharacterEnergyState(current, ally.name)
+    const allyMax = ally.maxEnergies
+
+    for (const generated of action.energyGenerated) {
+      if (generated.share <= 0) continue
+      if (!(generated.energyType in allyMax)) continue
+
+      let allyAmount = generated.amount * generated.share
+      if (allyAmount > 0 && generated.scalingStat) {
+        const scaling = ally.stats?.[generated.scalingStat] ?? 1
+        allyAmount *= scaling
+      }
+
+      const prevValue = allyEnergies![generated.energyType] ?? 0
+      const maxValue = allyMax[generated.energyType] ?? Infinity
+      allyEnergies![generated.energyType] = updateEnergyValue(prevValue, allyAmount, maxValue)
+    }
+  }
+
+  // Handle Outro
+  if (action.name === "Outro" && energiesCurr?.concerto !== undefined) {
+    energiesCurr.concerto = 0
+  }
 }
