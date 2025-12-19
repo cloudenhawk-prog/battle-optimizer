@@ -28,3 +28,12 @@ export type Character = {
   stats: CharacterStats
   damageModifiers: DamageModifier[]
 }
+
+
+export type EnergyType = 'energy' | 'forte' | 'concerto' | 'rage' | 'conviction'
+
+export type EnergyGeneration = {
+  energyType: EnergyType
+  amount: number
+  share: boolean
+}
