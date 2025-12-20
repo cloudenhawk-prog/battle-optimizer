@@ -1,6 +1,5 @@
 import { useState, type ReactNode } from "react"
 import Sidebar from "./sidebar/Sidebar"
-import Topbar from "./topbar/Topbar"
 import SidebarButton from "./sidebar/SidebarButton"
 import "../styles/AppLayout.css"
 
@@ -23,11 +22,9 @@ export default function AppLayout({ children }: AppLayoutProps) {
         onClick={toggleSidebar}
         icon="/assets/circle-icon.svg"
       />
-      <div className="content-column">
-        {/* Topbar */}
-        <Topbar/>
 
-        {/* Main content */}
+      {/* Main content */}
+      <div className="content-column">  
         <main className="main-content">{children}</main>
       </div>
     </div>

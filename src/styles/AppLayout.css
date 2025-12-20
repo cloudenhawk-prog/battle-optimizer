@@ -10,7 +10,7 @@
 
 .main-content {
   flex: 1;
-  padding: var(--content-column-width-free-space);
+  padding: 0 var(--content-column-width-free-space);
   overflow: auto;
   background-color: transparent;
 }

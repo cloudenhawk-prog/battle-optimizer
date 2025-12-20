@@ -1,9 +1,8 @@
 
 .topbarWrapper {
   position: relative;
-  margin: 0 var(--content-column-width-free-space);
   border-radius: 0 0 var(--table-overall-corner-radius) var(--table-overall-corner-radius);
-
+  
   background: rgba(var(--table-overall-bg-color), var(--table-overall-bg-transparency));
   backdrop-filter: var(--table-overall-blur);
 
@@ -18,10 +17,74 @@
 }
 
 .topbarBase {
-  height: 68px;
-  padding: 0 20px;
-  display: flex;
-  align-items: center;
-  gap: 12px;
+  height: 74px;
+  background: linear-gradient(
+    to bottom,
+    rgba(var(--table-headers-color), var(--table-headers-transparency)),
+    rgba(var(--table-headers-color), 0)
+  );
 }
 
+.topbarColoring {
+  width: 100%;
+  height: 100%;
+  background: rgba(var(--table-headers-color), var(--table-headers-transparency));
+  gap: 20px;
+  display: flex;
+}
+
+.topbarColumnButton {
+  width: calc(var(--table-icon-size) + 22px);
+  height: calc(var(--table-icon-size) + 22px);
+  
+  position: relative;
+  top: 10px;
+  left: 100px;
+
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  overflow: hidden;
+
+  background: rgba(var(--table-overall-bg-color), var(--table-overall-bg-transparency));
+  backdrop-filter: var(--table-overall-blur);
+
+  box-shadow:
+    inset 0 1px 1px rgba(var(--table-overall-lines-color), var(--table-overall-lines-transparency)),
+    0 30px 60px rgba(0,0,0,0.6),
+    0 0 40px rgba(255,150,150,var(--table-overall-lines-transparency));
+
+  border: 1px solid rgba(var(--table-overall-lines-color), var(--table-overall-lines-transparency));
+}
+
+.table-icon {
+  width: var(--table-icon-size);
+  height: var(--table-icon-size);
+  display: block;
+  object-fit: contain;
+
+  padding: var(--table-icon-padding);
+  border-radius: var(--table-icon-shape);
+
+  background: rgba(var(--table-headers-color), var(--table-icon-highlight));
+  border: 1px solid rgba(var(--table-overall-lines-color), var(--table-overall-lines-transparency));
+
+  box-shadow:
+    0 4px 10px rgba(0,0,0,0.25),
+    inset 0 1px 0 rgba(255,255,255, var(--table-icon-box-strength));
+
+  cursor: pointer;
+  transition: transform var(--table-icon-animation-speed) ease, box-shadow var(--table-icon-animation-speed) ease, opacity var(--table-icon-animation-speed) ease;
+}
+
+.table-icon:hover, .header-icon:focus {
+  transform: translateY(var(--table-icon-hover-y-jump)) scale(var(--table-icon-hover-size));
+  box-shadow: 0 8px 18px rgba(0,0,0,0.32), inset 0 1px 0 rgba(255,255,255, var(--table-icon-hover-box-strength));
+  opacity: var(--table-icon-hover-fade-out);
+}
+
+.table-icon:active {
+  transform: translateY(0) scale(var(--table-icon-clicked-size));
+}
