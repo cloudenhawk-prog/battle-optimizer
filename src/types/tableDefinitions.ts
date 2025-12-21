@@ -14,7 +14,7 @@ export type TableConfig = {
 
 export type ColumnGroup = {
   label: string
-  icon:string
+  icon: string
   columns: ColumnDef[]
 }
 
@@ -30,3 +30,12 @@ export type ColumnDef = {
 // ========== Type: Columns Visibility =========================================================================================
 
 export type ColumnVisibility = Record<string, boolean>
+
+// ========== Type: Global Columns =============================================================================================
+
+export type GlobalColumns = {
+  basic: string[]
+  buffs: string[]
+  debuffs: string[]
+  negativeStatuses: string[]
+}

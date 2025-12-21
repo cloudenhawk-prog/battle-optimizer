@@ -9,7 +9,8 @@ import type { Character } from "../../types/character"
 import type { Enemy } from "../../types/enemy"
 import type { NegativeStatusInAction } from "../../types/negativeStatus"
 import { calculateDamage } from "../../utils/calculators/damageCalculator"
-import { getNegativeStatusStacks, processNegativeStatusStacks, updateNegativeStatusStacks, createNegativeStatusDamageEvent, getCharacterEnergyState, updateEnergyValue } from "./characterActions"
+import { getNegativeStatusStacks, processNegativeStatusStacks, updateNegativeStatusStacks, createNegativeStatusDamageEvent } from "./negativeStatusHelpers"
+import { getCharacterEnergyState, updateEnergyValue } from "./energyHelpers"
 
 // ========== Resolver 0: Build Step Context ==================================================================================
 
@@ -95,7 +96,6 @@ export function resolveDamageModifiers(ctx: StepContext) {
 
   allModifiers.forEach(modifier => {
     const times = modifier.condition?.(ctx) ?? 1
-    console.log("Modifier:", modifier.source, "times:", times)
     if (times === 0) return
 
     // -------- Character Stats --------

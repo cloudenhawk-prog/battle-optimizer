@@ -1,14 +1,9 @@
 import { useState } from "react"
 import type { Character } from "../../types/character"
-import type { TableConfig } from "../../types/tableDefinitions"
+import type { TableConfig, GlobalColumns } from "../../types/tableDefinitions"
 import type { Snapshot } from "../../types/snapshot"
 
-type GlobalColumns = { // TODO: is it necessary to make a subtype like this of TableConfig?
-  basic: string[]
-  buffs: string[]
-  debuffs: string[]
-  negativeStatuses: string[]
-}
+// ========== Hook: useSnapshots ===============================================================================================
 
 type UseSnapshotsProps = {
   charactersInBattle: Character[]
@@ -17,9 +12,7 @@ type UseSnapshotsProps = {
 
 export function useSnapshots({ charactersInBattle, tableConfig }: UseSnapshotsProps) {
   const charactersMap = Object.fromEntries(charactersInBattle.map(c => [c.name, c]))
-  const characterColumnsMap = Object.fromEntries(
-    charactersInBattle.map(c => [c.name, Object.keys(c.maxEnergies)])
-  )
+  const characterColumnsMap = Object.fromEntries(charactersInBattle.map(c => [c.name, Object.keys(c.maxEnergies)]))
   const globalColumns: GlobalColumns = {
     basic: tableConfig.basic.columns.map(col => col.key),
     buffs: tableConfig.buffs?.columns.map(col => col.key) ?? [],
@@ -32,9 +25,7 @@ export function useSnapshots({ charactersInBattle, tableConfig }: UseSnapshotsPr
   return { snapshots, setSnapshots, createEmptySnapshot }
 }
 
-/* =========================
-   Snapshot Creation Helpers
-   ========================= */
+// ========== Internal Helpers =================================================================================================
 
 function createEmptySnapshot(
   charactersMap: Record<string, Character>,
@@ -55,40 +46,6 @@ function createEmptySnapshot(
 
   return {
     id: "0",
-    character: "",
-    action: "",
-    fromTime: 0,
-    toTime: 0,
-    damage: 0,
-    dps: 0,
-    ...basicValues,
-    charactersEnergies,
-    buffs,
-    debuffs,
-    negativeStatuses,
-  }
-}
-
-export function createSnapshot(
-  previousSnapshot: Snapshot,
-  charactersMap: Record<string, Character>,
-  characterColumnsMap: Record<string, string[]>,
-  globalColumns: GlobalColumns
-): Snapshot {
-  const charactersEnergies = Object.fromEntries(
-    Object.keys(charactersMap).map(charName => [
-      charName,
-      { ...previousSnapshot.charactersEnergies[charName] }
-    ])
-  )
-
-  const basicValues = Object.fromEntries(globalColumns.basic.map(col => [col, 0]))
-  const buffs = Object.fromEntries(globalColumns.buffs.map(col => [col, 0]))
-  const debuffs = Object.fromEntries(globalColumns.debuffs.map(col => [col, 0]))
-  const negativeStatuses = Object.fromEntries(globalColumns.negativeStatuses.map(col => [col, 0]))
-
-  return {
-    id: String(Number(previousSnapshot.id) + 1),
     character: "",
     action: "",
     fromTime: 0,

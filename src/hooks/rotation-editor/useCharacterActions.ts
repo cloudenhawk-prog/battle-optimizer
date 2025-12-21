@@ -4,42 +4,31 @@ import type { Dispatch, SetStateAction } from "react"
 import type { Enemy } from "../../types/enemy"
 import type { DamageEvent } from "../../types/events"
 import type { NegativeStatusInAction } from "../../types/negativeStatus"
+import type { GlobalColumns, TableConfig } from "../../types/tableDefinitions"
 import { useRef } from "react"
-import { getSnapshotIndex, getPrevSnapshot, getCharacter, getActionFromCharacter, copySnapshots, getPrevCharacter, getSnapshotById, getConcertoValue, assignCharacterToRow } from "../../utils/hooks/characterActions"
+import { getCharacter, getPrevCharacter } from "../../utils/hooks/characterHelpers"
+import { getConcertoValue } from "../../utils/hooks/energyHelpers"
+import { getActionFromCharacter } from "../../utils/hooks/actionHelpers"
+import { getSnapshotIndex, getPrevSnapshot, copySnapshots, getSnapshotById, assignCharacterToRow } from "../../utils/hooks/snapshotHelpers"
 import { buildStepContext, resolveTime, resolveDamageModifiers, resolveDamage, resolveNegativeStatuses, resolveResources } from "../../utils/hooks/resolvers"
 import { negativeStatuses as negativeStatusesData } from "../../data/negativeStatuses"
-import { createSnapshot } from "./useSnapshots"
+import { createSnapshot } from "../../utils/hooks/snapshotHelpers"
 
-// ========== useCharacterActions Hook =========================================================================================
-
-type GlobalColumns = {
-  basic: string[]
-  buffs: string[]
-  debuffs: string[]
-  negativeStatuses: string[]
-}
+// ========== Hook: useCharacterActions ========================================================================================
 
 type UseCharacterActionsProps = {
   snapshots: Snapshot[]
   setSnapshots: Dispatch<SetStateAction<Snapshot[]>>
   charactersInBattle: Character[]
   enemy: Enemy
-  tableConfig: {
-    basic: { columns: { key: string }[] }
-    buffs: { columns: { key: string }[] }
-    debuffs: { columns: { key: string }[] }
-    negativeStatuses: { columns: { key: string }[] }
-    characters: { label: string; columns: { key: string }[] }[]
-  }
+  tableConfig: TableConfig
   damageEvents: DamageEvent[]
   setDamageEvents: Dispatch<SetStateAction<DamageEvent[]>>
 }
 
 export function useCharacterActions({ snapshots, setSnapshots, charactersInBattle, enemy, tableConfig, damageEvents, setDamageEvents }: UseCharacterActionsProps) {
   const charactersMap: Record<string, Character> = Object.fromEntries(charactersInBattle.map(c => [c.name, c]))
-  const characterColumnsMap: Record<string, string[]> = Object.fromEntries(
-    tableConfig.characters.map(c => [c.label, c.columns.map(col => col.key.split("_")[1])])
-  )
+  const characterColumnsMap: Record<string, string[]> = Object.fromEntries(tableConfig.characters.map(c => [c.label, c.columns.map(col => col.key.split("_")[1])]))
   const globalColumns: GlobalColumns = {
     basic: tableConfig.basic.columns.map(col => col.key),
     buffs: tableConfig.buffs?.columns.map(col => col.key) ?? [],
@@ -91,7 +80,7 @@ function updateSnapshotsWithAction(params: {
   actionName: string
   charactersMap: Record<string, Character>
   characterColumnsMap: Record<string, string[]>
-  globalColumns: { basic: string[]; buffs: string[]; debuffs: string[]; negativeStatuses: string[] }
+  globalColumns: GlobalColumns
   enemy: Enemy
   damageEvents: DamageEvent[]
   setDamageEvents: Dispatch<SetStateAction<DamageEvent[]>>
@@ -161,7 +150,7 @@ function handleOutroIntroFlow(params: {
   snapshotId: number,
   charactersMap: Record<string, Character>,
   characterColumnsMap: Record<string, string[]>,
-  globalColumns: any,
+  globalColumns: GlobalColumns,
   enemy: Enemy,
   damageEvents: DamageEvent[],
   setDamageEvents: Dispatch<SetStateAction<DamageEvent[]>>,
@@ -198,7 +187,7 @@ function validateActionInputs(params: {
   actionName: string
   charactersMap: Record<string, Character>
   characterColumnsMap: Record<string, string[]>
-  globalColumns: { basic: string[]; buffs: string[]; debuffs: string[]; negativeStatuses: string[] }
+  globalColumns: GlobalColumns
   enemy: Enemy
   negativeStatusesInAction: React.MutableRefObject<NegativeStatusInAction[]>
   damageEvents: DamageEvent[]
