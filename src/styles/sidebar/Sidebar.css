@@ -1,5 +1,6 @@
 :root {
   --sidebar-width: 260px;
+  --sidebar-padding: 16px;
 
   --img-x: -70px;       
   --img-y: -15px;       
@@ -20,17 +21,18 @@
    ======================= */
 .sidebar {
   width: var(--sidebar-width);
-  min-height: calc(95vh + 12px);
   display: flex;
   flex-direction: column;
-  padding: 24px 16px;
+  padding: var(--sidebar-padding);
   position: relative;
   z-index: 10;
   border-radius: 0 8px 8px 0;
-  border: 2px solid rgb(255, 255, 255);
+  border: 1px solid rgb(255, 255, 255);
   border-left: none;
   transition: transform 0.3s ease, background 0.3s ease, all 0.3s ease;
   box-shadow: 8px 0 24px rgba(0, 0, 0, 0.4);
+
+  flex: 0 0 var(--sidebar-width);
 }
 
 /* Sidebar header / logo */

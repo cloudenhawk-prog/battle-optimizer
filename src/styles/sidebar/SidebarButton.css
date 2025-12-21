@@ -30,9 +30,9 @@
 
 /* Collapsed state */
 .sidebar-ghost.collapsed {
-  left: 20px;
-  top: 42px;
-  transform: scale(0.7);
+  left: calc(var(--content-column-width-free-space) + var(--topbar-left-margin) - 2px);
+  top: calc(var(--topbar-circle-top-space) + 1px);
+  transform: scale(0.78);
 }
 
 /* Expanded state */

@@ -1,21 +1,34 @@
+:root {
+  --content-column-width-free-space: 24px;
+}
+
 .app-container {
   display: flex;
-  min-height: 90vh;
+  height: 100vh;
+  width: 100vw;
 }
 
-/* Main content */
 .main-content {
+  flex: 1;
+  padding: 0 var(--content-column-width-free-space);
+  overflow: auto;
+  background-color: transparent;
+}
+
+.content-column {
   flex: 1 1 auto;
-  padding: 20px;
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+
   transition: margin-left 500ms cubic-bezier(.2,.9,.2,1);
-  margin-left: 0; 
+  margin-left: 0;
 }
 
-/* Push main content based on sidebar state */
-.sidebar.expanded ~ .main-content {
-  margin-left: 0px;
+.sidebar.collapsed ~ .content-column {
+  margin-left: calc(-1 * (var(--sidebar-width) + 2 * var(--sidebar-padding)));
 }
 
-.sidebar.collapsed ~ .main-content {
-  margin-left: calc(-1 * (var(--sidebar-width) - var(--icon-size) + 15px));
+.sidebar.expanded ~ .content-column {
+  margin-left: 0;
 }

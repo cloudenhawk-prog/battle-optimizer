@@ -1,6 +1,6 @@
 import "../../styles/rotation-editor/BodyRows.css"
 import type { Character } from "../../types/character"
-import type { ColumnGroup } from "../../types/tableDefinitions"
+import type { ColumnGroup, ColumnVisibility } from "../../types/tableDefinitions"
 import type { Snapshot } from "../../types/snapshot"
 import { buildActionOptions } from "../../utils/optionBuilders"
 
@@ -18,6 +18,8 @@ type BodyRowProps = {
   onSelectAction: (snapshotId: number, actionName: string) => void
   isLastRow?: boolean
   isNewRow?: boolean
+  columnVisibility: ColumnVisibility
+  setColumnVisibility: React.Dispatch<React.SetStateAction<ColumnVisibility>>
 }
 
 export function BodyRow({
@@ -27,11 +29,34 @@ export function BodyRow({
   onSelectCharacter,
   onSelectAction,
   isLastRow = false,
-  isNewRow = false
+  isNewRow = false,
+  columnVisibility,
+  setColumnVisibility
 }: BodyRowProps) {
   const snapshotId = Number(snapshot.id)
   const character = snapshot.character ?? ""
   const action = snapshot.action ?? ""
+
+  function renderBodyColumns(
+    columns: typeof tableConfig.basic.columns,
+    columnVisibility: ColumnVisibility,
+    snapshot: Snapshot,
+    character: string,
+    action: string
+  ) {
+    let firstVisible = true
+    return columns
+      .filter(col => columnVisibility[col.key])
+      .map(col => {
+        const className = firstVisible ? "tableCellBody charGroupBody" : "tableCellBody"
+        firstVisible = false
+        return (
+          <td key={col.key} className={className}>
+            {character && action ? col.render(snapshot) : ""}
+          </td>
+        )
+      })
+  }
 
   return (
     <tr className={`tableBody ${isLastRow ? "lastRowClass" : ""} ${isNewRow ? "rowHighlight" : ""}`}>
@@ -69,41 +94,28 @@ export function BodyRow({
       </td>
 
       {/* Basic columns */}
-      {tableConfig.basic.columns.map(col => (
-        <td key={col.key} className="tableCellBody">
-          {character && action ? col.render(snapshot) : ""}
-        </td>
-      ))}
-
-      {/* Character-specific columns (dynamic energies included) */}
-      {tableConfig.characters.flatMap(group =>
-        group.columns.map((col, idx) => (
-          <td key={col.key} className={`tableCellBody ${idx === 0 ? "charGroupBody" : ""}`}>
+      {tableConfig.basic.columns.map(col => {
+        if (!columnVisibility[col.key]) return null;
+        return (
+          <td key={col.key} className="tableCellBody">
             {character && action ? col.render(snapshot) : ""}
           </td>
-        ))
+        );
+      })}
+
+      {/* Character-specific columns */}
+      {tableConfig.characters.flatMap(group =>
+        renderBodyColumns(group.columns, columnVisibility, snapshot, character, action)
       )}
 
       {/* Negative status columns */}
-      {tableConfig.negativeStatuses?.columns.map((col, idx) => (
-        <td key={col.key} className={`tableCellBody ${idx === 0 ? "charGroupBody" : ""}`}>
-          {character && action ? col.render(snapshot) : ""}
-        </td>
-      ))}
+      {tableConfig.negativeStatuses && renderBodyColumns(tableConfig.negativeStatuses.columns, columnVisibility, snapshot, character, action)}
 
       {/* Buff columns */}
-      {tableConfig.buffs?.columns.map((col, idx) => (
-        <td key={col.key} className={`tableCellBody ${idx === 0 ? "charGroupBody" : ""}`}>
-          {character && action ? col.render(snapshot) : ""}
-        </td>
-      ))}
+      {tableConfig.buffs && renderBodyColumns(tableConfig.buffs.columns, columnVisibility, snapshot, character, action)}
 
       {/* Debuff columns */}
-      {tableConfig.debuffs?.columns.map((col, idx) => (
-        <td key={col.key} className={`tableCellBody ${idx === 0 ? "charGroupBody" : ""}`}>
-          {character && action ? col.render(snapshot) : ""}
-        </td>
-      ))}
+      {tableConfig.debuffs && renderBodyColumns(tableConfig.debuffs.columns, columnVisibility, snapshot, character, action)}
     </tr>
   )
 }

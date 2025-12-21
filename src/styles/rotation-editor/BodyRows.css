@@ -55,6 +55,36 @@ tr.tableBody:hover {
 
 /* -------------- No Effect -------------- */
 
+
+
+
+
+
+
+
+/* .cell-content {
+  transition: opacity 0.25s ease, transform 0.25s ease, max-width 0.25s ease;
+  transform: scaleX(1);
+}
+
+.cell-content.is-hidden {
+  opacity: 0;
+  transform: scaleX(0);
+  max-width: 0;
+  pointer-events: none;
+}
+
+
+ */
+
+
+
+
+
+
+
+
+
 /* tr.tableBody {
   border-bottom: 1px solid rgba(var(--table-overall-lines-color), var(--table-overall-lines-transparencya));
   transition: background 0.2s ease, box-shadow 0.2s ease;

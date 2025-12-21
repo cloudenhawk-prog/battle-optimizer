@@ -24,7 +24,9 @@ export default function AppLayout({ children }: AppLayoutProps) {
       />
 
       {/* Main content */}
-      <main className="main-content">{children}</main>
+      <div className="content-column">  
+        <main className="main-content">{children}</main>
+      </div>
     </div>
   )
 }

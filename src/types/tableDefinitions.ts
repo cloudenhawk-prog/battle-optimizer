@@ -20,3 +20,5 @@ export type ColumnDef = {
   icon: string
   render: (snapshot: Snapshot) => React.ReactNode
 }
+
+export type ColumnVisibility = Record<string, boolean>

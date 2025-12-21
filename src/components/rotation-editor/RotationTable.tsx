@@ -2,7 +2,7 @@ import "../../styles/rotation-editor/RotationTable.css"
 import { useState, useEffect, useRef } from "react"
 import { HeaderRow } from "./HeaderRow"
 import { BodyRow } from "./BodyRows"
-import type { TableConfig } from "../../types/tableDefinitions"
+import type { TableConfig, ColumnVisibility } from "../../types/tableDefinitions"
 import type { Character } from "../../types/character"
 import type { Snapshot } from "../../types/snapshot"
 
@@ -12,6 +12,8 @@ type RotationTableProps = {
   tableConfig: TableConfig
   onSelectCharacter: (snapshotId: number, characterName: string) => void
   onSelectAction: (snapshotId: number, actionName: string) => void
+  columnVisibility: ColumnVisibility
+  setColumnVisibility: React.Dispatch<React.SetStateAction<ColumnVisibility>>
 }
 
 export function RotationTable({
@@ -20,6 +22,8 @@ export function RotationTable({
   tableConfig,
   onSelectCharacter,
   onSelectAction,
+  columnVisibility,
+  setColumnVisibility
 }: RotationTableProps) {
   // TODO: Use util function or helper function? To not make our components ugly?
   // Check and clean up the RotationEditor CSS which makes the animation
@@ -66,7 +70,11 @@ export function RotationTable({
   return (
     <div className="tableWrapper">
       <table className="tableBase">
-        <HeaderRow tableConfig={tableConfig} />
+        <HeaderRow
+        tableConfig={tableConfig}
+        columnVisibility={columnVisibility}
+        setColumnVisibility={setColumnVisibility}
+        />
         <tbody>
           {snapshots.map((snapshot, idx) => (
             <BodyRow
@@ -78,6 +86,8 @@ export function RotationTable({
               onSelectAction={onSelectAction}
               isLastRow={idx === snapshots.length - 1}
               isNewRow={highlightIds.has(Number(snapshot.id))}
+              columnVisibility={columnVisibility}
+              setColumnVisibility={setColumnVisibility}
             />
           ))}
         </tbody>
