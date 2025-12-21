@@ -26,6 +26,8 @@ export default function RotationEditor({ charactersInBattle, enemy, tableConfig,
         tableConfig={tableConfig}
         onSelectCharacter={handleCharacterSelect}
         onSelectAction={handleActionSelect}
+        columnVisibility={columnVisibility}
+        setColumnVisibility={setColumnVisibility}
       />
     </div>
   )

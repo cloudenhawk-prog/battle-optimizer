@@ -8,17 +8,32 @@ type TopbarProps = {
 }
 
 export default function Topbar({ allColumns, columnVisibility, setColumnVisibility }: TopbarProps) {
-  // handle visibility
+  function toggleColumn(key: string) {
+    setColumnVisibility(prev => ({
+      ...prev,
+      [key]: !prev[key],
+    }))
+  }
 
   return (
     <div className="topbarWrapper">
       <div className="topbarBase">
         <div className="topbarColoring">
           {allColumns.map(col => (
-          <button key={col.key} className="topbarColumnButton">
-            <img src={col.icon} alt={col.label} className="table-icon" />
-          </button>
-        ))}
+            <button
+              key={col.key}
+              className={`topbarColumnButton ${
+                columnVisibility[col.key] ? "is-hidden" : "is-visible"
+              }`}
+              onClick={() => toggleColumn(col.key)}
+            >
+              <img
+                src={col.icon}
+                alt={col.label}
+                className="table-icon"
+              />
+            </button>
+          ))}
         </div>
       </div>
     </div>
