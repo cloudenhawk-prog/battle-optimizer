@@ -1,5 +1,7 @@
-import type { ColumnGroup, ColumnDef } from "../../../types/tableDefinitions"
-import type { Snapshot } from "../../../types/snapshot"
+import type { ColumnGroup, ColumnDef } from "../../types/tableDefinitions"
+import type { Snapshot } from "../../types/snapshot"
+
+// ========== Build Basic Column Group =========================================================================================
 
 export function buildBasicColumns(): ColumnGroup {
   const basicColumns: ColumnDef[] = [

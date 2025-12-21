@@ -1,7 +1,9 @@
-import type { EnergyType } from "../types/character"
-import type { Action, Character } from "../types/character"
+import type { EnergyType } from "../../types/baseTypes"
+import type { Action } from "../../types/action"
+import type { Character } from "../../types/character"
 
-// TODO - would be nice if we toggle on/off an "insufficient energy" tooltip on the option (dont change its name though)
+// ========== Build Action Options =============================================================================================
+
 export function buildActionOptions(
   actions: Action[],
   currentAction: string,

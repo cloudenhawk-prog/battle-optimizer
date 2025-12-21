@@ -1,3 +1,5 @@
+/* -------------- Sidebar Button ------------ */
+
 .sidebar-ghost {
   position: absolute;
   left: calc(var(--sidebar-width) / 2 - var(--icon-size) / 2 - 10px);
@@ -28,21 +30,18 @@
               filter var(--animation-duration) ease;
 }
 
-/* Collapsed state */
 .sidebar-ghost.collapsed {
   left: calc(var(--content-column-width-free-space) + var(--topbar-left-margin) - 0px);
   top: calc(var(--topbar-circle-top-space) + 1px);
   transform: scale(0.78);
 }
 
-/* Expanded state */
 .sidebar-ghost.expanded {
   left: calc(var(--sidebar-width) / 2 - var(--icon-size) / 2 + 9px);
   top: var(--icon-y);
   transform: scale(1.1);
 }
 
-/* Hover effect */
 .sidebar-ghost:hover {
   transform: scale(0.85);
   filter: brightness(1.4);

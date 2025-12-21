@@ -1,15 +1,17 @@
-import type { DamageEvent } from "../types/snapshot"
-import type { Action } from "../types/character"
-import type { Enemy } from "../types/enemy"
-import type { CharacterStats } from "../types/stats"
-import { negativeStatuses } from "../data/negativeStatuses"
+import type { DamageEvent } from "../../types/events"
+import type { Action } from "../../types/action"
+import type { Enemy } from "../../types/enemy"
+import type { CharacterStats } from "../../types/stats"
+import { negativeStatuses } from "../../data/negativeStatuses"
+
+// ========== Base Calculator ==================================================================================================
 
 type CalculateDamageParams = {
-  action: Action          // The action being performed
-  name: string            // The name of the character
-  stats: CharacterStats   // The stats of the character at the time of attacking
-  enemy: Enemy            // The target enemy
-  snapshotId: number      // ID of the snapshot (can also be number if you prefer)
+  action: Action
+  name: string
+  stats: CharacterStats
+  enemy: Enemy
+  snapshotId: number
 }
 
 type CalculateDamageResult = {
@@ -17,30 +19,11 @@ type CalculateDamageResult = {
   damageEvent: DamageEvent
 }
 
-
-/**
- * For now this calculator does nothing except return the same damage value.
- *
- * In the future this function may receive:
- * - character stats
- * - damage type (Skill, Heavy, Outro, etc)
- * - enemy defense / resistance
- * - buffs, debuffs, modifiers
- * - character level, weapon, echoes…
- * - timeline context
- * and produce the final damage number.
- */
-export function calculateDamage(params: CalculateDamageParams): CalculateDamageResult {
-  const { action, name, stats, enemy, snapshotId } = params
-  // TODO: based on prev snapshot, apply buffs, debuffs that can affect dmg
-  // TODO: calculate negative status damage and create another damageEvent?
-
+export function calculateDamage({ action, name, stats, enemy, snapshotId }: CalculateDamageParams): CalculateDamageResult {
+  // Scaling Definition
   const scalingStat = action.scaling
   const dmgType = action.dmgType
   const element = action.element
-
-  const enemyStats = enemy.stats
-
   const actionMultiplier = action.multiplier
 
   // Character Stats
@@ -56,6 +39,7 @@ export function calculateDamage(params: CalculateDamageParams): CalculateDamageR
   const elementVal        = stats[element.toLowerCase() as keyof typeof stats]
 
   // Enemy Stats
+  const enemyStats = enemy.stats
   const enLevel = enemyStats.level
   const enElementRES = enemyStats[`${element.toLowerCase()}RES` as keyof typeof enemyStats]
   const enResistance = enemyStats.resistance
@@ -82,7 +66,7 @@ export function calculateDamage(params: CalculateDamageParams): CalculateDamageR
   const criticalStrike  = actionMultiplier * baseDMG * damageRES * bonusDMG * critDamage
   const average         = actionMultiplier * baseDMG * damageRES * bonusDMG * critBonusDMG
 
-  const damageEvent = {
+  const damageEvent: DamageEvent = {
     snapshotId,
     dealer: name,
     target: enemy.name,
@@ -95,12 +79,13 @@ export function calculateDamage(params: CalculateDamageParams): CalculateDamageR
     average
   }
 
-  console.log("     DAMAGE (", action.name, "): ", average)
   return { average, damageEvent }
 }
 
-// Damage affectected by DEF, RES, Damage Reduction (and AERO EROSION dmg boost from Ciaconna)
+// ========== Negative Status Calculator =======================================================================================
+
 export function calculateDamageNegativeStatus(currStacks: number, element: string, enemy: Enemy, name: string): number {
+  const statusIdentifier = Object.entries(negativeStatuses).find(([key, status]) => status.name === name)?.[0]
 
   // Enemy Stats
   const enemyStats = enemy.stats
@@ -111,8 +96,6 @@ export function calculateDamageNegativeStatus(currStacks: number, element: strin
   const damageReduction = enemyStats.damageReduction
 
   // Damage Calculations
-  const statusIdentifier = Object.entries(negativeStatuses).find(([key, status]) => status.name === name)?.[0]
-
   const baseDMG = negativeStatuses[statusIdentifier].damage[currStacks]
 
   const resMultiplier = getResMultiplier(0, res)
@@ -123,11 +106,10 @@ export function calculateDamageNegativeStatus(currStacks: number, element: strin
 
   const damage = baseDMG * damageRES
 
-  console.log("BaseDamage: ", baseDMG)
-  console.log("DamageRes: ", damageRES)
-
   return damage
 }
+
+// ========== Helper Functions =================================================================================================
 
 function getResMultiplier(resistancePEN: number, resistance: number): number {
   const resDiff = resistance - resistancePEN
@@ -143,7 +125,3 @@ function convertLevelToDefense(enLevel: number): number {
 function getDefenseMultiplier(level: number, defense: number, defIgnore: number) {
   return (800 + 8 * level) / (800 + 8 * level  + defense  * (1 - defIgnore))
 }
-
-// When a damage calculator returns damage dealt, the value should be logged: Character / Damage Type / Element / Source / timestamp
-// ... so that we can do statistics, show graphic timeline with "action icons"
-// For negative statuses, it's harder to associate it with a character - might be best to put it as "null" or some default value

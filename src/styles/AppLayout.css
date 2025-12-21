@@ -1,6 +1,10 @@
+/* -------------- App Layout Variables ------ */
+
 :root {
   --content-column-width-free-space: 24px;
 }
+
+/* -------------- NO CLUE -------------- */
 
 .app-container {
   display: flex;

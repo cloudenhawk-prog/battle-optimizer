@@ -1,5 +1,5 @@
-
 /* -------------- Group Header -------------- */
+
 .tableHeader {
   background: linear-gradient(
     to bottom,
@@ -28,7 +28,8 @@
   background-color: rgba(var(--table-overall-lines-color), var(--table-overall-lines-transparency));
 }
 
-/* -------------- Column Header -------------- */
+/* -------------- Column Header ------------- */
+
 .tableCellHeader {
   padding: var(--column-headers-top-space);
   text-align: center;
@@ -43,7 +44,7 @@
   white-space: nowrap;
 }
 
-/* -------------- Icons -------------- */
+/* -------------- Icons --------------------- */
 
 .header-icon {
   width: var(--table-icon-size);    
@@ -77,27 +78,3 @@
 .header-icon:active {
   transform: translateY(0) scale(var(--table-icon-clicked-size));
 }
-
-
-
-/* -------------- No effect -------------- */
-
-
-
-
-/* .header-content {
-  display: inline-flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-} */
-
-/* .header-cell-content {
-  display: inline-flex;
-  flex-direction: column;
-  align-items: center;
-} */
-
-/* .groupHeader .header-content {
-  justify-content: center;
-} */

@@ -1,5 +1,7 @@
 import type { Snapshot } from "./snapshot"
 
+// ========== Type: Table Config ===============================================================================================
+
 export type TableConfig = {
   basic: ColumnGroup
   characters: ColumnGroup[]
@@ -8,11 +10,15 @@ export type TableConfig = {
   debuffs: ColumnGroup | null
 }
 
+// ========== Type: Column Group ===============================================================================================
+
 export type ColumnGroup = {
   label: string
   icon:string
   columns: ColumnDef[]
 }
+
+// ========== Type: Column Def =================================================================================================
 
 export type ColumnDef = {
   key: string
@@ -20,5 +26,7 @@ export type ColumnDef = {
   icon: string
   render: (snapshot: Snapshot) => React.ReactNode
 }
+
+// ========== Type: Columns Visibility =========================================================================================
 
 export type ColumnVisibility = Record<string, boolean>

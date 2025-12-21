@@ -1,9 +1,13 @@
+/* -------------- Topbar Variables ---------- */
+
 :root {
   --topbar-left-margin: 17px;
-  --topbar-height: 74px;
+  --topbar-height: 77px;
   --topbar-gap: 20px;
   --topbar-circle-top-space: 10px;
 }
+
+/* -------------- Topbar -------------------- */
 
 .topbarWrapper {
   position: relative;

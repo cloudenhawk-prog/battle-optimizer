@@ -1,9 +1,9 @@
+/* -------------- Structure ----------------- */
 
-/* -------------- Structure -------------- */
 .tableCellBody {
   padding: var(--rows-space-between);
   font-size: var(--rows-text-size);
-  color: rgba(var(--table-text-color), var(--rows-text-transparency));
+  color: rgba(var(--table-overall-text-color), var(--rows-text-transparency));
 
   text-align: center;
   overflow: hidden;
@@ -11,7 +11,8 @@
   white-space: nowrap;
 }
 
-/* -------------- Effects -------------- */
+/* -------------- Effects ------------------- */
+
 tr.tableBody:hover {
   background: rgba(var(--rows-hover-color),var(--rows-hover-transparency));
   box-shadow: inset 0 0 0 1px rgba(255,180,180,var(--table-overall-lines-transparency));
@@ -34,7 +35,8 @@ tr.tableBody:hover {
   }
 }
 
-/* -------------- Selectors -------------- */
+/* -------------- Selectors ----------------- */
+
 .selectInput {
   background: rgba(var(--rows-selectors-color), var(--rows-selectors-transparency));
   border: 1px solid rgba(var(--table-overall-lines-color), var(--table-overall-lines-transparency));
@@ -42,54 +44,12 @@ tr.tableBody:hover {
   padding: var(--rows-selectors-height) var(--rows-selectors-text-left-space);
 
   font-size: var(--rows-selectors-text-size);
-  color: rgba(var(--table-text-color), var(--rows-selectors-text-transparency));
+  color: rgba(var(--table-overall-text-color), var(--rows-selectors-text-transparency));
 
   box-shadow: inset 0 2px 2px rgba(var(--table-overall-lines-color), var(--table-overall-lines-transparency));
 }
 
 .selectInput option {
-  color: rgba(var(--table-text-color), 1);
+  color: rgba(var(--table-overall-text-color), 1);
   background-color: rgba(var(--table-overall-bg-color), var(--table-overall-bg-transparency));
 }
-
-
-/* -------------- No Effect -------------- */
-
-
-
-
-
-
-
-
-/* .cell-content {
-  transition: opacity 0.25s ease, transform 0.25s ease, max-width 0.25s ease;
-  transform: scaleX(1);
-}
-
-.cell-content.is-hidden {
-  opacity: 0;
-  transform: scaleX(0);
-  max-width: 0;
-  pointer-events: none;
-}
-
-
- */
-
-
-
-
-
-
-
-
-
-/* tr.tableBody {
-  border-bottom: 1px solid rgba(var(--table-overall-lines-color), var(--table-overall-lines-transparencya));
-  transition: background 0.2s ease, box-shadow 0.2s ease;
-}
-
-tr.tableBody:last-child {
-  border-bottom: none;
-} */

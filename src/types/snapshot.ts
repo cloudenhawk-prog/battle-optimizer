@@ -1,5 +1,6 @@
-import type { Action } from "./character"
-import type { EnergyType } from "./character"
+import type { EnergyType } from "./baseTypes"
+
+// ========== Type: Snapshot ===================================================================================================
 
 export interface Snapshot {
   id: string
@@ -13,17 +14,4 @@ export interface Snapshot {
   buffs: Record<string, number>
   debuffs: Record<string, number>
   negativeStatuses: Record<string, number>
-}
-
-export type DamageEvent = {
-  snapshotId: number
-  dealer: string
-  target: string
-  element: Action["element"]
-  dmgType: Action["dmgType"]
-  scaling: Action["scaling"]
-  actionName: string
-  normalStrike: number
-  criticalStrike: number
-  average: number
 }

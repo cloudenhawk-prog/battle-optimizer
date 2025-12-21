@@ -1,7 +1,9 @@
-import type { Character } from "../../../types/character"
-import type { ColumnGroup, ColumnDef } from "../../../types/tableDefinitions"
-import type { Snapshot } from "../../../types/snapshot"
-import { createOptionalGroup } from "../../../utils/tableBuilders"
+import type { Character } from "../../types/character"
+import type { ColumnGroup, ColumnDef } from "../../types/tableDefinitions"
+import type { Snapshot } from "../../types/snapshot"
+import { createOptionalGroup } from "./helpers"
+
+// ========== Build Negative Statuses Column Group =============================================================================
 
 export function buildNegativeStatusColumns(selectedCharacters: Character[]): ColumnGroup | null {
   const activeStatuses = Array.from(

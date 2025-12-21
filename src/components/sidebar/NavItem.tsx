@@ -2,6 +2,8 @@ import { Link } from "react-router-dom"
 import React from "react"
 import "../../styles/sidebar/NavItem.css"
 
+// ========== Component: Nav Item ==============================================================================================
+
 interface NavItemProps {
   path: string
   label: string

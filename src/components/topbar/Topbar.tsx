@@ -2,6 +2,8 @@ import "../../styles/topbar/Topbar.css"
 import type { ColumnVisibility, ColumnDef, TableConfig, ColumnGroup } from "../../types/tableDefinitions"
 import React from "react"
 
+// ========== Component: Topbar ================================================================================================
+
 type TopbarProps = {
   tableConfig: TableConfig
   allColumns: ColumnDef[]
@@ -16,17 +18,6 @@ export default function Topbar({ tableConfig, columnVisibility, setColumnVisibil
       [key]: !prev[key],
     }))
   }
-
-  const renderGroupButtons = (group: ColumnGroup) =>
-    group.columns.map(col => (
-      <button
-        key={col.key}
-        className={`topbarColumnButton ${columnVisibility[col.key] ? "is-hidden" : "is-visible"}`}
-        onClick={() => toggleColumn(col.key)}
-      >
-        <img src={col.icon} alt={col.label} className="table-icon" />
-      </button>
-    ))
 
   const groups: ColumnGroup[] = [
     tableConfig.basic,
@@ -48,7 +39,7 @@ export default function Topbar({ tableConfig, columnVisibility, setColumnVisibil
             <React.Fragment key={group.label}>
               {idx === 0 && <div className="topbarSeparator" />}
 
-              {renderGroupButtons(group)}
+              {renderGroupButtons(group, columnVisibility, toggleColumn)}
 
               {idx < groups.length - 1 && <div className="topbarSeparator" />}
 
@@ -59,4 +50,22 @@ export default function Topbar({ tableConfig, columnVisibility, setColumnVisibil
       </div>
     </div>
   )
+}
+
+// ========== Helper Functions =================================================================================================
+
+function renderGroupButtons(
+  group: ColumnGroup,
+  columnVisibility: ColumnVisibility,
+  toggleColumn: (key: string) => void
+) {
+  return group.columns.map(col => (
+    <button
+      key={col.key}
+      className={`topbarColumnButton ${columnVisibility[col.key] ? "is-hidden" : "is-visible"}`}
+      onClick={() => toggleColumn(col.key)}
+    >
+      <img src={col.icon} alt={col.label} className="table-icon" />
+    </button>
+  ))
 }

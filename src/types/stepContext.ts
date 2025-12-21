@@ -1,14 +1,11 @@
 import type { Snapshot } from "./snapshot"
-import type { Character, Action } from "./character"
+import type { Character } from "./character"
+import type { Action } from "./action"
 import type { Enemy } from "./enemy"
 import type { CharacterStats, EnemyStats } from "./stats"
 import type { NegativeStatusInAction } from "./negativeStatus"
 
-export type StepLog = {
-  resolver: string
-  message: string
-  details?: any
-}
+// ========== Type: Step Context ===============================================================================================
 
 export type StepContext = {
   snapshotId: number
@@ -36,15 +33,10 @@ export type StepContext = {
   logs: StepLog[]
 }
 
-export type DamageModifier = {
-  characterStats?: {
-    add?: Partial<CharacterStats>
-    multiply?: Partial<CharacterStats>
-  }
-  enemyStats?: {
-    add?: Partial<EnemyStats>
-    multiply?: Partial<EnemyStats>
-  }
-  condition?: (ctx: StepContext) => number
-  source: string
+// ========== Type: Step Log ===================================================================================================
+
+export type StepLog = {
+  resolver: string
+  message: string
+  details?: any
 }

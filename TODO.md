@@ -1,9 +1,22 @@
 
+TODO:
+
+Task:    Implement rows on-click overlay data breakdown
+Context: Right now damageEvents are passed to the component RotationEditor.tsx These can be passed to the RotationTable if it needs them for future features
+
+Task:    Damage Events should have type -> action, action-side-effect, negative-status such that we can put them together 
+Context: Right now damage events only includes events from actions. We do not want a seperate event list for every type of damage event. Sorted by ID, these can be used by rows on-click overlay
+
+Task:    Implement tests for all reasonably-testable functions
+Context: Right now we aren't performing any tests other than an outdated DamageCalculator.test.ts. It would be best if all functions in hooks and utils are tested
+
+Task:    Implement toggler to active/deactive the Selector Check on skill cost requrements (no need to update resolver, it's useful to see if energy becomes negative)
+Context: Right now energy stops characters from using actions if the requirement is not met. It would be nice with a toggle option that let's you bypass this
 
 
-Consider
-useTheme
-useMemo
+
+
+
 
 
 

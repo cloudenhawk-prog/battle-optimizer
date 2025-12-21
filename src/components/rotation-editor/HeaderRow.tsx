@@ -1,25 +1,12 @@
 import "../../styles/rotation-editor/HeaderRow.css"
 import type { TableConfig, ColumnVisibility } from "../../types/tableDefinitions"
-import { useState } from "react"
+
+// ========== Component: Header Row ============================================================================================
 
 type HeaderRowProps = {
   tableConfig: TableConfig
   columnVisibility: ColumnVisibility
   setColumnVisibility: React.Dispatch<React.SetStateAction<ColumnVisibility>>
-}
-
-function IconRenderer({ icon, alt }: { icon?: string; alt?: string }) {
-  if (!icon) return null
-  return <img src={icon} alt={alt ?? ""} className="header-icon" />
-}
-
-function HeaderContent({ label, icon }: { label: string; icon?: string }) {
-  return (
-    <div className="header-content">
-      <IconRenderer icon={icon} alt={label} />
-      <span>{label}</span>
-    </div>
-  )
 }
 
 export function HeaderRow({ tableConfig, columnVisibility, setColumnVisibility }: HeaderRowProps) {
@@ -169,3 +156,18 @@ export function HeaderRow({ tableConfig, columnVisibility, setColumnVisibility }
   )
 }
 
+// ========== Helper Components ================================================================================================
+
+function IconRenderer({ icon, alt }: { icon?: string; alt?: string }) {
+  if (!icon) return null
+  return <img src={icon} alt={alt ?? ""} className="header-icon" />
+}
+
+function HeaderContent({ label, icon }: { label: string; icon?: string }) {
+  return (
+    <div className="header-content">
+      <IconRenderer icon={icon} alt={label} />
+      <span>{label}</span>
+    </div>
+  )
+}
