@@ -6,6 +6,8 @@ import AnalyticsPage from "./pages/AnalyticsPage"
 import SettingsPage from "./pages/SettingsPage"
 import NotFoundPage from "./pages/NotFoundPage"
 
+// ========== Component: App ===================================================================================================
+
 export default function App() {
   return (
     <AppLayout>

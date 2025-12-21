@@ -2,6 +2,8 @@ import { useLocation } from "react-router-dom"
 import NavItem from "./NavItem"
 import "../../styles/sidebar/Sidebar.css"
 
+// ========== Component: Sidebar ===============================================================================================
+
 interface SidebarProps {
   collapsed: boolean
 }
@@ -18,15 +20,14 @@ export default function Sidebar({ collapsed }: SidebarProps) {
 
   return (
     <aside className={`sidebar ${collapsed ? "collapsed" : "expanded"}`}>
-      {/* Top section / future image */}
+      {/* Top Image */}
       <div className="sidebar-top" />
 
-      {/* Horizontal lines (no button here) */}
+      {/* Horizontal lines */}
       <span className="line line-left" />
       <span className="line line-right" />
 
-
-      {/* Navigation */}
+      {/* Navigation Items */}
       <nav className="nav">
         {navItems.map((item) => (
           <NavItem

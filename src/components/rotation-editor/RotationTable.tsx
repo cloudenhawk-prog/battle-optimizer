@@ -6,6 +6,8 @@ import type { TableConfig, ColumnVisibility } from "../../types/tableDefinitions
 import type { Character } from "../../types/character"
 import type { Snapshot } from "../../types/snapshot"
 
+// ========== Component: Rotation Table ========================================================================================
+
 type RotationTableProps = {
   snapshots: Array<Snapshot>
   charactersInBattle: Character[]
@@ -16,47 +18,14 @@ type RotationTableProps = {
   setColumnVisibility: React.Dispatch<React.SetStateAction<ColumnVisibility>>
 }
 
-export function RotationTable({
-  snapshots,
-  charactersInBattle,
-  tableConfig,
-  onSelectCharacter,
-  onSelectAction,
-  columnVisibility,
-  setColumnVisibility
-}: RotationTableProps) {
-  // TODO: Use util function or helper function? To not make our components ugly?
-  // Check and clean up the RotationEditor CSS which makes the animation
-  // Check and clean up BodyRows in case our new implementation is ugly - although it SHOULD just be a new prop and classname?
-
+export function RotationTable({ snapshots, charactersInBattle, tableConfig, onSelectCharacter, onSelectAction, columnVisibility, setColumnVisibility }: RotationTableProps) {
   const [highlightIds, setHighlightIds] = useState<Set<number>>(new Set())
   const lastMaxId = useRef(0)
 
-  // Highlight latest rows
   useEffect(() => {
-    if (!snapshots.length) return
+    const idsToHighlight = getHighlightIds(snapshots, lastMaxId)
 
-    const currentMaxId = Math.max(...snapshots.map(s => Number(s.id)))
-    if (currentMaxId <= lastMaxId.current) {
-      lastMaxId.current = currentMaxId
-      return
-    }
-    lastMaxId.current = currentMaxId
-
-    const last4 = snapshots.slice(-4)
-    const idsToHighlight: number[] = []
-
-    if (last4.length >= 2) {
-      idsToHighlight.push(Number(last4[last4.length - 2].id))
-    }
-
-    const outroRow = [...last4].reverse().find(s => s.action === "Outro")
-    const introRow = [...last4].reverse().find(s => s.action === "Intro")
-
-    if (outroRow && introRow) {
-      idsToHighlight.push(Number(outroRow.id))
-      idsToHighlight.push(Number(introRow.id))
-    }
+    if (!idsToHighlight.length) return
 
     const asyncSet = setTimeout(() => setHighlightIds(new Set(idsToHighlight)), 0)
     const clearHighlight = setTimeout(() => setHighlightIds(new Set()), 1500)
@@ -87,11 +56,41 @@ export function RotationTable({
               isLastRow={idx === snapshots.length - 1}
               isNewRow={highlightIds.has(Number(snapshot.id))}
               columnVisibility={columnVisibility}
-              setColumnVisibility={setColumnVisibility}
             />
           ))}
         </tbody>
       </table>
     </div>
   )
+}
+
+// ========== Helper Functions =================================================================================================
+
+function getHighlightIds(snapshots: Snapshot[], lastMaxId: React.MutableRefObject<number>): number[] {
+  if (!snapshots.length) return []
+
+  const currentMaxId = Math.max(...snapshots.map(s => Number(s.id)))
+  if (currentMaxId <= lastMaxId.current) {
+    lastMaxId.current = currentMaxId
+    return []
+  }
+  lastMaxId.current = currentMaxId
+
+  const last4 = snapshots.slice(-4)
+  const idsToHighlight: number[] = []
+
+  if (last4.length >= 2) {
+    idsToHighlight.push(Number(last4[last4.length - 2].id))
+  }
+
+  const reversed = [...last4].reverse()
+  const outroRow = reversed.find(s => s.action === "Outro")
+  const introRow = reversed.find(s => s.action === "Intro")
+
+  if (outroRow && introRow) {
+    idsToHighlight.push(Number(outroRow.id))
+    idsToHighlight.push(Number(introRow.id))
+  }
+
+  return idsToHighlight
 }

@@ -1,62 +1,26 @@
 import "../../styles/rotation-editor/BodyRows.css"
 import type { Character } from "../../types/character"
-import type { ColumnGroup, ColumnVisibility } from "../../types/tableDefinitions"
+import type { ColumnDef, TableConfig, ColumnVisibility } from "../../types/tableDefinitions"
 import type { Snapshot } from "../../types/snapshot"
-import { buildActionOptions } from "../../utils/optionBuilders"
+import { buildActionOptions } from "../../utils/selectors/selectorHelpers"
+
+// ========== Component: Body Row ==============================================================================================
 
 type BodyRowProps = {
   snapshot: Snapshot
   charactersInBattle: Character[]
-  tableConfig: {
-    basic: ColumnGroup
-    characters: ColumnGroup[]
-    negativeStatuses: ColumnGroup
-    buffs: ColumnGroup
-    debuffs: ColumnGroup
-  }
+  tableConfig: TableConfig
   onSelectCharacter: (snapshotId: number, characterName: string) => void
   onSelectAction: (snapshotId: number, actionName: string) => void
   isLastRow?: boolean
   isNewRow?: boolean
   columnVisibility: ColumnVisibility
-  setColumnVisibility: React.Dispatch<React.SetStateAction<ColumnVisibility>>
 }
 
-export function BodyRow({
-  snapshot,
-  charactersInBattle,
-  tableConfig,
-  onSelectCharacter,
-  onSelectAction,
-  isLastRow = false,
-  isNewRow = false,
-  columnVisibility,
-  setColumnVisibility
-}: BodyRowProps) {
+export function BodyRow({ snapshot, charactersInBattle, tableConfig, onSelectCharacter, onSelectAction, isLastRow = false, isNewRow = false, columnVisibility }: BodyRowProps) {
   const snapshotId = Number(snapshot.id)
   const character = snapshot.character ?? ""
   const action = snapshot.action ?? ""
-
-  function renderBodyColumns(
-    columns: typeof tableConfig.basic.columns,
-    columnVisibility: ColumnVisibility,
-    snapshot: Snapshot,
-    character: string,
-    action: string
-  ) {
-    let firstVisible = true
-    return columns
-      .filter(col => columnVisibility[col.key])
-      .map(col => {
-        const className = firstVisible ? "tableCellBody charGroupBody" : "tableCellBody"
-        firstVisible = false
-        return (
-          <td key={col.key} className={className}>
-            {character && action ? col.render(snapshot) : ""}
-          </td>
-        )
-      })
-  }
 
   return (
     <tr className={`tableBody ${isLastRow ? "lastRowClass" : ""} ${isNewRow ? "rowHighlight" : ""}`}>
@@ -118,4 +82,27 @@ export function BodyRow({
       {tableConfig.debuffs && renderBodyColumns(tableConfig.debuffs.columns, columnVisibility, snapshot, character, action)}
     </tr>
   )
+}
+
+// ========== Helper Functions =================================================================================================
+
+function renderBodyColumns(
+  columns: ColumnDef[],
+  columnVisibility: ColumnVisibility,
+  snapshot: Snapshot,
+  character: string,
+  action: string
+) {
+  let firstVisible = true
+  return columns
+    .filter(col => columnVisibility[col.key])
+    .map(col => {
+      const className = firstVisible ? "tableCellBody charGroupBody" : "tableCellBody"
+      firstVisible = false
+      return (
+        <td key={col.key} className={className}>
+          {character && action ? col.render(snapshot) : ""}
+        </td>
+      )
+    })
 }

@@ -1,3 +1,4 @@
+// ========== Type: Character Stats ============================================================================================
 
 export type CharacterStats = {
   level: number
@@ -47,6 +48,8 @@ export type CharacterStats = {
 
   energyPercent: number
 }
+
+// ========== Type: Enemy Stats ================================================================================================
 
 export type EnemyStats = {
   level: number

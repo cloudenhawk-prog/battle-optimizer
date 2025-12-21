@@ -1,3 +1,5 @@
+/* -------------- Nav Items ----------------- */
+
 .nav-item {
   display: flex;
   align-items: center;
@@ -23,14 +25,12 @@
   color: #fff;
 }
 
-/* When the sidebar is collapsed, labels are hidden */
 .nav-item.collapsed .label {
   opacity: 0;
   transform: translateX(-6px);
   pointer-events: none;
 }
 
-/* Hover effect */
 .nav-item:hover {
   background: rgba(255, 255, 255, 0.08);
   transform: translateX(2px);

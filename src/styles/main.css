@@ -1,22 +1,14 @@
-@tailwind base;
-@tailwind components;
-@tailwind utilities;
+/* -------------- Main Wrapper -------------- */
 
-/* =======================
-   Reset & Base Styles
-   ======================= */
 html, body, #root {
   margin: 0;
   padding: 0;
   height: 100%;
   width: 100%;
   font-family: 'Segoe UI', Roboto, sans-serif;
-  /* ensure a dark page background so collapsed sidebar doesn't reveal white */
   background-color: rgba(34, 35, 39);
   background-image: url('/assets/background1.jpg');
   background-repeat: no-repeat;
   background-size: cover;
   background-position: center;
 }
-
-

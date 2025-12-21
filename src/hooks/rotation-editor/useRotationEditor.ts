@@ -1,11 +1,12 @@
 import { useSnapshots } from "./useSnapshots"
 import { useCharacterActions } from "./useCharacterActions"
-import { useTableUpdates } from "./useTableUpdates"
 import type { Character } from "../../types/character"
 import type { TableConfig } from "../../types/tableDefinitions"
 import type { Enemy } from "../../types/enemy"
-import type { DamageEvent } from "../../types/snapshot"
+import type { DamageEvent } from "../../types/events"
 import { useState } from "react"
+
+// ========== Hook: useRotationEditor ==========================================================================================
 
 type UseRotationEditorProps = {
   charactersInBattle: Character[]
@@ -17,13 +18,12 @@ export function useRotationEditor({ charactersInBattle, tableConfig, enemy }: Us
   const [damageEvents, setDamageEvents] = useState<DamageEvent[]>([])
   const { snapshots, setSnapshots } = useSnapshots({ charactersInBattle, tableConfig })
   const { handleCharacterSelect, handleActionSelect } = useCharacterActions({ snapshots, setSnapshots, charactersInBattle, enemy, tableConfig, damageEvents, setDamageEvents })
-  const { tableConfigWithRenderers } = useTableUpdates(snapshots, tableConfig) // TODO: we dont use this yet for anything - just a skeleton. Ask LLM/GPT about possible future uses
 
   return {
     snapshots,
     damageEvents,
     handleCharacterSelect,
     handleActionSelect,
-    tableConfig: tableConfigWithRenderers,
+    tableConfig
   }
 }

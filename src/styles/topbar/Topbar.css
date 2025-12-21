@@ -1,9 +1,13 @@
+/* -------------- Topbar Variables ---------- */
+
 :root {
   --topbar-left-margin: 17px;
-  --topbar-height: 74px;
+  --topbar-height: 77px;
   --topbar-gap: 20px;
   --topbar-circle-top-space: 10px;
 }
+
+/* -------------- Topbar -------------------- */
 
 .topbarWrapper {
   position: relative;
@@ -29,6 +33,11 @@
     rgba(var(--table-headers-color), var(--table-headers-transparency)),
     rgba(var(--table-headers-color), 0)
   );
+  border-left: 1px solid rgba(var(--table-overall-lines-color), var(--table-overall-lines-transparency));
+  border-right: 1px solid rgba(var(--table-overall-lines-color), var(--table-overall-lines-transparency));
+  border-bottom: 1px solid rgba(var(--table-overall-lines-color), var(--table-overall-lines-transparency));
+
+  border-radius: 0 0 var(--table-overall-corner-radius) var(--table-overall-corner-radius);
 }
 
 .topbarColoring {
@@ -37,6 +46,11 @@
   background: rgba(var(--table-headers-color), var(--table-headers-transparency));
   gap: var(--topbar-gap);
   display: flex;
+  border-left: 1px solid rgba(var(--table-overall-lines-color), var(--table-overall-lines-transparency));
+  border-right: 1px solid rgba(var(--table-overall-lines-color), var(--table-overall-lines-transparency));
+  border-bottom: 1px solid rgba(var(--table-overall-lines-color), var(--table-overall-lines-transparency));
+
+  border-radius: 0 0 var(--table-overall-corner-radius) var(--table-overall-corner-radius);
 }
 
 .topbarColumnButton {

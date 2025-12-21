@@ -1,24 +1,22 @@
-import type { DamageModifier } from "./resolver"
-import type { Action } from "./character"
+import type { DamageModifier } from "./modifiers"
+import type { ElementType } from "./baseTypes"
 
-type NegativeStatus = {
+// ========== Type: Negative Status ============================================================================================
+
+export type NegativeStatus = {
     name: string
     duration: number
     maxStacksDefault: number,
     frequency: number,
     damage: Record<number, number>,
-    element: "AERO" | "SPECTRO" | "HAVOC" | "GLACIO" | "FUSION" | "ELECTRO",
+    element: ElementType,
     reductionStrategy: ReductionStrategy,
     damageModifiers: DamageModifier[]
 }
 
-type ReductionStrategy = {
-    stackConsumption: number,
-    triggerDmgOnReduction: boolean,
-    resetTimerOnApplication: boolean,
-}
+// ========== Type: Negative Status In Action ==================================================================================
 
-type NegativeStatusInAction = {
+export type NegativeStatusInAction = {
   negativeStatus: NegativeStatus,
   applicationTime: number,
   timeLeft: number,
@@ -26,10 +24,10 @@ type NegativeStatusInAction = {
   lastDamageTime: number,
 }
 
-type NegativeStatusDamageEvent = {
-  name: string,
-  element: Action["element"],
-  damage: number
-}
+// ========== Type: Reduction Strategy =========================================================================================
 
-export type { NegativeStatus, ReductionStrategy, NegativeStatusInAction, NegativeStatusDamageEvent }
+export type ReductionStrategy = {
+    stackConsumption: number,
+    triggerDmgOnReduction: boolean,
+    resetTimerOnApplication: boolean,
+}

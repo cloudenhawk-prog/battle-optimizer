@@ -1,5 +1,5 @@
+/* -------------- Table Wrappers ------------ */
 
-/* -------------- Table Wrappers -------------- */
 .tableWrapper {
   position: relative;
   overflow-x: visible;
@@ -28,7 +28,8 @@
     inset 0 0 40px rgba(255,200,200,var(--table-overall-lines-transparency));
 }
 
-/* -------------- Table Behaviour -------------- */
+/* -------------- Table Behaviour ----------- */
+
 .tableBase {
   width: 100%;
   min-width: 0;
@@ -39,14 +40,9 @@
   border-radius: inherit;
 }
 
-/* -------------- Table Column Seperators -------------- */
+/* -------------- Table Column Seperators --- */
+
 .charGroupHeader,
 .charGroupBody, .groupHeader {
   border-left: 1px solid rgba(var(--table-overall-lines-color), var(--table-overall-lines-transparency));
 }
-
-/* -------------- No Effect -------------- */
-
-/* .tableBody {
-  background: transparent;
-} */

@@ -3,6 +3,8 @@ import Sidebar from "./sidebar/Sidebar"
 import SidebarButton from "./sidebar/SidebarButton"
 import "../styles/AppLayout.css"
 
+// ========== Component: App Layout ============================================================================================
+
 interface AppLayoutProps {
   children: ReactNode
 }

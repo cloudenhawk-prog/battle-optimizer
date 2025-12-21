@@ -1,8 +1,6 @@
+/* -------------- Table Variables ----------- */
 
 :root {
-  /* Colors */
-  --table-text-color: 243, 244, 246;
-
   /* Shared */
   --table-overall-corner-radius: 14px;
   --table-overall-blur: blur(5px);
@@ -13,6 +11,8 @@
 
   --table-headers-color: 255, 255, 255;
   --table-headers-transparency: 0.08;
+
+  --table-overall-text-color: 243, 244, 246;
 
   /* Icons */
   --table-icon-size: 35px;

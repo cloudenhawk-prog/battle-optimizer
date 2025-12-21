@@ -1,5 +1,6 @@
-import React from "react"
 import "../../styles/sidebar/SidebarButton.css"
+
+// ========== Component: Sidebar Button ========================================================================================
 
 interface SidebarButtonProps {
   collapsed: boolean
