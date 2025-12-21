@@ -13,8 +13,23 @@ Context: Right now we aren't performing any tests other than an outdated DamageC
 Task:    Implement toggler to active/deactive the Selector Check on skill cost requrements (no need to update resolver, it's useful to see if energy becomes negative)
 Context: Right now energy stops characters from using actions if the requirement is not met. It would be nice with a toggle option that let's you bypass this
 
+Task:    Implement more icon/button logic, split it into multiple css classes for different kinds
+Context: Right now you can hide/unhide columns with button presses. Make certain icons non-clickable/no animation like Character/Action. Make group headers hide all columns under the group at once.
 
+Task:    Implement coordinated attacks
+Context: Coordinated attacks could work similar to negative statuses but have its own section (perhaps actually called DoT)
 
+Task:    Implement source tracking on missing things
+Context: Right now we can apply negative statuses (and buffs/Debuffs/coordinated attacks). We need to make sure that we can track the source - who applied them? Since they may count towards tracking the damage contribution of each character
+
+Task:    Implement a step in the useCharacterActions hook that creates references to all different effects before the first resolver
+Context: Right now the resolvers are doing A LOT of work with context but run-time isn't an issue. Later it might be useful to only have to iterate the context/snapshots once and directly collect and distribute all the effects and modifiers needed in future resolvers
+
+Task:    Implement custom/dynamic outro trigger conditions
+Context: Right now the outro-intro flow is hardcoded using 100 Concerto energy. It might be useful to make this function more dynamically by letting each character define a custom outro-intro trigger condition
+
+Task:    Implement dispatchable effects so damages and other things don't always proc at 'toTime'
+Context: Right now everything is summed up at the 'toTime' milestone. For a more detailed timeline in the future, and so that all damage is not necessarily triggered at once, it might be useful to create a queue that you can dispatch events to. The queue might be able to resolve/progress events, sorts the events at the time it happened, and more detailed create a timeline of action/effect starts, damage-procs, occurences, and event endings. This could be especially useful for outro skills, swap-cancelling, and delayed effects and damage procs. It might even automatically let us create Coordinated Attacks and alike really easily.
 
 
 
