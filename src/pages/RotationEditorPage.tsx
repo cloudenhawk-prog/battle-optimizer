@@ -17,6 +17,7 @@ export default function RotationEditorPage() {
   return (
     <div>
       <Topbar
+        tableConfig={tableConfig}
         allColumns={allColumns}
         columnVisibility={columnVisibility}
         setColumnVisibility={setColumnVisibility}
