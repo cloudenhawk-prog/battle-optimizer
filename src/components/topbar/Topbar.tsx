@@ -40,7 +40,6 @@ export default function Topbar({ tableConfig, columnVisibility, setColumnVisibil
     <div className="topbarWrapper">
       <div className="topbarBase">
         <div className="topbarColoring">
-          {/* Extra circle at far left */}
           <div 
             className="topbarColumnButton" 
           />
