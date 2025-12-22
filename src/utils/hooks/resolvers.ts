@@ -8,6 +8,7 @@ import type { Action } from "../../types/action"
 import type { Character } from "../../types/character"
 import type { Enemy } from "../../types/enemy"
 import type { NegativeStatusInAction } from "../../types/negativeStatus"
+import type { BuffInAction } from "../../types/buff"
 import { calculateDamage } from "../../utils/calculators/damageCalculator"
 import { getNegativeStatusStacks, processNegativeStatusStacks, updateNegativeStatusStacks, createNegativeStatusDamageEvent } from "./negativeStatusHelpers"
 import { getCharacterEnergyState, updateEnergyValue } from "./energyHelpers"
@@ -22,6 +23,7 @@ export function buildStepContext(
   action: Action,
   enemy: Enemy,
   negativeStatusesInAction: NegativeStatusInAction[],
+  buffsInAction: BuffInAction[],
   characterMap: Record<string, Character>
 ): StepContext {
   const fromTime = prev.toTime
@@ -51,6 +53,7 @@ export function buildStepContext(
     toTime,
 
     negativeStatusesInAction,
+    buffsInAction,
 
     logs: []
   }

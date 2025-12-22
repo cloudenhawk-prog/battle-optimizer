@@ -4,6 +4,8 @@ import type { Action } from "./action"
 import type { Enemy } from "./enemy"
 import type { CharacterStats, EnemyStats } from "./stats"
 import type { NegativeStatusInAction } from "./negativeStatus"
+import type { BuffInAction } from "./buff"
+
 
 // ========== Type: Step Context ===============================================================================================
 
@@ -22,10 +24,9 @@ export type StepContext = {
   fromTime: number
   toTime: number
 
-  // Buffs to be added later
-  // Debuffs to be added later
-
   negativeStatusesInAction: NegativeStatusInAction[]
+  buffsInAction: BuffInAction[]
+  // Debuffs to be added later
 
   characterStats?: CharacterStats
   enemyStats?: EnemyStats

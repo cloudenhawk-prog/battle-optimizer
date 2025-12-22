@@ -15,3 +15,7 @@ export type DamageModifier = {
   condition?: (ctx: StepContext) => number
   source: string
 }
+
+export type ModifierMode = "add" | "multiply"
+
+export type ModifierTarget = "character" | "enemy"

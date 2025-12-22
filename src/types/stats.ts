@@ -49,6 +49,8 @@ export type CharacterStats = {
   energyPercent: number
 }
 
+export type CharacterStatKey = keyof CharacterStats
+
 // ========== Type: Enemy Stats ================================================================================================
 
 export type EnemyStats = {
@@ -64,3 +66,5 @@ export type EnemyStats = {
   resistance: number
   damageReduction: number
 }
+
+export type EnemyStatKey = keyof EnemyStats

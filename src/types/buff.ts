@@ -11,6 +11,12 @@ export type Buff = {
   source: string
 }
 
+export type BuffInAction = {
+  buff: Buff,
+  applicationTime: number,
+  timeleft: number,
+}
+
 // ========== Type: Debuff =====================================================================================================
 
 export type Debuff = {
@@ -18,6 +24,7 @@ export type Debuff = {
   duration: number
   damageModifiers: DamageModifier[]
   // TODO add more types here if needed (like: target: enemy stats)
+  //source string
 }
 
 // ========== Type: Expiration Strategy ========================================================================================

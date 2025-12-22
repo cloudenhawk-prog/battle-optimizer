@@ -6,14 +6,16 @@ import { createOptionalGroup } from "./helpers"
 // ========== Build Buff Column Group ==========================================================================================
 
 export function buildBuffColumns(selectedCharacters: Character[]): ColumnGroup | null {
-  const inherentBuffs = selectedCharacters.flatMap(c => c.buffs.map(b => b.name))
-  const actionBuffs = selectedCharacters.flatMap(c =>
-    c.actions.flatMap(a => a.buffsApplied.map(b => b.name))
+  const actionBuffs = selectedCharacters.flatMap(character =>
+    character.actions.flatMap(action =>
+      action.buffsApplied.map(buff => buff.name)
+    )
   )
-  const activeBuffs = Array.from(new Set([...inherentBuffs, ...actionBuffs]))
+
+  const activeBuffs = Array.from(new Set(actionBuffs))
 
   const columns: ColumnDef[] = activeBuffs.map(buff => {
-    const key = buff.replace(/\s+/g, "")
+    const key = buff.toLowerCase().replace(/\s+/g, "_")
     return {
       key,
       label: buff,

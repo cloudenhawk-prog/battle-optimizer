@@ -1,5 +1,5 @@
 =======================================================================================================================================================
-TO DO - High Priority (7 tasks):
+TO DO - High Priority (9 tasks):
 =======================================================================================================================================================
 
 Task:    Implement buffs and other timed things
@@ -22,6 +22,12 @@ Context: Right now damageEvents are passed to the component RotationEditor.tsx T
 
 Task:    Implement dispatchable effects so damages and other things don't always proc at 'toTime'
 Context: Right now everything is summed up at the 'toTime' milestone. For a more detailed timeline in the future, and so that all damage is not necessarily triggered at once, it might be useful to create a queue that you can dispatch events to. The queue might be able to resolve/progress events, sorts the events at the time it happened, and more detailed create a timeline of action/effect starts, damage-procs, occurences, and event endings. This could be especially useful for outro skills, swap-cancelling, and delayed effects and damage procs. It might even automatically let us create Coordinated Attacks and alike really easily.
+
+Task:    Remove "source" from types where the soure can be inferred by the context
+Context: Right now we manually type "source" a lot of places. A source can technically be found by the context: when collecting modifiers, you know if it comes from an action, a character or alike (in fact you can always append character and sometimes append action, buff, or other sources). We could even create a "Source" type with mandatory character and optional other source types.
+
+Task:    Update useRef for negativeStatusesInAction such that it only uses relevant statuses
+Context: useRef for negativeStatusesInAction uses ALL negative statuses defined in the data - not just the ones relevant in this timeline. It would be better if it built them dynamically like buffs do
 
 =======================================================================================================================================================
 TO DO - Others (15 tasks):

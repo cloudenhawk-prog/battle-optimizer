@@ -1,5 +1,6 @@
 import type { Action } from "../types/action"
 import { stacksOf } from "../utils/conditions/damageModifierConditions"
+import { stellarRealmBuff } from "./buffs"
 
 // ========== Mage Actions =====================================================================================================
 
@@ -207,7 +208,7 @@ export const fleurdelysStrike: Action = {
   debuffsApplied: [],
   damageModifiers: [
     {
-      source: "Fleurdelys Strike – Aero Erosion scaling",
+      source: "Cartethyia",
       condition: stacksOf("Aero Erosion"),
       characterStats: {
         multiply: {
@@ -235,6 +236,26 @@ export const liberation: Action = {
   energyCost: [{ energyType: "energy", amount: 100 }],
   negativeStatusesApplied: {},
   buffsApplied: [],
+  debuffsApplied: [],
+  damageModifiers: []
+}
+
+export const stellarRealm: Action = {
+  name: "Stellar Realm",
+  castTime: 0.3,
+  multiplier: 0,
+  scaling: "HP",
+  element: "AERO",
+  dmgType: "SKILL",
+  cooldown: 0,
+  energyGenerated: [
+    { energyType: "energy", amount: 10, share: 0.5, scalingStat: "energyPercent"},
+    { energyType: "concerto", amount: 10, share: 0 },
+    { energyType: "forte", amount: 1, share: 0 }
+  ],
+  energyCost: [],
+  negativeStatusesApplied: {},
+  buffsApplied: [stellarRealmBuff],
   debuffsApplied: [],
   damageModifiers: []
 }
