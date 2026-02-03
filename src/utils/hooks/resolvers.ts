@@ -12,69 +12,6 @@ import { calculateDamage } from "../../utils/calculators/damageCalculator"
 import { getNegativeStatusStacks, processNegativeStatusStacks, updateNegativeStatusStacks, createNegativeStatusDamageEvent } from "./negativeStatusHelpers"
 import { getCharacterEnergyState, updateEnergyValue } from "./energyHelpers"
 
-// ========== Helper: Initialize Empty Stats ==================================================================================
-//TODO: Move helper function to util
-function initializeEmptyCharacterStats(): Partial<CharacterStats> {
-  const stats: Partial<CharacterStats> = {
-    level: 0,
-    baseATK: 0, flatATK: 0, bonusATK: 0, amplifyATK: 0, totalMultiplierATK: 1.00,
-    baseHP: 0, flatHP: 0, bonusHP: 0, amplifyHP: 0, totalMultiplierHP: 1.00,
-    baseDEF: 0, flatDEF: 0, bonusDEF: 0, amplifyDEF: 0, totalMultiplierDEF: 1.00,
-    critRate: 0, critDamage: 0,
-    bonusDMG: 0, amplifyDMG: 0, totalMultiplierDMG: 1.00,
-    defIgnore: 0.00, elementalResPEN: 0.00, resistancePEN: 0.00,
-    basicBonusDMG: 0, basicAmplifyDMG: 0, basicTotalMultiplierDMG: 1.00,
-    heavyBonusDMG: 0, heavyAmplifyDMG: 0, heavyTotalMultiplierDMG: 1.00,
-    skillBonusDMG: 0, skillAmplifyDMG: 0, skillTotalMultiplierDMG: 1.00,
-    liberationBonusDMG: 0, liberationAmplifyDMG: 0, liberationTotalMultiplierDMG: 1.00,
-    coordinatedBonusDMG: 0, coordinatedAmplifyDMG: 0, coordinatedTotalMultiplierDMG: 1.00,
-    echoBonusDMG: 0, echoAmplifyDMG: 0, echoTotalMultiplierDMG: 1.00,
-    introBonusDMG: 0, introAmplifyDMG: 0, introTotalMultiplierDMG: 1.00,
-    outroBonusDMG: 0, outroAmplifyDMG: 0, outroTotalMultiplierDMG: 1.00,
-    aeroErosionBonusDMG: 0, aeroErosionAmplifyDMG: 0, aeroErosionTotalMultiplierDMG: 1.00,
-    spectroFrazzleBonusDMG: 0, spectroFrazzleAmplifyDMG: 0, spectroFrazzleTotalMultiplierDMG: 1.00,
-    havocBaneBonusDMG: 0, havocBaneAmplifyDMG: 0, havocBaneTotalMultiplierDMG: 1.00,
-    glacioChafeBonusDMG: 0, glacioChafeAmplifyDMG: 0, glacioChafeTotalMultiplierDMG: 1.00,
-    fusionBurstBonusDMG: 0, fusionBurstAmplifyDMG: 0, fusionBurstTotalMultiplierDMG: 1.00,
-    electroFlareBonusDMG: 0, electroFlareAmplifyDMG: 0, electroFlareTotalMultiplierDMG: 1.00,
-    spectroBonusDMG: 0, spectroAmplifyDMG: 0, spectroTotalMultiplierDMG: 1.00,
-    fusionBonusDMG: 0, fusionAmplifyDMG: 0, fusionTotalMultiplierDMG: 1.00,
-    aeroBonusDMG: 0, aeroAmplifyDMG: 0, aeroTotalMultiplierDMG: 1.00,
-    glacioBonusDMG: 0, glacioAmplifyDMG: 0, glacioTotalMultiplierDMG: 1.00,
-    electroBonusDMG: 0, electroAmplifyDMG: 0, electroTotalMultiplierDMG: 1.00,
-    havocBonusDMG: 0, havocAmplifyDMG: 0, havocTotalMultiplierDMG: 1.00,
-    energyPercent: 0
-  }
-  return stats
-}
-
-function initializeEmptyEnemyStats(): Partial<EnemyStats> {
-  const stats: Partial<EnemyStats> = {
-    level: 0,
-    aeroRES: 0,
-    spectroRES: 0,
-    havocRES: 0,
-    glacioRES: 0,
-    fusionRES: 0,
-    electroRES: 0,
-    resistance: 0,
-    damageReduction: 0
-  }
-  return stats
-}
-
-// ========== Helper: Aggregate Stats =========================================================================================
-
-function aggregateStat(currentValue: number | undefined, incomingValue: number, statKey: string): number {
-  const current = currentValue ?? (statKey.includes('totalMultiplier') ? 1 : 0)
-  
-  if (statKey.includes('totalMultiplier')) {
-    return current * incomingValue
-  } else {
-    return current + incomingValue
-  }
-}
-
 // ========== Resolver 0: Build Step Context ==================================================================================
 
 export function buildStepContext(
@@ -345,4 +282,74 @@ export function resolveResources(ctx: StepContext): void {
 
 // ========== Resolver 8: Events ==============================================================================================
 
-// TODO
+
+
+
+
+
+
+
+
+// ========== Internal Helpers ================================================================================================
+
+function initializeEmptyCharacterStats(): Partial<CharacterStats> {
+  const stats: Partial<CharacterStats> = {
+    level: 0,
+    baseATK: 0, flatATK: 0, bonusATK: 0, amplifyATK: 0, totalMultiplierATK: 1.00,
+    baseHP: 0, flatHP: 0, bonusHP: 0, amplifyHP: 0, totalMultiplierHP: 1.00,
+    baseDEF: 0, flatDEF: 0, bonusDEF: 0, amplifyDEF: 0, totalMultiplierDEF: 1.00,
+    critRate: 0, critDamage: 0,
+    bonusDMG: 0, amplifyDMG: 0, totalMultiplierDMG: 1.00,
+    defIgnore: 0.00, elementalResPEN: 0.00, resistancePEN: 0.00,
+    basicBonusDMG: 0, basicAmplifyDMG: 0, basicTotalMultiplierDMG: 1.00,
+    heavyBonusDMG: 0, heavyAmplifyDMG: 0, heavyTotalMultiplierDMG: 1.00,
+    skillBonusDMG: 0, skillAmplifyDMG: 0, skillTotalMultiplierDMG: 1.00,
+    liberationBonusDMG: 0, liberationAmplifyDMG: 0, liberationTotalMultiplierDMG: 1.00,
+    coordinatedBonusDMG: 0, coordinatedAmplifyDMG: 0, coordinatedTotalMultiplierDMG: 1.00,
+    echoBonusDMG: 0, echoAmplifyDMG: 0, echoTotalMultiplierDMG: 1.00,
+    introBonusDMG: 0, introAmplifyDMG: 0, introTotalMultiplierDMG: 1.00,
+    outroBonusDMG: 0, outroAmplifyDMG: 0, outroTotalMultiplierDMG: 1.00,
+    aeroErosionBonusDMG: 0, aeroErosionAmplifyDMG: 0, aeroErosionTotalMultiplierDMG: 1.00,
+    spectroFrazzleBonusDMG: 0, spectroFrazzleAmplifyDMG: 0, spectroFrazzleTotalMultiplierDMG: 1.00,
+    havocBaneBonusDMG: 0, havocBaneAmplifyDMG: 0, havocBaneTotalMultiplierDMG: 1.00,
+    glacioChafeBonusDMG: 0, glacioChafeAmplifyDMG: 0, glacioChafeTotalMultiplierDMG: 1.00,
+    fusionBurstBonusDMG: 0, fusionBurstAmplifyDMG: 0, fusionBurstTotalMultiplierDMG: 1.00,
+    electroFlareBonusDMG: 0, electroFlareAmplifyDMG: 0, electroFlareTotalMultiplierDMG: 1.00,
+    spectroBonusDMG: 0, spectroAmplifyDMG: 0, spectroTotalMultiplierDMG: 1.00,
+    fusionBonusDMG: 0, fusionAmplifyDMG: 0, fusionTotalMultiplierDMG: 1.00,
+    aeroBonusDMG: 0, aeroAmplifyDMG: 0, aeroTotalMultiplierDMG: 1.00,
+    glacioBonusDMG: 0, glacioAmplifyDMG: 0, glacioTotalMultiplierDMG: 1.00,
+    electroBonusDMG: 0, electroAmplifyDMG: 0, electroTotalMultiplierDMG: 1.00,
+    havocBonusDMG: 0, havocAmplifyDMG: 0, havocTotalMultiplierDMG: 1.00,
+    energyPercent: 0
+  }
+  return stats
+}
+
+function initializeEmptyEnemyStats(): Partial<EnemyStats> {
+  const stats: Partial<EnemyStats> = {
+    level: 0,
+    aeroRES: 0,
+    spectroRES: 0,
+    havocRES: 0,
+    glacioRES: 0,
+    fusionRES: 0,
+    electroRES: 0,
+    resistance: 0,
+    damageReduction: 0
+  }
+  return stats
+}
+
+function aggregateStat(
+  currentValue: number | undefined,
+  incomingValue: number,
+  statKey: string
+): number {
+  const lowerKey = statKey.toLowerCase();
+  const isMultiplier = lowerKey.includes('totalmultiplier');
+
+  const current = currentValue ?? (isMultiplier ? 1 : 0);
+
+  return isMultiplier ? current * incomingValue : current + incomingValue;
+}
