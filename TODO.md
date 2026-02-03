@@ -1,6 +1,8 @@
 
 TODO:
 
+Task:    Implement tests - dmg calculator and resolvers?
+
 Task:    Implement rows on-click overlay data breakdown
 Context: Right now damageEvents are passed to the component RotationEditor.tsx These can be passed to the RotationTable if it needs them for future features
 
@@ -32,7 +34,12 @@ Task:    Implement dispatchable effects so damages and other things don't always
 Context: Right now everything is summed up at the 'toTime' milestone. For a more detailed timeline in the future, and so that all damage is not necessarily triggered at once, it might be useful to create a queue that you can dispatch events to. The queue might be able to resolve/progress events, sorts the events at the time it happened, and more detailed create a timeline of action/effect starts, damage-procs, occurences, and event endings. This could be especially useful for outro skills, swap-cancelling, and delayed effects and damage procs. It might even automatically let us create Coordinated Attacks and alike really easily.
 
 
+_______________________________
+COOL
+_______________________________
+Since we calculate average damage, it could be cool to have MIN and MAX in a graph with colored areas - or even cooler: percentage based with colored areas (would require to do calculations on ALL damage instances though).
 
+_______________________________
 
 
 
