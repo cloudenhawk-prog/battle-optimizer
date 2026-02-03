@@ -7,3 +7,7 @@
 // - createNegativeStatusDamageEvent: Create damage event from DoT
 //
 // These manage debuffs and damage-over-time effects
+
+describe('negativeStatusHelpers', () => {
+  it.todo('tests to be implemented');
+});

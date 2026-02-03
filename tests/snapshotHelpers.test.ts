@@ -9,3 +9,7 @@
 // - assignCharacterToRow: Assign character to a snapshot row
 //
 // These manage the snapshot array that represents the rotation timeline
+
+describe('snapshotHelpers', () => {
+  it.todo('tests to be implemented');
+});

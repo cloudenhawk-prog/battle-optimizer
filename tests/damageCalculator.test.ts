@@ -8,3 +8,7 @@
 // - getDefenseMultiplier: Defense reduction calculations
 //
 // These test the core damage formula accuracy
+
+describe('damageCalculator', () => {
+  it.todo('tests to be implemented');
+});

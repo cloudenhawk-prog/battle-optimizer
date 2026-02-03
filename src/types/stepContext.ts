@@ -27,8 +27,8 @@ export type StepContext = {
 
   negativeStatusesInAction: NegativeStatusInAction[]
 
-  characterStats?: CharacterStats
-  enemyStats?: EnemyStats
+  aggregatedCharacterModifiers?: Partial<CharacterStats>
+  aggregatedEnemyModifiers?: Partial<EnemyStats>
 
   logs: StepLog[]
 }
