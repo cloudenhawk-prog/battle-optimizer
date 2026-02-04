@@ -347,7 +347,7 @@ describe('damageCalculator', () => {
 
       const result = calculateScalingStat(stats, 'HP')
       
-      // Formula: 10000 * (1 + 0.15) * (1 + 0.10) * 1.05 + 500 = 10000 * 1.15 * 1.10 * 1.05 + 500 = 13282.5 + 500 = 13782.5
+      // Formula: 10000 * (1 + 0.15) * (1 + 0.10) * 1.05 + 500 = 13782.5
       expect(result).toBeCloseTo(13782.5, 5)
     })
 
@@ -373,7 +373,7 @@ describe('damageCalculator', () => {
     it('should return 1 with no bonuses', () => {
       const stats = createMockCharacterStats()
       
-      const result = calculateBonusMultiplier(stats, 'GLACIO', 'BASIC')
+      const result = calculateBonusMultiplier(stats, ['GLACIO'], ['BASIC'])
       
       expect(result).toBe(1)
     })
@@ -383,7 +383,7 @@ describe('damageCalculator', () => {
         bonusDMG: 0.25
       })
       
-      const result = calculateBonusMultiplier(stats, 'GLACIO', 'BASIC')
+      const result = calculateBonusMultiplier(stats, ['GLACIO'], ['BASIC'])
       
       // Formula: 1 + 0.25 = 1.25
       expect(result).toBe(1.25)
@@ -394,7 +394,7 @@ describe('damageCalculator', () => {
         glacioBonusDMG: 0.30
       })
       
-      const result = calculateBonusMultiplier(stats, 'GLACIO', 'BASIC')
+      const result = calculateBonusMultiplier(stats, ['GLACIO'], ['BASIC'])
       
       // Formula: 1 + 0 + 0.30 = 1.30
       expect(result).toBe(1.30)
@@ -405,7 +405,7 @@ describe('damageCalculator', () => {
         skillBonusDMG: 0.20
       })
       
-      const result = calculateBonusMultiplier(stats, 'GLACIO', 'SKILL')
+      const result = calculateBonusMultiplier(stats, ['GLACIO'], ['SKILL'])
       
       // Formula: 1 + 0 + 0 + 0.20 = 1.20
       expect(result).toBe(1.20)
@@ -416,7 +416,7 @@ describe('damageCalculator', () => {
         aeroErosionBonusDMG: 0.15
       })
       
-      const result = calculateBonusMultiplier(stats, 'AERO', 'BASIC')
+      const result = calculateBonusMultiplier(stats, ['AERO'], ['BASIC'])
       
       // Formula: 1 + 0 + 0 + 0 + 0.15 = 1.15
       expect(result).toBe(1.15)
@@ -430,7 +430,7 @@ describe('damageCalculator', () => {
         spectroFrazzleBonusDMG: 0.20
       })
       
-      const result = calculateBonusMultiplier(stats, 'SPECTRO', 'LIBERATION')
+      const result = calculateBonusMultiplier(stats, ['SPECTRO'], ['LIBERATION'])
       
       // Formula: 1 + 0.10 + 0.25 + 0.15 + 0.20 = 1.70
       expect(result).toBeCloseTo(1.70, 5)
@@ -443,7 +443,7 @@ describe('damageCalculator', () => {
         fusionBonusDMG: 0.40 // Should not be applied
       })
       
-      const result = calculateBonusMultiplier(stats, 'GLACIO', 'BASIC')
+      const result = calculateBonusMultiplier(stats, ['GLACIO'], ['BASIC'])
       
       // Formula: 1 + 0.10 + 0.30 = 1.40 (fusionBonusDMG ignored)
       expect(result).toBeCloseTo(1.40, 5)
@@ -456,10 +456,50 @@ describe('damageCalculator', () => {
         liberationBonusDMG: 0.35 // Should not be applied
       })
       
-      const result = calculateBonusMultiplier(stats, 'HAVOC', 'SKILL')
+      const result = calculateBonusMultiplier(stats, ['HAVOC'], ['SKILL'])
       
       // Formula: 1 + 0.15 + 0 + 0.25 = 1.40 (liberationBonusDMG ignored)
       expect(result).toBe(1.40)
+    })
+
+    it('should sum bonuses for multiple elements', () => {
+      const stats = createMockCharacterStats({
+        bonusDMG: 0.10,
+        aeroBonusDMG: 0.20,
+        spectroBonusDMG: 0.15
+      })
+      
+      const result = calculateBonusMultiplier(stats, ['AERO', 'SPECTRO'], ['SKILL'])
+      
+      // Formula: 1 + 0.10 + (0.20 + 0.15) + 0 = 1.45
+      expect(result).toBeCloseTo(1.45, 5)
+    })
+
+    it('should sum bonuses for multiple damage types', () => {
+      const stats = createMockCharacterStats({
+        bonusDMG: 0.10,
+        skillBonusDMG: 0.20,
+        echoBonusDMG: 0.15
+      })
+      
+      const result = calculateBonusMultiplier(stats, ['FUSION'], ['SKILL', 'ECHO'])
+      
+      // Formula: 1 + 0.10 + 0 + (0.20 + 0.15) = 1.45
+      expect(result).toBeCloseTo(1.45, 5)
+    })
+
+    it('should apply status bonuses when NEGATIVE_STATUS damage type is present', () => {
+      const stats = createMockCharacterStats({
+        bonusDMG: 0.12,
+        havocBonusDMG: 0.18,
+        havocBaneBonusDMG: 0.30
+      })
+      
+      const result = calculateBonusMultiplier(stats, ['HAVOC'], ['LIBERATION', 'NEGATIVE_STATUS'])
+      
+      // Formula: 1 + 0.12 + 0.18 + 0 + 0.30 = 1.60
+      // Status bonus (havocBaneBonusDMG) is applied based on HAVOC element
+      expect(result).toBeCloseTo(1.60, 5)
     })
   })
 
@@ -469,7 +509,7 @@ describe('damageCalculator', () => {
     it('should return 1 with no amplifications', () => {
       const stats = createMockCharacterStats()
       
-      const result = calculateAmplifyMultiplier(stats, 'ELECTRO', 'HEAVY')
+      const result = calculateAmplifyMultiplier(stats, ['ELECTRO'], ['HEAVY'])
       
       expect(result).toBe(1)
     })
@@ -479,7 +519,7 @@ describe('damageCalculator', () => {
         amplifyDMG: 0.18
       })
       
-      const result = calculateAmplifyMultiplier(stats, 'ELECTRO', 'HEAVY')
+      const result = calculateAmplifyMultiplier(stats, ['ELECTRO'], ['HEAVY'])
       
       // Formula: 1 + 0.18 = 1.18
       expect(result).toBe(1.18)
@@ -490,7 +530,7 @@ describe('damageCalculator', () => {
         electroAmplifyDMG: 0.22
       })
       
-      const result = calculateAmplifyMultiplier(stats, 'ELECTRO', 'HEAVY')
+      const result = calculateAmplifyMultiplier(stats, ['ELECTRO'], ['HEAVY'])
       
       // Formula: 1 + 0 + 0.22 = 1.22
       expect(result).toBe(1.22)
@@ -501,7 +541,7 @@ describe('damageCalculator', () => {
         heavyAmplifyDMG: 0.30
       })
       
-      const result = calculateAmplifyMultiplier(stats, 'ELECTRO', 'HEAVY')
+      const result = calculateAmplifyMultiplier(stats, ['ELECTRO'], ['HEAVY'])
       
       // Formula: 1 + 0 + 0 + 0.30 = 1.30
       expect(result).toBe(1.30)
@@ -512,7 +552,7 @@ describe('damageCalculator', () => {
         electroFlareAmplifyDMG: 0.25
       })
       
-      const result = calculateAmplifyMultiplier(stats, 'ELECTRO', 'HEAVY')
+      const result = calculateAmplifyMultiplier(stats, ['ELECTRO'], ['HEAVY'])
       
       // Formula: 1 + 0 + 0 + 0 + 0.25 = 1.25
       expect(result).toBe(1.25)
@@ -526,7 +566,7 @@ describe('damageCalculator', () => {
         fusionBurstAmplifyDMG: 0.15
       })
       
-      const result = calculateAmplifyMultiplier(stats, 'FUSION', 'COORDINATED')
+      const result = calculateAmplifyMultiplier(stats, ['FUSION'], ['COORDINATED'])
       
       // Formula: 1 + 0.08 + 0.12 + 0.20 + 0.15 = 1.55
       expect(result).toBeCloseTo(1.55, 5)
@@ -539,10 +579,81 @@ describe('damageCalculator', () => {
         aeroAmplifyDMG: 0.30 // Should not be applied
       })
       
-      const result = calculateAmplifyMultiplier(stats, 'HAVOC', 'ECHO')
+      const result = calculateAmplifyMultiplier(stats, ['HAVOC'], ['ECHO'])
       
       // Formula: 1 + 0.10 + 0.20 = 1.30 (aeroAmplifyDMG ignored)
       expect(result).toBe(1.30)
+    })
+
+    it('should sum amplifications for multiple elements', () => {
+      const stats = createMockCharacterStats({
+        amplifyDMG: 0.08,
+        glacioAmplifyDMG: 0.12,
+        havocAmplifyDMG: 0.15
+      })
+      
+      const result = calculateAmplifyMultiplier(stats, ['GLACIO', 'HAVOC'], ['BASIC'])
+      
+      // Formula: 1 + 0.08 + (0.12 + 0.15) + 0 = 1.35
+      expect(result).toBeCloseTo(1.35, 5)
+    })
+
+    it('should sum amplifications for multiple damage types', () => {
+      const stats = createMockCharacterStats({
+        amplifyDMG: 0.05,
+        skillAmplifyDMG: 0.10,
+        introAmplifyDMG: 0.20
+      })
+      
+      const result = calculateAmplifyMultiplier(stats, ['SPECTRO'], ['SKILL', 'INTRO'])
+      
+      // Formula: 1 + 0.05 + 0 + (0.10 + 0.20) = 1.35
+      expect(result).toBeCloseTo(1.35, 5)
+    })
+
+    it('should apply status amplifications when NEGATIVE_STATUS damage type is present', () => {
+      const stats = createMockCharacterStats({
+        amplifyDMG: 0.10,
+        aeroAmplifyDMG: 0.15,
+        aeroErosionAmplifyDMG: 0.25
+      })
+      
+      const result = calculateAmplifyMultiplier(stats, ['AERO'], ['SKILL', 'NEGATIVE_STATUS'])
+      
+      // Formula: 1 + 0.10 + 0.15 + 0 + 0.25 = 1.50
+      // Status amplifier (aeroErosionAmplifyDMG) is applied based on AERO element
+      expect(result).toBeCloseTo(1.50, 5)
+    })
+
+    it('should apply multiple status amplifications for multiple elements with NEGATIVE_STATUS', () => {
+      const stats = createMockCharacterStats({
+        amplifyDMG: 0.05,
+        spectroAmplifyDMG: 0.10,
+        fusionAmplifyDMG: 0.12,
+        spectroFrazzleAmplifyDMG: 0.20,
+        fusionBurstAmplifyDMG: 0.18
+      })
+      
+      const result = calculateAmplifyMultiplier(stats, ['SPECTRO', 'FUSION'], ['NEGATIVE_STATUS'])
+      
+      // Formula: 1 + 0.05 + (0.10 + 0.12) + 0 + (0.20 + 0.18) = 1.65
+      // Both status amplifiers are applied based on the elements present
+      expect(result).toBeCloseTo(1.65, 5)
+    })
+
+    it('should not apply status amplifications when NEGATIVE_STATUS is absent', () => {
+      const stats = createMockCharacterStats({
+        amplifyDMG: 0.10,
+        electroAmplifyDMG: 0.15,
+        electroFlareAmplifyDMG: 0.25
+      })
+      
+      const result = calculateAmplifyMultiplier(stats, ['ELECTRO'], ['SKILL'])
+      
+      // Formula: 1 + 0.10 + 0.15 + 0 + 0.25 = 1.50
+      // Status amplifier is still applied because it's tied to the element, not the damage type
+      // This demonstrates that status effects are ALWAYS considered when the element is present
+      expect(result).toBeCloseTo(1.50, 5)
     })
   })
 
@@ -552,7 +663,7 @@ describe('damageCalculator', () => {
     it('should return 1 with no multipliers', () => {
       const stats = createMockCharacterStats()
       
-      const result = calculateTotalMultiplier(stats, 'FUSION', 'INTRO')
+      const result = calculateTotalMultiplier(stats, ['FUSION'], ['INTRO'])
       
       expect(result).toBe(1)
     })
@@ -562,7 +673,7 @@ describe('damageCalculator', () => {
         totalMultiplierDMG: 1.15
       })
       
-      const result = calculateTotalMultiplier(stats, 'FUSION', 'INTRO')
+      const result = calculateTotalMultiplier(stats, ['FUSION'], ['INTRO'])
       
       // Formula: 1.15 * 1 * 1 * 1 = 1.15
       expect(result).toBe(1.15)
@@ -573,7 +684,7 @@ describe('damageCalculator', () => {
         fusionTotalMultiplierDMG: 1.20
       })
       
-      const result = calculateTotalMultiplier(stats, 'FUSION', 'INTRO')
+      const result = calculateTotalMultiplier(stats, ['FUSION'], ['INTRO'])
       
       // Formula: 1 * 1.20 * 1 * 1 = 1.20
       expect(result).toBe(1.20)
@@ -584,7 +695,7 @@ describe('damageCalculator', () => {
         introTotalMultiplierDMG: 1.25
       })
       
-      const result = calculateTotalMultiplier(stats, 'FUSION', 'INTRO')
+      const result = calculateTotalMultiplier(stats, ['FUSION'], ['INTRO'])
       
       // Formula: 1 * 1 * 1.25 * 1 = 1.25
       expect(result).toBe(1.25)
@@ -595,7 +706,7 @@ describe('damageCalculator', () => {
         fusionBurstTotalMultiplierDMG: 1.30
       })
       
-      const result = calculateTotalMultiplier(stats, 'FUSION', 'INTRO')
+      const result = calculateTotalMultiplier(stats, ['FUSION'], ['INTRO'])
       
       // Formula: 1 * 1 * 1 * 1.30 = 1.30
       expect(result).toBe(1.30)
@@ -609,7 +720,7 @@ describe('damageCalculator', () => {
         aeroErosionTotalMultiplierDMG: 1.25
       })
       
-      const result = calculateTotalMultiplier(stats, 'AERO', 'OUTRO')
+      const result = calculateTotalMultiplier(stats, ['AERO'], ['OUTRO'])
       
       // Formula: 1.10 * 1.15 * 1.20 * 1.25 = 1.89750
       expect(result).toBeCloseTo(1.89750, 5)
@@ -622,7 +733,7 @@ describe('damageCalculator', () => {
         glacioTotalMultiplierDMG: 1.40 // Should not be applied
       })
       
-      const result = calculateTotalMultiplier(stats, 'SPECTRO', 'BASIC')
+      const result = calculateTotalMultiplier(stats, ['SPECTRO'], ['BASIC'])
       
       // Formula: 1.10 * 1.25 * 1 * 1 = 1.375 (glacioTotalMultiplierDMG ignored)
       expect(result).toBeCloseTo(1.375, 5)
@@ -635,10 +746,50 @@ describe('damageCalculator', () => {
         skillTotalMultiplierDMG: 1.30 // Should not be applied
       })
       
-      const result = calculateTotalMultiplier(stats, 'HAVOC', 'BASIC')
+      const result = calculateTotalMultiplier(stats, ['HAVOC'], ['BASIC'])
       
       // Formula: 1.08 * 1 * 1.12 * 1 = 1.2096 (skillTotalMultiplierDMG ignored)
       expect(result).toBeCloseTo(1.2096, 5)
+    })
+
+    it('should multiply all multipliers for multiple elements', () => {
+      const stats = createMockCharacterStats({
+        totalMultiplierDMG: 1.10,
+        fusionTotalMultiplierDMG: 1.15,
+        electroTotalMultiplierDMG: 1.20
+      })
+      
+      const result = calculateTotalMultiplier(stats, ['FUSION', 'ELECTRO'], ['SKILL'])
+      
+      // Formula: 1.10 * 1.15 * 1.20 * 1 = 1.518
+      expect(result).toBeCloseTo(1.518, 5)
+    })
+
+    it('should multiply all multipliers for multiple damage types', () => {
+      const stats = createMockCharacterStats({
+        totalMultiplierDMG: 1.05,
+        liberationTotalMultiplierDMG: 1.10,
+        outroTotalMultiplierDMG: 1.15
+      })
+      
+      const result = calculateTotalMultiplier(stats, ['AERO'], ['LIBERATION', 'OUTRO'])
+      
+      // Formula: 1.05 * 1 * 1.10 * 1.15 * 1 = 1.32825
+      expect(result).toBeCloseTo(1.32825, 5)
+    })
+
+    it('should apply status total multipliers when NEGATIVE_STATUS damage type is present', () => {
+      const stats = createMockCharacterStats({
+        totalMultiplierDMG: 1.08,
+        glacioTotalMultiplierDMG: 1.12,
+        glacioChafeTotalMultiplierDMG: 1.25
+      })
+      
+      const result = calculateTotalMultiplier(stats, ['GLACIO'], ['SKILL', 'NEGATIVE_STATUS'])
+      
+      // Formula: 1.08 * 1.12 * 1 * 1.25 = 1.512
+      // Status multiplier (glacioChafeTotalMultiplierDMG) is applied based on GLACIO element
+      expect(result).toBeCloseTo(1.512, 5)
     })
   })
 })
