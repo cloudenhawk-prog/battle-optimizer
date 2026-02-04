@@ -1,170 +1,19 @@
-import { buildStepContext, resolveTime } from '../src/utils/hooks/resolvers';
+import { buildStepContext, resolveTime, aggregateStat } from '../src/utils/hooks/resolvers';
 import type { StepContext } from '../src/types/stepContext';
 import {
   createMockSnapshot,
   createMockCharacter,
   createMockAction,
   createMockEnemy,
-  createMockNegativeStatuses,
+  createMockNegativeStatus,
+  createMockActiveNegativeStatus,
 } from './testUtils';
 
-// Access internal helper for unit testing
-const resolversModule = require('../src/utils/hooks/resolvers');
-const aggregateStatInternal = (currentValue: number | undefined, incomingValue: number, statKey: string): number => {
-  const lowerKey = statKey.toLowerCase();
-  const isMultiplier = lowerKey.includes('totalmultiplier');
-  const current = currentValue ?? (isMultiplier ? 1 : 0);
-  return isMultiplier ? current * incomingValue : current + incomingValue;
-};
+// ========== Resolver 0: Build StepContext ====================================================================================
 
-// ========== Tests for aggregateStat (Core Logic) =============================================================================
-
-describe('aggregateStat', () => {
-  describe('Additive Stats', () => {
-    it('should add values for non-multiplier stats', () => {
-      expect(aggregateStatInternal(undefined, 100, 'bonusATK')).toBe(100);
-      expect(aggregateStatInternal(100, 50, 'bonusATK')).toBe(150);
-      expect(aggregateStatInternal(150, 30, 'flatHP')).toBe(180);
-    });
-
-    it('should initialize undefined additive stats to 0', () => {
-      expect(aggregateStatInternal(undefined, 50, 'critRate')).toBe(50);
-      expect(aggregateStatInternal(undefined, 0.20, 'amplifyDMG')).toBe(0.20);
-    });
-
-    it('should handle negative values correctly', () => {
-      expect(aggregateStatInternal(100, -50, 'bonusATK')).toBe(50);
-      expect(aggregateStatInternal(0, -0.15, 'glacioRES')).toBe(-0.15);
-    });
-
-    it('should treat all non-totalMultiplier stats as additive', () => {
-      const additiveStats = [
-        'baseATK', 'flatATK', 'bonusATK', 'amplifyATK',
-        'baseHP', 'flatHP', 'bonusHP', 'amplifyHP',
-        'baseDEF', 'flatDEF', 'bonusDEF', 'amplifyDEF',
-        'critRate', 'critDamage',
-        'bonusDMG', 'amplifyDMG',
-        'defIgnore', 'elementalResPEN', 'resistancePEN',
-        'energyPercent',
-        'basicBonusDMG', 'heavyBonusDMG', 'skillBonusDMG',
-        'spectroBonusDMG', 'fusionBonusDMG',
-        'aeroErosionBonusDMG', 'spectroFrazzleBonusDMG',
-        'aeroRES', 'spectroRES', 'havocRES', 'glacioRES', 'fusionRES', 'electroRES',
-        'resistance', 'damageReduction', 'level'
-      ];
-
-      additiveStats.forEach(stat => {
-        expect(aggregateStatInternal(100, 50, stat)).toBe(150);
-      });
-    });
-  });
-
-  describe('Multiplicative Stats', () => {
-    it('should multiply values for totalMultiplier stats', () => {
-      expect(aggregateStatInternal(undefined, 1.2, 'totalMultiplierATK')).toBe(1.2);
-      expect(aggregateStatInternal(1.2, 1.15, 'totalMultiplierATK')).toBeCloseTo(1.38, 5);
-      expect(aggregateStatInternal(1.38, 1.1, 'totalMultiplierATK')).toBeCloseTo(1.518, 5);
-    });
-
-    it('should initialize undefined totalMultiplier stats to 1', () => {
-      expect(aggregateStatInternal(undefined, 1.5, 'totalMultiplierHP')).toBe(1.5);
-      expect(aggregateStatInternal(undefined, 1.0, 'totalMultiplierDMG')).toBe(1.0);
-    });
-
-    it('should handle multipliers less than 1 (reductions)', () => {
-      expect(aggregateStatInternal(1.5, 0.8, 'totalMultiplierATK')).toBeCloseTo(1.2, 5);
-      expect(aggregateStatInternal(1.0, 0.5, 'totalMultiplierDEF')).toBe(0.5);
-    });
-
-    it('should treat all totalMultiplier* stats as multiplicative', () => {
-      const multiplicativeStats = [
-        'totalMultiplierATK', 'totalMultiplierHP', 'totalMultiplierDEF', 'totalMultiplierDMG',
-        'basicTotalMultiplierDMG', 'heavyTotalMultiplierDMG', 'skillTotalMultiplierDMG',
-        'liberationTotalMultiplierDMG', 'coordinatedTotalMultiplierDMG', 'echoTotalMultiplierDMG',
-        'introTotalMultiplierDMG', 'outroTotalMultiplierDMG',
-        'aeroErosionTotalMultiplierDMG', 'spectroFrazzleTotalMultiplierDMG',
-        'havocBaneTotalMultiplierDMG', 'glacioChafeToTotalMultiplierDMG',
-        'fusionBurstTotalMultiplierDMG', 'electroFlareTotalMultiplierDMG',
-        'spectroTotalMultiplierDMG', 'fusionTotalMultiplierDMG',
-        'aeroTotalMultiplierDMG', 'glacioTotalMultiplierDMG',
-        'electroTotalMultiplierDMG', 'havocTotalMultiplierDMG'
-      ];
-
-      multiplicativeStats.forEach(stat => {
-        expect(aggregateStatInternal(1.2, 1.5, stat)).toBeCloseTo(1.8, 5);
-      });
-    });
-  });
-
-  describe('Case Insensitivity', () => {
-    it('should handle different casings of totalMultiplier', () => {
-      expect(aggregateStatInternal(1.5, 2.0, 'TOTALMULTIPLIERATK')).toBe(3.0);
-      expect(aggregateStatInternal(1.5, 2.0, 'TotalMultiplierATK')).toBe(3.0);
-      expect(aggregateStatInternal(1.5, 2.0, 'totalmultiplieratk')).toBe(3.0);
-    });
-
-    it('should handle mixed case for additive stats', () => {
-      expect(aggregateStatInternal(100, 50, 'BONUSATK')).toBe(150);
-      expect(aggregateStatInternal(100, 50, 'BonusATK')).toBe(150);
-    });
-  });
-
-  describe('damageReduction (Reverse Multiplicative)', () => {
-    it('should use reverse multiplicative formula: 1 - (1-a) * (1-b)', () => {
-      // damageReduction should NOT be additive or simple multiplicative
-      // It should use the formula: 1 - (1-a) * (1-b)
-      // This represents stacking damage reduction effects where each reduces the remaining damage
-      
-      // Example 1: 50% + 50%
-      // 1 - (1-0.5) * (1-0.5) = 1 - 0.25 = 0.75 (75% total reduction)
-      expect(aggregateStatInternal(0.5, 0.5, 'damageReduction')).toBeCloseTo(0.75, 5);
-      
-      // Example 2: 50% + 40%
-      // 1 - (1-0.5) * (1-0.4) = 1 - 0.30 = 0.70 (70% total reduction)
-      expect(aggregateStatInternal(0.5, 0.4, 'damageReduction')).toBeCloseTo(0.70, 5);
-      
-      // Example 3: Building up from 0
-      // First application: 1 - (1-0) * (1-0.3) = 0.30 (30%)
-      expect(aggregateStatInternal(undefined, 0.3, 'damageReduction')).toBeCloseTo(0.30, 5);
-      
-      // Then add another: 1 - (1-0.3) * (1-0.25) = 1 - 0.525 = 0.475 (47.5%)
-      expect(aggregateStatInternal(0.3, 0.25, 'damageReduction')).toBeCloseTo(0.475, 5);
-    });
-
-    it('should handle zero as identity (leave value unchanged)', () => {
-      // Adding 0 damageReduction should not change the existing value
-      // 1 - (1-a) * (1-0) = 1 - (1-a) = a
-      expect(aggregateStatInternal(0.5, 0, 'damageReduction')).toBeCloseTo(0.5, 5);
-      expect(aggregateStatInternal(0.3, 0, 'damageReduction')).toBeCloseTo(0.3, 5);
-      expect(aggregateStatInternal(0, 0.4, 'damageReduction')).toBeCloseTo(0.4, 5);
-      expect(aggregateStatInternal(0, 0, 'damageReduction')).toBeCloseTo(0, 5);
-      
-      // Zero should also work with undefined (initial state)
-      expect(aggregateStatInternal(undefined, 0, 'damageReduction')).toBeCloseTo(0, 5);
-    });
-
-    it('should handle negative values (damage amplification)', () => {
-      // Negative damageReduction represents damage amplification
-      // Example: -0.5 means 50% MORE damage taken (150% total)
-      // Formula still applies: 1 - (1-a) * (1-b)
-      
-      // 30% reduction + 20% amplification (-20%)
-      // 1 - (1-0.3) * (1-(-0.2)) = 1 - 0.7 * 1.2 = 1 - 0.84 = 0.16 (16% reduction)
-      expect(aggregateStatInternal(0.3, -0.2, 'damageReduction')).toBeCloseTo(0.16, 5);
-      
-      // 20% amplification + 20% amplification
-      // 1 - (1-(-0.2)) * (1-(-0.2)) = 1 - 1.2 * 1.2 = 1 - 1.44 = -0.44 (44% amplification)
-      expect(aggregateStatInternal(-0.2, -0.2, 'damageReduction')).toBeCloseTo(-0.44, 5);
-      
-      // 50% reduction + 100% amplification (double damage)
-      // 1 - (1-0.5) * (1-(-1)) = 1 - 0.5 * 2 = 1 - 1 = 0 (neutral)
-      expect(aggregateStatInternal(0.5, -1, 'damageReduction')).toBeCloseTo(0, 5);
-    });
-  });
-});
-
-// ========== Tests for buildStepContext =======================================================================================
-
+/**
+ * This resolver creates a step context object and initializes its properties.
+ */
 describe('buildStepContext', () => {
   describe('Context Initialization', () => {
     it('should initialize context with all required references and calculated times', () => {
@@ -175,7 +24,7 @@ describe('buildStepContext', () => {
       const character = createMockCharacter('TestChar');
       const action = createMockAction('BasicAttack', { castTime: 2.5 });
       const enemy = createMockEnemy();
-      const negativeStatuses = createMockNegativeStatuses();
+      const negativeStatuses = [];
       const characterMap = { TestChar: character };
 
       // Act
@@ -206,6 +55,8 @@ describe('buildStepContext', () => {
       // Modifiers initialized empty
       expect(context.aggregatedCharacterModifiers).toBeDefined();
       expect(context.aggregatedEnemyModifiers).toBeDefined();
+      expect(context.damageModifiers).toBeDefined();
+      expect(context.damageModifiers).toEqual([]);
       
       // Logs initialized with entry
       expect(context.logs.length).toBeGreaterThan(0);
@@ -216,7 +67,7 @@ describe('buildStepContext', () => {
       const testCases = [
         { prevToTime: 0, castTime: 1.5, expectedFrom: 0, expectedTo: 1.5 },
         { prevToTime: 10.5, castTime: 2.25, expectedFrom: 10.5, expectedTo: 12.75 },
-        { prevToTime: 5, castTime: 0, expectedFrom: 5, expectedTo: 5 }, // Instant action
+        { prevToTime: 5, castTime: 0, expectedFrom: 5, expectedTo: 5 },
       ];
 
       testCases.forEach(({ prevToTime, castTime, expectedFrom, expectedTo }) => {
@@ -270,7 +121,6 @@ describe('buildStepContext', () => {
     });
 
     it('should handle edge cases: solo character and empty map', () => {
-      // Solo character
       const solo = createMockCharacter('Solo');
       const ctx1 = buildStepContext(
         1,
@@ -359,19 +209,204 @@ describe('buildStepContext', () => {
   });
 });
 
-// ========== Tests for resolveDamageModifiers =================================================================================
+// ========== Resolver 1: Resolve Time =========================================================================================
+
+describe('resolveTime', () => {
+  describe('Snapshot Time Resolution', () => {
+    it('should write calculated times to snapshot from prev.toTime and action.castTime', () => {
+      const testCases = [
+        { prevToTime: 10, castTime: 2.5, expectedFrom: 10, expectedTo: 12.5 },
+        { prevToTime: 0, castTime: 1.5, expectedFrom: 0, expectedTo: 1.5 },
+        { prevToTime: 5.125, castTime: 0.375, expectedFrom: 5.125, expectedTo: 5.5 },
+        { prevToTime: 10, castTime: 0, expectedFrom: 10, expectedTo: 10 }, // Instant
+      ];
+
+      testCases.forEach(({ prevToTime, castTime, expectedFrom, expectedTo }) => {
+        const prev = createMockSnapshot({ id: '0', toTime: prevToTime });
+        const current = createMockSnapshot({ id: '1' });
+        const character = createMockCharacter('Char');
+        const action = createMockAction('Action', { castTime });
+        const characterMap = { Char: character };
+
+        const context = buildStepContext(1, current, prev, character, action, createMockEnemy(), [], characterMap);
+        resolveTime(context);
+
+        expect(current.fromTime).toBe(expectedFrom);
+        expect(current.toTime).toBe(expectedTo);
+      });
+    });
+
+    it('should recalculate times from source data, not trust existing snapshot values', () => {
+      // Arrange - snapshot has wrong pre-existing values
+      const prev = createMockSnapshot({ id: '4', toTime: 10.0 });
+      const current = createMockSnapshot({ id: '5', fromTime: 999, toTime: 888 });
+      const character = createMockCharacter('Char');
+      const action = createMockAction('Action', { castTime: 2.0 });
+      const characterMap = { Char: character };
+
+      const context = buildStepContext(5, current, prev, character, action, createMockEnemy(), [], characterMap);
+
+      // Act
+      resolveTime(context);
+
+      // Assert - wrong values overwritten with correct calculation
+      expect(current.fromTime).toBe(10.0);
+      expect(current.toTime).toBe(12.0);
+    });
+  });
+
+  describe('Snapshot Mutation Contract', () => {
+    it('should ONLY mutate fromTime and toTime, leaving all other snapshot fields untouched', () => {
+      // Arrange
+      const prev = createMockSnapshot({ id: '4', toTime: 10.0 });
+      const current = createMockSnapshot({
+        id: '5',
+        fromTime: 0,
+        toTime: 0,
+        damage: 500,
+        dps: 25,
+        charactersEnergies: { concerto: 80 },
+        buffs: { buff1: 5 },
+        debuffs: { debuff1: 3 },
+        negativeStatuses: { burn: 2 },
+      });
+      const character = createMockCharacter('Char');
+      const action = createMockAction('Action', { castTime: 2.5 });
+      const characterMap = { Char: character };
+
+      const context = buildStepContext(5, current, prev, character, action, createMockEnemy(), [], characterMap);
+
+      // Act
+      resolveTime(context);
+
+      // Assert - ONLY time fields change
+      expect(current.fromTime).toBe(10.0);
+      expect(current.toTime).toBe(12.5);
+      expect(current.damage).toBe(500);
+      expect(current.dps).toBe(25);
+      expect(current.charactersEnergies).toEqual({ concerto: 80 });
+      expect(current.buffs).toEqual({ buff1: 5 });
+      expect(current.debuffs).toEqual({ debuff1: 3 });
+      expect(current.negativeStatuses).toEqual({ burn: 2 });
+    });
+
+    it('should never mutate previous snapshot', () => {
+      const prev = createMockSnapshot({
+        id: '4',
+        toTime: 10.0,
+        fromTime: 8.0,
+        damage: 1000,
+      });
+      const prevSnapshot = JSON.parse(JSON.stringify(prev));
+
+      const context = buildStepContext(
+        5,
+        createMockSnapshot({ id: '5' }),
+        prev,
+        createMockCharacter('Char'),
+        createMockAction('Action', { castTime: 1.5 }),
+        createMockEnemy(),
+        [],
+        { Char: createMockCharacter('Char') }
+      );
+
+      resolveTime(context);
+
+      expect(prev).toEqual(prevSnapshot);
+    });
+  });
+
+  describe('Context Behavior', () => {
+    it('should append log entry without mutating context time values', () => {
+      const prev = createMockSnapshot({ id: '4', toTime: 10 });
+      const current = createMockSnapshot({ id: '5' });
+      const character = createMockCharacter('Char');
+      const action = createMockAction('Action', { castTime: 2.0 });
+      const characterMap = { Char: character };
+
+      const context = buildStepContext(5, current, prev, character, action, createMockEnemy(), [], characterMap);
+
+      const initialLogCount = context.logs.length;
+      const contextFromBefore = context.fromTime;
+      const contextToBefore = context.toTime;
+
+      resolveTime(context);
+
+      // Log appended
+      expect(context.logs.length).toBe(initialLogCount + 1);
+      expect(context.logs[context.logs.length - 1].resolver).toBe('resolveTime');
+
+      // Context times unchanged
+      expect(context.fromTime).toBe(contextFromBefore);
+      expect(context.toTime).toBe(contextToBefore);
+    });
+  });
+
+  describe('Validation', () => {
+    it('should throw when context is invalid', () => {
+        const prev = createMockSnapshot({ id: '4', toTime: 10 });
+        const current = createMockSnapshot({ id: '5' });
+        const character = createMockCharacter('Char');
+        const action = createMockAction('Action');
+
+        const validationCases: Array<{
+        label: string;
+        modify: (ctx: StepContext) => void;
+        }> = [
+        {
+            label: 'null fromTime',
+            modify: (ctx) => {
+            (ctx as any).fromTime = null;
+            },
+        },
+        {
+            label: 'null toTime',
+            modify: (ctx) => {
+            (ctx as any).toTime = null;
+            },
+        },
+        {
+            label: 'fromTime > toTime',
+            modify: (ctx) => {
+            ctx.fromTime = 15;
+            ctx.toTime = 10;
+            },
+        },
+        {
+            label: 'snapshotId mismatch',
+            modify: (ctx) => {
+            ctx.snapshotId = 999;
+            },
+        },
+        ];
+
+        validationCases.forEach(({ label, modify }) => {
+        const context: StepContext = {
+            snapshotId: 5,
+            current,
+            prev,
+            character,
+            allies: [],
+            enemy: createMockEnemy(),
+            action,
+            fromTime: 10,
+            toTime: 12,
+            negativeStatusesInAction: [],
+            logs: [],
+        };
+
+        modify(context)
+
+        expect(() => resolveTime(context)).toThrow();
+        });
+    });
+    });
+});
+
+// ========== Resolver 2: Damage Modifiers =====================================================================================
 
 /**
- * Tests for resolver 2: Damage Modifiers
- * 
- * This resolver aggregates damage modifiers from multiple sources (character, action, negative statuses).
- * Core aggregation logic is tested separately in aggregateStat tests.
- * 
- * These tests focus on:
- * - Collecting modifiers from all sources (character, action, negative statuses)
- * - Applying conditional multipliers
- * - Writing results to context
- * - State management and immutability
+ * This resolver findes existing damage modifiers sources: character, action, negative statuses and adds up the stats.
  */
 describe('resolveDamageModifiers', () => {
   const { resolveDamageModifiers } = require('../src/utils/hooks/resolvers');
@@ -384,17 +419,11 @@ describe('resolveDamageModifiers', () => {
       const action = createMockAction('Action', {
         damageModifiers: [{ source: 'action', characterStats: { bonusATK: 50 } }],
       });
-      const negativeStatuses = [
-        {
-          negativeStatus: {
-            name: 'Burn',
-            element: 'Fusion',
-            damageModifiers: [{ source: 'negStatus', characterStats: { bonusATK: 25 } }],
-          },
-          duration: 10,
-          maxStacks: 1,
-        },
-      ] as any;
+      const burnStatus = createMockNegativeStatus('Burn', {
+        element: 'FUSION',
+        damageModifiers: [{ source: 'negStatus', characterStats: { bonusATK: 25 } }],
+      });
+      const negativeStatuses = [createMockActiveNegativeStatus(burnStatus)];
 
       const context = buildStepContext(
         1,
@@ -410,6 +439,10 @@ describe('resolveDamageModifiers', () => {
       resolveDamageModifiers(context);
 
       expect(context.aggregatedCharacterModifiers.bonusATK).toBe(175); // 100 + 50 + 25
+      expect(context.damageModifiers).toHaveLength(3);
+      expect(context.damageModifiers[0].source).toBe('character');
+      expect(context.damageModifiers[1].source).toBe('action');
+      expect(context.damageModifiers[2].source).toBe('negStatus');
     });
 
     it('should handle multiple modifiers from same source', () => {
@@ -438,26 +471,20 @@ describe('resolveDamageModifiers', () => {
     });
 
     it('should handle multiple negative statuses with modifiers', () => {
+      const status1 = createMockNegativeStatus('Status1', {
+        element: 'FUSION',
+        duration: 10,
+        damageModifiers: [{ source: 'status1', characterStats: { bonusATK: 30 } }],
+      });
+      const status2 = createMockNegativeStatus('Status2', {
+        element: 'GLACIO',
+        duration: 5,
+        damageModifiers: [{ source: 'status2', characterStats: { bonusATK: 20 } }],
+      });
       const negativeStatuses = [
-        {
-          negativeStatus: {
-            name: 'Status1',
-            element: 'Fusion',
-            damageModifiers: [{ source: 'status1', characterStats: { bonusATK: 30 } }],
-          },
-          duration: 10,
-          maxStacks: 1,
-        },
-        {
-          negativeStatus: {
-            name: 'Status2',
-            element: 'Glacio',
-            damageModifiers: [{ source: 'status2', characterStats: { bonusATK: 20 } }],
-          },
-          duration: 5,
-          maxStacks: 1,
-        },
-      ] as any;
+        createMockActiveNegativeStatus(status1),
+        createMockActiveNegativeStatus(status2),
+      ];
 
       const context = buildStepContext(
         1,
@@ -902,6 +929,48 @@ describe('resolveDamageModifiers', () => {
   });
 
   describe('Context State Management', () => {
+    it('should collect all modifiers into context.damageModifiers for damage calculator', () => {
+      const charMod = { source: 'passive', characterStats: { bonusATK: 50 } };
+      const actionMod = { source: 'skillBonus', characterStats: { bonusATK: 30 } };
+      const statusMod = { source: 'burn', enemyStats: { fusionRES: -0.1 } };
+
+      const character = createMockCharacter('TestChar', {
+        damageModifiers: [charMod],
+      });
+      const action = createMockAction('Action', {
+        damageModifiers: [actionMod],
+      });
+      const burnStatus = createMockNegativeStatus('Burn', {
+        element: 'FUSION',
+        damageModifiers: [statusMod],
+      });
+      const negativeStatuses = [createMockActiveNegativeStatus(burnStatus)];
+
+      const context = buildStepContext(
+        1,
+        createMockSnapshot({ id: '1' }),
+        createMockSnapshot({ id: '0', toTime: 0 }),
+        character,
+        action,
+        createMockEnemy(),
+        negativeStatuses,
+        { TestChar: character }
+      );
+
+      resolveDamageModifiers(context);
+
+      // Verify all modifiers are collected
+      expect(context.damageModifiers).toHaveLength(3);
+      expect(context.damageModifiers).toContainEqual(charMod);
+      expect(context.damageModifiers).toContainEqual(actionMod);
+      expect(context.damageModifiers).toContainEqual(statusMod);
+
+      // Verify they're in the correct order (character -> action -> negative statuses)
+      expect(context.damageModifiers[0]).toBe(charMod);
+      expect(context.damageModifiers[1]).toBe(actionMod);
+      expect(context.damageModifiers[2]).toBe(statusMod);
+    });
+
     it('should write aggregated modifiers to context', () => {
       const character = createMockCharacter('TestChar', {
         damageModifiers: [{ source: 'test', characterStats: { bonusATK: 100 } }],
@@ -996,6 +1065,7 @@ describe('resolveDamageModifiers', () => {
       // Should initialize all stats with defaults (0 for additive, 1 for multiplicative)
       expect(context.aggregatedCharacterModifiers.bonusATK).toBe(0);
       expect(context.aggregatedCharacterModifiers.totalMultiplierATK).toBe(1);
+      expect(context.damageModifiers).toEqual([]);
     });
 
     it('should handle undefined modifier arrays', () => {
@@ -1113,196 +1183,121 @@ describe('resolveDamageModifiers', () => {
   });
 });
 
-// ========== Tests for resolveTime ============================================================================================
+// ========== Helpers ==========================================================================================================
 
-describe('resolveTime', () => {
-  describe('Snapshot Time Resolution', () => {
-    it('should write calculated times to snapshot from prev.toTime and action.castTime', () => {
-      const testCases = [
-        { prevToTime: 10, castTime: 2.5, expectedFrom: 10, expectedTo: 12.5 },
-        { prevToTime: 0, castTime: 1.5, expectedFrom: 0, expectedTo: 1.5 },
-        { prevToTime: 5.125, castTime: 0.375, expectedFrom: 5.125, expectedTo: 5.5 },
-        { prevToTime: 10, castTime: 0, expectedFrom: 10, expectedTo: 10 }, // Instant
+const resolversModule = require('../src/utils/hooks/resolvers');
+
+describe('aggregateStat', () => {
+  describe('Additive Stats', () => {
+    it('should add values for non-multiplier stats', () => {
+      expect(aggregateStat(undefined, 100, 'bonusATK')).toBe(100);
+      expect(aggregateStat(100, 50, 'bonusATK')).toBe(150);
+      expect(aggregateStat(150, 30, 'flatHP')).toBe(180);
+    });
+
+    it('should initialize undefined additive stats to 0', () => {
+      expect(aggregateStat(undefined, 50, 'critRate')).toBe(50);
+      expect(aggregateStat(undefined, 0.20, 'amplifyDMG')).toBe(0.20);
+    });
+
+    it('should handle negative values correctly', () => {
+      expect(aggregateStat(100, -50, 'bonusATK')).toBe(50);
+      expect(aggregateStat(0, -0.15, 'glacioRES')).toBe(-0.15);
+    });
+
+    it('should treat all non-totalMultiplier stats as additive', () => {
+      const additiveStats = [
+        'baseATK', 'flatATK', 'bonusATK', 'amplifyATK',
+        'baseHP', 'flatHP', 'bonusHP', 'amplifyHP',
+        'baseDEF', 'flatDEF', 'bonusDEF', 'amplifyDEF',
+        'critRate', 'critDamage',
+        'bonusDMG', 'amplifyDMG',
+        'defIgnore', 'elementalResPEN', 'resistancePEN',
+        'energyPercent',
+        'basicBonusDMG', 'heavyBonusDMG', 'skillBonusDMG',
+        'spectroBonusDMG', 'fusionBonusDMG',
+        'aeroErosionBonusDMG', 'spectroFrazzleBonusDMG',
+        'aeroRES', 'spectroRES', 'havocRES', 'glacioRES', 'fusionRES', 'electroRES',
+        'resistance', 'level'
       ];
 
-      testCases.forEach(({ prevToTime, castTime, expectedFrom, expectedTo }) => {
-        const prev = createMockSnapshot({ id: '0', toTime: prevToTime });
-        const current = createMockSnapshot({ id: '1' });
-        const character = createMockCharacter('Char');
-        const action = createMockAction('Action', { castTime });
-        const characterMap = { Char: character };
-
-        const context = buildStepContext(1, current, prev, character, action, createMockEnemy(), [], characterMap);
-        resolveTime(context);
-
-        expect(current.fromTime).toBe(expectedFrom);
-        expect(current.toTime).toBe(expectedTo);
+      additiveStats.forEach(stat => {
+        expect(aggregateStat(100, 50, stat)).toBe(150);
       });
-    });
-
-    it('should recalculate times from source data, not trust existing snapshot values', () => {
-      // Arrange - snapshot has wrong pre-existing values
-      const prev = createMockSnapshot({ id: '4', toTime: 10.0 });
-      const current = createMockSnapshot({ id: '5', fromTime: 999, toTime: 888 });
-      const character = createMockCharacter('Char');
-      const action = createMockAction('Action', { castTime: 2.0 });
-      const characterMap = { Char: character };
-
-      const context = buildStepContext(5, current, prev, character, action, createMockEnemy(), [], characterMap);
-
-      // Act
-      resolveTime(context);
-
-      // Assert - wrong values overwritten with correct calculation
-      expect(current.fromTime).toBe(10.0);
-      expect(current.toTime).toBe(12.0);
     });
   });
 
-  describe('Snapshot Mutation Contract', () => {
-    it('should ONLY mutate fromTime and toTime, leaving all other snapshot fields untouched', () => {
-      // Arrange
-      const prev = createMockSnapshot({ id: '4', toTime: 10.0 });
-      const current = createMockSnapshot({
-        id: '5',
-        fromTime: 0,
-        toTime: 0,
-        damage: 500,
-        dps: 25,
-        charactersEnergies: { concerto: 80 },
-        buffs: { buff1: 5 },
-        debuffs: { debuff1: 3 },
-        negativeStatuses: { burn: 2 },
-      });
-      const character = createMockCharacter('Char');
-      const action = createMockAction('Action', { castTime: 2.5 });
-      const characterMap = { Char: character };
-
-      const context = buildStepContext(5, current, prev, character, action, createMockEnemy(), [], characterMap);
-
-      // Act
-      resolveTime(context);
-
-      // Assert - ONLY time fields change
-      expect(current.fromTime).toBe(10.0);
-      expect(current.toTime).toBe(12.5);
-      expect(current.damage).toBe(500);
-      expect(current.dps).toBe(25);
-      expect(current.charactersEnergies).toEqual({ concerto: 80 });
-      expect(current.buffs).toEqual({ buff1: 5 });
-      expect(current.debuffs).toEqual({ debuff1: 3 });
-      expect(current.negativeStatuses).toEqual({ burn: 2 });
+  describe('Multiplicative Stats', () => {
+    it('should multiply values for totalMultiplier stats', () => {
+      expect(aggregateStat(undefined, 1.2, 'totalMultiplierATK')).toBe(1.2);
+      expect(aggregateStat(1.2, 1.15, 'totalMultiplierATK')).toBeCloseTo(1.38, 5);
+      expect(aggregateStat(1.38, 1.1, 'totalMultiplierATK')).toBeCloseTo(1.518, 5);
     });
 
-    it('should never mutate previous snapshot', () => {
-      const prev = createMockSnapshot({
-        id: '4',
-        toTime: 10.0,
-        fromTime: 8.0,
-        damage: 1000,
+    it('should initialize undefined totalMultiplier stats to 1', () => {
+      expect(aggregateStat(undefined, 1.5, 'totalMultiplierHP')).toBe(1.5);
+      expect(aggregateStat(undefined, 1.0, 'totalMultiplierDMG')).toBe(1.0);
+    });
+
+    it('should handle multipliers less than 1 (reductions)', () => {
+      expect(aggregateStat(1.5, 0.8, 'totalMultiplierATK')).toBeCloseTo(1.2, 5);
+      expect(aggregateStat(1.0, 0.5, 'totalMultiplierDEF')).toBe(0.5);
+    });
+
+    it('should treat all totalMultiplier* stats as multiplicative', () => {
+      const multiplicativeStats = [
+        'totalMultiplierATK', 'totalMultiplierHP', 'totalMultiplierDEF', 'totalMultiplierDMG',
+        'basicTotalMultiplierDMG', 'heavyTotalMultiplierDMG', 'skillTotalMultiplierDMG',
+        'liberationTotalMultiplierDMG', 'coordinatedTotalMultiplierDMG', 'echoTotalMultiplierDMG',
+        'introTotalMultiplierDMG', 'outroTotalMultiplierDMG',
+        'aeroErosionTotalMultiplierDMG', 'spectroFrazzleTotalMultiplierDMG',
+        'havocBaneTotalMultiplierDMG', 'glacioChafeToTotalMultiplierDMG',
+        'fusionBurstTotalMultiplierDMG', 'electroFlareTotalMultiplierDMG',
+        'spectroTotalMultiplierDMG', 'fusionTotalMultiplierDMG',
+        'aeroTotalMultiplierDMG', 'glacioTotalMultiplierDMG',
+        'electroTotalMultiplierDMG', 'havocTotalMultiplierDMG'
+      ];
+
+      multiplicativeStats.forEach(stat => {
+        expect(aggregateStat(1.2, 1.5, stat)).toBeCloseTo(1.8, 5);
       });
-      const prevSnapshot = JSON.parse(JSON.stringify(prev));
-
-      const context = buildStepContext(
-        5,
-        createMockSnapshot({ id: '5' }),
-        prev,
-        createMockCharacter('Char'),
-        createMockAction('Action', { castTime: 1.5 }),
-        createMockEnemy(),
-        [],
-        { Char: createMockCharacter('Char') }
-      );
-
-      resolveTime(context);
-
-      expect(prev).toEqual(prevSnapshot);
     });
   });
 
-  describe('Context Behavior', () => {
-    it('should append log entry without mutating context time values', () => {
-      const prev = createMockSnapshot({ id: '4', toTime: 10 });
-      const current = createMockSnapshot({ id: '5' });
-      const character = createMockCharacter('Char');
-      const action = createMockAction('Action', { castTime: 2.0 });
-      const characterMap = { Char: character };
+  describe('Case Insensitivity', () => {
+    it('should handle different casings of totalMultiplier', () => {
+      expect(aggregateStat(1.5, 2.0, 'TOTALMULTIPLIERATK')).toBe(3.0);
+      expect(aggregateStat(1.5, 2.0, 'TotalMultiplierATK')).toBe(3.0);
+      expect(aggregateStat(1.5, 2.0, 'totalmultiplieratk')).toBe(3.0);
+    });
 
-      const context = buildStepContext(5, current, prev, character, action, createMockEnemy(), [], characterMap);
-
-      const initialLogCount = context.logs.length;
-      const contextFromBefore = context.fromTime;
-      const contextToBefore = context.toTime;
-
-      resolveTime(context);
-
-      // Log appended
-      expect(context.logs.length).toBe(initialLogCount + 1);
-      expect(context.logs[context.logs.length - 1].resolver).toBe('resolveTime');
-
-      // Context times unchanged
-      expect(context.fromTime).toBe(contextFromBefore);
-      expect(context.toTime).toBe(contextToBefore);
+    it('should handle mixed case for additive stats', () => {
+      expect(aggregateStat(100, 50, 'BONUSATK')).toBe(150);
+      expect(aggregateStat(100, 50, 'BonusATK')).toBe(150);
     });
   });
 
-  describe('Validation', () => {
-    it('should throw when context is invalid', () => {
-        const prev = createMockSnapshot({ id: '4', toTime: 10 });
-        const current = createMockSnapshot({ id: '5' });
-        const character = createMockCharacter('Char');
-        const action = createMockAction('Action');
-
-        const validationCases: Array<{
-        label: string;
-        modify: (ctx: StepContext) => void;
-        }> = [
-        {
-            label: 'null fromTime',
-            modify: (ctx) => {
-            (ctx as any).fromTime = null;
-            },
-        },
-        {
-            label: 'null toTime',
-            modify: (ctx) => {
-            (ctx as any).toTime = null;
-            },
-        },
-        {
-            label: 'fromTime > toTime',
-            modify: (ctx) => {
-            ctx.fromTime = 15;
-            ctx.toTime = 10;
-            },
-        },
-        {
-            label: 'snapshotId mismatch',
-            modify: (ctx) => {
-            ctx.snapshotId = 999;
-            },
-        },
-        ];
-
-        validationCases.forEach(({ label, modify }) => {
-        const context: StepContext = {
-            snapshotId: 5,
-            current,
-            prev,
-            character,
-            allies: [],
-            enemy: createMockEnemy(),
-            action,
-            fromTime: 10,
-            toTime: 12,
-            negativeStatusesInAction: [],
-            logs: [],
-        };
-
-        modify(context)
-
-        expect(() => resolveTime(context)).toThrow();
-        });
+  describe('damageReduction (Reverse Multiplicative)', () => {
+    it('should use reverse multiplicative formula: 1 - (1-a) * (1-b)', () => {
+      expect(aggregateStat(0.5, 0.5, 'damageReduction')).toBeCloseTo(0.75, 5);
+      expect(aggregateStat(0.5, 0.4, 'damageReduction')).toBeCloseTo(0.70, 5);
+      expect(aggregateStat(undefined, 0.3, 'damageReduction')).toBeCloseTo(0.30, 5);
+      expect(aggregateStat(0.3, 0.25, 'damageReduction')).toBeCloseTo(0.475, 5);
     });
-    });
-});
+
+    it('should handle zero as identity (leave value unchanged)', () => {
+      expect(aggregateStat(0.5, 0, 'damageReduction')).toBeCloseTo(0.5, 5)
+      expect(aggregateStat(0.3, 0, 'damageReduction')).toBeCloseTo(0.3, 5)
+      expect(aggregateStat(0, 0.4, 'damageReduction')).toBeCloseTo(0.4, 5)
+      expect(aggregateStat(0, 0, 'damageReduction')).toBeCloseTo(0, 5)
+      expect(aggregateStat(0, 0.33, 'damageReduction')).toBeCloseTo(0.33, 5)
+      expect(aggregateStat(undefined, 0, 'damageReduction')).toBeCloseTo(0, 5)
+    })
+
+    it('should handle negative values (damage amplification)', () => {
+      expect(aggregateStat(0.3, -0.2, 'damageReduction')).toBeCloseTo(0.16, 5)
+      expect(aggregateStat(-0.2, -0.2, 'damageReduction')).toBeCloseTo(-0.44, 5)
+      expect(aggregateStat(0.5, -1, 'damageReduction')).toBeCloseTo(0, 5)
+    })
+  })
+})

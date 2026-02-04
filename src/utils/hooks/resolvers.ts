@@ -52,6 +52,7 @@ export function buildStepContext(
 
     negativeStatusesInAction,
 
+    damageModifiers: [],
     aggregatedCharacterModifiers: {},
     aggregatedEnemyModifiers: {},
 
@@ -95,6 +96,9 @@ export function resolveDamageModifiers(ctx: StepContext) {
     ...(ctx.action.damageModifiers ?? []),
     ...ctx.negativeStatusesInAction.flatMap(ns => ns.negativeStatus.damageModifiers ?? [])
   ]
+
+  // Store all collected modifiers in context for damage calculator to use
+  ctx.damageModifiers = allModifiers
 
   for (const modifier of allModifiers) {
     const conditionMultiplier = modifier.condition ? modifier.condition(ctx) : 1
@@ -142,19 +146,20 @@ export function resolveDamageModifiers(ctx: StepContext) {
 // ========== Resolver 3: Damage ==============================================================================================
 
 export function resolveDamage(ctx: StepContext, setDamageEvents: Dispatch<SetStateAction<DamageEvent[]>>): void {
-  // TODO - error checking
 
   const action = ctx.action
   const name = ctx.character.name
   const baseStats = ctx.character.stats
-  const modifiers = ctx.aggregatedCharacterModifiers ?? {}
+  const damageModifiers = ctx.damageModifiers
+  const modifierCharacterStats = ctx.aggregatedCharacterModifiers
+  const modifierEnemyStats = ctx.aggregatedEnemyModifiers
   const enemy = ctx.enemy
   const snapshotId = ctx.snapshotId
   const prev = ctx.prev
   const current = ctx.current
   const toTime = ctx.toTime
 
-  const { average, damageEvent } = calculateDamage({ action, name, stats: baseStats, modifiers, enemy, snapshotId })
+  const { average, damageEvent } = calculateDamage({ action, name, stats: baseStats, damageModifiers, modifierCharacterStats, modifierEnemyStats, enemy, snapshotId })
   setDamageEvents(prevEvents => [...prevEvents, damageEvent])
 
   const cumulativeDamage = prev.damage + average
@@ -341,13 +346,19 @@ function initializeEmptyEnemyStats(): Partial<EnemyStats> {
   return stats
 }
 
-function aggregateStat(
+export function aggregateStat(
   currentValue: number | undefined,
   incomingValue: number,
   statKey: string
 ): number {
   const lowerKey = statKey.toLowerCase();
   const isMultiplier = lowerKey.includes('totalmultiplier');
+  const isDamageReduction = lowerKey === 'damagereduction';
+
+  if (isDamageReduction) {
+    const current = currentValue ?? 0;
+    return 1 - (1 - current) * (1 - incomingValue);
+  }
 
   const current = currentValue ?? (isMultiplier ? 1 : 0);
 

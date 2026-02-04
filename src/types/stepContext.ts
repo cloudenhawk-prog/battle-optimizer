@@ -4,6 +4,7 @@ import type { Action } from "./action"
 import type { Enemy } from "./enemy"
 import type { CharacterStats, EnemyStats } from "./stats"
 import type { NegativeStatusInAction } from "./negativeStatus"
+import type { DamageModifier } from "./modifiers"
 
 // ========== Type: Step Context ===============================================================================================
 
@@ -27,6 +28,7 @@ export type StepContext = {
 
   negativeStatusesInAction: NegativeStatusInAction[]
 
+  damageModifiers: DamageModifier[]
   aggregatedCharacterModifiers: Partial<CharacterStats>
   aggregatedEnemyModifiers: Partial<EnemyStats>
 
