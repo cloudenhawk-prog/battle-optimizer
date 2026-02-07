@@ -1,10 +1,10 @@
 
 TODO:
 
-Task:    Implement tests - dmg calculator and resolvers?
-
 Task:    Implement rows on-click overlay data breakdown
 Context: Right now damageEvents are passed to the component RotationEditor.tsx These can be passed to the RotationTable if it needs them for future features
+
+Task:    The table should show useful 'current' information under the icons above the rows. Current active resonator, energy progress (like 70/120, and a percentage), time remaining on negative statuses and buffs/debuffs
 
 Task:    Damage Events should have type -> action, action-side-effect, negative-status such that we can put them together 
 Context: Right now damage events only includes events from actions. We do not want a seperate event list for every type of damage event. Sorted by ID, these can be used by rows on-click overlay

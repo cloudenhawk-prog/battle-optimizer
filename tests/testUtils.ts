@@ -137,7 +137,7 @@ export function createMockCharacterStats(overrides: Partial<import('../src/types
 
 export function createMockEnemyStats(overrides: Partial<import('../src/types/stats').EnemyStats> = {}): import('../src/types/stats').EnemyStats {
   return {
-    level: 90,
+    level: 85,
     glacioRES: 0.1,
     fusionRES: 0.1,
     electroRES: 0.1,
@@ -261,4 +261,78 @@ export function createMockDamageModifier(source: string, overrides: Partial<Dama
     source,
     ...overrides,
   };
+}
+
+// ========== Damage Modifier List Builders ==================================================================================
+
+export function createMockDamageModifierList(count = 1, prefix = 'mod'): DamageModifier[] {
+  const list: DamageModifier[] = []
+  for (let i = 0; i < count; i++) {
+    list.push(createMockDamageModifier(`${prefix}${i + 1}`))
+  }
+  return list
+}
+
+export function createEmptyDamageModifierList(): DamageModifier[] {
+  return []
+}
+ 
+// ========== Test Helpers: Aggregation & Contribution Assertions ======================================================
+
+export function buildAggregatedFromModifiers(mods: DamageModifier[]): Record<string, any> {
+  const aggregated: Record<string, any> = {}
+  for (const m of mods) {
+    if (m.characterStats) {
+      for (const [k, v] of Object.entries(m.characterStats)) {
+        if (k.toLowerCase().includes('totalmultiplier')) {
+          aggregated[k] = (aggregated[k] ?? 1) * (v as number)
+        } else {
+          aggregated[k] = (aggregated[k] ?? 0) + (v as number)
+        }
+      }
+    }
+  }
+  return aggregated
+}
+
+export function buildAggregatedWithoutModifier(mod: DamageModifier, aggregated: Record<string, any>): Record<string, any> {
+  const copy: Record<string, any> = { ...aggregated }
+  for (const [k, v] of Object.entries(mod.characterStats ?? {})) {
+    if (k.toLowerCase().includes('totalmultiplier')) {
+      copy[k] = (copy[k] ?? 1) / (v as number)
+    } else {
+      copy[k] = (copy[k] ?? 0) - (v as number)
+    }
+  }
+  return copy
+}
+
+// Assert that a contribution object matches the expected diff between with/without
+export function assertContributionMatches(
+  actual: Partial<import('../src/types/events').Contribution> | undefined,
+  withValues: { normalStrike: number; criticalStrike: number; average: number },
+  withoutValues: { normalStrike: number; criticalStrike: number; average: number },
+  tol = 1e-6
+) {
+  if (!actual) throw new Error('Contribution is undefined')
+
+  const normal_contrib = Math.max(0, withValues.normalStrike - withoutValues.normalStrike)
+  const crit_contrib = Math.max(0, withValues.criticalStrike - withoutValues.criticalStrike)
+  const avg_contrib = Math.max(0, withValues.average - withoutValues.average)
+
+  const safePct = (withVal: number, withoutVal: number) => {
+    if (!withoutVal || withoutVal === 0) return 0
+    return (withVal / withoutVal - 1) * 100
+  }
+
+  const normal_pct = safePct(withValues.normalStrike, withoutValues.normalStrike)
+  const crit_pct = safePct(withValues.criticalStrike, withoutValues.criticalStrike)
+  const avg_pct = safePct(withValues.average, withoutValues.average)
+
+  expect(Math.abs((actual.normal_damage_contributed ?? 0) - normal_contrib)).toBeLessThan(tol)
+  expect(Math.abs((actual.normal_percent_damage_contributed ?? 0) - normal_pct)).toBeLessThan(tol)
+  expect(Math.abs((actual.crit_damage_contributed ?? 0) - crit_contrib)).toBeLessThan(tol)
+  expect(Math.abs((actual.crit_percent_damage_contributed ?? 0) - crit_pct)).toBeLessThan(tol)
+  expect(Math.abs((actual.average_damage_contributed ?? 0) - avg_contrib)).toBeLessThan(tol)
+  expect(Math.abs((actual.average_percent_damage_contributed ?? 0) - avg_pct)).toBeLessThan(tol)
 }

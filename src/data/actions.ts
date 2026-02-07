@@ -8,8 +8,8 @@ export const fireball: Action = {
   castTime: 2,
   multiplier: 0.8,
   scaling: "ATK",
-  element: "FUSION",
-  dmgType: "SKILL",
+  elements: ["FUSION"],
+  dmgTypes: ["SKILL"],
   cooldown: 0,
   energyGenerated: [
     { energyType: "energy", amount: 50, share: 0.5, scalingStat: "energyPercent" },
@@ -28,8 +28,8 @@ export const iceSpike: Action = {
   castTime: 1.5,
   multiplier: 1.2,
   scaling: "ATK",
-  element: "GLACIO",
-  dmgType: "SKILL",
+  elements: ["GLACIO"],
+  dmgTypes: ["SKILL"],
   cooldown: 5,
   energyGenerated: [
     { energyType: "energy", amount: 30, share: 0.5, scalingStat: "energyPercent" },
@@ -48,8 +48,8 @@ export const liberatingLightning: Action = {
   castTime: 4.5,
   multiplier: 8.0,
   scaling: "ATK",
-  element: "ELECTRO",
-  dmgType: "LIBERATION",
+  elements: ["ELECTRO"],
+  dmgTypes: ["LIBERATION"],
   cooldown: 0,
   energyGenerated: [
     { energyType: "energy", amount: 25, share: 0.5, scalingStat: "energyPercent" },
@@ -68,8 +68,8 @@ export const mageIntro: Action = {
   castTime: 1,
   multiplier: 1.0,
   scaling: "ATK",
-  element: "FUSION",
-  dmgType: "INTRO",
+  elements: ["FUSION"],
+  dmgTypes: ["INTRO"],
   cooldown: 0,
   energyGenerated: [
     { energyType: "energy", amount: 10, share: 0.5, scalingStat: "energyPercent" },
@@ -88,8 +88,8 @@ export const mageOutro: Action = {
   castTime: 0,
   multiplier: 1.0,
   scaling: "ATK",
-  element: "FUSION",
-  dmgType: "OUTRO",
+  elements: ["FUSION"],
+  dmgTypes: ["OUTRO"],
   cooldown: 0,
   energyGenerated: [
     { energyType: "energy", amount: 10, share: 0.5, scalingStat: "energyPercent" },
@@ -110,8 +110,8 @@ export const backstab: Action = {
   castTime: 1,
   multiplier: 1.0,
   scaling: "ATK",
-  element: "HAVOC",
-  dmgType: "BASIC",
+  elements: ["HAVOC"],
+  dmgTypes: ["BASIC"],
   cooldown: 0,
   energyGenerated: [
     { energyType: "energy", amount: 20, share: 0.5, scalingStat: "energyPercent" },
@@ -130,8 +130,8 @@ export const poison: Action = {
   castTime: 2.5,
   multiplier: 3.0,
   scaling: "ATK",
-  element: "HAVOC",
-  dmgType: "SKILL",
+  elements: ["HAVOC"],
+  dmgTypes: ["SKILL"],
   cooldown: 5,
   energyGenerated: [
     { energyType: "energy", amount: 25, share: 0.5 },
@@ -150,8 +150,8 @@ export const rogueIntro: Action = {
   castTime: 1,
   multiplier: 1.0,
   scaling: "ATK",
-  element: "HAVOC",
-  dmgType: "INTRO",
+  elements: ["HAVOC"],
+  dmgTypes: ["INTRO"],
   cooldown: 0,
   energyGenerated: [
     { energyType: "energy", amount: 10, share: 0.5, scalingStat: "energyPercent" },
@@ -170,8 +170,8 @@ export const rogueOutro: Action = {
   castTime: 0,
   multiplier: 1.0,
   scaling: "ATK",
-  element: "HAVOC",
-  dmgType: "OUTRO",
+  elements: ["HAVOC"],
+  dmgTypes: ["OUTRO"],
   cooldown: 0,
   energyGenerated: [
     { energyType: "energy", amount: 10, share: 0.5, scalingStat: "energyPercent" },
@@ -192,8 +192,8 @@ export const fleurdelysStrike: Action = {
   castTime: 0.5,
   multiplier: 2.0,
   scaling: "HP",
-  element: "AERO",
-  dmgType: "BASIC",
+  elements: ["AERO"],
+  dmgTypes: ["BASIC"],
   cooldown: 0,
   energyGenerated: [
     { energyType: "energy", amount: 50, share: 0.5, scalingStat: "energyPercent" },
@@ -210,11 +210,9 @@ export const fleurdelysStrike: Action = {
       source: "Fleurdelys Strike – Aero Erosion scaling",
       condition: stacksOf("Aero Erosion"),
       characterStats: {
-        multiply: {
-          dmgAmplification: 1.1
-        }
+        amplifyDMG: 0.1
       }
-    }
+  }
   ]
 }
 
@@ -223,8 +221,8 @@ export const liberation: Action = {
   castTime: 2,
   multiplier: 15.0,
   scaling: "HP",
-  element: "AERO",
-  dmgType: "LIBERATION",
+  elements: ["AERO"],
+  dmgTypes: ["LIBERATION"],
   cooldown: 0,
   energyGenerated: [
     { energyType: "energy", amount: 10, share: 0.5, scalingStat: "energyPercent" },
@@ -244,8 +242,8 @@ export const cartethyiaIntro: Action = {
   castTime: 1,
   multiplier: 1.0,
   scaling: "HP",
-  element: "AERO",
-  dmgType: "INTRO",
+  elements: ["AERO"],
+  dmgTypes: ["INTRO"],
   cooldown: 0,
   energyGenerated: [
     { energyType: "energy", amount: 10, share: 0.5, scalingStat: "energyPercent" },
@@ -264,8 +262,8 @@ export const cartethyiaOutro: Action = {
   castTime: 0,
   multiplier: 1.0,
   scaling: "HP",
-  element: "AERO",
-  dmgType: "OUTRO",
+  elements: ["AERO"],
+  dmgTypes: ["OUTRO"],
   cooldown: 0,
   energyGenerated: [
     { energyType: "energy", amount: 10, share: 0.5 },

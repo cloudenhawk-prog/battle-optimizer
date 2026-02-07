@@ -1,4 +1,5 @@
 import { 
+  calculateDamage,
   mergeStats, 
   mergeEnemyStats,
   calculateScalingStat,
@@ -7,7 +8,17 @@ import {
   calculateTotalMultiplier
 } from '../src/utils/calculators/damageCalculator'
 import type { CharacterStats, EnemyStats } from '../src/types/stats'
-import { createMockCharacterStats, createMockEnemyStats } from './testUtils'
+import {
+  createMockCharacterStats,
+  createMockEnemyStats,
+  createMockAction,
+  createMockEnemy,
+  createMockDamageModifier,
+  createMockDamageModifierList,
+  buildAggregatedFromModifiers,
+  buildAggregatedWithoutModifier,
+  assertContributionMatches
+} from './testUtils'
 
 // ========== Damage Calculator ================================================================================================
 
@@ -792,4 +803,345 @@ describe('damageCalculator', () => {
       expect(result).toBeCloseTo(1.512, 5)
     })
   })
+
+  // ========== Damage Contributions =============================================================================================
+
+  describe('damage contributions helper', () => {
+    const baseStats = createMockCharacterStats()
+    const enemy = createMockEnemy()
+    const TOL = 1e-6
+    const assertContribution = (actual: any, fullEvent: any, withoutEvent: any) =>
+      assertContributionMatches(actual, { normalStrike: fullEvent.normalStrike, criticalStrike: fullEvent.criticalStrike, average: fullEvent.average }, { normalStrike: withoutEvent.normalStrike, criticalStrike: withoutEvent.criticalStrike, average: withoutEvent.average }, TOL)
+
+    it('bonusDMG modifier numeric contribution matches removal diff', () => {
+      const mod = createMockDamageModifier('bonusMod', { characterStats: { bonusDMG: 0.20 } })
+      const mods = [mod]
+
+      const aggregated: any = buildAggregatedFromModifiers(mods)
+
+      const action = createMockAction('Test', { multiplier: 1, scaling: 'ATK', elements: ['GLACIO'], dmgTypes: ['BASIC'] })
+      const full = calculateDamage({ action, name: 'X', stats: baseStats, damageModifiers: mods, modifierCharacterStats: aggregated, modifierEnemyStats: {}, enemy, snapshotId: 1 })
+
+      const withoutAgg: any = buildAggregatedWithoutModifier(mod, aggregated)
+
+      const without = calculateDamage({ action, name: 'X', stats: baseStats, damageModifiers: [], modifierCharacterStats: withoutAgg, modifierEnemyStats: {}, enemy, snapshotId: 1 })
+
+      expect(full.damageEvent.contributions).toHaveProperty('bonusMod')
+      const contrib = full.damageEvent.contributions['bonusMod']
+      assertContribution(contrib, full.damageEvent, without.damageEvent)
+    })
+
+    it('amplifyDMG and totalMultiplierDMG numeric correctness', () => {
+      const m1 = createMockDamageModifier('amp', { characterStats: { amplifyDMG: 0.25 } })
+      const m2 = createMockDamageModifier('total', { characterStats: { totalMultiplierDMG: 1.20 } })
+      const mods = [m1, m2]
+
+      const aggregated: any = buildAggregatedFromModifiers(mods)
+
+      const action = createMockAction('Test', { multiplier: 1, scaling: 'ATK', elements: ['GLACIO'], dmgTypes: ['BASIC'] })
+      const full = calculateDamage({ action, name: 'X', stats: baseStats, damageModifiers: mods, modifierCharacterStats: aggregated, modifierEnemyStats: {}, enemy, snapshotId: 1 })
+
+      // amp
+      const withoutAmp: any = buildAggregatedWithoutModifier(m1, aggregated)
+      const resWithoutAmp = calculateDamage({ action, name: 'X', stats: baseStats, damageModifiers: [], modifierCharacterStats: withoutAmp, modifierEnemyStats: {}, enemy, snapshotId: 1 })
+      assertContribution(full.damageEvent.contributions['amp'], full.damageEvent, resWithoutAmp.damageEvent)
+
+      // total
+      const withoutTotal: any = buildAggregatedWithoutModifier(m2, aggregated)
+      const resWithoutTotal = calculateDamage({ action, name: 'X', stats: baseStats, damageModifiers: [], modifierCharacterStats: withoutTotal, modifierEnemyStats: {}, enemy, snapshotId: 1 })
+      assertContribution(full.damageEvent.contributions['total'], full.damageEvent, resWithoutTotal.damageEvent)
+    })
+
+    it('elemental and crit stats numeric match removal', () => {
+      const m1 = createMockDamageModifier('glacioBonus', { characterStats: { glacioBonusDMG: 0.50 } })
+      const m2 = createMockDamageModifier('critStuff', { characterStats: { critRate: 0.30, critDamage: 0.50 } })
+      const mods = [m1, m2]
+
+      const aggregated: any = buildAggregatedFromModifiers(mods)
+
+      const action = createMockAction('Test', { multiplier: 1, scaling: 'ATK', elements: ['GLACIO'], dmgTypes: ['BASIC'] })
+      const full = calculateDamage({ action, name: 'X', stats: baseStats, damageModifiers: mods, modifierCharacterStats: aggregated, modifierEnemyStats: {}, enemy, snapshotId: 1 })
+
+      const withoutG: any = buildAggregatedWithoutModifier(m1, aggregated)
+      const resWithoutG = calculateDamage({ action, name: 'X', stats: baseStats, damageModifiers: [], modifierCharacterStats: withoutG, modifierEnemyStats: {}, enemy, snapshotId: 1 })
+      assertContribution(full.damageEvent.contributions['glacioBonus'], full.damageEvent, resWithoutG.damageEvent)
+
+      // critStuff
+      const withoutC: any = buildAggregatedWithoutModifier(m2, aggregated)
+      const resWithoutC = calculateDamage({ action, name: 'X', stats: baseStats, damageModifiers: [], modifierCharacterStats: withoutC, modifierEnemyStats: {}, enemy, snapshotId: 1 })
+      assertContribution(full.damageEvent.contributions['critStuff'], full.damageEvent, resWithoutC.damageEvent)
+      // crit contribution should be present
+      expect(full.damageEvent.contributions['critStuff'].crit_damage_contributed).toBeGreaterThanOrEqual(0)
+    })
+
+    it('flat ATK numeric match removal', () => {
+      const m = createMockDamageModifier('flatATK', { characterStats: { flatATK: 200 } })
+      const mods = [m]
+
+      const aggregated: any = buildAggregatedFromModifiers(mods)
+      const action = createMockAction('Test', { multiplier: 1, scaling: 'ATK', elements: ['GLACIO'], dmgTypes: ['BASIC'] })
+      const full = calculateDamage({ action, name: 'X', stats: baseStats, damageModifiers: mods, modifierCharacterStats: aggregated, modifierEnemyStats: {}, enemy, snapshotId: 1 })
+
+      const without: any = buildAggregatedWithoutModifier(m, aggregated)
+      const resWithout = calculateDamage({ action, name: 'X', stats: baseStats, damageModifiers: [], modifierCharacterStats: without, modifierEnemyStats: {}, enemy, snapshotId: 1 })
+      assertContribution(full.damageEvent.contributions['flatATK'], full.damageEvent, resWithout.damageEvent)
+    })
+
+    it('multiple modifiers produce numerically-correct contributions', () => {
+      const mods = [
+        createMockDamageModifier('b', { characterStats: { bonusDMG: 0.10 } }),
+        createMockDamageModifier('a', { characterStats: { amplifyDMG: 0.15 } }),
+        createMockDamageModifier('t', { characterStats: { totalMultiplierDMG: 1.10 } })
+      ]
+
+      const aggregated: any = buildAggregatedFromModifiers(mods)
+
+      const action = createMockAction('Test', { multiplier: 1, scaling: 'ATK', elements: ['GLACIO'], dmgTypes: ['BASIC'] })
+      const full = calculateDamage({ action, name: 'X', stats: baseStats, damageModifiers: mods, modifierCharacterStats: aggregated, modifierEnemyStats: {}, enemy, snapshotId: 1 })
+
+      for (const m of mods) {
+        const withoutAgg: any = buildAggregatedWithoutModifier(m, aggregated)
+        const resWithout = calculateDamage({ action, name: 'X', stats: baseStats, damageModifiers: [], modifierCharacterStats: withoutAgg, modifierEnemyStats: {}, enemy, snapshotId: 1 })
+        const expectVal = full.damageEvent.average - resWithout.damageEvent.average
+        expect(full.damageEvent.contributions).toHaveProperty(m.source)
+        assertContribution(full.damageEvent.contributions[m.source], full.damageEvent, resWithout.damageEvent)
+      }
+    })
+  })
+
+  // ========== Damage Calculator ================================================================================================
+
+  describe('damageCalculator (integration)', () => {
+    // TODO - test all 3 scaling types
+    // TODO - test defensive stats interactions
+    // TODO - what happens to elemental RES when your dmg type has multiple elements? Refuse multiple elements?
+    it('basic calculateDamage returns a valid result with defaults', () => {
+      const action = createMockAction('Test Action')
+      const name = 'Test Character Dealer'
+      const stats = createMockCharacterStats()
+      const damageModifiers = createMockDamageModifierList(3)
+      const modifierCharacterStats = createMockCharacterStats()
+      const modifierEnemyStats = createMockEnemyStats()
+      const enemy = createMockEnemy('Test Enemy')
+      const snapshotId = 1
+
+      const result = calculateDamage({ action, name, stats, damageModifiers, modifierCharacterStats, modifierEnemyStats, enemy, snapshotId })
+
+      expect(result.average).toBeGreaterThanOrEqual(0)
+      expect(result.damageEvent).toHaveProperty('actionName', action.name)
+    })
+
+    it('should work for carlotta case 1', () => {
+      const action = createMockAction('Test Action Basic 1', { multiplier: 0.5408, scaling: 'ATK', elements: ['GLACIO'] })
+      const name = 'Test Dealer: Carlotta'
+      const stats = createMockCharacterStats({ baseATK: 0, flatATK: 2409, critRate: 0, critDamage: 2.678, basicBonusDMG: 0.064, glacioBonusDMG: 0.72 })
+
+      const damageModifiers = createMockDamageModifierList(3)
+      const modifierCharacterStats = {}
+      const modifierEnemyStats = {}
+      const enemy = createMockEnemy('Test Enemy')
+      const snapshotId = 1
+
+      const { average, damageEvent } = calculateDamage({ action, name, stats, damageModifiers, modifierCharacterStats, modifierEnemyStats, enemy, snapshotId })
+
+      expect(average).toBeGreaterThanOrEqual(1063 - 1)
+      expect(average).toBeLessThanOrEqual(1063 + 1)
+    })
+
+    it('should work for carlotta case 2', () => {
+      const action = createMockAction('Test Action Basic 1', { multiplier: 0.5408, scaling: 'ATK', elements: ['GLACIO'] })
+      const name = 'Test Dealer: Carlotta'
+      const stats = createMockCharacterStats({ baseATK: 0, flatATK: 2409, critRate: 1.00, critDamage: 2.678, basicBonusDMG: 0.064, glacioBonusDMG: 0.72 })
+
+      const damageModifiers = createMockDamageModifierList(3)
+      const modifierCharacterStats = { flatATK: 262, amplifyDMG: 0.25, bonusDMG: 0.40, critDamage: 0.52 }
+      const modifierEnemyStats = {}
+      const enemy = createMockEnemy('Test Enemy')
+      const snapshotId = 1
+
+      const { average, damageEvent } = calculateDamage({ action, name, stats, damageModifiers, modifierCharacterStats, modifierEnemyStats, enemy, snapshotId })
+
+      expect(average).toBeGreaterThanOrEqual(5767 - 1)
+      expect(average).toBeLessThanOrEqual(5767 + 1)
+    })
+
+    it('should work for cartethyia case 1', () => {
+      const action = createMockAction('Test Action Basic 1', { multiplier: 0.0717, scaling: 'HP', elements: ['AERO'] })
+      const name = 'Test Dealer: Cartethyia'
+      const stats = createMockCharacterStats({ baseHP: 0, flatHP: 45120, critRate: 1.00, critDamage: 2.226, basicBonusDMG: 0.33, aeroBonusDMG: 0.90, defIgnore: 0.08 })
+
+      const damageModifiers = createMockDamageModifierList(3)
+      const modifierCharacterStats = {}
+      const modifierEnemyStats = {}
+      const enemy = createMockEnemy('Test Enemy')
+      const snapshotId = 1
+
+      const { average, damageEvent } = calculateDamage({ action, name, stats, damageModifiers, modifierCharacterStats, modifierEnemyStats, enemy, snapshotId })
+
+      expect(average).toBeGreaterThanOrEqual(7644 - 1)
+      expect(average).toBeLessThanOrEqual(7644 + 1)
+    })
+
+    it('should work for cartethyia case 2', () => {
+      const action = createMockAction('Test Action Basic 1', { multiplier: 0.0717, scaling: 'HP', elements: ['AERO'] })
+      const name = 'Test Dealer: Cartethyia'
+      const stats = createMockCharacterStats({ baseHP: 0, flatHP: 45120, critRate: 1.00, critDamage: 2.226, basicBonusDMG: 0.33, aeroBonusDMG: 0.90, defIgnore: 0.08 })
+
+      const damageModifiers = createMockDamageModifierList(3)
+      const modifierCharacterStats = { bonusDMG: 0.30, aeroBonusDMG: 0.30, amplifyDMG: 0.20 }
+      const modifierEnemyStats = {}
+      const enemy = createMockEnemy('Test Enemy')
+      const snapshotId = 1
+
+      const { average, damageEvent } = calculateDamage({ action, name, stats, damageModifiers, modifierCharacterStats, modifierEnemyStats, enemy, snapshotId })
+
+      expect(average).toBeGreaterThanOrEqual(11641 - 1)
+      expect(average).toBeLessThanOrEqual(11641 + 1)
+    })
+
+    it('should correctly apply everything at once', () => {
+      const action = createMockAction('Test Action Everything', {
+        castTime: 1.0,
+        multiplier: 0.50,
+        scaling: 'ATK',
+        elements: ['AERO', 'GLACIO'],
+        dmgTypes: ['SKILL', 'NEGATIVE_STATUS'],
+        cooldown: 10,
+      })
+
+      const name = 'Test Dealer: Cartethyia'
+
+      const stats = createMockCharacterStats({
+        baseATK: 1000,
+        flatATK: 100,
+        bonusATK: 0.50,
+        amplifyATK: 0.20,
+        totalMultiplierATK: 1.10,
+
+        baseHP: 0,
+        flatHP: 0,
+        bonusHP: 0,
+        amplifyHP: 0,
+        totalMultiplierHP: 1.00,
+
+        baseDEF: 0,
+        flatDEF: 0,
+        bonusDEF: 0,
+        amplifyDEF: 0,
+        totalMultiplierDEF: 1.00,
+
+        critRate: 1.00,
+        critDamage: 2.00,
+
+        bonusDMG: 0.15,
+        amplifyDMG: 0.15,
+        totalMultiplierDMG: 1.05,
+
+        defIgnore: 0.10,
+        elementalResPEN: 0,
+        resistancePEN: 0,
+
+        basicBonusDMG: 0.35,
+        basicAmplifyDMG: 0.25,
+        basicTotalMultiplierDMG: 1.07,
+
+        heavyBonusDMG: 0.08,
+        heavyAmplifyDMG: 0.16,
+        heavyTotalMultiplierDMG: 1.03,
+
+        skillBonusDMG: 0.55,
+        skillAmplifyDMG: 0.35,
+        skillTotalMultiplierDMG: 1.04,
+
+        liberationBonusDMG: 0.09,
+        liberationAmplifyDMG: 0.13,
+        liberationTotalMultiplierDMG: 1.24,
+
+        coordinatedBonusDMG: 0.21,
+        coordinatedAmplifyDMG: 0.22,
+        coordinatedTotalMultiplierDMG: 1.13,
+
+        echoBonusDMG: 0.40,
+        echoAmplifyDMG: 0.30,
+        echoTotalMultiplierDMG: 1.16,
+
+        introBonusDMG: 0.80,
+        introAmplifyDMG: 0.31,
+        introTotalMultiplierDMG: 1.19,
+
+        outroBonusDMG: 0.42,
+        outroAmplifyDMG: 0.15,
+        outroTotalMultiplierDMG: 1.91,
+
+        aeroErosionBonusDMG: 0.25,
+        aeroErosionAmplifyDMG: 0.26,
+        aeroErosionTotalMultiplierDMG: 1.27,
+
+        spectroFrazzleBonusDMG: 0.28,
+        spectroFrazzleAmplifyDMG: 0.29,
+        spectroFrazzleTotalMultiplierDMG: 1.30,
+
+        havocBaneBonusDMG: 0.31,
+        havocBaneAmplifyDMG: 0.32,
+        havocBaneTotalMultiplierDMG: 1.33,
+
+        glacioChafeBonusDMG: 0.34,
+        glacioChafeAmplifyDMG: 0.35,
+        glacioChafeTotalMultiplierDMG: 1.36,
+
+        fusionBurstBonusDMG: 0.37,
+        fusionBurstAmplifyDMG: 0.38,
+        fusionBurstTotalMultiplierDMG: 1.39,
+
+        electroFlareBonusDMG: 0.40,
+        electroFlareAmplifyDMG: 0.41,
+        electroFlareTotalMultiplierDMG: 1.42,
+
+        spectroBonusDMG: 0.43,
+        spectroAmplifyDMG: 0.44,
+        spectroTotalMultiplierDMG: 1.45,
+
+        fusionBonusDMG: 0.46,
+        fusionAmplifyDMG: 0.47,
+        fusionTotalMultiplierDMG: 1.48,
+
+        aeroBonusDMG: 0.49,
+        aeroAmplifyDMG: 0.50,
+        aeroTotalMultiplierDMG: 1.51,
+
+        glacioBonusDMG: 0.52,
+        glacioAmplifyDMG: 0.53,
+        glacioTotalMultiplierDMG: 1.54,
+
+        electroBonusDMG: 0.55,
+        electroAmplifyDMG: 0.56,
+        electroTotalMultiplierDMG: 1.57,
+
+        havocBonusDMG: 0.58,
+        havocAmplifyDMG: 0.59,
+        havocTotalMultiplierDMG: 1.60,
+
+        energyPercent: 1.50
+      })
+
+      const damageModifiers = createMockDamageModifierList(3)
+
+      const modifierCharacterStats = {}
+
+      const modifierEnemyStats = {}
+
+      const enemy = createMockEnemy('Test Enemy')
+
+      const snapshotId = 1
+
+      const { average, damageEvent } = calculateDamage({ action, name, stats, damageModifiers, modifierCharacterStats, modifierEnemyStats, enemy, snapshotId })
+
+
+      // ATK x actionMultiplier x (1 + bonus%) x critdmg x (1 + amp%) x (1 - RES) x (DEF multiplier) x (Product of all total multipliers)
+      // 2080 x 0.50 x 3.3 x 2 x 3.14 x 0.90 x 0.5343082115 x 4.385942521 = 45459
+      expect(average).toBeGreaterThanOrEqual(45459 - 1)
+      expect(average).toBeLessThanOrEqual(45459 + 1)
+    })
+  })
 })
+
