@@ -35,7 +35,7 @@ export function buildStepContext(
     }
   }
 
-  return {
+  const ctx: StepContext = {
     snapshotId,
 
     current,
@@ -52,8 +52,20 @@ export function buildStepContext(
 
     negativeStatusesInAction,
 
+    damageModifiers: [],
+    aggregatedCharacterModifiers: {},
+    aggregatedEnemyModifiers: {},
+
     logs: []
   }
+
+  ctx.logs.push({
+    resolver: "buildStepContext",
+    message: `Context built for snapshot ${snapshotId}`,
+    details: { character: character.name, action: action.name }
+  })
+
+  return ctx
 }
 
 // ========== Resolver 1: Time ================================================================================================
@@ -76,97 +88,57 @@ export function resolveTime(ctx: StepContext): void {
 // ========== Resolver 2: Damage Modifiers ====================================================================================
 
 export function resolveDamageModifiers(ctx: StepContext) {
-  // Start with base stats
-  const aggregatedCharacterStats: CharacterStats = { ...ctx.character.stats }
-  const aggregatedEnemyStats: EnemyStats = { ...ctx.enemy.stats }
+  const characterModifiers = initializeEmptyCharacterStats()
+  const enemyModifiers = initializeEmptyEnemyStats()
 
-  // Collect all damage modifiers from character, action, and negative statuses
   const allModifiers: DamageModifier[] = [
-    ...ctx.character.damageModifiers,
-    ...ctx.action.damageModifiers,
-    ...ctx.negativeStatusesInAction.flatMap(ns => ns.negativeStatus.damageModifiers)
+    ...(ctx.character.damageModifiers ?? []),
+    ...(ctx.action.damageModifiers ?? []),
+    ...ctx.negativeStatusesInAction.flatMap(ns => ns.negativeStatus.damageModifiers ?? [])
   ]
 
-  // -------- Apply modifiers --------
-  const charAdditive: Partial<CharacterStats> = {}
-  const charMultiplicative: Partial<CharacterStats> = {}
+  // Store all collected modifiers in context for damage calculator to use
+  ctx.damageModifiers = allModifiers
 
-  const enemyAdditive: Partial<EnemyStats> = {}
-  const enemyMultiplicative: Partial<EnemyStats> = {}
-
-  allModifiers.forEach(modifier => {
-    const times = modifier.condition?.(ctx) ?? 1
-    if (times === 0) return
-
-    // -------- Character Stats --------
+  for (const modifier of allModifiers) {
+    const conditionMultiplier = modifier.condition ? modifier.condition(ctx) : 1
+    
     if (modifier.characterStats) {
-      // Additive
-      if (modifier.characterStats.add) {
-        Object.entries(modifier.characterStats.add).forEach(([key, value]) => {
-          charAdditive[key as keyof CharacterStats] =
-            (charAdditive[key as keyof CharacterStats] ?? 0) + (value as number) * times
-        })
-      }
-
-      // Multiplicative (linear stacking)
-      if (modifier.characterStats.multiply) {
-        Object.entries(modifier.characterStats.multiply).forEach(([key, value]) => {
-          charMultiplicative[key as keyof CharacterStats] =
-            (charMultiplicative[key as keyof CharacterStats] ?? 1) * (1 + ((value as number) - 1) * times)
-        })
+      for (const [key, value] of Object.entries(modifier.characterStats)) {
+        const statKey = key as keyof CharacterStats
+        const modValue = (value as number) * conditionMultiplier
+        
+        characterModifiers[statKey] = aggregateStat(
+          characterModifiers[statKey] as number | undefined,
+          modValue,
+          statKey
+        ) as any
       }
     }
 
-    // -------- Enemy Stats --------
     if (modifier.enemyStats) {
-      if (modifier.enemyStats.add) {
-        Object.entries(modifier.enemyStats.add).forEach(([key, value]) => {
-          enemyAdditive[key as keyof EnemyStats] =
-            (enemyAdditive[key as keyof EnemyStats] ?? 0) + (value as number) * times
-        })
-      }
-      if (modifier.enemyStats.multiply) {
-        Object.entries(modifier.enemyStats.multiply).forEach(([key, value]) => {
-          enemyMultiplicative[key as keyof EnemyStats] =
-            (enemyMultiplicative[key as keyof EnemyStats] ?? 1) * (1 + ((value as number) - 1) * times)
-        })
+      for (const [key, value] of Object.entries(modifier.enemyStats)) {
+        const statKey = key as keyof EnemyStats
+        const modValue = (value as number) * conditionMultiplier
+        
+        enemyModifiers[statKey] = aggregateStat(
+          enemyModifiers[statKey] as number | undefined,
+          modValue,
+          statKey
+        ) as any
       }
     }
+  }
 
-    ctx.logs.push({
-      resolver: "resolveDamageModifiers",
-      message: `Applied modifier from ${modifier.source} with times ${times}`,
-      details: { modifier }
-    })
-  })
-
-  // -------- Apply aggregated effects --------
-  // Character
-  Object.entries(charAdditive).forEach(([key, value]) => {
-    ;(aggregatedCharacterStats as any)[key] += value
-  })
-  Object.entries(charMultiplicative).forEach(([key, value]) => {
-    ;(aggregatedCharacterStats as any)[key] *= value
-  })
-
-  // Enemy
-  Object.entries(enemyAdditive).forEach(([key, value]) => {
-    ;(aggregatedEnemyStats as any)[key] += value
-  })
-  Object.entries(enemyMultiplicative).forEach(([key, value]) => {
-    ;(aggregatedEnemyStats as any)[key] *= value
-  })
-
-  // Attach final stats to context
-  ctx.characterStats = aggregatedCharacterStats
-  ctx.enemyStats = aggregatedEnemyStats
+  ctx.aggregatedCharacterModifiers = characterModifiers
+  ctx.aggregatedEnemyModifiers = enemyModifiers
 
   ctx.logs.push({
     resolver: "resolveDamageModifiers",
-    message: "Final aggregated stats after all modifiers",
+    message: "Final aggregated modifiers collected",
     details: {
-      characterStats: aggregatedCharacterStats,
-      enemyStats: aggregatedEnemyStats
+      characterModifiers: ctx.aggregatedCharacterModifiers,
+      enemyModifiers: ctx.aggregatedEnemyModifiers
     }
   })
 }
@@ -174,18 +146,20 @@ export function resolveDamageModifiers(ctx: StepContext) {
 // ========== Resolver 3: Damage ==============================================================================================
 
 export function resolveDamage(ctx: StepContext, setDamageEvents: Dispatch<SetStateAction<DamageEvent[]>>): void {
-  // TODO - error checking
 
   const action = ctx.action
   const name = ctx.character.name
-  const stats = ctx.characterStats
+  const baseStats = ctx.character.stats
+  const damageModifiers = ctx.damageModifiers
+  const modifierCharacterStats = ctx.aggregatedCharacterModifiers
+  const modifierEnemyStats = ctx.aggregatedEnemyModifiers
   const enemy = ctx.enemy
   const snapshotId = ctx.snapshotId
   const prev = ctx.prev
   const current = ctx.current
   const toTime = ctx.toTime
 
-  const { average, damageEvent } = calculateDamage({ action, name, stats, enemy, snapshotId })
+  const { average, damageEvent } = calculateDamage({ action, name, stats: baseStats, damageModifiers, modifierCharacterStats, modifierEnemyStats, enemy, snapshotId })
   setDamageEvents(prevEvents => [...prevEvents, damageEvent])
 
   const cumulativeDamage = prev.damage + average
@@ -313,4 +287,80 @@ export function resolveResources(ctx: StepContext): void {
 
 // ========== Resolver 8: Events ==============================================================================================
 
-// TODO
+
+
+
+
+
+
+
+
+// ========== Internal Helpers ================================================================================================
+
+function initializeEmptyCharacterStats(): Partial<CharacterStats> {
+  const stats: Partial<CharacterStats> = {
+    level: 0,
+    baseATK: 0, flatATK: 0, bonusATK: 0, amplifyATK: 0, totalMultiplierATK: 1.00,
+    baseHP: 0, flatHP: 0, bonusHP: 0, amplifyHP: 0, totalMultiplierHP: 1.00,
+    baseDEF: 0, flatDEF: 0, bonusDEF: 0, amplifyDEF: 0, totalMultiplierDEF: 1.00,
+    critRate: 0, critDamage: 0,
+    bonusDMG: 0, amplifyDMG: 0, totalMultiplierDMG: 1.00,
+    defIgnore: 0.00, elementalResPEN: 0.00, resistancePEN: 0.00,
+    basicBonusDMG: 0, basicAmplifyDMG: 0, basicTotalMultiplierDMG: 1.00,
+    heavyBonusDMG: 0, heavyAmplifyDMG: 0, heavyTotalMultiplierDMG: 1.00,
+    skillBonusDMG: 0, skillAmplifyDMG: 0, skillTotalMultiplierDMG: 1.00,
+    liberationBonusDMG: 0, liberationAmplifyDMG: 0, liberationTotalMultiplierDMG: 1.00,
+    coordinatedBonusDMG: 0, coordinatedAmplifyDMG: 0, coordinatedTotalMultiplierDMG: 1.00,
+    echoBonusDMG: 0, echoAmplifyDMG: 0, echoTotalMultiplierDMG: 1.00,
+    introBonusDMG: 0, introAmplifyDMG: 0, introTotalMultiplierDMG: 1.00,
+    outroBonusDMG: 0, outroAmplifyDMG: 0, outroTotalMultiplierDMG: 1.00,
+    aeroErosionBonusDMG: 0, aeroErosionAmplifyDMG: 0, aeroErosionTotalMultiplierDMG: 1.00,
+    spectroFrazzleBonusDMG: 0, spectroFrazzleAmplifyDMG: 0, spectroFrazzleTotalMultiplierDMG: 1.00,
+    havocBaneBonusDMG: 0, havocBaneAmplifyDMG: 0, havocBaneTotalMultiplierDMG: 1.00,
+    glacioChafeBonusDMG: 0, glacioChafeAmplifyDMG: 0, glacioChafeTotalMultiplierDMG: 1.00,
+    fusionBurstBonusDMG: 0, fusionBurstAmplifyDMG: 0, fusionBurstTotalMultiplierDMG: 1.00,
+    electroFlareBonusDMG: 0, electroFlareAmplifyDMG: 0, electroFlareTotalMultiplierDMG: 1.00,
+    spectroBonusDMG: 0, spectroAmplifyDMG: 0, spectroTotalMultiplierDMG: 1.00,
+    fusionBonusDMG: 0, fusionAmplifyDMG: 0, fusionTotalMultiplierDMG: 1.00,
+    aeroBonusDMG: 0, aeroAmplifyDMG: 0, aeroTotalMultiplierDMG: 1.00,
+    glacioBonusDMG: 0, glacioAmplifyDMG: 0, glacioTotalMultiplierDMG: 1.00,
+    electroBonusDMG: 0, electroAmplifyDMG: 0, electroTotalMultiplierDMG: 1.00,
+    havocBonusDMG: 0, havocAmplifyDMG: 0, havocTotalMultiplierDMG: 1.00,
+    energyPercent: 0
+  }
+  return stats
+}
+
+function initializeEmptyEnemyStats(): Partial<EnemyStats> {
+  const stats: Partial<EnemyStats> = {
+    level: 0,
+    aeroRES: 0,
+    spectroRES: 0,
+    havocRES: 0,
+    glacioRES: 0,
+    fusionRES: 0,
+    electroRES: 0,
+    resistance: 0,
+    damageReduction: 0
+  }
+  return stats
+}
+
+export function aggregateStat(
+  currentValue: number | undefined,
+  incomingValue: number,
+  statKey: string
+): number {
+  const lowerKey = statKey.toLowerCase();
+  const isMultiplier = lowerKey.includes('totalmultiplier');
+  const isDamageReduction = lowerKey === 'damagereduction';
+
+  if (isDamageReduction) {
+    const current = currentValue ?? 0;
+    return 1 - (1 - current) * (1 - incomingValue);
+  }
+
+  const current = currentValue ?? (isMultiplier ? 1 : 0);
+
+  return isMultiplier ? current * incomingValue : current + incomingValue;
+}

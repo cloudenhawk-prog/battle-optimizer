@@ -10,8 +10,8 @@ export type Action = {
   castTime: number
   multiplier: number
   scaling: ScalingType
-  element: ElementType
-  dmgType: DamageType
+  elements: ElementType[]
+  dmgTypes: DamageType[]
   cooldown: number
 
   energyGenerated: EnergyGeneration[]
