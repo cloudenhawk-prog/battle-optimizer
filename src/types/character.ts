@@ -11,7 +11,7 @@ export type Character = {
   actions: Action[]
   buffs: Buff[]
   debuffs: Debuff[]
-  maxEnergies: Partial<Record<EnergyType, number>>;
+  maxEnergies: Partial<Record<EnergyType, number>>
   stats: CharacterStats
   damageModifiers: DamageModifier[]
 }

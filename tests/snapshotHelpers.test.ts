@@ -11,5 +11,5 @@
 // These manage the snapshot array that represents the rotation timeline
 
 describe('snapshotHelpers', () => {
-  it.todo('tests to be implemented');
-});
+  it.todo('tests to be implemented')
+})

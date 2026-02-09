@@ -8,5 +8,5 @@
 // These handle the energy/concerto/forte resource system
 
 describe('energyHelpers', () => {
-  it.todo('tests to be implemented');
-});
+  it.todo('tests to be implemented')
+})

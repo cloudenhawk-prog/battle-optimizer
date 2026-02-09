@@ -1,5 +1,5 @@
-import { buildStepContext, resolveTime, aggregateStat } from '../src/utils/hooks/resolvers';
-import type { StepContext } from '../src/types/stepContext';
+import { buildStepContext, resolveTime, aggregateStat } from '../src/utils/hooks/resolvers'
+import type { StepContext } from '../src/types/stepContext'
 import {
   createMockSnapshot,
   createMockCharacter,
@@ -7,7 +7,7 @@ import {
   createMockEnemy,
   createMockNegativeStatus,
   createMockActiveNegativeStatus,
-} from './testUtils';
+} from './testUtils'
 
 // ========== Resolver 0: Build StepContext ====================================================================================
 
@@ -18,14 +18,14 @@ describe('buildStepContext', () => {
   describe('Context Initialization', () => {
     it('should initialize context with all required references and calculated times', () => {
       // Arrange
-      const snapshotId = 5;
-      const current = createMockSnapshot({ id: '5' });
-      const prev = createMockSnapshot({ id: '4', toTime: 10 });
-      const character = createMockCharacter('TestChar');
-      const action = createMockAction('BasicAttack', { castTime: 2.5 });
-      const enemy = createMockEnemy();
-      const negativeStatuses = [];
-      const characterMap = { TestChar: character };
+      const snapshotId = 5
+      const current = createMockSnapshot({ id: '5' })
+      const prev = createMockSnapshot({ id: '4', toTime: 10 })
+      const character = createMockCharacter('TestChar')
+      const action = createMockAction('BasicAttack', { castTime: 2.5 })
+      const enemy = createMockEnemy()
+      const negativeStatuses = []
+      const characterMap = { TestChar: character }
 
       // Act
       const context = buildStepContext(
@@ -40,42 +40,42 @@ describe('buildStepContext', () => {
       );
 
       // Assert - context holds references (not copies)
-      expect(context.snapshotId).toBe(snapshotId);
-      expect(context.current).toBe(current);
-      expect(context.prev).toBe(prev);
-      expect(context.character).toBe(character);
-      expect(context.enemy).toBe(enemy);
-      expect(context.action).toBe(action);
-      expect(context.negativeStatusesInAction).toBe(negativeStatuses);
+      expect(context.snapshotId).toBe(snapshotId)
+      expect(context.current).toBe(current)
+      expect(context.prev).toBe(prev)
+      expect(context.character).toBe(character)
+      expect(context.enemy).toBe(enemy)
+      expect(context.action).toBe(action)
+      expect(context.negativeStatusesInAction).toBe(negativeStatuses)
       
       // Context times are calculated: prev.toTime + action.castTime
-      expect(context.fromTime).toBe(10);
-      expect(context.toTime).toBe(12.5);
+      expect(context.fromTime).toBe(10)
+      expect(context.toTime).toBe(12.5)
       
       // Modifiers initialized empty
-      expect(context.aggregatedCharacterModifiers).toBeDefined();
-      expect(context.aggregatedEnemyModifiers).toBeDefined();
-      expect(context.damageModifiers).toBeDefined();
-      expect(context.damageModifiers).toEqual([]);
+      expect(context.aggregatedCharacterModifiers).toBeDefined()
+      expect(context.aggregatedEnemyModifiers).toBeDefined()
+      expect(context.damageModifiers).toBeDefined()
+      expect(context.damageModifiers).toEqual([])
       
       // Logs initialized with entry
-      expect(context.logs.length).toBeGreaterThan(0);
-      expect(context.logs[0].resolver).toBe('buildStepContext');
-    });
+      expect(context.logs.length).toBeGreaterThan(0)
+      expect(context.logs[0].resolver).toBe('buildStepContext')
+    })
 
     it('should calculate context times correctly for various cast times', () => {
       const testCases = [
         { prevToTime: 0, castTime: 1.5, expectedFrom: 0, expectedTo: 1.5 },
         { prevToTime: 10.5, castTime: 2.25, expectedFrom: 10.5, expectedTo: 12.75 },
         { prevToTime: 5, castTime: 0, expectedFrom: 5, expectedTo: 5 },
-      ];
+      ]
 
       testCases.forEach(({ prevToTime, castTime, expectedFrom, expectedTo }) => {
-        const prev = createMockSnapshot({ id: '0', toTime: prevToTime });
-        const current = createMockSnapshot({ id: '1' });
-        const character = createMockCharacter('TestChar');
-        const action = createMockAction('Action', { castTime });
-        const characterMap = { TestChar: character };
+        const prev = createMockSnapshot({ id: '0', toTime: prevToTime })
+        const current = createMockSnapshot({ id: '1' })
+        const character = createMockCharacter('TestChar')
+        const action = createMockAction('Action', { castTime })
+        const characterMap = { TestChar: character }
 
         const context = buildStepContext(
           1,
@@ -86,22 +86,22 @@ describe('buildStepContext', () => {
           createMockEnemy(),
           [],
           characterMap
-        );
+        )
 
-        expect(context.fromTime).toBe(expectedFrom);
-        expect(context.toTime).toBe(expectedTo);
-      });
-    });
-  });
+        expect(context.fromTime).toBe(expectedFrom)
+        expect(context.toTime).toBe(expectedTo)
+      })
+    })
+  })
 
   describe('Allies Filtering', () => {
     it('should exclude current character and include all others from character map', () => {
-      const current = createMockSnapshot({ id: '1' });
-      const prev = createMockSnapshot({ id: '0', toTime: 0 });
-      const character = createMockCharacter('MainChar');
-      const ally1 = createMockCharacter('Ally1');
-      const ally2 = createMockCharacter('Ally2');
-      const characterMap = { MainChar: character, Ally1: ally1, Ally2: ally2 };
+      const current = createMockSnapshot({ id: '1' })
+      const prev = createMockSnapshot({ id: '0', toTime: 0 })
+      const character = createMockCharacter('MainChar')
+      const ally1 = createMockCharacter('Ally1')
+      const ally2 = createMockCharacter('Ally2')
+      const characterMap = { MainChar: character, Ally1: ally1, Ally2: ally2 }
 
       const context = buildStepContext(
         1,
@@ -112,16 +112,16 @@ describe('buildStepContext', () => {
         createMockEnemy(),
         [],
         characterMap
-      );
+      )
 
-      expect(context.allies).toHaveLength(2);
-      expect(context.allies).toContain(ally1);
-      expect(context.allies).toContain(ally2);
-      expect(context.allies).not.toContain(character);
-    });
+      expect(context.allies).toHaveLength(2)
+      expect(context.allies).toContain(ally1)
+      expect(context.allies).toContain(ally2)
+      expect(context.allies).not.toContain(character)
+    })
 
     it('should handle edge cases: solo character and empty map', () => {
-      const solo = createMockCharacter('Solo');
+      const solo = createMockCharacter('Solo')
       const ctx1 = buildStepContext(
         1,
         createMockSnapshot({ id: '1' }),
@@ -131,8 +131,8 @@ describe('buildStepContext', () => {
         createMockEnemy(),
         [],
         { Solo: solo }
-      );
-      expect(ctx1.allies).toEqual([]);
+      )
+      expect(ctx1.allies).toEqual([])
 
       // Empty map
       const ctx2 = buildStepContext(
@@ -144,10 +144,10 @@ describe('buildStepContext', () => {
         createMockEnemy(),
         [],
         {}
-      );
-      expect(ctx2.allies).toEqual([]);
-    });
-  });
+      )
+      expect(ctx2.allies).toEqual([])
+    })
+  })
 
   describe('Snapshot Mutation Contract', () => {
     it('should ONLY mutate current.action, leaving all other snapshot fields untouched', () => {
@@ -163,35 +163,35 @@ describe('buildStepContext', () => {
         buffs: { testBuff: 10 },
         debuffs: { testDebuff: 5 },
         negativeStatuses: { burn: 3 },
-      });
-      const prev = createMockSnapshot({ id: '4', toTime: 10 });
-      const character = createMockCharacter('TestChar');
-      const action = createMockAction('NewAction', { castTime: 2.0 });
-      const characterMap = { TestChar: character };
+      })
+      const prev = createMockSnapshot({ id: '4', toTime: 10 })
+      const character = createMockCharacter('TestChar')
+      const action = createMockAction('NewAction', { castTime: 2.0 })
+      const characterMap = { TestChar: character }
 
       // Act
-      buildStepContext(5, current, prev, character, action, createMockEnemy(), [], characterMap);
+      buildStepContext(5, current, prev, character, action, createMockEnemy(), [], characterMap)
 
       // Assert - ONLY action changes
-      expect(current.action).toBe('NewAction');
-      expect(current.fromTime).toBe(999);
-      expect(current.toTime).toBe(888);
-      expect(current.damage).toBe(1234);
-      expect(current.dps).toBe(567);
-      expect(current.charactersEnergies).toEqual({ concerto: 50 });
-      expect(current.buffs).toEqual({ testBuff: 10 });
-      expect(current.debuffs).toEqual({ testDebuff: 5 });
-      expect(current.negativeStatuses).toEqual({ burn: 3 });
-    });
+      expect(current.action).toBe('NewAction')
+      expect(current.fromTime).toBe(999)
+      expect(current.toTime).toBe(888)
+      expect(current.damage).toBe(1234)
+      expect(current.dps).toBe(567)
+      expect(current.charactersEnergies).toEqual({ concerto: 50 })
+      expect(current.buffs).toEqual({ testBuff: 10 })
+      expect(current.debuffs).toEqual({ testDebuff: 5 })
+      expect(current.negativeStatuses).toEqual({ burn: 3 })
+    })
 
     it('should never mutate previous snapshot', () => {
       const prev = createMockSnapshot({
         id: '4',
         toTime: 10,
-        damage: 500,
+        damage: 500,;
         action: 'PrevAction',
-      });
-      const prevSnapshot = JSON.parse(JSON.stringify(prev)); // Deep copy for comparison
+      })
+      const prevSnapshot = JSON.parse(JSON.stringify(prev))
 
       buildStepContext(
         5,
@@ -204,10 +204,10 @@ describe('buildStepContext', () => {
         { Char: createMockCharacter('Char') }
       );
 
-      expect(prev).toEqual(prevSnapshot);
-    });
-  });
-});
+      expect(prev).toEqual(prevSnapshot)
+    })
+  })
+})
 
 // ========== Resolver 1: Resolve Time =========================================================================================
 
@@ -218,47 +218,47 @@ describe('resolveTime', () => {
         { prevToTime: 10, castTime: 2.5, expectedFrom: 10, expectedTo: 12.5 },
         { prevToTime: 0, castTime: 1.5, expectedFrom: 0, expectedTo: 1.5 },
         { prevToTime: 5.125, castTime: 0.375, expectedFrom: 5.125, expectedTo: 5.5 },
-        { prevToTime: 10, castTime: 0, expectedFrom: 10, expectedTo: 10 }, // Instant
-      ];
+        { prevToTime: 10, castTime: 0, expectedFrom: 10, expectedTo: 10 },
+      ]
 
       testCases.forEach(({ prevToTime, castTime, expectedFrom, expectedTo }) => {
-        const prev = createMockSnapshot({ id: '0', toTime: prevToTime });
-        const current = createMockSnapshot({ id: '1' });
-        const character = createMockCharacter('Char');
-        const action = createMockAction('Action', { castTime });
-        const characterMap = { Char: character };
+        const prev = createMockSnapshot({ id: '0', toTime: prevToTime })
+        const current = createMockSnapshot({ id: '1' })
+        const character = createMockCharacter('Char')
+        const action = createMockAction('Action', { castTime })
+        const characterMap = { Char: character }
 
         const context = buildStepContext(1, current, prev, character, action, createMockEnemy(), [], characterMap);
-        resolveTime(context);
+        resolveTime(context)
 
-        expect(current.fromTime).toBe(expectedFrom);
-        expect(current.toTime).toBe(expectedTo);
-      });
-    });
+        expect(current.fromTime).toBe(expectedFrom)
+        expect(current.toTime).toBe(expectedTo)
+      })
+    })
 
     it('should recalculate times from source data, not trust existing snapshot values', () => {
       // Arrange - snapshot has wrong pre-existing values
-      const prev = createMockSnapshot({ id: '4', toTime: 10.0 });
-      const current = createMockSnapshot({ id: '5', fromTime: 999, toTime: 888 });
-      const character = createMockCharacter('Char');
-      const action = createMockAction('Action', { castTime: 2.0 });
-      const characterMap = { Char: character };
+      const prev = createMockSnapshot({ id: '4', toTime: 10.0 })
+      const current = createMockSnapshot({ id: '5', fromTime: 999, toTime: 888 })
+      const character = createMockCharacter('Char')
+      const action = createMockAction('Action', { castTime: 2.0 })
+      const characterMap = { Char: character }
 
-      const context = buildStepContext(5, current, prev, character, action, createMockEnemy(), [], characterMap);
+      const context = buildStepContext(5, current, prev, character, action, createMockEnemy(), [], characterMap)
 
       // Act
-      resolveTime(context);
+      resolveTime(context)
 
       // Assert - wrong values overwritten with correct calculation
-      expect(current.fromTime).toBe(10.0);
-      expect(current.toTime).toBe(12.0);
-    });
-  });
+      expect(current.fromTime).toBe(10.0)
+      expect(current.toTime).toBe(12.0)
+    })
+  })
 
   describe('Snapshot Mutation Contract', () => {
     it('should ONLY mutate fromTime and toTime, leaving all other snapshot fields untouched', () => {
       // Arrange
-      const prev = createMockSnapshot({ id: '4', toTime: 10.0 });
+      const prev = createMockSnapshot({ id: '4', toTime: 10.0 })
       const current = createMockSnapshot({
         id: '5',
         fromTime: 0,
@@ -269,26 +269,26 @@ describe('resolveTime', () => {
         buffs: { buff1: 5 },
         debuffs: { debuff1: 3 },
         negativeStatuses: { burn: 2 },
-      });
-      const character = createMockCharacter('Char');
-      const action = createMockAction('Action', { castTime: 2.5 });
-      const characterMap = { Char: character };
+      })
+      const character = createMockCharacter('Char')
+      const action = createMockAction('Action', { castTime: 2.5 })
+      const characterMap = { Char: character }
 
-      const context = buildStepContext(5, current, prev, character, action, createMockEnemy(), [], characterMap);
+      const context = buildStepContext(5, current, prev, character, action, createMockEnemy(), [], characterMap)
 
       // Act
-      resolveTime(context);
+      resolveTime(context)
 
       // Assert - ONLY time fields change
-      expect(current.fromTime).toBe(10.0);
-      expect(current.toTime).toBe(12.5);
-      expect(current.damage).toBe(500);
-      expect(current.dps).toBe(25);
-      expect(current.charactersEnergies).toEqual({ concerto: 80 });
-      expect(current.buffs).toEqual({ buff1: 5 });
-      expect(current.debuffs).toEqual({ debuff1: 3 });
-      expect(current.negativeStatuses).toEqual({ burn: 2 });
-    });
+      expect(current.fromTime).toBe(10.0)
+      expect(current.toTime).toBe(12.5)
+      expect(current.damage).toBe(500)
+      expect(current.dps).toBe(25)
+      expect(current.charactersEnergies).toEqual({ concerto: 80 })
+      expect(current.buffs).toEqual({ buff1: 5 })
+      expect(current.debuffs).toEqual({ debuff1: 3 })
+      expect(current.negativeStatuses).toEqual({ burn: 2 })
+    })
 
     it('should never mutate previous snapshot', () => {
       const prev = createMockSnapshot({
@@ -296,8 +296,8 @@ describe('resolveTime', () => {
         toTime: 10.0,
         fromTime: 8.0,
         damage: 1000,
-      });
-      const prevSnapshot = JSON.parse(JSON.stringify(prev));
+      })
+      const prevSnapshot = JSON.parse(JSON.stringify(prev))
 
       const context = buildStepContext(
         5,
@@ -308,39 +308,39 @@ describe('resolveTime', () => {
         createMockEnemy(),
         [],
         { Char: createMockCharacter('Char') }
-      );
+      )
 
-      resolveTime(context);
+      resolveTime(context)
 
-      expect(prev).toEqual(prevSnapshot);
-    });
-  });
+      expect(prev).toEqual(prevSnapshot)
+    })
+  })
 
   describe('Context Behavior', () => {
     it('should append log entry without mutating context time values', () => {
-      const prev = createMockSnapshot({ id: '4', toTime: 10 });
-      const current = createMockSnapshot({ id: '5' });
-      const character = createMockCharacter('Char');
-      const action = createMockAction('Action', { castTime: 2.0 });
-      const characterMap = { Char: character };
+      const prev = createMockSnapshot({ id: '4', toTime: 10 })
+      const current = createMockSnapshot({ id: '5' })
+      const character = createMockCharacter('Char')
+      const action = createMockAction('Action', { castTime: 2.0 })
+      const characterMap = { Char: character }
 
       const context = buildStepContext(5, current, prev, character, action, createMockEnemy(), [], characterMap);
 
-      const initialLogCount = context.logs.length;
-      const contextFromBefore = context.fromTime;
-      const contextToBefore = context.toTime;
+      const initialLogCount = context.logs.length
+      const contextFromBefore = context.fromTime
+      const contextToBefore = context.toTime
 
-      resolveTime(context);
+      resolveTime(context)
 
       // Log appended
-      expect(context.logs.length).toBe(initialLogCount + 1);
-      expect(context.logs[context.logs.length - 1].resolver).toBe('resolveTime');
+      expect(context.logs.length).toBe(initialLogCount + 1)
+      expect(context.logs[context.logs.length - 1].resolver).toBe('resolveTime')
 
       // Context times unchanged
-      expect(context.fromTime).toBe(contextFromBefore);
-      expect(context.toTime).toBe(contextToBefore);
-    });
-  });
+      expect(context.fromTime).toBe(contextFromBefore)
+      expect(context.toTime).toBe(contextToBefore)
+    })
+  })
 
   describe('Validation', () => {
     it('should throw when context is invalid', () => {

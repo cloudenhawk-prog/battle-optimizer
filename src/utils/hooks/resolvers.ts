@@ -377,16 +377,16 @@ export function aggregateStat(
   incomingValue: number,
   statKey: string
 ): number {
-  const lowerKey = statKey.toLowerCase();
-  const isMultiplier = lowerKey.includes('totalmultiplier');
-  const isDamageReduction = lowerKey === 'damagereduction';
+  const lowerKey = statKey.toLowerCase()
+  const isMultiplier = lowerKey.includes('totalmultiplier')
+  const isDamageReduction = lowerKey === 'damagereduction'
 
   if (isDamageReduction) {
-    const current = currentValue ?? 0;
-    return 1 - (1 - current) * (1 - incomingValue);
+    const current = currentValue ?? 0
+    return 1 - (1 - current) * (1 - incomingValue)
   }
 
-  const current = currentValue ?? (isMultiplier ? 1 : 0);
+  const current = currentValue ?? (isMultiplier ? 1 : 0)
 
-  return isMultiplier ? current * incomingValue : current + incomingValue;
+  return isMultiplier ? current * incomingValue : current + incomingValue
 }

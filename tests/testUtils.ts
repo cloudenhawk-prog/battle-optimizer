@@ -5,13 +5,13 @@
  * All factories accept optional overrides to customize the returned objects.
  */
 
-import type { Snapshot } from '../src/types/snapshot';
-import type { Character } from '../src/types/character';
-import type { Action } from '../src/types/action';
-import type { Enemy } from '../src/types/enemy';
-import type { NegativeStatusInAction, NegativeStatus } from '../src/types/negativeStatus';
-import type { Buff, Debuff } from '../src/types/buff';
-import type { DamageModifier } from '../src/types/modifiers';
+import type { Snapshot } from '../src/types/snapshot'
+import type { Character } from '../src/types/character'
+import type { Action } from '../src/types/action'
+import type { Enemy } from '../src/types/enemy'
+import type { NegativeStatusInAction, NegativeStatus } from '../src/types/negativeStatus'
+import type { Buff, Debuff } from '../src/types/buff'
+import type { DamageModifier } from '../src/types/modifiers'
 
 // ========== Snapshot Mocks ===================================================================================================
 
@@ -29,7 +29,7 @@ export function createMockSnapshot(overrides: Partial<Snapshot> = {}): Snapshot 
     debuffs: {},
     negativeStatuses: {},
     ...overrides,
-  };
+  }
 }
 
 // ========== Stats Mocks ======================================================================================================
@@ -132,7 +132,7 @@ export function createMockCharacterStats(overrides: Partial<import('../src/types
 
     energyPercent: 1,
     ...overrides,
-  };
+  }
 }
 
 export function createMockEnemyStats(overrides: Partial<import('../src/types/stats').EnemyStats> = {}): import('../src/types/stats').EnemyStats {
@@ -147,7 +147,7 @@ export function createMockEnemyStats(overrides: Partial<import('../src/types/sta
     resistance: 0,
     damageReduction: 0,
     ...overrides,
-  };
+  }
 }
 
 // ========== Character Mocks ==================================================================================================
@@ -162,7 +162,7 @@ export function createMockCharacter(name: string, overrides: Partial<Character> 
     stats: createMockCharacterStats(),
     damageModifiers: [],
     ...overrides,
-  };
+  }
 }
 
 // ========== Action Mocks =====================================================================================================
@@ -183,7 +183,7 @@ export function createMockAction(name: string, overrides: Partial<Action> = {}):
     debuffsApplied: [],
     damageModifiers: [],
     ...overrides,
-  };
+  }
 }
 
 // ========== Enemy Mocks ======================================================================================================
@@ -193,7 +193,7 @@ export function createMockEnemy(name: string = 'Test Enemy', overrides: Partial<
     name,
     stats: createMockEnemyStats(),
     ...overrides,
-  };
+  }
 }
 
 // ========== Negative Status Mocks ============================================================================================
@@ -213,7 +213,7 @@ export function createMockNegativeStatus(name: string, overrides: Partial<Negati
     },
     damageModifiers: [],
     ...overrides,
-  };
+  }
 }
 
 export function createMockActiveNegativeStatus(negativeStatus: NegativeStatus, overrides: Partial<NegativeStatusInAction> = {}): NegativeStatusInAction {
@@ -224,11 +224,11 @@ export function createMockActiveNegativeStatus(negativeStatus: NegativeStatus, o
     currentStacks: 1,
     lastDamageTime: 0,
     ...overrides,
-  };
+  }
 }
 
 export function createMockNegativeStatuses(): NegativeStatusInAction[] {
-  return [];
+  return []
 }
 
 // ========== Buff/Debuff Mocks ================================================================================================
@@ -242,7 +242,7 @@ export function createMockBuff(name: string, overrides: Partial<Buff> = {}): Buf
     targetingStrategy: { type: 'active' },
     source: 'test',
     ...overrides,
-  };
+  }
 }
 
 export function createMockDebuff(name: string, overrides: Partial<Debuff> = {}): Debuff {
@@ -251,7 +251,7 @@ export function createMockDebuff(name: string, overrides: Partial<Debuff> = {}):
     duration: 10,
     damageModifiers: [],
     ...overrides,
-  };
+  }
 }
 
 // ========== Damage Modifier Mocks ============================================================================================
@@ -260,7 +260,7 @@ export function createMockDamageModifier(source: string, overrides: Partial<Dama
   return {
     source,
     ...overrides,
-  };
+  }
 }
 
 // ========== Damage Modifier List Builders ==================================================================================

@@ -9,5 +9,5 @@
 // These manage debuffs and damage-over-time effects
 
 describe('negativeStatusHelpers', () => {
-  it.todo('tests to be implemented');
-});
+  it.todo('tests to be implemented')
+})

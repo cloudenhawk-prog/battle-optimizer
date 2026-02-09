@@ -59,12 +59,12 @@ export function BodyRow({ snapshot, charactersInBattle, tableConfig, onSelectCha
 
       {/* Basic columns */}
       {tableConfig.basic.columns.map(col => {
-        if (!columnVisibility[col.key]) return null;
+        if (!columnVisibility[col.key]) return null
         return (
           <td key={col.key} className="tableCellBody">
             {character && action ? col.render(snapshot) : ""}
           </td>
-        );
+        )
       })}
 
       {/* Character-specific columns */}

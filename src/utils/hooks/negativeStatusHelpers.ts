@@ -1,4 +1,4 @@
-import type { NegativeStatusDamageEvent, DamageEvent } from './../../types/events';
+import type { NegativeStatusDamageEvent, DamageEvent } from './../../types/events'
 import type { Snapshot } from "../../types/snapshot"
 import type { Action } from "../../types/action"
 import type { Enemy } from "../../types/enemy"
@@ -21,8 +21,8 @@ export function processNegativeStatusStacks(
   characterStats: CharacterStats,
   snapshotId: number
 ): {
-  damageEvents: Record<string, DamageEvent[]>;
-  stacksCurr: Record<string, number>;
+  damageEvents: Record<string, DamageEvent[]>
+  stacksCurr: Record<string, number>
 } {
   const damageEvents: Record<string, DamageEvent[]> = {}
   const stacksCurr: Record<string, number> = {}

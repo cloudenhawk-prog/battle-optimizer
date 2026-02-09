@@ -7,5 +7,5 @@
 // These retrieve character information from snapshots
 
 describe('characterHelpers', () => {
-  it.todo('tests to be implemented');
-});
+  it.todo('tests to be implemented')
+})
