@@ -2,6 +2,7 @@ import type { EnergyGeneration, EnergyCost } from "./energy"
 import type { ScalingType, ElementType, DamageType } from "./baseTypes"
 import type { Buff, Debuff } from "./buff"
 import type { DamageModifier } from "./modifiers"
+import type { SideEffect } from "./sideEffect"
 
 // ========== Type: Action =====================================================================================================
 
@@ -22,4 +23,5 @@ export type Action = {
   debuffsApplied: Debuff[]
 
   damageModifiers: DamageModifier[]
+  sideEffects: SideEffect[]
 }

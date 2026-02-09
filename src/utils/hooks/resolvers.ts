@@ -2,14 +2,14 @@ import type { StepContext } from "../../types/stepContext"
 import type { CharacterStats, EnemyStats } from "../../types/stats"
 import type { DamageModifier } from "../../types/modifiers"
 import type { Dispatch, SetStateAction } from "react"
-import type { DamageEvent, NegativeStatusDamageEvent } from "../../types/events"
+import type { DamageEvent } from "../../types/events"
 import type { Snapshot } from "../../types/snapshot"
 import type { Action } from "../../types/action"
 import type { Character } from "../../types/character"
 import type { Enemy } from "../../types/enemy"
 import type { NegativeStatusInAction } from "../../types/negativeStatus"
 import { calculateDamage } from "../../utils/calculators/damageCalculator"
-import { getNegativeStatusStacks, processNegativeStatusStacks, updateNegativeStatusStacks, createNegativeStatusDamageEvent } from "./negativeStatusHelpers"
+import { getNegativeStatusStacks, processNegativeStatusStacks, updateNegativeStatusStacks } from "./negativeStatusHelpers"
 import { getCharacterEnergyState, updateEnergyValue } from "./energyHelpers"
 
 // ========== Resolver 0: Build Step Context ==================================================================================
@@ -177,7 +177,31 @@ export function resolveDamage(ctx: StepContext, setDamageEvents: Dispatch<SetSta
 
 // ========== Resolver 4: Side Effects Damage =================================================================================
 
-// TODO
+export function resolveSideEffectsDamage(ctx: StepContext, setDamageEvents: Dispatch<SetStateAction<DamageEvent[]>>): void {
+  const sideEffects = ctx.action.sideEffects
+
+  if (!sideEffects || sideEffects.length === 0) {
+    return
+  }
+
+  let totalSideEffectDamage = 0
+  const damageEvents: DamageEvent[] = []
+
+  for (const sideEffect of sideEffects) {
+    const damageEvent = sideEffect.damageDealt(ctx, sideEffect.name)
+    damageEvents.push(damageEvent)
+    totalSideEffectDamage += damageEvent.average
+  }
+
+  setDamageEvents(prevEvents => [...prevEvents, ...damageEvents])
+  ctx.current.damage += totalSideEffectDamage
+
+  ctx.logs.push({
+    resolver: "resolveSideEffectsDamage",
+    message: `Side effects damage resolved: +${totalSideEffectDamage} dmg`,
+    details: { sideEffectsCount: sideEffects.length, totalDamage: totalSideEffectDamage, damageEvents }
+  })
+}
 
 // ========== Resolver 5: Side Effects ========================================================================================
 
@@ -185,7 +209,7 @@ export function resolveDamage(ctx: StepContext, setDamageEvents: Dispatch<SetSta
 
 // ========== Resolver 6: Negative Statuses ===================================================================================
 
-export function resolveNegativeStatuses(ctx: StepContext): void {
+export function resolveNegativeStatuses(ctx: StepContext, setDamageEvents: Dispatch<SetStateAction<DamageEvent[]>>): void {
   // TODO - error checking
 
   const prev = ctx.prev
@@ -197,27 +221,29 @@ export function resolveNegativeStatuses(ctx: StepContext): void {
   const action = ctx.action
 
   const stacksPrev = getNegativeStatusStacks(prev)
-  const {damages, stacksCurr} = processNegativeStatusStacks(negativeStatusesInAction, fromTime, toTime, stacksPrev, enemy)
+  const {damageEvents, stacksCurr} = processNegativeStatusStacks(
+    negativeStatusesInAction, 
+    fromTime, 
+    toTime, 
+    stacksPrev, 
+    enemy, 
+    ctx.character.stats,
+    ctx.snapshotId
+  )
   updateNegativeStatusStacks(current, stacksCurr, action, negativeStatusesInAction)
 
-  const totalDmgNegativeStatuses = Object.values(damages).flat().reduce((sum, dmg) => sum + dmg, 0)
+  // Collect all damage events and add to the damage events list
+  const allDamageEvents = Object.values(damageEvents).flat()
+  setDamageEvents(prevEvents => [...prevEvents, ...allDamageEvents])
+
+  // Calculate total damage from all events
+  const totalDmgNegativeStatuses = allDamageEvents.reduce((sum, event) => sum + event.average, 0)
   current.damage += totalDmgNegativeStatuses
 
-
-  const nsDamageEvents: NegativeStatusDamageEvent[] = []
-  Object.keys(damages).forEach(statusName => {
-    const statusEntry = negativeStatusesInAction.find(
-      entry => entry.negativeStatus.name === statusName
-    )
-
-    if (statusEntry) {
-      const element = statusEntry.negativeStatus.element
-
-      damages[statusName].forEach(damage => {
-        const event = createNegativeStatusDamageEvent(statusName, element, damage)
-        nsDamageEvents.push(event)
-      })
-    }
+  ctx.logs.push({
+    resolver: "resolveNegativeStatuses",
+    message: `Negative statuses resolved: +${totalDmgNegativeStatuses} dmg`,
+    details: { damageEventsCount: allDamageEvents.length, totalDamage: totalDmgNegativeStatuses, damageEvents: allDamageEvents }
   })
 }
 

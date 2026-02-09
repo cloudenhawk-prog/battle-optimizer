@@ -1,6 +1,6 @@
 // ========== Type: Basics =====================================================================================================
 
-export type ScalingType = "ATK" | "HP" | "DEF"
+export type ScalingType = "ATK" | "HP" | "DEF" | "FLAT"
 
 export type ElementType =  "AERO" | "SPECTRO" | "HAVOC" | "GLACIO" | "FUSION" | "ELECTRO" | "NONE"
 

@@ -1,5 +1,6 @@
 import type { Action } from "../types/action"
 import { stacksOf } from "../utils/conditions/damageModifierConditions"
+import { aeroErosionExplosion } from "./sideEffects"
 
 // ========== Mage Actions =====================================================================================================
 
@@ -20,7 +21,8 @@ export const fireball: Action = {
   negativeStatusesApplied: {},
   buffsApplied: [],
   debuffsApplied: [],
-  damageModifiers: []
+  damageModifiers: [],
+  sideEffects: []
 }
 
 export const iceSpike: Action = {
@@ -40,7 +42,8 @@ export const iceSpike: Action = {
   negativeStatusesApplied: {},
   buffsApplied: [],
   debuffsApplied: [],
-  damageModifiers: []
+  damageModifiers: [],
+  sideEffects: []
 }
 
 export const liberatingLightning: Action = {
@@ -60,7 +63,8 @@ export const liberatingLightning: Action = {
   negativeStatusesApplied: { "Spectro Frazzle": 3 },
   buffsApplied: [],
   debuffsApplied: [],
-  damageModifiers: []
+  damageModifiers: [],
+  sideEffects: []
 }
 
 export const mageIntro: Action = {
@@ -80,7 +84,8 @@ export const mageIntro: Action = {
   negativeStatusesApplied: {},
   buffsApplied: [],
   debuffsApplied: [],
-  damageModifiers: []
+  damageModifiers: [],
+  sideEffects: []
 }
 
 export const mageOutro: Action = {
@@ -100,7 +105,8 @@ export const mageOutro: Action = {
   negativeStatusesApplied: {},
   buffsApplied: [],
   debuffsApplied: [],
-  damageModifiers: []
+  damageModifiers: [],
+  sideEffects: []
 }
 
 // ========== Rogue Actions ====================================================================================================
@@ -122,7 +128,8 @@ export const backstab: Action = {
   negativeStatusesApplied: {},
   buffsApplied: [],
   debuffsApplied: [],
-  damageModifiers: []
+  damageModifiers: [],
+  sideEffects: []
 }
 
 export const poison: Action = {
@@ -142,7 +149,8 @@ export const poison: Action = {
   negativeStatusesApplied: {},
   buffsApplied: [],
   debuffsApplied: [],
-  damageModifiers: []
+  damageModifiers: [],
+  sideEffects: []
 }
 
 export const rogueIntro: Action = {
@@ -162,7 +170,8 @@ export const rogueIntro: Action = {
   negativeStatusesApplied: {},
   buffsApplied: [],
   debuffsApplied: [],
-  damageModifiers: []
+  damageModifiers: [],
+  sideEffects: []
 }
 
 export const rogueOutro: Action = {
@@ -182,7 +191,8 @@ export const rogueOutro: Action = {
   negativeStatusesApplied: {},
   buffsApplied: [],
   debuffsApplied: [],
-  damageModifiers: []
+  damageModifiers: [],
+  sideEffects: []
 }
 
 // ========== Cartethyia Actions ===============================================================================================
@@ -213,7 +223,8 @@ export const fleurdelysStrike: Action = {
         amplifyDMG: 0.1
       }
   }
-  ]
+  ],
+  sideEffects: []
 }
 
 export const liberation: Action = {
@@ -234,7 +245,30 @@ export const liberation: Action = {
   negativeStatusesApplied: {},
   buffsApplied: [],
   debuffsApplied: [],
-  damageModifiers: []
+  damageModifiers: [],
+  sideEffects: []
+}
+
+export const explosiveStrike: Action = {
+  name: "Explosive Strike",
+  castTime: 0.6,
+  multiplier: 0.50,
+  scaling: "HP",
+  elements: ["AERO"],
+  dmgTypes: ["BASIC"],
+  cooldown: 2,
+  energyGenerated: [
+    { energyType: "energy", amount: 100, share: 0.5, scalingStat: "energyPercent" },
+    { energyType: "concerto", amount: 100, share: 0 },
+    { energyType: "forte", amount: 3, share: 0 },
+    { energyType: "conviction", amount: 100, share: 0 }
+  ],
+  energyCost: [],
+  negativeStatusesApplied: { "Aero Erosion": 2 },
+  buffsApplied: [],
+  debuffsApplied: [],
+  damageModifiers: [],
+  sideEffects: [aeroErosionExplosion]
 }
 
 export const cartethyiaIntro: Action = {
@@ -254,7 +288,8 @@ export const cartethyiaIntro: Action = {
   negativeStatusesApplied: {},
   buffsApplied: [],
   debuffsApplied: [],
-  damageModifiers: []
+  damageModifiers: [],
+  sideEffects: []
 }
 
 export const cartethyiaOutro: Action = {
@@ -274,5 +309,6 @@ export const cartethyiaOutro: Action = {
   negativeStatusesApplied: {},
   buffsApplied: [],
   debuffsApplied: [],
-  damageModifiers: []
+  damageModifiers: [],
+  sideEffects: []
 }

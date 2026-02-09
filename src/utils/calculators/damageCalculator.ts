@@ -557,7 +557,15 @@ export function calculateAllContrubutions(
 
 // ========== Negative Status Calculator =======================================================================================
 
-export function calculateDamageNegativeStatus(currStacks: number, element: string, enemy: Enemy, name: string): number {
+export function calculateDamageNegativeStatus(
+  currStacks: number, 
+  element: ElementType, 
+  enemy: Enemy, 
+  name: string,
+  characterStats: CharacterStats,
+  dealer: string,
+  snapshotId: number
+): DamageEvent {
   const statusIdentifier = Object.entries(negativeStatuses).find(([, status]) => status.name === name)?.[0]
 
   // Enemy Stats
@@ -576,7 +584,27 @@ export function calculateDamageNegativeStatus(currStacks: number, element: strin
   const elementalResMultiplier = 1 - elementRES
   const damageRES = resistanceMultiplier * defenseMultiplier * damageReductionMultiplier * elementalResMultiplier
 
-  const damage = baseDMG * damageRES
+  // Apply negative status damage multipliers from character stats
+  const statusBonus = getStatusBonusDMG(characterStats, element)
+  const statusAmplify = getStatusAmplifyDMG(characterStats, element)
+  const statusTotalMultiplier = getStatusTotalMultiplierDMG(characterStats, element)
+  const statusMultiplier = (1 + statusBonus) * (1 + statusAmplify) * statusTotalMultiplier
 
-  return damage
+  const damage = baseDMG * damageRES * statusMultiplier
+
+  const damageEvent: DamageEvent = {
+    snapshotId,
+    dealer,
+    target: enemy.name,
+    elements: [element],
+    dmgTypes: ["NEGATIVE_STATUS"],
+    scaling: "FLAT",
+    actionName: name,
+    normalStrike: damage,
+    criticalStrike: damage,
+    average: damage,
+    contributions: {}
+  }
+
+  return damageEvent
 }

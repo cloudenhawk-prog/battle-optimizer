@@ -10,7 +10,7 @@ import { getCharacter, getPrevCharacter } from "../../utils/hooks/characterHelpe
 import { getConcertoValue } from "../../utils/hooks/energyHelpers"
 import { getActionFromCharacter } from "../../utils/hooks/actionHelpers"
 import { getSnapshotIndex, getPrevSnapshot, copySnapshots, getSnapshotById, assignCharacterToRow } from "../../utils/hooks/snapshotHelpers"
-import { buildStepContext, resolveTime, resolveDamageModifiers, resolveDamage, resolveNegativeStatuses, resolveResources } from "../../utils/hooks/resolvers"
+import { buildStepContext, resolveTime, resolveDamageModifiers, resolveDamage, resolveSideEffectsDamage, resolveNegativeStatuses, resolveResources } from "../../utils/hooks/resolvers"
 import { negativeStatuses as negativeStatusesData } from "../../data/negativeStatuses"
 import { createSnapshot } from "../../utils/hooks/snapshotHelpers"
 
@@ -101,13 +101,12 @@ function updateSnapshotsWithAction(params: {
 
   resolveDamage(context, setDamageEvents)
 
-  // Step 4: resolveSideEffectsDamage - damage if action triggers aero erosion proc or anything like that
-    // Needs a new type, SideEffectDamage - might need to also tell you which stats it scales with (maybe use types so you dont need to type everything - including a standard type that means 'everything')
+  resolveSideEffectsDamage(context, setDamageEvents)
 
   // Step 5: resolveSideEffects - updates buffs, debuffs etc if they are still active or get more stacks
     // Only needs logic, as long as buffs/debuffs have 'duration'
 
-  resolveNegativeStatuses(context)
+  resolveNegativeStatuses(context, setDamageEvents)
 
   resolveResources(context)
 

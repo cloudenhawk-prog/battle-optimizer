@@ -1,6 +1,10 @@
 
 TODO:
 
+
+Task:    Implement a pending system for side effects that manupulate negative statuses, buffs and debuffs so it's handled in the corresponding resolver. 
+Context: Right now Side Effects can manipulate negative statuses, buffs and debuffs (although it doesnt seem to work!). It would be better if these changes are added to 'pending' and then resolved in the related resolver. The reason being: if an action both adds and removes stacks, the order can mess things up. If things are first added together and then handled as one instance, the order issue would disappear.
+
 Task:    Implement rows on-click overlay data breakdown
 Context: Right now damageEvents are passed to the component RotationEditor.tsx These can be passed to the RotationTable if it needs them for future features
 

@@ -1,7 +1,7 @@
 import type { Character } from "../types/character"
 import { fireball, iceSpike, liberatingLightning, mageIntro, mageOutro } from "./actions"
 import { backstab, poison, rogueIntro, rogueOutro } from "./actions"
-import { fleurdelysStrike, liberation, cartethyiaIntro, cartethyiaOutro } from "./actions"
+import { fleurdelysStrike, liberation, explosiveStrike, cartethyiaIntro, cartethyiaOutro } from "./actions"
 import { mageStats, rogueStats, cartethyiaStats } from "./stats"
 
 // ========== Characters =======================================================================================================
@@ -28,7 +28,7 @@ export const characters: Character[] =
   },
   {
     name: "Cartethyia",
-    actions: [fleurdelysStrike, liberation, cartethyiaIntro, cartethyiaOutro],
+    actions: [fleurdelysStrike, liberation, explosiveStrike, cartethyiaIntro, cartethyiaOutro],
     buffs: [],
     debuffs: [],
     maxEnergies: { energy: 100, concerto: 100, forte: 3, conviction: 120, rage: 100 },

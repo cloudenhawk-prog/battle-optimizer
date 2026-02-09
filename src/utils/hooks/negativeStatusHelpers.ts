@@ -1,8 +1,9 @@
-import type { NegativeStatusDamageEvent } from './../../types/events';
+import type { NegativeStatusDamageEvent, DamageEvent } from './../../types/events';
 import type { Snapshot } from "../../types/snapshot"
 import type { Action } from "../../types/action"
 import type { Enemy } from "../../types/enemy"
 import type { NegativeStatusInAction } from "../../types/negativeStatus"
+import type { CharacterStats } from "../../types/stats"
 import { calculateDamageNegativeStatus } from "../../utils/calculators/damageCalculator"
 
 // ========== Negative Status Helpers ==========================================================================================
@@ -16,12 +17,14 @@ export function processNegativeStatusStacks(
   fromTime: number,
   toTime: number,
   stacksPrev: Record<string, number>,
-  enemy: Enemy
+  enemy: Enemy,
+  characterStats: CharacterStats,
+  snapshotId: number
 ): {
-  damages: Record<string, number[]>;
+  damageEvents: Record<string, DamageEvent[]>;
   stacksCurr: Record<string, number>;
 } {
-  const damages: Record<string, number[]> = {}
+  const damageEvents: Record<string, DamageEvent[]> = {}
   const stacksCurr: Record<string, number> = {}
 
   for (const nsa of negativeStatusesInAction) {
@@ -45,11 +48,11 @@ export function processNegativeStatusStacks(
         lastDamageTime += frequency
         timeLeft -= frequency
 
-        if (!damages[name]) {
-          damages[name] = []
+        if (!damageEvents[name]) {
+          damageEvents[name] = []
         }
 
-        damages[name].push(calculateDamageNegativeStatus(currStacks, element, enemy, name))
+        damageEvents[name].push(calculateDamageNegativeStatus(currStacks, element, enemy, name, characterStats, name, snapshotId))  // DoT: dealer is the status itself
       }
 
       if (timeLeft <= 0) {
@@ -79,11 +82,11 @@ export function processNegativeStatusStacks(
         lastDamageTime += frequency
         timeLeft -= frequency
 
-        if (!damages[name]) {
-          damages[name] = []
+        if (!damageEvents[name]) {
+          damageEvents[name] = []
         }
 
-        damages[name].push(calculateDamageNegativeStatus(currStacks, element, enemy, name))
+        damageEvents[name].push(calculateDamageNegativeStatus(currStacks, element, enemy, name, characterStats, name, snapshotId))  // DoT: dealer is the status itself
 
         if (timeLeft <= 0) {
           currStacks -= stackConsume
@@ -105,7 +108,7 @@ export function processNegativeStatusStacks(
     }
   }
 
-  return { damages, stacksCurr }
+  return { damageEvents, stacksCurr }
 }
 
 // =============================================================================================================================
