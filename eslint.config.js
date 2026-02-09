@@ -20,11 +20,11 @@ export default defineConfig([
       globals: globals.browser,
     },
     rules: {
-      "no-trailing-spaces": "warn",     // catches extra spaces at end of line
-      "semi": ["warn", "never"],        // disallow semicolons
-      "quotes": ["warn", "single", { "avoidEscape": true }], // prefer single quotes, but allow double if it avoids escaping
-      "@typescript-eslint/no-explicit-any": "off", // allow use of 'any' type
-      "react-hooks/exhaustive-deps": "off" // allow effects to selectively skip dependencies (like snapshot highlighting)
+      "no-trailing-spaces": ["warn", { "skipBlankLines": true }],   // allow trailing spaces on blank lines (for better git diffs)
+      "semi": ["warn", "never"],                                    // disallow semicolons
+      "quotes": ["warn", "single", { "avoidEscape": true }],        // prefer single quotes, but allow double if it avoids escaping
+      "@typescript-eslint/no-explicit-any": "off",                  // allow use of 'any' type
+      "react-hooks/exhaustive-deps": "off"                          // allow effects to selectively skip dependencies (like snapshot highlighting)
     },
   },
 ])
