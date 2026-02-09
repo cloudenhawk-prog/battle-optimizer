@@ -1,6 +1,6 @@
-import { 
+import {
   calculateDamage,
-  mergeStats, 
+  mergeStats,
   mergeEnemyStats,
   calculateScalingStat,
   calculateBonusMultiplier,
