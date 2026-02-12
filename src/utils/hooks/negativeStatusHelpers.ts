@@ -52,7 +52,7 @@ export function processNegativeStatusStacks(
           damageEvents[name] = []
         }
 
-        damageEvents[name].push(calculateDamageNegativeStatus(currStacks, element, enemy, name, characterStats, name, snapshotId))  // DoT: dealer is the status itself
+        damageEvents[name].push(calculateDamageNegativeStatus(currStacks, element, enemy, name, characterStats, name, snapshotId, lastDamageTime))  // DoT: dealer is the status itself
       }
 
       if (timeLeft <= 0) {
@@ -86,7 +86,7 @@ export function processNegativeStatusStacks(
           damageEvents[name] = []
         }
 
-        damageEvents[name].push(calculateDamageNegativeStatus(currStacks, element, enemy, name, characterStats, name, snapshotId))  // DoT: dealer is the status itself
+        damageEvents[name].push(calculateDamageNegativeStatus(currStacks, element, enemy, name, characterStats, name, snapshotId, lastDamageTime))
 
         if (timeLeft <= 0) {
           currStacks -= stackConsume

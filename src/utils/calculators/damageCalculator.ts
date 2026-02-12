@@ -38,6 +38,7 @@ type CalculateDamageParams = {
   modifierEnemyStats: Partial<EnemyStats>
   enemy: Enemy
   snapshotId: number
+  timeStamp: number
 }
 
 type CalculateDamageResult = {
@@ -53,7 +54,8 @@ export function calculateDamage({
   modifierCharacterStats, 
   modifierEnemyStats, 
   enemy, 
-  snapshotId 
+  snapshotId,
+  timeStamp
 }: CalculateDamageParams): CalculateDamageResult {
   // Step 1: Extract action properties
   const { scaling, dmgTypes, elements, multiplier: actionMultiplier } = action
@@ -124,7 +126,8 @@ export function calculateDamage({
     normalStrike,
     criticalStrike,
     average,
-    contributions: contributions
+    contributions: contributions,
+    timeStamp
   }
 
   return { average: Math.ceil(average), damageEvent }
@@ -564,7 +567,8 @@ export function calculateDamageNegativeStatus(
   name: string,
   characterStats: CharacterStats,
   dealer: string,
-  snapshotId: number
+  snapshotId: number,
+  timeStamp: number
 ): DamageEvent {
   const statusIdentifier = Object.entries(negativeStatuses).find(([, status]) => status.name === name)?.[0]
 
@@ -603,7 +607,8 @@ export function calculateDamageNegativeStatus(
     normalStrike: damage,
     criticalStrike: damage,
     average: damage,
-    contributions: {}
+    contributions: {},
+    timeStamp
   }
 
   return damageEvent

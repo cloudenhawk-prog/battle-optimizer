@@ -5,7 +5,7 @@ import type { DamageEvent } from "./events"
 
 export type SideEffect = {
   name: string
-  damageDealt: (context: StepContext, sideEffectName: string) => DamageEvent
+  damageDealt: (context: StepContext, sideEffectName: string, timeStamp: number) => DamageEvent
   statusModifications: StatusModification[]
 }
 

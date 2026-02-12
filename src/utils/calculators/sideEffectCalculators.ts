@@ -8,7 +8,7 @@ import { calculateDamageNegativeStatus } from "./damageCalculator"
  * Calculates damage based on current Aero Erosion stacks
  * Uses the standard negative status damage formula
  */
-export function calculateAeroErosionSideEffectDamage(context: StepContext, sideEffectName: string): DamageEvent {
+export function calculateAeroErosionSideEffectDamage(context: StepContext, sideEffectName: string, timeStamp: number): DamageEvent {
   const aeroErosionStacks = context.current.negativeStatuses["Aero Erosion"] || 0
   
   if (aeroErosionStacks === 0) {
@@ -24,7 +24,8 @@ export function calculateAeroErosionSideEffectDamage(context: StepContext, sideE
       normalStrike: 0,
       criticalStrike: 0,
       average: 0,
-      contributions: {}
+      contributions: {},
+      timeStamp
     }
   }
 
@@ -35,6 +36,7 @@ export function calculateAeroErosionSideEffectDamage(context: StepContext, sideE
     sideEffectName,
     context.character.stats,
     `${context.character.name}: ${sideEffectName}`,
-    context.snapshotId
+    context.snapshotId,
+    timeStamp
   )
 }

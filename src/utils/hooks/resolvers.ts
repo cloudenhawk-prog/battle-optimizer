@@ -159,7 +159,7 @@ export function resolveDamage(ctx: StepContext, setDamageEvents: Dispatch<SetSta
   const current = ctx.current
   const toTime = ctx.toTime
 
-  const { average, damageEvent } = calculateDamage({ action, name, stats: baseStats, damageModifiers, modifierCharacterStats, modifierEnemyStats, enemy, snapshotId })
+  const { average, damageEvent } = calculateDamage({ action, name, stats: baseStats, damageModifiers, modifierCharacterStats, modifierEnemyStats, enemy, snapshotId, timeStamp: ctx.fromTime })
   setDamageEvents(prevEvents => [...prevEvents, damageEvent])
 
   const cumulativeDamage = prev.damage + average
@@ -199,7 +199,7 @@ function helpSideEffectsDamage(ctx: StepContext, setDamageEvents: Dispatch<SetSt
   const damageEvents: DamageEvent[] = []
 
   for (const sideEffect of sideEffects) {
-    const damageEvent = sideEffect.damageDealt(ctx, sideEffect.name)
+    const damageEvent = sideEffect.damageDealt(ctx, sideEffect.name, ctx.fromTime)
     damageEvents.push(damageEvent)
     totalSideEffectDamage += damageEvent.average
   }
