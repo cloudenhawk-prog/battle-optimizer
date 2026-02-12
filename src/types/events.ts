@@ -14,18 +14,10 @@ export type DamageEvent = {
   criticalStrike: number
   average: number
   contributions: Record<string, Contribution>
+  timeStamp: number
 }
 
-// ========== Type: Negative Status Damage Event ===============================================================================
-
-export type NegativeStatusDamageEvent = {
-  name: string,
-  element: ElementType
-  damage: number
-}
-
-// ========== Type: Negative Status Damage Event ===============================================================================
-// ========== Type: Negative Status Damage Event ===============================================================================
+// ========== Type: Contribution ===============================================================================================
 
 export type Contribution = {
   crit_damage_contributed: number

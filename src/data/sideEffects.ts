@@ -7,7 +7,6 @@ import { removeNegativeStatusStacks } from "../utils/modifications/statusModific
 export const aeroErosionExplosion: SideEffect = {
   name: "Aero Erosion Explosion",
   damageDealt: calculateAeroErosionSideEffectDamage,
-  energyGenerated: [],
   statusModifications: [
     removeNegativeStatusStacks("Aero Erosion", 1)
   ]

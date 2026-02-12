@@ -175,9 +175,20 @@ export function resolveDamage(ctx: StepContext, setDamageEvents: Dispatch<SetSta
   })
 }
 
-// ========== Resolver 4: Side Effects Damage =================================================================================
+// ========== Resolver 4: Side Effects And Statuses ===========================================================================
 
-export function resolveSideEffectsDamage(ctx: StepContext, setDamageEvents: Dispatch<SetStateAction<DamageEvent[]>>): void {
+export function resolveSideEffectsAndStatuses(ctx: StepContext, setDamageEvents: Dispatch<SetStateAction<DamageEvent[]>>): void {
+  // Side Effects
+  const statusModifications = helpSideEffectsDamage(ctx, setDamageEvents)
+
+  // Negative Statuses
+  helpNegativeStatuses(ctx, setDamageEvents, statusModifications)
+
+  // TODO: Buffs & Debuffs
+}
+
+function helpSideEffectsDamage(ctx: StepContext, setDamageEvents: Dispatch<SetStateAction<DamageEvent[]>>) {
+  // Side Effects Damage
   const sideEffects = ctx.action.sideEffects
 
   if (!sideEffects || sideEffects.length === 0) {
@@ -201,16 +212,44 @@ export function resolveSideEffectsDamage(ctx: StepContext, setDamageEvents: Disp
     message: `Side effects damage resolved: +${totalSideEffectDamage} dmg`,
     details: { sideEffectsCount: sideEffects.length, totalDamage: totalSideEffectDamage, damageEvents }
   })
+
+  // Status Modifications
+  const aggregated = {
+    buff: {},
+    debuff: {},
+    negativeStatus: {}
+  }
+
+  for (const { statusModifications } of sideEffects) {
+    if (!statusModifications) continue
+
+    for (const {
+      type,
+      targetName,
+      stackChange = 0,
+      durationChange = 0,
+      refreshDuration = false
+    } of statusModifications) {
+
+      const container = aggregated[type]
+
+      const entry = container[targetName] ??= {
+        stackChange: 0,
+        durationChange: 0,
+        refreshDuration: false
+      }
+
+      entry.stackChange += stackChange
+      entry.durationChange += durationChange
+      entry.refreshDuration ||= refreshDuration
+    }
+  }
+
+  return aggregated
 }
 
-// ========== Resolver 5: Side Effects ========================================================================================
 
-// TODO
-
-// ========== Resolver 6: Negative Statuses ===================================================================================
-
-export function resolveNegativeStatuses(ctx: StepContext, setDamageEvents: Dispatch<SetStateAction<DamageEvent[]>>): void {
-  // TODO - error checking
+export function helpNegativeStatuses(ctx: StepContext, setDamageEvents: Dispatch<SetStateAction<DamageEvent[]>>, statusModifications: any): void {
 
   const prev = ctx.prev
   const current = ctx.current
@@ -230,7 +269,7 @@ export function resolveNegativeStatuses(ctx: StepContext, setDamageEvents: Dispa
     ctx.character.stats,
     ctx.snapshotId
   )
-  updateNegativeStatusStacks(current, stacksCurr, action, negativeStatusesInAction)
+  updateNegativeStatusStacks(current, stacksCurr, action, negativeStatusesInAction, statusModifications.negativeStatus)
 
   // Collect all damage events and add to the damage events list
   const allDamageEvents = Object.values(damageEvents).flat()
@@ -246,6 +285,15 @@ export function resolveNegativeStatuses(ctx: StepContext, setDamageEvents: Dispa
     details: { damageEventsCount: allDamageEvents.length, totalDamage: totalDmgNegativeStatuses, damageEvents: allDamageEvents }
   })
 }
+
+
+
+
+
+// ========== Resolver 5: Side Effects ========================================================================================
+
+// TODO
+
 
 // ========== Resolver 7: Resources ===========================================================================================
 

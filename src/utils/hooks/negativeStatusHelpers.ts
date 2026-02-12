@@ -113,7 +113,12 @@ export function processNegativeStatusStacks(
 
 // =============================================================================================================================
 
-export function updateNegativeStatusStacks(snapshot: Snapshot, stacksCurr: Record<string, number>, action: Action, negativeStatusesInAction: NegativeStatusInAction[]): void {
+export function updateNegativeStatusStacks(snapshot: Snapshot, stacksCurr: Record<string, number>, action: Action, negativeStatusesInAction: NegativeStatusInAction[], negativeStatusModifications: Record<string, {
+    stackChange: number
+    durationChange: number
+    refreshDuration: boolean
+  }>): void {
+  // 1️⃣ Normal updates
   for (const [name, count] of Object.entries(action.negativeStatusesApplied)) {
     const nsInQuestion = negativeStatusesInAction.find(nsInAction => nsInAction.negativeStatus.name === name)
     const maxStacks = nsInQuestion.negativeStatus.maxStacksDefault
@@ -133,6 +138,43 @@ export function updateNegativeStatusStacks(snapshot: Snapshot, stacksCurr: Recor
         statusInAction.timeLeft = statusInAction.negativeStatus.duration
         statusInAction.lastDamageTime = snapshot.toTime
       }
+    }
+  }
+
+  // 2️⃣ Aggregated side-effect modifications
+  for (const [name, mod] of Object.entries(negativeStatusModifications)) {
+    const statusInAction = negativeStatusesInAction.find(
+      nsa => nsa.negativeStatus.name === name
+    )
+
+    if (!statusInAction) continue
+
+    const maxStacks = statusInAction.negativeStatus.maxStacksDefault
+
+    // Apply stack change
+    stacksCurr[name] = (stacksCurr[name] ?? 0) + mod.stackChange
+    stacksCurr[name] = Math.max(0, Math.min(stacksCurr[name], maxStacks))
+    statusInAction.currentStacks = stacksCurr[name]
+
+    // If stacks drop to 0 → clear status
+    if (stacksCurr[name] <= 0) {
+      statusInAction.applicationTime = -1
+      statusInAction.timeLeft = 0
+      statusInAction.lastDamageTime = 0
+      continue
+    }
+
+    // Duration logic
+    if (mod.refreshDuration) {
+      // Reset to full duration, ignoring any durationChange
+      statusInAction.timeLeft = statusInAction.negativeStatus.duration
+      statusInAction.lastDamageTime = snapshot.toTime
+    } else if (mod.durationChange) {
+      // Increment/decrement current time left
+      statusInAction.timeLeft = Math.max(
+        0,
+        statusInAction.timeLeft + mod.durationChange
+      )
     }
   }
 

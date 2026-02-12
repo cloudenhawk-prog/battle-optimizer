@@ -1,5 +1,4 @@
 import type { StepContext } from "./stepContext"
-import type { EnergyGeneration } from "./energy"
 import type { DamageEvent } from "./events"
 
 // ========== Type: SideEffect =================================================================================================
@@ -7,7 +6,6 @@ import type { DamageEvent } from "./events"
 export type SideEffect = {
   name: string
   damageDealt: (context: StepContext, sideEffectName: string) => DamageEvent
-  energyGenerated: EnergyGeneration[]
   statusModifications: StatusModification[]
 }
 

@@ -10,7 +10,7 @@ import { getCharacter, getPrevCharacter } from "../../utils/hooks/characterHelpe
 import { getConcertoValue } from "../../utils/hooks/energyHelpers"
 import { getActionFromCharacter } from "../../utils/hooks/actionHelpers"
 import { getSnapshotIndex, getPrevSnapshot, copySnapshots, getSnapshotById, assignCharacterToRow } from "../../utils/hooks/snapshotHelpers"
-import { buildStepContext, resolveTime, resolveDamageModifiers, resolveDamage, resolveSideEffectsDamage, resolveNegativeStatuses, resolveResources } from "../../utils/hooks/resolvers"
+import { buildStepContext, resolveTime, resolveDamageModifiers, resolveDamage, resolveSideEffectsAndStatuses, resolveResources } from "../../utils/hooks/resolvers"
 import { negativeStatuses as negativeStatusesData } from "../../data/negativeStatuses"
 import { createSnapshot } from "../../utils/hooks/snapshotHelpers"
 
@@ -101,19 +101,9 @@ function updateSnapshotsWithAction(params: {
 
   resolveDamage(context, setDamageEvents)
 
-  resolveSideEffectsDamage(context, setDamageEvents)
-
-  // Step 5: resolveSideEffects - updates buffs, debuffs etc if they are still active or get more stacks
-    // Only needs logic, as long as buffs/debuffs have 'duration'
-
-  resolveNegativeStatuses(context, setDamageEvents)
+  resolveSideEffectsAndStatuses(context, setDamageEvents) // What about damage events and nsDamageEvents
 
   resolveResources(context)
-
-  // Step 8: collectEvents - grabs logs/events etc
-    // Does anything else needs to be updated?
-    // Do we need to store logs anywhere?
-    // What about damageEvents and nsDamageEvents?
 
   // -------- Update snapshot -------------------
   updatedSnapshots[index] = { ...context.current }
