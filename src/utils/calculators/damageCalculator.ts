@@ -564,13 +564,14 @@ export function calculateDamageNegativeStatus(
   currStacks: number, 
   element: ElementType, 
   enemy: Enemy, 
-  name: string,
+  negativeStatusName: string,
   characterStats: CharacterStats,
   dealer: string,
   snapshotId: number,
-  timeStamp: number
+  timeStamp: number,
+  actionName?: string
 ): DamageEvent {
-  const statusIdentifier = Object.entries(negativeStatuses).find(([, status]) => status.name === name)?.[0]
+  const statusIdentifier = Object.entries(negativeStatuses).find(([, status]) => status.name === negativeStatusName)?.[0]
 
   // Enemy Stats
   const enemyStats = enemy.stats
@@ -603,7 +604,7 @@ export function calculateDamageNegativeStatus(
     elements: [element],
     dmgTypes: ["NEGATIVE_STATUS"],
     scaling: "FLAT",
-    actionName: name,
+    actionName: actionName ?? negativeStatusName,
     normalStrike: damage,
     criticalStrike: damage,
     average: damage,

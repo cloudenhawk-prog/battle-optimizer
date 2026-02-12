@@ -188,11 +188,18 @@ export function resolveSideEffectsAndStatuses(ctx: StepContext, setDamageEvents:
 }
 
 function helpSideEffectsDamage(ctx: StepContext, setDamageEvents: Dispatch<SetStateAction<DamageEvent[]>>) {
+  // Status Modifications default structure
+  const aggregated = {
+    buff: {},
+    debuff: {},
+    negativeStatus: {}
+  }
+
   // Side Effects Damage
   const sideEffects = ctx.action.sideEffects
 
   if (!sideEffects || sideEffects.length === 0) {
-    return
+    return aggregated
   }
 
   let totalSideEffectDamage = 0
@@ -200,8 +207,10 @@ function helpSideEffectsDamage(ctx: StepContext, setDamageEvents: Dispatch<SetSt
 
   for (const sideEffect of sideEffects) {
     const damageEvent = sideEffect.damageDealt(ctx, sideEffect.name, ctx.fromTime)
-    damageEvents.push(damageEvent)
-    totalSideEffectDamage += damageEvent.average
+    if (damageEvent.average > 0) {
+      damageEvents.push(damageEvent)
+      totalSideEffectDamage += damageEvent.average
+    }
   }
 
   setDamageEvents(prevEvents => [...prevEvents, ...damageEvents])
@@ -213,13 +222,7 @@ function helpSideEffectsDamage(ctx: StepContext, setDamageEvents: Dispatch<SetSt
     details: { sideEffectsCount: sideEffects.length, totalDamage: totalSideEffectDamage, damageEvents }
   })
 
-  // Status Modifications
-  const aggregated = {
-    buff: {},
-    debuff: {},
-    negativeStatus: {}
-  }
-
+  // Aggregate status modifications from side effects
   for (const { statusModifications } of sideEffects) {
     if (!statusModifications) continue
 
@@ -271,8 +274,8 @@ export function helpNegativeStatuses(ctx: StepContext, setDamageEvents: Dispatch
   )
   updateNegativeStatusStacks(current, stacksCurr, action, negativeStatusesInAction, statusModifications.negativeStatus)
 
-  // Collect all damage events and add to the damage events list
-  const allDamageEvents = Object.values(damageEvents).flat()
+  // Collect all damage events and filter out zero-damage events
+  const allDamageEvents = Object.values(damageEvents).flat().filter(event => event.average > 0)
   setDamageEvents(prevEvents => [...prevEvents, ...allDamageEvents])
 
   // Calculate total damage from all events

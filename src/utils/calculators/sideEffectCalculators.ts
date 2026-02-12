@@ -4,15 +4,10 @@ import { calculateDamageNegativeStatus } from "./damageCalculator"
 
 // ========== Aero Erosion Side Effect =========================================================================================
 
-/**
- * Calculates damage based on current Aero Erosion stacks
- * Uses the standard negative status damage formula
- */
 export function calculateAeroErosionSideEffectDamage(context: StepContext, sideEffectName: string, timeStamp: number): DamageEvent {
-  const aeroErosionStacks = context.current.negativeStatuses["Aero Erosion"] || 0
-  
+  const aeroErosionStacks = context.prev.negativeStatuses["Aero Erosion"] || 0
+
   if (aeroErosionStacks === 0) {
-    // Return a zero-damage event
     return {
       snapshotId: context.snapshotId,
       dealer: `${context.character.name}: ${sideEffectName}`,
@@ -33,10 +28,11 @@ export function calculateAeroErosionSideEffectDamage(context: StepContext, sideE
     aeroErosionStacks, 
     "AERO", 
     context.enemy, 
-    sideEffectName,
+    "Aero Erosion",
     context.character.stats,
     `${context.character.name}: ${sideEffectName}`,
     context.snapshotId,
-    timeStamp
+    timeStamp,
+    sideEffectName
   )
 }
