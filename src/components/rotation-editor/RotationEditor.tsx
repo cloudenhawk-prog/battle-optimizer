@@ -16,7 +16,7 @@ type RotationEditorProps = {
 }
 
 export default function RotationEditor({ charactersInBattle, enemy, tableConfig, columnVisibility, setColumnVisibility }: RotationEditorProps) {
-  const { snapshots, damageEvents, handleCharacterSelect, handleActionSelect } = useRotationEditor({ charactersInBattle, tableConfig, enemy })
+  const { snapshots, handleCharacterSelect, handleActionSelect } = useRotationEditor({ charactersInBattle, tableConfig, enemy })
 
   return (
     <div className="pageWrapper">

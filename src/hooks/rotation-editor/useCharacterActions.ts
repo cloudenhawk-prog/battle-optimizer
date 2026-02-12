@@ -82,13 +82,14 @@ function updateSnapshotsWithAction(params: {
   characterColumnsMap: Record<string, string[]>
   globalColumns: GlobalColumns
   enemy: Enemy
-  damageEvents: DamageEvent[]
+  damageEvents: DamageEvent[] // Do we even need or use this?
   setDamageEvents: Dispatch<SetStateAction<DamageEvent[]>>
   negativeStatusesInAction: React.MutableRefObject<NegativeStatusInAction[]>
 }): Snapshot[] {
   // -------- Validate Input --------------------
   const validated = validateActionInputs(params)
   if (!validated) return params.snapshots
+  const { damageEvents } = params
   const { index, character, action, snapshots, current, prev, enemy, negativeStatusesInAction, charactersMap, characterColumnsMap, globalColumns, setDamageEvents } = validated
   const updatedSnapshots = copySnapshots(snapshots)
 
@@ -112,6 +113,8 @@ function updateSnapshotsWithAction(params: {
   if (index === updatedSnapshots.length - 1) {
     updatedSnapshots.push(createSnapshot(updatedSnapshots[updatedSnapshots.length - 1], charactersMap, characterColumnsMap, globalColumns))
   }
+
+  console.log("Damage Events: ", damageEvents)
 
   return updatedSnapshots
 }
