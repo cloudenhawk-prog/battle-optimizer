@@ -1185,8 +1185,6 @@ describe('resolveDamageModifiers', () => {
 
 // ========== Helpers ==========================================================================================================
 
-const resolversModule = require('../src/utils/hooks/resolvers');
-
 describe('aggregateStat', () => {
   describe('Additive Stats', () => {
     it('should add values for non-multiplier stats', () => {

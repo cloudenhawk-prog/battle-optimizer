@@ -1,29 +1,20 @@
-import type { StepContext } from "../../types/stepContext"
-import type { CharacterStats, EnemyStats } from "../../types/stats"
-import type { DamageModifier } from "../../types/modifiers"
-import type { Dispatch, SetStateAction } from "react"
-import type { DamageEvent } from "../../types/events"
-import type { Snapshot } from "../../types/snapshot"
-import type { Action } from "../../types/action"
-import type { Character } from "../../types/character"
-import type { Enemy } from "../../types/enemy"
-import type { NegativeStatusInAction } from "../../types/negativeStatus"
-import { calculateDamage } from "../../utils/calculators/damageCalculator"
-import { getNegativeStatusStacks, processNegativeStatusStacks, updateNegativeStatusStacks } from "./negativeStatusHelpers"
-import { getCharacterEnergyState, updateEnergyValue } from "./energyHelpers"
+import type { StepContext } from '../../types/stepContext'
+import type { CharacterStats, EnemyStats } from '../../types/stats'
+import type { DamageModifier } from '../../types/modifiers'
+import type { Dispatch, SetStateAction } from 'react'
+import type { DamageEvent } from '../../types/events'
+import type { Snapshot } from '../../types/snapshot'
+import type { Action } from '../../types/action'
+import type { Character } from '../../types/character'
+import type { Enemy } from '../../types/enemy'
+import type { NegativeStatusInAction } from '../../types/negativeStatus'
+import { calculateDamage } from '../../utils/calculators/damageCalculator'
+import { getNegativeStatusStacks, processNegativeStatusStacks, updateNegativeStatusStacks } from './negativeStatusHelpers'
+import { getCharacterEnergyState, updateEnergyValue } from './energyHelpers'
 
 // ========== Resolver 0: Build Step Context ==================================================================================
 
-export function buildStepContext(
-  snapshotId: number,
-  current: Snapshot,
-  prev: Snapshot,
-  character: Character,
-  action: Action,
-  enemy: Enemy,
-  negativeStatusesInAction: NegativeStatusInAction[],
-  characterMap: Record<string, Character>
-): StepContext {
+export function buildStepContext(snapshotId: number, current: Snapshot, prev: Snapshot, character: Character, action: Action, enemy: Enemy, negativeStatusesInAction: NegativeStatusInAction[], characterMap: Record<string, Character>): StepContext {
   const fromTime = prev.toTime
   const toTime = fromTime + action.castTime
   current.action = action.name
@@ -56,13 +47,13 @@ export function buildStepContext(
     aggregatedCharacterModifiers: {},
     aggregatedEnemyModifiers: {},
 
-    logs: []
+    logs: [],
   }
 
   ctx.logs.push({
-    resolver: "buildStepContext",
+    resolver: 'buildStepContext',
     message: `Context built for snapshot ${snapshotId}`,
-    details: { character: character.name, action: action.name }
+    details: { character: character.name, action: action.name },
   })
 
   return ctx
@@ -79,9 +70,9 @@ export function resolveTime(ctx: StepContext): void {
   ctx.current.toTime = ctx.prev.toTime + ctx.action.castTime
 
   ctx.logs.push({
-    resolver: "resolveTime",
+    resolver: 'resolveTime',
     message: `Snapshot with id: ${ctx.snapshotId}: from ${ctx.current.fromTime}s to ${ctx.current.toTime}s`,
-    details: { action: ctx.action.name }
+    details: { action: ctx.action.name },
   })
 }
 
@@ -91,28 +82,20 @@ export function resolveDamageModifiers(ctx: StepContext) {
   const characterModifiers = initializeEmptyCharacterStats()
   const enemyModifiers = initializeEmptyEnemyStats()
 
-  const allModifiers: DamageModifier[] = [
-    ...(ctx.character.damageModifiers ?? []),
-    ...(ctx.action.damageModifiers ?? []),
-    ...ctx.negativeStatusesInAction.flatMap(ns => ns.negativeStatus.damageModifiers ?? [])
-  ]
+  const allModifiers: DamageModifier[] = [...(ctx.character.damageModifiers ?? []), ...(ctx.action.damageModifiers ?? []), ...ctx.negativeStatusesInAction.flatMap(ns => ns.negativeStatus.damageModifiers ?? [])]
 
   // Store all collected modifiers in context for damage calculator to use
   ctx.damageModifiers = allModifiers
 
   for (const modifier of allModifiers) {
     const conditionMultiplier = modifier.condition ? modifier.condition(ctx) : 1
-    
+
     if (modifier.characterStats) {
       for (const [key, value] of Object.entries(modifier.characterStats)) {
         const statKey = key as keyof CharacterStats
         const modValue = (value as number) * conditionMultiplier
-        
-        characterModifiers[statKey] = aggregateStat(
-          characterModifiers[statKey] as number | undefined,
-          modValue,
-          statKey
-        ) as any
+
+        characterModifiers[statKey] = aggregateStat(characterModifiers[statKey] as number | undefined, modValue, statKey) as any
       }
     }
 
@@ -120,12 +103,8 @@ export function resolveDamageModifiers(ctx: StepContext) {
       for (const [key, value] of Object.entries(modifier.enemyStats)) {
         const statKey = key as keyof EnemyStats
         const modValue = (value as number) * conditionMultiplier
-        
-        enemyModifiers[statKey] = aggregateStat(
-          enemyModifiers[statKey] as number | undefined,
-          modValue,
-          statKey
-        ) as any
+
+        enemyModifiers[statKey] = aggregateStat(enemyModifiers[statKey] as number | undefined, modValue, statKey) as any
       }
     }
   }
@@ -134,19 +113,18 @@ export function resolveDamageModifiers(ctx: StepContext) {
   ctx.aggregatedEnemyModifiers = enemyModifiers
 
   ctx.logs.push({
-    resolver: "resolveDamageModifiers",
-    message: "Final aggregated modifiers collected",
+    resolver: 'resolveDamageModifiers',
+    message: 'Final aggregated modifiers collected',
     details: {
       characterModifiers: ctx.aggregatedCharacterModifiers,
-      enemyModifiers: ctx.aggregatedEnemyModifiers
-    }
+      enemyModifiers: ctx.aggregatedEnemyModifiers,
+    },
   })
 }
 
 // ========== Resolver 3: Damage ==============================================================================================
 
 export function resolveDamage(ctx: StepContext, setDamageEvents: Dispatch<SetStateAction<DamageEvent[]>>): void {
-
   const action = ctx.action
   const name = ctx.character.name
   const baseStats = ctx.character.stats
@@ -169,9 +147,9 @@ export function resolveDamage(ctx: StepContext, setDamageEvents: Dispatch<SetSta
   current.dps = dps
 
   ctx.logs.push({
-    resolver: "resolveDamage",
+    resolver: 'resolveDamage',
     message: `Damage resolved for snapshot ${snapshotId}: +${average} dmg, cumulative ${cumulativeDamage}`,
-    details: { damageEvent }
+    details: { damageEvent },
   })
 }
 
@@ -194,7 +172,7 @@ function aggregateStatusModifications(ctx: StepContext) {
   const aggregated = {
     buff: {} as Record<string, { stackChange: number; durationChange: number; refreshDuration: boolean }>,
     debuff: {} as Record<string, { stackChange: number; durationChange: number; refreshDuration: boolean }>,
-    negativeStatus: {} as Record<string, { stackChange: number; durationChange: number; refreshDuration: boolean }>
+    negativeStatus: {} as Record<string, { stackChange: number; durationChange: number; refreshDuration: boolean }>,
   }
 
   // Collect from action's statusModifications
@@ -217,9 +195,9 @@ function aggregateStatusModifications(ctx: StepContext) {
   }
 
   ctx.logs.push({
-    resolver: "aggregateStatusModifications",
-    message: "Status modifications aggregated from action and side effects",
-    details: { statusModifications: aggregated }
+    resolver: 'aggregateStatusModifications',
+    message: 'Status modifications aggregated from action and side effects',
+    details: { statusModifications: aggregated },
   })
 
   return aggregated
@@ -232,22 +210,23 @@ function aggregateModification(
     negativeStatus: Record<string, { stackChange: number; durationChange: number; refreshDuration: boolean }>
   },
   modification: {
-    type: "buff" | "debuff" | "negativeStatus"
+    type: 'buff' | 'debuff' | 'negativeStatus'
     targetName: string
     stackChange?: number
     durationChange?: number
     refreshDuration?: boolean
-  }
+  },
 ) {
   const { type, targetName, stackChange = 0, durationChange = 0, refreshDuration = false } = modification
   const container = aggregated[type]
 
-  const entry = container[targetName] ??= {
+  const entry = (container[targetName] ??= {
     stackChange: 0,
     durationChange: 0,
-    refreshDuration: false
-  }
+    refreshDuration: false,
+  })
 
+  console.log('Hej')
   entry.stackChange += stackChange
   entry.durationChange += durationChange
   entry.refreshDuration ||= refreshDuration
@@ -275,15 +254,13 @@ function helpSideEffectsDamage(ctx: StepContext, setDamageEvents: Dispatch<SetSt
   ctx.current.damage += totalSideEffectDamage
 
   ctx.logs.push({
-    resolver: "resolveSideEffectsDamage",
+    resolver: 'resolveSideEffectsDamage',
     message: `Side effects damage resolved: +${totalSideEffectDamage} dmg`,
-    details: { sideEffectsCount: sideEffects.length, totalDamage: totalSideEffectDamage, damageEvents }
+    details: { sideEffectsCount: sideEffects.length, totalDamage: totalSideEffectDamage, damageEvents },
   })
 }
 
-
 export function helpNegativeStatuses(ctx: StepContext, setDamageEvents: Dispatch<SetStateAction<DamageEvent[]>>, statusModifications: any): void {
-
   const prev = ctx.prev
   const current = ctx.current
   const negativeStatusesInAction = ctx.negativeStatusesInAction
@@ -293,19 +270,13 @@ export function helpNegativeStatuses(ctx: StepContext, setDamageEvents: Dispatch
   const action = ctx.action
 
   const stacksPrev = getNegativeStatusStacks(prev)
-  const {damageEvents, stacksCurr} = processNegativeStatusStacks(
-    negativeStatusesInAction, 
-    fromTime, 
-    toTime, 
-    stacksPrev, 
-    enemy, 
-    ctx.character.stats,
-    ctx.snapshotId
-  )
+  const { damageEvents, stacksCurr } = processNegativeStatusStacks(negativeStatusesInAction, fromTime, toTime, stacksPrev, enemy, ctx.character.stats, ctx.snapshotId)
   updateNegativeStatusStacks(current, stacksCurr, action, negativeStatusesInAction, statusModifications.negativeStatus)
 
   // Collect all damage events and filter out zero-damage events
-  const allDamageEvents = Object.values(damageEvents).flat().filter(event => event.average > 0)
+  const allDamageEvents = Object.values(damageEvents)
+    .flat()
+    .filter(event => event.average > 0)
   setDamageEvents(prevEvents => [...prevEvents, ...allDamageEvents])
 
   // Calculate total damage from all events
@@ -313,20 +284,15 @@ export function helpNegativeStatuses(ctx: StepContext, setDamageEvents: Dispatch
   current.damage += totalDmgNegativeStatuses
 
   ctx.logs.push({
-    resolver: "resolveNegativeStatuses",
+    resolver: 'resolveNegativeStatuses',
     message: `Negative statuses resolved: +${totalDmgNegativeStatuses} dmg`,
-    details: { damageEventsCount: allDamageEvents.length, totalDamage: totalDmgNegativeStatuses, damageEvents: allDamageEvents }
+    details: { damageEventsCount: allDamageEvents.length, totalDamage: totalDmgNegativeStatuses, damageEvents: allDamageEvents },
   })
 }
-
-
-
-
 
 // ========== Resolver 5: Side Effects ========================================================================================
 
 // TODO
-
 
 // ========== Resolver 7: Resources ===========================================================================================
 
@@ -387,53 +353,102 @@ export function resolveResources(ctx: StepContext): void {
   }
 
   // Handle Outro
-  if (action.name === "Outro" && energiesCurr?.concerto !== undefined) {
+  if (action.name === 'Outro' && energiesCurr?.concerto !== undefined) {
     energiesCurr.concerto = 0
   }
 }
 
 // ========== Resolver 8: Events ==============================================================================================
 
-
-
-
-
-
-
-
-
 // ========== Internal Helpers ================================================================================================
 
 function initializeEmptyCharacterStats(): Partial<CharacterStats> {
   const stats: Partial<CharacterStats> = {
     level: 0,
-    baseATK: 0, flatATK: 0, bonusATK: 0, amplifyATK: 0, totalMultiplierATK: 1.00,
-    baseHP: 0, flatHP: 0, bonusHP: 0, amplifyHP: 0, totalMultiplierHP: 1.00,
-    baseDEF: 0, flatDEF: 0, bonusDEF: 0, amplifyDEF: 0, totalMultiplierDEF: 1.00,
-    critRate: 0, critDamage: 0,
-    bonusDMG: 0, amplifyDMG: 0, totalMultiplierDMG: 1.00,
-    defIgnore: 0.00, elementalResPEN: 0.00, resistancePEN: 0.00,
-    basicBonusDMG: 0, basicAmplifyDMG: 0, basicTotalMultiplierDMG: 1.00,
-    heavyBonusDMG: 0, heavyAmplifyDMG: 0, heavyTotalMultiplierDMG: 1.00,
-    skillBonusDMG: 0, skillAmplifyDMG: 0, skillTotalMultiplierDMG: 1.00,
-    liberationBonusDMG: 0, liberationAmplifyDMG: 0, liberationTotalMultiplierDMG: 1.00,
-    coordinatedBonusDMG: 0, coordinatedAmplifyDMG: 0, coordinatedTotalMultiplierDMG: 1.00,
-    echoBonusDMG: 0, echoAmplifyDMG: 0, echoTotalMultiplierDMG: 1.00,
-    introBonusDMG: 0, introAmplifyDMG: 0, introTotalMultiplierDMG: 1.00,
-    outroBonusDMG: 0, outroAmplifyDMG: 0, outroTotalMultiplierDMG: 1.00,
-    aeroErosionBonusDMG: 0, aeroErosionAmplifyDMG: 0, aeroErosionTotalMultiplierDMG: 1.00,
-    spectroFrazzleBonusDMG: 0, spectroFrazzleAmplifyDMG: 0, spectroFrazzleTotalMultiplierDMG: 1.00,
-    havocBaneBonusDMG: 0, havocBaneAmplifyDMG: 0, havocBaneTotalMultiplierDMG: 1.00,
-    glacioChafeBonusDMG: 0, glacioChafeAmplifyDMG: 0, glacioChafeTotalMultiplierDMG: 1.00,
-    fusionBurstBonusDMG: 0, fusionBurstAmplifyDMG: 0, fusionBurstTotalMultiplierDMG: 1.00,
-    electroFlareBonusDMG: 0, electroFlareAmplifyDMG: 0, electroFlareTotalMultiplierDMG: 1.00,
-    spectroBonusDMG: 0, spectroAmplifyDMG: 0, spectroTotalMultiplierDMG: 1.00,
-    fusionBonusDMG: 0, fusionAmplifyDMG: 0, fusionTotalMultiplierDMG: 1.00,
-    aeroBonusDMG: 0, aeroAmplifyDMG: 0, aeroTotalMultiplierDMG: 1.00,
-    glacioBonusDMG: 0, glacioAmplifyDMG: 0, glacioTotalMultiplierDMG: 1.00,
-    electroBonusDMG: 0, electroAmplifyDMG: 0, electroTotalMultiplierDMG: 1.00,
-    havocBonusDMG: 0, havocAmplifyDMG: 0, havocTotalMultiplierDMG: 1.00,
-    energyPercent: 0
+    baseATK: 0,
+    flatATK: 0,
+    bonusATK: 0,
+    amplifyATK: 0,
+    totalMultiplierATK: 1.0,
+    baseHP: 0,
+    flatHP: 0,
+    bonusHP: 0,
+    amplifyHP: 0,
+    totalMultiplierHP: 1.0,
+    baseDEF: 0,
+    flatDEF: 0,
+    bonusDEF: 0,
+    amplifyDEF: 0,
+    totalMultiplierDEF: 1.0,
+    critRate: 0,
+    critDamage: 0,
+    bonusDMG: 0,
+    amplifyDMG: 0,
+    totalMultiplierDMG: 1.0,
+    defIgnore: 0.0,
+    elementalResPEN: 0.0,
+    resistancePEN: 0.0,
+    basicBonusDMG: 0,
+    basicAmplifyDMG: 0,
+    basicTotalMultiplierDMG: 1.0,
+    heavyBonusDMG: 0,
+    heavyAmplifyDMG: 0,
+    heavyTotalMultiplierDMG: 1.0,
+    skillBonusDMG: 0,
+    skillAmplifyDMG: 0,
+    skillTotalMultiplierDMG: 1.0,
+    liberationBonusDMG: 0,
+    liberationAmplifyDMG: 0,
+    liberationTotalMultiplierDMG: 1.0,
+    coordinatedBonusDMG: 0,
+    coordinatedAmplifyDMG: 0,
+    coordinatedTotalMultiplierDMG: 1.0,
+    echoBonusDMG: 0,
+    echoAmplifyDMG: 0,
+    echoTotalMultiplierDMG: 1.0,
+    introBonusDMG: 0,
+    introAmplifyDMG: 0,
+    introTotalMultiplierDMG: 1.0,
+    outroBonusDMG: 0,
+    outroAmplifyDMG: 0,
+    outroTotalMultiplierDMG: 1.0,
+    aeroErosionBonusDMG: 0,
+    aeroErosionAmplifyDMG: 0,
+    aeroErosionTotalMultiplierDMG: 1.0,
+    spectroFrazzleBonusDMG: 0,
+    spectroFrazzleAmplifyDMG: 0,
+    spectroFrazzleTotalMultiplierDMG: 1.0,
+    havocBaneBonusDMG: 0,
+    havocBaneAmplifyDMG: 0,
+    havocBaneTotalMultiplierDMG: 1.0,
+    glacioChafeBonusDMG: 0,
+    glacioChafeAmplifyDMG: 0,
+    glacioChafeTotalMultiplierDMG: 1.0,
+    fusionBurstBonusDMG: 0,
+    fusionBurstAmplifyDMG: 0,
+    fusionBurstTotalMultiplierDMG: 1.0,
+    electroFlareBonusDMG: 0,
+    electroFlareAmplifyDMG: 0,
+    electroFlareTotalMultiplierDMG: 1.0,
+    spectroBonusDMG: 0,
+    spectroAmplifyDMG: 0,
+    spectroTotalMultiplierDMG: 1.0,
+    fusionBonusDMG: 0,
+    fusionAmplifyDMG: 0,
+    fusionTotalMultiplierDMG: 1.0,
+    aeroBonusDMG: 0,
+    aeroAmplifyDMG: 0,
+    aeroTotalMultiplierDMG: 1.0,
+    glacioBonusDMG: 0,
+    glacioAmplifyDMG: 0,
+    glacioTotalMultiplierDMG: 1.0,
+    electroBonusDMG: 0,
+    electroAmplifyDMG: 0,
+    electroTotalMultiplierDMG: 1.0,
+    havocBonusDMG: 0,
+    havocAmplifyDMG: 0,
+    havocTotalMultiplierDMG: 1.0,
+    energyPercent: 0,
   }
   return stats
 }
@@ -448,16 +463,12 @@ function initializeEmptyEnemyStats(): Partial<EnemyStats> {
     fusionRES: 0,
     electroRES: 0,
     resistance: 0,
-    damageReduction: 0
+    damageReduction: 0,
   }
   return stats
 }
 
-export function aggregateStat(
-  currentValue: number | undefined,
-  incomingValue: number,
-  statKey: string
-): number {
+export function aggregateStat(currentValue: number | undefined, incomingValue: number, statKey: string): number {
   const lowerKey = statKey.toLowerCase()
   const isMultiplier = lowerKey.includes('totalmultiplier')
   const isDamageReduction = lowerKey === 'damagereduction'
