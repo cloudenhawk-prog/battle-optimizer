@@ -8,7 +8,11 @@ import { createOptionalGroup } from "./helpers"
 export function buildDebuffColumns(selectedCharacters: Character[]): ColumnGroup | null {
   const inherentDebuffs = selectedCharacters.flatMap(c => c.debuffs.map(b => b.name))
   const actionDebuffs = selectedCharacters.flatMap(c =>
-    c.actions.flatMap(a => a.debuffsApplied.map(b => b.name))
+    c.actions.flatMap(a => 
+      a.statusModifications
+        .filter(mod => mod.type === "debuff")
+        .map(mod => mod.targetName)
+    )
   )
   const activeDebuffs = Array.from(new Set([...inherentDebuffs, ...actionDebuffs]))
 

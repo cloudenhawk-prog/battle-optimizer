@@ -1,4 +1,4 @@
-import type { NegativeStatusDamageEvent, DamageEvent } from './../../types/events'
+import type { DamageEvent } from './../../types/events'
 import type { Snapshot } from "../../types/snapshot"
 import type { Action } from "../../types/action"
 import type { Enemy } from "../../types/enemy"
@@ -14,9 +14,9 @@ export function getNegativeStatusStacks(snapshot: Snapshot): Record<string, numb
 
 export function processNegativeStatusStacks(
   negativeStatusesInAction: NegativeStatusInAction[],
-  fromTime: number,
+  _fromTime: number,
   toTime: number,
-  stacksPrev: Record<string, number>,
+  _stacksPrev: Record<string, number>,
   enemy: Enemy,
   characterStats: CharacterStats,
   snapshotId: number
@@ -113,35 +113,18 @@ export function processNegativeStatusStacks(
 
 // =============================================================================================================================
 
-export function updateNegativeStatusStacks(snapshot: Snapshot, stacksCurr: Record<string, number>, action: Action, negativeStatusesInAction: NegativeStatusInAction[], negativeStatusModifications: Record<string, {
+export function updateNegativeStatusStacks(
+  snapshot: Snapshot, 
+  stacksCurr: Record<string, number>, 
+  _action: Action, 
+  negativeStatusesInAction: NegativeStatusInAction[], 
+  negativeStatusModifications: Record<string, {
     stackChange: number
     durationChange: number
     refreshDuration: boolean
-  }>): void {
-  // 1️⃣ Normal updates
-  for (const [name, count] of Object.entries(action.negativeStatusesApplied)) {
-    const nsInQuestion = negativeStatusesInAction.find(nsInAction => nsInAction.negativeStatus.name === name)
-    const maxStacks = nsInQuestion.negativeStatus.maxStacksDefault
-
-    // Update stacks in stacksCurr
-    stacksCurr[name] += count
-    stacksCurr[name] = Math.min(stacksCurr[name], maxStacks)
-
-    // Update stacks in NegativeStatusInAction
-    const statusInAction = negativeStatusesInAction.find(nsa => nsa.negativeStatus.name === name)
-    if (statusInAction) {
-      statusInAction.currentStacks = stacksCurr[name]
-
-      // If this status is being applied for the first time
-      if (statusInAction.applicationTime === -1) {
-        statusInAction.applicationTime = snapshot.toTime
-        statusInAction.timeLeft = statusInAction.negativeStatus.duration
-        statusInAction.lastDamageTime = snapshot.toTime
-      }
-    }
-  }
-
-  // 2️⃣ Aggregated side-effect modifications
+  }>
+): void {
+  // Apply all aggregated status modifications (from both action and side effects)
   for (const [name, mod] of Object.entries(negativeStatusModifications)) {
     const statusInAction = negativeStatusesInAction.find(
       nsa => nsa.negativeStatus.name === name
@@ -164,12 +147,19 @@ export function updateNegativeStatusStacks(snapshot: Snapshot, stacksCurr: Recor
       continue
     }
 
+    // If this status is being applied for the first time (stacks > 0 but was inactive)
+    if (statusInAction.applicationTime === -1 && stacksCurr[name] > 0) {
+      statusInAction.applicationTime = snapshot.toTime
+      statusInAction.timeLeft = statusInAction.negativeStatus.duration
+      statusInAction.lastDamageTime = snapshot.toTime
+    }
+
     // Duration logic
     if (mod.refreshDuration) {
       // Reset to full duration, ignoring any durationChange
       statusInAction.timeLeft = statusInAction.negativeStatus.duration
       statusInAction.lastDamageTime = snapshot.toTime
-    } else if (mod.durationChange) {
+    } else if (mod.durationChange !== 0) {
       // Increment/decrement current time left
       statusInAction.timeLeft = Math.max(
         0,
@@ -179,18 +169,4 @@ export function updateNegativeStatusStacks(snapshot: Snapshot, stacksCurr: Recor
   }
 
   snapshot.negativeStatuses = { ...stacksCurr }
-}
-
-// =============================================================================================================================
-
-export function createNegativeStatusDamageEvent(
-  statusName: string,
-  element: Action["element"],
-  damage: number
-): NegativeStatusDamageEvent {
-  return {
-    name: statusName,
-    element: element,
-    damage: damage,
-  }
 }

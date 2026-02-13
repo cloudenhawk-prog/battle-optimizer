@@ -1,8 +1,7 @@
 import type { EnergyGeneration, EnergyCost } from "./energy"
 import type { ScalingType, ElementType, DamageType } from "./baseTypes"
-import type { Buff, Debuff } from "./buff"
 import type { DamageModifier } from "./modifiers"
-import type { SideEffect } from "./sideEffect"
+import type { SideEffect, StatusModification } from "./sideEffect"
 
 // ========== Type: Action =====================================================================================================
 
@@ -18,9 +17,7 @@ export type Action = {
   energyGenerated: EnergyGeneration[]
   energyCost: EnergyCost[]
 
-  negativeStatusesApplied: Record<string, number>
-  buffsApplied: Buff[]
-  debuffsApplied: Debuff[]
+  statusModifications: StatusModification[]
 
   damageModifiers: DamageModifier[]
   sideEffects: SideEffect[]

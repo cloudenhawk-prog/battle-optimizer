@@ -178,8 +178,11 @@ export function resolveDamage(ctx: StepContext, setDamageEvents: Dispatch<SetSta
 // ========== Resolver 4: Side Effects And Statuses ===========================================================================
 
 export function resolveSideEffectsAndStatuses(ctx: StepContext, setDamageEvents: Dispatch<SetStateAction<DamageEvent[]>>): void {
-  // Side Effects
-  const statusModifications = helpSideEffectsDamage(ctx, setDamageEvents)
+  // Aggregate all status modifications from both action and side effects
+  const statusModifications = aggregateStatusModifications(ctx)
+
+  // Side Effects Damage
+  helpSideEffectsDamage(ctx, setDamageEvents)
 
   // Negative Statuses
   helpNegativeStatuses(ctx, setDamageEvents, statusModifications)
@@ -187,19 +190,74 @@ export function resolveSideEffectsAndStatuses(ctx: StepContext, setDamageEvents:
   // TODO: Buffs & Debuffs
 }
 
-function helpSideEffectsDamage(ctx: StepContext, setDamageEvents: Dispatch<SetStateAction<DamageEvent[]>>) {
-  // Status Modifications default structure
+function aggregateStatusModifications(ctx: StepContext) {
   const aggregated = {
-    buff: {},
-    debuff: {},
-    negativeStatus: {}
+    buff: {} as Record<string, { stackChange: number; durationChange: number; refreshDuration: boolean }>,
+    debuff: {} as Record<string, { stackChange: number; durationChange: number; refreshDuration: boolean }>,
+    negativeStatus: {} as Record<string, { stackChange: number; durationChange: number; refreshDuration: boolean }>
   }
 
-  // Side Effects Damage
+  // Collect from action's statusModifications
+  if (ctx.action.statusModifications) {
+    for (const modification of ctx.action.statusModifications) {
+      aggregateModification(aggregated, modification)
+    }
+  }
+
+  // Collect from all side effects' statusModifications
+  const sideEffects = ctx.action.sideEffects
+  if (sideEffects && sideEffects.length > 0) {
+    for (const sideEffect of sideEffects) {
+      if (sideEffect.statusModifications) {
+        for (const modification of sideEffect.statusModifications) {
+          aggregateModification(aggregated, modification)
+        }
+      }
+    }
+  }
+
+  ctx.logs.push({
+    resolver: "aggregateStatusModifications",
+    message: "Status modifications aggregated from action and side effects",
+    details: { statusModifications: aggregated }
+  })
+
+  return aggregated
+}
+
+function aggregateModification(
+  aggregated: {
+    buff: Record<string, { stackChange: number; durationChange: number; refreshDuration: boolean }>
+    debuff: Record<string, { stackChange: number; durationChange: number; refreshDuration: boolean }>
+    negativeStatus: Record<string, { stackChange: number; durationChange: number; refreshDuration: boolean }>
+  },
+  modification: {
+    type: "buff" | "debuff" | "negativeStatus"
+    targetName: string
+    stackChange?: number
+    durationChange?: number
+    refreshDuration?: boolean
+  }
+) {
+  const { type, targetName, stackChange = 0, durationChange = 0, refreshDuration = false } = modification
+  const container = aggregated[type]
+
+  const entry = container[targetName] ??= {
+    stackChange: 0,
+    durationChange: 0,
+    refreshDuration: false
+  }
+
+  entry.stackChange += stackChange
+  entry.durationChange += durationChange
+  entry.refreshDuration ||= refreshDuration
+}
+
+function helpSideEffectsDamage(ctx: StepContext, setDamageEvents: Dispatch<SetStateAction<DamageEvent[]>>): void {
   const sideEffects = ctx.action.sideEffects
 
   if (!sideEffects || sideEffects.length === 0) {
-    return aggregated
+    return
   }
 
   let totalSideEffectDamage = 0
@@ -221,34 +279,6 @@ function helpSideEffectsDamage(ctx: StepContext, setDamageEvents: Dispatch<SetSt
     message: `Side effects damage resolved: +${totalSideEffectDamage} dmg`,
     details: { sideEffectsCount: sideEffects.length, totalDamage: totalSideEffectDamage, damageEvents }
   })
-
-  // Aggregate status modifications from side effects
-  for (const { statusModifications } of sideEffects) {
-    if (!statusModifications) continue
-
-    for (const {
-      type,
-      targetName,
-      stackChange = 0,
-      durationChange = 0,
-      refreshDuration = false
-    } of statusModifications) {
-
-      const container = aggregated[type]
-
-      const entry = container[targetName] ??= {
-        stackChange: 0,
-        durationChange: 0,
-        refreshDuration: false
-      }
-
-      entry.stackChange += stackChange
-      entry.durationChange += durationChange
-      entry.refreshDuration ||= refreshDuration
-    }
-  }
-
-  return aggregated
 }
 
 

@@ -18,9 +18,7 @@ export const fireball: Action = {
     { energyType: "forte", amount: 10, share: 0 }
   ],
   energyCost: [],
-  negativeStatusesApplied: {},
-  buffsApplied: [],
-  debuffsApplied: [],
+  statusModifications: [],
   damageModifiers: [],
   sideEffects: []
 }
@@ -39,9 +37,7 @@ export const iceSpike: Action = {
     { energyType: "forte", amount: 30, share: 0 }
   ],
   energyCost: [],
-  negativeStatusesApplied: {},
-  buffsApplied: [],
-  debuffsApplied: [],
+  statusModifications: [],
   damageModifiers: [],
   sideEffects: []
 }
@@ -60,9 +56,9 @@ export const liberatingLightning: Action = {
     { energyType: "forte", amount: 50, share: 0 }
   ],
   energyCost: [{ energyType: "energy", amount: 100 }],
-  negativeStatusesApplied: { "Spectro Frazzle": 3 },
-  buffsApplied: [],
-  debuffsApplied: [],
+  statusModifications: [
+    { type: "negativeStatus", targetName: "Spectro Frazzle", stackChange: 3 }
+  ],
   damageModifiers: [],
   sideEffects: []
 }
@@ -81,9 +77,7 @@ export const mageIntro: Action = {
     { energyType: "forte", amount: 10, share: 0 }
   ],
   energyCost: [],
-  negativeStatusesApplied: {},
-  buffsApplied: [],
-  debuffsApplied: [],
+  statusModifications: [],
   damageModifiers: [],
   sideEffects: []
 }
@@ -102,9 +96,7 @@ export const mageOutro: Action = {
     { energyType: "forte", amount: 10, share: 0 }
   ],
   energyCost: [],
-  negativeStatusesApplied: {},
-  buffsApplied: [],
-  debuffsApplied: [],
+  statusModifications: [],
   damageModifiers: [],
   sideEffects: []
 }
@@ -125,9 +117,7 @@ export const backstab: Action = {
     { energyType: "forte", amount: 40, share: 0 }
   ],
   energyCost: [],
-  negativeStatusesApplied: {},
-  buffsApplied: [],
-  debuffsApplied: [],
+  statusModifications: [],
   damageModifiers: [],
   sideEffects: []
 }
@@ -146,9 +136,7 @@ export const poison: Action = {
     { energyType: "forte", amount: 20, share: 0 }
   ],
   energyCost: [],
-  negativeStatusesApplied: {},
-  buffsApplied: [],
-  debuffsApplied: [],
+  statusModifications: [],
   damageModifiers: [],
   sideEffects: []
 }
@@ -167,9 +155,7 @@ export const rogueIntro: Action = {
     { energyType: "forte", amount: 10, share: 0 }
   ],
   energyCost: [],
-  negativeStatusesApplied: {},
-  buffsApplied: [],
-  debuffsApplied: [],
+  statusModifications: [],
   damageModifiers: [],
   sideEffects: []
 }
@@ -188,9 +174,7 @@ export const rogueOutro: Action = {
     { energyType: "forte", amount: 10, share: 0 }
   ],
   energyCost: [],
-  negativeStatusesApplied: {},
-  buffsApplied: [],
-  debuffsApplied: [],
+  statusModifications: [],
   damageModifiers: [],
   sideEffects: []
 }
@@ -212,9 +196,9 @@ export const fleurdelysStrike: Action = {
     { energyType: "conviction", amount: 50, share: 0 }
   ],
   energyCost: [],
-  negativeStatusesApplied: { "Aero Erosion": 1 },
-  buffsApplied: [],
-  debuffsApplied: [],
+  statusModifications: [
+    { type: "negativeStatus", targetName: "Aero Erosion", stackChange: 1 }
+  ],
   damageModifiers: [
     {
       source: "Fleurdelys Strike – Aero Erosion scaling",
@@ -242,9 +226,7 @@ export const liberation: Action = {
     { energyType: "rage", amount: 75, share: 0 }
   ],
   energyCost: [{ energyType: "energy", amount: 100 }],
-  negativeStatusesApplied: {},
-  buffsApplied: [],
-  debuffsApplied: [],
+  statusModifications: [],
   damageModifiers: [],
   sideEffects: []
 }
@@ -264,9 +246,9 @@ export const explosiveStrike: Action = {
     { energyType: "conviction", amount: 100, share: 0 }
   ],
   energyCost: [],
-  negativeStatusesApplied: { "Aero Erosion": 2 },
-  buffsApplied: [],
-  debuffsApplied: [],
+  statusModifications: [
+    { type: "negativeStatus", targetName: "Aero Erosion", stackChange: 2 }
+  ],
   damageModifiers: [],
   sideEffects: [aeroErosionExplosion]
 }
@@ -285,9 +267,7 @@ export const cartethyiaIntro: Action = {
     { energyType: "forte", amount: 1, share: 0 }
   ],
   energyCost: [],
-  negativeStatusesApplied: {},
-  buffsApplied: [],
-  debuffsApplied: [],
+  statusModifications: [],
   damageModifiers: [],
   sideEffects: []
 }
@@ -306,9 +286,7 @@ export const cartethyiaOutro: Action = {
     { energyType: "forte", amount: 0, share: 0, scalingStat: "energyPercent" }
   ],
   energyCost: [],
-  negativeStatusesApplied: {},
-  buffsApplied: [],
-  debuffsApplied: [],
+  statusModifications: [],
   damageModifiers: [],
   sideEffects: []
 }

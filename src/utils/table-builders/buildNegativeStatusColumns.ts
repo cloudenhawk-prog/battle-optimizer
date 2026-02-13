@@ -9,7 +9,11 @@ export function buildNegativeStatusColumns(selectedCharacters: Character[]): Col
   const activeStatuses = Array.from(
     new Set(
       selectedCharacters.flatMap(c => 
-        c.actions.flatMap(action => Object.keys(action.negativeStatusesApplied))
+        c.actions.flatMap(action => 
+          action.statusModifications
+            .filter(mod => mod.type === "negativeStatus")
+            .map(mod => mod.targetName)
+        )
       )
     )
   )

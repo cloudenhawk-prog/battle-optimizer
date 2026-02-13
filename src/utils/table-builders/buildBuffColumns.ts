@@ -8,7 +8,11 @@ import { createOptionalGroup } from "./helpers"
 export function buildBuffColumns(selectedCharacters: Character[]): ColumnGroup | null {
   const inherentBuffs = selectedCharacters.flatMap(c => c.buffs.map(b => b.name))
   const actionBuffs = selectedCharacters.flatMap(c =>
-    c.actions.flatMap(a => a.buffsApplied.map(b => b.name))
+    c.actions.flatMap(a => 
+      a.statusModifications
+        .filter(mod => mod.type === "buff")
+        .map(mod => mod.targetName)
+    )
   )
   const activeBuffs = Array.from(new Set([...inherentBuffs, ...actionBuffs]))
 

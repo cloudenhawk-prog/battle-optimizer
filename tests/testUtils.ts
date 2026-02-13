@@ -171,10 +171,9 @@ export function createMockAction(name: string, overrides: Partial<Action> = {}):
     cooldown: 0,
     energyGenerated: [],
     energyCost: [],
-    negativeStatusesApplied: {},
-    buffsApplied: [],
-    debuffsApplied: [],
+    statusModifications: [],
     damageModifiers: [],
+    sideEffects: [],
     ...overrides,
   }
 }
