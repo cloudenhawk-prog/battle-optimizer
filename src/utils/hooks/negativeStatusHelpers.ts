@@ -1,10 +1,10 @@
 import type { DamageEvent } from './../../types/events'
-import type { Snapshot } from "../../types/snapshot"
-import type { Action } from "../../types/action"
-import type { Enemy } from "../../types/enemy"
-import type { NegativeStatusInAction } from "../../types/negativeStatus"
-import type { CharacterStats } from "../../types/stats"
-import { calculateDamageNegativeStatus } from "../../utils/calculators/damageCalculator"
+import type { Snapshot } from '../../types/snapshot'
+import type { Action } from '../../types/action'
+import type { Enemy } from '../../types/enemy'
+import type { NegativeStatusInAction } from '../../types/negativeStatus'
+import type { CharacterStats } from '../../types/stats'
+import { calculateDamageNegativeStatus } from '../../utils/calculators/damageCalculator'
 
 // ========== Negative Status Helpers ==========================================================================================
 
@@ -19,7 +19,7 @@ export function processNegativeStatusStacks(
   _stacksPrev: Record<string, number>,
   enemy: Enemy,
   characterStats: CharacterStats,
-  snapshotId: number
+  snapshotId: number,
 ): {
   damageEvents: Record<string, DamageEvent[]>
   stacksCurr: Record<string, number>
@@ -35,7 +35,8 @@ export function processNegativeStatusStacks(
 
     const reducStrat = nsa.negativeStatus.reductionStrategy
 
-    if (reducStrat.resetTimerOnApplication === true) { // AERO EROSION FOR NOW
+    if (reducStrat.resetTimerOnApplication === true) {
+      // AERO EROSION FOR NOW
       const name = nsa.negativeStatus.name
       const currStacks = nsa.currentStacks
       const element = nsa.negativeStatus.element
@@ -52,7 +53,7 @@ export function processNegativeStatusStacks(
           damageEvents[name] = []
         }
 
-        damageEvents[name].push(calculateDamageNegativeStatus(currStacks, element, enemy, name, characterStats, name, snapshotId, lastDamageTime))  // DoT: dealer is the status itself
+        damageEvents[name].push(calculateDamageNegativeStatus(currStacks, element, enemy, name, characterStats, name, snapshotId, lastDamageTime)) // DoT: dealer is the status itself
       }
 
       if (timeLeft <= 0) {
@@ -66,9 +67,8 @@ export function processNegativeStatusStacks(
       }
 
       stacksCurr[name] = currStacks
-    }
-
-    else if (reducStrat.resetTimerOnApplication === false) { // SPECTRO FRAZZLE FOR NOW
+    } else if (reducStrat.resetTimerOnApplication === false) {
+      // SPECTRO FRAZZLE FOR NOW
       const name = nsa.negativeStatus.name
       const element = nsa.negativeStatus.element
 
@@ -114,21 +114,22 @@ export function processNegativeStatusStacks(
 // =============================================================================================================================
 
 export function updateNegativeStatusStacks(
-  snapshot: Snapshot, 
-  stacksCurr: Record<string, number>, 
-  _action: Action, 
-  negativeStatusesInAction: NegativeStatusInAction[], 
-  negativeStatusModifications: Record<string, {
-    stackChange: number
-    durationChange: number
-    refreshDuration: boolean
-  }>
+  snapshot: Snapshot,
+  stacksCurr: Record<string, number>,
+  _action: Action,
+  negativeStatusesInAction: NegativeStatusInAction[],
+  negativeStatusModifications: Record<
+    string,
+    {
+      stackChange: number
+      durationChange: number
+      refreshDuration: boolean
+    }
+  >,
 ): void {
   // Apply all aggregated status modifications (from both action and side effects)
   for (const [name, mod] of Object.entries(negativeStatusModifications)) {
-    const statusInAction = negativeStatusesInAction.find(
-      nsa => nsa.negativeStatus.name === name
-    )
+    const statusInAction = negativeStatusesInAction.find(nsa => nsa.negativeStatus.name === name)
 
     if (!statusInAction) continue
 
@@ -161,10 +162,7 @@ export function updateNegativeStatusStacks(
       statusInAction.lastDamageTime = snapshot.toTime
     } else if (mod.durationChange !== 0) {
       // Increment/decrement current time left
-      statusInAction.timeLeft = Math.max(
-        0,
-        statusInAction.timeLeft + mod.durationChange
-      )
+      statusInAction.timeLeft = Math.max(0, statusInAction.timeLeft + mod.durationChange)
     }
   }
 

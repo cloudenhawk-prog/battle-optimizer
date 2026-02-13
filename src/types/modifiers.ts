@@ -1,5 +1,5 @@
-import type { CharacterStats, EnemyStats } from "./stats"
-import type { StepContext } from "./stepContext"
+import type { CharacterStats, EnemyStats } from './stats'
+import type { StepContext } from './stepContext'
 
 // ========== Type: Damage Modifier ============================================================================================
 

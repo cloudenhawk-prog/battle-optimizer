@@ -1,5 +1,5 @@
-import type { StepContext } from "./stepContext"
-import type { DamageEvent } from "./events"
+import type { StepContext } from './stepContext'
+import type { DamageEvent } from './events'
 
 // ========== Type: SideEffect =================================================================================================
 
@@ -12,7 +12,7 @@ export type SideEffect = {
 // ========== Type: StatusModification =========================================================================================
 
 export type StatusModification = {
-  type: "buff" | "debuff" | "negativeStatus"
+  type: 'buff' | 'debuff' | 'negativeStatus'
   targetName: string
   stackChange?: number
   durationChange?: number

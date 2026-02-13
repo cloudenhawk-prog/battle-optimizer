@@ -1,4 +1,4 @@
-import type { DamageType, ScalingType, ElementType } from "./baseTypes"
+import type { DamageType, ScalingType, ElementType } from './baseTypes'
 
 // ========== Type: Damage Event ===============================================================================================
 

@@ -1,8 +1,8 @@
-import type { StatusModification } from "../../types/sideEffect"
+import type { StatusModification } from '../../types/sideEffect'
 
 /**
  * Side Effect Helpers
- * 
+ *
  * Utility functions to easily create status modifications for side effects.
  * These helpers provide intuitive APIs for common modification patterns.
  */
@@ -11,41 +11,41 @@ import type { StatusModification } from "../../types/sideEffect"
 
 export function removeNegativeStatusStacks(targetName: string, stacks: number): StatusModification {
   return {
-    type: "negativeStatus",
+    type: 'negativeStatus',
     targetName,
-    stackChange: -stacks
+    stackChange: -stacks,
   }
 }
 
 export function addNegativeStatusStacks(targetName: string, stacks: number): StatusModification {
   return {
-    type: "negativeStatus",
+    type: 'negativeStatus',
     targetName,
-    stackChange: stacks
+    stackChange: stacks,
   }
 }
 
 export function extendNegativeStatusDuration(targetName: string, seconds: number): StatusModification {
   return {
-    type: "negativeStatus",
+    type: 'negativeStatus',
     targetName,
-    durationChange: seconds
+    durationChange: seconds,
   }
 }
 
 export function reduceNegativeStatusDuration(targetName: string, seconds: number): StatusModification {
   return {
-    type: "negativeStatus",
+    type: 'negativeStatus',
     targetName,
-    durationChange: -seconds
+    durationChange: -seconds,
   }
 }
 
 export function refreshNegativeStatusDuration(targetName: string): StatusModification {
   return {
-    type: "negativeStatus",
+    type: 'negativeStatus',
     targetName,
-    refreshDuration: true
+    refreshDuration: true,
   }
 }
 
@@ -53,41 +53,41 @@ export function refreshNegativeStatusDuration(targetName: string): StatusModific
 
 export function removeBuffStacks(targetName: string, stacks: number): StatusModification {
   return {
-    type: "buff",
+    type: 'buff',
     targetName,
-    stackChange: -stacks
+    stackChange: -stacks,
   }
 }
 
 export function addBuffStacks(targetName: string, stacks: number): StatusModification {
   return {
-    type: "buff",
+    type: 'buff',
     targetName,
-    stackChange: stacks
+    stackChange: stacks,
   }
 }
 
 export function extendBuffDuration(targetName: string, seconds: number): StatusModification {
   return {
-    type: "buff",
+    type: 'buff',
     targetName,
-    durationChange: seconds
+    durationChange: seconds,
   }
 }
 
 export function reduceBuffDuration(targetName: string, seconds: number): StatusModification {
   return {
-    type: "buff",
+    type: 'buff',
     targetName,
-    durationChange: -seconds
+    durationChange: -seconds,
   }
 }
 
 export function refreshBuffDuration(targetName: string): StatusModification {
   return {
-    type: "buff",
+    type: 'buff',
     targetName,
-    refreshDuration: true
+    refreshDuration: true,
   }
 }
 
@@ -95,40 +95,40 @@ export function refreshBuffDuration(targetName: string): StatusModification {
 
 export function removeDebuffStacks(targetName: string, stacks: number): StatusModification {
   return {
-    type: "debuff",
+    type: 'debuff',
     targetName,
-    stackChange: -stacks
+    stackChange: -stacks,
   }
 }
 
 export function addDebuffStacks(targetName: string, stacks: number): StatusModification {
   return {
-    type: "debuff",
+    type: 'debuff',
     targetName,
-    stackChange: stacks
+    stackChange: stacks,
   }
 }
 
 export function extendDebuffDuration(targetName: string, seconds: number): StatusModification {
   return {
-    type: "debuff",
+    type: 'debuff',
     targetName,
-    durationChange: seconds
+    durationChange: seconds,
   }
 }
 
 export function reduceDebuffDuration(targetName: string, seconds: number): StatusModification {
   return {
-    type: "debuff",
+    type: 'debuff',
     targetName,
-    durationChange: -seconds
+    durationChange: -seconds,
   }
 }
 
 export function refreshDebuffDuration(targetName: string): StatusModification {
   return {
-    type: "debuff",
+    type: 'debuff',
     targetName,
-    refreshDuration: true
+    refreshDuration: true,
   }
 }

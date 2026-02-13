@@ -1,7 +1,7 @@
-import { useState } from "react"
-import type { Character } from "../../types/character"
-import type { TableConfig, GlobalColumns } from "../../types/tableDefinitions"
-import type { Snapshot } from "../../types/snapshot"
+import { useState } from 'react'
+import type { Character } from '../../types/character'
+import type { TableConfig, GlobalColumns } from '../../types/tableDefinitions'
+import type { Snapshot } from '../../types/snapshot'
 
 // ========== Hook: useSnapshots ===============================================================================================
 
@@ -27,17 +27,8 @@ export function useSnapshots({ charactersInBattle, tableConfig }: UseSnapshotsPr
 
 // ========== Internal Helpers =================================================================================================
 
-function createEmptySnapshot(
-  charactersMap: Record<string, Character>,
-  characterColumnsMap: Record<string, string[]>,
-  globalColumns: GlobalColumns
-): Snapshot {
-  const charactersEnergies = Object.fromEntries(
-    Object.keys(charactersMap).map(charName => [
-      charName,
-      Object.fromEntries(characterColumnsMap[charName].map(key => [key, 0]))
-    ])
-  )
+function createEmptySnapshot(charactersMap: Record<string, Character>, characterColumnsMap: Record<string, string[]>, globalColumns: GlobalColumns): Snapshot {
+  const charactersEnergies = Object.fromEntries(Object.keys(charactersMap).map(charName => [charName, Object.fromEntries(characterColumnsMap[charName].map(key => [key, 0]))]))
 
   const basicValues = Object.fromEntries(globalColumns.basic.map(col => [col, 0]))
   const buffs = Object.fromEntries(globalColumns.buffs.map(col => [col, 0]))
@@ -45,9 +36,9 @@ function createEmptySnapshot(
   const negativeStatuses = Object.fromEntries(globalColumns.negativeStatuses.map(col => [col, 0]))
 
   return {
-    id: "0",
-    character: "",
-    action: "",
+    id: '0',
+    character: '',
+    action: '',
     fromTime: 0,
     toTime: 0,
     damage: 0,

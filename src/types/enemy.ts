@@ -1,4 +1,4 @@
-import type { EnemyStats } from "./stats"
+import type { EnemyStats } from './stats'
 
 // ========== Type: Enemy ======================================================================================================
 

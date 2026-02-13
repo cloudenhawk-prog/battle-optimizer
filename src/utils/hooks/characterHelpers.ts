@@ -1,5 +1,5 @@
-import type { Character } from "../../types/character"
-import type { Snapshot } from "../../types/snapshot"
+import type { Character } from '../../types/character'
+import type { Snapshot } from '../../types/snapshot'
 
 // ========== Character Helpers ================================================================================================
 
@@ -16,5 +16,5 @@ export function getCharacterMaxEnergies(character: Character) {
 }
 
 export function getPrevCharacter(snapshots: Snapshot[], snapshotId: number): string | null {
-  return snapshotId > 0 ? snapshots[snapshotId - 1].character ?? null : null
+  return snapshotId > 0 ? (snapshots[snapshotId - 1].character ?? null) : null
 }

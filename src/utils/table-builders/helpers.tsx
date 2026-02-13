@@ -1,14 +1,9 @@
-import type { ColumnGroup, ColumnDef, TableConfig } from "../../types/tableDefinitions"
+import type { ColumnGroup, ColumnDef, TableConfig } from '../../types/tableDefinitions'
 
 // ========== Create Optional Group ============================================================================================
 
-export function createOptionalGroup(
-  group: Omit<ColumnGroup, "columns">,
-  columns: ColumnDef[]
-): ColumnGroup | null {
-  return columns.length > 0
-    ? { ...group, columns }
-    : null
+export function createOptionalGroup(group: Omit<ColumnGroup, 'columns'>, columns: ColumnDef[]): ColumnGroup | null {
+  return columns.length > 0 ? { ...group, columns } : null
 }
 
 // ========== Flatten Table Columns ============================================================================================

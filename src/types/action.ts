@@ -1,7 +1,7 @@
-import type { EnergyGeneration, EnergyCost } from "./energy"
-import type { ScalingType, ElementType, DamageType } from "./baseTypes"
-import type { DamageModifier } from "./modifiers"
-import type { SideEffect, StatusModification } from "./sideEffect"
+import type { EnergyGeneration, EnergyCost } from './energy'
+import type { ScalingType, ElementType, DamageType } from './baseTypes'
+import type { DamageModifier } from './modifiers'
+import type { SideEffect, StatusModification } from './sideEffect'
 
 // ========== Type: Action =====================================================================================================
 

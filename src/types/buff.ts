@@ -1,4 +1,4 @@
-import type { DamageModifier } from "./modifiers"
+import type { DamageModifier } from './modifiers'
 
 // ========== Type: Buff =======================================================================================================
 
@@ -25,11 +25,11 @@ export type Debuff = {
 export type ExpirationStrategy = InfiniteExpiration | SwapExpiration
 
 export type InfiniteExpiration = {
-  type: "infinite"
+  type: 'infinite'
 }
 
 export type SwapExpiration = {
-  type: "swapCount"
+  type: 'swapCount'
   swapsRemaining: number
 }
 
@@ -38,17 +38,17 @@ export type SwapExpiration = {
 export type TargetingStrategy = ActiveTarget | AllCharactersTarget | SelfTarget | NextSwapTarget
 
 type ActiveTarget = {
-  type: "active"
+  type: 'active'
 }
 
 type AllCharactersTarget = {
-  type: "all"
+  type: 'all'
 }
 
 type SelfTarget = {
-  type: "self"
+  type: 'self'
 }
 
 type NextSwapTarget = {
-  type: "next"
+  type: 'next'
 }

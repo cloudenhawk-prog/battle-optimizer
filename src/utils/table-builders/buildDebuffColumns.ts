@@ -1,23 +1,17 @@
-import type { Character } from "../../types/character"
-import type { ColumnGroup, ColumnDef } from "../../types/tableDefinitions"
-import type { Snapshot } from "../../types/snapshot"
-import { createOptionalGroup } from "./helpers"
+import type { Character } from '../../types/character'
+import type { ColumnGroup, ColumnDef } from '../../types/tableDefinitions'
+import type { Snapshot } from '../../types/snapshot'
+import { createOptionalGroup } from './helpers'
 
 // ========== Build Debuff Column Group ========================================================================================
 
 export function buildDebuffColumns(selectedCharacters: Character[]): ColumnGroup | null {
   const inherentDebuffs = selectedCharacters.flatMap(c => c.debuffs.map(b => b.name))
-  const actionDebuffs = selectedCharacters.flatMap(c =>
-    c.actions.flatMap(a => 
-      a.statusModifications
-        .filter(mod => mod.type === "debuff")
-        .map(mod => mod.targetName)
-    )
-  )
+  const actionDebuffs = selectedCharacters.flatMap(c => c.actions.flatMap(a => a.statusModifications.filter(mod => mod.type === 'debuff').map(mod => mod.targetName)))
   const activeDebuffs = Array.from(new Set([...inherentDebuffs, ...actionDebuffs]))
 
   const columns: ColumnDef[] = activeDebuffs.map(debuff => {
-    const key = debuff.replace(/\s+/g, "")
+    const key = debuff.replace(/\s+/g, '')
     return {
       key,
       label: debuff,
@@ -29,5 +23,5 @@ export function buildDebuffColumns(selectedCharacters: Character[]): ColumnGroup
     }
   })
 
-  return createOptionalGroup({ label: "Debuffs", icon: "assets/debuffs.png" }, columns)
+  return createOptionalGroup({ label: 'Debuffs', icon: 'assets/debuffs.png' }, columns)
 }

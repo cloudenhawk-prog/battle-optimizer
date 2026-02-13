@@ -1,8 +1,8 @@
-import type { Character } from "../../types/character"
-import type { ColumnDef } from "../../types/tableDefinitions"
-import type { ColumnGroup } from "../../types/tableDefinitions"
-import type { EnergyType } from "../../types/baseTypes"
-import type { Snapshot } from "../../types/snapshot"
+import type { Character } from '../../types/character'
+import type { ColumnDef } from '../../types/tableDefinitions'
+import type { ColumnGroup } from '../../types/tableDefinitions'
+import type { EnergyType } from '../../types/baseTypes'
+import type { Snapshot } from '../../types/snapshot'
 
 // ========== Build Character Column Groups ====================================================================================
 
@@ -14,7 +14,7 @@ export function buildCharacterGroupsColumns(selectedCharacters: Character[]): Co
       key: `${c.name}_${key}`,
       label: key.charAt(0).toUpperCase() + key.slice(1),
       icon: `/assets/${key}.png`,
-      render: (snapshot: Snapshot) => snapshot.charactersEnergies[c.name]?.[key]
+      render: (snapshot: Snapshot) => snapshot.charactersEnergies[c.name]?.[key],
     }))
 
     return {

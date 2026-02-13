@@ -1,10 +1,10 @@
-import { useSnapshots } from "./useSnapshots"
-import { useCharacterActions } from "./useCharacterActions"
-import type { Character } from "../../types/character"
-import type { TableConfig } from "../../types/tableDefinitions"
-import type { Enemy } from "../../types/enemy"
-import type { DamageEvent } from "../../types/events"
-import { useState } from "react"
+import { useSnapshots } from './useSnapshots'
+import { useCharacterActions } from './useCharacterActions'
+import type { Character } from '../../types/character'
+import type { TableConfig } from '../../types/tableDefinitions'
+import type { Enemy } from '../../types/enemy'
+import type { DamageEvent } from '../../types/events'
+import { useState } from 'react'
 
 // ========== Hook: useRotationEditor ==========================================================================================
 
@@ -24,6 +24,6 @@ export function useRotationEditor({ charactersInBattle, tableConfig, enemy }: Us
     damageEvents,
     handleCharacterSelect,
     handleActionSelect,
-    tableConfig
+    tableConfig,
   }
 }
