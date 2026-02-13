@@ -188,7 +188,7 @@ describe('buildStepContext', () => {
       const prev = createMockSnapshot({
         id: '4',
         toTime: 10,
-        damage: 500,;
+        damage: 500,
         action: 'PrevAction',
       })
       const prevSnapshot = JSON.parse(JSON.stringify(prev))
