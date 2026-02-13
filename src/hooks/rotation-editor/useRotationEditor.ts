@@ -17,7 +17,7 @@ type UseRotationEditorProps = {
 export function useRotationEditor({ charactersInBattle, tableConfig, enemy }: UseRotationEditorProps) {
   const [damageEvents, setDamageEvents] = useState<DamageEvent[]>([])
   const { snapshots, setSnapshots } = useSnapshots({ charactersInBattle, tableConfig })
-  const { handleCharacterSelect, handleActionSelect } = useCharacterActions({ snapshots, setSnapshots, charactersInBattle, enemy, tableConfig, damageEvents, setDamageEvents })
+  const { handleCharacterSelect, handleActionSelect } = useCharacterActions({ setSnapshots, charactersInBattle, enemy, tableConfig, setDamageEvents })
 
   return {
     snapshots,

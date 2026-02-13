@@ -13,21 +13,18 @@ import { getSnapshotIndex, getPrevSnapshot, copySnapshots, getSnapshotById, assi
 import { buildStepContext, resolveTime, resolveDamageModifiers, resolveDamage, resolveSideEffectsAndStatuses, resolveResources } from '../../utils/hooks/resolvers'
 import { negativeStatuses as negativeStatusesData } from '../../data/negativeStatuses'
 import { createSnapshot } from '../../utils/hooks/snapshotHelpers'
-import { useEffect } from 'react'
 
 // ========== Hook: useCharacterActions ========================================================================================
 
 type UseCharacterActionsProps = {
-  snapshots: Snapshot[]
   setSnapshots: Dispatch<SetStateAction<Snapshot[]>>
   charactersInBattle: Character[]
   enemy: Enemy
   tableConfig: TableConfig
-  damageEvents: DamageEvent[]
   setDamageEvents: Dispatch<SetStateAction<DamageEvent[]>>
 }
 
-export function useCharacterActions({ snapshots, setSnapshots, charactersInBattle, enemy, tableConfig, damageEvents, setDamageEvents }: UseCharacterActionsProps) {
+export function useCharacterActions({ setSnapshots, charactersInBattle, enemy, tableConfig, setDamageEvents }: UseCharacterActionsProps) {
   const charactersMap: Record<string, Character> = Object.fromEntries(charactersInBattle.map(c => [c.name, c]))
   const characterColumnsMap: Record<string, string[]> = Object.fromEntries(tableConfig.characters.map(c => [c.label, c.columns.map(col => col.key.split('_')[1])]))
   const globalColumns: GlobalColumns = {
