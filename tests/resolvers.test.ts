@@ -1,6 +1,6 @@
-import { buildStepContext, resolveTime, aggregateStat } from '../src/utils/hooks/resolvers'
+import { buildStepContext, resolveTime, aggregateStat, resolveDamageModifiers } from '../src/utils/hooks/resolvers'
 import type { StepContext } from '../src/types/stepContext'
-import { createMockSnapshot, createMockCharacter, createMockAction, createMockEnemy, createMockNegativeStatus, createMockActiveNegativeStatus } from './testUtils'
+import { createMockSnapshot, createMockCharacter, createMockAction, createMockEnemy, createMockNegativeStatus, createMockActiveNegativeStatus, createMockNegativeStatuses } from './testUtils'
 
 // ========== Resolver 0: Build StepContext ====================================================================================
 
@@ -17,7 +17,7 @@ describe('buildStepContext', () => {
       const character = createMockCharacter('TestChar')
       const action = createMockAction('BasicAttack', { castTime: 2.5 })
       const enemy = createMockEnemy()
-      const negativeStatuses = []
+      const negativeStatuses = createMockNegativeStatuses()
       const characterMap = { TestChar: character }
 
       // Act
@@ -310,7 +310,7 @@ describe('resolveTime', () => {
         },
       ]
 
-      validationCases.forEach(({ label, modify }) => {
+      validationCases.forEach(({ modify }) => {
         const context: StepContext = {
           snapshotId: 5,
           current,
@@ -322,6 +322,9 @@ describe('resolveTime', () => {
           fromTime: 10,
           toTime: 12,
           negativeStatusesInAction: [],
+          damageModifiers: [],
+          aggregatedCharacterModifiers: {},
+          aggregatedEnemyModifiers: {},
           logs: [],
         }
 
@@ -339,8 +342,6 @@ describe('resolveTime', () => {
  * This resolver findes existing damage modifiers sources: character, action, negative statuses and adds up the stats.
  */
 describe('resolveDamageModifiers', () => {
-  const { resolveDamageModifiers } = require('../src/utils/hooks/resolvers')
-
   describe('Modifier Source Collection', () => {
     it('should collect and aggregate from all sources (character + action + negative statuses)', () => {
       const character = createMockCharacter('TestChar', {
@@ -606,7 +607,7 @@ describe('resolveDamageModifiers', () => {
           {
             source: 'conditional',
             characterStats: { bonusATK: 100, critRate: 0.2 },
-            condition: ctx => 2, // Double the effect
+            condition: () => 2,
           },
         ],
       })
