@@ -1,5 +1,5 @@
-import "../../styles/rotation-editor/HeaderRow.css"
-import type { TableConfig, ColumnVisibility } from "../../types/tableDefinitions"
+import '../../styles/rotation-editor/HeaderRow.css'
+import type { TableConfig, ColumnVisibility } from '../../types/tableDefinitions'
 
 // ========== Component: Header Row ============================================================================================
 
@@ -12,23 +12,15 @@ type HeaderRowProps = {
 export function HeaderRow({ tableConfig, columnVisibility, setColumnVisibility }: HeaderRowProps) {
   const countVisible = (columns: typeof tableConfig.basic.columns) => columns.filter(col => columnVisibility[col.key]).length
 
-  function renderColumns(
-    columns: typeof tableConfig.basic.columns,
-    columnVisibility: ColumnVisibility,
-    setColumnVisibility: React.Dispatch<React.SetStateAction<ColumnVisibility>>
-  ) {
+  function renderColumns(columns: typeof tableConfig.basic.columns, columnVisibility: ColumnVisibility, setColumnVisibility: React.Dispatch<React.SetStateAction<ColumnVisibility>>) {
     let firstVisible = true
     return columns
       .filter(col => columnVisibility[col.key])
       .map(col => {
-        const className = firstVisible ? "tableCellHeader charGroupHeader" : "tableCellHeader"
+        const className = firstVisible ? 'tableCellHeader charGroupHeader' : 'tableCellHeader'
         firstVisible = false
         return (
-          <th
-            key={col.key}
-            className={className}
-            onClick={() => setColumnVisibility(prev => ({ ...prev, [col.key]: !prev[col.key] }))}
-          >
+          <th key={col.key} className={className} onClick={() => setColumnVisibility(prev => ({ ...prev, [col.key]: !prev[col.key] }))}>
             <div className="header-cell-content">
               <IconRenderer icon={col.icon} alt={col.label} />
               <span>{col.label}</span>
@@ -65,46 +57,40 @@ export function HeaderRow({ tableConfig, columnVisibility, setColumnVisibility }
         })}
 
         {/* Group: Negative Statuses */}
-        {tableConfig.negativeStatuses && (() => {
-          const visibleCols = tableConfig.negativeStatuses.columns.filter(col => columnVisibility[col.key]).length
-          if (!visibleCols) return null
-          return (
-            <th className="groupHeader" colSpan={visibleCols}>
-              <HeaderContent
-                label={tableConfig.negativeStatuses.label}
-                icon={tableConfig.negativeStatuses.icon}
-              />
-            </th>
-          )
-        })()}
+        {tableConfig.negativeStatuses &&
+          (() => {
+            const visibleCols = tableConfig.negativeStatuses.columns.filter(col => columnVisibility[col.key]).length
+            if (!visibleCols) return null
+            return (
+              <th className="groupHeader" colSpan={visibleCols}>
+                <HeaderContent label={tableConfig.negativeStatuses.label} icon={tableConfig.negativeStatuses.icon} />
+              </th>
+            )
+          })()}
 
         {/* Group: Buffs */}
-        {tableConfig.buffs && (() => {
-          const visibleCols = tableConfig.buffs.columns.filter(col => columnVisibility[col.key]).length
-          if (!visibleCols) return null
-          return (
-            <th className="groupHeader" colSpan={visibleCols}>
-              <HeaderContent
-                label={tableConfig.buffs.label}
-                icon={tableConfig.buffs.icon}
-              />
-            </th>
-          )
-        })()}
+        {tableConfig.buffs &&
+          (() => {
+            const visibleCols = tableConfig.buffs.columns.filter(col => columnVisibility[col.key]).length
+            if (!visibleCols) return null
+            return (
+              <th className="groupHeader" colSpan={visibleCols}>
+                <HeaderContent label={tableConfig.buffs.label} icon={tableConfig.buffs.icon} />
+              </th>
+            )
+          })()}
 
         {/* Group: Debuffs */}
-        {tableConfig.debuffs && (() => {
-          const visibleCols = tableConfig.debuffs.columns.filter(col => columnVisibility[col.key]).length
-          if (!visibleCols) return null
-          return (
-            <th className="groupHeader" colSpan={visibleCols}>
-              <HeaderContent
-                label={tableConfig.debuffs.label}
-                icon={tableConfig.debuffs.icon}
-              />
-            </th>
-          )
-        })()}
+        {tableConfig.debuffs &&
+          (() => {
+            const visibleCols = tableConfig.debuffs.columns.filter(col => columnVisibility[col.key]).length
+            if (!visibleCols) return null
+            return (
+              <th className="groupHeader" colSpan={visibleCols}>
+                <HeaderContent label={tableConfig.debuffs.label} icon={tableConfig.debuffs.icon} />
+              </th>
+            )
+          })()}
       </tr>
 
       {/* Column labels */}
@@ -112,7 +98,7 @@ export function HeaderRow({ tableConfig, columnVisibility, setColumnVisibility }
         {/* Character */}
         <th className="tableCellHeader">
           <div className="header-cell-content">
-            <IconRenderer icon={"assets/character.png"} alt={"Character"} />
+            <IconRenderer icon={'assets/character.png'} alt={'Character'} />
             <span>Character</span>
           </div>
         </th>
@@ -120,7 +106,7 @@ export function HeaderRow({ tableConfig, columnVisibility, setColumnVisibility }
         {/* Action */}
         <th className="tableCellHeader">
           <div className="header-cell-content">
-            <IconRenderer icon={"assets/action.png"} alt={"Action"} />
+            <IconRenderer icon={'assets/action.png'} alt={'Action'} />
             <span>Action</span>
           </div>
         </th>
@@ -139,9 +125,7 @@ export function HeaderRow({ tableConfig, columnVisibility, setColumnVisibility }
         })}
 
         {/* Character-specific Columns */}
-        {tableConfig.characters.flatMap(group =>
-          renderColumns(group.columns, columnVisibility, setColumnVisibility)
-        )}
+        {tableConfig.characters.flatMap(group => renderColumns(group.columns, columnVisibility, setColumnVisibility))}
 
         {/* Negative Status Columns */}
         {tableConfig.negativeStatuses && renderColumns(tableConfig.negativeStatuses.columns, columnVisibility, setColumnVisibility)}
@@ -160,7 +144,7 @@ export function HeaderRow({ tableConfig, columnVisibility, setColumnVisibility }
 
 function IconRenderer({ icon, alt }: { icon?: string; alt?: string }) {
   if (!icon) return null
-  return <img src={icon} alt={alt ?? ""} className="header-icon" />
+  return <img src={icon} alt={alt ?? ''} className="header-icon" />
 }
 
 function HeaderContent({ label, icon }: { label: string; icon?: string }) {

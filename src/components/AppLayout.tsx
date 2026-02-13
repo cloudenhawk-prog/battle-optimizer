@@ -1,7 +1,7 @@
-import { useState, type ReactNode } from "react"
-import Sidebar from "./sidebar/Sidebar"
-import SidebarButton from "./sidebar/SidebarButton"
-import "../styles/AppLayout.css"
+import { useState, type ReactNode } from 'react'
+import Sidebar from './sidebar/Sidebar'
+import SidebarButton from './sidebar/SidebarButton'
+import '../styles/AppLayout.css'
 
 // ========== Component: App Layout ============================================================================================
 
@@ -11,7 +11,7 @@ interface AppLayoutProps {
 
 export default function AppLayout({ children }: AppLayoutProps) {
   const [collapsed, setCollapsed] = useState(false)
-  const toggleSidebar = () => setCollapsed((s) => !s)
+  const toggleSidebar = () => setCollapsed(s => !s)
 
   return (
     <div className="app-container">
@@ -19,14 +19,10 @@ export default function AppLayout({ children }: AppLayoutProps) {
       <Sidebar collapsed={collapsed} />
 
       {/* Ghost toggle button outside sidebar */}
-      <SidebarButton
-        collapsed={collapsed}
-        onClick={toggleSidebar}
-        icon="/assets/circle-icon.svg"
-      />
+      <SidebarButton collapsed={collapsed} onClick={toggleSidebar} icon="/assets/circle-icon.svg" />
 
       {/* Main content */}
-      <div className="content-column">  
+      <div className="content-column">
         <main className="main-content">{children}</main>
       </div>
     </div>
