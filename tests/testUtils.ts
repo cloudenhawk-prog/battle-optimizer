@@ -1,10 +1,19 @@
-import type { Snapshot } from '../src/types/snapshot'
-import type { Character } from '../src/types/character'
-import type { Action } from '../src/types/action'
-import type { Enemy } from '../src/types/enemy'
-import type { NegativeStatusInAction, NegativeStatus } from '../src/types/negativeStatus'
-import type { Buff, Debuff } from '../src/types/buff'
-import type { DamageModifier } from '../src/types/modifiers'
+/**
+ * Test Utilities - Shared mock factories and helpers for tests
+ * 
+ * This file provides factory functions to create mock objects for testing.
+ * All factories accept optional overrides to customize the returned objects.
+ */
+
+import type { Snapshot } from '../src/types/snapshot';
+import type { Character } from '../src/types/character';
+import type { Action } from '../src/types/action';
+import type { Enemy } from '../src/types/enemy';
+import type { NegativeStatusInAction, NegativeStatus } from '../src/types/negativeStatus';
+import type { Buff, Debuff } from '../src/types/buff';
+import type { DamageModifier } from '../src/types/modifiers';
+import type { CharacterStats, EnemyStats } from '../src/types/stats';
+import type { Contribution } from '../src/types/events';
 
 // ========== Snapshot Mocks ===================================================================================================
 
@@ -27,7 +36,7 @@ export function createMockSnapshot(overrides: Partial<Snapshot> = {}): Snapshot 
 
 // ========== Stats Mocks ======================================================================================================
 
-export function createMockCharacterStats(overrides: Partial<import('../src/types/stats').CharacterStats> = {}): import('../src/types/stats').CharacterStats {
+export function createMockCharacterStats(overrides: Partial<CharacterStats> = {}): CharacterStats {
   return {
     level: 90,
 
@@ -128,7 +137,7 @@ export function createMockCharacterStats(overrides: Partial<import('../src/types
   }
 }
 
-export function createMockEnemyStats(overrides: Partial<import('../src/types/stats').EnemyStats> = {}): import('../src/types/stats').EnemyStats {
+export function createMockEnemyStats(overrides: Partial<EnemyStats> = {}): EnemyStats {
   return {
     level: 85,
     glacioRES: 0.1,
@@ -300,7 +309,12 @@ export function buildAggregatedWithoutModifier(mod: DamageModifier, aggregated: 
 }
 
 // Assert that a contribution object matches the expected diff between with/without
-export function assertContributionMatches(actual: Partial<import('../src/types/events').Contribution> | undefined, withValues: { normalStrike: number; criticalStrike: number; average: number }, withoutValues: { normalStrike: number; criticalStrike: number; average: number }, tol = 1e-6) {
+export function assertContributionMatches(
+  actual: Partial<Contribution> | undefined,
+  withValues: { normalStrike: number; criticalStrike: number; average: number },
+  withoutValues: { normalStrike: number; criticalStrike: number; average: number },
+  tol = 1e-6
+) {
   if (!actual) throw new Error('Contribution is undefined')
 
   const normal_contrib = Math.max(0, withValues.normalStrike - withoutValues.normalStrike)

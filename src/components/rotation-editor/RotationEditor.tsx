@@ -1,10 +1,13 @@
-import '../../styles/rotation-editor/RotationEditor.css'
-import { useRotationEditor } from '../../hooks/rotation-editor/useRotationEditor'
-import { RotationTable } from './RotationTable'
-import { useEffect } from 'react'
-import type { Character } from '../../types/character'
-import type { Enemy } from '../../types/enemy'
-import type { TableConfig, ColumnVisibility } from '../../types/tableDefinitions'
+import "../../styles/rotation-editor/RotationEditor.css"
+import { useState } from "react"
+import { useRotationEditor } from "../../hooks/rotation-editor/useRotationEditor"
+import { RotationTable } from "./RotationTable"
+import DataOverlay from "./DataOverlay"
+import type { Character } from "../../types/character"
+import type { Enemy } from "../../types/enemy"
+import type { TableConfig, ColumnVisibility } from "../../types/tableDefinitions"
+import type { DamageEvent } from "../../types/events"
+import type { Snapshot } from "../../types/snapshot"
 
 // ========== Component: Rotation Editor =======================================================================================
 
@@ -18,15 +21,29 @@ type RotationEditorProps = {
 
 export default function RotationEditor({ charactersInBattle, enemy, tableConfig, columnVisibility, setColumnVisibility }: RotationEditorProps) {
   const { snapshots, damageEvents, handleCharacterSelect, handleActionSelect } = useRotationEditor({ charactersInBattle, tableConfig, enemy })
+  const [overlayOpen, setOverlayOpen] = useState(false)
+  const [overlayData, setOverlayData] = useState<null | { snapshot: Snapshot; damageEvents: DamageEvent[] }>(null)
 
-  useEffect(() => {
-    console.log('Damage Events Updated:', damageEvents)
-  }, [damageEvents])
+  function handleRowClick(snapshot: Snapshot) {
+    const filtered = (damageEvents ?? []).filter(e => Number(e.snapshotId) === Number(snapshot.id))
+    setOverlayData({ snapshot, damageEvents: filtered })
+    setOverlayOpen(true)
+  }
 
   return (
     <div className="pageWrapper">
       <h1 className="heading"></h1>
-      <RotationTable snapshots={snapshots} charactersInBattle={charactersInBattle} tableConfig={tableConfig} onSelectCharacter={handleCharacterSelect} onSelectAction={handleActionSelect} columnVisibility={columnVisibility} setColumnVisibility={setColumnVisibility} />
+      <RotationTable
+        snapshots={snapshots}
+        charactersInBattle={charactersInBattle}
+        tableConfig={tableConfig}
+        onSelectCharacter={handleCharacterSelect}
+        onSelectAction={handleActionSelect}
+        columnVisibility={columnVisibility}
+        setColumnVisibility={setColumnVisibility}
+        onRowClick={handleRowClick}
+      />
+      <DataOverlay snapshot={overlayData?.snapshot ?? null} damageEvents={overlayData?.damageEvents ?? []} open={overlayOpen} onClose={() => setOverlayOpen(false)} />
     </div>
   )
 }
