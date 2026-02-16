@@ -1,30 +1,24 @@
-import type { Character } from "../../types/character"
-import type { ColumnGroup, ColumnDef } from "../../types/tableDefinitions"
-import type { Snapshot } from "../../types/snapshot"
-import { createOptionalGroup } from "./helpers"
+import type { Character } from '../../types/character'
+import type { ColumnGroup, ColumnDef } from '../../types/tableDefinitions'
+import type { Snapshot } from '../../types/snapshot'
+import { createOptionalGroup } from './helpers'
 
 // ========== Build Negative Statuses Column Group =============================================================================
 
 export function buildNegativeStatusColumns(selectedCharacters: Character[]): ColumnGroup | null {
-  const activeStatuses = Array.from(
-    new Set(
-      selectedCharacters.flatMap(c => 
-        c.actions.flatMap(action => Object.keys(action.negativeStatusesApplied))
-      )
-    )
-  )
+  const activeStatuses = Array.from(new Set(selectedCharacters.flatMap(c => c.actions.flatMap(action => action.statusModifications.filter(mod => mod.type === 'negativeStatus').map(mod => mod.targetName)))))
 
   const columns: ColumnDef[] = activeStatuses.map(status => {
     const key = status
     return {
       key,
       label: status,
-      icon: `/assets/${key.toLowerCase().replace(/\s+/g, "_")}.png`,
+      icon: `/assets/${key.toLowerCase().replace(/\s+/g, '_')}.png`,
       render: (snapshot: Snapshot) => {
         const negativeStatuses = snapshot.negativeStatuses as Record<string, number> | undefined
         return negativeStatuses?.[key]
       },
     }
   })
-  return createOptionalGroup({ label: "Negative Statuses", icon: "assets/negativeStatuses.png" }, columns)
+  return createOptionalGroup({ label: 'Negative Statuses', icon: 'assets/negativeStatuses.png' }, columns)
 }

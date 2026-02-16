@@ -1,16 +1,16 @@
-import type { Snapshot } from "./snapshot"
-import type { Character } from "./character"
-import type { Action } from "./action"
-import type { Enemy } from "./enemy"
-import type { CharacterStats, EnemyStats } from "./stats"
-import type { NegativeStatusInAction } from "./negativeStatus"
-import type { DamageModifier } from "./modifiers"
+import type { Snapshot } from './snapshot'
+import type { Character } from './character'
+import type { Action } from './action'
+import type { Enemy } from './enemy'
+import type { CharacterStats, EnemyStats } from './stats'
+import type { NegativeStatusInAction } from './negativeStatus'
+import type { DamageModifier } from './modifiers'
 
 // ========== Type: Step Context ===============================================================================================
 
 export type StepContext = {
   snapshotId: number
-  
+
   current: Snapshot
   prev: Snapshot
 

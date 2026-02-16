@@ -1,17 +1,12 @@
-import type { EnergyType } from "../../types/baseTypes"
-import type { Action } from "../../types/action"
-import type { Character } from "../../types/character"
+import type { EnergyType } from '../../types/baseTypes'
+import type { Action } from '../../types/action'
+import type { Character } from '../../types/character'
 
 // ========== Build Action Options =============================================================================================
 
-export function buildActionOptions(
-  actions: Action[],
-  currentAction: string,
-  character?: Character,
-  currentEnergies?: Partial<Record<EnergyType, number>>
-) {
-  return actions.map((a) => {
-    const isSpecial = a.name === "Intro" || a.name === "Outro"
+export function buildActionOptions(actions: Action[], currentAction: string, character?: Character, currentEnergies?: Partial<Record<EnergyType, number>>) {
+  return actions.map(a => {
+    const isSpecial = a.name === 'Intro' || a.name === 'Outro'
     const isCurrent = a.name === currentAction
 
     let isUnaffordable = false

@@ -1,17 +1,10 @@
-/**
- * Test Utilities - Shared mock factories and helpers for tests
- * 
- * This file provides factory functions to create mock objects for testing.
- * All factories accept optional overrides to customize the returned objects.
- */
-
-import type { Snapshot } from '../src/types/snapshot';
-import type { Character } from '../src/types/character';
-import type { Action } from '../src/types/action';
-import type { Enemy } from '../src/types/enemy';
-import type { NegativeStatusInAction, NegativeStatus } from '../src/types/negativeStatus';
-import type { Buff, Debuff } from '../src/types/buff';
-import type { DamageModifier } from '../src/types/modifiers';
+import type { Snapshot } from '../src/types/snapshot'
+import type { Character } from '../src/types/character'
+import type { Action } from '../src/types/action'
+import type { Enemy } from '../src/types/enemy'
+import type { NegativeStatusInAction, NegativeStatus } from '../src/types/negativeStatus'
+import type { Buff, Debuff } from '../src/types/buff'
+import type { DamageModifier } from '../src/types/modifiers'
 
 // ========== Snapshot Mocks ===================================================================================================
 
@@ -29,7 +22,7 @@ export function createMockSnapshot(overrides: Partial<Snapshot> = {}): Snapshot 
     debuffs: {},
     negativeStatuses: {},
     ...overrides,
-  };
+  }
 }
 
 // ========== Stats Mocks ======================================================================================================
@@ -132,7 +125,7 @@ export function createMockCharacterStats(overrides: Partial<import('../src/types
 
     energyPercent: 1,
     ...overrides,
-  };
+  }
 }
 
 export function createMockEnemyStats(overrides: Partial<import('../src/types/stats').EnemyStats> = {}): import('../src/types/stats').EnemyStats {
@@ -147,7 +140,7 @@ export function createMockEnemyStats(overrides: Partial<import('../src/types/sta
     resistance: 0,
     damageReduction: 0,
     ...overrides,
-  };
+  }
 }
 
 // ========== Character Mocks ==================================================================================================
@@ -162,7 +155,7 @@ export function createMockCharacter(name: string, overrides: Partial<Character> 
     stats: createMockCharacterStats(),
     damageModifiers: [],
     ...overrides,
-  };
+  }
 }
 
 // ========== Action Mocks =====================================================================================================
@@ -178,12 +171,11 @@ export function createMockAction(name: string, overrides: Partial<Action> = {}):
     cooldown: 0,
     energyGenerated: [],
     energyCost: [],
-    negativeStatusesApplied: {},
-    buffsApplied: [],
-    debuffsApplied: [],
+    statusModifications: [],
     damageModifiers: [],
+    sideEffects: [],
     ...overrides,
-  };
+  }
 }
 
 // ========== Enemy Mocks ======================================================================================================
@@ -193,7 +185,7 @@ export function createMockEnemy(name: string = 'Test Enemy', overrides: Partial<
     name,
     stats: createMockEnemyStats(),
     ...overrides,
-  };
+  }
 }
 
 // ========== Negative Status Mocks ============================================================================================
@@ -213,7 +205,7 @@ export function createMockNegativeStatus(name: string, overrides: Partial<Negati
     },
     damageModifiers: [],
     ...overrides,
-  };
+  }
 }
 
 export function createMockActiveNegativeStatus(negativeStatus: NegativeStatus, overrides: Partial<NegativeStatusInAction> = {}): NegativeStatusInAction {
@@ -224,11 +216,11 @@ export function createMockActiveNegativeStatus(negativeStatus: NegativeStatus, o
     currentStacks: 1,
     lastDamageTime: 0,
     ...overrides,
-  };
+  }
 }
 
 export function createMockNegativeStatuses(): NegativeStatusInAction[] {
-  return [];
+  return []
 }
 
 // ========== Buff/Debuff Mocks ================================================================================================
@@ -242,7 +234,7 @@ export function createMockBuff(name: string, overrides: Partial<Buff> = {}): Buf
     targetingStrategy: { type: 'active' },
     source: 'test',
     ...overrides,
-  };
+  }
 }
 
 export function createMockDebuff(name: string, overrides: Partial<Debuff> = {}): Debuff {
@@ -251,7 +243,7 @@ export function createMockDebuff(name: string, overrides: Partial<Debuff> = {}):
     duration: 10,
     damageModifiers: [],
     ...overrides,
-  };
+  }
 }
 
 // ========== Damage Modifier Mocks ============================================================================================
@@ -260,7 +252,7 @@ export function createMockDamageModifier(source: string, overrides: Partial<Dama
   return {
     source,
     ...overrides,
-  };
+  }
 }
 
 // ========== Damage Modifier List Builders ==================================================================================
@@ -276,7 +268,7 @@ export function createMockDamageModifierList(count = 1, prefix = 'mod'): DamageM
 export function createEmptyDamageModifierList(): DamageModifier[] {
   return []
 }
- 
+
 // ========== Test Helpers: Aggregation & Contribution Assertions ======================================================
 
 export function buildAggregatedFromModifiers(mods: DamageModifier[]): Record<string, any> {
@@ -308,12 +300,7 @@ export function buildAggregatedWithoutModifier(mod: DamageModifier, aggregated: 
 }
 
 // Assert that a contribution object matches the expected diff between with/without
-export function assertContributionMatches(
-  actual: Partial<import('../src/types/events').Contribution> | undefined,
-  withValues: { normalStrike: number; criticalStrike: number; average: number },
-  withoutValues: { normalStrike: number; criticalStrike: number; average: number },
-  tol = 1e-6
-) {
+export function assertContributionMatches(actual: Partial<import('../src/types/events').Contribution> | undefined, withValues: { normalStrike: number; criticalStrike: number; average: number }, withoutValues: { normalStrike: number; criticalStrike: number; average: number }, tol = 1e-6) {
   if (!actual) throw new Error('Contribution is undefined')
 
   const normal_contrib = Math.max(0, withValues.normalStrike - withoutValues.normalStrike)

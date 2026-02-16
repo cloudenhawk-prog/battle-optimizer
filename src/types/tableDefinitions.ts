@@ -1,4 +1,4 @@
-import type { Snapshot } from "./snapshot"
+import type { Snapshot } from './snapshot'
 
 // ========== Type: Table Config ===============================================================================================
 

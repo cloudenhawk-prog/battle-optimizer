@@ -1,4 +1,4 @@
-import type { Snapshot } from "../../types/snapshot"
+import type { Snapshot } from '../../types/snapshot'
 
 // ========== Energy Helpers ===================================================================================================
 
@@ -6,11 +6,7 @@ export function getCharacterEnergyState(snapshot: Snapshot, characterName: strin
   return snapshot.charactersEnergies[characterName]
 }
 
-export function updateEnergyValue(
-  prev: number | undefined,
-  generated: number,
-  max: number
-) {
+export function updateEnergyValue(prev: number | undefined, generated: number, max: number) {
   return Math.min((prev ?? 0) + generated, max)
 }
 

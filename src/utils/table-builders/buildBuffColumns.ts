@@ -1,19 +1,17 @@
-import type { Character } from "../../types/character"
-import type { ColumnGroup, ColumnDef } from "../../types/tableDefinitions"
-import type { Snapshot } from "../../types/snapshot"
-import { createOptionalGroup } from "./helpers"
+import type { Character } from '../../types/character'
+import type { ColumnGroup, ColumnDef } from '../../types/tableDefinitions'
+import type { Snapshot } from '../../types/snapshot'
+import { createOptionalGroup } from './helpers'
 
 // ========== Build Buff Column Group ==========================================================================================
 
 export function buildBuffColumns(selectedCharacters: Character[]): ColumnGroup | null {
   const inherentBuffs = selectedCharacters.flatMap(c => c.buffs.map(b => b.name))
-  const actionBuffs = selectedCharacters.flatMap(c =>
-    c.actions.flatMap(a => a.buffsApplied.map(b => b.name))
-  )
+  const actionBuffs = selectedCharacters.flatMap(c => c.actions.flatMap(a => a.statusModifications.filter(mod => mod.type === 'buff').map(mod => mod.targetName)))
   const activeBuffs = Array.from(new Set([...inherentBuffs, ...actionBuffs]))
 
   const columns: ColumnDef[] = activeBuffs.map(buff => {
-    const key = buff.replace(/\s+/g, "")
+    const key = buff.replace(/\s+/g, '')
     return {
       key,
       label: buff,
@@ -25,5 +23,5 @@ export function buildBuffColumns(selectedCharacters: Character[]): ColumnGroup |
     }
   })
 
-  return createOptionalGroup({ label: "Buffs", icon: "assets/buffs.png" }, columns)
+  return createOptionalGroup({ label: 'Buffs', icon: 'assets/buffs.png' }, columns)
 }

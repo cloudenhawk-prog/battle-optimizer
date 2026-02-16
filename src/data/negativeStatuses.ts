@@ -1,10 +1,10 @@
-import type { NegativeStatus } from "../types/negativeStatus"
+import type { NegativeStatus } from '../types/negativeStatus'
 
 // ========== Negative Statuses ================================================================================================
 
 export const negativeStatuses: Record<string, NegativeStatus> = {
   aeroErosion: {
-    name: "Aero Erosion",
+    name: 'Aero Erosion',
     duration: 15,
     maxStacksDefault: 3,
     frequency: 3,
@@ -19,16 +19,16 @@ export const negativeStatuses: Record<string, NegativeStatus> = {
       8: 28938,
       9: 33072,
     },
-    element: "AERO",
+    element: 'AERO',
     reductionStrategy: {
       stackConsumption: 999,
       triggerDmgOnReduction: false,
       resetTimerOnApplication: true,
     },
-    damageModifiers: []
+    damageModifiers: [],
   },
   spectroFrazzle: {
-    name: "Spectro Frazzle",
+    name: 'Spectro Frazzle',
     duration: 12,
     maxStacksDefault: 10,
     frequency: 3,
@@ -44,12 +44,12 @@ export const negativeStatuses: Record<string, NegativeStatus> = {
       9: 9192,
       10: 10188,
     },
-    element: "SPECTRO",
+    element: 'SPECTRO',
     reductionStrategy: {
       stackConsumption: 1,
       triggerDmgOnReduction: true,
       resetTimerOnApplication: false,
     },
-    damageModifiers: []
-  }
+    damageModifiers: [],
+  },
 }

@@ -1,4 +1,4 @@
-import type { EnergyType } from "./baseTypes"
+import type { EnergyType } from './baseTypes'
 
 // ========== Type: Snapshot ===================================================================================================
 

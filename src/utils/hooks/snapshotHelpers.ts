@@ -1,6 +1,6 @@
-import type { Snapshot } from "../../types/snapshot"
-import type { Character } from "../../types/character"
-import type { GlobalColumns } from "../../types/tableDefinitions"
+import type { Snapshot } from '../../types/snapshot'
+import type { Character } from '../../types/character'
+import type { GlobalColumns } from '../../types/tableDefinitions'
 
 // ========== Snapshot Helpers ================================================================================================
 
@@ -28,18 +28,8 @@ export function assignCharacterToRow(row: Snapshot, character: string): Snapshot
   return { ...row, character }
 }
 
-export function createSnapshot(
-  previousSnapshot: Snapshot,
-  charactersMap: Record<string, Character>,
-  characterColumnsMap: Record<string, string[]>,
-  globalColumns: GlobalColumns
-): Snapshot {
-  const charactersEnergies = Object.fromEntries(
-    Object.keys(charactersMap).map(charName => [
-      charName,
-      { ...previousSnapshot.charactersEnergies[charName] }
-    ])
-  )
+export function createSnapshot(previousSnapshot: Snapshot, charactersMap: Record<string, Character>, characterColumnsMap: Record<string, string[]>, globalColumns: GlobalColumns): Snapshot {
+  const charactersEnergies = Object.fromEntries(Object.keys(charactersMap).map(charName => [charName, { ...previousSnapshot.charactersEnergies[charName] }]))
 
   const basicValues = Object.fromEntries(globalColumns.basic.map(col => [col, 0]))
   const buffs = Object.fromEntries(globalColumns.buffs.map(col => [col, 0]))
@@ -48,8 +38,8 @@ export function createSnapshot(
 
   return {
     id: String(Number(previousSnapshot.id) + 1),
-    character: "",
-    action: "",
+    character: '',
+    action: '',
     fromTime: 0,
     toTime: 0,
     damage: 0,

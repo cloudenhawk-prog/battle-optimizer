@@ -1,9 +1,10 @@
-import "../../styles/rotation-editor/RotationEditor.css"
-import { useRotationEditor } from "../../hooks/rotation-editor/useRotationEditor"
-import { RotationTable } from "./RotationTable"
-import type { Character } from "../../types/character"
-import type { Enemy } from "../../types/enemy"
-import type { TableConfig, ColumnVisibility } from "../../types/tableDefinitions"
+import '../../styles/rotation-editor/RotationEditor.css'
+import { useRotationEditor } from '../../hooks/rotation-editor/useRotationEditor'
+import { RotationTable } from './RotationTable'
+import { useEffect } from 'react'
+import type { Character } from '../../types/character'
+import type { Enemy } from '../../types/enemy'
+import type { TableConfig, ColumnVisibility } from '../../types/tableDefinitions'
 
 // ========== Component: Rotation Editor =======================================================================================
 
@@ -18,18 +19,14 @@ type RotationEditorProps = {
 export default function RotationEditor({ charactersInBattle, enemy, tableConfig, columnVisibility, setColumnVisibility }: RotationEditorProps) {
   const { snapshots, damageEvents, handleCharacterSelect, handleActionSelect } = useRotationEditor({ charactersInBattle, tableConfig, enemy })
 
+  useEffect(() => {
+    console.log('Damage Events Updated:', damageEvents)
+  }, [damageEvents])
+
   return (
     <div className="pageWrapper">
       <h1 className="heading"></h1>
-      <RotationTable
-        snapshots={snapshots}
-        charactersInBattle={charactersInBattle}
-        tableConfig={tableConfig}
-        onSelectCharacter={handleCharacterSelect}
-        onSelectAction={handleActionSelect}
-        columnVisibility={columnVisibility}
-        setColumnVisibility={setColumnVisibility}
-      />
+      <RotationTable snapshots={snapshots} charactersInBattle={charactersInBattle} tableConfig={tableConfig} onSelectCharacter={handleCharacterSelect} onSelectAction={handleActionSelect} columnVisibility={columnVisibility} setColumnVisibility={setColumnVisibility} />
     </div>
   )
 }

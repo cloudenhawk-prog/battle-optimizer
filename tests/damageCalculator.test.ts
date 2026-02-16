@@ -1,6 +1,6 @@
-import { 
+import {
   calculateDamage,
-  mergeStats, 
+  mergeStats,
   mergeEnemyStats,
   calculateScalingStat,
   calculateBonusMultiplier,
@@ -820,11 +820,11 @@ describe('damageCalculator', () => {
       const aggregated: any = buildAggregatedFromModifiers(mods)
 
       const action = createMockAction('Test', { multiplier: 1, scaling: 'ATK', elements: ['GLACIO'], dmgTypes: ['BASIC'] })
-      const full = calculateDamage({ action, name: 'X', stats: baseStats, damageModifiers: mods, modifierCharacterStats: aggregated, modifierEnemyStats: {}, enemy, snapshotId: 1 })
+      const full = calculateDamage({ action, name: 'X', stats: baseStats, damageModifiers: mods, modifierCharacterStats: aggregated, modifierEnemyStats: {}, enemy, snapshotId: 1, timeStamp: 0 })
 
       const withoutAgg: any = buildAggregatedWithoutModifier(mod, aggregated)
 
-      const without = calculateDamage({ action, name: 'X', stats: baseStats, damageModifiers: [], modifierCharacterStats: withoutAgg, modifierEnemyStats: {}, enemy, snapshotId: 1 })
+      const without = calculateDamage({ action, name: 'X', stats: baseStats, damageModifiers: [], modifierCharacterStats: withoutAgg, modifierEnemyStats: {}, enemy, snapshotId: 1, timeStamp: 0 })
 
       expect(full.damageEvent.contributions).toHaveProperty('bonusMod')
       const contrib = full.damageEvent.contributions['bonusMod']
@@ -839,16 +839,16 @@ describe('damageCalculator', () => {
       const aggregated: any = buildAggregatedFromModifiers(mods)
 
       const action = createMockAction('Test', { multiplier: 1, scaling: 'ATK', elements: ['GLACIO'], dmgTypes: ['BASIC'] })
-      const full = calculateDamage({ action, name: 'X', stats: baseStats, damageModifiers: mods, modifierCharacterStats: aggregated, modifierEnemyStats: {}, enemy, snapshotId: 1 })
+      const full = calculateDamage({ action, name: 'X', stats: baseStats, damageModifiers: mods, modifierCharacterStats: aggregated, modifierEnemyStats: {}, enemy, snapshotId: 1, timeStamp: 0 })
 
       // amp
       const withoutAmp: any = buildAggregatedWithoutModifier(m1, aggregated)
-      const resWithoutAmp = calculateDamage({ action, name: 'X', stats: baseStats, damageModifiers: [], modifierCharacterStats: withoutAmp, modifierEnemyStats: {}, enemy, snapshotId: 1 })
+      const resWithoutAmp = calculateDamage({ action, name: 'X', stats: baseStats, damageModifiers: [], modifierCharacterStats: withoutAmp, modifierEnemyStats: {}, enemy, snapshotId: 1, timeStamp: 0 })
       assertContribution(full.damageEvent.contributions['amp'], full.damageEvent, resWithoutAmp.damageEvent)
 
       // total
       const withoutTotal: any = buildAggregatedWithoutModifier(m2, aggregated)
-      const resWithoutTotal = calculateDamage({ action, name: 'X', stats: baseStats, damageModifiers: [], modifierCharacterStats: withoutTotal, modifierEnemyStats: {}, enemy, snapshotId: 1 })
+      const resWithoutTotal = calculateDamage({ action, name: 'X', stats: baseStats, damageModifiers: [], modifierCharacterStats: withoutTotal, modifierEnemyStats: {}, enemy, snapshotId: 1, timeStamp: 0 })
       assertContribution(full.damageEvent.contributions['total'], full.damageEvent, resWithoutTotal.damageEvent)
     })
 
@@ -860,15 +860,15 @@ describe('damageCalculator', () => {
       const aggregated: any = buildAggregatedFromModifiers(mods)
 
       const action = createMockAction('Test', { multiplier: 1, scaling: 'ATK', elements: ['GLACIO'], dmgTypes: ['BASIC'] })
-      const full = calculateDamage({ action, name: 'X', stats: baseStats, damageModifiers: mods, modifierCharacterStats: aggregated, modifierEnemyStats: {}, enemy, snapshotId: 1 })
+      const full = calculateDamage({ action, name: 'X', stats: baseStats, damageModifiers: mods, modifierCharacterStats: aggregated, modifierEnemyStats: {}, enemy, snapshotId: 1, timeStamp: 0 })
 
       const withoutG: any = buildAggregatedWithoutModifier(m1, aggregated)
-      const resWithoutG = calculateDamage({ action, name: 'X', stats: baseStats, damageModifiers: [], modifierCharacterStats: withoutG, modifierEnemyStats: {}, enemy, snapshotId: 1 })
+      const resWithoutG = calculateDamage({ action, name: 'X', stats: baseStats, damageModifiers: [], modifierCharacterStats: withoutG, modifierEnemyStats: {}, enemy, snapshotId: 1, timeStamp: 0 })
       assertContribution(full.damageEvent.contributions['glacioBonus'], full.damageEvent, resWithoutG.damageEvent)
 
       // critStuff
       const withoutC: any = buildAggregatedWithoutModifier(m2, aggregated)
-      const resWithoutC = calculateDamage({ action, name: 'X', stats: baseStats, damageModifiers: [], modifierCharacterStats: withoutC, modifierEnemyStats: {}, enemy, snapshotId: 1 })
+      const resWithoutC = calculateDamage({ action, name: 'X', stats: baseStats, damageModifiers: [], modifierCharacterStats: withoutC, modifierEnemyStats: {}, enemy, snapshotId: 1, timeStamp: 0 })
       assertContribution(full.damageEvent.contributions['critStuff'], full.damageEvent, resWithoutC.damageEvent)
       // crit contribution should be present
       expect(full.damageEvent.contributions['critStuff'].crit_damage_contributed).toBeGreaterThanOrEqual(0)
@@ -880,10 +880,10 @@ describe('damageCalculator', () => {
 
       const aggregated: any = buildAggregatedFromModifiers(mods)
       const action = createMockAction('Test', { multiplier: 1, scaling: 'ATK', elements: ['GLACIO'], dmgTypes: ['BASIC'] })
-      const full = calculateDamage({ action, name: 'X', stats: baseStats, damageModifiers: mods, modifierCharacterStats: aggregated, modifierEnemyStats: {}, enemy, snapshotId: 1 })
+      const full = calculateDamage({ action, name: 'X', stats: baseStats, damageModifiers: mods, modifierCharacterStats: aggregated, modifierEnemyStats: {}, enemy, snapshotId: 1, timeStamp: 0 })
 
       const without: any = buildAggregatedWithoutModifier(m, aggregated)
-      const resWithout = calculateDamage({ action, name: 'X', stats: baseStats, damageModifiers: [], modifierCharacterStats: without, modifierEnemyStats: {}, enemy, snapshotId: 1 })
+      const resWithout = calculateDamage({ action, name: 'X', stats: baseStats, damageModifiers: [], modifierCharacterStats: without, modifierEnemyStats: {}, enemy, snapshotId: 1, timeStamp: 0 })
       assertContribution(full.damageEvent.contributions['flatATK'], full.damageEvent, resWithout.damageEvent)
     })
 
@@ -897,12 +897,11 @@ describe('damageCalculator', () => {
       const aggregated: any = buildAggregatedFromModifiers(mods)
 
       const action = createMockAction('Test', { multiplier: 1, scaling: 'ATK', elements: ['GLACIO'], dmgTypes: ['BASIC'] })
-      const full = calculateDamage({ action, name: 'X', stats: baseStats, damageModifiers: mods, modifierCharacterStats: aggregated, modifierEnemyStats: {}, enemy, snapshotId: 1 })
+      const full = calculateDamage({ action, name: 'X', stats: baseStats, damageModifiers: mods, modifierCharacterStats: aggregated, modifierEnemyStats: {}, enemy, snapshotId: 1, timeStamp: 0 })
 
       for (const m of mods) {
         const withoutAgg: any = buildAggregatedWithoutModifier(m, aggregated)
-        const resWithout = calculateDamage({ action, name: 'X', stats: baseStats, damageModifiers: [], modifierCharacterStats: withoutAgg, modifierEnemyStats: {}, enemy, snapshotId: 1 })
-        const expectVal = full.damageEvent.average - resWithout.damageEvent.average
+        const resWithout = calculateDamage({ action, name: 'X', stats: baseStats, damageModifiers: [], modifierCharacterStats: withoutAgg, modifierEnemyStats: {}, enemy, snapshotId: 1, timeStamp: 0 })
         expect(full.damageEvent.contributions).toHaveProperty(m.source)
         assertContribution(full.damageEvent.contributions[m.source], full.damageEvent, resWithout.damageEvent)
       }
@@ -925,7 +924,7 @@ describe('damageCalculator', () => {
       const enemy = createMockEnemy('Test Enemy')
       const snapshotId = 1
 
-      const result = calculateDamage({ action, name, stats, damageModifiers, modifierCharacterStats, modifierEnemyStats, enemy, snapshotId })
+      const result = calculateDamage({ action, name, stats, damageModifiers, modifierCharacterStats, modifierEnemyStats, enemy, snapshotId, timeStamp: 0 })
 
       expect(result.average).toBeGreaterThanOrEqual(0)
       expect(result.damageEvent).toHaveProperty('actionName', action.name)
@@ -942,7 +941,7 @@ describe('damageCalculator', () => {
       const enemy = createMockEnemy('Test Enemy')
       const snapshotId = 1
 
-      const { average, damageEvent } = calculateDamage({ action, name, stats, damageModifiers, modifierCharacterStats, modifierEnemyStats, enemy, snapshotId })
+      const { average } = calculateDamage({ action, name, stats, damageModifiers, modifierCharacterStats, modifierEnemyStats, enemy, snapshotId, timeStamp: 0 })
 
       expect(average).toBeGreaterThanOrEqual(1063 - 1)
       expect(average).toBeLessThanOrEqual(1063 + 1)
@@ -959,7 +958,7 @@ describe('damageCalculator', () => {
       const enemy = createMockEnemy('Test Enemy')
       const snapshotId = 1
 
-      const { average, damageEvent } = calculateDamage({ action, name, stats, damageModifiers, modifierCharacterStats, modifierEnemyStats, enemy, snapshotId })
+      const { average } = calculateDamage({ action, name, stats, damageModifiers, modifierCharacterStats, modifierEnemyStats, enemy, snapshotId, timeStamp: 0 })
 
       expect(average).toBeGreaterThanOrEqual(5767 - 1)
       expect(average).toBeLessThanOrEqual(5767 + 1)
@@ -976,7 +975,7 @@ describe('damageCalculator', () => {
       const enemy = createMockEnemy('Test Enemy')
       const snapshotId = 1
 
-      const { average, damageEvent } = calculateDamage({ action, name, stats, damageModifiers, modifierCharacterStats, modifierEnemyStats, enemy, snapshotId })
+      const { average } = calculateDamage({ action, name, stats, damageModifiers, modifierCharacterStats, modifierEnemyStats, enemy, snapshotId, timeStamp: 0 })
 
       expect(average).toBeGreaterThanOrEqual(7644 - 1)
       expect(average).toBeLessThanOrEqual(7644 + 1)
@@ -993,7 +992,7 @@ describe('damageCalculator', () => {
       const enemy = createMockEnemy('Test Enemy')
       const snapshotId = 1
 
-      const { average, damageEvent } = calculateDamage({ action, name, stats, damageModifiers, modifierCharacterStats, modifierEnemyStats, enemy, snapshotId })
+      const { average } = calculateDamage({ action, name, stats, damageModifiers, modifierCharacterStats, modifierEnemyStats, enemy, snapshotId, timeStamp: 0 })
 
       expect(average).toBeGreaterThanOrEqual(11641 - 1)
       expect(average).toBeLessThanOrEqual(11641 + 1)
@@ -1134,7 +1133,7 @@ describe('damageCalculator', () => {
 
       const snapshotId = 1
 
-      const { average, damageEvent } = calculateDamage({ action, name, stats, damageModifiers, modifierCharacterStats, modifierEnemyStats, enemy, snapshotId })
+      const { average } = calculateDamage({ action, name, stats, damageModifiers, modifierCharacterStats, modifierEnemyStats, enemy, snapshotId, timeStamp: 0 })
 
 
       // ATK x actionMultiplier x (1 + bonus%) x critdmg x (1 + amp%) x (1 - RES) x (DEF multiplier) x (Product of all total multipliers)

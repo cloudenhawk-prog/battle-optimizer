@@ -1,10 +1,10 @@
-import "../../styles/rotation-editor/RotationTable.css"
-import { useState, useEffect, useRef } from "react"
-import { HeaderRow } from "./HeaderRow"
-import { BodyRow } from "./BodyRows"
-import type { TableConfig, ColumnVisibility } from "../../types/tableDefinitions"
-import type { Character } from "../../types/character"
-import type { Snapshot } from "../../types/snapshot"
+import '../../styles/rotation-editor/RotationTable.css'
+import { useState, useEffect, useRef } from 'react'
+import { HeaderRow } from './HeaderRow'
+import { BodyRow } from './BodyRows'
+import type { TableConfig, ColumnVisibility } from '../../types/tableDefinitions'
+import type { Character } from '../../types/character'
+import type { Snapshot } from '../../types/snapshot'
 
 // ========== Component: Rotation Table ========================================================================================
 
@@ -39,24 +39,10 @@ export function RotationTable({ snapshots, charactersInBattle, tableConfig, onSe
   return (
     <div className="tableWrapper">
       <table className="tableBase">
-        <HeaderRow
-        tableConfig={tableConfig}
-        columnVisibility={columnVisibility}
-        setColumnVisibility={setColumnVisibility}
-        />
+        <HeaderRow tableConfig={tableConfig} columnVisibility={columnVisibility} setColumnVisibility={setColumnVisibility} />
         <tbody>
           {snapshots.map((snapshot, idx) => (
-            <BodyRow
-              key={Number(snapshot.id)}
-              snapshot={snapshot}
-              charactersInBattle={charactersInBattle}
-              tableConfig={tableConfig}
-              onSelectCharacter={onSelectCharacter}
-              onSelectAction={onSelectAction}
-              isLastRow={idx === snapshots.length - 1}
-              isNewRow={highlightIds.has(Number(snapshot.id))}
-              columnVisibility={columnVisibility}
-            />
+            <BodyRow key={Number(snapshot.id)} snapshot={snapshot} charactersInBattle={charactersInBattle} tableConfig={tableConfig} onSelectCharacter={onSelectCharacter} onSelectAction={onSelectAction} isLastRow={idx === snapshots.length - 1} isNewRow={highlightIds.has(Number(snapshot.id))} columnVisibility={columnVisibility} />
           ))}
         </tbody>
       </table>
@@ -84,8 +70,8 @@ function getHighlightIds(snapshots: Snapshot[], lastMaxId: React.MutableRefObjec
   }
 
   const reversed = [...last4].reverse()
-  const outroRow = reversed.find(s => s.action === "Outro")
-  const introRow = reversed.find(s => s.action === "Intro")
+  const outroRow = reversed.find(s => s.action === 'Outro')
+  const introRow = reversed.find(s => s.action === 'Intro')
 
   if (outroRow && introRow) {
     idsToHighlight.push(Number(outroRow.id))
