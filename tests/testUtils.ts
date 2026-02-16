@@ -1,19 +1,19 @@
 /**
  * Test Utilities - Shared mock factories and helpers for tests
- * 
+ *
  * This file provides factory functions to create mock objects for testing.
  * All factories accept optional overrides to customize the returned objects.
  */
 
-import type { Snapshot } from '../src/types/snapshot';
-import type { Character } from '../src/types/character';
-import type { Action } from '../src/types/action';
-import type { Enemy } from '../src/types/enemy';
-import type { NegativeStatusInAction, NegativeStatus } from '../src/types/negativeStatus';
-import type { Buff, Debuff } from '../src/types/buff';
-import type { DamageModifier } from '../src/types/modifiers';
-import type { CharacterStats, EnemyStats } from '../src/types/stats';
-import type { Contribution } from '../src/types/events';
+import type { Snapshot } from '../src/types/snapshot'
+import type { Character } from '../src/types/character'
+import type { Action } from '../src/types/action'
+import type { Enemy } from '../src/types/enemy'
+import type { NegativeStatusInAction, NegativeStatus } from '../src/types/negativeStatus'
+import type { Buff, Debuff } from '../src/types/buff'
+import type { DamageModifier } from '../src/types/modifiers'
+import type { CharacterStats, EnemyStats } from '../src/types/stats'
+import type { Contribution } from '../src/types/events'
 
 // ========== Snapshot Mocks ===================================================================================================
 

@@ -1,8 +1,8 @@
-import "../../styles/rotation-editor/BodyRows.css"
-import type { Character } from "../../types/character"
-import type { ColumnDef, TableConfig, ColumnVisibility } from "../../types/tableDefinitions"
-import type { Snapshot } from "../../types/snapshot"
-import { buildActionOptions } from "../../utils/selectors/selectorHelpers"
+import '../../styles/rotation-editor/BodyRows.css'
+import type { Character } from '../../types/character'
+import type { ColumnDef, TableConfig, ColumnVisibility } from '../../types/tableDefinitions'
+import type { Snapshot } from '../../types/snapshot'
+import { buildActionOptions } from '../../utils/selectors/selectorHelpers'
 
 // ========== Component: Body Row ==============================================================================================
 
@@ -25,13 +25,13 @@ export function BodyRow({ snapshot, charactersInBattle, tableConfig, onSelectCha
 
   return (
     <tr
-      className={`tableBody ${isLastRow ? "lastRowClass" : ""} ${isNewRow ? "rowHighlight" : ""}`}
+      className={`tableBody ${isLastRow ? 'lastRowClass' : ''} ${isNewRow ? 'rowHighlight' : ''}`}
       role="button"
       tabIndex={0}
       onClick={e => {
         // avoid opening overlay when interacting with form controls inside the row
         const el = e.target as HTMLElement
-        if (el.closest("select") || el.closest("button") || el.closest("input")) return
+        if (el.closest('select') || el.closest('button') || el.closest('input')) return
         onRowClick?.(snapshot)
       }}
     >

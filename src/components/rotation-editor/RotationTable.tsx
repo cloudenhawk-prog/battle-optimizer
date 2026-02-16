@@ -1,11 +1,10 @@
-import "../../styles/rotation-editor/RotationTable.css"
-import { useState, useEffect, useRef } from "react"
-import { HeaderRow } from "./HeaderRow"
-import { BodyRow } from "./BodyRows"
-import type { TableConfig, ColumnVisibility } from "../../types/tableDefinitions"
-import type { Character } from "../../types/character"
-import type { Snapshot } from "../../types/snapshot"
-import type { DamageEvent } from "../../types/events"
+import '../../styles/rotation-editor/RotationTable.css'
+import { useState, useEffect, useRef } from 'react'
+import { HeaderRow } from './HeaderRow'
+import { BodyRow } from './BodyRows'
+import type { TableConfig, ColumnVisibility } from '../../types/tableDefinitions'
+import type { Character } from '../../types/character'
+import type { Snapshot } from '../../types/snapshot'
 
 // ========== Component: Rotation Table ========================================================================================
 
@@ -44,18 +43,7 @@ export function RotationTable({ snapshots, charactersInBattle, tableConfig, onSe
         <HeaderRow tableConfig={tableConfig} columnVisibility={columnVisibility} setColumnVisibility={setColumnVisibility} />
         <tbody>
           {snapshots.map((snapshot, idx) => (
-            <BodyRow
-              key={Number(snapshot.id)}
-              snapshot={snapshot}
-              charactersInBattle={charactersInBattle}
-              tableConfig={tableConfig}
-              onSelectCharacter={onSelectCharacter}
-              onSelectAction={onSelectAction}
-              onRowClick={onRowClick}
-              isLastRow={idx === snapshots.length - 1}
-              isNewRow={highlightIds.has(Number(snapshot.id))}
-              columnVisibility={columnVisibility}
-            />
+            <BodyRow key={Number(snapshot.id)} snapshot={snapshot} charactersInBattle={charactersInBattle} tableConfig={tableConfig} onSelectCharacter={onSelectCharacter} onSelectAction={onSelectAction} onRowClick={onRowClick} isLastRow={idx === snapshots.length - 1} isNewRow={highlightIds.has(Number(snapshot.id))} columnVisibility={columnVisibility} />
           ))}
         </tbody>
       </table>
