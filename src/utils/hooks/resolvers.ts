@@ -226,7 +226,6 @@ function aggregateModification(
     refreshDuration: false,
   })
 
-  console.log('Hej')
   entry.stackChange += stackChange
   entry.durationChange += durationChange
   entry.refreshDuration ||= refreshDuration
