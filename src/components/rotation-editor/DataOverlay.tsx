@@ -107,7 +107,6 @@ function PieChartCenter({ damageEvents, totalDamage }: { damageEvents: DamageEve
       {/* Outer rotating rings */}
       <div className="pieOuterRing" />
       <div className="pieOuterRingDashed" />
-      <div className="pieOuterRingThird" />
 
       {/* Pie chart SVG */}
       {damageEvents.length === 1 ? (
@@ -129,19 +128,21 @@ function PieChartCenter({ damageEvents, totalDamage }: { damageEvents: DamageEve
       </div>
 
       {/* Tick marks */}
-      {Array.from({ length: 36 }).map((_, i) => (
-        <div
-          key={i}
-          className="pieTick"
-          style={{
-            transform: `rotate(${i * 10}deg) translateY(-${155}px)`,
-            height: i % 3 === 0 ? '6px' : '3px',
-            marginLeft: '-0.5px',
-            marginTop: i % 3 === 0 ? '-3px' : '-1.5px',
-            backgroundColor: `rgba(255, 255, 255, ${i % 3 === 0 ? 0.15 : 0.06})`,
-          }}
-        />
-      ))}
+      <div className="pieTickContainer">
+        {Array.from({ length: 36 }).map((_, i) => (
+          <div
+            key={i}
+            className="pieTick"
+            style={{
+              transform: `rotate(${i * 10}deg) translateY(-${155}px)`,
+              height: i % 3 === 0 ? '6px' : '3px',
+              marginLeft: '-0.5px',
+              marginTop: i % 3 === 0 ? '-3px' : '-1.5px',
+              backgroundColor: `rgba(255, 255, 255, ${i % 3 === 0 ? 0.15 : 0.06})`,
+            }}
+          />
+        ))}
+      </div>
     </div>
   )
 }

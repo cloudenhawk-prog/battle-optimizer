@@ -293,35 +293,16 @@
   position: absolute;
   inset: -20px;
   border-radius: 50%;
-  border: 1px solid rgba(100, 150, 255, 0.15);
-  box-shadow:
-    0 0 10px rgba(100, 150, 255, 0.1),
-    inset 0 0 10px rgba(100, 150, 255, 0.05);
-  animation:
-    rotateSlow 20s linear infinite,
-    ringGlow 4s ease-in-out infinite;
+  border: 1px dashed rgba(255, 255, 255, 0.12);
+  animation: rotateSlow 8s linear infinite;
 }
 
 .pieOuterRingDashed {
   position: absolute;
   inset: -35px;
   border-radius: 50%;
-  border: 1px dashed rgba(255, 150, 100, 0.12);
-  box-shadow: 0 0 8px rgba(255, 150, 100, 0.08);
-  animation:
-    rotateReverse 15s linear infinite,
-    ringGlowAlt 3s ease-in-out infinite 1.5s;
-}
-
-.pieOuterRingThird {
-  position: absolute;
-  inset: -50px;
-  border-radius: 50%;
-  border: 1px solid rgba(200, 150, 255, 0.1);
-  box-shadow: 0 0 6px rgba(200, 150, 255, 0.06);
-  animation:
-    rotateSlow 25s linear infinite,
-    ringGlowThird 5s ease-in-out infinite 3s;
+  border: 1px dashed rgba(255, 255, 255, 0.04);
+  animation: rotateReverse 15s linear infinite;
 }
 
 @keyframes rotateSlow {
@@ -339,46 +320,6 @@
   }
   to {
     transform: rotate(0deg);
-  }
-}
-
-@keyframes ringGlow {
-  0%,
-  100% {
-    border-color: rgba(100, 150, 255, 0.15);
-    box-shadow:
-      0 0 10px rgba(100, 150, 255, 0.1),
-      inset 0 0 10px rgba(100, 150, 255, 0.05);
-  }
-  50% {
-    border-color: rgba(100, 150, 255, 0.35);
-    box-shadow:
-      0 0 20px rgba(100, 150, 255, 0.25),
-      inset 0 0 15px rgba(100, 150, 255, 0.15);
-  }
-}
-
-@keyframes ringGlowAlt {
-  0%,
-  100% {
-    border-color: rgba(255, 150, 100, 0.12);
-    box-shadow: 0 0 8px rgba(255, 150, 100, 0.08);
-  }
-  50% {
-    border-color: rgba(255, 150, 100, 0.25);
-    box-shadow: 0 0 15px rgba(255, 150, 100, 0.2);
-  }
-}
-
-@keyframes ringGlowThird {
-  0%,
-  100% {
-    border-color: rgba(200, 150, 255, 0.1);
-    box-shadow: 0 0 6px rgba(200, 150, 255, 0.06);
-  }
-  50% {
-    border-color: rgba(200, 150, 255, 0.25);
-    box-shadow: 0 0 12px rgba(200, 150, 255, 0.15);
   }
 }
 
@@ -426,6 +367,21 @@
 }
 
 /* Tick marks around pie */
+.pieTickContainer {
+  position: absolute;
+  inset: 0;
+  animation: tickRotate 20s linear infinite;
+}
+
+@keyframes tickRotate {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}
+
 .pieTick {
   position: absolute;
   top: 50%;
