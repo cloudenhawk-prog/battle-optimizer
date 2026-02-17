@@ -22,24 +22,22 @@ export default function Topbar({ tableConfig, columnVisibility, setColumnVisibil
   const groups: ColumnGroup[] = [tableConfig.basic, ...tableConfig.characters, ...(tableConfig.negativeStatuses ? [tableConfig.negativeStatuses] : []), ...(tableConfig.buffs ? [tableConfig.buffs] : []), ...(tableConfig.debuffs ? [tableConfig.debuffs] : [])]
 
   return (
-    <div className="topbarWrapper">
-      <div className="topbarBase">
-        <div className="topbarColoring">
-          <div className="topbarColumnButton" />
+    <div className="topbar">
+      {groups.map((group, idx) => (
+        <React.Fragment key={group.label}>
+          {idx === 0 && <div className="topbarSeparator" />}
 
-          {groups.map((group, idx) => (
-            <React.Fragment key={group.label}>
-              {idx === 0 && <div className="topbarSeparator" />}
-
+          <div className="topbarGroup">
+            <div className="topbarGroupLabel">{group.label}</div>
+            <div className="topbarGroupButtons">
               {renderGroupButtons(group, columnVisibility, toggleColumn)}
+            </div>
+          </div>
 
-              {idx < groups.length - 1 && <div className="topbarSeparator" />}
-
-              {idx === groups.length - 1 && <div className="topbarSeparator" />}
-            </React.Fragment>
-          ))}
-        </div>
-      </div>
+          {idx < groups.length - 1 && <div className="topbarSeparator" />}
+          {idx === groups.length - 1 && <div className="topbarSeparator" />}
+        </React.Fragment>
+      ))}
     </div>
   )
 }
@@ -48,8 +46,9 @@ export default function Topbar({ tableConfig, columnVisibility, setColumnVisibil
 
 function renderGroupButtons(group: ColumnGroup, columnVisibility: ColumnVisibility, toggleColumn: (key: string) => void) {
   return group.columns.map(col => (
-    <button key={col.key} className={`topbarColumnButton ${columnVisibility[col.key] ? 'is-hidden' : 'is-visible'}`} onClick={() => toggleColumn(col.key)}>
+    <button key={col.key} className={`topbarColumnButton ${columnVisibility[col.key] ? 'is-hidden' : 'is-visible'}`} onClick={() => toggleColumn(col.key)} title={col.label}>
       <img src={col.icon} alt={col.label} className="table-icon" />
+      <span className="topbarButtonLabel">{col.label}</span>
     </button>
   ))
 }

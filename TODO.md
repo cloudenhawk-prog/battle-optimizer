@@ -1,9 +1,9 @@
-Current task:
 
-- When clicking outside the data overlay, it should also close (not just the X)
-- Fix the lines from 4 sections to center (they should only touch the outmost circle, be colorless, and perhaps even normalize to x,y axis coordinates rather than being 'forskubbet')
 
 TODO:
+
+Task: Create data for Cartethyia's team so that we can more thoroughly "test" everything (including cooldowns - test in-game how much time is wasted on character swap, for example Cartethyia BA5 from scratch vs on swap)
+Context: Self-explanatory
 
 Task: Implement rows on-click overlay data breakdown
 Context: Right now damageEvents are passed to the component RotationEditor.tsx These can be passed to the RotationTable if it needs them for future features
@@ -36,6 +36,28 @@ Context: Right now the outro-intro flow is hardcoded using 100 Concerto energy. 
 
 Task: Implement dispatchable effects so damages and other things don't always proc at 'toTime'
 Context: Right now everything is summed up at the 'toTime' milestone. For a more detailed timeline in the future, and so that all damage is not necessarily triggered at once, it might be useful to create a queue that you can dispatch events to. The queue might be able to resolve/progress events, sorts the events at the time it happened, and more detailed create a timeline of action/effect starts, damage-procs, occurences, and event endings. This could be especially useful for outro skills, swap-cancelling, and delayed effects and damage procs. It might even automatically let us create Coordinated Attacks and alike really easily.
+
+
+
+
+
+
+
+
+ISSUES:
+
+The topbar layout changes every time an icon/column becomes hidden - likely reason: the icons are smaller than the empty placeholder in both directions
+
+
+
+
+
+
+
+
+
+
+
 
 ---
 
