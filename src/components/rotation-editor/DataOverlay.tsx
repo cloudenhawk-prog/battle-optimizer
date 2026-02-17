@@ -13,7 +13,7 @@ type DataOverlayProps = {
 }
 
 export default function DataOverlay({ snapshot, damageEvents = [], open, onClose }: DataOverlayProps) {
-  const [contributionMode, setContributionMode] = useState<'average' | 'normal' | 'crit'>('average')
+  const [mode, setMode] = useState<'average' | 'normal' | 'crit'>('average')
 
   if (!open || !snapshot) return null
 
@@ -28,7 +28,7 @@ export default function DataOverlay({ snapshot, damageEvents = [], open, onClose
       <div className="dataOverlayContent">
         <OverlayHeader onClose={onClose} />
         <div className="dataOverlayBody">
-          <HudOverlay />
+          <HudOverlay mode={mode} onModeChange={setMode} />
 
           {/* Central Pie Chart */}
           <PieChartCenter damageEvents={damageEvents} totalDamage={totalDamage} />
@@ -37,7 +37,7 @@ export default function DataOverlay({ snapshot, damageEvents = [], open, onClose
           <CombatOverviewSection totalDamage={totalDamage} duration={duration} snapshot={snapshot} />
           <MainActionSection mainAction={mainAction} totalDamage={totalDamage} />
           <SideEffectsSection otherDamage={otherDamage} totalDamage={totalDamage} />
-          <ContributionsSection contributions={mainAction?.contributions || {}} mode={contributionMode} onModeChange={setContributionMode} />
+          <ContributionsSection contributions={mainAction?.contributions || {}} mode={mode} />
         </div>
       </div>
     </div>
@@ -56,8 +56,7 @@ function OverlayHeader({ onClose }: { onClose: () => void }) {
     </div>
   )
 }
-
-function HudOverlay() {
+function HudOverlay({ mode, onModeChange }: { mode: 'average' | 'normal' | 'crit'; onModeChange: (mode: 'average' | 'normal' | 'crit') => void }) {
   return (
     <>
       {/* Scanning line */}
@@ -72,7 +71,18 @@ function HudOverlay() {
       {/* Top bar */}
       <div className="hudTopBar">
         <div className="hudTopLeft">
-          TETHER <span className="separator">//</span> v3.2.17
+          {/* Mode Selector */}
+          <div className="modeSelectorContainer">
+            <button className={`modeButton ${mode === 'average' ? 'active' : ''}`} onClick={() => onModeChange('average')}>
+              Average
+            </button>
+            <button className={`modeButton ${mode === 'normal' ? 'active' : ''}`} onClick={() => onModeChange('normal')}>
+              Normal
+            </button>
+            <button className={`modeButton ${mode === 'crit' ? 'active' : ''}`} onClick={() => onModeChange('crit')}>
+              Critical
+            </button>
+          </div>
         </div>
         <div className="hudTopRight">
           <div className="liveIndicator">LIVE FEED</div>
@@ -90,7 +100,7 @@ function HudOverlay() {
           <div>ECHO SIGNATURE: LOCKED</div>
         </div>
         <div className="hudBottomRight">
-          <span className="hudLabel">Resonance Field:</span> Nominal
+          TETHER <span className="separator">//</span> v3.2.17
         </div>
       </div>
     </>
@@ -286,11 +296,11 @@ function SideEffectsSection({ otherDamage, totalDamage }: { otherDamage: DamageE
   )
 }
 
-function ContributionsSection({ contributions, mode, onModeChange }: { contributions: Record<string, Contribution>; mode: 'average' | 'normal' | 'crit'; onModeChange: (mode: 'average' | 'normal' | 'crit') => void }) {
-  const contributionsList = Object.entries(contributions).map(([source, contrib]) => ({
-    source,
-    ...contrib,
-  }))
+function ContributionsSection({ contributions, mode }: { contributions: Record<string, Contribution>; mode: 'average' | 'normal' | 'crit' }) {
+  const contributionsList = Object.entries(contributions).map(([_key, contrib]) => contrib)
+
+  console.log('Contributions from props:', contributions)
+  console.log('Contributions list:', contributionsList)
 
   // Sort by contribution amount (descending) based on current mode
   contributionsList.sort((a, b) => {
@@ -315,19 +325,6 @@ function ContributionsSection({ contributions, mode, onModeChange }: { contribut
           <span>Modifier Contributions</span>
         </div>
 
-        {/* Mode Selector */}
-        <div className="modeSelectorContainer">
-          <button className={`modeButton ${mode === 'average' ? 'active' : ''}`} onClick={() => onModeChange('average')}>
-            Average
-          </button>
-          <button className={`modeButton ${mode === 'normal' ? 'active' : ''}`} onClick={() => onModeChange('normal')}>
-            Normal
-          </button>
-          <button className={`modeButton ${mode === 'crit' ? 'active' : ''}`} onClick={() => onModeChange('crit')}>
-            Critical
-          </button>
-        </div>
-
         <div className="sectionContent">
           {contributionsList.length === 0 ? (
             <p className="emptyMessage">No modifier contributions detected</p>
@@ -349,9 +346,9 @@ function ContributionsSection({ contributions, mode, onModeChange }: { contribut
                       </div>
                     </div>
                     <div className="pillarLabel">
-                      <div className="pillarSource">{contrib.source}</div>
-                      <div className="pillarValue">{damageValue.toFixed(0)}</div>
+                      <div className="pillarSource">{contrib.displayName || contrib.source}</div>
                       <div className="pillarPercent">{percentValue.toFixed(1)}%</div>
+                      <div className="pillarValue">{damageValue.toFixed(0)}</div>
                     </div>
                   </div>
                 )

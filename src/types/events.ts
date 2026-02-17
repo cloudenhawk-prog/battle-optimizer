@@ -21,6 +21,7 @@ export type DamageEvent = {
 
 export type Contribution = {
   source: string
+  displayName?: string
   crit_damage_contributed: number
   crit_percent_damage_contributed: number
   normal_damage_contributed: number

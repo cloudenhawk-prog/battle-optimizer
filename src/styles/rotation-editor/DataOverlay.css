@@ -42,6 +42,7 @@
   display: flex;
   justify-content: space-between;
   align-items: center;
+  gap: 24px;
   padding: 20px 28px;
   background: var(--table-header-bg);
   border-bottom: 1px solid var(--table-border);
@@ -505,6 +506,7 @@
 }
 .sectionCard.magenta {
   border-top: 2px solid rgba(200, 150, 255, 0.3);
+  padding-bottom: 7px;
 }
 .sectionCard.purple {
   border-top: 2px solid rgba(150, 100, 255, 0.3);
@@ -746,16 +748,14 @@
 .modeSelectorContainer {
   display: flex;
   gap: 6px;
-  margin-bottom: 16px;
   padding: 4px;
   background: rgba(255, 255, 255, 0.03);
-  border-radius: 4px;
+  border-radius: 6px;
   border: 1px solid var(--table-border);
 }
 
 .modeButton {
-  flex: 1;
-  padding: 6px 12px;
+  padding: 8px 16px;
   font-family:
     system-ui,
     -apple-system,
@@ -763,24 +763,27 @@
   font-size: 11px;
   font-weight: 600;
   text-transform: uppercase;
-  letter-spacing: 0.05em;
+  letter-spacing: 0.08em;
   background: transparent;
   border: none;
   color: var(--table-text-subtle);
   cursor: pointer;
-  border-radius: 3px;
+  border-radius: 4px;
   transition: all 0.2s ease;
+  white-space: nowrap;
 }
 
 .modeButton:hover {
-  background: rgba(255, 255, 255, 0.05);
+  background: rgba(100, 150, 255, 0.1);
   color: var(--table-text);
 }
 
 .modeButton.active {
-  background: rgba(200, 150, 255, 0.15);
-  color: rgba(200, 150, 255, 0.95);
-  box-shadow: 0 0 8px rgba(200, 150, 255, 0.2);
+  background: rgba(100, 150, 255, 0.2);
+  color: rgba(100, 200, 255, 0.95);
+  box-shadow:
+    0 0 8px rgba(100, 150, 255, 0.25),
+    inset 0 0 8px rgba(100, 150, 255, 0.1);
 }
 
 /* Pillar Graph */
@@ -789,7 +792,7 @@
   gap: 12px;
   align-items: flex-end;
   justify-content: center;
-  height: 200px;
+  height: 150px;
   padding: 0 8px;
   overflow-x: auto;
 }
@@ -799,13 +802,13 @@
   flex-direction: column;
   align-items: center;
   gap: 8px;
-  min-width: 60px;
+  height: 100%;
 }
 
 .pillarBar {
   position: relative;
   width: 40px;
-  height: 100%;
+  flex: 1;
   background: rgba(255, 255, 255, 0.04);
   border-radius: 4px 4px 0 0;
   border: 1px solid rgba(255, 255, 255, 0.06);
@@ -888,16 +891,18 @@
 
 .pillarValue {
   font-family: 'Courier New', monospace;
-  font-size: 12px;
-  font-weight: 600;
-  color: rgba(200, 150, 255, 0.95);
+  font-size: 11px;
+  font-weight: 500;
+  color: var(--table-text-dim);
+  opacity: 0.9;
 }
 
 .pillarPercent {
   font-family: 'Courier New', monospace;
-  font-size: 9px;
-  color: var(--table-text-subtle);
-  opacity: 0.7;
+  font-size: 14px;
+  font-weight: 700;
+  color: rgba(200, 150, 255, 0.95);
+  text-shadow: 0 0 8px rgba(200, 150, 255, 0.3);
 }
 
 /* Responsive */

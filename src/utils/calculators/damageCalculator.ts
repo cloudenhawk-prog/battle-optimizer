@@ -454,6 +454,7 @@ export function calculateAllContrubutions(action: Action, name: string, stats: C
 
     results[uniqueKey] = {
       source: mod.source,
+      displayName: mod.displayName,
       crit_damage_contributed: Math.max(0, crit_contrib),
       crit_percent_damage_contributed: crit_pct,
       normal_damage_contributed: Math.max(0, normal_contrib),
