@@ -108,6 +108,24 @@ function PieChartCenter({ damageEvents, totalDamage }: { damageEvents: DamageEve
       <div className="pieOuterRing" />
       <div className="pieOuterRingDashed" />
 
+      {/* Outer notches rotating counter-clockwise */}
+      <div className="pieOuterNotchContainer">
+        {Array.from({ length: 24 }).map((_, i) => (
+          <div
+            key={i}
+            className="pieOuterNotch"
+            style={{
+              transform: `rotate(${i * 15}deg) translateY(-${185}px)`,
+              height: i % 2 === 0 ? '10px' : '6px',
+              marginLeft: '-1px',
+              marginTop: i % 2 === 0 ? '-5px' : '-3px',
+              backgroundColor: i % 2 === 0 ? `rgba(100, 200, 255, ${0.25})` : `rgba(100, 150, 255, ${0.12})`,
+              boxShadow: i % 2 === 0 ? '0 0 4px rgba(100, 200, 255, 0.3)' : 'none',
+            }}
+          />
+        ))}
+      </div>
+
       {/* Pie chart SVG */}
       {damageEvents.length === 1 ? (
         <svg viewBox="0 0 200 200" className="pieChartSvg">
