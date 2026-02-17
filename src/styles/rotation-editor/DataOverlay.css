@@ -460,7 +460,7 @@
 .radialSection.contributions {
   left: 50%;
   transform: translateX(-50%);
-  bottom: 60px;
+  bottom: 20px;
 }
 
 .sectionCard {
@@ -740,6 +740,164 @@
   padding: 12px;
   text-align: center;
   font-size: 12px;
+}
+
+/* Mode Selector */
+.modeSelectorContainer {
+  display: flex;
+  gap: 6px;
+  margin-bottom: 16px;
+  padding: 4px;
+  background: rgba(255, 255, 255, 0.03);
+  border-radius: 4px;
+  border: 1px solid var(--table-border);
+}
+
+.modeButton {
+  flex: 1;
+  padding: 6px 12px;
+  font-family:
+    system-ui,
+    -apple-system,
+    sans-serif;
+  font-size: 11px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  background: transparent;
+  border: none;
+  color: var(--table-text-subtle);
+  cursor: pointer;
+  border-radius: 3px;
+  transition: all 0.2s ease;
+}
+
+.modeButton:hover {
+  background: rgba(255, 255, 255, 0.05);
+  color: var(--table-text);
+}
+
+.modeButton.active {
+  background: rgba(200, 150, 255, 0.15);
+  color: rgba(200, 150, 255, 0.95);
+  box-shadow: 0 0 8px rgba(200, 150, 255, 0.2);
+}
+
+/* Pillar Graph */
+.pillarGraphContainer {
+  display: flex;
+  gap: 12px;
+  align-items: flex-end;
+  justify-content: center;
+  height: 200px;
+  padding: 0 8px;
+  overflow-x: auto;
+}
+
+.pillarWrapper {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+  min-width: 60px;
+}
+
+.pillarBar {
+  position: relative;
+  width: 40px;
+  height: 100%;
+  background: rgba(255, 255, 255, 0.04);
+  border-radius: 4px 4px 0 0;
+  border: 1px solid rgba(255, 255, 255, 0.06);
+  border-bottom: none;
+  display: flex;
+  align-items: flex-end;
+  overflow: hidden;
+}
+
+.pillarFill {
+  position: relative;
+  width: 100%;
+  border-radius: 3px 3px 0 0;
+  transition: height 0.7s cubic-bezier(0.34, 1.56, 0.64, 1);
+  min-height: 8px;
+}
+
+.pillarFill.magenta {
+  background: linear-gradient(to top, rgba(200, 150, 255, 0.8), rgba(200, 150, 255, 0.5));
+  box-shadow:
+    0 0 12px rgba(200, 150, 255, 0.4),
+    inset 0 -2px 8px rgba(255, 255, 255, 0.2);
+  animation: pillarPulse 3s ease-in-out infinite;
+}
+
+@keyframes pillarPulse {
+  0%,
+  100% {
+    filter: brightness(1);
+  }
+  50% {
+    filter: brightness(1.2);
+  }
+}
+
+.pillarGlow {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 30%;
+  background: linear-gradient(to bottom, rgba(255, 255, 255, 0.3), transparent);
+  border-radius: 3px 3px 0 0;
+  animation: glowShimmer 2s ease-in-out infinite;
+}
+
+@keyframes glowShimmer {
+  0%,
+  100% {
+    opacity: 0.5;
+  }
+  50% {
+    opacity: 1;
+  }
+}
+
+.pillarLabel {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 2px;
+  text-align: center;
+}
+
+.pillarSource {
+  font-family:
+    system-ui,
+    -apple-system,
+    sans-serif;
+  font-size: 10px;
+  font-weight: 600;
+  color: var(--table-text-subtle);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  max-width: 80px;
+}
+
+.pillarValue {
+  font-family: 'Courier New', monospace;
+  font-size: 12px;
+  font-weight: 600;
+  color: rgba(200, 150, 255, 0.95);
+}
+
+.pillarPercent {
+  font-family: 'Courier New', monospace;
+  font-size: 9px;
+  color: var(--table-text-subtle);
+  opacity: 0.7;
 }
 
 /* Responsive */

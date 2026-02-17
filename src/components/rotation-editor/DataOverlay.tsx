@@ -1,6 +1,7 @@
+import { useState } from 'react'
 import '../../styles/rotation-editor/DataOverlay.css'
 import type { Snapshot } from '../../types/snapshot'
-import type { DamageEvent } from '../../types/events'
+import type { DamageEvent, Contribution } from '../../types/events'
 
 // ========== Main Component =====================================================================================================
 
@@ -12,6 +13,8 @@ type DataOverlayProps = {
 }
 
 export default function DataOverlay({ snapshot, damageEvents = [], open, onClose }: DataOverlayProps) {
+  const [contributionMode, setContributionMode] = useState<'average' | 'normal' | 'crit'>('average')
+
   if (!open || !snapshot) return null
 
   console.log('Damage Events: ', damageEvents)
@@ -34,7 +37,7 @@ export default function DataOverlay({ snapshot, damageEvents = [], open, onClose
           <CombatOverviewSection totalDamage={totalDamage} duration={duration} snapshot={snapshot} />
           <MainActionSection mainAction={mainAction} totalDamage={totalDamage} />
           <SideEffectsSection otherDamage={otherDamage} totalDamage={totalDamage} />
-          <ContributionsSection />
+          <ContributionsSection contributions={mainAction?.contributions || {}} mode={contributionMode} onModeChange={setContributionMode} />
         </div>
       </div>
     </div>
@@ -283,7 +286,25 @@ function SideEffectsSection({ otherDamage, totalDamage }: { otherDamage: DamageE
   )
 }
 
-function ContributionsSection() {
+function ContributionsSection({ contributions, mode, onModeChange }: { contributions: Record<string, Contribution>; mode: 'average' | 'normal' | 'crit'; onModeChange: (mode: 'average' | 'normal' | 'crit') => void }) {
+  const contributionsList = Object.entries(contributions).map(([source, contrib]) => ({
+    source,
+    ...contrib,
+  }))
+
+  // Sort by contribution amount (descending) based on current mode
+  contributionsList.sort((a, b) => {
+    const aValue = mode === 'average' ? a.average_damage_contributed : mode === 'normal' ? a.normal_damage_contributed : a.crit_damage_contributed
+    const bValue = mode === 'average' ? b.average_damage_contributed : mode === 'normal' ? b.normal_damage_contributed : b.crit_damage_contributed
+    return bValue - aValue
+  })
+
+  // Find max value for scaling
+  const maxValue = contributionsList.reduce((max, contrib) => {
+    const value = mode === 'average' ? contrib.average_damage_contributed : mode === 'normal' ? contrib.normal_damage_contributed : contrib.crit_damage_contributed
+    return Math.max(max, value)
+  }, 0)
+
   return (
     <div className="radialSection contributions">
       <div className="connectorLine" />
@@ -291,12 +312,52 @@ function ContributionsSection() {
         <div className="sectionTopAccent magenta" />
         <div className="sectionTitle magenta">
           <div className="titleDot magenta" />
-          <span>Combat Statistics</span>
+          <span>Modifier Contributions</span>
         </div>
+
+        {/* Mode Selector */}
+        <div className="modeSelectorContainer">
+          <button className={`modeButton ${mode === 'average' ? 'active' : ''}`} onClick={() => onModeChange('average')}>
+            Average
+          </button>
+          <button className={`modeButton ${mode === 'normal' ? 'active' : ''}`} onClick={() => onModeChange('normal')}>
+            Normal
+          </button>
+          <button className={`modeButton ${mode === 'crit' ? 'active' : ''}`} onClick={() => onModeChange('crit')}>
+            Critical
+          </button>
+        </div>
+
         <div className="sectionContent">
-          <DataRow label="ATK Rating" value="+248" barPct={62} color="magenta" />
-          <DataRow label="Crit Chance" value="45.2%" barPct={45} color="magenta" />
-          <DataRow label="Crit DMG" value="180.0%" barPct={90} color="magenta" />
+          {contributionsList.length === 0 ? (
+            <p className="emptyMessage">No modifier contributions detected</p>
+          ) : (
+            <div className="pillarGraphContainer">
+              {contributionsList.map((contrib, index) => {
+                const damageValue = mode === 'average' ? contrib.average_damage_contributed : mode === 'normal' ? contrib.normal_damage_contributed : contrib.crit_damage_contributed
+                const percentValue = mode === 'average' ? contrib.average_percent_damage_contributed : mode === 'normal' ? contrib.normal_percent_damage_contributed : contrib.crit_percent_damage_contributed
+
+                // Scale height with a minimum of 15% for visibility
+                const rawHeightPercent = maxValue > 0 ? (damageValue / maxValue) * 100 : 0
+                const heightPercent = Math.max(15, rawHeightPercent)
+
+                return (
+                  <div key={index} className="pillarWrapper">
+                    <div className="pillarBar">
+                      <div className="pillarFill magenta" style={{ height: `${heightPercent}%` }}>
+                        <div className="pillarGlow" />
+                      </div>
+                    </div>
+                    <div className="pillarLabel">
+                      <div className="pillarSource">{contrib.source}</div>
+                      <div className="pillarValue">{damageValue.toFixed(0)}</div>
+                      <div className="pillarPercent">{percentValue.toFixed(1)}%</div>
+                    </div>
+                  </div>
+                )
+              })}
+            </div>
+          )}
         </div>
         <div className="sectionBottomAccent magenta" />
       </div>
