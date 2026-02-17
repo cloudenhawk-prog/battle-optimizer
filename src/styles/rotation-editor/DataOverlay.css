@@ -463,59 +463,6 @@
   bottom: 60px;
 }
 
-.connectorLine {
-  position: absolute;
-  background: currentColor;
-  box-shadow: 0 0 8px currentColor;
-}
-
-@keyframes pulseGlow {
-  0%,
-  100% {
-    opacity: 0.5;
-    box-shadow: 0 0 6px currentColor;
-  }
-  50% {
-    opacity: 0.8;
-    box-shadow:
-      0 0 12px currentColor,
-      0 0 20px currentColor;
-  }
-}
-
-.radialSection.mainAction .connectorLine {
-  right: -260px;
-  top: 50%;
-  width: 260px;
-  height: 2px;
-  transform: translateY(-50%);
-  color: rgba(100, 150, 255, 0.6);
-}
-.radialSection.combatOverview .connectorLine {
-  left: 50%;
-  bottom: -100px;
-  width: 2px;
-  height: 100px;
-  transform: translateX(-50%);
-  color: rgba(150, 100, 255, 0.6);
-}
-.radialSection.sideEffects .connectorLine {
-  left: -260px;
-  top: 50%;
-  width: 260px;
-  height: 2px;
-  transform: translateY(-50%);
-  color: rgba(255, 150, 100, 0.6);
-}
-.radialSection.contributions .connectorLine {
-  left: 50%;
-  top: -100px;
-  width: 2px;
-  height: 100px;
-  transform: translateX(-50%);
-  color: rgba(200, 150, 255, 0.6);
-}
-
 .sectionCard {
   border-radius: 6px;
   background: var(--table-bg);
