@@ -39,6 +39,7 @@ type CalculateDamageParams = {
   enemy: Enemy
   snapshotId: number
   timeStamp: number
+  skipContributions?: boolean
 }
 
 type CalculateDamageResult = {
@@ -46,7 +47,7 @@ type CalculateDamageResult = {
   damageEvent: DamageEvent
 }
 
-export function calculateDamage({ action, name, stats, damageModifiers, modifierCharacterStats, modifierEnemyStats, enemy, snapshotId, timeStamp }: CalculateDamageParams): CalculateDamageResult {
+export function calculateDamage({ action, name, stats, damageModifiers, modifierCharacterStats, modifierEnemyStats, enemy, snapshotId, timeStamp, skipContributions = false }: CalculateDamageParams): CalculateDamageResult {
   // Step 1: Extract action properties
   const { scaling, dmgTypes, elements, multiplier: actionMultiplier } = action
 
@@ -79,10 +80,13 @@ export function calculateDamage({ action, name, stats, damageModifiers, modifier
   const criticalStrike = normalStrike * finalStats.critDamage
   const average = normalStrike * critMultiplier
 
-  // TODO - use damageModifiers to determine how much each source contributed to the final damage
-  // TODO - update DamageEvent to be able to include multiple elements and damage types
+  const contributions = skipContributions ? {} : calculateAllContrubutions(action, name, stats, damageModifiers, enemy, snapshotId, timeStamp, normalStrike, criticalStrike, average)
 
-  const contributions = calculateAllContrubutions(damageModifiers, modifierCharacterStats, modifierEnemyStats, stats, enemy, scaling, elements, dmgTypes, actionMultiplier, normalStrike, criticalStrike, average)
+  if (!skipContributions) {
+    console.log('Calculating damage for action:', action.name)
+    console.log('Modifiers: ', damageModifiers)
+    console.log('Contributions: ', contributions)
+  }
 
   const damageEvent: DamageEvent = {
     snapshotId,
@@ -383,75 +387,60 @@ function convertLevelToDefense(level: number): number {
   return 8 * level + 792
 }
 
-export function calculateAllContrubutions(damageModifiers: DamageModifier[], modifierCharacterStats: Partial<CharacterStats>, modifierEnemyStats: Partial<EnemyStats>, stats: CharacterStats, enemy: Enemy, scaling: ScalingType, elements: ElementType[], dmgTypes: DamageType[], actionMultiplier: number, normalStrike: number, criticalStrike: number, average: number): Record<string, Contribution> {
+export function calculateAllContrubutions(action: Action, name: string, stats: CharacterStats, damageModifiers: DamageModifier[], enemy: Enemy, snapshotId: number, timeStamp: number, normalStrike: number, criticalStrike: number, average: number): Record<string, Contribution> {
   const results: Record<string, Contribution> = {}
 
-  function clonePartial<T extends object>(obj: Partial<T> | undefined): Partial<T> {
-    return obj ? ({ ...obj } as Partial<T>) : ({} as Partial<T>)
-  }
-
-  function removeModifierFromAggregated<T extends object>(aggregated: Partial<T> | undefined, toRemove: Partial<T> | undefined): Partial<T> {
-    const out: Partial<T> = clonePartial<T>(aggregated)
-    if (!toRemove) return out
-
-    for (const [key, rawVal] of Object.entries(toRemove)) {
-      const statKey = key as string
-      const lower = statKey.toLowerCase()
-      const isMultiplier = lower.includes('totalmultiplier')
-      const isDamageReduction = lower === 'damagereduction'
-
-      const incoming = rawVal as number
-      const current = (out as any)[statKey]
-
-      if (current === undefined) {
-        continue
-      }
-
-      if (isDamageReduction) {
-        const aggregatedVal = current as number
-        const denom = 1 - incoming
-        if (denom === 0) {
-          ;(out as any)[statKey] = 0
-        } else {
-          ;(out as any)[statKey] = 1 - (1 - aggregatedVal) / denom
-        }
-      } else if (isMultiplier) {
-        if ((incoming as number) === 0) continue
-        ;(out as any)[statKey] = (current as number) / (incoming as number)
-      } else {
-        ;(out as any)[statKey] = (current as number) - (incoming as number)
-      }
-    }
-
-    return out
-  }
-
+  // For each modifier, recalculate damage without it
   for (let i = 0; i < damageModifiers.length; i++) {
     const mod = damageModifiers[i]
     const keyBase = mod.source || `modifier_${i}`
     const uniqueKey = keyBase in results ? `${keyBase}_${i}` : keyBase
 
-    const charModsWithout = removeModifierFromAggregated<CharacterStats>(modifierCharacterStats, mod.characterStats)
-    const enemyModsWithout = removeModifierFromAggregated<EnemyStats>(modifierEnemyStats, mod.enemyStats)
+    // Rebuild modifiers without this one
+    let charModsWithout: Partial<CharacterStats> = {}
+    let enemyModsWithout: Partial<EnemyStats> = {}
 
-    const statsWithout = mergeStats(stats, charModsWithout)
-    const enemyStatsWithout = mergeEnemyStats(enemy.stats, enemyModsWithout)
+    for (let j = 0; j < damageModifiers.length; j++) {
+      if (i === j) continue // Skip current modifier
 
-    const baseStatWithout = calculateScalingStat(statsWithout, scaling)
-    const bonusMultiplierWithout = calculateBonusMultiplier(statsWithout, elements, dmgTypes)
-    const amplifyMultiplierWithout = calculateAmplifyMultiplier(statsWithout, elements, dmgTypes)
-    const totalDamageMultiplierWithout = calculateTotalMultiplier(statsWithout, elements, dmgTypes)
-    const resistanceMultiplierWithout = calculateResistanceMultiplier(statsWithout, enemyStatsWithout, elements)
+      const otherMod = damageModifiers[j]
+      if (otherMod.characterStats) {
+        for (const [key, value] of Object.entries(otherMod.characterStats)) {
+          const statKey = key as keyof CharacterStats
+          const currentVal = charModsWithout[statKey] as number | undefined
+          charModsWithout[statKey] = aggregateStat(currentVal, value as number, key) as any
+        }
+      }
+      if (otherMod.enemyStats) {
+        for (const [key, value] of Object.entries(otherMod.enemyStats)) {
+          const statKey = key as keyof EnemyStats
+          const currentVal = enemyModsWithout[statKey] as number | undefined
+          enemyModsWithout[statKey] = aggregateStat(currentVal, value as number, key) as any
+        }
+      }
+    }
 
-    const damageMultiplierWithout = bonusMultiplierWithout * amplifyMultiplierWithout * totalDamageMultiplierWithout * resistanceMultiplierWithout
+    // Calculate damage without this modifier
+    const resultWithout = calculateDamage({
+      action,
+      name,
+      stats,
+      damageModifiers: [],
+      modifierCharacterStats: charModsWithout,
+      modifierEnemyStats: enemyModsWithout,
+      enemy,
+      snapshotId,
+      timeStamp,
+      skipContributions: true,
+    })
 
-    const normalWithout = actionMultiplier * baseStatWithout * damageMultiplierWithout
-    const criticalWithout = normalWithout * statsWithout.critDamage
-    const critMulWithout = 1 + statsWithout.critRate * (statsWithout.critDamage - 1)
-    const averageWithout = normalWithout * critMulWithout
+    const normalWithout = resultWithout.damageEvent.normalStrike
+    const critWithout = resultWithout.damageEvent.criticalStrike
+    const averageWithout = resultWithout.damageEvent.average
 
+    // Calculate contributions
     const normal_contrib = normalStrike - normalWithout
-    const crit_contrib = criticalStrike - criticalWithout
+    const crit_contrib = criticalStrike - critWithout
     const average_contrib = average - averageWithout
 
     const safePercent = (withVal: number, withoutVal: number) => {
@@ -460,7 +449,7 @@ export function calculateAllContrubutions(damageModifiers: DamageModifier[], mod
     }
 
     const normal_pct = safePercent(normalStrike, normalWithout)
-    const crit_pct = safePercent(criticalStrike, criticalWithout)
+    const crit_pct = safePercent(criticalStrike, critWithout)
     const average_pct = safePercent(average, averageWithout)
 
     results[uniqueKey] = {
