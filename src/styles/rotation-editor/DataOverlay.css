@@ -1,0 +1,272 @@
+.dataOverlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.4);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 60;
+}
+
+.dataOverlayContent {
+  background: #fff;
+  padding: 24px;
+  border-radius: 8px;
+  width: 95%;
+  max-width: 1400px;
+  height: 90vh;
+  max-height: 90vh;
+  overflow: hidden;
+  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.2);
+  display: flex;
+  flex-direction: column;
+  user-select: none;
+  cursor: default;
+}
+
+.dataOverlayHeader {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 24px;
+  padding-bottom: 12px;
+  border-bottom: 2px solid #e0e0e0;
+}
+
+.overlayTitle {
+  margin: 0;
+  font-size: 24px;
+  font-weight: 600;
+  color: #333;
+}
+
+.overlayCloseButton {
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  font-size: 24px;
+  font-weight: 600;
+  color: #666;
+  padding: 4px 8px;
+  transition: color 0.2s;
+}
+
+.overlayCloseButton:hover {
+  color: #000;
+}
+
+.dataOverlayBody {
+  position: relative;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  grid-template-rows: 1fr 1fr;
+  gap: 40px 340px;
+  padding: 20px 20px;
+  flex: 1;
+  overflow: hidden;
+}
+
+/* Section Styling */
+.overlaySection {
+  background: #f8f9fa;
+  padding: 16px;
+  border-radius: 6px;
+  border: 1px solid #e0e0e0;
+}
+
+/* Position sections in quadrants */
+.topLeft {
+  grid-column: 1;
+  grid-row: 1;
+}
+
+.topRight {
+  grid-column: 2;
+  grid-row: 1;
+}
+
+.bottomFull {
+  grid-column: 1 / -1;
+  grid-row: 2;
+}
+
+/* Pie Chart Capsule - Centered and floating */
+.pieChartCapsule {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  background: rgba(255, 255, 255, 0.98);
+  padding: 24px;
+  border-radius: 16px;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.15);
+  border: 2px solid #e0e0e0;
+  z-index: 10;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 16px;
+  max-width: 420px;
+}
+
+.sectionTitle {
+  margin: 0 0 16px 0;
+  font-size: 18px;
+  font-weight: 600;
+  color: #444;
+  border-bottom: 2px solid #ddd;
+  padding-bottom: 8px;
+}
+
+/* Detail Rows */
+.mainActionDetails,
+.otherDamageItem {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.detailRow {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 6px 8px;
+  background: #fff;
+  border-radius: 4px;
+}
+
+.detailLabel {
+  font-weight: 600;
+  color: #555;
+  font-size: 14px;
+}
+
+.detailValue {
+  color: #222;
+  font-size: 14px;
+}
+
+/* Lists */
+.otherDamageList {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.otherDamageItem {
+  background: #fff;
+  padding: 12px;
+  border-radius: 4px;
+  border: 1px solid #ddd;
+}
+
+/* Pie Chart */
+.pieChartContainer {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 16px;
+  width: 100%;
+  max-width: 500px;
+}
+
+.pieChartSvg {
+  width: 240px;
+  height: 240px;
+}
+
+.pieChartLegend {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  width: 100%;
+}
+
+.legendItem {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 6px 8px;
+  background: #fff;
+  border-radius: 4px;
+}
+
+.legendColor {
+  width: 16px;
+  height: 16px;
+  border-radius: 2px;
+  flex-shrink: 0;
+}
+
+.legendLabel {
+  font-size: 14px;
+  color: #333;
+}
+
+.totalDamage {
+  font-size: 18px;
+  padding: 12px 16px;
+  background: #f0f9ff;
+  border-radius: 8px;
+  border: 2px solid #4caf50;
+  color: #333;
+  width: 100%;
+  text-align: center;
+}
+
+/* Messages */
+.emptyMessage {
+  color: #888;
+  font-style: italic;
+  margin: 0;
+  padding: 12px;
+  text-align: center;
+  background: #fff;
+  border-radius: 4px;
+}
+
+.placeholderMessage {
+  color: #666;
+  font-style: italic;
+  margin: 0;
+  padding: 12px;
+  background: #fff;
+  border-radius: 4px;
+  text-align: center;
+}
+
+/* Responsive */
+@media (max-width: 900px) {
+  .dataOverlayBody {
+    grid-template-columns: 1fr;
+    grid-template-rows: auto auto auto auto;
+    padding: 40px 20px;
+  }
+
+  .topLeft {
+    grid-column: 1;
+    grid-row: 1;
+  }
+
+  .topRight {
+    grid-column: 1;
+    grid-row: 2;
+  }
+
+  .bottomLeft {
+    grid-column: 1;
+    grid-row: 3;
+  }
+
+  .bottomRight {
+    grid-column: 1;
+    grid-row: 4;
+  }
+
+  .pieChartCapsule {
+    position: static;
+    transform: none;
+    margin: 20px auto;
+    max-width: 100%;
+  }
+}

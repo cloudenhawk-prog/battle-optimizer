@@ -16,9 +16,10 @@ type RotationTableProps = {
   onSelectAction: (snapshotId: number, actionName: string) => void
   columnVisibility: ColumnVisibility
   setColumnVisibility: React.Dispatch<React.SetStateAction<ColumnVisibility>>
+  onRowClick?: (snapshot: Snapshot) => void
 }
 
-export function RotationTable({ snapshots, charactersInBattle, tableConfig, onSelectCharacter, onSelectAction, columnVisibility, setColumnVisibility }: RotationTableProps) {
+export function RotationTable({ snapshots, charactersInBattle, tableConfig, onSelectCharacter, onSelectAction, columnVisibility, setColumnVisibility, onRowClick }: RotationTableProps) {
   const [highlightIds, setHighlightIds] = useState<Set<number>>(new Set())
   const lastMaxId = useRef(0)
 
@@ -42,7 +43,7 @@ export function RotationTable({ snapshots, charactersInBattle, tableConfig, onSe
         <HeaderRow tableConfig={tableConfig} columnVisibility={columnVisibility} setColumnVisibility={setColumnVisibility} />
         <tbody>
           {snapshots.map((snapshot, idx) => (
-            <BodyRow key={Number(snapshot.id)} snapshot={snapshot} charactersInBattle={charactersInBattle} tableConfig={tableConfig} onSelectCharacter={onSelectCharacter} onSelectAction={onSelectAction} isLastRow={idx === snapshots.length - 1} isNewRow={highlightIds.has(Number(snapshot.id))} columnVisibility={columnVisibility} />
+            <BodyRow key={Number(snapshot.id)} snapshot={snapshot} charactersInBattle={charactersInBattle} tableConfig={tableConfig} onSelectCharacter={onSelectCharacter} onSelectAction={onSelectAction} onRowClick={onRowClick} isLastRow={idx === snapshots.length - 1} isNewRow={highlightIds.has(Number(snapshot.id))} columnVisibility={columnVisibility} />
           ))}
         </tbody>
       </table>
