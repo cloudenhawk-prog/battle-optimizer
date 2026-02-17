@@ -297,10 +297,7 @@ function SideEffectsSection({ otherDamage, totalDamage }: { otherDamage: DamageE
 }
 
 function ContributionsSection({ contributions, mode }: { contributions: Record<string, Contribution>; mode: 'average' | 'normal' | 'crit' }) {
-  const contributionsList = Object.entries(contributions).map(([_key, contrib]) => contrib)
-
-  console.log('Contributions from props:', contributions)
-  console.log('Contributions list:', contributionsList)
+  const contributionsList = Object.values(contributions)
 
   // Sort by contribution amount (descending) based on current mode
   contributionsList.sort((a, b) => {
