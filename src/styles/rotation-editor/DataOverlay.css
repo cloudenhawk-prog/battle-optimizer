@@ -463,49 +463,57 @@
   bottom: 60px;
 }
 
-.connectorDot {
+.connectorLine {
   position: absolute;
-  width: 6px;
-  height: 6px;
-  border-radius: 50%;
-  top: 50%;
-  margin-top: -3px;
-  animation: pulseGlow 2s ease-in-out infinite;
+  background: currentColor;
+  box-shadow: 0 0 8px currentColor;
 }
 
 @keyframes pulseGlow {
   0%,
   100% {
-    opacity: 0.4;
-    box-shadow: 0 0 4px currentColor;
+    opacity: 0.5;
+    box-shadow: 0 0 6px currentColor;
   }
   50% {
-    opacity: 0.9;
+    opacity: 0.8;
     box-shadow:
       0 0 12px currentColor,
       0 0 20px currentColor;
   }
 }
 
-.radialSection.mainAction .connectorDot {
-  right: -12px;
-  background: rgba(100, 150, 255, 0.6);
+.radialSection.mainAction .connectorLine {
+  right: -260px;
+  top: 50%;
+  width: 260px;
+  height: 2px;
+  transform: translateY(-50%);
+  color: rgba(100, 150, 255, 0.6);
 }
-.radialSection.combatOverview .connectorDot {
+.radialSection.combatOverview .connectorLine {
   left: 50%;
-  margin-left: -3px;
-  bottom: -12px;
-  background: rgba(150, 100, 255, 0.6);
+  bottom: -100px;
+  width: 2px;
+  height: 100px;
+  transform: translateX(-50%);
+  color: rgba(150, 100, 255, 0.6);
 }
-.radialSection.sideEffects .connectorDot {
-  left: -12px;
-  background: rgba(255, 150, 100, 0.6);
+.radialSection.sideEffects .connectorLine {
+  left: -260px;
+  top: 50%;
+  width: 260px;
+  height: 2px;
+  transform: translateY(-50%);
+  color: rgba(255, 150, 100, 0.6);
 }
-.radialSection.contributions .connectorDot {
+.radialSection.contributions .connectorLine {
   left: 50%;
-  margin-left: -3px;
-  top: -12px;
-  background: rgba(200, 150, 255, 0.6);
+  top: -100px;
+  width: 2px;
+  height: 100px;
+  transform: translateX(-50%);
+  color: rgba(200, 150, 255, 0.6);
 }
 
 .sectionCard {

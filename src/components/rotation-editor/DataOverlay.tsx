@@ -14,6 +14,8 @@ type DataOverlayProps = {
 export default function DataOverlay({ snapshot, damageEvents = [], open, onClose }: DataOverlayProps) {
   if (!open || !snapshot) return null
 
+  console.log('Damage Events: ', damageEvents)
+
   const { mainAction, otherDamage } = categorizeDamageEvents(damageEvents)
   const totalDamage = calculateTotalDamage(damageEvents)
   const duration = calculateDuration(snapshot)
@@ -171,7 +173,7 @@ function CombatOverviewSection({ totalDamage, duration, snapshot }: { totalDamag
 
   return (
     <div className="radialSection combatOverview">
-      <div className="connectorDot" />
+      <div className="connectorLine" />
       <div className="sectionCard purple">
         <div className="sectionTopAccent purple" />
         <div className="sectionTitle purple">
@@ -194,7 +196,7 @@ function MainActionSection({ mainAction, totalDamage }: { mainAction: DamageEven
   if (!mainAction) {
     return (
       <div className="radialSection mainAction">
-        <div className="connectorDot" />
+        <div className="connectorLine" />
         <div className="sectionCard cyan">
           <div className="sectionTopAccent cyan" />
           <div className="sectionTitle cyan">
@@ -218,7 +220,7 @@ function MainActionSection({ mainAction, totalDamage }: { mainAction: DamageEven
 
   return (
     <div className="radialSection mainAction">
-      <div className="connectorDot" />
+      <div className="connectorLine" />
       <div className="sectionCard cyan">
         <div className="sectionTopAccent cyan" />
         <div className="sectionTitle cyan">
@@ -244,7 +246,7 @@ function SideEffectsSection({ otherDamage, totalDamage }: { otherDamage: DamageE
   if (otherDamage.length === 0) {
     return (
       <div className="radialSection sideEffects">
-        <div className="connectorDot" />
+        <div className="connectorLine" />
         <div className="sectionCard amber">
           <div className="sectionTopAccent amber" />
           <div className="sectionTitle amber">
@@ -262,7 +264,7 @@ function SideEffectsSection({ otherDamage, totalDamage }: { otherDamage: DamageE
 
   return (
     <div className="radialSection sideEffects">
-      <div className="connectorDot" />
+      <div className="connectorLine" />
       <div className="sectionCard amber">
         <div className="sectionTopAccent amber" />
         <div className="sectionTitle amber">
@@ -284,7 +286,7 @@ function SideEffectsSection({ otherDamage, totalDamage }: { otherDamage: DamageE
 function ContributionsSection() {
   return (
     <div className="radialSection contributions">
-      <div className="connectorDot" />
+      <div className="connectorLine" />
       <div className="sectionCard magenta">
         <div className="sectionTopAccent magenta" />
         <div className="sectionTitle magenta">
