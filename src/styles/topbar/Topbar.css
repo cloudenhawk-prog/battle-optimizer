@@ -11,52 +11,45 @@
 
 .topbarWrapper {
   position: relative;
-  border-radius: 0 0 var(--table-overall-corner-radius) var(--table-overall-corner-radius);
-  
-  background: rgba(var(--table-overall-bg-color), var(--table-overall-bg-transparency));
-  backdrop-filter: var(--table-overall-blur);
+  border-radius: 0 0 var(--table-corner-radius) var(--table-corner-radius);
 
-  box-shadow:
-    inset 0 1px 1px rgba(var(--table-overall-lines-color), var(--table-overall-lines-transparency)),
-    0 30px 60px rgba(0,0,0,0.6),
-    0 0 40px rgba(255,150,150,var(--table-overall-lines-transparency));
+  background: var(--table-bg);
+  backdrop-filter: var(--table-blur);
 
-  border-left: 1px solid rgba(var(--table-overall-lines-color), var(--table-overall-lines-transparency));
-  border-right: 1px solid rgba(var(--table-overall-lines-color), var(--table-overall-lines-transparency));
-  border-bottom: 1px solid rgba(var(--table-overall-lines-color), var(--table-overall-lines-transparency));
+  box-shadow: var(--table-shadow-inner), var(--table-shadow-main), var(--table-shadow-glow);
+
+  border-left: 1px solid var(--table-border);
+  border-right: 1px solid var(--table-border);
+  border-bottom: 1px solid var(--table-border);
 }
 
 .topbarBase {
   height: var(--topbar-height);
-  background: linear-gradient(
-    to bottom,
-    rgba(var(--table-headers-color), var(--table-headers-transparency)),
-    rgba(var(--table-headers-color), 0)
-  );
-  border-left: 1px solid rgba(var(--table-overall-lines-color), var(--table-overall-lines-transparency));
-  border-right: 1px solid rgba(var(--table-overall-lines-color), var(--table-overall-lines-transparency));
-  border-bottom: 1px solid rgba(var(--table-overall-lines-color), var(--table-overall-lines-transparency));
+  background: linear-gradient(to bottom, var(--table-border), transparent);
+  border-left: 1px solid var(--table-border);
+  border-right: 1px solid var(--table-border);
+  border-bottom: 1px solid var(--table-border);
 
-  border-radius: 0 0 var(--table-overall-corner-radius) var(--table-overall-corner-radius);
+  border-radius: 0 0 var(--table-corner-radius) var(--table-corner-radius);
 }
 
 .topbarColoring {
   width: 100%;
   height: 100%;
-  background: rgba(var(--table-headers-color), var(--table-headers-transparency));
+  background: var(--table-header-bg);
   gap: var(--topbar-gap);
   display: flex;
-  border-left: 1px solid rgba(var(--table-overall-lines-color), var(--table-overall-lines-transparency));
-  border-right: 1px solid rgba(var(--table-overall-lines-color), var(--table-overall-lines-transparency));
-  border-bottom: 1px solid rgba(var(--table-overall-lines-color), var(--table-overall-lines-transparency));
+  border-left: 1px solid var(--table-border);
+  border-right: 1px solid var(--table-border);
+  border-bottom: 1px solid var(--table-border);
 
-  border-radius: 0 0 var(--table-overall-corner-radius) var(--table-overall-corner-radius);
+  border-radius: 0 0 var(--table-corner-radius) var(--table-corner-radius);
 }
 
 .topbarColumnButton {
   width: calc(var(--table-icon-size) + 22px);
   height: calc(var(--table-icon-size) + 22px);
-  
+
   position: relative;
   top: var(--topbar-circle-top-space);
   left: var(--topbar-left-margin);
@@ -68,15 +61,12 @@
 
   overflow: hidden;
 
-  background: rgba(var(--table-overall-bg-color), var(--table-overall-bg-transparency));
-  backdrop-filter: var(--table-overall-blur);
+  background: var(--table-bg);
+  backdrop-filter: var(--table-blur);
 
-  box-shadow:
-    inset 0 1px 1px rgba(var(--table-overall-lines-color), var(--table-overall-lines-transparency)),
-    0 30px 60px rgba(0,0,0,0.6),
-    0 0 40px rgba(255,150,150,var(--table-overall-lines-transparency));
+  box-shadow: var(--table-shadow-inner), var(--table-shadow-main), var(--table-shadow-glow);
 
-  border: 1px solid rgba(var(--table-overall-lines-color), var(--table-overall-lines-transparency));
+  border: 1px solid var(--table-border);
 }
 
 .topbarColumnButton.is-hidden {
@@ -96,21 +86,27 @@
   padding: var(--table-icon-padding);
   border-radius: var(--table-icon-shape);
 
-  background: rgba(var(--table-headers-color), var(--table-icon-highlight));
-  border: 1px solid rgba(var(--table-overall-lines-color), var(--table-overall-lines-transparency));
+  background: var(--table-icon-bg);
+  border: 1px solid var(--table-border);
 
   box-shadow:
-    0 4px 10px rgba(0,0,0,0.25),
-    inset 0 1px 0 rgba(255,255,255, var(--table-icon-box-strength));
+    0 4px 10px rgba(0, 0, 0, 0.25),
+    inset 0 1px 0 rgba(255, 255, 255, var(--table-icon-box-strength));
 
   cursor: pointer;
-  transition: transform var(--table-icon-animation-speed) ease, box-shadow var(--table-icon-animation-speed) ease, opacity calc(2 * var(--table-icon-animation-speed)) ease;
+  transition:
+    transform var(--table-icon-animation-speed) ease,
+    box-shadow var(--table-icon-animation-speed) ease,
+    opacity calc(2 * var(--table-icon-animation-speed)) ease;
 }
 
-.table-icon:hover, .header-icon:focus {
+.table-icon:hover,
+.header-icon:focus {
   transform: translateY(var(--table-icon-hover-y-jump)) scale(var(--table-icon-hover-size));
-  box-shadow: 0 8px 18px rgba(0,0,0,0.32), inset 0 1px 0 rgba(255,255,255, var(--table-icon-hover-box-strength));
-  opacity: var(--table-icon-hover-fade-out);
+  box-shadow:
+    0 8px 18px rgba(0, 0, 0, 0.32),
+    inset 0 1px 0 rgba(255, 255, 255, var(--table-icon-hover-box-strength));
+  opacity: var(--table-icon-hover-opacity);
 }
 
 .table-icon:active {

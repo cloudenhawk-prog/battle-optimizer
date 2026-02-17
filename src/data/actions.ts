@@ -197,7 +197,8 @@ export const fleurdelysStrike: Action = {
   statusModifications: [{ type: 'negativeStatus', targetName: 'Aero Erosion', stackChange: 1 }],
   damageModifiers: [
     {
-      source: 'Fleurdelys Strike – Aero Erosion scaling',
+      source: 'Fleurdelys Strike - Aero Erosion scaling',
+      displayName: 'Stack Mod',
       condition: stacksOf('Aero Erosion'),
       characterStats: {
         amplifyDMG: 0.1,
