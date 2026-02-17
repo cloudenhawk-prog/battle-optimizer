@@ -397,8 +397,8 @@ export function calculateAllContrubutions(action: Action, name: string, stats: C
     const uniqueKey = keyBase in results ? `${keyBase}_${i}` : keyBase
 
     // Rebuild modifiers without this one
-    let charModsWithout: Partial<CharacterStats> = {}
-    let enemyModsWithout: Partial<EnemyStats> = {}
+    const charModsWithout: Partial<CharacterStats> = {}
+    const enemyModsWithout: Partial<EnemyStats> = {}
 
     for (let j = 0; j < damageModifiers.length; j++) {
       if (i === j) continue // Skip current modifier
