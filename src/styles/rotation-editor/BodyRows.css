@@ -3,7 +3,7 @@
 .tableCellBody {
   padding: var(--rows-space-between);
   font-size: var(--rows-text-size);
-  color: rgba(var(--table-overall-text-color), var(--rows-text-transparency));
+  color: var(--table-text);
 
   text-align: center;
   overflow: hidden;
@@ -14,8 +14,8 @@
 /* -------------- Effects ------------------- */
 
 tr.tableBody:hover {
-  background: rgba(var(--rows-hover-color),var(--rows-hover-transparency));
-  box-shadow: inset 0 0 0 1px rgba(255,180,180,var(--table-overall-lines-transparency));
+  background: var(--table-hover-bg);
+  box-shadow: inset 0 0 0 1px var(--table-hover-border);
   cursor: pointer;
 }
 
@@ -25,10 +25,10 @@ tr.tableBody:hover {
 
 @keyframes highlightRow {
   0% {
-    background-color: rgba(180, 255, 200, var(--rows-hover-transparency));
+    background-color: rgba(180, 255, 200, 0.12);
   }
   60% {
-    background-color: rgba(200, 255, 215, var(--rows-hover-transparency));
+    background-color: rgba(200, 255, 215, 0.12);
   }
   100% {
     background-color: transparent;
@@ -38,18 +38,18 @@ tr.tableBody:hover {
 /* -------------- Selectors ----------------- */
 
 .selectInput {
-  background: rgba(var(--rows-selectors-color), var(--rows-selectors-transparency));
-  border: 1px solid rgba(var(--table-overall-lines-color), var(--table-overall-lines-transparency));
+  background: var(--table-select-bg);
+  border: 1px solid var(--table-border);
   border-radius: var(--rows-selectors-corner-radius);
   padding: var(--rows-selectors-height) var(--rows-selectors-text-left-space);
 
   font-size: var(--rows-selectors-text-size);
-  color: rgba(var(--table-overall-text-color), var(--rows-selectors-text-transparency));
+  color: var(--table-text);
 
-  box-shadow: inset 0 2px 2px rgba(var(--table-overall-lines-color), var(--table-overall-lines-transparency));
+  box-shadow: var(--table-shadow-select);
 }
 
 .selectInput option {
-  color: rgba(var(--table-overall-text-color), 1);
-  background-color: rgba(var(--table-overall-bg-color), var(--table-overall-bg-transparency));
+  color: var(--table-text);
+  background-color: var(--table-bg);
 }

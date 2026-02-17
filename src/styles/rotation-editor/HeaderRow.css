@@ -3,8 +3,8 @@
 .tableHeader {
   background: linear-gradient(
     to bottom,
-    rgba(var(--table-headers-color), var(--table-headers-transparency)),
-    rgba(var(--table-headers-color), 0)
+    var(--table-border),
+    transparent
   );
 }
 
@@ -14,8 +14,8 @@
   padding-top: var(--group-padding-top);
   padding-bottom: var(--group-padding-bottom);
   font-weight: var(--group-text-weight);
-  color: rgba(var(--table-headers-color), var(--group-text-transparency));
-  background: rgba(var(--table-headers-color), var(--table-headers-transparency));
+  color: var(--table-text-dim);
+  background: var(--table-header-bg);
 }
 
 .groupHeader::after {
@@ -25,7 +25,7 @@
   left: calc(var(--group-bottom-line-middle-gap) / 2);
   right: calc(var(--group-bottom-line-middle-gap) / 2);
   height: var(--group-bottom-line-height);
-  background-color: rgba(var(--table-overall-lines-color), var(--table-overall-lines-transparency));
+  background-color: var(--table-border);
 }
 
 /* -------------- Column Header ------------- */
@@ -37,7 +37,7 @@
   text-transform: uppercase;
   letter-spacing: var(--column-headers-text-spacing);
   font-weight: var(--column-headers-text-weight);
-  color: rgba(var(--table-headers-color), var(--column-headers-text-transparency));
+  color: var(--table-text-dim);
 
   overflow: hidden;
   text-overflow: ellipsis;
@@ -53,26 +53,26 @@
   object-fit: contain;
 
   margin: var(--table-icon-top) auto var(--table-icon-bottom);
-  opacity: var(--table-icon-transparency);
+  opacity: var(--table-icon-opacity);
   cursor: pointer;
 
   padding: var(--table-icon-padding);
 
   border-radius: var(--table-icon-shape);
-  background: rgba(var(--table-headers-color), var(--table-icon-highlight));
-  border: 1px solid rgba(var(--table-overall-lines-color), var(--table-overall-lines-transparency));
+  background: var(--table-icon-bg);
+  border: 1px solid var(--table-border);
 
   box-shadow:
-    0 4px 10px rgba(0,0,0,0.25),
-    inset 0 1px 0 rgba(255,255,255, var(--table-icon-box-strength));
+    0 4px 10px rgba(0, 0, 0, 0.25),
+    inset 0 1px 0 rgba(255, 255, 255, var(--table-icon-box-strength));
 
   transition: transform var(--table-icon-animation-speed) ease, box-shadow var(--table-icon-animation-speed) ease, opacity var(--table-icon-animation-speed) ease;
 }
 
 .header-icon:hover, .header-icon:focus {
   transform: translateY(var(--table-icon-hover-y-jump)) scale(var(--table-icon-hover-size));
-  box-shadow: 0 8px 18px rgba(0,0,0,0.32), inset 0 1px 0 rgba(255,255,255, var(--table-icon-hover-box-strength));
-  opacity: var(--table-icon-hover-fade-out);
+  box-shadow: 0 8px 18px rgba(0, 0, 0, 0.32), inset 0 1px 0 rgba(255, 255, 255, var(--table-icon-hover-box-strength));
+  opacity: var(--table-icon-hover-opacity);
 }
 
 .header-icon:active {
