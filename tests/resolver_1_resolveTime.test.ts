@@ -60,6 +60,7 @@ describe('resolveTime', () => {
         buffs: { buff1: 5 },
         debuffs: { debuff1: 3 },
         negativeStatuses: { burn: 2 },
+        negativeStatusesTimeLeft: { burn: 10 },
       })
       const character = createMockCharacter('Char')
       const action = createMockAction('Action', { castTime: 2.5 })

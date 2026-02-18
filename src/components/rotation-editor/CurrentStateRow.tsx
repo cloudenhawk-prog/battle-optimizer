@@ -55,14 +55,10 @@ export function CurrentStateRow({ snapshot, charactersInBattle, tableConfig, col
     <tbody className="currentStateBody">
       <tr className="currentStateRow">
         {/* Character */}
-        <td className="currentStateCell">
-          <div className="currentStateValue">{hasCharacter ? displaySnapshot.character : '-'}</div>
-        </td>
+        <td className="currentStateCell"></td>
 
         {/* Action */}
-        <td className="currentStateCell">
-          <div className="currentStateValue">{hasCharacter ? displaySnapshot.action || '-' : '-'}</div>
-        </td>
+        <td className="currentStateCell"></td>
 
         {/* Basic columns */}
         {tableConfig.basic.columns.map(col => {
@@ -103,7 +99,7 @@ export function CurrentStateRow({ snapshot, charactersInBattle, tableConfig, col
         {tableConfig.characters.flatMap(group => renderStateColumns(group, columnVisibility, displaySnapshot, charactersInBattle))}
 
         {/* Negative status columns */}
-        {tableConfig.negativeStatuses && renderNegativeStatusColumns(tableConfig.negativeStatuses.columns, columnVisibility, displaySnapshot.negativeStatuses)}
+        {tableConfig.negativeStatuses && renderNegativeStatusColumns(tableConfig.negativeStatuses.columns, columnVisibility, displaySnapshot.negativeStatuses, displaySnapshot.negativeStatusesTimeLeft)}
 
         {/* Buff columns - empty for now */}
         {tableConfig.buffs &&
@@ -136,6 +132,7 @@ function createInitialSnapshot(): Snapshot {
     buffs: {},
     debuffs: {},
     negativeStatuses: {},
+    negativeStatusesTimeLeft: {},
   }
 }
 
@@ -171,7 +168,7 @@ function renderStateColumns(group: any, columnVisibility: ColumnVisibility, snap
     })
 }
 
-function renderNegativeStatusColumns(columns: any[], columnVisibility: ColumnVisibility, negativeStatusesRecord: Record<string, number>) {
+function renderNegativeStatusColumns(columns: any[], columnVisibility: ColumnVisibility, negativeStatusesRecord: Record<string, number>, negativeStatusesTimeLeft: Record<string, number>) {
   let firstVisible = true
   return columns
     .filter((col: any) => columnVisibility[col.key])
@@ -183,13 +180,17 @@ function renderNegativeStatusColumns(columns: any[], columnVisibility: ColumnVis
       // Find the negative status by matching the name property (col.key is the display name like "Aero Erosion")
       const negativeStatusData = Object.values(negativeStatuses).find(ns => ns.name === col.key)
       const maxStacks = negativeStatusData?.maxStacksDefault || 0
+      const timeLeft = negativeStatusesTimeLeft[col.key] || 0
 
       return (
         <td key={col.key} className={className}>
           <div className="statusStateDisplay">
-            <span className="statusStateTime">
-              {currentStacks}/{maxStacks}
-            </span>
+            <div className="statusStateContent">
+              <div className="statusStateStacks">
+                {currentStacks}/{maxStacks}
+              </div>
+              <div className="statusStateTime">{timeLeft.toFixed(1)}s</div>
+            </div>
           </div>
         </td>
       )

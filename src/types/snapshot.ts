@@ -14,4 +14,5 @@ export interface Snapshot {
   buffs: Record<string, number>
   debuffs: Record<string, number>
   negativeStatuses: Record<string, number>
+  negativeStatusesTimeLeft: Record<string, number>
 }

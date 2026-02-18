@@ -31,7 +31,7 @@
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
-  font-size: 12px;
+  font-size: 16px;
 }
 
 /* Energy display in cells */
@@ -93,12 +93,30 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  height: 20px;
+  min-height: 25px;
+  padding: 2px 0;
+}
+
+.statusStateContent {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 0px;
+}
+
+.statusStateStacks {
+  font-family: monospace;
+  font-size: 10px;
+  font-weight: 600;
+  color: var(--table-text);
+  line-height: 1.1;
 }
 
 .statusStateTime {
   font-family: monospace;
-  font-size: 11px;
-  font-weight: 600;
-  color: var(--table-text);
+  font-size: 9px;
+  font-weight: 500;
+  color: var(--table-text-secondary, #888);
+  line-height: 1.1;
 }

@@ -108,6 +108,7 @@ describe('buildStepContext', () => {
         buffs: { testBuff: 10 },
         debuffs: { testDebuff: 5 },
         negativeStatuses: { burn: 3 },
+        negativeStatusesTimeLeft: { burn: 15 },
       })
       const prev = createMockSnapshot({ id: '4', toTime: 10 })
       const character = createMockCharacter('TestChar')

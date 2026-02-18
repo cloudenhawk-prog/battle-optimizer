@@ -167,4 +167,11 @@ export function updateNegativeStatusStacks(
   }
 
   snapshot.negativeStatuses = { ...stacksCurr }
+
+  // Update time left for all negative statuses
+  const timeLeftCurr: Record<string, number> = {}
+  for (const nsa of negativeStatusesInAction) {
+    timeLeftCurr[nsa.negativeStatus.name] = nsa.timeLeft
+  }
+  snapshot.negativeStatusesTimeLeft = { ...timeLeftCurr }
 }

@@ -49,5 +49,6 @@ export function createSnapshot(previousSnapshot: Snapshot, charactersMap: Record
     buffs,
     debuffs,
     negativeStatuses,
+    negativeStatusesTimeLeft: Object.fromEntries(globalColumns.negativeStatuses.map(col => [col, 0])),
   }
 }
