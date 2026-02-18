@@ -1,0 +1,104 @@
+/* Current State Row - inline with table */
+.currentStateBody {
+  background: var(--table-header-bg);
+  border-top: 1px solid var(--table-border);
+  border-bottom: 2px solid var(--table-border);
+}
+
+.currentStateRow {
+  background: var(--table-header-bg);
+}
+
+.currentStateCell {
+  padding: 4px 6px !important;
+  text-align: center;
+  vertical-align: middle;
+  font-size: 11px;
+  border-left: 1px solid var(--table-border);
+}
+
+.currentStateCell:first-child {
+  border-left: none;
+}
+
+.currentStateCell.charGroupCell {
+  border-left: 2px solid var(--table-border);
+}
+
+.currentStateValue {
+  font-weight: 600;
+  color: var(--table-text);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  font-size: 12px;
+}
+
+/* Energy display in cells */
+.energyStateDisplay {
+  position: relative;
+  width: 100%;
+  height: 20px;
+  background: var(--table-bg);
+  border: 1px solid var(--table-border);
+  border-radius: 3px;
+  overflow: hidden;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.energyStateBar {
+  position: absolute;
+  left: 0;
+  top: 0;
+  height: 100%;
+  background: linear-gradient(90deg, rgba(100, 200, 255, 0.5), rgba(100, 200, 255, 0.8));
+  transition: width 0.3s ease;
+  border-radius: 2px;
+}
+
+.energyStateBar[data-energy-type='concerto'] {
+  background: linear-gradient(90deg, rgba(255, 215, 0, 0.5), rgba(255, 215, 0, 0.8));
+}
+
+.energyStateBar[data-energy-type='resonance'] {
+  background: linear-gradient(90deg, rgba(138, 43, 226, 0.5), rgba(138, 43, 226, 0.8));
+}
+
+.energyStateBar[data-energy-type='forte'] {
+  background: linear-gradient(90deg, rgba(50, 205, 50, 0.5), rgba(50, 205, 50, 0.8));
+}
+
+.energyStateBar[data-energy-type='rage'] {
+  background: linear-gradient(90deg, rgba(255, 69, 0, 0.5), rgba(255, 69, 0, 0.8));
+}
+
+.energyStateBar[data-energy-type='conviction'] {
+  background: linear-gradient(90deg, rgba(255, 165, 0, 0.5), rgba(255, 165, 0, 0.8));
+}
+
+.energyStateText {
+  position: relative;
+  z-index: 1;
+  font-family: monospace;
+  font-size: 10px;
+  color: var(--table-text);
+  font-weight: 600;
+  text-shadow: 0 0 2px rgba(0, 0, 0, 0.5);
+}
+
+/* Status display in cells */
+.statusStateDisplay {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 20px;
+}
+
+.statusStateTime {
+  font-family: monospace;
+  font-size: 11px;
+  font-weight: 600;
+  color: var(--table-text);
+}
