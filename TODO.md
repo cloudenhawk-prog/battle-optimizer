@@ -3,8 +3,6 @@ TODO:
 Task: Create data for Cartethyia's team so that we can more thoroughly "test" everything (including cooldowns - test in-game how much time is wasted on character swap, for example Cartethyia BA5 from scratch vs on swap)
 Context: Self-explanatory
 
-Task: The table should show useful 'current' information under the icons above the rows. Current active resonator, energy progress (like 70/120, and a percentage), time remaining on negative statuses and buffs/debuffs
-
 Task: Damage Events should have type -> action, action-side-effect, negative-status such that we can put them together
 Context: Right now damage events only includes events from actions. We do not want a seperate event list for every type of damage event. Sorted by ID, these can be used by rows on-click overlay
 
