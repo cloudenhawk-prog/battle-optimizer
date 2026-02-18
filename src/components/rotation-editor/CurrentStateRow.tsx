@@ -100,7 +100,7 @@ export function CurrentStateRow({ snapshot, charactersInBattle, tableConfig, col
         })}
 
         {/* Character-specific columns (energies) */}
-        {tableConfig.characters.flatMap(group => renderStateColumns(group, columnVisibility, displaySnapshot, charactersInBattle, hasCharacter))}
+        {tableConfig.characters.flatMap(group => renderStateColumns(group, columnVisibility, displaySnapshot, charactersInBattle))}
 
         {/* Negative status columns */}
         {tableConfig.negativeStatuses && renderNegativeStatusColumns(tableConfig.negativeStatuses.columns, columnVisibility, displaySnapshot.negativeStatuses)}
@@ -139,7 +139,7 @@ function createInitialSnapshot(): Snapshot {
   }
 }
 
-function renderStateColumns(group: any, columnVisibility: ColumnVisibility, snapshot: Snapshot, charactersInBattle: Character[], hasCharacter: boolean) {
+function renderStateColumns(group: any, columnVisibility: ColumnVisibility, snapshot: Snapshot, charactersInBattle: Character[]) {
   // Extract character name from the group label
   const characterName = group.label
   const character = charactersInBattle.find(c => c.name === characterName)
