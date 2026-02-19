@@ -30,6 +30,10 @@ Context: Right now the outro-intro flow is hardcoded using 100 Concerto energy. 
 Task: Implement dispatchable effects so damages and other things don't always proc at 'toTime'
 Context: Right now everything is summed up at the 'toTime' milestone. For a more detailed timeline in the future, and so that all damage is not necessarily triggered at once, it might be useful to create a queue that you can dispatch events to. The queue might be able to resolve/progress events, sorts the events at the time it happened, and more detailed create a timeline of action/effect starts, damage-procs, occurences, and event endings. This could be especially useful for outro skills, swap-cancelling, and delayed effects and damage procs. It might even automatically let us create Coordinated Attacks and alike really easily.
 
+Task: Implement custom importable combos
+Context: Characters might have certain combos they often use - like Cartethyia double Plunge pre-Fleurdelys combo. The idea would be: select a combo from some menu -> table automatically inserts all the rows
+
+
 ISSUES:
 
 The topbar layout changes every time an icon/column becomes hidden - likely reason: the icons are smaller than the empty placeholder in both directions

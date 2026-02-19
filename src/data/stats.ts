@@ -239,26 +239,26 @@ export const rogueStats: CharacterStats = {
 export const cartethyiaStats: CharacterStats = {
   level: 90,
 
-  baseATK: 774,
-  flatATK: 100,
-  bonusATK: 24,
+  baseATK: 724,
+  flatATK: 300,
+  bonusATK: 0,
   amplifyATK: 0,
   totalMultiplierATK: 1.0,
 
   baseHP: 14800,
-  flatHP: 0,
-  bonusHP: 0,
+  flatHP: 6840,
+  bonusHP: 2.096,
   amplifyHP: 0,
   totalMultiplierHP: 1.0,
 
   baseDEF: 611,
-  flatDEF: 100,
+  flatDEF: 0,
   bonusDEF: 0,
   amplifyDEF: 0,
   totalMultiplierDEF: 1.0,
 
-  critRate: 0.49,
-  critDamage: 2.3,
+  critRate: 0.87,
+  critDamage: 2.78,
 
   bonusDMG: 0,
   amplifyDMG: 0,
@@ -332,7 +332,7 @@ export const cartethyiaStats: CharacterStats = {
   fusionAmplifyDMG: 0,
   fusionTotalMultiplierDMG: 1.0,
 
-  aeroBonusDMG: 30,
+  aeroBonusDMG: 0.50,
   aeroAmplifyDMG: 0,
   aeroTotalMultiplierDMG: 1.0,
 
@@ -348,7 +348,7 @@ export const cartethyiaStats: CharacterStats = {
   havocAmplifyDMG: 0,
   havocTotalMultiplierDMG: 1.0,
 
-  energyPercent: 1.5,
+  energyPercent: 1.1,
 }
 
 // ========== Birdy Stats ======================================================================================================

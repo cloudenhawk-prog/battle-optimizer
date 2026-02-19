@@ -160,7 +160,7 @@ function renderStateColumns(group: any, columnVisibility: ColumnVisibility, snap
           <div className="energyStateDisplay">
             <div className="energyStateBar" style={{ width: `${percentage}%` }} data-energy-type={energyType.toLowerCase()} />
             <span className="energyStateText">
-              {current}/{max}
+              {Math.floor(current)}/{max}
             </span>
           </div>
         </td>
