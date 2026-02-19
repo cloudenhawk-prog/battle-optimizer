@@ -1,6 +1,14 @@
 TODO:
 
 TASK: Data Overlay Pie Chart should have a hover to see each piece. The text in the middle should be more useful than just showing the biggest contributor. Maybe add a toggle/2 buttons that let's you see damage distribution of different sources OR damage types distribution (OR EVEN dmg distribution by owner - will need to know which belong to which character, and what belongs to 'no one'). The 3 buttons in the left corner should have a title or helpful label -> we are swapping between scenarios like; too long but theoretically 'see scenario where everything crits'
+Contributions could also have hover: show more details
+Each section could have a small button in the right corner for explanations
+Make more things clickable, like secondary effects
+Merge 'Combat Metrics' and 'Primary Damage Output' - then add the dmg from primary to 'Secondary Effects' and rename it (something like damage sources)
+
+TASK: Make the sidebar icon-button spin similarly to the pie chart rings - let's see how it looks
+TASK: Turn phrolova into a see-through gif with AI? Or make the background move with some "animations"?
+TASK: When a new row is added - play an animation similarly to te light that moves through the sections in data overlay - instead of using a green color?
 
 TASK: When a new snapshot is created, it should automatically set the character in the next one to the previous one
 Context: Since you will often use multiple actions in a row, and setting it doesnt do anything problematic or unchangable
