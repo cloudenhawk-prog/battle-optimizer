@@ -1,5 +1,6 @@
 import type { Action } from '../types/action'
 import { aeroErosionExplosion } from './sideEffects'
+import { stacksOfCap } from '../utils/conditions/damageModifierConditions'
 
 // ========== Mage Actions =====================================================================================================
 
@@ -380,6 +381,7 @@ export const cartethyiaSkill: Action = {
   sideEffects: []
 }
 
+// TODO: needs to trigger Manifest and buffs buffs based on swords (or assume always true for simplicity)
 export const cartethyiaTransform: Action = {
   name: 'Flerudelys Form',
   castTime: 0.16,
@@ -429,7 +431,7 @@ export const fleurdelysBA3_5: Action = {
   energyGenerated: [
     { energyType: 'energy', amount: (3*0.45 + 0.9) + (5*0.45) + (0.4 + 1.59), share: 0.5, scalingStat: 'energyPercent' },
     { energyType: 'concerto', amount: 7, share: 0 }, // uncertain amount
-    { energyType: 'conviction', amount: 36.67, share: 0 } // needs logic (buff giving cdmg based on current conviction amount)
+    { energyType: 'conviction', amount: 40, share: 0 } // needs logic (buff giving cdmg based on current conviction amount)
   ],
   energyCost: [],
   statusModifications: [{ type: 'negativeStatus', targetName: 'Aero Erosion', stackChange: 2 }],
@@ -543,7 +545,7 @@ export const fleurdelysSkill_2: Action = {
   energyGenerated: [
     { energyType: 'energy', amount: 5, share: 0.5, scalingStat: 'energyPercent' }, // uncertain amount
     { energyType: 'concerto', amount: 10, share: 0 }, // uncertain amount
-    { energyType: 'conviction', amount: 26.67, share: 0 } // needs logic (buff giving cdmg based on current conviction amount)
+    { energyType: 'conviction', amount: 26.67, share: 0 } // TODO: needs logic (buff giving cdmg based on current conviction amount)
   ],
   energyCost: [],
   statusModifications: [{ type: 'negativeStatus', targetName: 'Aero Erosion', stackChange: 2 }],
@@ -554,20 +556,24 @@ export const fleurdelysSkill_2: Action = {
 export const fleurdelysLiberation: Action = {
   name: 'Liberation (Fleurdelys)',
   castTime: 0.03,
-  multiplier: (2*2*(7*13.12)) / 100,
+  multiplier: (2*(7*13.12)) / 100,
   scaling: 'HP',
   elements: ['AERO'],
   dmgTypes: ['LIBERATION'],
   cooldown: 25,
-  energyGenerated: [
+  energyGenerated: [  
     { energyType: 'energy', amount: 10, share: 0.5, scalingStat: 'energyPercent' },
     { energyType: 'concerto', amount: 10, share: 0 }, // uncertain amount
   ],
   energyCost: [
     { energyType: 'conviction', amount: 120 },
   ],
-  statusModifications: [],
-  damageModifiers: [],
+  statusModifications: [
+    { type: 'negativeStatus', targetName: 'Aero Erosion', stackChange: -100 }, // TODO: does our resolver handle it correctly?
+  ],
+  damageModifiers: [
+    { source: 'Liberation Stacks', displayName: 'Liberation Passive', condition: stacksOfCap('Aero Erosion'), characterStats: { liberationTotalMultiplierDMG: 0.2 } },
+  ],
   sideEffects: []
 }
 
@@ -604,6 +610,29 @@ export const cartethyiaOutro: Action = {
   energyGenerated: [
     { energyType: 'energy', amount: 0, share: 0.5 },
     { energyType: 'concerto', amount: 0, share: 0 },
+  ],
+  energyCost: [],
+  statusModifications: [],
+  damageModifiers: [],
+  sideEffects: [],
+}
+
+
+
+
+
+export const energiesUp: Action = {
+  name: 'Energies Up',
+  castTime: 0,
+  multiplier: 0,
+  scaling: 'HP',
+  elements: ['NONE'],
+  dmgTypes: ['BASIC'],
+  cooldown: 0,
+  energyGenerated: [
+    { energyType: 'energy', amount: 1000, share: 0.5 },
+    { energyType: 'concerto', amount: 1000, share: 0 },
+    { energyType: 'forte', amount: 1000, share: 0 }
   ],
   energyCost: [],
   statusModifications: [],

@@ -1,5 +1,10 @@
 TODO:
 
+TASK: Data Overlay Pie Chart should have a hover to see each piece. The text in the middle should be more useful than just showing the biggest contributor. Maybe add a toggle/2 buttons that let's you see damage distribution of different sources OR damage types distribution (OR EVEN dmg distribution by owner - will need to know which belong to which character, and what belongs to 'no one'). The 3 buttons in the left corner should have a title or helpful label -> we are swapping between scenarios like; too long but theoretically 'see scenario where everything crits'
+
+TASK: When a new snapshot is created, it should automatically set the character in the next one to the previous one
+Context: Since you will often use multiple actions in a row, and setting it doesnt do anything problematic or unchangable
+
 Task: Create data for Cartethyia's team so that we can more thoroughly "test" everything (including cooldowns - test in-game how much time is wasted on character swap, for example Cartethyia BA5 from scratch vs on swap)
 Context: Self-explanatory
 

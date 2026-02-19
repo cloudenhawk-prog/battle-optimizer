@@ -1,6 +1,6 @@
 import type { StepContext } from '../../types/stepContext'
 
-// ========== Set Multiplier By Number of Negative Status Stacks ===============================================================
+// ========== Stack Based Conditions ===============================================================
 
 export function stacksOf(statusName: string) {
   return (ctx: StepContext): number => {
@@ -15,7 +15,15 @@ export function stacksOf(statusName: string) {
   }
 }
 
-// ========== Check for At Least One Stack ===============================================================
+export function stacksOfCap(statusName: string) {
+  return (ctx: StepContext): number => {
+    const status = ctx.negativeStatusesInAction.find(ns => ns.negativeStatus.name === statusName)
+    const stacks = status?.currentStacks ?? 0
+
+    if (stacks > 5) return 5
+    return stacks
+  }
+}
 
 export function atLeastOneStackOf(statusName: string) {
   return (ctx: StepContext): number => {

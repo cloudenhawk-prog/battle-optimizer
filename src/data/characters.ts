@@ -1,7 +1,7 @@
 import type { Character } from '../types/character'
 import { fireball, iceSpike, liberatingLightning, mageIntro, mageOutro } from './actions'
 import { backstab, poison, rogueIntro, rogueOutro } from './actions'
-import { cartethyiaBA1_4, cartethyiaBA2_4, cartethyiaHeavy, cartethyiaPlunge1, cartethyiaPlunge2, cartethyiaPlunge3, cartethyiaSkill, cartethyiaTransform, fleurdelysBA1_5, fleurdelysBA3_5, fleurdelysHeavy, fleurdelysHeavyEnhanced, fleurdelysAerial1_2, fleurdelysAerial1_3, fleurdelysSkill_1, fleurdelysSkill_2, fleurdelysLiberation, cartethyiaIntro, cartethyiaOutro } from './actions'
+import { energiesUp, cartethyiaBA1_4, cartethyiaBA2_4, cartethyiaHeavy, cartethyiaPlunge1, cartethyiaPlunge2, cartethyiaPlunge3, cartethyiaSkill, cartethyiaTransform, fleurdelysBA1_5, fleurdelysBA3_5, fleurdelysHeavy, fleurdelysHeavyEnhanced, fleurdelysAerial1_2, fleurdelysAerial1_3, fleurdelysSkill_1, fleurdelysSkill_2, fleurdelysLiberation, cartethyiaIntro, cartethyiaOutro } from './actions'
 import { mageStats, rogueStats, cartethyiaStats } from './stats'
 import { stacksOf, atLeastOneStackOf, always } from '../utils/conditions/damageModifierConditions'
 
@@ -29,6 +29,7 @@ export const characters: Character[] = [
   {
     name: 'Cartethyia',
     actions: [
+      energiesUp,
       cartethyiaBA1_4,
       cartethyiaBA2_4,
       cartethyiaHeavy,
