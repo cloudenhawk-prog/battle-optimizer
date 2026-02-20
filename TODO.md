@@ -12,6 +12,7 @@ TASK: Data Overlay
 - All Sections: could have a small button in the right corner for explanations
 - General: Make more things clickable, for example secondary effects rows on-click could show more info about that damage entry
 - General: Merge 'Combat Metrics' and 'Primary Damage Output' -> then add the entire dmg entry from 'Primary Damage Output' to 'Secondary Effects' too and rename it (something like damage sources)
+- Tether: Swap the bottom two labels: TETHER//V3.2.17 and LINK: ESTABLISHED PHASE DRIFT: 0.02' so tether is the in the left bottom corner
 
 TASK: Make the sidebar icon-button spin similarly to the pie chart rings - let's see how it looks
 TASK: Turn phrolova into a see-through gif with AI? Or make the background move with some "animations"?
