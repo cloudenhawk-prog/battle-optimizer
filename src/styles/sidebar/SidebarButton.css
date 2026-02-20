@@ -32,9 +32,9 @@
 }
 
 .sidebar-ghost.collapsed {
-  left: calc(-6px - var(--icon-size) / 2);
-  top: calc(var(--icon-size) / 2 - 51px);
-  transform: scale(0.78);
+  left: calc(-1.5 * var(--icon-size) / 2 + 10px);
+  top: calc(-1.5 * var(--icon-size) / 2 + 15px);
+  transform: scale(1.35);
 }
 
 .sidebar-ghost.expanded {
@@ -43,7 +43,12 @@
   transform: scale(1.1);
 }
 
-.sidebar-ghost:hover {
-  transform: scale(0.85);
+.sidebar-ghost.collapsed:hover {
+  transform: scale(1.55);
+  filter: brightness(1.4);
+}
+
+.sidebar-ghost.expanded:hover {
+  transform: scale(0.95);
   filter: brightness(1.4);
 }
