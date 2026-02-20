@@ -1,4 +1,4 @@
-import { useState, useEffect, useRef } from 'react'
+import { useState } from 'react'
 import '../../styles/rotation-editor/DataOverlay.css'
 import type { Snapshot } from '../../types/snapshot'
 import type { DamageEvent, Contribution } from '../../types/events'
