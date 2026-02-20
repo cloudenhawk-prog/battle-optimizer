@@ -108,14 +108,17 @@ function HudOverlay({ mode, onModeChange }: { mode: 'average' | 'normal' | 'crit
 }
 
 function PieChartCenter({ damageEvents, totalDamage }: { damageEvents: DamageEvent[]; totalDamage: number }) {
+  const [hoveredSlice, setHoveredSlice] = useState<number | null>(null)
+
   if (damageEvents.length === 0) return null
 
   // Subtle colors matching the table theme
   const colors = ['rgba(100, 150, 255, 0.7)', 'rgba(255, 150, 100, 0.7)', 'rgba(200, 150, 255, 0.7)']
 
-  // Calculate main action percentage
-  const mainAction = damageEvents.find(e => !e.dmgTypes.includes('NEGATIVE_STATUS'))
-  const mainPercentage = mainAction && totalDamage > 0 ? Math.round((mainAction.average / totalDamage) * 100) : 0
+  // Format total damage for display
+  const formattedDamage = totalDamage >= 1000 ? `${(totalDamage / 1000).toFixed(1)}k` : totalDamage.toFixed(0)
+
+  const hoveredEvent = hoveredSlice !== null ? damageEvents[hoveredSlice] : null
 
   return (
     <div className="pieChartCenter">
@@ -143,20 +146,20 @@ function PieChartCenter({ damageEvents, totalDamage }: { damageEvents: DamageEve
 
       {/* Pie chart SVG */}
       {damageEvents.length === 1 ? (
-        <svg viewBox="0 0 200 200" className="pieChartSvg">
-          <circle cx="100" cy="100" r="90" fill={colors[0]} stroke="rgba(30, 30, 40, 0.95)" strokeWidth="2" />
+        <svg viewBox="0 0 200 200" className="pieChartSvg" style={{ pointerEvents: 'auto' }}>
+          <circle cx="100" cy="100" r="90" fill={colors[0]} stroke="rgba(30, 30, 40, 0.95)" strokeWidth="2" className="pieSlice" onMouseEnter={() => setHoveredSlice(0)} onMouseLeave={() => setHoveredSlice(null)} />
         </svg>
       ) : (
-        <svg viewBox="0 0 200 200" className="pieChartSvg">
+        <svg viewBox="0 0 200 200" className="pieChartSvg" style={{ pointerEvents: 'auto' }}>
           {calculatePieSlices(damageEvents, colors).map((slice, index) => (
-            <path key={index} d={slice.path} fill={slice.color} stroke="rgba(30, 30, 40, 0.95)" strokeWidth="2" />
+            <path key={index} d={slice.path} fill={slice.color} stroke="rgba(30, 30, 40, 0.95)" strokeWidth="2" className={`pieSlice ${hoveredSlice === index ? 'hovered' : ''}`} onMouseEnter={() => setHoveredSlice(index)} onMouseLeave={() => setHoveredSlice(null)} />
           ))}
         </svg>
       )}
 
-      {/* Inner circle with percentage */}
+      {/* Inner circle with total damage */}
       <div className="pieInnerCircle">
-        <div className="piePercentage">{mainPercentage}%</div>
+        <div className="piePercentage">{formattedDamage}</div>
         <div className="pieLabel">Total Damage</div>
       </div>
 
@@ -176,6 +179,37 @@ function PieChartCenter({ damageEvents, totalDamage }: { damageEvents: DamageEve
           />
         ))}
       </div>
+
+      {/* Hover tooltip */}
+      {hoveredEvent && (
+        <div className="pieTooltip">
+          <div className="pieTooltipAccent" />
+          <div className="pieTooltipTitle">{hoveredEvent.actionName}</div>
+          <div className="pieTooltipDivider" />
+          <div className="pieTooltipRow">
+            <span className="pieTooltipLabel">Dealer</span>
+            <span className="pieTooltipValue">{hoveredEvent.dealer}</span>
+          </div>
+          <div className="pieTooltipRow">
+            <span className="pieTooltipLabel">Target</span>
+            <span className="pieTooltipValue">{hoveredEvent.target}</span>
+          </div>
+          <div className="pieTooltipRow">
+            <span className="pieTooltipLabel">Damage</span>
+            <span className="pieTooltipValue pieTooltipHighlight">{hoveredEvent.average.toFixed(0)}</span>
+          </div>
+          <div className="pieTooltipRow">
+            <span className="pieTooltipLabel">Share</span>
+            <span className="pieTooltipValue pieTooltipHighlight">{((hoveredEvent.average / totalDamage) * 100).toFixed(1)}%</span>
+          </div>
+          {hoveredEvent.elements.length > 0 && (
+            <div className="pieTooltipRow">
+              <span className="pieTooltipLabel">Elements</span>
+              <span className="pieTooltipValue">{hoveredEvent.elements.join(', ')}</span>
+            </div>
+          )}
+        </div>
+      )}
     </div>
   )
 }
