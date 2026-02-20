@@ -2,11 +2,14 @@ TODO:
 
 TASK: HOW do we want to handle trigger-timed based (potentially ramping) modifiers like Fleurdelys Mandate, or Fleurdelys potential 3 swords buff
 
-TASK: Data Overlay Pie Chart should have a hover to see each piece. The text in the middle should be more useful than just showing the biggest contributor. Maybe add a toggle/2 buttons that let's you see damage distribution of different sources OR damage types distribution (OR EVEN dmg distribution by owner - will need to know which belong to which character, and what belongs to 'no one'). The 3 buttons in the left corner should have a title or helpful label -> we are swapping between scenarios like; too long but theoretically 'see scenario where everything crits'
-Contributions could also have hover: show more details
-Each section could have a small button in the right corner for explanations
-Make more things clickable, like secondary effects
-Merge 'Combat Metrics' and 'Primary Damage Output' - then add the dmg from primary to 'Secondary Effects' and rename it (something like damage sources)
+TASK: Data Overlay
+
+- Left Corner: The 3 buttons should have a title or helpful label -> we are swapping between scenarios like; too long but theoretically 'see scenario where everything crits'
+- Contributions: could also have hover - 'show more details'
+- All Sections: could have a small button in the right corner for explanations
+- Tether: Swap the bottom two labels: TETHER//V3.2.17 and LINK: ESTABLISHED PHASE DRIFT: 0.02' so tether is the in the left bottom corner
+- General: Arrows up/down to swap between data overlays quickly. Also if you click outside the data overlay it should close
+- MODIFIER CONTRIBUTIONS: Remove empty shell for the pillars - It makes it seem like the biggest pillar is some sort of "max possible value" which is not the case: it's just used for scaling heights so it looks good.
 
 TASK: Make the sidebar icon-button spin similarly to the pie chart rings - let's see how it looks
 TASK: Turn phrolova into a see-through gif with AI? Or make the background move with some "animations"?
@@ -52,9 +55,6 @@ Task: Character/gear builder
 Context: Would let you set up a character, automatically calculating stats.
 Task: Import characters/bosses in rotation editor
 Context: Would let you set up a "battle"
-
-
-
 
 ISSUES:
 

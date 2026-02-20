@@ -1,7 +1,10 @@
-import { useState } from 'react'
+import { useState, useRef } from 'react'
 import '../../styles/rotation-editor/DataOverlay.css'
 import type { Snapshot } from '../../types/snapshot'
 import type { DamageEvent, Contribution } from '../../types/events'
+
+// Pie chart colors - shared between pie chart and damage sources
+const PIE_CHART_COLORS = ['rgba(100, 150, 255, 0.7)', 'rgba(255, 150, 100, 0.7)', 'rgba(200, 150, 255, 0.7)']
 
 // ========== Main Component =====================================================================================================
 
@@ -14,12 +17,12 @@ type DataOverlayProps = {
 
 export default function DataOverlay({ snapshot, damageEvents = [], open, onClose }: DataOverlayProps) {
   const [mode, setMode] = useState<'average' | 'normal' | 'crit'>('average')
+  const [pieChartView, setPieChartView] = useState<'events' | 'types'>('events')
 
   if (!open || !snapshot) return null
 
   console.log('Damage Events: ', damageEvents)
 
-  const { mainAction, otherDamage } = categorizeDamageEvents(damageEvents)
   const totalDamage = calculateTotalDamage(damageEvents)
   const duration = calculateDuration(snapshot)
 
@@ -31,13 +34,12 @@ export default function DataOverlay({ snapshot, damageEvents = [], open, onClose
           <HudOverlay mode={mode} onModeChange={setMode} />
 
           {/* Central Pie Chart */}
-          <PieChartCenter damageEvents={damageEvents} totalDamage={totalDamage} />
+          <PieChartCenter damageEvents={damageEvents} totalDamage={totalDamage} view={pieChartView} />
 
           {/* Radial Sections */}
           <CombatOverviewSection totalDamage={totalDamage} duration={duration} snapshot={snapshot} />
-          <MainActionSection mainAction={mainAction} totalDamage={totalDamage} />
-          <SideEffectsSection otherDamage={otherDamage} totalDamage={totalDamage} />
-          <ContributionsSection contributions={mainAction?.contributions || {}} mode={mode} />
+          <DamageSourcesSection damageEvents={damageEvents} totalDamage={totalDamage} view={pieChartView} onViewChange={setPieChartView} />
+          <ContributionsSection damageEvents={damageEvents} mode={mode} />
         </div>
       </div>
     </div>
@@ -107,15 +109,14 @@ function HudOverlay({ mode, onModeChange }: { mode: 'average' | 'normal' | 'crit
   )
 }
 
-function PieChartCenter({ damageEvents, totalDamage }: { damageEvents: DamageEvent[]; totalDamage: number }) {
+function PieChartCenter({ damageEvents, totalDamage, view }: { damageEvents: DamageEvent[]; totalDamage: number; view: 'events' | 'types' }) {
   if (damageEvents.length === 0) return null
 
-  // Subtle colors matching the table theme
-  const colors = ['rgba(100, 150, 255, 0.7)', 'rgba(255, 150, 100, 0.7)', 'rgba(200, 150, 255, 0.7)']
+  // Aggregate damage by type if in 'types' view
+  const displayData = view === 'types' ? aggregateDamageByType(damageEvents) : damageEvents.map(e => ({ name: e.actionName, damage: e.average, event: e }))
 
-  // Calculate main action percentage
-  const mainAction = damageEvents.find(e => !e.dmgTypes.includes('NEGATIVE_STATUS'))
-  const mainPercentage = mainAction && totalDamage > 0 ? Math.round((mainAction.average / totalDamage) * 100) : 0
+  // Format total damage for display
+  const formattedDamage = totalDamage >= 1000 ? `${(totalDamage / 1000).toFixed(1)}k` : totalDamage.toFixed(0)
 
   return (
     <div className="pieChartCenter">
@@ -142,22 +143,29 @@ function PieChartCenter({ damageEvents, totalDamage }: { damageEvents: DamageEve
       </div>
 
       {/* Pie chart SVG */}
-      {damageEvents.length === 1 ? (
+      {displayData.length === 1 ? (
         <svg viewBox="0 0 200 200" className="pieChartSvg">
-          <circle cx="100" cy="100" r="90" fill={colors[0]} stroke="rgba(30, 30, 40, 0.95)" strokeWidth="2" />
+          <circle cx="100" cy="100" r="90" fill={PIE_CHART_COLORS[0]} stroke="rgba(30, 30, 40, 0.95)" strokeWidth="2" className="pieSlice" />
         </svg>
       ) : (
         <svg viewBox="0 0 200 200" className="pieChartSvg">
-          {calculatePieSlices(damageEvents, colors).map((slice, index) => (
-            <path key={index} d={slice.path} fill={slice.color} stroke="rgba(30, 30, 40, 0.95)" strokeWidth="2" />
+          {calculatePieSlices(
+            displayData.map(d => d.damage),
+            PIE_CHART_COLORS,
+          ).map((slice, index) => (
+            <path key={index} d={slice.path} fill={slice.color} stroke="rgba(30, 30, 40, 0.95)" strokeWidth="2" className="pieSlice" />
           ))}
         </svg>
       )}
 
-      {/* Inner circle with percentage */}
+      {/* Inner circle with total damage */}
       <div className="pieInnerCircle">
-        <div className="piePercentage">{mainPercentage}%</div>
-        <div className="pieLabel">Total Damage</div>
+        <div className="pieLabel" style={{ pointerEvents: 'none' }}>
+          Total Damage
+        </div>
+        <div className="piePercentage" style={{ pointerEvents: 'none' }}>
+          {formattedDamage}
+        </div>
       </div>
 
       {/* Tick marks */}
@@ -205,99 +213,219 @@ function CombatOverviewSection({ totalDamage, duration, snapshot }: { totalDamag
   )
 }
 
-function MainActionSection({ mainAction, totalDamage }: { mainAction: DamageEvent | null; totalDamage: number }) {
-  if (!mainAction) {
+function DamageSourcesSection({ damageEvents, totalDamage, view, onViewChange }: { damageEvents: DamageEvent[]; totalDamage: number; view: 'events' | 'types'; onViewChange: (view: 'events' | 'types') => void }) {
+  const [hoveredItem, setHoveredItem] = useState<{ name: string; damage: number; index: number; event?: DamageEvent } | null>(null)
+  const [showTooltip, setShowTooltip] = useState(false)
+  const [pinnedItem, setPinnedItem] = useState<{ name: string; damage: number; index: number; event?: DamageEvent } | null>(null)
+  const hoverTimeoutRef = useRef<number | null>(null)
+
+  const handleMouseEnter = (item: { name: string; damage: number; index: number; event?: DamageEvent }) => {
+    // Don't change hover state if an item is pinned
+    if (pinnedItem) return
+
+    setHoveredItem(item)
+    // Small delay to ensure layout is stable before showing tooltip
+    if (hoverTimeoutRef.current !== null) {
+      clearTimeout(hoverTimeoutRef.current)
+    }
+    hoverTimeoutRef.current = window.setTimeout(() => {
+      setShowTooltip(true)
+    }, 100)
+  }
+
+  const handleMouseLeave = () => {
+    // Don't hide tooltip if an item is pinned
+    if (pinnedItem) return
+
+    if (hoverTimeoutRef.current !== null) {
+      clearTimeout(hoverTimeoutRef.current)
+    }
+    setHoveredItem(null)
+    setShowTooltip(false)
+  }
+
+  const handleClick = (item: { name: string; damage: number; index: number; event?: DamageEvent }) => {
+    if (pinnedItem && pinnedItem.name === item.name && pinnedItem.index === item.index) {
+      // Unpin if clicking the same item
+      setPinnedItem(null)
+      setHoveredItem(null)
+      setShowTooltip(false)
+    } else {
+      // Pin the clicked item
+      setPinnedItem(item)
+      setHoveredItem(item)
+      setShowTooltip(true)
+    }
+  }
+
+  const handleClickAway = (e: React.MouseEvent) => {
+    // Only unpin if clicking outside the section content
+    if ((e.target as HTMLElement).closest('.sectionContent') === null) {
+      setPinnedItem(null)
+      setHoveredItem(null)
+      setShowTooltip(false)
+    }
+  }
+
+  if (damageEvents.length === 0) {
     return (
-      <div className="radialSection mainAction">
+      <div className="radialSection damageSourcesSection">
         <div className="connectorLine" />
-        <div className="sectionCard cyan">
-          <div className="sectionTopAccent cyan" />
-          <div className="sectionTitle cyan">
-            <div className="titleDot cyan" />
-            <span>Primary Output</span>
+        <div className="sectionCard silver">
+          <div className="sectionTopAccent silver" />
+          <div className="sectionTitle silver">
+            <div className="titleDot silver" />
+            <span>{view === 'events' ? 'Damage Sources' : 'Damage Types'}</span>
           </div>
           <div className="sectionContent">
-            <p className="emptyMessage">No primary resonance detected</p>
+            <p className="emptyMessage">No damage sources detected</p>
           </div>
-          <div className="sectionBottomAccent cyan" />
+          <div className="sectionBottomAccent silver" />
+        </div>
+        <div className="damageSourcesHeader">
+          <div className="pieViewToggle">
+            <button className={`pieViewButton ${view === 'events' ? 'active' : ''}`} onClick={() => onViewChange('events')}>
+              Events
+            </button>
+            <button className={`pieViewButton ${view === 'types' ? 'active' : ''}`} onClick={() => onViewChange('types')}>
+              Types
+            </button>
+          </div>
         </div>
       </div>
     )
   }
 
-  // Calculate percentages for bars
-  const avgDamageBarPct = totalDamage > 0 ? (mainAction.average / totalDamage) * 100 : 0
-  const normalHitBarPct = mainAction.average > 0 ? (mainAction.normalStrike / mainAction.average) * 100 : 0
-  const critHitRatio = mainAction.average > 0 ? (mainAction.criticalStrike / mainAction.average) * 100 : 100
-  const critExcessPct = Math.max(0, critHitRatio - 100)
+  // Prepare display data based on view
+  const displayData = view === 'types' ? aggregateDamageByType(damageEvents) : damageEvents.map(e => ({ name: e.actionName, damage: e.average, event: e }))
 
   return (
-    <div className="radialSection mainAction">
+    <div className="radialSection damageSourcesSection" onClick={handleClickAway}>
       <div className="connectorLine" />
-      <div className="sectionCard cyan">
-        <div className="sectionTopAccent cyan" />
-        <div className="sectionTitle cyan">
-          <div className="titleDot cyan" />
-          <span>Primary Damage Output</span>
+      <div className="sectionCard silver">
+        <div className="sectionTopAccent silver" />
+        <div className="sectionTitle silver">
+          <div className="titleDot silver" />
+          <span>{view === 'events' ? 'Damage Sources' : 'Damage Types'}</span>
         </div>
         <div className="sectionContent">
-          <DataRow label="Resonator" value={mainAction.dealer} />
-          <DataRow label="Combat Event" value={mainAction.actionName} />
-          <DataRow label="Target" value={mainAction.target} />
-          <DataRow label="Avg Damage" value={mainAction.average.toFixed(0)} barPct={avgDamageBarPct} color="cyan" />
-          <DataRow label="Normal Hit" value={mainAction.normalStrike.toFixed(0)} barPct={normalHitBarPct} color="cyan" />
-          <DataRow label="Critical Hit" value={mainAction.criticalStrike.toFixed(0)} barPct={100} barExcessPct={critExcessPct} color="cyan" />
-          <DataRow label="Elements" value={mainAction.elements.join(', ')} />
-        </div>
-        <div className="sectionBottomAccent cyan" />
-      </div>
-    </div>
-  )
-}
-
-function SideEffectsSection({ otherDamage, totalDamage }: { otherDamage: DamageEvent[]; totalDamage: number }) {
-  if (otherDamage.length === 0) {
-    return (
-      <div className="radialSection sideEffects">
-        <div className="connectorLine" />
-        <div className="sectionCard amber">
-          <div className="sectionTopAccent amber" />
-          <div className="sectionTitle amber">
-            <div className="titleDot amber" />
-            <span>Secondary Effects</span>
-          </div>
-          <div className="sectionContent">
-            <p className="emptyMessage">No echo signatures detected</p>
-          </div>
-          <div className="sectionBottomAccent amber" />
-        </div>
-      </div>
-    )
-  }
-
-  return (
-    <div className="radialSection sideEffects">
-      <div className="connectorLine" />
-      <div className="sectionCard amber">
-        <div className="sectionTopAccent amber" />
-        <div className="sectionTitle amber">
-          <div className="titleDot amber" />
-          <span>Secondary Effects</span>
-        </div>
-        <div className="sectionContent">
-          {otherDamage.slice(0, 5).map((event, index) => {
-            const pct = totalDamage > 0 ? (event.average / totalDamage) * 100 : 0
-            return <DataRow key={index} label={event.actionName} value={`${event.average.toFixed(0)} (${pct.toFixed(2)}%)`} barPct={pct} color="amber" />
+          {displayData.map((item, index) => {
+            const pct = totalDamage > 0 ? (item.damage / totalDamage) * 100 : 0
+            const pieColor = PIE_CHART_COLORS[index % PIE_CHART_COLORS.length]
+            const isPinned = pinnedItem && pinnedItem.name === item.name && pinnedItem.index === index
+            return (
+              <div
+                key={index}
+                className={`damageSourceRow ${isPinned ? 'pinned' : ''}`}
+                onMouseEnter={() => handleMouseEnter({ ...item, index })}
+                onMouseLeave={handleMouseLeave}
+                onClick={e => {
+                  e.stopPropagation()
+                  handleClick({ ...item, index })
+                }}>
+                <DataRow label={item.name} value={`${item.damage.toFixed(0)} (${pct.toFixed(1)}%)`} barPct={pct} customColor={pieColor} />
+              </div>
+            )
           })}
         </div>
-        <div className="sectionBottomAccent amber" />
+        <div className="sectionBottomAccent silver" />
       </div>
+      <div className="damageSourcesHeader">
+        <div className="pieViewToggle">
+          <button className={`pieViewButton ${view === 'events' ? 'active' : ''}`} onClick={() => onViewChange('events')}>
+            Events
+          </button>
+          <button className={`pieViewButton ${view === 'types' ? 'active' : ''}`} onClick={() => onViewChange('types')}>
+            Types
+          </button>
+        </div>
+      </div>
+
+      {/* Detail tooltip when hovering over an item */}
+      {hoveredItem && showTooltip && (
+        <div className="pieTooltip damageSourceTooltip" style={{ bottom: 'calc(100% + 20px)', left: '50%', transform: 'translateX(-50%)', top: 'auto', '--tooltip-color': PIE_CHART_COLORS[hoveredItem.index % PIE_CHART_COLORS.length] } as React.CSSProperties}>
+          <div className="pieTooltipAccent" style={{ background: `linear-gradient(to right, ${PIE_CHART_COLORS[hoveredItem.index % PIE_CHART_COLORS.length]}, transparent)` }} />
+          <div className="pieTooltipTitle" style={{ color: PIE_CHART_COLORS[hoveredItem.index % PIE_CHART_COLORS.length] }}>
+            {hoveredItem.name}
+          </div>
+          <div className="pieTooltipDivider" />
+          {view === 'events' && hoveredItem.event && (
+            <>
+              <div className="pieTooltipRow">
+                <span className="pieTooltipLabel">Dealer</span>
+                <span className="pieTooltipValue">{hoveredItem.event.dealer}</span>
+              </div>
+              <div className="pieTooltipRow">
+                <span className="pieTooltipLabel">Target</span>
+                <span className="pieTooltipValue">{hoveredItem.event.target}</span>
+              </div>
+              <div className="pieTooltipRow">
+                <span className="pieTooltipLabel">Avg Damage</span>
+                <span className="pieTooltipValue pieTooltipHighlight" style={{ color: PIE_CHART_COLORS[hoveredItem.index % PIE_CHART_COLORS.length] }}>
+                  {hoveredItem.event.average.toFixed(0)}
+                </span>
+              </div>
+              <div className="pieTooltipRow">
+                <span className="pieTooltipLabel">Normal Hit</span>
+                <span className="pieTooltipValue">{hoveredItem.event.normalStrike.toFixed(0)}</span>
+              </div>
+              <div className="pieTooltipRow">
+                <span className="pieTooltipLabel">Critical Hit</span>
+                <span className="pieTooltipValue">{hoveredItem.event.criticalStrike.toFixed(0)}</span>
+              </div>
+              {hoveredItem.event.elements.length > 0 && (
+                <div className="pieTooltipRow">
+                  <span className="pieTooltipLabel">Elements</span>
+                  <span className="pieTooltipValue">{hoveredItem.event.elements.join(', ')}</span>
+                </div>
+              )}
+              <div className="pieTooltipRow">
+                <span className="pieTooltipLabel">Damage Types</span>
+                <span className="pieTooltipValue">{hoveredItem.event.dmgTypes.join(', ')}</span>
+              </div>
+            </>
+          )}
+          {view === 'types' && (
+            <>
+              <div className="pieTooltipRow">
+                <span className="pieTooltipLabel">Total Damage</span>
+                <span className="pieTooltipValue pieTooltipHighlight" style={{ color: PIE_CHART_COLORS[hoveredItem.index % PIE_CHART_COLORS.length] }}>
+                  {hoveredItem.damage.toFixed(0)}
+                </span>
+              </div>
+              <div className="pieTooltipRow">
+                <span className="pieTooltipLabel">Percentage</span>
+                <span className="pieTooltipValue pieTooltipHighlight" style={{ color: PIE_CHART_COLORS[hoveredItem.index % PIE_CHART_COLORS.length] }}>
+                  {((hoveredItem.damage / totalDamage) * 100).toFixed(1)}%
+                </span>
+              </div>
+            </>
+          )}
+        </div>
+      )}
     </div>
   )
 }
 
-function ContributionsSection({ contributions, mode }: { contributions: Record<string, Contribution>; mode: 'average' | 'normal' | 'crit' }) {
-  const contributionsList = Object.values(contributions)
+function ContributionsSection({ damageEvents, mode }: { damageEvents: DamageEvent[]; mode: 'average' | 'normal' | 'crit' }) {
+  // Aggregate all contributions from all damage events
+  const allContributions: Record<string, Contribution> = {}
+
+  damageEvents.forEach(event => {
+    Object.entries(event.contributions).forEach(([source, contrib]) => {
+      if (!allContributions[source]) {
+        allContributions[source] = { ...contrib }
+      } else {
+        // Sum up contributions from the same source
+        allContributions[source].average_damage_contributed += contrib.average_damage_contributed
+        allContributions[source].normal_damage_contributed += contrib.normal_damage_contributed
+        allContributions[source].crit_damage_contributed += contrib.crit_damage_contributed
+        // Recalculate percentages later if needed
+      }
+    })
+  })
+
+  const contributionsList = Object.values(allContributions)
 
   // Sort by contribution amount (descending) based on current mode
   contributionsList.sort((a, b) => {
@@ -359,17 +487,28 @@ function ContributionsSection({ contributions, mode }: { contributions: Record<s
   )
 }
 
-function DataRow({ label, value, barPct, barExcessPct, color = 'cyan' }: { label: string; value: string; barPct?: number; barExcessPct?: number; color?: 'cyan' | 'amber' | 'magenta' | 'purple' }) {
+function DataRow({ label, value, barPct, barExcessPct, color = 'cyan', customColor }: { label: string; value: string; barPct?: number; barExcessPct?: number; color?: 'cyan' | 'amber' | 'magenta' | 'purple'; customColor?: string }) {
   return (
     <div className="dataRow">
       <div className="dataRowTop">
         <span className="dataRowLabel">{label}</span>
-        <span className="dataRowValue">{value}</span>
+        <span className="dataRowValue" style={customColor ? { color: customColor, textShadow: `0 0 8px ${customColor}` } : undefined}>
+          {value}
+        </span>
       </div>
       {barPct !== undefined && (
         <div className="dataRowBar">
-          <div className={`dataRowBarFill ${color}`} style={{ width: `${Math.min(barPct, 100)}%` }} />
-          {barExcessPct !== undefined && barExcessPct > 0 && <div className={`dataRowBarFillExcess ${color}`} style={{ width: `${barExcessPct}%` }} />}
+          {customColor ? (
+            <>
+              <div className="dataRowBarFill" style={{ width: `${Math.min(barPct, 100)}%`, background: customColor, boxShadow: `0 0 6px ${customColor}` }} />
+              {barExcessPct !== undefined && barExcessPct > 0 && <div className="dataRowBarFillExcess" style={{ width: `${barExcessPct}%`, background: customColor, filter: 'brightness(1.3)' }} />}
+            </>
+          ) : (
+            <>
+              <div className={`dataRowBarFill ${color}`} style={{ width: `${Math.min(barPct, 100)}%` }} />
+              {barExcessPct !== undefined && barExcessPct > 0 && <div className={`dataRowBarFillExcess ${color}`} style={{ width: `${barExcessPct}%` }} />}
+            </>
+          )}
         </div>
       )}
     </div>
@@ -377,12 +516,6 @@ function DataRow({ label, value, barPct, barExcessPct, color = 'cyan' }: { label
 }
 
 // ========== Helper Functions ===================================================================================================
-
-function categorizeDamageEvents(damageEvents: DamageEvent[]) {
-  const mainAction: DamageEvent | null = damageEvents.find(e => !e.dmgTypes.includes('NEGATIVE_STATUS')) || null
-  const otherDamage = damageEvents.filter(e => e !== mainAction)
-  return { mainAction, otherDamage }
-}
 
 function calculateTotalDamage(damageEvents: DamageEvent[]): number {
   return damageEvents.reduce((sum, e) => sum + e.average, 0)
@@ -392,12 +525,12 @@ function calculateDuration(snapshot: Snapshot): number {
   return snapshot.toTime - snapshot.fromTime
 }
 
-function calculatePieSlices(damageEvents: DamageEvent[], colors: string[]) {
-  const total = calculateTotalDamage(damageEvents)
+function calculatePieSlices(damageValues: number[], colors: string[]) {
+  const total = damageValues.reduce((sum, val) => sum + val, 0)
   let cumulativePercent = 0
 
-  return damageEvents.map((event, index) => {
-    const percent = (event.average / total) * 100
+  return damageValues.map((damage, index) => {
+    const percent = (damage / total) * 100
     const angle = (percent / 100) * 360
     const startAngle = (cumulativePercent / 100) * 360
     const rad = (deg: number) => (deg * Math.PI) / 180
@@ -417,4 +550,19 @@ function calculatePieSlices(damageEvents: DamageEvent[], colors: string[]) {
       color: colors[index % colors.length],
     }
   })
+}
+
+function aggregateDamageByType(damageEvents: DamageEvent[]): Array<{ name: string; damage: number; event?: DamageEvent }> {
+  const typeMap = new Map<string, number>()
+
+  damageEvents.forEach(event => {
+    event.dmgTypes.forEach(type => {
+      const current = typeMap.get(type) || 0
+      typeMap.set(type, current + event.average)
+    })
+  })
+
+  return Array.from(typeMap.entries())
+    .map(([type, damage]) => ({ name: type, damage }))
+    .sort((a, b) => b.damage - a.damage)
 }
