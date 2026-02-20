@@ -198,10 +198,12 @@ function PieChartCenter({ damageEvents, totalDamage, view, onViewChange }: { dam
       </div>
 
       {/* Hover tooltip */}
-      {hoveredData && (
-        <div className="pieTooltip">
-          <div className="pieTooltipAccent" />
-          <div className="pieTooltipTitle">{hoveredData.name}</div>
+      {hoveredData && hoveredSlice !== null && (
+        <div className="pieTooltip" style={{ '--tooltip-color': PIE_CHART_COLORS[hoveredSlice % PIE_CHART_COLORS.length] } as React.CSSProperties}>
+          <div className="pieTooltipAccent" style={{ background: `linear-gradient(to right, ${PIE_CHART_COLORS[hoveredSlice % PIE_CHART_COLORS.length]}, transparent)` }} />
+          <div className="pieTooltipTitle" style={{ color: PIE_CHART_COLORS[hoveredSlice % PIE_CHART_COLORS.length] }}>
+            {hoveredData.name}
+          </div>
           <div className="pieTooltipDivider" />
           {view === 'events' && hoveredData.event && (
             <>
@@ -217,11 +219,15 @@ function PieChartCenter({ damageEvents, totalDamage, view, onViewChange }: { dam
           )}
           <div className="pieTooltipRow">
             <span className="pieTooltipLabel">Damage</span>
-            <span className="pieTooltipValue pieTooltipHighlight">{hoveredData.damage.toFixed(0)}</span>
+            <span className="pieTooltipValue pieTooltipHighlight" style={{ color: PIE_CHART_COLORS[hoveredSlice % PIE_CHART_COLORS.length] }}>
+              {hoveredData.damage.toFixed(0)}
+            </span>
           </div>
           <div className="pieTooltipRow">
             <span className="pieTooltipLabel">Share</span>
-            <span className="pieTooltipValue pieTooltipHighlight">{((hoveredData.damage / totalDamage) * 100).toFixed(1)}%</span>
+            <span className="pieTooltipValue pieTooltipHighlight" style={{ color: PIE_CHART_COLORS[hoveredSlice % PIE_CHART_COLORS.length] }}>
+              {((hoveredData.damage / totalDamage) * 100).toFixed(1)}%
+            </span>
           </div>
           {view === 'events' && hoveredData.event && hoveredData.event.elements.length > 0 && (
             <div className="pieTooltipRow">
@@ -261,22 +267,7 @@ function CombatOverviewSection({ totalDamage, duration, snapshot }: { totalDamag
 }
 
 function DamageSourcesSection({ damageEvents, totalDamage }: { damageEvents: DamageEvent[]; totalDamage: number }) {
-  const [selectedEvent, setSelectedEvent] = useState<DamageEvent | null>(null)
-  const tooltipRef = useRef<HTMLDivElement>(null)
-
-  // Close tooltip when clicking outside
-  useEffect(() => {
-    if (!selectedEvent) return
-
-    const handleClickOutside = (event: MouseEvent) => {
-      if (tooltipRef.current && !tooltipRef.current.contains(event.target as Node)) {
-        setSelectedEvent(null)
-      }
-    }
-
-    document.addEventListener('mousedown', handleClickOutside)
-    return () => document.removeEventListener('mousedown', handleClickOutside)
-  }, [selectedEvent])
+  const [hoveredEvent, setHoveredEvent] = useState<{ event: DamageEvent; index: number } | null>(null)
 
   if (damageEvents.length === 0) {
     return (
@@ -311,7 +302,7 @@ function DamageSourcesSection({ damageEvents, totalDamage }: { damageEvents: Dam
             const pct = totalDamage > 0 ? (event.average / totalDamage) * 100 : 0
             const pieColor = PIE_CHART_COLORS[index % PIE_CHART_COLORS.length]
             return (
-              <div key={index} className="damageSourceRow" onClick={() => setSelectedEvent(event)} style={{ cursor: 'pointer' }}>
+              <div key={index} className="damageSourceRow" onMouseEnter={() => setHoveredEvent({ event, index })} onMouseLeave={() => setHoveredEvent(null)}>
                 <DataRow label={event.actionName} value={`${event.average.toFixed(0)} (${pct.toFixed(1)}%)`} barPct={pct} customColor={pieColor} />
               </div>
             )
@@ -320,23 +311,45 @@ function DamageSourcesSection({ damageEvents, totalDamage }: { damageEvents: Dam
         <div className="sectionBottomAccent silver" />
       </div>
 
-      {/* Detail tooltip when an event is selected */}
-      {selectedEvent && (
-        <div className="damageSourceDetailTooltip" ref={tooltipRef}>
-          <div className="damageSourceDetailAccent" />
-          <div className="damageSourceDetailHeader">
-            <h3>{selectedEvent.actionName}</h3>
-            <button onClick={() => setSelectedEvent(null)}>✕</button>
+      {/* Detail tooltip when hovering over an event */}
+      {hoveredEvent && (
+        <div className="pieTooltip damageSourceTooltip" style={{ bottom: 'calc(100% + 20px)', left: '50%', transform: 'translateX(-50%)', top: 'auto', '--tooltip-color': PIE_CHART_COLORS[hoveredEvent.index % PIE_CHART_COLORS.length] } as React.CSSProperties}>
+          <div className="pieTooltipAccent" style={{ background: `linear-gradient(to right, ${PIE_CHART_COLORS[hoveredEvent.index % PIE_CHART_COLORS.length]}, transparent)` }} />
+          <div className="pieTooltipTitle" style={{ color: PIE_CHART_COLORS[hoveredEvent.index % PIE_CHART_COLORS.length] }}>
+            {hoveredEvent.event.actionName}
           </div>
-          <div className="damageSourceDetailDivider" />
-          <div className="damageSourceDetailBody">
-            <DataRow label="Resonator" value={selectedEvent.dealer} />
-            <DataRow label="Target" value={selectedEvent.target} />
-            <DataRow label="Avg Damage" value={selectedEvent.average.toFixed(0)} />
-            <DataRow label="Normal Hit" value={selectedEvent.normalStrike.toFixed(0)} />
-            <DataRow label="Critical Hit" value={selectedEvent.criticalStrike.toFixed(0)} />
-            <DataRow label="Elements" value={selectedEvent.elements.join(', ')} />
-            <DataRow label="Damage Types" value={selectedEvent.dmgTypes.join(', ')} />
+          <div className="pieTooltipDivider" />
+          <div className="pieTooltipRow">
+            <span className="pieTooltipLabel">Dealer</span>
+            <span className="pieTooltipValue">{hoveredEvent.event.dealer}</span>
+          </div>
+          <div className="pieTooltipRow">
+            <span className="pieTooltipLabel">Target</span>
+            <span className="pieTooltipValue">{hoveredEvent.event.target}</span>
+          </div>
+          <div className="pieTooltipRow">
+            <span className="pieTooltipLabel">Avg Damage</span>
+            <span className="pieTooltipValue pieTooltipHighlight" style={{ color: PIE_CHART_COLORS[hoveredEvent.index % PIE_CHART_COLORS.length] }}>
+              {hoveredEvent.event.average.toFixed(0)}
+            </span>
+          </div>
+          <div className="pieTooltipRow">
+            <span className="pieTooltipLabel">Normal Hit</span>
+            <span className="pieTooltipValue">{hoveredEvent.event.normalStrike.toFixed(0)}</span>
+          </div>
+          <div className="pieTooltipRow">
+            <span className="pieTooltipLabel">Critical Hit</span>
+            <span className="pieTooltipValue">{hoveredEvent.event.criticalStrike.toFixed(0)}</span>
+          </div>
+          {hoveredEvent.event.elements.length > 0 && (
+            <div className="pieTooltipRow">
+              <span className="pieTooltipLabel">Elements</span>
+              <span className="pieTooltipValue">{hoveredEvent.event.elements.join(', ')}</span>
+            </div>
+          )}
+          <div className="pieTooltipRow">
+            <span className="pieTooltipLabel">Damage Types</span>
+            <span className="pieTooltipValue">{hoveredEvent.event.dmgTypes.join(', ')}</span>
           </div>
         </div>
       )}

@@ -509,9 +509,19 @@
   transform: translateY(-50%);
   width: 50px;
   height: 2px;
-  background: linear-gradient(to right, transparent, rgba(100, 150, 255, 0.4), rgba(100, 200, 255, 0.8));
-  box-shadow: 0 0 8px rgba(100, 200, 255, 0.6);
+  background: linear-gradient(to right, transparent, var(--tooltip-color, rgba(100, 150, 255, 0.4)), var(--tooltip-color, rgba(100, 200, 255, 0.8)));
+  box-shadow: 0 0 8px var(--tooltip-color, rgba(100, 200, 255, 0.6));
   animation: connectorPulse 2s ease-in-out infinite;
+}
+
+/* Override connector for damage source tooltips */
+.damageSourceTooltip::before {
+  left: 50%;
+  top: 100%;
+  transform: translateX(-50%);
+  width: 2px;
+  height: 20px;
+  background: linear-gradient(to bottom, var(--tooltip-color, rgba(100, 150, 255, 0.8)), transparent);
 }
 
 @keyframes connectorPulse {
@@ -947,123 +957,18 @@
   font-size: 12px;
 }
 
-/* Damage Source Detail Tooltip */
+/* Damage Source Row Hover */
 .damageSourceRow {
   transition: all 0.2s ease;
   border-radius: 4px;
   padding: 4px;
   margin: -4px;
+  position: relative;
 }
 
 .damageSourceRow:hover {
   background: rgba(100, 150, 255, 0.1);
   transform: translateX(2px);
-}
-
-.damageSourceDetailTooltip {
-  position: absolute;
-  bottom: calc(100% + 20px);
-  left: 50%;
-  transform: translateX(-50%);
-  background: var(--table-bg);
-  border: 1px solid var(--table-border);
-  border-radius: 8px;
-  min-width: 320px;
-  max-width: 400px;
-  box-shadow:
-    var(--table-shadow-inner),
-    0 4px 20px rgba(0, 0, 0, 0.5),
-    0 0 30px rgba(100, 150, 255, 0.15);
-  z-index: 200;
-  animation: tooltipSlideIn 0.25s ease;
-  pointer-events: auto;
-}
-
-@keyframes tooltipSlideIn {
-  from {
-    opacity: 0;
-    transform: translateX(-50%) translateY(10px);
-  }
-  to {
-    opacity: 1;
-    transform: translateX(-50%) translateY(0);
-  }
-}
-
-.damageSourceDetailTooltip::before {
-  content: '';
-  position: absolute;
-  top: 100%;
-  left: 50%;
-  transform: translateX(-50%);
-  width: 2px;
-  height: 20px;
-  background: linear-gradient(to bottom, rgba(100, 150, 255, 0.6), transparent);
-  box-shadow: 0 0 8px rgba(100, 150, 255, 0.4);
-}
-
-.damageSourceDetailAccent {
-  position: absolute;
-  top: 0;
-  left: 0;
-  right: 0;
-  height: 2px;
-  background: linear-gradient(to right, rgba(100, 150, 255, 0.6), transparent);
-  box-shadow: 0 0 6px rgba(100, 150, 255, 0.4);
-  border-radius: 8px 8px 0 0;
-}
-
-.damageSourceDetailHeader {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  padding: 16px 20px 12px;
-  background: var(--table-header-bg);
-  border-radius: 8px 8px 0 0;
-}
-
-.damageSourceDetailHeader h3 {
-  margin: 0;
-  font-size: 14px;
-  font-weight: 600;
-  color: var(--table-text);
-  text-transform: uppercase;
-  letter-spacing: 0.08em;
-  font-family:
-    system-ui,
-    -apple-system,
-    sans-serif;
-}
-
-.damageSourceDetailHeader button {
-  background: transparent;
-  border: none;
-  cursor: pointer;
-  font-size: 16px;
-  color: var(--table-text-dim);
-  padding: 2px 6px;
-  transition: all 0.2s;
-  border-radius: 3px;
-  line-height: 1;
-}
-
-.damageSourceDetailHeader button:hover {
-  color: var(--table-text);
-  background: var(--table-select-bg);
-}
-
-.damageSourceDetailDivider {
-  height: 1px;
-  background: linear-gradient(to right, var(--table-border), transparent);
-  margin: 0 20px 12px;
-  opacity: 0.5;
-}
-
-.damageSourceDetailBody {
-  padding: 0 20px 16px;
-  display: flex;
-  flex-direction: column;
-  gap: 10px;
 }
 
 /* Mode Selector */
