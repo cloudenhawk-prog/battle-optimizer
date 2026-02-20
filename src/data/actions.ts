@@ -561,7 +561,7 @@ export const fleurdelysLiberation: Action = {
   elements: ['AERO'],
   dmgTypes: ['LIBERATION'],
   cooldown: 25,
-  energyGenerated: [  
+  energyGenerated: [
     { energyType: 'energy', amount: 10, share: 0.5, scalingStat: 'energyPercent' },
     { energyType: 'concerto', amount: 10, share: 0 }, // uncertain amount
   ],
