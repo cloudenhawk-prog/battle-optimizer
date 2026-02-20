@@ -1,14 +1,22 @@
-Current task:
-
-- When clicking outside the data overlay, it should also close (not just the X)
-- Fix the lines from 4 sections to center (they should only touch the outmost circle, be colorless, and perhaps even normalize to x,y axis coordinates rather than being 'forskubbet')
-
 TODO:
 
-Task: Implement rows on-click overlay data breakdown
-Context: Right now damageEvents are passed to the component RotationEditor.tsx These can be passed to the RotationTable if it needs them for future features
+TASK: HOW do we want to handle trigger-timed based (potentially ramping) modifiers like Fleurdelys Mandate, or Fleurdelys potential 3 swords buff
 
-Task: The table should show useful 'current' information under the icons above the rows. Current active resonator, energy progress (like 70/120, and a percentage), time remaining on negative statuses and buffs/debuffs
+TASK: Data Overlay Pie Chart should have a hover to see each piece. The text in the middle should be more useful than just showing the biggest contributor. Maybe add a toggle/2 buttons that let's you see damage distribution of different sources OR damage types distribution (OR EVEN dmg distribution by owner - will need to know which belong to which character, and what belongs to 'no one'). The 3 buttons in the left corner should have a title or helpful label -> we are swapping between scenarios like; too long but theoretically 'see scenario where everything crits'
+Contributions could also have hover: show more details
+Each section could have a small button in the right corner for explanations
+Make more things clickable, like secondary effects
+Merge 'Combat Metrics' and 'Primary Damage Output' - then add the dmg from primary to 'Secondary Effects' and rename it (something like damage sources)
+
+TASK: Make the sidebar icon-button spin similarly to the pie chart rings - let's see how it looks
+TASK: Turn phrolova into a see-through gif with AI? Or make the background move with some "animations"?
+TASK: When a new row is added - play an animation similarly to te light that moves through the sections in data overlay - instead of using a green color?
+
+TASK: When a new snapshot is created, it should automatically set the character in the next one to the previous one
+Context: Since you will often use multiple actions in a row, and setting it doesnt do anything problematic or unchangable
+
+Task: Create data for Cartethyia's team so that we can more thoroughly "test" everything (including cooldowns - test in-game how much time is wasted on character swap, for example Cartethyia BA5 from scratch vs on swap)
+Context: Self-explanatory
 
 Task: Damage Events should have type -> action, action-side-effect, negative-status such that we can put them together
 Context: Right now damage events only includes events from actions. We do not want a seperate event list for every type of damage event. Sorted by ID, these can be used by rows on-click overlay
@@ -36,6 +44,21 @@ Context: Right now the outro-intro flow is hardcoded using 100 Concerto energy. 
 
 Task: Implement dispatchable effects so damages and other things don't always proc at 'toTime'
 Context: Right now everything is summed up at the 'toTime' milestone. For a more detailed timeline in the future, and so that all damage is not necessarily triggered at once, it might be useful to create a queue that you can dispatch events to. The queue might be able to resolve/progress events, sorts the events at the time it happened, and more detailed create a timeline of action/effect starts, damage-procs, occurences, and event endings. This could be especially useful for outro skills, swap-cancelling, and delayed effects and damage procs. It might even automatically let us create Coordinated Attacks and alike really easily.
+
+Task: Implement custom importable combos
+Context: Characters might have certain combos they often use - like Cartethyia double Plunge pre-Fleurdelys combo. The idea would be: select a combo from some menu -> table automatically inserts all the rows
+
+Task: Character/gear builder
+Context: Would let you set up a character, automatically calculating stats.
+Task: Import characters/bosses in rotation editor
+Context: Would let you set up a "battle"
+
+
+
+
+ISSUES:
+
+The topbar layout changes every time an icon/column becomes hidden - likely reason: the icons are smaller than the empty placeholder in both directions
 
 ---
 

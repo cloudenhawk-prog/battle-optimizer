@@ -2,6 +2,7 @@ import '../../styles/rotation-editor/RotationTable.css'
 import { useState, useEffect, useRef } from 'react'
 import { HeaderRow } from './HeaderRow'
 import { BodyRow } from './BodyRows'
+import { CurrentStateRow } from './CurrentStateRow'
 import type { TableConfig, ColumnVisibility } from '../../types/tableDefinitions'
 import type { Character } from '../../types/character'
 import type { Snapshot } from '../../types/snapshot'
@@ -37,10 +38,14 @@ export function RotationTable({ snapshots, charactersInBattle, tableConfig, onSe
     }
   }, [snapshots])
 
+  // Get the last snapshot that has an action selected
+  const currentSnapshot = [...snapshots].reverse().find(s => s.action !== undefined && s.action !== '')
+
   return (
     <div className="tableWrapper">
       <table className="tableBase">
         <HeaderRow tableConfig={tableConfig} columnVisibility={columnVisibility} setColumnVisibility={setColumnVisibility} />
+        <CurrentStateRow snapshot={currentSnapshot || null} charactersInBattle={charactersInBattle} tableConfig={tableConfig} columnVisibility={columnVisibility} />
         <tbody>
           {snapshots.map((snapshot, idx) => (
             <BodyRow key={Number(snapshot.id)} snapshot={snapshot} charactersInBattle={charactersInBattle} tableConfig={tableConfig} onSelectCharacter={onSelectCharacter} onSelectAction={onSelectAction} onRowClick={onRowClick} isLastRow={idx === snapshots.length - 1} isNewRow={highlightIds.has(Number(snapshot.id))} columnVisibility={columnVisibility} />

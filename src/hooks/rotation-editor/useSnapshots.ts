@@ -48,5 +48,6 @@ function createEmptySnapshot(charactersMap: Record<string, Character>, character
     buffs,
     debuffs,
     negativeStatuses,
+    negativeStatusesTimeLeft: Object.fromEntries(globalColumns.negativeStatuses.map(col => [col, 0])),
   }
 }

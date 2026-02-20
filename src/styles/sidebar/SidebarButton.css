@@ -12,10 +12,10 @@
   align-items: center;
   justify-content: center;
 
-  transition: 
-    transform var(--animation-duration) cubic-bezier(.2,.9,.2,1),
-    left var(--animation-duration) cubic-bezier(.2,.9,.2,1),
-    top var(--animation-duration) cubic-bezier(.2,.9,.2,1),
+  transition:
+    transform var(--animation-duration) cubic-bezier(0.2, 0.9, 0.2, 1),
+    left var(--animation-duration) cubic-bezier(0.2, 0.9, 0.2, 1),
+    top var(--animation-duration) cubic-bezier(0.2, 0.9, 0.2, 1),
     width var(--animation-duration) ease,
     height var(--animation-duration) ease;
 }
@@ -24,15 +24,16 @@
   width: var(--icon-size);
   height: var(--icon-size);
   pointer-events: none;
-  transition: transform var(--animation-duration) cubic-bezier(.2,.9,.2,1),
-              width var(--animation-duration) ease,
-              height var(--animation-duration) ease,
-              filter var(--animation-duration) ease;
+  transition:
+    transform var(--animation-duration) cubic-bezier(0.2, 0.9, 0.2, 1),
+    width var(--animation-duration) ease,
+    height var(--animation-duration) ease,
+    filter var(--animation-duration) ease;
 }
 
 .sidebar-ghost.collapsed {
-  left: calc(var(--content-column-width-free-space) + var(--topbar-left-margin) - 0px);
-  top: calc(var(--topbar-circle-top-space) + 1px);
+  left: calc(-6px - var(--icon-size) / 2);
+  top: calc(var(--icon-size) / 2 - 51px);
   transform: scale(0.78);
 }
 

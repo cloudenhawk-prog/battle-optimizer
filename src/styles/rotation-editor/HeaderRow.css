@@ -16,6 +16,8 @@
   font-weight: var(--group-text-weight);
   color: var(--table-text-dim);
   background: var(--table-header-bg);
+  cursor: pointer;
+  user-select: none;
 }
 
 .groupHeader::after {

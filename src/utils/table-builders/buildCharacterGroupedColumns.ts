@@ -14,7 +14,10 @@ export function buildCharacterGroupsColumns(selectedCharacters: Character[]): Co
       key: `${c.name}_${key}`,
       label: key.charAt(0).toUpperCase() + key.slice(1),
       icon: `/assets/${key}.png`,
-      render: (snapshot: Snapshot) => snapshot.charactersEnergies[c.name]?.[key],
+      render: (snapshot: Snapshot) => {
+        const energy = snapshot.charactersEnergies[c.name]?.[key]
+        return energy != null ? Math.floor(energy) : energy
+      },
     }))
 
     return {

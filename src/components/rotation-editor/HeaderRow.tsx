@@ -12,6 +12,19 @@ type HeaderRowProps = {
 export function HeaderRow({ tableConfig, columnVisibility, setColumnVisibility }: HeaderRowProps) {
   const countVisible = (columns: typeof tableConfig.basic.columns) => columns.filter(col => columnVisibility[col.key]).length
 
+  function handleGroupClick(groupColumns: typeof tableConfig.basic.columns) {
+    const visibleKeysinGroup = groupColumns.filter(col => columnVisibility[col.key]).map(col => col.key)
+    if (visibleKeysinGroup.length === 0) return
+
+    setColumnVisibility(prev => {
+      const updated = { ...prev }
+      visibleKeysinGroup.forEach(key => {
+        updated[key] = false
+      })
+      return updated
+    })
+  }
+
   function renderColumns(columns: typeof tableConfig.basic.columns, columnVisibility: ColumnVisibility, setColumnVisibility: React.Dispatch<React.SetStateAction<ColumnVisibility>>) {
     let firstVisible = true
     return columns
@@ -39,7 +52,7 @@ export function HeaderRow({ tableConfig, columnVisibility, setColumnVisibility }
           const visibleBasicCols = countVisible(tableConfig.basic.columns)
           const basicColSpan = 2 + visibleBasicCols // Character + Action + visible columns
           return basicColSpan > 0 ? (
-            <th className="groupHeader" colSpan={basicColSpan}>
+            <th className="groupHeader" colSpan={basicColSpan} onClick={() => handleGroupClick(tableConfig.basic.columns)}>
               <HeaderContent label={tableConfig.basic.label} icon={tableConfig.basic.icon} />
             </th>
           ) : null
@@ -50,7 +63,7 @@ export function HeaderRow({ tableConfig, columnVisibility, setColumnVisibility }
           const visibleCols = group.columns.filter(col => columnVisibility[col.key]).length
           if (!visibleCols) return null
           return (
-            <th key={group.label} className="groupHeader" colSpan={visibleCols}>
+            <th key={group.label} className="groupHeader" colSpan={visibleCols} onClick={() => handleGroupClick(group.columns)}>
               <HeaderContent label={group.label} icon={group.icon} />
             </th>
           )
@@ -62,7 +75,7 @@ export function HeaderRow({ tableConfig, columnVisibility, setColumnVisibility }
             const visibleCols = tableConfig.negativeStatuses.columns.filter(col => columnVisibility[col.key]).length
             if (!visibleCols) return null
             return (
-              <th className="groupHeader" colSpan={visibleCols}>
+              <th className="groupHeader" colSpan={visibleCols} onClick={() => handleGroupClick(tableConfig.negativeStatuses!.columns)}>
                 <HeaderContent label={tableConfig.negativeStatuses.label} icon={tableConfig.negativeStatuses.icon} />
               </th>
             )
@@ -74,7 +87,7 @@ export function HeaderRow({ tableConfig, columnVisibility, setColumnVisibility }
             const visibleCols = tableConfig.buffs.columns.filter(col => columnVisibility[col.key]).length
             if (!visibleCols) return null
             return (
-              <th className="groupHeader" colSpan={visibleCols}>
+              <th className="groupHeader" colSpan={visibleCols} onClick={() => handleGroupClick(tableConfig.buffs!.columns)}>
                 <HeaderContent label={tableConfig.buffs.label} icon={tableConfig.buffs.icon} />
               </th>
             )
@@ -86,7 +99,7 @@ export function HeaderRow({ tableConfig, columnVisibility, setColumnVisibility }
             const visibleCols = tableConfig.debuffs.columns.filter(col => columnVisibility[col.key]).length
             if (!visibleCols) return null
             return (
-              <th className="groupHeader" colSpan={visibleCols}>
+              <th className="groupHeader" colSpan={visibleCols} onClick={() => handleGroupClick(tableConfig.debuffs!.columns)}>
                 <HeaderContent label={tableConfig.debuffs.label} icon={tableConfig.debuffs.icon} />
               </th>
             )
