@@ -7,8 +7,6 @@ TASK: Data Overlay
 - Left Corner: The 3 buttons should have a title or helpful label -> we are swapping between scenarios like; too long but theoretically 'see scenario where everything crits'
 - Contributions: could also have hover - 'show more details'
 - All Sections: could have a small button in the right corner for explanations
-- General: Make more things clickable, for example secondary effects rows on-click could show more info about that damage entry
-- General: Merge 'Combat Metrics' and 'Primary Damage Output' -> then add the entire dmg entry from 'Primary Damage Output' to 'Secondary Effects' too and rename it (something like damage sources)
 - Tether: Swap the bottom two labels: TETHER//V3.2.17 and LINK: ESTABLISHED PHASE DRIFT: 0.02' so tether is the in the left bottom corner
 - General: Arrows up/down to swap between data overlays quickly. Also if you click outside the data overlay it should close
 - MODIFIER CONTRIBUTIONS: Remove empty shell for the pillars - It makes it seem like the biggest pillar is some sort of "max possible value" which is not the case: it's just used for scaling heights so it looks good.
