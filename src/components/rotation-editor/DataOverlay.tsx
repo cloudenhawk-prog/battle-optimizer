@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useState, useRef } from 'react'
 import '../../styles/rotation-editor/DataOverlay.css'
 import type { Snapshot } from '../../types/snapshot'
 import type { DamageEvent, Contribution } from '../../types/events'
@@ -215,6 +215,57 @@ function CombatOverviewSection({ totalDamage, duration, snapshot }: { totalDamag
 
 function DamageSourcesSection({ damageEvents, totalDamage, view, onViewChange }: { damageEvents: DamageEvent[]; totalDamage: number; view: 'events' | 'types'; onViewChange: (view: 'events' | 'types') => void }) {
   const [hoveredItem, setHoveredItem] = useState<{ name: string; damage: number; index: number; event?: DamageEvent } | null>(null)
+  const [showTooltip, setShowTooltip] = useState(false)
+  const [pinnedItem, setPinnedItem] = useState<{ name: string; damage: number; index: number; event?: DamageEvent } | null>(null)
+  const hoverTimeoutRef = useRef<number | null>(null)
+
+  const handleMouseEnter = (item: { name: string; damage: number; index: number; event?: DamageEvent }) => {
+    // Don't change hover state if an item is pinned
+    if (pinnedItem) return
+
+    setHoveredItem(item)
+    // Small delay to ensure layout is stable before showing tooltip
+    if (hoverTimeoutRef.current !== null) {
+      clearTimeout(hoverTimeoutRef.current)
+    }
+    hoverTimeoutRef.current = window.setTimeout(() => {
+      setShowTooltip(true)
+    }, 100)
+  }
+
+  const handleMouseLeave = () => {
+    // Don't hide tooltip if an item is pinned
+    if (pinnedItem) return
+
+    if (hoverTimeoutRef.current !== null) {
+      clearTimeout(hoverTimeoutRef.current)
+    }
+    setHoveredItem(null)
+    setShowTooltip(false)
+  }
+
+  const handleClick = (item: { name: string; damage: number; index: number; event?: DamageEvent }) => {
+    if (pinnedItem && pinnedItem.name === item.name && pinnedItem.index === item.index) {
+      // Unpin if clicking the same item
+      setPinnedItem(null)
+      setHoveredItem(null)
+      setShowTooltip(false)
+    } else {
+      // Pin the clicked item
+      setPinnedItem(item)
+      setHoveredItem(item)
+      setShowTooltip(true)
+    }
+  }
+
+  const handleClickAway = (e: React.MouseEvent) => {
+    // Only unpin if clicking outside the section content
+    if ((e.target as HTMLElement).closest('.sectionContent') === null) {
+      setPinnedItem(null)
+      setHoveredItem(null)
+      setShowTooltip(false)
+    }
+  }
 
   if (damageEvents.length === 0) {
     return (
@@ -249,7 +300,7 @@ function DamageSourcesSection({ damageEvents, totalDamage, view, onViewChange }:
   const displayData = view === 'types' ? aggregateDamageByType(damageEvents) : damageEvents.map(e => ({ name: e.actionName, damage: e.average, event: e }))
 
   return (
-    <div className="radialSection damageSourcesSection">
+    <div className="radialSection damageSourcesSection" onClick={handleClickAway}>
       <div className="connectorLine" />
       <div className="sectionCard silver">
         <div className="sectionTopAccent silver" />
@@ -261,8 +312,17 @@ function DamageSourcesSection({ damageEvents, totalDamage, view, onViewChange }:
           {displayData.map((item, index) => {
             const pct = totalDamage > 0 ? (item.damage / totalDamage) * 100 : 0
             const pieColor = PIE_CHART_COLORS[index % PIE_CHART_COLORS.length]
+            const isPinned = pinnedItem && pinnedItem.name === item.name && pinnedItem.index === index
             return (
-              <div key={index} className="damageSourceRow" onMouseEnter={() => setHoveredItem({ ...item, index })} onMouseLeave={() => setHoveredItem(null)}>
+              <div
+                key={index}
+                className={`damageSourceRow ${isPinned ? 'pinned' : ''}`}
+                onMouseEnter={() => handleMouseEnter({ ...item, index })}
+                onMouseLeave={handleMouseLeave}
+                onClick={e => {
+                  e.stopPropagation()
+                  handleClick({ ...item, index })
+                }}>
                 <DataRow label={item.name} value={`${item.damage.toFixed(0)} (${pct.toFixed(1)}%)`} barPct={pct} customColor={pieColor} />
               </div>
             )
@@ -282,7 +342,7 @@ function DamageSourcesSection({ damageEvents, totalDamage, view, onViewChange }:
       </div>
 
       {/* Detail tooltip when hovering over an item */}
-      {hoveredItem && (
+      {hoveredItem && showTooltip && (
         <div className="pieTooltip damageSourceTooltip" style={{ bottom: 'calc(100% + 20px)', left: '50%', transform: 'translateX(-50%)', top: 'auto', '--tooltip-color': PIE_CHART_COLORS[hoveredItem.index % PIE_CHART_COLORS.length] } as React.CSSProperties}>
           <div className="pieTooltipAccent" style={{ background: `linear-gradient(to right, ${PIE_CHART_COLORS[hoveredItem.index % PIE_CHART_COLORS.length]}, transparent)` }} />
           <div className="pieTooltipTitle" style={{ color: PIE_CHART_COLORS[hoveredItem.index % PIE_CHART_COLORS.length] }}>
