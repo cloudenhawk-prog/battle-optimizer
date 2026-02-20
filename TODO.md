@@ -1,5 +1,7 @@
 TODO:
 
+TASK: HOW do we want to handle trigger-timed based (potentially ramping) modifiers like Fleurdelys Mandate, or Fleurdelys potential 3 swords buff
+
 TASK: Data Overlay Pie Chart should have a hover to see each piece. The text in the middle should be more useful than just showing the biggest contributor. Maybe add a toggle/2 buttons that let's you see damage distribution of different sources OR damage types distribution (OR EVEN dmg distribution by owner - will need to know which belong to which character, and what belongs to 'no one'). The 3 buttons in the left corner should have a title or helpful label -> we are swapping between scenarios like; too long but theoretically 'see scenario where everything crits'
 Contributions could also have hover: show more details
 Each section could have a small button in the right corner for explanations
@@ -45,6 +47,13 @@ Context: Right now everything is summed up at the 'toTime' milestone. For a more
 
 Task: Implement custom importable combos
 Context: Characters might have certain combos they often use - like Cartethyia double Plunge pre-Fleurdelys combo. The idea would be: select a combo from some menu -> table automatically inserts all the rows
+
+Task: Character/gear builder
+Context: Would let you set up a character, automatically calculating stats.
+Task: Import characters/bosses in rotation editor
+Context: Would let you set up a "battle"
+
+
 
 
 ISSUES:

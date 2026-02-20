@@ -596,7 +596,7 @@ export const cartethyiaIntro: Action = {
   sideEffects: [],
 }
 
-// Outro should be a none-dmg action that applies a buff:
+// TODO Outro should be a none-dmg action that applies a buff:
 // Aero DMG dealt by ACTIVE resonators in the team OTHER THAN CARTETHYIA/FLEURDELYS to targets WITH negative statuses
 // .. is AMPLIFIED with 17.5 % for 20 seconds
 export const cartethyiaOutro: Action = {
@@ -616,6 +616,10 @@ export const cartethyiaOutro: Action = {
   damageModifiers: [],
   sideEffects: [],
 }
+
+
+
+
 
 
 
