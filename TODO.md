@@ -4,7 +4,6 @@ TASK: HOW do we want to handle trigger-timed based (potentially ramping) modifie
 
 TASK: Data Overlay
 
-- Pie Chart: Maybe add a toggle that let's you see damage distribution of different sources OR damage types distribution (basic, negative status, skill, ... whichever is present) (OR EVEN dmg distribution by owner - will need to know which belong to which character, and what belongs to 'no one').
 - Left Corner: The 3 buttons should have a title or helpful label -> we are swapping between scenarios like; too long but theoretically 'see scenario where everything crits'
 - Contributions: could also have hover - 'show more details'
 - All Sections: could have a small button in the right corner for explanations
