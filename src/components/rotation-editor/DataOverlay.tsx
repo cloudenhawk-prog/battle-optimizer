@@ -34,11 +34,11 @@ export default function DataOverlay({ snapshot, damageEvents = [], open, onClose
           <HudOverlay mode={mode} onModeChange={setMode} />
 
           {/* Central Pie Chart */}
-          <PieChartCenter damageEvents={damageEvents} totalDamage={totalDamage} view={pieChartView} onViewChange={setPieChartView} />
+          <PieChartCenter damageEvents={damageEvents} totalDamage={totalDamage} view={pieChartView} />
 
           {/* Radial Sections */}
           <CombatOverviewSection totalDamage={totalDamage} duration={duration} snapshot={snapshot} />
-          <DamageSourcesSection damageEvents={damageEvents} totalDamage={totalDamage} />
+          <DamageSourcesSection damageEvents={damageEvents} totalDamage={totalDamage} view={pieChartView} onViewChange={setPieChartView} />
           <ContributionsSection damageEvents={damageEvents} mode={mode} />
         </div>
       </div>
@@ -109,9 +109,7 @@ function HudOverlay({ mode, onModeChange }: { mode: 'average' | 'normal' | 'crit
   )
 }
 
-function PieChartCenter({ damageEvents, totalDamage, view, onViewChange }: { damageEvents: DamageEvent[]; totalDamage: number; view: 'events' | 'types'; onViewChange: (view: 'events' | 'types') => void }) {
-  const [hoveredSlice, setHoveredSlice] = useState<number | null>(null)
-
+function PieChartCenter({ damageEvents, totalDamage, view }: { damageEvents: DamageEvent[]; totalDamage: number; view: 'events' | 'types' }) {
   if (damageEvents.length === 0) return null
 
   // Aggregate damage by type if in 'types' view
@@ -119,8 +117,6 @@ function PieChartCenter({ damageEvents, totalDamage, view, onViewChange }: { dam
 
   // Format total damage for display
   const formattedDamage = totalDamage >= 1000 ? `${(totalDamage / 1000).toFixed(1)}k` : totalDamage.toFixed(0)
-
-  const hoveredData = hoveredSlice !== null ? displayData[hoveredSlice] : null
 
   return (
     <div className="pieChartCenter">
@@ -148,16 +144,16 @@ function PieChartCenter({ damageEvents, totalDamage, view, onViewChange }: { dam
 
       {/* Pie chart SVG */}
       {displayData.length === 1 ? (
-        <svg viewBox="0 0 200 200" className="pieChartSvg" style={{ pointerEvents: 'auto' }}>
-          <circle cx="100" cy="100" r="90" fill={PIE_CHART_COLORS[0]} stroke="rgba(30, 30, 40, 0.95)" strokeWidth="2" className="pieSlice" onMouseEnter={() => setHoveredSlice(0)} onMouseLeave={() => setHoveredSlice(null)} />
+        <svg viewBox="0 0 200 200" className="pieChartSvg">
+          <circle cx="100" cy="100" r="90" fill={PIE_CHART_COLORS[0]} stroke="rgba(30, 30, 40, 0.95)" strokeWidth="2" className="pieSlice" />
         </svg>
       ) : (
-        <svg viewBox="0 0 200 200" className="pieChartSvg" style={{ pointerEvents: 'auto' }}>
+        <svg viewBox="0 0 200 200" className="pieChartSvg">
           {calculatePieSlices(
             displayData.map(d => d.damage),
             PIE_CHART_COLORS,
           ).map((slice, index) => (
-            <path key={index} d={slice.path} fill={slice.color} stroke="rgba(30, 30, 40, 0.95)" strokeWidth="2" className={`pieSlice ${hoveredSlice === index ? 'hovered' : ''}`} onMouseEnter={() => setHoveredSlice(index)} onMouseLeave={() => setHoveredSlice(null)} />
+            <path key={index} d={slice.path} fill={slice.color} stroke="rgba(30, 30, 40, 0.95)" strokeWidth="2" className="pieSlice" />
           ))}
         </svg>
       )}
@@ -169,14 +165,6 @@ function PieChartCenter({ damageEvents, totalDamage, view, onViewChange }: { dam
         </div>
         <div className="piePercentage" style={{ pointerEvents: 'none' }}>
           {formattedDamage}
-        </div>
-        <div className="pieViewToggle">
-          <button className={`pieViewButton ${view === 'events' ? 'active' : ''}`} onClick={() => onViewChange('events')}>
-            Events
-          </button>
-          <button className={`pieViewButton ${view === 'types' ? 'active' : ''}`} onClick={() => onViewChange('types')}>
-            Types
-          </button>
         </div>
       </div>
 
@@ -196,47 +184,6 @@ function PieChartCenter({ damageEvents, totalDamage, view, onViewChange }: { dam
           />
         ))}
       </div>
-
-      {/* Hover tooltip */}
-      {hoveredData && hoveredSlice !== null && (
-        <div className="pieTooltip" style={{ '--tooltip-color': PIE_CHART_COLORS[hoveredSlice % PIE_CHART_COLORS.length] } as React.CSSProperties}>
-          <div className="pieTooltipAccent" style={{ background: `linear-gradient(to right, ${PIE_CHART_COLORS[hoveredSlice % PIE_CHART_COLORS.length]}, transparent)` }} />
-          <div className="pieTooltipTitle" style={{ color: PIE_CHART_COLORS[hoveredSlice % PIE_CHART_COLORS.length] }}>
-            {hoveredData.name}
-          </div>
-          <div className="pieTooltipDivider" />
-          {view === 'events' && hoveredData.event && (
-            <>
-              <div className="pieTooltipRow">
-                <span className="pieTooltipLabel">Dealer</span>
-                <span className="pieTooltipValue">{hoveredData.event.dealer}</span>
-              </div>
-              <div className="pieTooltipRow">
-                <span className="pieTooltipLabel">Target</span>
-                <span className="pieTooltipValue">{hoveredData.event.target}</span>
-              </div>
-            </>
-          )}
-          <div className="pieTooltipRow">
-            <span className="pieTooltipLabel">Damage</span>
-            <span className="pieTooltipValue pieTooltipHighlight" style={{ color: PIE_CHART_COLORS[hoveredSlice % PIE_CHART_COLORS.length] }}>
-              {hoveredData.damage.toFixed(0)}
-            </span>
-          </div>
-          <div className="pieTooltipRow">
-            <span className="pieTooltipLabel">Share</span>
-            <span className="pieTooltipValue pieTooltipHighlight" style={{ color: PIE_CHART_COLORS[hoveredSlice % PIE_CHART_COLORS.length] }}>
-              {((hoveredData.damage / totalDamage) * 100).toFixed(1)}%
-            </span>
-          </div>
-          {view === 'events' && hoveredData.event && hoveredData.event.elements.length > 0 && (
-            <div className="pieTooltipRow">
-              <span className="pieTooltipLabel">Elements</span>
-              <span className="pieTooltipValue">{hoveredData.event.elements.join(', ')}</span>
-            </div>
-          )}
-        </div>
-      )}
     </div>
   )
 }
@@ -266,8 +213,8 @@ function CombatOverviewSection({ totalDamage, duration, snapshot }: { totalDamag
   )
 }
 
-function DamageSourcesSection({ damageEvents, totalDamage }: { damageEvents: DamageEvent[]; totalDamage: number }) {
-  const [hoveredEvent, setHoveredEvent] = useState<{ event: DamageEvent; index: number } | null>(null)
+function DamageSourcesSection({ damageEvents, totalDamage, view, onViewChange }: { damageEvents: DamageEvent[]; totalDamage: number; view: 'events' | 'types'; onViewChange: (view: 'events' | 'types') => void }) {
+  const [hoveredItem, setHoveredItem] = useState<{ name: string; damage: number; index: number; event?: DamageEvent } | null>(null)
 
   if (damageEvents.length === 0) {
     return (
@@ -277,16 +224,29 @@ function DamageSourcesSection({ damageEvents, totalDamage }: { damageEvents: Dam
           <div className="sectionTopAccent silver" />
           <div className="sectionTitle silver">
             <div className="titleDot silver" />
-            <span>Damage Sources</span>
+            <span>{view === 'events' ? 'Damage Sources' : 'Damage Types'}</span>
           </div>
           <div className="sectionContent">
             <p className="emptyMessage">No damage sources detected</p>
           </div>
           <div className="sectionBottomAccent silver" />
         </div>
+        <div className="damageSourcesHeader">
+          <div className="pieViewToggle">
+            <button className={`pieViewButton ${view === 'events' ? 'active' : ''}`} onClick={() => onViewChange('events')}>
+              Events
+            </button>
+            <button className={`pieViewButton ${view === 'types' ? 'active' : ''}`} onClick={() => onViewChange('types')}>
+              Types
+            </button>
+          </div>
+        </div>
       </div>
     )
   }
+
+  // Prepare display data based on view
+  const displayData = view === 'types' ? aggregateDamageByType(damageEvents) : damageEvents.map(e => ({ name: e.actionName, damage: e.average, event: e }))
 
   return (
     <div className="radialSection damageSourcesSection">
@@ -295,62 +255,92 @@ function DamageSourcesSection({ damageEvents, totalDamage }: { damageEvents: Dam
         <div className="sectionTopAccent silver" />
         <div className="sectionTitle silver">
           <div className="titleDot silver" />
-          <span>Damage Sources</span>
+          <span>{view === 'events' ? 'Damage Sources' : 'Damage Types'}</span>
         </div>
         <div className="sectionContent">
-          {damageEvents.map((event, index) => {
-            const pct = totalDamage > 0 ? (event.average / totalDamage) * 100 : 0
+          {displayData.map((item, index) => {
+            const pct = totalDamage > 0 ? (item.damage / totalDamage) * 100 : 0
             const pieColor = PIE_CHART_COLORS[index % PIE_CHART_COLORS.length]
             return (
-              <div key={index} className="damageSourceRow" onMouseEnter={() => setHoveredEvent({ event, index })} onMouseLeave={() => setHoveredEvent(null)}>
-                <DataRow label={event.actionName} value={`${event.average.toFixed(0)} (${pct.toFixed(1)}%)`} barPct={pct} customColor={pieColor} />
+              <div key={index} className="damageSourceRow" onMouseEnter={() => setHoveredItem({ ...item, index })} onMouseLeave={() => setHoveredItem(null)}>
+                <DataRow label={item.name} value={`${item.damage.toFixed(0)} (${pct.toFixed(1)}%)`} barPct={pct} customColor={pieColor} />
               </div>
             )
           })}
         </div>
         <div className="sectionBottomAccent silver" />
       </div>
+      <div className="damageSourcesHeader">
+        <div className="pieViewToggle">
+          <button className={`pieViewButton ${view === 'events' ? 'active' : ''}`} onClick={() => onViewChange('events')}>
+            Events
+          </button>
+          <button className={`pieViewButton ${view === 'types' ? 'active' : ''}`} onClick={() => onViewChange('types')}>
+            Types
+          </button>
+        </div>
+      </div>
 
-      {/* Detail tooltip when hovering over an event */}
-      {hoveredEvent && (
-        <div className="pieTooltip damageSourceTooltip" style={{ bottom: 'calc(100% + 20px)', left: '50%', transform: 'translateX(-50%)', top: 'auto', '--tooltip-color': PIE_CHART_COLORS[hoveredEvent.index % PIE_CHART_COLORS.length] } as React.CSSProperties}>
-          <div className="pieTooltipAccent" style={{ background: `linear-gradient(to right, ${PIE_CHART_COLORS[hoveredEvent.index % PIE_CHART_COLORS.length]}, transparent)` }} />
-          <div className="pieTooltipTitle" style={{ color: PIE_CHART_COLORS[hoveredEvent.index % PIE_CHART_COLORS.length] }}>
-            {hoveredEvent.event.actionName}
+      {/* Detail tooltip when hovering over an item */}
+      {hoveredItem && (
+        <div className="pieTooltip damageSourceTooltip" style={{ bottom: 'calc(100% + 20px)', left: '50%', transform: 'translateX(-50%)', top: 'auto', '--tooltip-color': PIE_CHART_COLORS[hoveredItem.index % PIE_CHART_COLORS.length] } as React.CSSProperties}>
+          <div className="pieTooltipAccent" style={{ background: `linear-gradient(to right, ${PIE_CHART_COLORS[hoveredItem.index % PIE_CHART_COLORS.length]}, transparent)` }} />
+          <div className="pieTooltipTitle" style={{ color: PIE_CHART_COLORS[hoveredItem.index % PIE_CHART_COLORS.length] }}>
+            {hoveredItem.name}
           </div>
           <div className="pieTooltipDivider" />
-          <div className="pieTooltipRow">
-            <span className="pieTooltipLabel">Dealer</span>
-            <span className="pieTooltipValue">{hoveredEvent.event.dealer}</span>
-          </div>
-          <div className="pieTooltipRow">
-            <span className="pieTooltipLabel">Target</span>
-            <span className="pieTooltipValue">{hoveredEvent.event.target}</span>
-          </div>
-          <div className="pieTooltipRow">
-            <span className="pieTooltipLabel">Avg Damage</span>
-            <span className="pieTooltipValue pieTooltipHighlight" style={{ color: PIE_CHART_COLORS[hoveredEvent.index % PIE_CHART_COLORS.length] }}>
-              {hoveredEvent.event.average.toFixed(0)}
-            </span>
-          </div>
-          <div className="pieTooltipRow">
-            <span className="pieTooltipLabel">Normal Hit</span>
-            <span className="pieTooltipValue">{hoveredEvent.event.normalStrike.toFixed(0)}</span>
-          </div>
-          <div className="pieTooltipRow">
-            <span className="pieTooltipLabel">Critical Hit</span>
-            <span className="pieTooltipValue">{hoveredEvent.event.criticalStrike.toFixed(0)}</span>
-          </div>
-          {hoveredEvent.event.elements.length > 0 && (
-            <div className="pieTooltipRow">
-              <span className="pieTooltipLabel">Elements</span>
-              <span className="pieTooltipValue">{hoveredEvent.event.elements.join(', ')}</span>
-            </div>
+          {view === 'events' && hoveredItem.event && (
+            <>
+              <div className="pieTooltipRow">
+                <span className="pieTooltipLabel">Dealer</span>
+                <span className="pieTooltipValue">{hoveredItem.event.dealer}</span>
+              </div>
+              <div className="pieTooltipRow">
+                <span className="pieTooltipLabel">Target</span>
+                <span className="pieTooltipValue">{hoveredItem.event.target}</span>
+              </div>
+              <div className="pieTooltipRow">
+                <span className="pieTooltipLabel">Avg Damage</span>
+                <span className="pieTooltipValue pieTooltipHighlight" style={{ color: PIE_CHART_COLORS[hoveredItem.index % PIE_CHART_COLORS.length] }}>
+                  {hoveredItem.event.average.toFixed(0)}
+                </span>
+              </div>
+              <div className="pieTooltipRow">
+                <span className="pieTooltipLabel">Normal Hit</span>
+                <span className="pieTooltipValue">{hoveredItem.event.normalStrike.toFixed(0)}</span>
+              </div>
+              <div className="pieTooltipRow">
+                <span className="pieTooltipLabel">Critical Hit</span>
+                <span className="pieTooltipValue">{hoveredItem.event.criticalStrike.toFixed(0)}</span>
+              </div>
+              {hoveredItem.event.elements.length > 0 && (
+                <div className="pieTooltipRow">
+                  <span className="pieTooltipLabel">Elements</span>
+                  <span className="pieTooltipValue">{hoveredItem.event.elements.join(', ')}</span>
+                </div>
+              )}
+              <div className="pieTooltipRow">
+                <span className="pieTooltipLabel">Damage Types</span>
+                <span className="pieTooltipValue">{hoveredItem.event.dmgTypes.join(', ')}</span>
+              </div>
+            </>
           )}
-          <div className="pieTooltipRow">
-            <span className="pieTooltipLabel">Damage Types</span>
-            <span className="pieTooltipValue">{hoveredEvent.event.dmgTypes.join(', ')}</span>
-          </div>
+          {view === 'types' && (
+            <>
+              <div className="pieTooltipRow">
+                <span className="pieTooltipLabel">Total Damage</span>
+                <span className="pieTooltipValue pieTooltipHighlight" style={{ color: PIE_CHART_COLORS[hoveredItem.index % PIE_CHART_COLORS.length] }}>
+                  {hoveredItem.damage.toFixed(0)}
+                </span>
+              </div>
+              <div className="pieTooltipRow">
+                <span className="pieTooltipLabel">Percentage</span>
+                <span className="pieTooltipValue pieTooltipHighlight" style={{ color: PIE_CHART_COLORS[hoveredItem.index % PIE_CHART_COLORS.length] }}>
+                  {((hoveredItem.damage / totalDamage) * 100).toFixed(1)}%
+                </span>
+              </div>
+            </>
+          )}
         </div>
       )}
     </div>
