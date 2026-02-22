@@ -185,3 +185,16 @@ Lav (fremtid):
 - Analytics page
 - Settings page
 - Pie charts visualisering
+
+
+
+
+
+
+
+
+
+
+
+
+

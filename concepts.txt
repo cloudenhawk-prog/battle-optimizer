@@ -1,0 +1,1363 @@
+Common issue:
+Overly number-heavy, boring.
+Amplify visual atmosphere in CSS. Redesign table for cinematic feel, not just analytics number-spamming (that is something that can be left for the future)
+
+
+3 CONCEPTS:
+Combat Rotation Instrument
+
+Concept 1: "Signal Wire"
+Screen: A single horizontal timeline spine runs across the center of the screen — thin, glowing, pale cyan. Snapshots are vertical pulses rising above and below this spine like an oscilloscope. Above: damage events. Below: resource consumption. Character switches are marked by a subtle color-shift along the spine itself — each character owns a hue (teal, amber, violet).
+
+Time: The spine is time. It scrolls horizontally. The viewport is roughly 15–20 snapshots wide. The current focus point has a bright vertical hairline cursor. Past fades to lower opacity. Future is dim but visible, like radar echoes.
+
+DPS & Impact: High-damage snapshots produce taller pulses with a brief radial bloom — like a signal spike on a monitor. The pulse height maps to raw damage. A faint trailing glow lingers for 0.3s after big hits. Crits have a sharper, whiter peak. The DPS average is a slow-moving sine wave underneath, ghosted.
+
+Buffs/Debuffs/Resources: Buffs appear as thin horizontal tether lines stretching from their activation point forward along the spine until expiry — color-coded, slightly translucent. When you hover a buff line, every snapshot it touches subtly brightens. Debuffs hang below the spine as inverted, red-shifted versions. Resources (Energy, Forte, etc.) are stacked micro-bars at each snapshot position — like tiny vertical gauges embedded into the spine, almost like LED indicators on hardware.
+
+Hover/Select: Hovering a snapshot causes tether lines to extend outward to every connected element — the buff that was active, the resource state, the character. These lines animate in with a quick elastic ease. The snapshot lifts slightly (2px) and a detail panel materializes to the right — not a popup, but a smooth slide-in pane with glowing borders. Everything else dims to 40% opacity.
+
+Motion: Precise. Mechanical. Like a high-end audio visualizer. Easing is tight spring curves. Nothing bounces — everything snaps with a slight overshoot then settles. Scrolling the timeline feels like scrubbing a waveform.
+
+Aesthetic: Dark background (#0a0e14). Monospaced micro-type. Thin 1px lines. Glow effects are additive blending — cyan, amber, soft white. Minimal use of fills. Everything is lines, pulses, and light. Feels like a military-grade signal analyzer.
+
+Concept 2: "Orbital Ring"
+Screen: The rotation is literal — snapshots are arranged in a large circular arc filling 70% of the viewport. The circle represents the full rotation cycle. Each snapshot is a node on the ring — a small diamond or hexagon. The currently selected node is enlarged and pulled slightly toward center. The center of the ring is a live readout zone: character portrait (silhouette-style), current DPS, active buffs displayed as orbiting particles.
+
+Time: Time flows clockwise. A faint animated dash pattern traces the ring's circumference like a loading indicator, showing progression. Character segments own arcs of the ring — visually distinguished by a subtle background gradient band behind their section. Transition points between characters have a brief "handoff" gap with a small spark animation.
+
+DPS & Impact: Each node's size and inner brightness scales with damage dealt. Low-damage nodes are dim, small. High-damage nodes pulse with a warm amber/white core. The ring itself thickens at high-DPS stretches — like a vessel carrying more energy. A radial bar chart in the center updates to show DPS over the last N snapshots as you scrub around the ring.
+
+Buffs/Debuffs/Resources: Buffs are concentric inner rings — thinner, translucent arcs that span their duration. Hovering a buff arc highlights every node it covers. Resources are shown as a secondary ring just inside the main one — segmented gauge style, color fills indicating current levels. Overcaps flash briefly with a warning amber pulse. Debuffs/DoTs are shown as outer ring thorns — small angular protrusions on the exterior.
+
+Hover/Select: Selecting a node causes radial lines to shoot from it to the center readout, which transitions to show that snapshot's full detail. Connected buffs illuminate their arcs. A subtle ripple emanates outward from the selected node. Neighboring nodes shift slightly apart to give breathing room.
+
+Motion: Rotational, gravitational. Things orbit, sweep, and arc. No linear translations — everything curves. Easing is smooth and planetary. The ring itself can be slowly rotated by drag gesture, giving a tactile globe-like feel.
+
+Aesthetic: Deep navy background with subtle radial gradient toward center. The ring glows softly — like a holographic projector. Colors are cool-dominant: steel blue, ice white, with warm amber for damage spikes. Thin line weights (0.5–1px). Typography is geometric sans-serif, small, placed tangentially along curves. Feels like a sci-fi tactical display from a mech cockpit.
+
+Concept 3: "Tether Field"
+Screen: No single axis. Snapshots are laid out in a flowing, left-to-right river formation — not a strict grid, not a line. They meander slightly, like a path through space. Each snapshot is a small circular node. Tether lines visibly connect sequential nodes, and also connect nodes that share buffs, character, or resource thresholds — creating a web of relationships. The background is near-black with a faint dot grid (like graph paper in space).
+
+Time: Time flows left to right, but the vertical position of each node is driven by its "intensity" — high-DPS moments drift upward, recovery/setup moments sink lower. This creates a topographical landscape of the fight. Peaks and valleys are immediately readable. A ghosted horizontal baseline shows "average" intensity.
+
+DPS & Impact: The tether lines between high-damage nodes glow brighter and thicker — like power cables under load. Crit chains cause a brief cascade animation along connected lines, like electricity traveling. The nodes themselves have a radial gradient: warm core = high damage, cool core = utility/setup. A faint heatmap wash behind the node field shows DPS density — warmer bands where damage clusters.
+
+Buffs/Debuffs/Resources: Buffs are visualized as fields — soft, translucent rectangular zones behind the nodes they affect, with rounded edges and a gentle color fill (green-tinted for buffs, red-tinted for debuffs). Multiple overlapping buffs create layered translucency — visually showing buff stacking. Resources appear as tiny spark lines trailing behind each node — longer trails = more resource remaining. Overcap moments have the trail "breaking" with a small shatter particle effect.
+
+Hover/Select: Hovering a node activates its tether network. Every line connected to it (sequential, buff-shared, character-shared) illuminates with a quick propagation animation — light traveling along the wire from the hovered node outward. Unrelated nodes fade to near-invisible. A detail panel appears anchored to the node — floating, with a subtle parallax offset as you move the cursor. The panel has no hard border — just a soft shadow and glass-morphic blur.
+
+Motion: Organic but controlled. Like neural signals firing. Lines illuminate with traveling-light animations. Nodes breathe (subtle scale oscillation). Field zones fade in with soft gaussian expansion. Nothing snaps — everything flows with 300–500ms durations and cubic-bezier easing. Feels alive but calm.
+
+Aesthetic: Almost-black background (#08090d) with a 1px dot grid at 5% opacity. Node colors shift per character: teal, warm gold, soft rose. Tether lines are 1px, white at 20% opacity by default, brightening to 80% on activation. Typography is thin-weight, slightly warm white, with generous letter-spacing. The overall feel is like a constellation map crossed with a neural network visualization — cerebral, beautiful, slightly haunting.
+
+My recommendation: Concept 3 ("Tether Field") is the most aligned with Wuthering Waves' tether identity — it literally visualizes cause-and-effect as connected tension lines, and the intensity-driven vertical positioning makes the fight's rhythm immediately spatial. Want me to build it?
+
+
+
+
+
+
+
+3 CONCEPTS:
+Revamped with ChatGPT to fit a table like structure:
+1. Signal Wire → Vertical Table Spine
+
+Visual idea: Flip the horizontal spine into a vertical central axis. Each snapshot becomes a horizontal pulse/row across the spine.
+
+Buffs/debuffs tether left and right instead of above/below.
+
+Resources appear as mini stacked bars embedded in the row, like LED strips along the axis.
+
+Hovering a row highlights tethers flowing outward, pulling connected snapshots and resource lines into focus.
+
+Effect: Feels like a table from top to bottom, but still living and reactive. You can scroll vertically and see DPS spikes, energy flows, and buffs without ever losing the “tether system” aesthetic.
+
+2. Orbital Ring → Columned Rotation
+
+Visual idea: Instead of a circular orbit, make each “character segment” a vertical lane, like columns in a table.
+
+Snapshots are stacked nodes along the column (time flows top→bottom).
+
+Buffs/debuffs are concentric arcs or overlay bands along the column, maybe with subtle animation.
+
+Hovering a snapshot triggers radial tethers connecting to adjacent columns (other characters) or resources.
+
+Effect: Keeps the cinematic orbital feel, but now the table has readable columns per character, with spatial relationships and flowing motion intact.
+
+3. Tether Field → Columned “Network Table”
+
+Visual idea: Keep a top-to-bottom timeline per character (or combined in a multi-column view).
+
+Each snapshot is a node in its row; tethers flow horizontally across columns connecting buffs, resources, or other snapshots.
+
+High-DPS nodes can rise slightly above the row for visual emphasis.
+
+Overlapping buffs/debuffs are layered with translucency behind each row.
+
+Hovering a node lights up its tether network across the table.
+
+Effect: Feels very much like a table, but the tether network brings the data to life. You get the readability of a table but retain a dynamic, signal-like, relational visual system.
+
+✅ Takeaway:
+All three concepts can adapt to a top-down, column/row structure with minimal tweaks:
+
+Flip axes (horizontal → vertical)
+
+Treat columns as character/resource lanes
+
+Keep tethers, pulses, and dynamic interactions
+
+Preserve intensity cues (spike height, glow, color)
+
+You could essentially have a “table that looks alive”, with relational motion, flowing energy, and a clear visual hierarchy — a hybrid between a table and a tethered visualization.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+REVISED PROMPT:
+Create a snapshot-based interface that is technically a table with rows and columns, but visually behaves like a living tether system console rather than a static data table.
+
+The table is the structure, not the aesthetic.
+It should feel like interacting with an active system displaying flowing combat signals, where data pulses, rotates, propagates, and responds to focus.
+
+Structural Foundation (Important)
+
+The layout uses rows and columns
+
+Each row represents a snapshot
+
+Columns represent channels (time, character state, resources, buffs, damage, etc.)
+
+Scrolling is vertical
+
+The table must remain readable and structurally sound
+
+However:
+
+Rows should not read as flat rectangles
+
+Columns should not feel like static spreadsheet columns
+
+Visual grouping, layering, and animation are encouraged
+
+Visual Interpretation of Rows & Columns
+
+Rows can behave like:
+
+signal bands
+
+data lanes
+
+energy slices
+
+system pulses
+
+Columns can be visualized as:
+
+vertical lanes of energy
+
+stacked modules
+
+embedded gauges
+
+rotating or oscillating components inside the row
+
+Avoid visible gridlines where possible — imply structure through spacing, glow, and alignment.
+
+Animation & “Alive” Behavior (Key Priority)
+
+Use animation to make the table feel active and intelligent:
+
+Subtle continuous motion:
+
+slow rotation of circular indicators
+
+pulsing glows traveling through rows
+
+oscillating resource bars
+
+Reactive motion:
+
+hovering a row sends light through connected columns
+
+selecting a row slightly lifts it and increases signal intensity
+
+adjacent rows respond with faint sympathetic motion
+
+Propagation effects:
+
+buffs and states visually flow across multiple rows
+
+high-impact snapshots emit brief signal surges
+
+Nothing should feel static — even idle elements should “breathe”
+
+Animations should be controlled and elegant, not chaotic.
+
+Data Density & Presentation
+
+Numbers exist, but are not the visual focus
+
+Prefer:
+
+bars, rings, arcs, pulses, or glyphs
+
+animated indicators over raw text
+
+Detailed numeric data can:
+
+fade in on hover
+
+appear in overlays or side panels
+
+be secondary to visual signal strength
+
+The first impression should be system behavior, not analytics.
+
+Interaction Model
+
+Rows are interactive:
+
+hover reveals relationships
+
+selection increases brightness and motion
+
+Hovering a row:
+
+highlights related columns
+
+animates tethers between affected data points
+
+subtly dims unrelated rows
+
+The table should feel like:
+
+a console you’re probing
+
+not a list you’re reading
+
+Visual Style & Atmosphere
+
+Dark, cinematic background
+
+Thin strokes, glowing accents
+
+Additive light effects preferred over solid fills
+
+Minimal borders
+
+Clean, futuristic typography
+
+Color used as signal, not decoration
+
+Overall tone:
+A calm but powerful internal system — precise, responsive, and alive.
+
+Design Intent Clarification
+
+This is not a static UI mockup.
+
+It is a system display:
+
+rows = moments
+
+columns = channels
+
+animations = activity
+
+glow & motion = state
+
+If the table were paused, it would still look interesting.
+When interacted with, it should feel reactive and intelligent.
+
+Final Guiding Question (For Design Decisions)
+
+“Does this element feel like part of a living system — or like a cell in a spreadsheet?”
+
+If it feels alive, you’re doing it right.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+FILES
+Files from lovable.dev for the initial 3rd concept.
+
+
+Building the Tether Field visualization — dark combat telemetry aesthetic with flowing nodes, animated tether lines, and glassmorphic detail panels.
+
+Installed
+framer-motion
+@tailwind utilities;
+/* Definition of the design system. All colors, gradients, fonts, etc should be defined here. 
+All colors MUST be HSL.
+*/
+@import url('https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&family=JetBrains+Mono:wght@300;400;500&display=swap');
+@layer base {
+  :root {
+    --background: 0 0% 100%;
+    --foreground: 222.2 84% 4.9%;
+    --background: 228 35% 3%;
+    --foreground: 35 12% 86%;
+    --card: 0 0% 100%;
+    --card-foreground: 222.2 84% 4.9%;
+    --card: 225 28% 6%;
+    --card-foreground: 35 12% 86%;
+    --popover: 0 0% 100%;
+    --popover-foreground: 222.2 84% 4.9%;
+    --popover: 225 28% 6%;
+    --popover-foreground: 35 12% 86%;
+    --primary: 222.2 47.4% 11.2%;
+    --primary-foreground: 210 40% 98%;
+    --primary: 174 58% 39%;
+    --primary-foreground: 174 90% 94%;
+    --secondary: 210 40% 96.1%;
+    --secondary-foreground: 222.2 47.4% 11.2%;
+    --secondary: 38 92% 50%;
+    --secondary-foreground: 38 95% 92%;
+    --muted: 210 40% 96.1%;
+    --muted-foreground: 215.4 16.3% 46.9%;
+    --muted: 225 18% 10%;
+    --muted-foreground: 220 10% 42%;
+    --accent: 210 40% 96.1%;
+    --accent-foreground: 222.2 47.4% 11.2%;
+    --accent: 330 65% 65%;
+    --accent-foreground: 330 80% 92%;
+    --destructive: 0 84.2% 60.2%;
+    --destructive-foreground: 210 40% 98%;
+    --destructive: 0 72% 50%;
+    --destructive-foreground: 0 0% 96%;
+    --border: 214.3 31.8% 91.4%;
+    --input: 214.3 31.8% 91.4%;
+    --ring: 222.2 84% 4.9%;
+    --border: 225 18% 13%;
+    --input: 225 18% 13%;
+    --ring: 174 58% 39%;
+    --radius: 0.5rem;
+    --sidebar-background: 0 0% 98%;
+    /* Character system */
+    --char-jiyan: 174 58% 39%;
+    --char-mortefi: 38 92% 50%;
+    --char-verina: 330 65% 65%;
+    --sidebar-foreground: 240 5.3% 26.1%;
+    --glow-jiyan: 174 80% 50%;
+    --glow-mortefi: 38 95% 55%;
+    --glow-verina: 330 72% 62%;
+    --sidebar-primary: 240 5.9% 10%;
+    /* Tether system */
+    --tether: 0 0% 100%;
+    --tether-idle: 0.12;
+    --tether-active: 0.7;
+    /* Dot grid */
+    --grid-dot: 220 20% 50%;
+    /* Glass */
+    --glass-bg: 225 30% 8%;
+    --glass-border: 225 20% 18%;
+    /* Buff zones */
+    --buff-positive: 160 50% 45%;
+    --buff-negative: 0 60% 50%;
+    --sidebar-background: 225 28% 5%;
+    --sidebar-foreground: 35 12% 86%;
+    --sidebar-primary: 174 58% 39%;
+    --sidebar-primary-foreground: 0 0% 98%;
+    --sidebar-accent: 240 4.8% 95.9%;
+    --sidebar-accent-foreground: 240 5.9% 10%;
+    --sidebar-border: 220 13% 91%;
+    --sidebar-ring: 217.2 91.2% 59.8%;
+  }
+  .dark {
+    --background: 222.2 84% 4.9%;
+    --foreground: 210 40% 98%;
+    --card: 222.2 84% 4.9%;
+    --card-foreground: 210 40% 98%;
+    --popover: 222.2 84% 4.9%;
+    --popover-foreground: 210 40% 98%;
+    --primary: 210 40% 98%;
+    --primary-foreground: 222.2 47.4% 11.2%;
+    --secondary: 217.2 32.6% 17.5%;
+    --secondary-foreground: 210 40% 98%;
+    --muted: 217.2 32.6% 17.5%;
+    --muted-foreground: 215 20.2% 65.1%;
+    --accent: 217.2 32.6% 17.5%;
+    --accent-foreground: 210 40% 98%;
+    --destructive: 0 62.8% 30.6%;
+    --destructive-foreground: 210 40% 98%;
+    --border: 217.2 32.6% 17.5%;
+    --input: 217.2 32.6% 17.5%;
+    --ring: 212.7 26.8% 83.9%;
+    --sidebar-background: 240 5.9% 10%;
+    --sidebar-foreground: 240 4.8% 95.9%;
+    --sidebar-primary: 224.3 76.3% 48%;
+    --sidebar-primary-foreground: 0 0% 100%;
+    --sidebar-accent: 240 3.7% 15.9%;
+    --sidebar-accent-foreground: 240 4.8% 95.9%;
+    --sidebar-border: 240 3.7% 15.9%;
+    --sidebar-ring: 217.2 91.2% 59.8%;
+    --sidebar-accent: 225 18% 10%;
+    --sidebar-accent-foreground: 35 12% 86%;
+    --sidebar-border: 225 18% 13%;
+    --sidebar-ring: 174 58% 39%;
+  }
+}
+  body {
+    @apply bg-background text-foreground;
+    font-family: 'Space Grotesk', system-ui, sans-serif;
+  }
+  code, .mono {
+    font-family: 'JetBrains Mono', monospace;
+  }
+}
+@layer components {
+  /* ===== DOT GRID BACKGROUND ===== */
+  .tether-bg {
+    background-color: hsl(var(--background));
+    background-image: radial-gradient(
+      circle,
+      hsl(var(--grid-dot) / 0.04) 1px,
+      transparent 1px
+    );
+    background-size: 28px 28px;
+    position: relative;
+  }
+  .tether-bg::after {
+    content: '';
+    position: fixed;
+    inset: 0;
+    background: radial-gradient(
+      ellipse at 50% 50%,
+      transparent 40%,
+      hsl(var(--background) / 0.85) 100%
+    );
+    pointer-events: none;
+    z-index: 1;
+  }
+  /* ===== VIEWPORT ===== */
+  .tether-viewport {
+    @apply w-full h-screen overflow-x-auto overflow-y-hidden relative;
+    scrollbar-width: thin;
+    scrollbar-color: hsl(var(--muted-foreground) / 0.2) transparent;
+    z-index: 2;
+  }
+  .tether-viewport::-webkit-scrollbar {
+    height: 4px;
+  }
+  .tether-viewport::-webkit-scrollbar-track {
+    background: transparent;
+  }
+  .tether-viewport::-webkit-scrollbar-thumb {
+    background: hsl(var(--muted-foreground) / 0.2);
+    border-radius: 4px;
+  }
+  /* Edge fade gradients */
+  .tether-edge-left,
+  .tether-edge-right {
+    @apply fixed top-0 bottom-0 w-24 pointer-events-none;
+    z-index: 10;
+  }
+  .tether-edge-left {
+    left: 0;
+    background: linear-gradient(to right, hsl(var(--background)), transparent);
+  }
+  .tether-edge-right {
+    right: 0;
+    background: linear-gradient(to left, hsl(var(--background)), transparent);
+  }
+  /* ===== FIELD ===== */
+  .tether-field {
+    @apply relative;
+    min-height: 100vh;
+  }
+  /* ===== BASELINE ===== */
+  .tether-baseline {
+    @apply absolute left-0 right-0;
+    border-top: 1px dashed hsl(var(--foreground) / 0.06);
+  }
+  /* ===== TETHER LINES ===== */
+  .tether-line {
+    transition: stroke 0.4s cubic-bezier(0.16, 1, 0.3, 1),
+                stroke-width 0.4s cubic-bezier(0.16, 1, 0.3, 1),
+                opacity 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+    stroke-linecap: round;
+  }
+  .tether-line-active {
+    stroke-dasharray: 6 8;
+    animation: tether-flow 2s linear infinite;
+    filter: drop-shadow(0 0 3px currentColor);
+  }
+  .tether-line-extra {
+    animation: tether-flow-slow 3s linear infinite;
+    opacity: 0;
+    animation: tether-flow-slow 3s linear infinite, tether-fade-in 0.5s ease-out forwards;
+  }
+  .tether-line-dimmed {
+    opacity: 0.03 !important;
+  }
+  /* ===== NODES ===== */
+  .tether-node {
+    @apply absolute rounded-full cursor-pointer;
+    transition: transform 0.35s cubic-bezier(0.34, 1.56, 0.64, 1),
+                box-shadow 0.4s ease-out,
+                opacity 0.4s ease-out;
+    animation: node-breathe 3s ease-in-out infinite;
+    z-index: 5;
+  }
+  .tether-node::before {
+    content: '';
+    @apply absolute inset-0 rounded-full;
+    background: radial-gradient(
+      circle at 40% 40%,
+      hsl(var(--foreground) / 0.5),
+      transparent 70%
+    );
+  }
+  /* Character variants */
+  .tether-node-jiyan {
+    background: radial-gradient(
+      circle at 40% 40%,
+      hsl(var(--glow-jiyan)),
+      hsl(var(--char-jiyan) / 0.6) 70%,
+      hsl(var(--char-jiyan) / 0.2)
+    );
+    box-shadow: 0 0 8px hsl(var(--glow-jiyan) / 0.3),
+                0 0 20px hsl(var(--char-jiyan) / 0.1);
+  }
+  .tether-node-mortefi {
+    background: radial-gradient(
+      circle at 40% 40%,
+      hsl(var(--glow-mortefi)),
+      hsl(var(--char-mortefi) / 0.6) 70%,
+      hsl(var(--char-mortefi) / 0.2)
+    );
+    box-shadow: 0 0 8px hsl(var(--glow-mortefi) / 0.3),
+                0 0 20px hsl(var(--char-mortefi) / 0.1);
+  }
+  .tether-node-verina {
+    background: radial-gradient(
+      circle at 40% 40%,
+      hsl(var(--glow-verina)),
+      hsl(var(--char-verina) / 0.6) 70%,
+      hsl(var(--char-verina) / 0.2)
+    );
+    box-shadow: 0 0 8px hsl(var(--glow-verina) / 0.3),
+                0 0 20px hsl(var(--char-verina) / 0.1);
+  }
+  /* Node states */
+  .tether-node-hovered {
+    transform: scale(2.2) !important;
+    animation: none !important;
+    z-index: 20;
+  }
+  .tether-node-hovered.tether-node-jiyan {
+    box-shadow: 0 0 16px hsl(var(--glow-jiyan) / 0.6),
+                0 0 40px hsl(var(--char-jiyan) / 0.3),
+                0 0 80px hsl(var(--char-jiyan) / 0.1);
+  }
+  .tether-node-hovered.tether-node-mortefi {
+    box-shadow: 0 0 16px hsl(var(--glow-mortefi) / 0.6),
+                0 0 40px hsl(var(--char-mortefi) / 0.3),
+                0 0 80px hsl(var(--char-mortefi) / 0.1);
+  }
+  .tether-node-hovered.tether-node-verina {
+    box-shadow: 0 0 16px hsl(var(--glow-verina) / 0.6),
+                0 0 40px hsl(var(--char-verina) / 0.3),
+                0 0 80px hsl(var(--char-verina) / 0.1);
+  }
+  .tether-node-connected {
+    animation: node-pulse 0.6s ease-out !important;
+    z-index: 8;
+  }
+  .tether-node-dimmed {
+    opacity: 0.12 !important;
+    animation: none !important;
+    transform: scale(0.7);
+  }
+  /* ===== RESOURCE TRAIL ===== */
+  .tether-trail {
+    @apply absolute rounded-full;
+    height: 2px;
+    right: 100%;
+    top: 50%;
+    transform: translateY(-50%);
+    margin-right: 2px;
+    opacity: 0.4;
+  }
+  .tether-trail-jiyan {
+    background: linear-gradient(to left, hsl(var(--char-jiyan) / 0.6), transparent);
+  }
+  .tether-trail-mortefi {
+    background: linear-gradient(to left, hsl(var(--char-mortefi) / 0.6), transparent);
+  }
+  .tether-trail-verina {
+    background: linear-gradient(to left, hsl(var(--char-verina) / 0.6), transparent);
+  }
+  /* ===== BUFF ZONES ===== */
+  .buff-zone {
+    @apply absolute rounded-2xl pointer-events-none;
+    transition: opacity 0.5s ease-out;
+  }
+  .buff-zone-label {
+    @apply absolute -top-5 left-3 tracking-widest uppercase font-light;
+    font-size: 9px;
+    letter-spacing: 0.15em;
+    opacity: 0.25;
+    color: hsl(var(--foreground));
+  }
+  /* ===== GLASS PANEL ===== */
+  .glass-panel {
+    background: hsl(var(--glass-bg) / 0.85);
+    backdrop-filter: blur(20px) saturate(1.5);
+    -webkit-backdrop-filter: blur(20px) saturate(1.5);
+    border: 1px solid hsl(var(--glass-border) / 0.5);
+    border-radius: 16px;
+    box-shadow:
+      0 8px 32px hsl(var(--background) / 0.6),
+      0 0 1px hsl(var(--foreground) / 0.05),
+      inset 0 1px 0 hsl(var(--foreground) / 0.03);
+  }
+  /* ===== RESOURCE BARS ===== */
+  .resource-bar-track {
+    @apply h-1 rounded-full w-full;
+    background: hsl(var(--foreground) / 0.06);
+  }
+  .resource-bar-fill {
+    @apply h-full rounded-full;
+    transition: width 0.3s ease-out;
+  }
+  /* ===== BUFF PILLS ===== */
+  .buff-pill {
+    @apply inline-block rounded-full px-2 py-0.5 text-[9px] tracking-wider uppercase font-medium;
+    background: hsl(var(--buff-positive) / 0.12);
+    color: hsl(var(--buff-positive));
+    border: 1px solid hsl(var(--buff-positive) / 0.2);
+  }
+  .debuff-pill {
+    @apply inline-block rounded-full px-2 py-0.5 text-[9px] tracking-wider uppercase font-medium;
+    background: hsl(var(--buff-negative) / 0.12);
+    color: hsl(var(--buff-negative));
+    border: 1px solid hsl(var(--buff-negative) / 0.2);
+  }
+  /* ===== HEADER ===== */
+  .field-header {
+    @apply fixed top-0 left-0 right-0 z-20 flex items-center justify-between px-8 py-5;
+    background: linear-gradient(
+      to bottom,
+      hsl(var(--background) / 0.95),
+      hsl(var(--background) / 0.5) 80%,
+      transparent
+    );
+    backdrop-filter: blur(8px);
+  }
+  .field-title {
+    @apply text-sm font-light tracking-[0.3em] uppercase;
+    color: hsl(var(--foreground) / 0.4);
+  }
+  .field-subtitle {
+    @apply text-[10px] tracking-[0.2em] uppercase;
+    color: hsl(var(--foreground) / 0.2);
+    font-family: 'JetBrains Mono', monospace;
+  }
+  /* ===== CHARACTER LEGEND ===== */
+  .char-legend {
+    @apply flex items-center gap-6;
+  }
+  .char-legend-item {
+    @apply flex items-center gap-2 text-[10px] tracking-wider uppercase font-light;
+    color: hsl(var(--foreground) / 0.35);
+  }
+  .char-legend-dot {
+    @apply w-2 h-2 rounded-full;
+  }
+  /* ===== DPS INDICATOR ===== */
+  .dps-spike {
+    @apply absolute w-px pointer-events-none;
+    bottom: 0;
+    opacity: 0.06;
+    background: linear-gradient(
+      to top,
+      transparent,
+      hsl(var(--foreground) / 0.3) 50%,
+      transparent
+    );
+  }
+  /* ===== RIPPLE ===== */
+  .node-ripple {
+    @apply absolute rounded-full pointer-events-none;
+    border: 1px solid;
+    animation: ripple-expand 0.8s ease-out forwards;
+  }
+}
+/* ===== KEYFRAMES ===== */
+@keyframes node-breathe {
+  0%, 100% { transform: scale(1); }
+  50% { transform: scale(1.12); }
+}
+@keyframes node-pulse {
+  0% { transform: scale(1); }
+  50% { transform: scale(1.4); }
+  100% { transform: scale(1); }
+}
+@keyframes tether-flow {
+  to { stroke-dashoffset: -28; }
+}
+@keyframes tether-flow-slow {
+  to { stroke-dashoffset: -40; }
+}
+@keyframes tether-fade-in {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+@keyframes ripple-expand {
+  0% {
+    transform: scale(0.5);
+    opacity: 0.6;
+  }
+  100% {
+    transform: scale(4);
+    opacity: 0;
+  }
+}
+@keyframes float-up {
+  0% {
+    opacity: 0;
+    transform: translateY(8px);
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+@keyframes scan-line {
+  0% { transform: translateX(-100%); }
+  100% { transform: translateX(200%); }
+}
+    },
+    extend: {
+      fontFamily: {
+        sans: ["Space Grotesk", "system-ui", "sans-serif"],
+        mono: ["JetBrains Mono", "monospace"],
+      },
+      colors: {
+        border: "hsl(var(--border))",
+          ring: "hsl(var(--sidebar-ring))",
+        },
+        // Character colors
+        jiyan: "hsl(var(--char-jiyan))",
+        mortefi: "hsl(var(--char-mortefi))",
+        verina: "hsl(var(--char-verina))",
+      },
+      borderRadius: {
+      keyframes: {
+        "accordion-down": {
+          from: {
+            height: "0",
+          },
+          to: {
+            height: "var(--radix-accordion-content-height)",
+          },
+          from: { height: "0" },
+          to: { height: "var(--radix-accordion-content-height)" },
+        },
+        "accordion-up": {
+          from: {
+            height: "var(--radix-accordion-content-height)",
+          },
+          to: {
+            height: "0",
+          },
+          from: { height: "var(--radix-accordion-content-height)" },
+          to: { height: "0" },
+        },
+      },
+export interface Snapshot {
+  id: number;
+  character: 'Jiyan' | 'Mortefi' | 'Verina';
+  action: string;
+  timeStart: number;
+  timeEnd: number;
+  damage: number;
+  dps: number;
+  energy: number;
+  concerto: number;
+  forte: number;
+  conviction: number;
+  buffs: string[];
+  debuffs: string[];
+}
+const JIYAN_ACTIONS = [
+  { action: 'Intro: Windborne', dmgBase: 4200, dur: 0.8 },
+  { action: 'Basic Attack 1', dmgBase: 1800, dur: 0.45 },
+  { action: 'Basic Attack 2', dmgBase: 2400, dur: 0.45 },
+  { action: 'Basic Attack 3', dmgBase: 3100, dur: 0.55 },
+  { action: 'Resonance Skill', dmgBase: 11000, dur: 1.1 },
+  { action: 'Heavy: Tempest', dmgBase: 16500, dur: 1.4 },
+  { action: 'Forte: Emerald Storm', dmgBase: 30000, dur: 1.8 },
+  { action: 'Liberation: Qingloong', dmgBase: 42000, dur: 2.2 },
+  { action: 'Outro: Wind Spiral', dmgBase: 5500, dur: 0.7 },
+];
+const MORTEFI_ACTIONS = [
+  { action: 'Intro: Blazing Waltz', dmgBase: 3800, dur: 0.7 },
+  { action: 'Resonance Skill', dmgBase: 6200, dur: 0.9 },
+  { action: 'Basic Attack 1', dmgBase: 1500, dur: 0.4 },
+  { action: 'Basic Attack 2', dmgBase: 2000, dur: 0.4 },
+  { action: 'Liberation: Inferno', dmgBase: 14000, dur: 1.6 },
+  { action: 'Outro: Coordinated', dmgBase: 2200, dur: 0.6 },
+];
+const VERINA_ACTIONS = [
+  { action: 'Intro: Verdant Light', dmgBase: 1200, dur: 0.6 },
+  { action: 'Resonance Skill', dmgBase: 800, dur: 0.8 },
+  { action: 'Basic Attack 1', dmgBase: 600, dur: 0.35 },
+  { action: 'Liberation: Bloom', dmgBase: 500, dur: 1.4 },
+  { action: 'Outro: Renewal', dmgBase: 400, dur: 0.5 },
+];
+function vary(base: number, pct: number = 0.15): number {
+  return Math.round(base * (1 + (Math.random() * 2 - 1) * pct));
+}
+function generateRotation(): Snapshot[] {
+  const result: Snapshot[] = [];
+  let id = 0;
+  let time = 0;
+  let energy = 40;
+  let concerto = 0;
+  let forte = 0;
+  let conviction = 0;
+  const cycles = 4;
+  for (let c = 0; c < cycles; c++) {
+    // Jiyan phase
+    const jiyanBuffs = c > 0 ? ['Coordinated Attack'] : [];
+    for (const tmpl of JIYAN_ACTIONS) {
+      const dur = tmpl.dur * (0.9 + Math.random() * 0.2);
+      const dmg = vary(tmpl.dmgBase);
+      energy = Math.min(100, energy + dmg * 0.001 + 3);
+      forte = Math.min(100, forte + 8 + Math.random() * 5);
+      concerto = Math.min(100, concerto + 5 + Math.random() * 4);
+      conviction = Math.min(5, conviction + (tmpl.dmgBase > 10000 ? 1 : 0));
+      const buffs = [...jiyanBuffs];
+      if (forte > 60) buffs.push('Forte Resonance');
+      if (tmpl.action.includes('Liberation')) buffs.push('Resonance Liberation');
+      const debuffs: string[] = [];
+      if (tmpl.dmgBase > 15000) debuffs.push('Wind Shear');
+      result.push({
+        id: id++,
+        character: 'Jiyan',
+        action: tmpl.action,
+        timeStart: Math.round(time * 100) / 100,
+        timeEnd: Math.round((time + dur) * 100) / 100,
+        damage: dmg,
+        dps: Math.round(dmg / dur),
+        energy: Math.round(energy),
+        concerto: Math.round(concerto),
+        forte: Math.round(forte),
+        conviction,
+        buffs,
+        debuffs,
+      });
+      time += dur;
+    }
+    // Reset Jiyan resources on swap
+    forte = 0;
+    conviction = 0;
+    concerto = 0;
+    // Mortefi phase
+    for (const tmpl of MORTEFI_ACTIONS) {
+      const dur = tmpl.dur * (0.9 + Math.random() * 0.2);
+      const dmg = vary(tmpl.dmgBase);
+      energy = Math.min(100, energy + 4);
+      concerto = Math.min(100, concerto + 12);
+      const buffs: string[] = [];
+      if (tmpl.action.includes('Liberation')) buffs.push('Resonance Liberation');
+      if (tmpl.action.includes('Outro') || tmpl.action.includes('Liberation'))
+        buffs.push('Coordinated Attack');
+      result.push({
+        id: id++,
+        character: 'Mortefi',
+        action: tmpl.action,
+        timeStart: Math.round(time * 100) / 100,
+        timeEnd: Math.round((time + dur) * 100) / 100,
+        damage: dmg,
+        dps: Math.round(dmg / dur),
+        energy: Math.round(energy),
+        concerto: Math.round(concerto),
+        forte: 0,
+        conviction: 0,
+        buffs,
+        debuffs: [],
+      });
+      time += dur;
+    }
+    concerto = 0;
+    // Verina phase
+    for (const tmpl of VERINA_ACTIONS) {
+      const dur = tmpl.dur * (0.9 + Math.random() * 0.2);
+      const dmg = vary(tmpl.dmgBase);
+      energy = Math.min(100, energy + 3);
+      concerto = Math.min(100, concerto + 10);
+      const buffs: string[] = [];
+      if (tmpl.action.includes('Liberation')) buffs.push('Healing Zone');
+      if (tmpl.action.includes('Skill')) buffs.push('Healing Zone');
+      result.push({
+        id: id++,
+        character: 'Verina',
+        action: tmpl.action,
+        timeStart: Math.round(time * 100) / 100,
+        timeEnd: Math.round((time + dur) * 100) / 100,
+        damage: dmg,
+        dps: Math.round(dmg / dur),
+        energy: Math.round(energy),
+        concerto: Math.round(concerto),
+        forte: 0,
+        conviction: 0,
+        buffs,
+        debuffs: [],
+      });
+      time += dur;
+    }
+    concerto = 0;
+    energy = Math.max(20, energy - 30);
+  }
+  return result;
+}
+export const snapshots = generateRotation();
+import { useState, useMemo, useRef, useEffect, useCallback } from 'react';
+import { snapshots, type Snapshot } from '@/data/dummyRotation';
+import { DetailPanel } from './DetailPanel';
+import { cn } from '@/lib/utils';
+const NODE_SPACING = 82;
+const PADDING = 160;
+const FIELD_HEIGHT = 600;
+const BASELINE_Y = 370;
+const CHARACTER_MAP = {
+  Jiyan: 'jiyan',
+  Mortefi: 'mortefi',
+  Verina: 'verina',
+} as const;
+type CharKey = keyof typeof CHARACTER_MAP;
+interface PositionedNode extends Snapshot {
+  x: number;
+  y: number;
+  size: number;
+  nd: number;
+}
+function getNodeY(nd: number): number {
+  return BASELINE_Y - nd * 280 + (1 - nd) * 40;
+}
+function getNodeSize(nd: number): number {
+  return 6 + nd * 16;
+}
+function curvePath(x1: number, y1: number, x2: number, y2: number): string {
+  const mx = (x1 + x2) / 2;
+  const dy = (y2 - y1) * 0.35;
+  return `M ${x1} ${y1} Q ${mx} ${(y1 + y2) / 2 + dy} ${x2} ${y2}`;
+}
+interface BuffZone {
+  buff: string;
+  startX: number;
+  endX: number;
+  y: number;
+  height: number;
+  character: string;
+}
+function computeBuffZones(nodes: PositionedNode[]): BuffZone[] {
+  const zones: BuffZone[] = [];
+  const buffNames = ['Coordinated Attack', 'Resonance Liberation', 'Healing Zone', 'Forte Resonance'];
+  buffNames.forEach(buffName => {
+    let startIdx = -1;
+    nodes.forEach((node, i) => {
+      const hasBuff = node.buffs.includes(buffName);
+      if (hasBuff && startIdx === -1) startIdx = i;
+      if ((!hasBuff || i === nodes.length - 1) && startIdx !== -1) {
+        const endIdx = hasBuff ? i : i - 1;
+        const slice = nodes.slice(startIdx, endIdx + 1);
+        if (slice.length >= 2) {
+          const minY = Math.min(...slice.map(n => n.y)) - 35;
+          const maxY = Math.max(...slice.map(n => n.y)) + 35;
+          zones.push({
+            buff: buffName,
+            startX: nodes[startIdx].x - 25,
+            endX: nodes[endIdx].x + 25,
+            y: minY,
+            height: maxY - minY,
+            character: buffName === 'Healing Zone' ? 'verina' : buffName === 'Coordinated Attack' ? 'mortefi' : 'jiyan',
+          });
+        }
+        startIdx = -1;
+      }
+    });
+  });
+  return zones;
+}
+export const TetherField = () => {
+  const [hoveredId, setHoveredId] = useState<number | null>(null);
+  const scrollRef = useRef<HTMLDivElement>(null);
+  const maxDamage = useMemo(() => Math.max(...snapshots.map(s => s.damage)), []);
+  const nodes: PositionedNode[] = useMemo(() =>
+    snapshots.map((s, i) => {
+      const nd = s.damage / maxDamage;
+      return { ...s, x: i * NODE_SPACING + PADDING, y: getNodeY(nd), size: getNodeSize(nd), nd };
+    }), [maxDamage]);
+  const fieldWidth = nodes.length * NODE_SPACING + PADDING * 2;
+  const buffZones = useMemo(() => computeBuffZones(nodes), [nodes]);
+  const connections = useMemo(() => {
+    if (hoveredId === null) return new Set<number>();
+    const hovered = nodes.find(n => n.id === hoveredId);
+    if (!hovered) return new Set<number>();
+    const set = new Set<number>();
+    set.add(hoveredId);
+    const idx = nodes.findIndex(n => n.id === hoveredId);
+    if (idx > 0) set.add(nodes[idx - 1].id);
+    if (idx < nodes.length - 1) set.add(nodes[idx + 1].id);
+    nodes.forEach(n => {
+      if (n.character === hovered.character && Math.abs(n.id - hoveredId) <= 10) set.add(n.id);
+      if (n.buffs.some(b => hovered.buffs.includes(b)) && Math.abs(n.id - hoveredId) <= 14) set.add(n.id);
+    });
+    return set;
+  }, [hoveredId, nodes]);
+  useEffect(() => {
+    if (scrollRef.current) {
+      scrollRef.current.scrollLeft = (fieldWidth - window.innerWidth) * 0.3;
+    }
+  }, [fieldWidth]);
+  const hoveredNode = hoveredId !== null ? nodes.find(n => n.id === hoveredId) ?? null : null;
+  const handleEnter = useCallback((id: number) => setHoveredId(id), []);
+  const handleLeave = useCallback(() => setHoveredId(null), []);
+  // Find character transition points
+  const transitions = useMemo(() => {
+    const pts: number[] = [];
+    nodes.forEach((n, i) => {
+      if (i > 0 && n.character !== nodes[i - 1].character) pts.push(i);
+    });
+    return pts;
+  }, [nodes]);
+  return (
+    <div className="tether-bg min-h-screen">
+      {/* Header */}
+      <div className="field-header">
+        <div>
+          <div className="field-title">Combat Telemetry</div>
+          <div className="field-subtitle">
+            {nodes.length} snapshots · {nodes[nodes.length - 1]?.timeEnd.toFixed(1)}s rotation
+          </div>
+        </div>
+        <div className="char-legend">
+          {Object.entries(CHARACTER_MAP).map(([name, key]) => (
+            <div key={key} className="char-legend-item">
+              <div className={`char-legend-dot bg-${key}`} />
+              <span>{name}</span>
+            </div>
+          ))}
+        </div>
+      </div>
+      {/* Edge fades */}
+      <div className="tether-edge-left" />
+      <div className="tether-edge-right" />
+      {/* Scrollable field */}
+      <div className="tether-viewport" ref={scrollRef}>
+        <div className="tether-field" style={{ width: fieldWidth, height: FIELD_HEIGHT }}>
+          {/* Baseline */}
+          <div className="tether-baseline" style={{ top: BASELINE_Y }} />
+          {/* Character transition markers */}
+          {transitions.map(i => (
+            <div
+              key={`tr-${i}`}
+              className="absolute top-0 bottom-0 w-px pointer-events-none"
+              style={{
+                left: (nodes[i].x + nodes[i - 1].x) / 2,
+                background: `linear-gradient(to bottom, transparent, hsl(var(--foreground) / 0.04) 40%, hsl(var(--foreground) / 0.04) 60%, transparent)`,
+              }}
+            >
+              <div
+                className="absolute text-[8px] font-mono tracking-widest uppercase"
+                style={{
+                  top: FIELD_HEIGHT - 40,
+                  left: '50%',
+                  transform: 'translateX(-50%)',
+                  color: `hsl(var(--char-${CHARACTER_MAP[nodes[i].character as CharKey]}) / 0.35)`,
+                  whiteSpace: 'nowrap',
+                }}
+              >
+                {nodes[i].character}
+              </div>
+            </div>
+          ))}
+          {/* Buff zones */}
+          {buffZones.map((zone, i) => (
+            <div
+              key={`bz-${i}`}
+              className={cn(
+                "buff-zone",
+                hoveredId !== null && "opacity-30",
+              )}
+              style={{
+                left: zone.startX,
+                top: zone.y,
+                width: zone.endX - zone.startX,
+                height: zone.height,
+                background: `linear-gradient(135deg, hsl(var(--char-${zone.character}) / 0.04), hsl(var(--char-${zone.character}) / 0.02))`,
+                border: `1px solid hsl(var(--char-${zone.character}) / 0.08)`,
+                transition: 'opacity 0.5s ease',
+              }}
+            >
+              <span className="buff-zone-label">{zone.buff}</span>
+            </div>
+          ))}
+          {/* DPS spikes (subtle vertical lines for high-damage moments) */}
+          {nodes.filter(n => n.nd > 0.5).map(n => (
+            <div
+              key={`spike-${n.id}`}
+              className="dps-spike"
+              style={{
+                left: n.x,
+                height: n.nd * 120,
+                bottom: FIELD_HEIGHT - n.y,
+                opacity: n.nd * 0.08,
+              }}
+            />
+          ))}
+          {/* SVG tether lines */}
+          <svg
+            className="absolute inset-0 pointer-events-none"
+            width={fieldWidth}
+            height={FIELD_HEIGHT}
+            style={{ overflow: 'visible' }}
+          >
+            {/* Sequential lines */}
+            {nodes.map((node, i) => {
+              if (i === 0) return null;
+              const prev = nodes[i - 1];
+              const bothConnected = hoveredId !== null && connections.has(node.id) && connections.has(prev.id);
+              const isDimmed = hoveredId !== null && !bothConnected;
+              const charKey = CHARACTER_MAP[node.character as CharKey];
+              return (
+                <path
+                  key={`line-${i}`}
+                  d={curvePath(prev.x, prev.y, node.x, node.y)}
+                  fill="none"
+                  className={cn(
+                    "tether-line",
+                    bothConnected && "tether-line-active",
+                    isDimmed && "tether-line-dimmed",
+                  )}
+                  stroke={bothConnected
+                    ? `hsl(var(--char-${charKey}) / 0.65)`
+                    : `hsl(var(--tether) / var(--tether-idle))`
+                  }
+                  strokeWidth={bothConnected ? 1.5 : 0.7}
+                />
+              );
+            })}
+            {/* Extra tether arcs for shared-buff connections on hover */}
+            {hoveredNode && nodes
+              .filter(n => {
+                if (n.id === hoveredId) return false;
+                if (!connections.has(n.id)) return false;
+                const idx = nodes.findIndex(nd => nd.id === n.id);
+                const hovIdx = nodes.findIndex(nd => nd.id === hoveredId);
+                if (Math.abs(idx - hovIdx) === 1) return false; // already sequential
+                return n.buffs.some(b => hoveredNode.buffs.includes(b));
+              })
+              .map(n => (
+                <path
+                  key={`extra-${n.id}`}
+                  d={curvePath(hoveredNode.x, hoveredNode.y, n.x, n.y)}
+                  fill="none"
+                  className="tether-line-extra"
+                  stroke={`hsl(var(--char-${CHARACTER_MAP[hoveredNode.character as CharKey]}) / 0.25)`}
+                  strokeWidth={0.5}
+                  strokeDasharray="3 7"
+                />
+              ))
+            }
+          </svg>
+          {/* Nodes */}
+          {nodes.map(node => {
+            const charKey = CHARACTER_MAP[node.character as CharKey];
+            const isHovered = node.id === hoveredId;
+            const isConnected = connections.has(node.id);
+            const isDimmed = hoveredId !== null && !isConnected;
+            return (
+              <div
+                key={node.id}
+                className={cn(
+                  "tether-node",
+                  `tether-node-${charKey}`,
+                  isHovered && "tether-node-hovered",
+                  isConnected && !isHovered && hoveredId !== null && "tether-node-connected",
+                  isDimmed && "tether-node-dimmed",
+                )}
+                style={{
+                  left: node.x - node.size / 2,
+                  top: node.y - node.size / 2,
+                  width: node.size,
+                  height: node.size,
+                }}
+                onMouseEnter={() => handleEnter(node.id)}
+                onMouseLeave={handleLeave}
+              >
+                {/* Resource trail */}
+                <div
+                  className={`tether-trail tether-trail-${charKey}`}
+                  style={{ width: 4 + node.nd * 24 }}
+                />
+              </div>
+            );
+          })}
+          {/* Detail panel */}
+          {hoveredNode && <DetailPanel node={hoveredNode} />}
+        </div>
+      </div>
+    </div>
+  );
+};
+import { motion } from 'framer-motion';
+import type { Snapshot } from '@/data/dummyRotation';
+const CHARACTER_COLORS: Record<string, string> = {
+  Jiyan: 'var(--char-jiyan)',
+  Mortefi: 'var(--char-mortefi)',
+  Verina: 'var(--char-verina)',
+};
+interface ResourceBarProps {
+  label: string;
+  value: number;
+  max: number;
+  color: string;
+}
+const ResourceBar = ({ label, value, max, color }: ResourceBarProps) => (
+  <div className="flex items-center gap-2">
+    <span className="text-[9px] font-mono tracking-wider uppercase opacity-40 w-12 text-right shrink-0">{label}</span>
+    <div className="resource-bar-track flex-1">
+      <div
+        className="resource-bar-fill"
+        style={{
+          width: `${Math.min(100, (value / max) * 100)}%`,
+          background: `linear-gradient(90deg, hsl(${color} / 0.6), hsl(${color}))`,
+          boxShadow: `0 0 8px hsl(${color} / 0.3)`,
+        }}
+      />
+    </div>
+    <span className="text-[9px] font-mono opacity-30 w-6">{value}</span>
+  </div>
+);
+interface DetailPanelProps {
+  node: Snapshot & { x: number; y: number; nd: number; size: number };
+}
+export const DetailPanel = ({ node }: DetailPanelProps) => {
+  const charColor = CHARACTER_COLORS[node.character] || 'var(--foreground)';
+  return (
+    <motion.div
+      initial={{ opacity: 0, y: 12, scale: 0.92 }}
+      animate={{ opacity: 1, y: 0, scale: 1 }}
+      transition={{ duration: 0.25, ease: [0.16, 1, 0.3, 1] }}
+      className="glass-panel absolute z-30 pointer-events-none"
+      style={{
+        left: node.x + node.size + 16,
+        top: node.y - 80,
+        width: 260,
+      }}
+    >
+      {/* Tether connector line */}
+      <div
+        className="absolute w-4 h-px top-20"
+        style={{
+          right: '100%',
+          background: `linear-gradient(to left, hsl(${charColor} / 0.4), transparent)`,
+        }}
+      />
+      <div className="p-4 space-y-3">
+        {/* Header */}
+        <div className="flex items-center gap-3">
+          <div
+            className="w-8 h-8 rounded-full flex items-center justify-center text-[11px] font-semibold shrink-0"
+            style={{
+              background: `radial-gradient(circle at 40% 40%, hsl(${charColor}), hsl(${charColor} / 0.3))`,
+              boxShadow: `0 0 16px hsl(${charColor} / 0.3)`,
+              color: 'hsl(var(--background))',
+            }}
+          >
+            {node.character[0]}
+          </div>
+          <div className="min-w-0">
+            <div className="text-[10px] tracking-wider uppercase font-medium" style={{ color: `hsl(${charColor})` }}>
+              {node.character}
+            </div>
+            <div className="text-xs font-light opacity-70 truncate">{node.action}</div>
+          </div>
+        </div>
+        {/* Time */}
+        <div className="text-[10px] font-mono opacity-30 tracking-wider">
+          {node.timeStart.toFixed(2)}s → {node.timeEnd.toFixed(2)}s
+        </div>
+        {/* Damage */}
+        <div className="flex items-baseline gap-3">
+          <div className="text-xl font-semibold tracking-tight" style={{ color: `hsl(${charColor})` }}>
+            {node.damage.toLocaleString()}
+          </div>
+          <div className="text-[10px] font-mono opacity-40">
+            {node.dps.toLocaleString()} DPS
+          </div>
+        </div>
+        {/* Separator */}
+        <div className="h-px w-full" style={{ background: `hsl(var(--foreground) / 0.06)` }} />
+        {/* Resources */}
+        <div className="space-y-1.5">
+          <ResourceBar label="Energy" value={node.energy} max={100} color="var(--primary)" />
+          <ResourceBar label="Concrto" value={node.concerto} max={100} color="38 80% 55%" />
+          <ResourceBar label="Forte" value={node.forte} max={100} color="280 60% 55%" />
+          {node.character === 'Jiyan' && node.conviction > 0 && (
+            <ResourceBar label="Conv" value={node.conviction} max={5} color="var(--char-jiyan)" />
+          )}
+        </div>
+        {/* Buffs */}
+        {node.buffs.length > 0 && (
+          <div className="flex flex-wrap gap-1 pt-1">
+            {node.buffs.map((b, i) => (
+              <span key={i} className="buff-pill">{b}</span>
+            ))}
+          </div>
+        )}
+        {/* Debuffs */}
+        {node.debuffs.length > 0 && (
+          <div className="flex flex-wrap gap-1">
+            {node.debuffs.map((d, i) => (
+              <span key={i} className="debuff-pill">{d}</span>
+            ))}
+          </div>
+        )}
+      </div>
+    </motion.div>
+  );
+};
+// Update this page (the content is just a fallback if you fail to update the page)
+import { TetherField } from '@/components/tether/TetherField';
+const Index = () => {
+  return (
+    <div className="flex min-h-screen items-center justify-center bg-background">
+      <div className="text-center">
+        <h1 className="mb-4 text-4xl font-bold">Welcome to Your Blank App</h1>
+        <p className="text-xl text-muted-foreground">Start building your amazing project here!</p>
+      </div>
+    </div>
+  );
+  return <TetherField />;
+};
+
