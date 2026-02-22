@@ -1,6 +1,7 @@
 import { useState, type ReactNode } from 'react'
 import Sidebar from './sidebar/Sidebar'
 import SidebarButton from './sidebar/SidebarButton'
+import TetherBackground from './TetherBackground'
 import '../styles/AppLayout.css'
 
 // ========== Component: App Layout ============================================================================================
@@ -15,6 +16,17 @@ export default function AppLayout({ children }: AppLayoutProps) {
 
   return (
     <div className="app-container">
+      {/* Animated Background */}
+      <div className="background-container">
+        <div className="gradient-background" />
+        <div className="floating-orbs">
+          <div className="orb orb-1" />
+          <div className="orb orb-2" />
+          <div className="orb orb-3" />
+        </div>
+        <TetherBackground />
+      </div>
+
       {/* Sidebar */}
       <Sidebar collapsed={collapsed} />
 

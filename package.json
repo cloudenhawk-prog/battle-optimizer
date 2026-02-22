@@ -23,6 +23,7 @@
     "@mui/material": "^7.3.6",
     "@mui/x-date-pickers": "^8.21.0",
     "@tanstack/react-virtual": "^3.13.13",
+    "framer-motion": "^12.34.3",
     "mdi-material-ui": "^7.9.4",
     "react": "^19.2.0",
     "react-color": "^2.19.3",
