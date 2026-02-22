@@ -1,5 +1,7 @@
 TODO:
 
+TASK: Sidebar should have the from-up-to-down scanning animation (the one Data Overlay has), but no the from-left-to-right light animation effect (the one the sections within the Data Overlay have)
+
 TASK: HOW do we want to handle trigger-timed based (potentially ramping) modifiers like Fleurdelys Mandate, or Fleurdelys potential 3 swords buff
 
 TASK: Data Overlay
