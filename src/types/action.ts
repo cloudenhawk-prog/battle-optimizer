@@ -18,7 +18,6 @@ export type Action = {
   energyCost: EnergyCost[]
 
   statusModifications: StatusModification[]
-
   damageModifiers: DamageModifier[]
   sideEffects: SideEffect[]
 }
