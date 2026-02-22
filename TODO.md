@@ -2,6 +2,11 @@ TODO:
 
 TASK: Sidebar should have the from-up-to-down scanning animation (the one Data Overlay has), but no the from-left-to-right light animation effect (the one the sections within the Data Overlay have)
 
+TASK: The borders should match among: sidebar, topbar, table
+TASK: The colors and overall theme should match among: sidebar, topbar, table, data overlay
+
+TASK: Try Mornye (with legs) or shorekeepr, instead of Phrolova since they may fit the new theme better (Tether System)
+
 TASK: HOW do we want to handle trigger-timed based (potentially ramping) modifiers like Fleurdelys Mandate, or Fleurdelys potential 3 swords buff
 
 TASK: Data Overlay
