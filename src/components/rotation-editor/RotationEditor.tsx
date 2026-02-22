@@ -25,6 +25,7 @@ export default function RotationEditor({ charactersInBattle, enemy, tableConfig,
   const [overlayData, setOverlayData] = useState<null | { snapshot: Snapshot; damageEvents: DamageEvent[] }>(null)
 
   function handleRowClick(snapshot: Snapshot) {
+    if (!snapshot.action) return
     const filtered = (damageEvents ?? []).filter(e => Number(e.snapshotId) === Number(snapshot.id))
     setOverlayData({ snapshot, damageEvents: filtered })
     setOverlayOpen(true)
@@ -33,16 +34,7 @@ export default function RotationEditor({ charactersInBattle, enemy, tableConfig,
   return (
     <div className="pageWrapper">
       <h1 className="heading"></h1>
-      <RotationTable
-        snapshots={snapshots}
-        charactersInBattle={charactersInBattle}
-        tableConfig={tableConfig}
-        onSelectCharacter={handleCharacterSelect}
-        onSelectAction={handleActionSelect}
-        columnVisibility={columnVisibility}
-        setColumnVisibility={setColumnVisibility}
-        onRowClick={handleRowClick}
-      />
+      <RotationTable snapshots={snapshots} charactersInBattle={charactersInBattle} tableConfig={tableConfig} onSelectCharacter={handleCharacterSelect} onSelectAction={handleActionSelect} columnVisibility={columnVisibility} setColumnVisibility={setColumnVisibility} onRowClick={handleRowClick} />
       <DataOverlay snapshot={overlayData?.snapshot ?? null} damageEvents={overlayData?.damageEvents ?? []} open={overlayOpen} onClose={() => setOverlayOpen(false)} />
     </div>
   )

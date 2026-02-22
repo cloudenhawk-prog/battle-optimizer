@@ -1,4 +1,5 @@
 import { useState, useRef } from 'react'
+import { createPortal } from 'react-dom'
 import '../../styles/rotation-editor/DataOverlay.css'
 import type { Snapshot } from '../../types/snapshot'
 import type { DamageEvent, Contribution } from '../../types/events'
@@ -26,7 +27,7 @@ export default function DataOverlay({ snapshot, damageEvents = [], open, onClose
   const totalDamage = calculateTotalDamage(damageEvents)
   const duration = calculateDuration(snapshot)
 
-  return (
+  return createPortal(
     <div className="dataOverlay" role="dialog" aria-modal="true">
       <div className="dataOverlayContent">
         <OverlayHeader onClose={onClose} />
@@ -42,7 +43,8 @@ export default function DataOverlay({ snapshot, damageEvents = [], open, onClose
           <ContributionsSection damageEvents={damageEvents} mode={mode} />
         </div>
       </div>
-    </div>
+    </div>,
+    document.body,
   )
 }
 
