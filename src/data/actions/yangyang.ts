@@ -507,6 +507,7 @@ export const intro: Action = {
   }
 }
 
+//TODO: Restore 4 Resonance Energy per second for 5s for the incoming Resonator.
 export const outro: Action = {
   name: 'Whispering Breeze',
   displayName: 'Outro',
@@ -549,4 +550,10 @@ export const outro: Action = {
 // TODO: Define custom selectors: when hovering/clicking on actions with multiple versions, a new box should appear on top of it where you select which version
   // (this will let us avoid overcrowding the selector - same can be done with Basics instead of having an entry per version of basic attacks)
   // This should be forced on Character selection (if you just used a SWAP version, you cannot use the same character in the next row/snapshot)
-  
+
+
+//TODO : handle sequences - define different versions of actions and sequence requirements, then add sequence to character?
+
+// TODO: For now lock action/character at points where these cant be reselected (we dont have any logging needed to restore checkpoints when overwriting/deleting rows yet)
+  // When an action is selected for a snapshot: lock both character and action
+  // Backtracking is easy if we make COPIES of all objects each time - assuming there won't be RAM problems. It's not a pretty solution, but it's easy
