@@ -11,8 +11,9 @@ TASK: HOW do we want to handle trigger-timed based (potentially ramping) modifie
 
 TASK: Buffs/debuffs can be split into subgroups for each character and for shared (but would be difficult since some rely on 'active character' and 'N number of swaps')
 
-TASK: Data Overlay
+TASK: Allow to click on groups to restore all icons instead of one at a time
 
+- TASK: Data Overlay:
 - Left Corner: The 3 buttons should have a title or helpful label -> we are swapping between scenarios like; too long but theoretically 'see scenario where everything crits'
 - Contributions: could also have hover - 'show more details'
 - All Sections: could have a small button in the right corner for explanations
