@@ -9,6 +9,8 @@ TASK: Try Mornye (with legs) or shorekeepr, instead of Phrolova since they may f
 
 TASK: HOW do we want to handle trigger-timed based (potentially ramping) modifiers like Fleurdelys Mandate, or Fleurdelys potential 3 swords buff
 
+TASK: Buffs/debuffs can be split into subgroups for each character and for shared (but would be difficult since some rely on 'active character' and 'N number of swaps')
+
 TASK: Data Overlay
 
 - Left Corner: The 3 buttons should have a title or helpful label -> we are swapping between scenarios like; too long but theoretically 'see scenario where everything crits'
@@ -192,16 +194,3 @@ Lav (fremtid):
 - Analytics page
 - Settings page
 - Pie charts visualisering
-
-
-
-
-
-
-
-
-
-
-
-
-
