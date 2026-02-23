@@ -2,14 +2,15 @@ import type { DamageType, ElementType, Position, ScalingType } from "../../types
 import type { EnergyCost, EnergyGeneration } from "../../types/energy"
 import type { DamageModifier } from "../../types/modifiers"
 import type { SideEffect, StatusModification } from "../../types/sideEffect"
+import { buildBasicAction, type BasicsData } from "../../utils/data-builders/basics"
 
-type CastConditions = { // TODO: redo resolvers flow and use new types - put into own types files
+export type CastConditions = { // TODO: redo resolvers flow and use new types - put into own types files
   position: Position
   previousAction: string
   endState: Position
 }
 
-type Other = { // TODO: doesnt require any logic yet, just keep it as a type in its own file for now
+export type Other = { // TODO: doesnt require any logic yet, just keep it as a type in its own file for now
   hardness: number[]
   toughness: number[]
   offtune: number[]
@@ -39,7 +40,7 @@ export type Action = { // TODO: replace Action type from global types, and updat
 
 // ========== Basic ===========================================================================================================
 
-const basics = {
+const basics: BasicsData = {
   scaling: 'ATK',
   elements: ['AERO'],
   dmgTypes: ['BASIC'],
@@ -134,31 +135,13 @@ const basics = {
   }
 }
 
-export const basic_1_4: Action = {
+export const basic_1_4: Action = buildBasicAction({
   name: 'Basic Attack 1-4',
   displayName: 'Basic Attack 1-4',
-  castTime: 0,
-  multipliers: Object.values(basics.stages).slice(0, 4).flatMap(stage => stage.multipliers),
-  scaling: basics.scaling as ScalingType,
-  elements: basics.elements as ElementType[],
-  dmgTypes: basics.dmgTypes as DamageType[],
-  cooldown: basics.cooldown,
-
-  castConditions: basics.castConditions as CastConditions,
-
-  energiesGenerated: Object.values(basics.stages).slice(0, 4).flatMap(stage => stage.energiesGenerated) as EnergyGeneration[][],
-  energiesCost: [],
-
-  statusModifications: Object.values(basics.stages).slice(0, 4).flatMap(stage => stage.statusModifications),
-  damageModifiers: Object.values(basics.stages).slice(0, 4).flatMap(stage => stage.damageModifiers),
-  sideEffects: Object.values(basics.stages).slice(0, 4).flatMap(stage => stage.sideEffects),
-
-  other: {
-    hardness: Object.values(basics.stages).slice(0, 4).flatMap(stage => stage.other.hardness),
-    toughness: Object.values(basics.stages).slice(0, 4).flatMap(stage => stage.other.toughness),
-    offtune: Object.values(basics.stages).slice(0, 4).flatMap(stage => stage.other.offtune)
-  }
-}
+  basics,
+  fromStage: 1,
+  toStage: 4
+})
 
 export const heavy_1: Action = {
   name: 'Heavy Attack',
