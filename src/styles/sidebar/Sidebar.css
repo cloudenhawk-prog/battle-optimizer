@@ -112,7 +112,7 @@
 .sidebar.collapsed {
   transform: translateX(-110%);
   background: var(--sidebar-bg);
-  background-image: url('/assets/phrolova.png');
+background-image: url('/assets/phrolova.png');
   background-repeat: no-repeat;
   background-size: var(--img-width) var(--img-height);
   background-position: var(--img-x) var(--img-y);
