@@ -1,36 +1,5 @@
-import type { ActionExpanded } from '../../types/action'
-import type { EnergyType } from '../../types/baseTypes'
-import type { DamageModifier } from '../../types/modifiers'
-import type { CharacterStats } from '../../types/stats'
+import type { CharacterData } from '../../types/character'
 import { baseStats, inherentStats } from '../stats/cartethyia'
-
-type Gear = {
-  weapon: Weapon | null
-  echoes: Echo[]
-}
-
-type Weapon = {
-  name: string
-  stats: Partial<CharacterStats>
-  damageModifiers: DamageModifier[]
-}
-
-type Echo = {
-  name: string
-  cost: number
-  baseStats: Partial<CharacterStats>
-  subStats: Partial<CharacterStats>
-  specialStats: Partial<CharacterStats>
-}
-
-type CharacterData = {
-  name: string
-  actions: ActionExpanded[]
-  maxEnergies: Partial<Record<EnergyType, number>>
-  baseStats: Partial<CharacterStats>
-  inherentStats: Partial<CharacterStats>
-  gear: Gear
-}
 
 export const cartethyia: CharacterData = {
   name: 'Cartethyia',
