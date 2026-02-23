@@ -5,8 +5,42 @@ import type { StepContext } from './stepContext'
 
 export type DamageModifier = {
   source: string
-  displayName?: string // Optional display name for UI purposes
+  displayName: string // Optional display name for UI purposes
+  type: 'buff' | 'debuff'
   characterStats?: Partial<CharacterStats>
   enemyStats?: Partial<EnemyStats>
-  condition?: (ctx: StepContext) => number
+  condition: (ctx: StepContext) => number
+  targets: TargetStrategy
+  duration: DurationStrategy
+  stacking?: StackingStrategy
+}
+
+// ========== Type: Target Strategy ============================================================================================
+
+export type TargetStrategy = 'self' | 'active' | 'all' | 'nextSwap'
+
+// ========== Type: Duration Strategy ==========================================================================================
+
+export type DurationStrategy = TimeStrategy | SwapStrategy | PermanentStrategy
+
+export type TimeStrategy = {
+  type: 'time-based'
+  timeDuration: number
+}
+
+export type SwapStrategy = {
+  type: 'swap-based'
+  numberOfSwaps: number
+}
+
+export type PermanentStrategy = {
+  type: 'permanent'
+}
+
+// ========== Type: Stacking Strategy ==========================================================================================
+
+export type StackingStrategy = {
+  maxStacks: number
+  resetTimerOnApplication: boolean
+  stacksRemovedEachTime: number
 }

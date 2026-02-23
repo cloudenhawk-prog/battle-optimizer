@@ -4,6 +4,7 @@ import type { Enemy } from '../../types/enemy'
 import type { CharacterStats, EnemyStats } from '../../types/stats'
 import type { DamageModifier } from '../../types/modifiers'
 import type { ScalingType, ElementType, DamageType } from '../../types/baseTypes'
+import type { StepContext } from '../../types/stepContext'
 import { negativeStatuses } from '../../data/negativeStatuses'
 import { aggregateStat } from '../hooks/resolvers'
 
@@ -40,6 +41,7 @@ type CalculateDamageParams = {
   snapshotId: number
   timeStamp: number
   skipContributions?: boolean
+  ctx?: StepContext
 }
 
 type CalculateDamageResult = {
@@ -47,7 +49,7 @@ type CalculateDamageResult = {
   damageEvent: DamageEvent
 }
 
-export function calculateDamage({ action, name, stats, damageModifiers, modifierCharacterStats, modifierEnemyStats, enemy, snapshotId, timeStamp, skipContributions = false }: CalculateDamageParams): CalculateDamageResult {
+export function calculateDamage({ action, name, stats, damageModifiers, modifierCharacterStats, modifierEnemyStats, enemy, snapshotId, timeStamp, skipContributions = false, ctx }: CalculateDamageParams): CalculateDamageResult {
   // Step 1: Extract action properties
   const { scaling, dmgTypes, elements, multiplier: actionMultiplier } = action
 
@@ -80,7 +82,7 @@ export function calculateDamage({ action, name, stats, damageModifiers, modifier
   const criticalStrike = normalStrike * finalStats.critDamage
   const average = normalStrike * critMultiplier
 
-  const contributions = skipContributions ? {} : calculateAllContrubutions(action, name, stats, damageModifiers, enemy, snapshotId, timeStamp, normalStrike, criticalStrike, average)
+  const contributions = skipContributions || !ctx ? {} : calculateAllContrubutions(action, name, stats, damageModifiers, enemy, snapshotId, timeStamp, normalStrike, criticalStrike, average, ctx)
 
   if (!skipContributions) {
     console.log('Calculating damage for action:', action.name)
@@ -387,7 +389,7 @@ function convertLevelToDefense(level: number): number {
   return 8 * level + 792
 }
 
-export function calculateAllContrubutions(action: Action, name: string, stats: CharacterStats, damageModifiers: DamageModifier[], enemy: Enemy, snapshotId: number, timeStamp: number, normalStrike: number, criticalStrike: number, average: number): Record<string, Contribution> {
+export function calculateAllContrubutions(action: Action, name: string, stats: CharacterStats, damageModifiers: DamageModifier[], enemy: Enemy, snapshotId: number, timeStamp: number, normalStrike: number, criticalStrike: number, average: number, ctx: StepContext): Record<string, Contribution> {
   const results: Record<string, Contribution> = {}
 
   // For each modifier, recalculate damage without it
@@ -404,18 +406,22 @@ export function calculateAllContrubutions(action: Action, name: string, stats: C
       if (i === j) continue // Skip current modifier
 
       const otherMod = damageModifiers[j]
+      const conditionMultiplier = otherMod.condition ? otherMod.condition(ctx) : 1
+
       if (otherMod.characterStats) {
         for (const [key, value] of Object.entries(otherMod.characterStats)) {
           const statKey = key as keyof CharacterStats
           const currentVal = charModsWithout[statKey] as number | undefined
-          charModsWithout[statKey] = aggregateStat(currentVal, value as number, key) as any
+          const modValue = (value as number) * conditionMultiplier
+          charModsWithout[statKey] = aggregateStat(currentVal, modValue, key) as any
         }
       }
       if (otherMod.enemyStats) {
         for (const [key, value] of Object.entries(otherMod.enemyStats)) {
           const statKey = key as keyof EnemyStats
           const currentVal = enemyModsWithout[statKey] as number | undefined
-          enemyModsWithout[statKey] = aggregateStat(currentVal, value as number, key) as any
+          const modValue = (value as number) * conditionMultiplier
+          enemyModsWithout[statKey] = aggregateStat(currentVal, modValue, key) as any
         }
       }
     }
