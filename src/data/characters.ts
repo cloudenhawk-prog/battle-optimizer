@@ -29,6 +29,7 @@ export const characters: Character[] = [
   {
     name: 'Cartethyia',
     actions: [
+      // Just always assume 3 forte = 3 correct swords - and 3 sword buffs always active in Fleurdelys form
       energiesUp,
       cartethyiaBA1_4,
       cartethyiaBA2_4,
@@ -48,15 +49,16 @@ export const characters: Character[] = [
       fleurdelysSkill_2,
       fleurdelysLiberation,
       cartethyiaIntro,
-      cartethyiaOutro],
+      cartethyiaOutro,
+    ],
     buffs: [],
     debuffs: [],
     maxEnergies: { energy: 125, concerto: 100, forte: 3, conviction: 120 },
     stats: cartethyiaStats,
     damageModifiers: [
       { source: 'Inherent Skill', displayName: 'Inherent Skill', condition: stacksOf('Aero Erosion'), characterStats: { amplifyDMG: 0.1 } },
-      { source: 'Defier\'s Thorn', displayName: 'Defier Skill 1', condition: atLeastOneStackOf('Aero Erosion'), characterStats: { amplifyDMG: 0.2 } },
-      { source: 'Defier\'s Thorn', displayName: 'Defier Skill 2', condition: always(), characterStats: { defIgnore: 0.08 } }
-    ]
+      { source: "Defier's Thorn", displayName: 'Defier Skill 1', condition: atLeastOneStackOf('Aero Erosion'), characterStats: { amplifyDMG: 0.2 } },
+      { source: "Defier's Thorn", displayName: 'Defier Skill 2', condition: always(), characterStats: { defIgnore: 0.08 } },
+    ],
   },
 ]

@@ -1,45 +1,8 @@
-import type { DamageType, ElementType, ScalingType } from '../../types/baseTypes'
+import type { ActionExpanded, BasicsData } from '../../types/action'
 import type { EnergyGeneration } from '../../types/energy'
-import type { DamageModifier } from '../../types/modifiers'
-import type { SideEffect, StatusModification } from '../../types/sideEffect'
-import type { Action, CastConditions } from '../../data/actions/yangyang'
 
-type BasicsStage = {
-  multipliers: number[]
-  energiesGenerated: EnergyGeneration[][]
-  statusModifications: StatusModification[]
-  damageModifiers: DamageModifier[]
-  sideEffects: SideEffect[]
-  other: {
-    hardness: number[]
-    toughness: number[]
-    offtune: number[]
-  }
-}
-
-export type BasicsData = {
-  scaling: ScalingType
-  elements: ElementType[]
-  dmgTypes: DamageType[]
-  cooldown: number
-  castConditions: CastConditions
-  stages: Record<number, BasicsStage>
-}
-
-export function buildBasicAction(params: {
-  name: string
-  displayName?: string
-  basics: BasicsData
-  fromStage: number
-  toStage: number
-}): Action {
-  const {
-    name,
-    displayName = name,
-    basics,
-    fromStage,
-    toStage
-  } = params
+export function buildBasicAction(params: { name: string; displayName?: string; basics: BasicsData; fromStage: number; toStage: number }): ActionExpanded {
+  const { name, displayName = name, basics, fromStage, toStage } = params
 
   const stages = Object.entries(basics.stages)
     .filter(([stage]) => {
@@ -73,7 +36,7 @@ export function buildBasicAction(params: {
       hardness: stages.flatMap(s => s.other.hardness),
       toughness: stages.flatMap(s => s.other.toughness),
       offtune: stages.flatMap(s => s.other.offtune),
-    }
+    },
   }
 }
 

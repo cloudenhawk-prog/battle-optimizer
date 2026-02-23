@@ -1,42 +1,5 @@
-import type { DamageType, ElementType, Position, ScalingType } from "../../types/baseTypes"
-import type { EnergyCost, EnergyGeneration } from "../../types/energy"
-import type { DamageModifier } from "../../types/modifiers"
-import type { SideEffect, StatusModification } from "../../types/sideEffect"
-import { buildBasicAction, type BasicsData } from "../../utils/data-builders/basics"
-
-export type CastConditions = { // TODO: redo resolvers flow and use new types - put into own types files
-  position: Position
-  previousAction: string
-  endState: Position
-}
-
-export type Other = { // TODO: doesnt require any logic yet, just keep it as a type in its own file for now
-  hardness: number[]
-  toughness: number[]
-  offtune: number[]
-}
-
-export type Action = { // TODO: replace Action type from global types, and update resolvers
-  name: string
-  displayName: string
-  castTime: number
-  multipliers: number[]
-  scaling: ScalingType
-  elements: ElementType[]
-  dmgTypes: DamageType[]
-  cooldown: number
-
-  castConditions: CastConditions
-
-  energiesGenerated: EnergyGeneration[][]
-  energiesCost: EnergyCost[]
-
-  statusModifications: StatusModification[]
-  damageModifiers: DamageModifier[]
-  sideEffects: SideEffect[]
-
-  other: Other
-}
+import type { ActionExpanded, BasicsData } from '../../types/action'
+import { buildBasicAction } from '../../utils/data-builders/basics'
 
 // ========== Basic ===========================================================================================================
 
@@ -56,8 +19,8 @@ const basics: BasicsData = {
       energiesGenerated: [
         [
           { energyType: 'energy', amount: 0.75, share: 0.5, scalingStat: 'energyPercent' },
-          { energyType: 'concerto', amount: 2.4, share: 0 }
-        ]
+          { energyType: 'concerto', amount: 2.4, share: 0 },
+        ],
       ],
       statusModifications: [],
       damageModifiers: [],
@@ -65,16 +28,16 @@ const basics: BasicsData = {
       other: {
         hardness: [1],
         toughness: [0.3],
-        offtune: [0.24]
-      }
+        offtune: [0.24],
+      },
     },
     2: {
       multipliers: [0.5964],
       energiesGenerated: [
         [
-          { energyType: 'energy', amount: 1.00, share: 0.5, scalingStat: 'energyPercent' },
-          { energyType: 'concerto', amount: 3.2, share: 0 }
-        ]
+          { energyType: 'energy', amount: 1.0, share: 0.5, scalingStat: 'energyPercent' },
+          { energyType: 'concerto', amount: 3.2, share: 0 },
+        ],
       ],
       statusModifications: [],
       damageModifiers: [],
@@ -82,20 +45,20 @@ const basics: BasicsData = {
       other: {
         hardness: [1],
         toughness: [0.4],
-        offtune: [0.32]
-      }
+        offtune: [0.32],
+      },
     },
     3: {
       multipliers: [0.4681, 0.4681],
       energiesGenerated: [
         [
           { energyType: 'energy', amount: 2 * 0.78, share: 0.5, scalingStat: 'energyPercent' },
-          { energyType: 'concerto', amount: 2 * 2.51, share: 0 }
+          { energyType: 'concerto', amount: 2 * 2.51, share: 0 },
         ],
         [
           { energyType: 'energy', amount: 2 * 0.78, share: 0.5, scalingStat: 'energyPercent' },
-          { energyType: 'concerto', amount: 2 * 2.51, share: 0 }
-        ]
+          { energyType: 'concerto', amount: 2 * 2.51, share: 0 },
+        ],
       ],
       statusModifications: [],
       damageModifiers: [],
@@ -103,8 +66,8 @@ const basics: BasicsData = {
       other: {
         hardness: [1, 1],
         toughness: [0.314, 0.314],
-        offtune: [0.252, 0.252]
-      }
+        offtune: [0.252, 0.252],
+      },
     },
     4: {
       multipliers: [0.5936, 0.5936, 0.7914],
@@ -112,15 +75,15 @@ const basics: BasicsData = {
         [
           { energyType: 'energy', amount: 1, share: 0.5, scalingStat: 'energyPercent' },
           { energyType: 'concerto', amount: 3.18, share: 0 },
-          { energyType: 'forte', amount: 1, share: 0 }
+          { energyType: 'forte', amount: 1, share: 0 },
         ],
         [
           { energyType: 'energy', amount: 1, share: 0.5, scalingStat: 'energyPercent' },
-          { energyType: 'concerto', amount: 3.18, share: 0 }
+          { energyType: 'concerto', amount: 3.18, share: 0 },
         ],
         [
           { energyType: 'energy', amount: 1.32, share: 0.5, scalingStat: 'energyPercent' },
-          { energyType: 'concerto', amount: 4.24, share: 0 }
+          { energyType: 'concerto', amount: 4.24, share: 0 },
         ],
       ],
       statusModifications: [],
@@ -129,21 +92,21 @@ const basics: BasicsData = {
       other: {
         hardness: [1, 1, 1],
         toughness: [0.3981, 0.3981, 0.5308],
-        offtune: [0.3192, 0.3192, 0.4256]
-      }
-    }
-  }
+        offtune: [0.3192, 0.3192, 0.4256],
+      },
+    },
+  },
 }
 
-export const basic_1_4: Action = buildBasicAction({
+export const basic_1_4: ActionExpanded = buildBasicAction({
   name: 'Basic Attack 1-4',
   displayName: 'Basic Attack 1-4',
   basics,
   fromStage: 1,
-  toStage: 4
+  toStage: 4,
 })
 
-export const heavy_1: Action = {
+export const heavy_1: ActionExpanded = {
   name: 'Heavy Attack',
   displayName: 'Heavy Attack',
   castTime: 0,
@@ -162,16 +125,16 @@ export const heavy_1: Action = {
   energiesGenerated: [
     [
       { energyType: 'energy', amount: 0.33, share: 0.5, scalingStat: 'energyPercent' },
-      { energyType: 'concerto', amount: 1.06, share: 0 }
+      { energyType: 'concerto', amount: 1.06, share: 0 },
     ],
     [
       { energyType: 'energy', amount: 0.33, share: 0.5, scalingStat: 'energyPercent' },
-      { energyType: 'concerto', amount: 1.06, share: 0 }
+      { energyType: 'concerto', amount: 1.06, share: 0 },
     ],
     [
       { energyType: 'energy', amount: 0.33, share: 0.5, scalingStat: 'energyPercent' },
-      { energyType: 'concerto', amount: 1.06, share: 0 }
-    ]
+      { energyType: 'concerto', amount: 1.06, share: 0 },
+    ],
   ],
   energiesCost: [],
 
@@ -182,11 +145,11 @@ export const heavy_1: Action = {
   other: {
     hardness: [1, 1, 1],
     toughness: [0.1333, 0.1333, 0.1333],
-    offtune: [0.1067, 0.1067, 0.1067]
-  }
+    offtune: [0.1067, 0.1067, 0.1067],
+  },
 }
 
-export const heavy_2: Action = {
+export const heavy_2: ActionExpanded = {
   name: 'Zephyr Song',
   displayName: 'Heavy Attack 2',
   castTime: 0,
@@ -206,8 +169,8 @@ export const heavy_2: Action = {
     [
       { energyType: 'energy', amount: 1.78, share: 0.5, scalingStat: 'energyPercent' },
       { energyType: 'concerto', amount: 5.72, share: 0 },
-      { energyType: 'forte', amount: 1, share: 0 }
-    ]
+      { energyType: 'forte', amount: 1, share: 0 },
+    ],
   ],
   energiesCost: [],
 
@@ -218,11 +181,11 @@ export const heavy_2: Action = {
   other: {
     hardness: [1],
     toughness: [0.715],
-    offtune: [0.576]
-  }
+    offtune: [0.576],
+  },
 }
 
-export const mid_air_1: Action = {
+export const mid_air_1: ActionExpanded = {
   name: 'Mid-Air Attack',
   displayName: 'Plunge Attack',
   castTime: 0,
@@ -241,8 +204,8 @@ export const mid_air_1: Action = {
   energiesGenerated: [
     [
       { energyType: 'energy', amount: 0.51, share: 0.5, scalingStat: 'energyPercent' },
-      { energyType: 'concerto', amount: 1, share: 0 }
-    ]
+      { energyType: 'concerto', amount: 1, share: 0 },
+    ],
   ],
   energiesCost: [],
 
@@ -253,11 +216,11 @@ export const mid_air_1: Action = {
   other: {
     hardness: [1],
     toughness: [0.62],
-    offtune: [0.496]
-  }
+    offtune: [0.496],
+  },
 }
 
-export const dodge_counter: Action = {
+export const dodge_counter: ActionExpanded = {
   name: 'Dodge Counter',
   displayName: 'Dodge Counter',
   castTime: 0,
@@ -276,12 +239,12 @@ export const dodge_counter: Action = {
   energiesGenerated: [
     [
       { energyType: 'energy', amount: 1.36, share: 0.5, scalingStat: 'energyPercent' },
-      { energyType: 'concerto', amount: 1.98, share: 0 }
+      { energyType: 'concerto', amount: 1.98, share: 0 },
     ],
     [
       { energyType: 'energy', amount: 1.36, share: 0.5, scalingStat: 'energyPercent' },
-      { energyType: 'concerto', amount: 1.98, share: 0 }
-    ]
+      { energyType: 'concerto', amount: 1.98, share: 0 },
+    ],
   ],
   energiesCost: [],
 
@@ -292,13 +255,13 @@ export const dodge_counter: Action = {
   other: {
     hardness: [1, 1],
     toughness: [0.75, 0.75],
-    offtune: [0.2, 0.2]
-  }
+    offtune: [0.2, 0.2],
+  },
 }
 
 // ========== Forte ===========================================================================================================
 
-export const mid_air_2: Action = {
+export const mid_air_2: ActionExpanded = {
   name: 'Feather Release',
   displayName: 'Forte Plunge Attack',
   castTime: 0,
@@ -317,26 +280,14 @@ export const mid_air_2: Action = {
   energiesGenerated: [
     [
       { energyType: 'energy', amount: 0.36, share: 0.5, scalingStat: 'energyPercent' },
-      { energyType: 'concerto', amount: 30, share: 0 }
+      { energyType: 'concerto', amount: 30, share: 0 },
     ],
-    [
-      { energyType: 'energy', amount: 0.36, share: 0.5, scalingStat: 'energyPercent' }
-    ],
-    [
-      { energyType: 'energy', amount: 0.36, share: 0.5, scalingStat: 'energyPercent' }
-    ],
-    [
-      { energyType: 'energy', amount: 0.36, share: 0.5, scalingStat: 'energyPercent' }
-    ],
-    [
-      { energyType: 'energy', amount: 0.36, share: 0.5, scalingStat: 'energyPercent' }
-    ],
-    [
-      { energyType: 'energy', amount: 2.12, share: 0.5, scalingStat: 'energyPercent' }
-    ],
-    [
-      { energyType: 'energy', amount: 2.12, share: 0.5, scalingStat: 'energyPercent' }
-    ]
+    [{ energyType: 'energy', amount: 0.36, share: 0.5, scalingStat: 'energyPercent' }],
+    [{ energyType: 'energy', amount: 0.36, share: 0.5, scalingStat: 'energyPercent' }],
+    [{ energyType: 'energy', amount: 0.36, share: 0.5, scalingStat: 'energyPercent' }],
+    [{ energyType: 'energy', amount: 0.36, share: 0.5, scalingStat: 'energyPercent' }],
+    [{ energyType: 'energy', amount: 2.12, share: 0.5, scalingStat: 'energyPercent' }],
+    [{ energyType: 'energy', amount: 2.12, share: 0.5, scalingStat: 'energyPercent' }],
   ],
   energiesCost: [],
 
@@ -347,13 +298,13 @@ export const mid_air_2: Action = {
   other: {
     hardness: [1, 1, 1, 1, 1, 1, 1],
     toughness: [0.1458, 0.1458, 0.1458, 0.1458, 0.1458, 0.8505, 0.8505],
-    offtune: [0.1167, 0.1167, 0.1167, 0.1167, 0.1167, 0.6804, 0.6804]
-  }
+    offtune: [0.1167, 0.1167, 0.1167, 0.1167, 0.1167, 0.6804, 0.6804],
+  },
 }
 
 // ========== Skill ===========================================================================================================
 
-export const skill: Action = {
+export const skill: ActionExpanded = {
   name: 'Zephyr Domain',
   displayName: 'Resonance Skill',
   castTime: 0,
@@ -373,20 +324,12 @@ export const skill: Action = {
     [
       { energyType: 'energy', amount: 1.18, share: 0.5, scalingStat: 'energyPercent' },
       { energyType: 'concerto', amount: 15, share: 0 },
-      { energyType: 'forte', amount: 1, share: 0 }
+      { energyType: 'forte', amount: 1, share: 0 },
     ],
-    [
-      { energyType: 'energy', amount: 1.18, share: 0.5, scalingStat: 'energyPercent' },
-    ],
-    [
-      { energyType: 'energy', amount: 1.18, share: 0.5, scalingStat: 'energyPercent' },
-    ],
-    [
-      { energyType: 'energy', amount: 1.18, share: 0.5, scalingStat: 'energyPercent' },
-    ],
-    [
-      { energyType: 'energy', amount: 7.1, share: 0.5, scalingStat: 'energyPercent' },
-    ]
+    [{ energyType: 'energy', amount: 1.18, share: 0.5, scalingStat: 'energyPercent' }],
+    [{ energyType: 'energy', amount: 1.18, share: 0.5, scalingStat: 'energyPercent' }],
+    [{ energyType: 'energy', amount: 1.18, share: 0.5, scalingStat: 'energyPercent' }],
+    [{ energyType: 'energy', amount: 7.1, share: 0.5, scalingStat: 'energyPercent' }],
   ],
   energiesCost: [],
 
@@ -397,13 +340,13 @@ export const skill: Action = {
   other: {
     hardness: [1, 1, 1, 1, 1],
     toughness: [0.2, 0.2, 0.2, 0.2, 1.2],
-    offtune: [0.059, 0.059, 0.059, 0.059, 0.3538]
-  }
+    offtune: [0.059, 0.059, 0.059, 0.059, 0.3538],
+  },
 }
 
 // ========== Liberation ======================================================================================================
 
-export const liberation: Action = {
+export const liberation: ActionExpanded = {
   name: 'Wind Spirals',
   displayName: 'Liberation',
   castTime: 0,
@@ -419,23 +362,7 @@ export const liberation: Action = {
     endState: 'GROUND',
   },
 
-  energiesGenerated: [
-    [
-      { energyType: 'concerto', amount: 20, share: 0 }
-    ],
-    [],
-    [],
-    [],
-    [],
-    [],
-    [],
-    [],
-    [],
-    [],
-    [],
-    [],
-    []
-  ],
+  energiesGenerated: [[{ energyType: 'concerto', amount: 20, share: 0 }], [], [], [], [], [], [], [], [], [], [], [], []],
   energiesCost: [{ energyType: 'energy', amount: 100 }],
 
   statusModifications: [],
@@ -445,13 +372,13 @@ export const liberation: Action = {
   other: {
     hardness: [1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1],
     toughness: [0.2, 0.2, 0.2, 0.2, 0.2, 0.2, 0.2, 0.2, 0.2, 0.2, 0.2, 0.2, 1.6],
-    offtune: [0.3072, 0.3072, 0.3072, 0.3072, 0.3072, 0.3072, 0.3072, 0.3072, 0.3072, 0.3072, 0.3072, 0.3072, 2.4576]
-  }
+    offtune: [0.3072, 0.3072, 0.3072, 0.3072, 0.3072, 0.3072, 0.3072, 0.3072, 0.3072, 0.3072, 0.3072, 0.3072, 2.4576],
+  },
 }
 
 // ========== Intro & Outro ===================================================================================================
 
-export const intro: Action = {
+export const intro: ActionExpanded = {
   name: 'Cerulean Song',
   displayName: 'Intro',
   castTime: 0,
@@ -471,11 +398,9 @@ export const intro: Action = {
     [
       { energyType: 'energy', amount: 5, share: 0.5, scalingStat: 'energyPercent' },
       { energyType: 'concerto', amount: 10, share: 0 },
-      { energyType: 'forte', amount: 1, share: 0 }
+      { energyType: 'forte', amount: 1, share: 0 },
     ],
-    [
-      { energyType: 'energy', amount: 5, share: 0.5, scalingStat: 'energyPercent' },
-    ]
+    [{ energyType: 'energy', amount: 5, share: 0.5, scalingStat: 'energyPercent' }],
   ],
   energiesCost: [],
 
@@ -486,12 +411,12 @@ export const intro: Action = {
   other: {
     hardness: [1, 1],
     toughness: [0.45, 0.45],
-    offtune: [0.36, 0.36]
-  }
+    offtune: [0.36, 0.36],
+  },
 }
 
 //TODO: Restore 4 Resonance Energy per second for 5s for the incoming Resonator.
-export const outro: Action = {
+export const outro: ActionExpanded = {
   name: 'Whispering Breeze',
   displayName: 'Outro',
   castTime: 0,
@@ -510,11 +435,9 @@ export const outro: Action = {
   energiesGenerated: [
     [
       { energyType: 'energy', amount: 5, share: 0.5, scalingStat: 'energyPercent' },
-      { energyType: 'concerto', amount: 10, share: 0 }
+      { energyType: 'concerto', amount: 10, share: 0 },
     ],
-    [
-      { energyType: 'energy', amount: 5, share: 0.5, scalingStat: 'energyPercent' },
-    ]
+    [{ energyType: 'energy', amount: 5, share: 0.5, scalingStat: 'energyPercent' }],
   ],
   energiesCost: [],
 
@@ -525,18 +448,17 @@ export const outro: Action = {
   other: {
     hardness: [1, 1],
     toughness: [0.45, 0.45],
-    offtune: [0.36, 0.36]
-  }
+    offtune: [0.36, 0.36],
+  },
 }
 
 // TODO: test cast times, and make versions for: default & swap-cancel
 // TODO: Define custom selectors: when hovering/clicking on actions with multiple versions, a new box should appear on top of it where you select which version
-  // (this will let us avoid overcrowding the selector - same can be done with Basics instead of having an entry per version of basic attacks)
-  // This should be forced on Character selection (if you just used a SWAP version, you cannot use the same character in the next row/snapshot)
-
+// (this will let us avoid overcrowding the selector - same can be done with Basics instead of having an entry per version of basic attacks)
+// This should be forced on Character selection (if you just used a SWAP version, you cannot use the same character in the next row/snapshot)
 
 //TODO : handle sequences - define different versions of actions and sequence requirements, then add sequence to character?
 
 // TODO: For now lock action/character at points where these cant be reselected (we dont have any logging needed to restore checkpoints when overwriting/deleting rows yet)
-  // When an action is selected for a snapshot: lock both character and action
-  // Backtracking is easy if we make COPIES of all objects each time - assuming there won't be RAM problems. It's not a pretty solution, but it's easy
+// When an action is selected for a snapshot: lock both character and action
+// Backtracking is easy if we make COPIES of all objects each time - assuming there won't be RAM problems. It's not a pretty solution, but it's easy

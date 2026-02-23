@@ -1,7 +1,7 @@
+import type { ActionExpanded } from '../../types/action'
 import type { EnergyType } from '../../types/baseTypes'
 import type { DamageModifier } from '../../types/modifiers'
 import type { CharacterStats } from '../../types/stats'
-import type { Action } from '../actions/yangyang'
 import { baseStats, inherentStats } from '../stats/yangyang'
 
 type Gear = {
@@ -24,12 +24,12 @@ type Echo = {
 }
 
 type CharacterData = {
-    name: string
-    actions: Action[]
-    maxEnergies: Partial<Record<EnergyType, number>>
-    baseStats: Partial<CharacterStats>  // TODO: make sure partial stats are handled
-    inherentStats: Partial<CharacterStats>
-    gear: Gear
+  name: string
+  actions: ActionExpanded[]
+  maxEnergies: Partial<Record<EnergyType, number>>
+  baseStats: Partial<CharacterStats> // TODO: make sure partial stats are handled
+  inherentStats: Partial<CharacterStats>
+  gear: Gear
 }
 
 export const yangyang: CharacterData = {
@@ -41,16 +41,14 @@ export const yangyang: CharacterData = {
   gear: {
     weapon: null, // Equip weapon
     echoes: [],
-  }
+  },
 }
 
 // TODO: define eapons, echoes
 // TODO: the defined characters should use character data, like 'cartehyia: Character = someConvertFunction(characterData: CharacterData)'
-  // This function should use util function to add stats together / aggregate stats (make sure it works with partial stat objects)
+// This function should use util function to add stats together / aggregate stats (make sure it works with partial stat objects)
 
-// TODO: Fix the buff/debuff/damage modifier issue -> We need everything to be handled consistently. Some may be:
-  // Conditional apply / Universal
-  // Time-based / Permanent / Next N Character(s)
-  // Self / Current Active / Global
-  
-
+// TODO NEXT: Fix the buff/debuff/damage modifier issue -> We need everything to be handled consistently. Some may be:
+// Conditional apply / Universal
+// Time-based / Permanent / Next N swaps Character(s) - for example self + 0 swap means (until I change character)
+// Self / Current Active / Global
