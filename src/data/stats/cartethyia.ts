@@ -10,9 +10,9 @@ export const baseStats: Partial<CharacterStats> = {
   baseDEF: 611,
 
   critRate: 0.05,
-  critDamage: 1.50,
+  critDamage: 1.5,
 
-  energyPercent: 1.0
+  energyPercent: 1.0,
 }
 
 export const inherentStats: Partial<CharacterStats> = {
@@ -21,4 +21,4 @@ export const inherentStats: Partial<CharacterStats> = {
 
 // Must:  Shorekeeper, Ciaconna, Rover Aero, Chisa, Mornye
 
-// Maybe: Sanhua, Jinhsi, Verina, Carlotta, Ciaconna, Buling, 
+// Maybe: Sanhua, Jinhsi, Verina, Carlotta, Ciaconna, Buling,
