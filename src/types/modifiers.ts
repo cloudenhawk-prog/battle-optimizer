@@ -44,3 +44,12 @@ export type StackingStrategy = {
   resetTimerOnApplication: boolean
   stacksRemovedEachTime: number
 }
+
+// TODO :
+// Currently the resolvers don't care where modifiers come from - this is perfect
+// Currently modifiers come only from: selected character, selected action, active negative statuses - this is perfect
+
+// We are not ready to update modifiers with:
+// TimeStrategy - requires tracking like NegativeStatusesInAction
+// SwapStrategy - requires tracking swaps
+// PermanentStrategy - might simply relate to timeTracking?

@@ -82,7 +82,7 @@ export function resolveDamageModifiers(ctx: StepContext) {
   const characterModifiers = initializeEmptyCharacterStats()
   const enemyModifiers = initializeEmptyEnemyStats()
 
-  const allModifiers: DamageModifier[] = [...(ctx.character.damageModifiers ?? []), ...(ctx.action.damageModifiers ?? []), ...ctx.negativeStatusesInAction.flatMap(ns => ns.negativeStatus.damageModifiers ?? [])]
+  const allModifiers: DamageModifier[] = [...(ctx.character.damageModifiers ?? []), ...(ctx.action.damageModifiers ?? []), ...ctx.negativeStatusesInAction.filter(ns => ns.currentStacks > 0).flatMap(ns => ns.negativeStatus.damageModifiers ?? [])]
 
   // Store all collected modifiers in context for damage calculator to use
   ctx.damageModifiers = allModifiers
