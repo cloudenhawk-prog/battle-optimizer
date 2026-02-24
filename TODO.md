@@ -1,13 +1,6 @@
 TODO:
 
-TASK: Sidebar should have the from-up-to-down scanning animation (the one Data Overlay has), but no the from-left-to-right light animation effect (the one the sections within the Data Overlay have)
-
-TASK: The borders should match among: sidebar, topbar, table
-TASK: The colors and overall theme should match among: sidebar, topbar, table, data overlay
-
-TASK: Try Mornye (with legs) or shorekeepr, instead of Phrolova since they may fit the new theme better (Tether System)
-
-TASK: HOW do we want to handle trigger-timed based (potentially ramping) modifiers like Fleurdelys Mandate, or Fleurdelys potential 3 swords buff
+Need a way to remove buffs - like FLeurdelys Mandata and sword buffs (they are timed but also disappear when she used liberation - i.e. swaps back)
 
 TASK: Buffs/debuffs can be split into subgroups for each character and for shared (but would be difficult since some rely on 'active character' and 'N number of swaps')
 

@@ -5,7 +5,7 @@ import type { StepContext } from './stepContext'
 
 export type DamageModifier = {
   source: string
-  displayName: string // Optional display name for UI purposes
+  displayName: string
   type: 'buff' | 'debuff'
   characterStats?: Partial<CharacterStats>
   enemyStats?: Partial<EnemyStats>
