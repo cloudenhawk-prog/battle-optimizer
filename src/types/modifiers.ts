@@ -50,7 +50,7 @@ export type StackingStrategy = {
 // Currently modifiers come only from: selected character, selected action, active negative statuses - this is perfect
 
 // Add source:
-// Gear: Weapon 
+// Gear: Weapon
 
 // We are not ready to update modifiers with:
 // TimeStrategy - requires tracking like NegativeStatusesInAction
