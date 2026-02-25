@@ -49,7 +49,17 @@ export type StackingStrategy = {
 // Currently the resolvers don't care where modifiers come from - this is perfect
 // Currently modifiers come only from: selected character, selected action, active negative statuses - this is perfect
 
+// Add source:
+// Gear: Weapon 
+
 // We are not ready to update modifiers with:
 // TimeStrategy - requires tracking like NegativeStatusesInAction
 // SwapStrategy - requires tracking swaps
 // PermanentStrategy - might simply relate to timeTracking?
+
+// For contributions, we need a way to distinguish modifiers
+// You may not want to see base ones (weapon/character inherent skills)
+// You may want to see all actual buffs
+
+// Similarly, we may want to hide certain buffs?
+// We may want to go with aggregation: possibly a column for different types of buffs/debuffs, like DurationStrategy, stackingStrategy, Others
