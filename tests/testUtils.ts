@@ -261,6 +261,12 @@ export function createMockDebuff(name: string, overrides: Partial<Debuff> = {}):
 export function createMockDamageModifier(source: string, overrides: Partial<DamageModifier> = {}): DamageModifier {
   return {
     source,
+    displayName: overrides.displayName ?? source,
+    type: overrides.type ?? 'buff',
+    ownerCharacter: overrides.ownerCharacter !== undefined ? overrides.ownerCharacter : null,
+    condition: overrides.condition ?? (() => 1),
+    targets: overrides.targets ?? 'all',
+    duration: overrides.duration ?? { type: 'permanent' },
     ...overrides,
   }
 }

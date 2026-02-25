@@ -34,9 +34,9 @@ export const characters: Character[] = [
     maxEnergies: { energy: 125, concerto: 100, forte: 3, conviction: 120 },
     stats: cartethyiaStats,
     damageModifiers: [
-      { source: 'Inherent Skill', displayName: 'Aero Stacks', type: 'buff', condition: stacksOf('Aero Erosion'), characterStats: { amplifyDMG: 0.1 }, targets: 'self', duration: { type: 'permanent' } },
-      { source: "Defier's Thorn", displayName: 'Defier Stack', type: 'buff', condition: atLeastOneStackOf('Aero Erosion'), characterStats: { amplifyDMG: 0.2 }, targets: 'self', duration: { type: 'permanent' } },
-      { source: "Defier's Thorn", displayName: 'Defier Ignore', type: 'buff', condition: always(), characterStats: { defIgnore: 0.08 }, targets: 'self', duration: { type: 'permanent' } },
+      { source: 'Inherent Skill', displayName: 'Aero Stacks', type: 'buff', ownerCharacter: 'Cartethyia', condition: stacksOf('Aero Erosion'), characterStats: { amplifyDMG: 0.1 }, targets: 'self', duration: { type: 'permanent' } },
+      { source: "Defier's Thorn", displayName: 'Defier Stack', type: 'buff', ownerCharacter: 'Cartethyia', condition: atLeastOneStackOf('Aero Erosion'), characterStats: { amplifyDMG: 0.2 }, targets: 'self', duration: { type: 'permanent' } },
+      { source: "Defier's Thorn", displayName: 'Defier Ignore', type: 'buff', ownerCharacter: 'Cartethyia', condition: always(), characterStats: { defIgnore: 0.08 }, targets: 'self', duration: { type: 'permanent' } },
     ],
   },
 ]

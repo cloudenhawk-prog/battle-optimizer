@@ -32,6 +32,9 @@ export type StepContext = {
   aggregatedCharacterModifiers: Partial<CharacterStats>
   aggregatedEnemyModifiers: Partial<EnemyStats>
 
+  // Track the character who was swapped to most recently (for 'nextSwap' target strategy)
+  lastSwappedToCharacter?: string
+
   logs: StepLog[]
 }
 

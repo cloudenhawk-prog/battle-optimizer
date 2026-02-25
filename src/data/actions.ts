@@ -567,7 +567,18 @@ export const fleurdelysLiberation: Action = {
   statusModifications: [
     { type: 'negativeStatus', targetName: 'Aero Erosion', stackChange: -100 }, // TODO: does our resolver handle it correctly?
   ],
-  damageModifiers: [{ source: 'Liberation Stacks', displayName: 'Liberation Passive', condition: stacksOfCap('Aero Erosion'), characterStats: { liberationTotalMultiplierDMG: 0.2 } }],
+  damageModifiers: [
+    {
+      source: 'Liberation Stacks',
+      displayName: 'Liberation Passive',
+      type: 'buff',
+      ownerCharacter: 'Cartethyia',
+      condition: stacksOfCap('Aero Erosion'),
+      characterStats: { liberationTotalMultiplierDMG: 0.2 },
+      targets: 'self',
+      duration: { type: 'permanent' },
+    },
+  ],
   sideEffects: [],
 }
 

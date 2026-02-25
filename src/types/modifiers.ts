@@ -7,6 +7,7 @@ export type DamageModifier = {
   source: string
   displayName: string
   type: 'buff' | 'debuff'
+  ownerCharacter: string | null
   characterStats?: Partial<CharacterStats>
   enemyStats?: Partial<EnemyStats>
   condition: (ctx: StepContext) => number
@@ -52,7 +53,9 @@ export type StackingStrategy = {
 // Add source:
 // Gear: Weapon
 
-// We are not ready to update modifiers with:
+// ---
+
+// We are now ready to update modifiers with:
 // TimeStrategy - requires tracking like NegativeStatusesInAction
 // SwapStrategy - requires tracking swaps
 // PermanentStrategy - might simply relate to timeTracking?

@@ -26,6 +26,11 @@ export function buildStepContext(snapshotId: number, current: Snapshot, prev: Sn
     }
   }
 
+  // Determine if this is a swap: character changed from prev to current
+  // Intro actions are swap-triggered, so we include them
+  const isSwap = prev.character && prev.character !== character.name
+  const lastSwappedToCharacter = isSwap ? character.name : undefined
+
   const ctx: StepContext = {
     snapshotId,
 
@@ -47,13 +52,15 @@ export function buildStepContext(snapshotId: number, current: Snapshot, prev: Sn
     aggregatedCharacterModifiers: {},
     aggregatedEnemyModifiers: {},
 
+    lastSwappedToCharacter,
+
     logs: [],
   }
 
   ctx.logs.push({
     resolver: 'buildStepContext',
     message: `Context built for snapshot ${snapshotId}`,
-    details: { character: character.name, action: action.name },
+    details: { character: character.name, action: action.name, isSwap },
   })
 
   return ctx
@@ -82,12 +89,20 @@ export function resolveDamageModifiers(ctx: StepContext) {
   const characterModifiers = initializeEmptyCharacterStats()
   const enemyModifiers = initializeEmptyEnemyStats()
 
-  const allModifiers: DamageModifier[] = [...(ctx.character.damageModifiers ?? []), ...(ctx.action.damageModifiers ?? []), ...ctx.negativeStatusesInAction.filter(ns => ns.currentStacks > 0).flatMap(ns => ns.negativeStatus.damageModifiers ?? [])]
+  // Collect modifiers with ownerCharacter tracking
+  const characterModifiersWithOwner = (ctx.character.damageModifiers ?? []).map(mod => ({ ...mod, ownerCharacter: mod.ownerCharacter ?? ctx.character.name }))
+  const actionModifiersWithOwner = (ctx.action.damageModifiers ?? []).map(mod => ({ ...mod, ownerCharacter: mod.ownerCharacter ?? ctx.character.name }))
+  const negativeStatusModifiers = ctx.negativeStatusesInAction.filter(ns => ns.currentStacks > 0).flatMap(ns => (ns.negativeStatus.damageModifiers ?? []).map(mod => ({ ...mod, ownerCharacter: mod.ownerCharacter ?? null })))
 
-  // Store all collected modifiers in context for damage calculator to use
-  ctx.damageModifiers = allModifiers
+  const allModifiers: DamageModifier[] = [...characterModifiersWithOwner, ...actionModifiersWithOwner, ...negativeStatusModifiers]
 
-  for (const modifier of allModifiers) {
+  // Filter modifiers based on target strategy
+  const applicableModifiers = allModifiers.filter(modifier => shouldApplyModifier(modifier, ctx))
+
+  // Store all applicable modifiers in context for damage calculator to use
+  ctx.damageModifiers = applicableModifiers
+
+  for (const modifier of applicableModifiers) {
     const conditionMultiplier = modifier.condition ? modifier.condition(ctx) : 1
 
     if (modifier.characterStats) {
@@ -116,6 +131,8 @@ export function resolveDamageModifiers(ctx: StepContext) {
     resolver: 'resolveDamageModifiers',
     message: 'Final aggregated modifiers collected',
     details: {
+      totalModifiers: allModifiers.length,
+      applicableModifiers: applicableModifiers.length,
       characterModifiers: ctx.aggregatedCharacterModifiers,
       enemyModifiers: ctx.aggregatedEnemyModifiers,
     },
@@ -480,4 +497,61 @@ export function aggregateStat(currentValue: number | undefined, incomingValue: n
   const current = currentValue ?? (isMultiplier ? 1 : 0)
 
   return isMultiplier ? current * incomingValue : current + incomingValue
+}
+
+/**
+ * Determines if a damage modifier should be applied based on its target and duration strategies.
+ *
+ * TARGET STRATEGIES:
+ * - 'self': Only applies when the owner character is currently active
+ * - 'active': Always applies to whoever is currently active
+ * - 'all': Always applies regardless of who is active
+ * - 'nextSwap': Applies to the character who was swapped to (until next swap or duration expires)
+ *
+ * DURATION STRATEGIES (TODO - not yet implemented):
+ * - 'time-based': Modifier expires after a set duration in seconds
+ * - 'swap-based': Modifier expires after N character swaps
+ * - 'permanent': Never expires
+ *
+ * CURRENT LIMITATIONS:
+ * - 'nextSwap' only works at the moment of swap (NOT persisted across subsequent actions)
+ *   To fix: Need modifier tracking system to store active modifiers and check duration
+ * - Duration strategies are not enforced yet (all modifiers behave as permanent)
+ *   To fix: Need to track modifier activation time/swap count and check expiration
+ *
+ * FUTURE IMPLEMENTATION:
+ * - Track active modifiers similar to negativeStatusesInAction
+ * - Store: modifier, activationTime, activationSwapCount, targetCharacter (for nextSwap)
+ * - On each step: check if duration expired (time or swap count)
+ * - For 'nextSwap': activate when swap detected, apply while duration valid + character matches
+ */
+function shouldApplyModifier(modifier: DamageModifier, ctx: StepContext): boolean {
+  const { targets, ownerCharacter } = modifier
+  const activeCharacter = ctx.character.name
+
+  switch (targets) {
+    case 'self':
+      // Only applies if the owner is the currently active character
+      return ownerCharacter === activeCharacter
+
+    case 'active':
+      // Always applies to whoever is currently active
+      return true
+
+    case 'all':
+      // Always applies regardless of who is active
+      return true
+
+    case 'nextSwap':
+      // TODO: This currently only works at the moment of swap
+      // Need to track which character was swapped to and persist across snapshots
+      // Should apply until: next swap OR duration expires (whichever comes first)
+      console.log("Warning: 'nextSwap' target strategy currently does not work")
+      return ctx.lastSwappedToCharacter === activeCharacter && ownerCharacter !== activeCharacter
+
+    default:
+      // Unknown target strategy - log warning and default to not applying
+      console.warn(`Unknown target strategy: ${targets}`)
+      return false
+  }
 }
