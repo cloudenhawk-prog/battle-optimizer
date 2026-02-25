@@ -11,14 +11,19 @@ export type DamageModifier = {
   characterStats?: Partial<CharacterStats>
   enemyStats?: Partial<EnemyStats>
   condition: (ctx: StepContext) => number
-  targets: TargetStrategy
-  duration: DurationStrategy
-  stacking?: StackingStrategy
+  targetStrategy: TargetStrategy
+  durationStrategy: DurationStrategy
+  // Need type for current snapshot in time: timeLeft, swapsLeft?
+  stackingStrategy?: StackingStrategy // Make non-optional : default can be maxStacks=1, resetTimerOnApplication=true, stacksRemovedEachTime=1
+  // need type for current snapshot in time: currentStacks? Stacks should be multiplied with 'condition=>number' result?
 }
 
 // ========== Type: Target Strategy ============================================================================================
 
 export type TargetStrategy = 'self' | 'active' | 'all' | 'nextSwap'
+// self     - (Done)
+// active   - (Done)
+// 
 
 // ========== Type: Duration Strategy ==========================================================================================
 

@@ -525,33 +525,39 @@ export function aggregateStat(currentValue: number | undefined, incomingValue: n
  * - On each step: check if duration expired (time or swap count)
  * - For 'nextSwap': activate when swap detected, apply while duration valid + character matches
  */
+// TODO - IMPORTANT: filter should not be applied here when you collect modifiers. They should be filtered before each calculation (Negative Status, Coordinated Attack, Action etc)
+// TODO - Normalize an interface. Input: modifiers, stepcontext (or w/e we need), source that wants to deal dmg   Output: modifiers that should apply to it
+// TODO - Gather all things that can deal damage -> Use an interface to determine what properties such things need (characterOwner?)
+// TODO - Just like negative statuses in action are resolved, so should modifiers be at the end (stacks, time etc)
+// TODO - damage modifiers should also be resolved in resolver 0 -> swaps should count down the swapCount by 1 - then remove/reset modifiers that runs out (and also resolve if 'nextSwap' targetStrategy)
+// TODO - for modifiers that are actually cast like buffs/debuffs and arent just permanent modifiers, how/where are they born?
+  // Born through actions - Outro, Intro, certain skills
+  // Born through triggers when a condition is met - When dealing basic attack, gains buff for 5s: +10 % aero dmg (or whatever)
 function shouldApplyModifier(modifier: DamageModifier, ctx: StepContext): boolean {
-  const { targets, ownerCharacter } = modifier
+  const { targetStrategy, durationStrategy, stackingStrategy, ownerCharacter, source } = modifier
   const activeCharacter = ctx.character.name
+  // Stacking Strategy isn't needed here? It's needed for damage calcs (how many stacks=multiplier) and activeNsInAction-like updates?
+  // Same for durationStrategy
 
-  switch (targets) {
-    case 'self':
-      // Only applies if the owner is the currently active character
-      return ownerCharacter === activeCharacter
+  
 
-    case 'active':
-      // Always applies to whoever is currently active
-      return true
+  switch (targetStrategy) {
+    case 'self': return ownerCharacter === activeCharacter
+    case 'active': return true
+    case 'all': return true
+    case 'nextSwap': return caster !== activeCharacter && triggerCharacter === activeCharacter // This type needs a way to tell which the caster was & when triggered
+    default: return false
+  }
+}
 
-    case 'all':
-      // Always applies regardless of who is active
-      return true
+// Call first thing first inside resolveDamageModifiers
+function resolveSwaps(modifiers: DamageModifier[], ctx: StepContext): void {
+  if (ctx.current.character !== ctx.prev.character) {
+    // Swap occured
+    modifiers.forEach(mod => {
+      if (mod.targetStrategy === 'nextSwap') {
 
-    case 'nextSwap':
-      // TODO: This currently only works at the moment of swap
-      // Need to track which character was swapped to and persist across snapshots
-      // Should apply until: next swap OR duration expires (whichever comes first)
-      console.log("Warning: 'nextSwap' target strategy currently does not work")
-      return ctx.lastSwappedToCharacter === activeCharacter && ownerCharacter !== activeCharacter
-
-    default:
-      // Unknown target strategy - log warning and default to not applying
-      console.warn(`Unknown target strategy: ${targets}`)
-      return false
+      }
+    })
   }
 }
