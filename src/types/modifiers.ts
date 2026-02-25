@@ -22,20 +22,16 @@ export type TargetStrategy = 'self' | 'active' | 'all' | 'nextSwap'
 
 // ========== Type: Duration Strategy ==========================================================================================
 
-export type DurationStrategy = TimeStrategy | SwapStrategy | PermanentStrategy
-
-export type TimeStrategy = {
-  type: 'time-based'
-  timeDuration: number
-}
-
-export type SwapStrategy = {
-  type: 'swap-based'
-  numberOfSwaps: number
-}
+export type DurationStrategy = PermanentStrategy | LimitedStrategy
 
 export type PermanentStrategy = {
   type: 'permanent'
+}
+
+export type LimitedStrategy = {
+  type: 'limited'
+  timeDuration?: number // Expires after N seconds (undefined = no time limit)
+  numberOfSwaps?: number // Expires after N swaps (undefined = no swap limit)
 }
 
 // ========== Type: Stacking Strategy ==========================================================================================
