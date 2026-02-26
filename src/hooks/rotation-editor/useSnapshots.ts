@@ -20,20 +20,24 @@ export function useSnapshots({ charactersInBattle, tableConfig }: UseSnapshotsPr
     negativeStatuses: tableConfig.negativeStatuses?.columns.map(col => col.key) ?? [],
   }
 
-  const [snapshots, setSnapshots] = useState<Snapshot[]>([createEmptySnapshot(charactersMap, characterColumnsMap, globalColumns)])
+  const [snapshots, setSnapshots] = useState<Snapshot[]>([createEmptySnapshot(charactersMap, characterColumnsMap, globalColumns, tableConfig)])
 
   return { snapshots, setSnapshots, createEmptySnapshot }
 }
 
 // ========== Internal Helpers =================================================================================================
 
-function createEmptySnapshot(charactersMap: Record<string, Character>, characterColumnsMap: Record<string, string[]>, globalColumns: GlobalColumns): Snapshot {
+function createEmptySnapshot(charactersMap: Record<string, Character>, characterColumnsMap: Record<string, string[]>, globalColumns: GlobalColumns, tableConfig: TableConfig): Snapshot {
   const charactersEnergies = Object.fromEntries(Object.keys(charactersMap).map(charName => [charName, Object.fromEntries(characterColumnsMap[charName].map(key => [key, 0]))]))
 
   const basicValues = Object.fromEntries(globalColumns.basic.map(col => [col, 0]))
   const buffs = Object.fromEntries(globalColumns.buffs.map(col => [col, 0]))
   const debuffs = Object.fromEntries(globalColumns.debuffs.map(col => [col, 0]))
   const negativeStatuses = Object.fromEntries(globalColumns.negativeStatuses.map(col => [col, 0]))
+
+  // Get maxStacks from table config columns
+  const buffsMaxStacks = Object.fromEntries((tableConfig.buffs?.columns || []).map(col => [col.key, (col as any).maxStacks || 1]))
+  const debuffsMaxStacks = Object.fromEntries((tableConfig.debuffs?.columns || []).map(col => [col.key, (col as any).maxStacks || 1]))
 
   return {
     id: '0',
@@ -46,7 +50,13 @@ function createEmptySnapshot(charactersMap: Record<string, Character>, character
     ...basicValues,
     charactersEnergies,
     buffs,
+    buffsTimeLeft: Object.fromEntries(globalColumns.buffs.map(col => [col, 0])),
+    buffsSwapsLeft: Object.fromEntries(globalColumns.buffs.map(col => [col, 0])),
+    buffsMaxStacks,
     debuffs,
+    debuffsTimeLeft: Object.fromEntries(globalColumns.debuffs.map(col => [col, 0])),
+    debuffsSwapsLeft: Object.fromEntries(globalColumns.debuffs.map(col => [col, 0])),
+    debuffsMaxStacks,
     negativeStatuses,
     negativeStatusesTimeLeft: Object.fromEntries(globalColumns.negativeStatuses.map(col => [col, 0])),
   }

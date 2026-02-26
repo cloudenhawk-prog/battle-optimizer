@@ -28,13 +28,17 @@ export function assignCharacterToRow(row: Snapshot, character: string): Snapshot
   return { ...row, character }
 }
 
-export function createSnapshot(previousSnapshot: Snapshot, charactersMap: Record<string, Character>, characterColumnsMap: Record<string, string[]>, globalColumns: GlobalColumns): Snapshot {
+export function createSnapshot(previousSnapshot: Snapshot, charactersMap: Record<string, Character>, _characterColumnsMap: Record<string, string[]>, globalColumns: GlobalColumns): Snapshot {
   const charactersEnergies = Object.fromEntries(Object.keys(charactersMap).map(charName => [charName, { ...previousSnapshot.charactersEnergies[charName] }]))
 
   const basicValues = Object.fromEntries(globalColumns.basic.map(col => [col, 0]))
   const buffs = Object.fromEntries(globalColumns.buffs.map(col => [col, 0]))
   const debuffs = Object.fromEntries(globalColumns.debuffs.map(col => [col, 0]))
   const negativeStatuses = Object.fromEntries(globalColumns.negativeStatuses.map(col => [col, 0]))
+
+  // Copy maxStacks from previous snapshot to preserve them
+  const buffsMaxStacks = { ...previousSnapshot.buffsMaxStacks }
+  const debuffsMaxStacks = { ...previousSnapshot.debuffsMaxStacks }
 
   return {
     id: String(Number(previousSnapshot.id) + 1),
@@ -47,7 +51,13 @@ export function createSnapshot(previousSnapshot: Snapshot, charactersMap: Record
     ...basicValues,
     charactersEnergies,
     buffs,
+    buffsTimeLeft: Object.fromEntries(globalColumns.buffs.map(col => [col, 0])),
+    buffsSwapsLeft: Object.fromEntries(globalColumns.buffs.map(col => [col, 0])),
+    buffsMaxStacks,
     debuffs,
+    debuffsTimeLeft: Object.fromEntries(globalColumns.debuffs.map(col => [col, 0])),
+    debuffsSwapsLeft: Object.fromEntries(globalColumns.debuffs.map(col => [col, 0])),
+    debuffsMaxStacks,
     negativeStatuses,
     negativeStatusesTimeLeft: Object.fromEntries(globalColumns.negativeStatuses.map(col => [col, 0])),
   }

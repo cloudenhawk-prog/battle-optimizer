@@ -12,7 +12,13 @@ export interface Snapshot {
   dps: number
   charactersEnergies: Partial<Record<EnergyType, number>>
   buffs: Record<string, number>
+  buffsTimeLeft: Record<string, number>
+  buffsSwapsLeft: Record<string, number>
+  buffsMaxStacks: Record<string, number>
   debuffs: Record<string, number>
+  debuffsTimeLeft: Record<string, number>
+  debuffsSwapsLeft: Record<string, number>
+  debuffsMaxStacks: Record<string, number>
   negativeStatuses: Record<string, number>
   negativeStatusesTimeLeft: Record<string, number>
 }

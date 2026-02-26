@@ -4,7 +4,7 @@ import type { Action } from './action'
 import type { Enemy } from './enemy'
 import type { CharacterStats, EnemyStats } from './stats'
 import type { NegativeStatusInAction } from './negativeStatus'
-import type { DamageModifier } from './modifiers'
+import type { DamageModifier, ModifierInAction } from './modifiers'
 
 // ========== Type: Step Context ===============================================================================================
 
@@ -23,10 +23,13 @@ export type StepContext = {
   fromTime: number
   toTime: number
 
-  // Buffs to be added later
-  // Debuffs to be added later
+  // Runtime state for active modifiers (similar to negativeStatusesInAction)
+  modifiersInAction: ModifierInAction[]
 
   negativeStatusesInAction: NegativeStatusInAction[]
+
+  // All permanent modifiers for this step (used for display tracking)
+  permanentModifiers: DamageModifier[]
 
   damageModifiers: DamageModifier[]
   aggregatedCharacterModifiers: Partial<CharacterStats>

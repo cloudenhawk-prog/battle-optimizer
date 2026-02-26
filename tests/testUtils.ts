@@ -264,10 +264,16 @@ export function createMockDamageModifier(source: string, overrides: Partial<Dama
     displayName: overrides.displayName ?? source,
     type: overrides.type ?? 'buff',
     ownerCharacter: overrides.ownerCharacter !== undefined ? overrides.ownerCharacter : null,
+    characterStats: overrides.characterStats,
+    enemyStats: overrides.enemyStats,
     condition: overrides.condition ?? (() => 1),
-    targets: overrides.targets ?? 'all',
-    duration: overrides.duration ?? { type: 'permanent' },
-    ...overrides,
+    targetStrategy: overrides.targetStrategy ?? 'active',
+    durationStrategy: overrides.durationStrategy ?? { type: 'permanent' },
+    stackingStrategy: overrides.stackingStrategy ?? {
+      maxStacks: 1,
+      resetTimerOnApplication: false,
+      stacksRemovedEachTime: 1,
+    },
   }
 }
 

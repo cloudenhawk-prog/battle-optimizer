@@ -101,19 +101,11 @@ export function CurrentStateRow({ snapshot, charactersInBattle, tableConfig, col
         {/* Negative status columns */}
         {tableConfig.negativeStatuses && renderNegativeStatusColumns(tableConfig.negativeStatuses.columns, columnVisibility, displaySnapshot.negativeStatuses, displaySnapshot.negativeStatusesTimeLeft)}
 
-        {/* Buff columns - empty for now */}
-        {tableConfig.buffs &&
-          tableConfig.buffs.columns.map(col => {
-            if (!columnVisibility[col.key]) return null
-            return <td key={col.key} className="currentStateCell"></td>
-          })}
+        {/* Buff columns */}
+        {tableConfig.buffs && renderModifierColumns(tableConfig.buffs.columns, columnVisibility, displaySnapshot.buffs, displaySnapshot.buffsTimeLeft, displaySnapshot.buffsSwapsLeft, displaySnapshot.buffsMaxStacks)}
 
-        {/* Debuff columns - empty for now */}
-        {tableConfig.debuffs &&
-          tableConfig.debuffs.columns.map(col => {
-            if (!columnVisibility[col.key]) return null
-            return <td key={col.key} className="currentStateCell"></td>
-          })}
+        {/* Debuff columns */}
+        {tableConfig.debuffs && renderModifierColumns(tableConfig.debuffs.columns, columnVisibility, displaySnapshot.debuffs, displaySnapshot.debuffsTimeLeft, displaySnapshot.debuffsSwapsLeft, displaySnapshot.debuffsMaxStacks)}
       </tr>
     </tbody>
   )
@@ -130,7 +122,13 @@ function createInitialSnapshot(): Snapshot {
     dps: 0,
     charactersEnergies: {},
     buffs: {},
+    buffsTimeLeft: {},
+    buffsSwapsLeft: {},
+    buffsMaxStacks: {},
     debuffs: {},
+    debuffsTimeLeft: {},
+    debuffsSwapsLeft: {},
+    debuffsMaxStacks: {},
     negativeStatuses: {},
     negativeStatusesTimeLeft: {},
   }
@@ -190,6 +188,48 @@ function renderNegativeStatusColumns(columns: any[], columnVisibility: ColumnVis
                 {currentStacks}/{maxStacks}
               </div>
               <div className="statusStateTime">{timeLeft.toFixed(1)}s</div>
+            </div>
+          </div>
+        </td>
+      )
+    })
+}
+
+function renderModifierColumns(columns: any[], columnVisibility: ColumnVisibility, modifierStacks: Record<string, number>, modifierTimeLeft: Record<string, number>, modifierSwapsLeft: Record<string, number>, modifierMaxStacks: Record<string, number>) {
+  let firstVisible = true
+  return columns
+    .filter((col: any) => columnVisibility[col.key])
+    .map((col: any) => {
+      const className = firstVisible ? 'currentStateCell charGroupCell' : 'currentStateCell'
+      firstVisible = false
+
+      const currentStacks = modifierStacks[col.key] || 0
+      // Use maxStacks from snapshot if available, otherwise fall back to column metadata
+      const maxStacks = modifierMaxStacks[col.key] ?? col.maxStacks ?? 1
+      const timeLeft = modifierTimeLeft[col.key]
+      const swapsLeft = modifierSwapsLeft[col.key]
+
+      // Determine display: show time if not infinite, otherwise show swaps if not infinite, otherwise show ∞
+      let timerDisplay = ''
+      if (timeLeft === Infinity && swapsLeft === Infinity) {
+        timerDisplay = '∞'
+      } else if (timeLeft !== undefined && timeLeft !== Infinity && timeLeft !== 0) {
+        timerDisplay = `${timeLeft.toFixed(1)}s`
+      } else if (swapsLeft !== undefined && swapsLeft !== Infinity && swapsLeft !== 0) {
+        timerDisplay = `${swapsLeft} swap${swapsLeft !== 1 ? 's' : ''}`
+      } else {
+        // Default display for limited modifiers with no data yet
+        timerDisplay = '0.0s'
+      }
+
+      return (
+        <td key={col.key} className={className}>
+          <div className="statusStateDisplay">
+            <div className="statusStateContent">
+              <div className="statusStateStacks">
+                {currentStacks}/{maxStacks}
+              </div>
+              <div className="statusStateTime">{timerDisplay}</div>
             </div>
           </div>
         </td>

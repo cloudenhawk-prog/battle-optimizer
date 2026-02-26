@@ -13,9 +13,7 @@ export type DamageModifier = {
   condition: (ctx: StepContext) => number
   targetStrategy: TargetStrategy
   durationStrategy: DurationStrategy
-  // Need type for current snapshot in time: timeLeft, swapsLeft?
-  stackingStrategy?: StackingStrategy // Make non-optional : default can be maxStacks=1, resetTimerOnApplication=true, stacksRemovedEachTime=1
-  // need type for current snapshot in time: currentStacks? Stacks should be multiplied with 'condition=>number' result?
+  stackingStrategy: StackingStrategy
 }
 
 // ========== Type: Target Strategy ============================================================================================
@@ -23,7 +21,7 @@ export type DamageModifier = {
 export type TargetStrategy = 'self' | 'active' | 'all' | 'nextSwap'
 // self     - (Done)
 // active   - (Done)
-// 
+//
 
 // ========== Type: Duration Strategy ==========================================================================================
 
@@ -45,6 +43,21 @@ export type StackingStrategy = {
   maxStacks: number
   resetTimerOnApplication: boolean
   stacksRemovedEachTime: number
+}
+
+// ========== Type: Modifier In Action ========================================================================================
+
+/**
+ * Runtime state wrapper for DamageModifier, similar to NegativeStatusInAction.
+ * Separates the static blueprint (DamageModifier) from the living state during battle.
+ */
+export type ModifierInAction = {
+  modifier: DamageModifier
+  applicationTime: number // When the modifier was first applied (in seconds)
+  timeLeft: number // Remaining duration in seconds (for time-based duration strategies)
+  swapsLeft: number // Remaining swaps before expiration (for swap-based duration strategies)
+  currentStacks: number // Current stack count (respects maxStacks from stackingStrategy)
+  targetCharacter: string | null // For 'nextSwap' targetStrategy: which character this applies to
 }
 
 // TODO :

@@ -25,20 +25,40 @@ export function buildBuffColumns(selectedCharacters: Character[]): ColumnGroup |
   const allModifiers: DamageModifier[] = [...characterModifiers, ...actionModifiers, ...negativeStatusModifiers]
   const modifierNames = allModifiers.map(mod => mod.displayName)
 
+  // Create a map of modifier name -> maxStacks for initialization
+  const modifierMaxStacksMap = new Map<string, number>()
+  const permanentModifiersSet = new Set<string>()
+  for (const mod of allModifiers) {
+    const key = mod.displayName.replace(/\s+/g, '')
+    modifierMaxStacksMap.set(key, mod.stackingStrategy.maxStacks)
+    if (mod.durationStrategy.type === 'permanent') {
+      permanentModifiersSet.add(key)
+    }
+  }
+
   const activeBuffs = Array.from(new Set([...inherentBuffs, ...actionBuffs, ...modifierNames]))
 
-  const columns: ColumnDef[] = activeBuffs.map(buff => {
-    const key = buff.replace(/\s+/g, '')
-    return {
-      key,
-      label: buff,
-      icon: `/assets/${key}.png`,
-      render: (snapshot: Snapshot) => {
-        const buffs = snapshot.buffs as Record<string, number> | undefined
-        return buffs?.[key]
-      },
-    }
-  })
+  const columns: ColumnDef[] = activeBuffs
+    .filter(buff => {
+      const key = buff.replace(/\s+/g, '')
+      // Filter out permanent modifiers - they don't need tracking in the table
+      return !permanentModifiersSet.has(key)
+    })
+    .map(buff => {
+      const key = buff.replace(/\s+/g, '')
+      const maxStacks = modifierMaxStacksMap.get(key) || 1
+      return {
+        key,
+        label: buff,
+        icon: `/assets/${key}.png`,
+        maxStacks, // Store maxStacks in column metadata
+        render: (snapshot: Snapshot) => {
+          const buffs = snapshot.buffs as Record<string, number> | undefined
+          const stacks = buffs?.[key]
+          return stacks !== undefined ? stacks : 0 // Show 0 instead of undefined
+        },
+      }
+    })
 
   return createOptionalGroup({ label: 'Buffs', icon: 'assets/buffs.png' }, columns)
 }

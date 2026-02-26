@@ -1,6 +1,6 @@
 import type { StepContext } from '../../types/stepContext'
 import type { CharacterStats, EnemyStats } from '../../types/stats'
-import type { DamageModifier } from '../../types/modifiers'
+import type { ModifierInAction } from '../../types/modifiers'
 import type { Dispatch, SetStateAction } from 'react'
 import type { DamageEvent } from '../../types/events'
 import type { Snapshot } from '../../types/snapshot'
@@ -11,10 +11,12 @@ import type { NegativeStatusInAction } from '../../types/negativeStatus'
 import { calculateDamage } from '../../utils/calculators/damageCalculator'
 import { getNegativeStatusStacks, processNegativeStatusStacks, updateNegativeStatusStacks } from './negativeStatusHelpers'
 import { getCharacterEnergyState, updateEnergyValue } from './energyHelpers'
+import { updateModifiersForSwap, collectAllModifiers, activateModifiers, filterApplicableModifiers, applyStackMultiplier, updateModifiersForTime } from './modifierHelpers'
+import { updateModifierStacks } from './modifierStateHelpers'
 
 // ========== Resolver 0: Build Step Context ==================================================================================
 
-export function buildStepContext(snapshotId: number, current: Snapshot, prev: Snapshot, character: Character, action: Action, enemy: Enemy, negativeStatusesInAction: NegativeStatusInAction[], characterMap: Record<string, Character>): StepContext {
+export function buildStepContext(snapshotId: number, current: Snapshot, prev: Snapshot, character: Character, action: Action, enemy: Enemy, negativeStatusesInAction: NegativeStatusInAction[], modifiersInAction: ModifierInAction[], characterMap: Record<string, Character>): StepContext {
   const fromTime = prev.toTime
   const toTime = fromTime + action.castTime
   current.action = action.name
@@ -31,6 +33,12 @@ export function buildStepContext(snapshotId: number, current: Snapshot, prev: Sn
   const isSwap = prev.character && prev.character !== character.name
   const lastSwappedToCharacter = isSwap ? character.name : undefined
 
+  // Handle swap-based modifier expiration
+  let updatedModifiersInAction = modifiersInAction
+  if (isSwap && lastSwappedToCharacter) {
+    updatedModifiersInAction = updateModifiersForSwap(modifiersInAction, lastSwappedToCharacter)
+  }
+
   const ctx: StepContext = {
     snapshotId,
 
@@ -46,8 +54,10 @@ export function buildStepContext(snapshotId: number, current: Snapshot, prev: Sn
     fromTime,
     toTime,
 
+    modifiersInAction: updatedModifiersInAction,
     negativeStatusesInAction,
 
+    permanentModifiers: [],
     damageModifiers: [],
     aggregatedCharacterModifiers: {},
     aggregatedEnemyModifiers: {},
@@ -89,24 +99,30 @@ export function resolveDamageModifiers(ctx: StepContext) {
   const characterModifiers = initializeEmptyCharacterStats()
   const enemyModifiers = initializeEmptyEnemyStats()
 
-  // Collect modifiers with ownerCharacter tracking
-  const characterModifiersWithOwner = (ctx.character.damageModifiers ?? []).map(mod => ({ ...mod, ownerCharacter: mod.ownerCharacter ?? ctx.character.name }))
-  const actionModifiersWithOwner = (ctx.action.damageModifiers ?? []).map(mod => ({ ...mod, ownerCharacter: mod.ownerCharacter ?? ctx.character.name }))
-  const negativeStatusModifiers = ctx.negativeStatusesInAction.filter(ns => ns.currentStacks > 0).flatMap(ns => (ns.negativeStatus.damageModifiers ?? []).map(mod => ({ ...mod, ownerCharacter: mod.ownerCharacter ?? null })))
+  // Step 1: Collect all modifier blueprints from various sources
+  const allModifiers = collectAllModifiers(ctx.character, ctx.action, ctx.negativeStatusesInAction)
 
-  const allModifiers: DamageModifier[] = [...characterModifiersWithOwner, ...actionModifiersWithOwner, ...negativeStatusModifiers]
+  // Step 2: Activate new modifiers (convert limited ones to ModifierInAction, handle stacking)
+  ctx.modifiersInAction = activateModifiers(allModifiers, ctx.modifiersInAction, ctx)
 
-  // Filter modifiers based on target strategy
-  const applicableModifiers = allModifiers.filter(modifier => shouldApplyModifier(modifier, ctx))
+  // Step 3: Filter modifiers that apply to current context
+  // This includes both permanent modifiers and active limited modifiers
+  const permanentModifiers = allModifiers.filter(mod => mod.durationStrategy.type === 'permanent')
+  ctx.permanentModifiers = permanentModifiers // Store for later use in resolveModifierState
+  const applicableModifiers = filterApplicableModifiers(ctx.modifiersInAction, permanentModifiers, ctx)
 
   // Store all applicable modifiers in context for damage calculator to use
   ctx.damageModifiers = applicableModifiers
 
+  // Step 4: Aggregate stats from applicable modifiers
   for (const modifier of applicableModifiers) {
-    const conditionMultiplier = modifier.condition ? modifier.condition(ctx) : 1
+    // Apply stack multiplier for limited modifiers
+    const stackedModifier = modifier.durationStrategy.type === 'limited' ? applyStackMultiplier(modifier, ctx.modifiersInAction) : modifier
 
-    if (modifier.characterStats) {
-      for (const [key, value] of Object.entries(modifier.characterStats)) {
+    const conditionMultiplier = stackedModifier.condition ? stackedModifier.condition(ctx) : 1
+
+    if (stackedModifier.characterStats) {
+      for (const [key, value] of Object.entries(stackedModifier.characterStats)) {
         const statKey = key as keyof CharacterStats
         const modValue = (value as number) * conditionMultiplier
 
@@ -114,8 +130,8 @@ export function resolveDamageModifiers(ctx: StepContext) {
       }
     }
 
-    if (modifier.enemyStats) {
-      for (const [key, value] of Object.entries(modifier.enemyStats)) {
+    if (stackedModifier.enemyStats) {
+      for (const [key, value] of Object.entries(stackedModifier.enemyStats)) {
         const statKey = key as keyof EnemyStats
         const modValue = (value as number) * conditionMultiplier
 
@@ -133,6 +149,7 @@ export function resolveDamageModifiers(ctx: StepContext) {
     details: {
       totalModifiers: allModifiers.length,
       applicableModifiers: applicableModifiers.length,
+      activeModifiersInAction: ctx.modifiersInAction.length,
       characterModifiers: ctx.aggregatedCharacterModifiers,
       enemyModifiers: ctx.aggregatedEnemyModifiers,
     },
@@ -306,7 +323,32 @@ export function helpNegativeStatuses(ctx: StepContext, setDamageEvents: Dispatch
   })
 }
 
-// ========== Resolver 5: Side Effects ========================================================================================
+// ========== Resolver 5: Update Modifier State ===============================================================================
+
+export function resolveModifierState(ctx: StepContext): void {
+  // Update time-based modifiers
+  ctx.modifiersInAction = updateModifiersForTime(ctx.modifiersInAction, ctx.fromTime, ctx.toTime)
+
+  // Store modifier state in snapshot (includes both limited and permanent modifiers)
+  updateModifierStacks(ctx.current, ctx.modifiersInAction, ctx.permanentModifiers, ctx)
+
+  ctx.logs.push({
+    resolver: 'resolveModifierState',
+    message: 'Modifier state updated for time passage',
+    details: {
+      activeModifiers: ctx.modifiersInAction.length,
+      permanentModifiers: ctx.permanentModifiers.length,
+      modifiers: ctx.modifiersInAction.map(mia => ({
+        name: mia.modifier.displayName,
+        stacks: mia.currentStacks,
+        timeLeft: mia.timeLeft === Infinity ? 'permanent' : `${mia.timeLeft}s`,
+        swapsLeft: mia.swapsLeft === Infinity ? 'permanent' : mia.swapsLeft,
+      })),
+    },
+  })
+}
+
+// ========== Resolver 6: Side Effects ========================================================================================
 
 // TODO
 
@@ -500,64 +542,34 @@ export function aggregateStat(currentValue: number | undefined, incomingValue: n
 }
 
 /**
- * Determines if a damage modifier should be applied based on its target and duration strategies.
+ * IMPLEMENTATION NOTES - Modifier System:
  *
- * TARGET STRATEGIES:
- * - 'self': Only applies when the owner character is currently active
- * - 'active': Always applies to whoever is currently active
- * - 'all': Always applies regardless of who is active
- * - 'nextSwap': Applies to the character who was swapped to (until next swap or duration expires)
+ * The modifier system is now implemented with the following flow:
  *
- * DURATION STRATEGIES (TODO - not yet implemented):
- * - 'time-based': Modifier expires after a set duration in seconds
- * - 'swap-based': Modifier expires after N character swaps
- * - 'permanent': Never expires
+ * 1. Resolver 0 (buildStepContext):
+ *    - Handles swap-based expiration if a character swap occurred
+ *    - Updates swapsLeft counter and removes expired modifiers
  *
- * CURRENT LIMITATIONS:
- * - 'nextSwap' only works at the moment of swap (NOT persisted across subsequent actions)
- *   To fix: Need modifier tracking system to store active modifiers and check duration
- * - Duration strategies are not enforced yet (all modifiers behave as permanent)
- *   To fix: Need to track modifier activation time/swap count and check expiration
+ * 2. Resolver 2 (resolveDamageModifiers):
+ *    - Collects all modifier blueprints from character/action/negative statuses
+ *    - Activates new limited modifiers → creates ModifierInAction
+ *    - Handles stacking (adds stacks, resets timers if configured)
+ *    - Filters applicable modifiers (target strategy + permanent vs active)
+ *    - Applies stack multipliers and aggregates stats
  *
- * FUTURE IMPLEMENTATION:
- * - Track active modifiers similar to negativeStatusesInAction
- * - Store: modifier, activationTime, activationSwapCount, targetCharacter (for nextSwap)
- * - On each step: check if duration expired (time or swap count)
- * - For 'nextSwap': activate when swap detected, apply while duration valid + character matches
+ * 3. Resolver 5 (resolveModifierState):
+ *    - Updates time-based modifiers (decrements timeLeft)
+ *    - Removes stacks/expires modifiers when duration runs out
+ *
+ * Key Design Decisions:
+ * - Permanent modifiers: Don't create ModifierInAction, applied directly each step
+ * - Limited modifiers: Create ModifierInAction to track stacks/time/swaps
+ * - Stacking: Handled in activateModifiers (adds to existing or creates new)
+ * - Target strategies: Filtered in filterApplicableModifiers
+ * - Stack multiplier: Applied before aggregating stats
+ *
+ * TODO - Future improvements:
+ * - Normalize damage source interface (action, negative status, coordinated attack, etc.)
+ * - Allow modifiers from triggers (e.g., "on basic attack, gain buff for 5s")
+ * - Consider buff/debuff display columns in table
  */
-// TODO - IMPORTANT: filter should not be applied here when you collect modifiers. They should be filtered before each calculation (Negative Status, Coordinated Attack, Action etc)
-// TODO - Normalize an interface. Input: modifiers, stepcontext (or w/e we need), source that wants to deal dmg   Output: modifiers that should apply to it
-// TODO - Gather all things that can deal damage -> Use an interface to determine what properties such things need (characterOwner?)
-// TODO - Just like negative statuses in action are resolved, so should modifiers be at the end (stacks, time etc)
-// TODO - damage modifiers should also be resolved in resolver 0 -> swaps should count down the swapCount by 1 - then remove/reset modifiers that runs out (and also resolve if 'nextSwap' targetStrategy)
-// TODO - for modifiers that are actually cast like buffs/debuffs and arent just permanent modifiers, how/where are they born?
-  // Born through actions - Outro, Intro, certain skills
-  // Born through triggers when a condition is met - When dealing basic attack, gains buff for 5s: +10 % aero dmg (or whatever)
-function shouldApplyModifier(modifier: DamageModifier, ctx: StepContext): boolean {
-  const { targetStrategy, durationStrategy, stackingStrategy, ownerCharacter, source } = modifier
-  const activeCharacter = ctx.character.name
-  // Stacking Strategy isn't needed here? It's needed for damage calcs (how many stacks=multiplier) and activeNsInAction-like updates?
-  // Same for durationStrategy
-
-  
-
-  switch (targetStrategy) {
-    case 'self': return ownerCharacter === activeCharacter
-    case 'active': return true
-    case 'all': return true
-    case 'nextSwap': return caster !== activeCharacter && triggerCharacter === activeCharacter // This type needs a way to tell which the caster was & when triggered
-    default: return false
-  }
-}
-
-// Call first thing first inside resolveDamageModifiers
-function resolveSwaps(modifiers: DamageModifier[], ctx: StepContext): void {
-  if (ctx.current.character !== ctx.prev.character) {
-    // Swap occured
-    modifiers.forEach(mod => {
-      if (mod.targetStrategy === 'nextSwap') {
-
-      }
-    })
-  }
-}

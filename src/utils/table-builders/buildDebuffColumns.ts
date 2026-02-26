@@ -25,20 +25,40 @@ export function buildDebuffColumns(selectedCharacters: Character[]): ColumnGroup
   const allModifiers: DamageModifier[] = [...characterModifiers, ...actionModifiers, ...negativeStatusModifiers]
   const modifierNames = allModifiers.map(mod => mod.displayName)
 
+  // Create a map of modifier name -> maxStacks for initialization
+  const modifierMaxStacksMap = new Map<string, number>()
+  const permanentModifiersSet = new Set<string>()
+  for (const mod of allModifiers) {
+    const key = mod.displayName.replace(/\s+/g, '')
+    modifierMaxStacksMap.set(key, mod.stackingStrategy.maxStacks)
+    if (mod.durationStrategy.type === 'permanent') {
+      permanentModifiersSet.add(key)
+    }
+  }
+
   const activeDebuffs = Array.from(new Set([...inherentDebuffs, ...actionDebuffs, ...modifierNames]))
 
-  const columns: ColumnDef[] = activeDebuffs.map(debuff => {
-    const key = debuff.replace(/\s+/g, '')
-    return {
-      key,
-      label: debuff,
-      icon: `/assets/${key}.png`,
-      render: (snapshot: Snapshot) => {
-        const debuffs = snapshot.debuffs as Record<string, number> | undefined
-        return debuffs?.[key]
-      },
-    }
-  })
+  const columns: ColumnDef[] = activeDebuffs
+    .filter(debuff => {
+      const key = debuff.replace(/\s+/g, '')
+      // Filter out permanent modifiers - they don't need tracking in the table
+      return !permanentModifiersSet.has(key)
+    })
+    .map(debuff => {
+      const key = debuff.replace(/\s+/g, '')
+      const maxStacks = modifierMaxStacksMap.get(key) || 1
+      return {
+        key,
+        label: debuff,
+        icon: `/assets/${key}.png`,
+        maxStacks, // Store maxStacks in column metadata
+        render: (snapshot: Snapshot) => {
+          const debuffs = snapshot.debuffs as Record<string, number> | undefined
+          const stacks = debuffs?.[key]
+          return stacks !== undefined ? stacks : 0 // Show 0 instead of undefined
+        },
+      }
+    })
 
   return createOptionalGroup({ label: 'Debuffs', icon: 'assets/debuffs.png' }, columns)
 }

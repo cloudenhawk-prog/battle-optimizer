@@ -33,8 +33,7 @@ export function BodyRow({ snapshot, charactersInBattle, tableConfig, onSelectCha
         const el = e.target as HTMLElement
         if (el.closest('select') || el.closest('button') || el.closest('input')) return
         onRowClick?.(snapshot)
-      }}
-    >
+      }}>
       {/* Character select */}
       <td className="tableCellBody">
         <select className="selectInput" value={character} onChange={e => onSelectCharacter(snapshotId, e.target.value)}>
@@ -91,6 +90,7 @@ function renderBodyColumns(columns: ColumnDef[], columnVisibility: ColumnVisibil
   let firstVisible = true
   return columns
     .filter(col => columnVisibility[col.key])
+    .filter(col => !(col as any).isPermanent) // Hide permanent modifiers from body rows
     .map(col => {
       const className = firstVisible ? 'tableCellBody charGroupBody' : 'tableCellBody'
       firstVisible = false
