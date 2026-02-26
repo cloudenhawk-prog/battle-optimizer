@@ -105,7 +105,7 @@
 import type { DamageModifier, ModifierInAction } from '../src/types/modifiers'
 import type { StepContext } from '../src/types/stepContext'
 import { collectAllModifiers, activateModifiers, updateModifiersForTime, updateModifiersForSwap, filterApplicableModifiers, applyStackMultiplier } from '../src/utils/hooks/modifierHelpers'
-import { createMockCharacter, createMockAction, createMockEnemy, createMockSnapshot, createMockCharacterStats, createMockActiveNegativeStatus, createMockNegativeStatus } from './testUtils'
+import { createMockCharacter, createMockAction, createMockEnemy, createMockSnapshot, createMockActiveNegativeStatus, createMockNegativeStatus } from './testUtils'
 
 // ========== Test Helpers =====================================================================================================
 
@@ -209,7 +209,7 @@ describe('Modifier Conditions', () => {
 
   test('condition based on context - applies only when HP > 80%', () => {
     const modifier = createMockModifier({
-      condition: ctx => {
+      condition: () => {
         const hpPercent = 0.9 // Assume 90% HP for test
         return hpPercent > 0.8 ? 1 : 0
       },
