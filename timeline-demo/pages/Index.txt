@@ -1,0 +1,13 @@
+import { TetherField } from '@/components/tether/TetherField';
+import { DamageChart } from '@/components/tether/DamageChart';
+
+const Index = () => {
+  return (
+    <div className="tether-bg min-h-screen">
+      <TetherField />
+      <DamageChart />
+    </div>
+  );
+};
+
+export default Index;

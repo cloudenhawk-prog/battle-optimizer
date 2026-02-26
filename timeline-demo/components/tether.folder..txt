@@ -1,0 +1,1021 @@
+DamageChart.tsx:
+import { useState, useMemo, useRef, useCallback } from 'react';
+import { snapshots, type Snapshot } from '@/data/dummyRotation';
+import { motion, AnimatePresence } from 'framer-motion';
+import { cn } from '@/lib/utils';
+
+type ChartMode = 'dps' | 'damage';
+
+const CHARACTER_MAP: Record<string, string> = {
+  Jiyan: 'jiyan',
+  Mortefi: 'mortefi',
+  Verina: 'verina',
+};
+
+const CHART_HEIGHT = 300;
+const CHART_PADDING_TOP = 40;
+const CHART_PADDING_BOTTOM = 60;
+const CHART_PADDING_LEFT = 64;
+const CHART_PADDING_RIGHT = 32;
+const USABLE_HEIGHT = CHART_HEIGHT - CHART_PADDING_TOP - CHART_PADDING_BOTTOM;
+
+// Actions that can overlap everything (DoTs, persistent effects)
+const OVERLAY_ACTIONS = ['Coordinated Attack', 'Wind Shear', 'Healing Zone'];
+
+interface ActionBlock {
+  action: string;
+  character: string;
+  charKey: string;
+  timeStart: number;
+  timeEnd: number;
+  snapshots: Snapshot[];
+  isOverlay: boolean;
+}
+
+function buildActionBlocks(data: Snapshot[]): ActionBlock[] {
+  const blocks: ActionBlock[] = [];
+  const overlayBuffs: Map<string, { start: number; end: number; character: string }> = new Map();
+
+  // Group sequential snapshots into action blocks
+  let current: ActionBlock | null = null;
+
+  data.forEach((snap) => {
+    // Check for overlay buffs
+    for (const buff of snap.buffs) {
+      if (OVERLAY_ACTIONS.includes(buff)) {
+        const existing = overlayBuffs.get(buff);
+        if (existing) {
+          existing.end = snap.timeEnd;
+        } else {
+          overlayBuffs.set(buff, {
+            start: snap.timeStart,
+            end: snap.timeEnd,
+            character: buff === 'Healing Zone' ? 'Verina' : buff === 'Coordinated Attack' ? 'Mortefi' : 'Jiyan',
+          });
+        }
+      }
+    }
+
+    // Check for debuffs as overlays
+    for (const debuff of snap.debuffs) {
+      if (OVERLAY_ACTIONS.includes(debuff)) {
+        const existing = overlayBuffs.get(debuff);
+        if (existing) {
+          existing.end = snap.timeEnd;
+        } else {
+          overlayBuffs.set(debuff, {
+            start: snap.timeStart,
+            end: snap.timeEnd,
+            character: snap.character,
+          });
+        }
+      }
+    }
+
+    if (!current || current.action !== snap.action || current.character !== snap.character) {
+      if (current) blocks.push(current);
+      current = {
+        action: snap.action,
+        character: snap.character,
+        charKey: CHARACTER_MAP[snap.character] || 'jiyan',
+        timeStart: snap.timeStart,
+        timeEnd: snap.timeEnd,
+        snapshots: [snap],
+        isOverlay: false,
+      };
+    } else {
+      current.timeEnd = snap.timeEnd;
+      current.snapshots.push(snap);
+    }
+  });
+  if (current) blocks.push(current);
+
+  // Add overlay blocks from accumulated buff ranges
+  overlayBuffs.forEach((range, buff) => {
+    blocks.push({
+      action: buff,
+      character: range.character,
+      charKey: CHARACTER_MAP[range.character] || 'jiyan',
+      timeStart: range.start,
+      timeEnd: range.end,
+      snapshots: [],
+      isOverlay: true,
+    });
+  });
+
+  return blocks;
+}
+
+function formatNumber(n: number): string {
+  if (n >= 1000000) return `${(n / 1000000).toFixed(1)}M`;
+  if (n >= 1000) return `${(n / 1000).toFixed(1)}K`;
+  return n.toString();
+}
+
+export const DamageChart = () => {
+  const [mode, setMode] = useState<ChartMode>('dps');
+  const [hoveredBlock, setHoveredBlock] = useState<string | null>(null);
+  const [tooltipInfo, setTooltipInfo] = useState<{ x: number; y: number; block: ActionBlock } | null>(null);
+  const svgRef = useRef<SVGSVGElement>(null);
+  const containerRef = useRef<HTMLDivElement>(null);
+
+  const totalTime = useMemo(() => Math.max(...snapshots.map(s => s.timeEnd)), []);
+
+  // Build cumulative damage data
+  const cumulativeData = useMemo(() => {
+    let total = 0;
+    return snapshots.map(s => {
+      total += s.damage;
+      return { ...s, cumDamage: total };
+    });
+  }, []);
+
+  const maxDps = useMemo(() => Math.max(...snapshots.map(s => s.dps)), []);
+  const maxCumDamage = useMemo(() => cumulativeData[cumulativeData.length - 1]?.cumDamage || 1, [cumulativeData]);
+
+  const actionBlocks = useMemo(() => buildActionBlocks(snapshots), []);
+
+  // Chart dimensions based on container
+  const chartWidth = 1200;
+  const usableWidth = chartWidth - CHART_PADDING_LEFT - CHART_PADDING_RIGHT;
+
+  const timeToX = useCallback((t: number) => CHART_PADDING_LEFT + (t / totalTime) * usableWidth, [totalTime, usableWidth]);
+  const valueToY = useCallback((v: number, max: number) => {
+    const normalized = v / max;
+    return CHART_HEIGHT - CHART_PADDING_BOTTOM - normalized * USABLE_HEIGHT;
+  }, []);
+
+  // Build the area path for the main line
+  const areaPath = useMemo(() => {
+    const points = mode === 'dps'
+      ? snapshots.map(s => ({ x: timeToX((s.timeStart + s.timeEnd) / 2), y: valueToY(s.dps, maxDps) }))
+      : cumulativeData.map(s => ({ x: timeToX((s.timeStart + s.timeEnd) / 2), y: valueToY(s.cumDamage, maxCumDamage) }));
+
+    if (points.length === 0) return '';
+
+    const baseline = CHART_HEIGHT - CHART_PADDING_BOTTOM;
+
+    // Line path
+    let line = `M ${points[0].x} ${points[0].y}`;
+    for (let i = 1; i < points.length; i++) {
+      const prev = points[i - 1];
+      const curr = points[i];
+      const cpx = (prev.x + curr.x) / 2;
+      line += ` C ${cpx} ${prev.y}, ${cpx} ${curr.y}, ${curr.x} ${curr.y}`;
+    }
+
+    // Area (close path to baseline)
+    const area = `${line} L ${points[points.length - 1].x} ${baseline} L ${points[0].x} ${baseline} Z`;
+    return { line, area };
+  }, [mode, snapshots, cumulativeData, maxDps, maxCumDamage, timeToX, valueToY]);
+
+  // Y-axis ticks
+  const yTicks = useMemo(() => {
+    const max = mode === 'dps' ? maxDps : maxCumDamage;
+    const count = 5;
+    return Array.from({ length: count + 1 }, (_, i) => {
+      const value = (max / count) * i;
+      return { value, y: valueToY(value, max) };
+    });
+  }, [mode, maxDps, maxCumDamage, valueToY]);
+
+  // X-axis ticks
+  const xTicks = useMemo(() => {
+    const step = Math.ceil(totalTime / 10);
+    const ticks: { time: number; x: number }[] = [];
+    for (let t = 0; t <= totalTime; t += step) {
+      ticks.push({ time: t, x: timeToX(t) });
+    }
+    return ticks;
+  }, [totalTime, timeToX]);
+
+  const handleBlockHover = useCallback((block: ActionBlock, e: React.MouseEvent) => {
+    const rect = containerRef.current?.getBoundingClientRect();
+    if (!rect) return;
+    setHoveredBlock(block.action + block.timeStart);
+    setTooltipInfo({
+      x: e.clientX - rect.left,
+      y: e.clientY - rect.top,
+      block,
+    });
+  }, []);
+
+  const handleBlockLeave = useCallback(() => {
+    setHoveredBlock(null);
+    setTooltipInfo(null);
+  }, []);
+
+  const nonOverlayBlocks = actionBlocks.filter(b => !b.isOverlay);
+  const overlayBlocks = actionBlocks.filter(b => b.isOverlay);
+
+  return (
+    <div className="relative px-8 pb-8" ref={containerRef}>
+      {/* Toggle */}
+      <div className="flex items-center justify-between mb-4">
+        <div className="flex items-center gap-1 p-0.5 rounded-lg" style={{ background: 'hsl(var(--muted))' }}>
+          {(['dps', 'damage'] as ChartMode[]).map((m) => (
+            <button
+              key={m}
+              onClick={() => setMode(m)}
+              className={cn(
+                "relative px-4 py-1.5 text-[10px] tracking-[0.2em] uppercase font-medium rounded-md transition-all duration-300",
+                mode === m
+                  ? "text-foreground"
+                  : "text-muted-foreground hover:text-foreground/60"
+              )}
+            >
+              {mode === m && (
+                <motion.div
+                  layoutId="chart-toggle"
+                  className="absolute inset-0 rounded-md"
+                  style={{ background: 'hsl(var(--card))' }}
+                  transition={{ type: 'spring', stiffness: 400, damping: 30 }}
+                />
+              )}
+              <span className="relative z-10">{m === 'dps' ? 'DPS' : 'Damage'}</span>
+            </button>
+          ))}
+        </div>
+        <div className="text-[10px] font-mono tracking-wider uppercase" style={{ color: 'hsl(var(--muted-foreground))' }}>
+          {mode === 'dps' ? `Peak ${formatNumber(maxDps)} DPS` : `Total ${formatNumber(maxCumDamage)}`}
+        </div>
+      </div>
+
+      {/* Chart */}
+      <div className="glass-panel overflow-hidden">
+        <svg
+          ref={svgRef}
+          viewBox={`0 0 ${chartWidth} ${CHART_HEIGHT}`}
+          className="w-full"
+          style={{ height: CHART_HEIGHT }}
+          preserveAspectRatio="none"
+        >
+          <defs>
+            {/* Gradient for main area */}
+            <linearGradient id="area-grad" x1="0" y1="0" x2="0" y2="1">
+              <stop offset="0%" stopColor="hsl(var(--primary))" stopOpacity="0.25" />
+              <stop offset="100%" stopColor="hsl(var(--primary))" stopOpacity="0.02" />
+            </linearGradient>
+            {/* Character gradients for action blocks */}
+            {['jiyan', 'mortefi', 'verina'].map(char => (
+              <linearGradient key={char} id={`block-${char}`} x1="0" y1="0" x2="0" y2="1">
+                <stop offset="0%" stopColor={`hsl(var(--char-${char}))`} stopOpacity="0.2" />
+                <stop offset="100%" stopColor={`hsl(var(--char-${char}))`} stopOpacity="0.03" />
+              </linearGradient>
+            ))}
+            {['jiyan', 'mortefi', 'verina'].map(char => (
+              <linearGradient key={`overlay-${char}`} id={`overlay-${char}`} x1="0" y1="0" x2="0" y2="1">
+                <stop offset="0%" stopColor={`hsl(var(--char-${char}))`} stopOpacity="0.08" />
+                <stop offset="100%" stopColor={`hsl(var(--char-${char}))`} stopOpacity="0.03" />
+              </linearGradient>
+            ))}
+          </defs>
+
+          {/* Grid lines */}
+          {yTicks.map((tick, i) => (
+            <g key={`y-${i}`}>
+              <line
+                x1={CHART_PADDING_LEFT}
+                y1={tick.y}
+                x2={chartWidth - CHART_PADDING_RIGHT}
+                y2={tick.y}
+                stroke="hsl(var(--foreground) / 0.04)"
+                strokeDasharray="2 6"
+              />
+              <text
+                x={CHART_PADDING_LEFT - 8}
+                y={tick.y + 3}
+                textAnchor="end"
+                className="fill-muted-foreground"
+                style={{ fontSize: '9px', fontFamily: "'JetBrains Mono', monospace" }}
+              >
+                {formatNumber(Math.round(tick.value))}
+              </text>
+            </g>
+          ))}
+
+          {/* X-axis ticks */}
+          {xTicks.map((tick, i) => (
+            <g key={`x-${i}`}>
+              <line
+                x1={tick.x}
+                y1={CHART_HEIGHT - CHART_PADDING_BOTTOM}
+                x2={tick.x}
+                y2={CHART_HEIGHT - CHART_PADDING_BOTTOM + 6}
+                stroke="hsl(var(--foreground) / 0.08)"
+              />
+              <text
+                x={tick.x}
+                y={CHART_HEIGHT - CHART_PADDING_BOTTOM + 18}
+                textAnchor="middle"
+                className="fill-muted-foreground"
+                style={{ fontSize: '9px', fontFamily: "'JetBrains Mono', monospace" }}
+              >
+                {tick.time}s
+              </text>
+            </g>
+          ))}
+
+          {/* Baseline */}
+          <line
+            x1={CHART_PADDING_LEFT}
+            y1={CHART_HEIGHT - CHART_PADDING_BOTTOM}
+            x2={chartWidth - CHART_PADDING_RIGHT}
+            y2={CHART_HEIGHT - CHART_PADDING_BOTTOM}
+            stroke="hsl(var(--foreground) / 0.08)"
+          />
+
+          {/* Action block areas (non-overlay) */}
+          {nonOverlayBlocks.map((block, i) => {
+            const x1 = timeToX(block.timeStart);
+            const x2 = timeToX(block.timeEnd);
+            const w = Math.max(x2 - x1, 2);
+            const isHovered = hoveredBlock === block.action + block.timeStart;
+            const baseline = CHART_HEIGHT - CHART_PADDING_BOTTOM;
+
+            return (
+              <g key={`block-${i}`}>
+                <rect
+                  x={x1}
+                  y={CHART_PADDING_TOP}
+                  width={w}
+                  height={baseline - CHART_PADDING_TOP}
+                  fill={`url(#block-${block.charKey})`}
+                  opacity={isHovered ? 1 : 0.6}
+                  className="transition-opacity duration-300"
+                  onMouseEnter={(e) => handleBlockHover(block, e)}
+                  onMouseLeave={handleBlockLeave}
+                  style={{ cursor: 'pointer' }}
+                />
+                {/* Action separator line */}
+                <line
+                  x1={x1}
+                  y1={CHART_PADDING_TOP}
+                  x2={x1}
+                  y2={baseline}
+                  stroke={`hsl(var(--char-${block.charKey}) / ${isHovered ? '0.25' : '0.08'})`}
+                  strokeWidth={0.5}
+                  className="transition-all duration-300"
+                />
+                {/* Action title (only show if block is wide enough) */}
+                {w > 30 && (
+                  <text
+                    x={x1 + w / 2}
+                    y={CHART_HEIGHT - CHART_PADDING_BOTTOM + 35}
+                    textAnchor="middle"
+                    fill={`hsl(var(--char-${block.charKey}) / 0.4)`}
+                    style={{
+                      fontSize: w > 60 ? '8px' : '6px',
+                      fontFamily: "'Space Grotesk', sans-serif",
+                      letterSpacing: '0.05em',
+                      fontWeight: 300,
+                    }}
+                    transform={w < 50 ? `rotate(-45, ${x1 + w / 2}, ${CHART_HEIGHT - CHART_PADDING_BOTTOM + 35})` : ''}
+                  >
+                    {block.action.length > 14 && w < 80 ? block.action.slice(0, 12) + '…' : block.action}
+                  </text>
+                )}
+              </g>
+            );
+          })}
+
+          {/* Overlay action blocks (DoTs, Coordinated Attacks, etc.) */}
+          {overlayBlocks.map((block, i) => {
+            const x1 = timeToX(block.timeStart);
+            const x2 = timeToX(block.timeEnd);
+            const w = Math.max(x2 - x1, 2);
+            const isHovered = hoveredBlock === block.action + block.timeStart;
+            const baseline = CHART_HEIGHT - CHART_PADDING_BOTTOM;
+            // Overlays render at the top with diagonal hash pattern
+            const overlayHeight = 24;
+            const overlayY = CHART_PADDING_TOP - 28 + i * 14;
+
+            return (
+              <g key={`overlay-${i}`}>
+                {/* Full-height subtle tint */}
+                <rect
+                  x={x1}
+                  y={CHART_PADDING_TOP}
+                  width={w}
+                  height={baseline - CHART_PADDING_TOP}
+                  fill={`hsl(var(--char-${block.charKey}) / 0.03)`}
+                  className="pointer-events-none"
+                />
+                {/* Overlay bar */}
+                <rect
+                  x={x1}
+                  y={overlayY}
+                  width={w}
+                  height={overlayHeight}
+                  rx={4}
+                  fill={`url(#overlay-${block.charKey})`}
+                  stroke={`hsl(var(--char-${block.charKey}) / ${isHovered ? '0.3' : '0.12'})`}
+                  strokeWidth={0.5}
+                  opacity={isHovered ? 1 : 0.8}
+                  className="transition-opacity duration-300 cursor-pointer"
+                  onMouseEnter={(e) => handleBlockHover(block, e)}
+                  onMouseLeave={handleBlockLeave}
+                />
+                {/* Overlay label */}
+                {w > 40 && (
+                  <text
+                    x={x1 + 6}
+                    y={overlayY + overlayHeight / 2 + 3}
+                    fill={`hsl(var(--char-${block.charKey}) / 0.6)`}
+                    style={{
+                      fontSize: '7px',
+                      fontFamily: "'JetBrains Mono', monospace",
+                      letterSpacing: '0.1em',
+                      textTransform: 'uppercase',
+                    }}
+                  >
+                    {block.action}
+                  </text>
+                )}
+              </g>
+            );
+          })}
+
+          {/* Main area fill */}
+          <AnimatePresence mode="wait">
+            <motion.path
+              key={mode}
+              d={typeof areaPath === 'object' ? areaPath.area : ''}
+              fill="url(#area-grad)"
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+              transition={{ duration: 0.4 }}
+            />
+          </AnimatePresence>
+
+          {/* Main line */}
+          <AnimatePresence mode="wait">
+            <motion.path
+              key={`line-${mode}`}
+              d={typeof areaPath === 'object' ? areaPath.line : ''}
+              fill="none"
+              stroke="hsl(var(--primary))"
+              strokeWidth={1.5}
+              strokeLinecap="round"
+              initial={{ opacity: 0, pathLength: 0 }}
+              animate={{ opacity: 1, pathLength: 1 }}
+              exit={{ opacity: 0 }}
+              transition={{ duration: 0.8, ease: [0.16, 1, 0.3, 1] }}
+              style={{ filter: 'drop-shadow(0 0 4px hsl(var(--primary) / 0.3))' }}
+            />
+          </AnimatePresence>
+
+          {/* Data points on line for high-impact moments */}
+          {snapshots
+            .filter(s => s.dps > maxDps * 0.6)
+            .map(s => {
+              const x = timeToX((s.timeStart + s.timeEnd) / 2);
+              const max = mode === 'dps' ? maxDps : maxCumDamage;
+              const val = mode === 'dps' ? s.dps : (cumulativeData.find(c => c.id === s.id)?.cumDamage || 0);
+              const y = valueToY(val, max);
+              const charKey = CHARACTER_MAP[s.character];
+
+              return (
+                <circle
+                  key={`dot-${s.id}`}
+                  cx={x}
+                  cy={y}
+                  r={3}
+                  fill={`hsl(var(--char-${charKey}))`}
+                  opacity={0.7}
+                  style={{ filter: `drop-shadow(0 0 4px hsl(var(--char-${charKey}) / 0.5))` }}
+                />
+              );
+            })}
+
+          {/* Axis labels */}
+          <text
+            x={CHART_PADDING_LEFT - 8}
+            y={CHART_PADDING_TOP - 8}
+            textAnchor="end"
+            className="fill-muted-foreground"
+            style={{ fontSize: '8px', fontFamily: "'JetBrains Mono', monospace", letterSpacing: '0.15em', textTransform: 'uppercase' }}
+          >
+            {mode === 'dps' ? 'DPS' : 'DMG'}
+          </text>
+          <text
+            x={chartWidth - CHART_PADDING_RIGHT}
+            y={CHART_HEIGHT - CHART_PADDING_BOTTOM + 18}
+            textAnchor="end"
+            className="fill-muted-foreground"
+            style={{ fontSize: '8px', fontFamily: "'JetBrains Mono', monospace", letterSpacing: '0.15em' }}
+          >
+            TIME
+          </text>
+        </svg>
+      </div>
+
+      {/* Tooltip */}
+      <AnimatePresence>
+        {tooltipInfo && (
+          <motion.div
+            initial={{ opacity: 0, y: 6, scale: 0.95 }}
+            animate={{ opacity: 1, y: 0, scale: 1 }}
+            exit={{ opacity: 0, scale: 0.95 }}
+            transition={{ duration: 0.15 }}
+            className="glass-panel absolute z-50 pointer-events-none p-3 space-y-1"
+            style={{
+              left: Math.min(tooltipInfo.x + 12, (containerRef.current?.clientWidth || 800) - 220),
+              top: tooltipInfo.y - 10,
+              minWidth: 180,
+            }}
+          >
+            <div className="flex items-center gap-2">
+              <div
+                className="w-2 h-2 rounded-full"
+                style={{ background: `hsl(var(--char-${tooltipInfo.block.charKey}))` }}
+              />
+              <span
+                className="text-[10px] tracking-wider uppercase font-medium"
+                style={{ color: `hsl(var(--char-${tooltipInfo.block.charKey}))` }}
+              >
+                {tooltipInfo.block.character}
+              </span>
+            </div>
+            <div className="text-xs font-light" style={{ color: 'hsl(var(--foreground) / 0.7)' }}>
+              {tooltipInfo.block.action}
+            </div>
+            <div className="text-[9px] font-mono" style={{ color: 'hsl(var(--muted-foreground))' }}>
+              {tooltipInfo.block.timeStart.toFixed(2)}s → {tooltipInfo.block.timeEnd.toFixed(2)}s
+            </div>
+            {tooltipInfo.block.snapshots.length > 0 && (
+              <div className="text-[10px] font-mono pt-1" style={{ color: 'hsl(var(--foreground) / 0.5)' }}>
+                {formatNumber(tooltipInfo.block.snapshots.reduce((s, n) => s + n.damage, 0))} total dmg
+              </div>
+            )}
+          </motion.div>
+        )}
+      </AnimatePresence>
+    </div>
+  );
+};
+
+
+
+DetailPanel.tsx:
+import { motion } from 'framer-motion';
+import type { Snapshot } from '@/data/dummyRotation';
+
+const CHARACTER_COLORS: Record<string, string> = {
+  Jiyan: 'var(--char-jiyan)',
+  Mortefi: 'var(--char-mortefi)',
+  Verina: 'var(--char-verina)',
+};
+
+interface ResourceBarProps {
+  label: string;
+  value: number;
+  max: number;
+  color: string;
+}
+
+const ResourceBar = ({ label, value, max, color }: ResourceBarProps) => (
+  <div className="flex items-center gap-2">
+    <span className="text-[9px] font-mono tracking-wider uppercase opacity-40 w-12 text-right shrink-0">{label}</span>
+    <div className="resource-bar-track flex-1">
+      <div
+        className="resource-bar-fill"
+        style={{
+          width: `${Math.min(100, (value / max) * 100)}%`,
+          background: `linear-gradient(90deg, hsl(${color} / 0.6), hsl(${color}))`,
+          boxShadow: `0 0 8px hsl(${color} / 0.3)`,
+        }}
+      />
+    </div>
+    <span className="text-[9px] font-mono opacity-30 w-6">{value}</span>
+  </div>
+);
+
+interface DetailPanelProps {
+  node: Snapshot & { x: number; y: number; nd: number; size: number };
+}
+
+export const DetailPanel = ({ node }: DetailPanelProps) => {
+  const charColor = CHARACTER_COLORS[node.character] || 'var(--foreground)';
+
+  return (
+    <motion.div
+      initial={{ opacity: 0, y: 12, scale: 0.92 }}
+      animate={{ opacity: 1, y: 0, scale: 1 }}
+      transition={{ duration: 0.25, ease: [0.16, 1, 0.3, 1] }}
+      className="glass-panel absolute z-30 pointer-events-none"
+      style={{
+        left: node.x + node.size + 16,
+        top: node.y - 80,
+        width: 260,
+      }}
+    >
+      {/* Tether connector line */}
+      <div
+        className="absolute w-4 h-px top-20"
+        style={{
+          right: '100%',
+          background: `linear-gradient(to left, hsl(${charColor} / 0.4), transparent)`,
+        }}
+      />
+
+      <div className="p-4 space-y-3">
+        {/* Header */}
+        <div className="flex items-center gap-3">
+          <div
+            className="w-8 h-8 rounded-full flex items-center justify-center text-[11px] font-semibold shrink-0"
+            style={{
+              background: `radial-gradient(circle at 40% 40%, hsl(${charColor}), hsl(${charColor} / 0.3))`,
+              boxShadow: `0 0 16px hsl(${charColor} / 0.3)`,
+              color: 'hsl(var(--background))',
+            }}
+          >
+            {node.character[0]}
+          </div>
+          <div className="min-w-0">
+            <div className="text-[10px] tracking-wider uppercase font-medium" style={{ color: `hsl(${charColor})` }}>
+              {node.character}
+            </div>
+            <div className="text-xs font-light opacity-70 truncate">{node.action}</div>
+          </div>
+        </div>
+
+        {/* Time */}
+        <div className="text-[10px] font-mono opacity-30 tracking-wider">
+          {node.timeStart.toFixed(2)}s → {node.timeEnd.toFixed(2)}s
+        </div>
+
+        {/* Damage */}
+        <div className="flex items-baseline gap-3">
+          <div className="text-xl font-semibold tracking-tight" style={{ color: `hsl(${charColor})` }}>
+            {node.damage.toLocaleString()}
+          </div>
+          <div className="text-[10px] font-mono opacity-40">
+            {node.dps.toLocaleString()} DPS
+          </div>
+        </div>
+
+        {/* Separator */}
+        <div className="h-px w-full" style={{ background: `hsl(var(--foreground) / 0.06)` }} />
+
+        {/* Resources */}
+        <div className="space-y-1.5">
+          <ResourceBar label="Energy" value={node.energy} max={100} color="var(--primary)" />
+          <ResourceBar label="Concrto" value={node.concerto} max={100} color="38 80% 55%" />
+          <ResourceBar label="Forte" value={node.forte} max={100} color="280 60% 55%" />
+          {node.character === 'Jiyan' && node.conviction > 0 && (
+            <ResourceBar label="Conv" value={node.conviction} max={5} color="var(--char-jiyan)" />
+          )}
+        </div>
+
+        {/* Buffs */}
+        {node.buffs.length > 0 && (
+          <div className="flex flex-wrap gap-1 pt-1">
+            {node.buffs.map((b, i) => (
+              <span key={i} className="buff-pill">{b}</span>
+            ))}
+          </div>
+        )}
+
+        {/* Debuffs */}
+        {node.debuffs.length > 0 && (
+          <div className="flex flex-wrap gap-1">
+            {node.debuffs.map((d, i) => (
+              <span key={i} className="debuff-pill">{d}</span>
+            ))}
+          </div>
+        )}
+      </div>
+    </motion.div>
+  );
+};
+
+
+
+
+
+TetherField.tsx:
+import { useState, useMemo, useRef, useEffect, useCallback } from 'react';
+import { snapshots, type Snapshot } from '@/data/dummyRotation';
+import { DetailPanel } from './DetailPanel';
+import { cn } from '@/lib/utils';
+
+const NODE_SPACING = 82;
+const PADDING = 160;
+const FIELD_HEIGHT = 600;
+const BASELINE_Y = 370;
+
+const CHARACTER_MAP = {
+  Jiyan: 'jiyan',
+  Mortefi: 'mortefi',
+  Verina: 'verina',
+} as const;
+
+type CharKey = keyof typeof CHARACTER_MAP;
+
+interface PositionedNode extends Snapshot {
+  x: number;
+  y: number;
+  size: number;
+  nd: number;
+}
+
+function getNodeY(nd: number): number {
+  return BASELINE_Y - nd * 280 + (1 - nd) * 40;
+}
+
+function getNodeSize(nd: number): number {
+  return 6 + nd * 16;
+}
+
+function curvePath(x1: number, y1: number, x2: number, y2: number): string {
+  const mx = (x1 + x2) / 2;
+  const dy = (y2 - y1) * 0.35;
+  return `M ${x1} ${y1} Q ${mx} ${(y1 + y2) / 2 + dy} ${x2} ${y2}`;
+}
+
+interface BuffZone {
+  buff: string;
+  startX: number;
+  endX: number;
+  y: number;
+  height: number;
+  character: string;
+}
+
+function computeBuffZones(nodes: PositionedNode[]): BuffZone[] {
+  const zones: BuffZone[] = [];
+  const buffNames = ['Coordinated Attack', 'Resonance Liberation', 'Healing Zone', 'Forte Resonance'];
+
+  buffNames.forEach(buffName => {
+    let startIdx = -1;
+    nodes.forEach((node, i) => {
+      const hasBuff = node.buffs.includes(buffName);
+      if (hasBuff && startIdx === -1) startIdx = i;
+      if ((!hasBuff || i === nodes.length - 1) && startIdx !== -1) {
+        const endIdx = hasBuff ? i : i - 1;
+        const slice = nodes.slice(startIdx, endIdx + 1);
+        if (slice.length >= 2) {
+          const minY = Math.min(...slice.map(n => n.y)) - 35;
+          const maxY = Math.max(...slice.map(n => n.y)) + 35;
+          zones.push({
+            buff: buffName,
+            startX: nodes[startIdx].x - 25,
+            endX: nodes[endIdx].x + 25,
+            y: minY,
+            height: maxY - minY,
+            character: buffName === 'Healing Zone' ? 'verina' : buffName === 'Coordinated Attack' ? 'mortefi' : 'jiyan',
+          });
+        }
+        startIdx = -1;
+      }
+    });
+  });
+
+  return zones;
+}
+
+export const TetherField = () => {
+  const [hoveredId, setHoveredId] = useState<number | null>(null);
+  const scrollRef = useRef<HTMLDivElement>(null);
+
+  const maxDamage = useMemo(() => Math.max(...snapshots.map(s => s.damage)), []);
+
+  const nodes: PositionedNode[] = useMemo(() =>
+    snapshots.map((s, i) => {
+      const nd = s.damage / maxDamage;
+      return { ...s, x: i * NODE_SPACING + PADDING, y: getNodeY(nd), size: getNodeSize(nd), nd };
+    }), [maxDamage]);
+
+  const fieldWidth = nodes.length * NODE_SPACING + PADDING * 2;
+
+  const buffZones = useMemo(() => computeBuffZones(nodes), [nodes]);
+
+  const connections = useMemo(() => {
+    if (hoveredId === null) return new Set<number>();
+    const hovered = nodes.find(n => n.id === hoveredId);
+    if (!hovered) return new Set<number>();
+    const set = new Set<number>();
+    set.add(hoveredId);
+    const idx = nodes.findIndex(n => n.id === hoveredId);
+    if (idx > 0) set.add(nodes[idx - 1].id);
+    if (idx < nodes.length - 1) set.add(nodes[idx + 1].id);
+    nodes.forEach(n => {
+      if (n.character === hovered.character && Math.abs(n.id - hoveredId) <= 10) set.add(n.id);
+      if (n.buffs.some(b => hovered.buffs.includes(b)) && Math.abs(n.id - hoveredId) <= 14) set.add(n.id);
+    });
+    return set;
+  }, [hoveredId, nodes]);
+
+  useEffect(() => {
+    if (scrollRef.current) {
+      scrollRef.current.scrollLeft = (fieldWidth - window.innerWidth) * 0.3;
+    }
+  }, [fieldWidth]);
+
+  const hoveredNode = hoveredId !== null ? nodes.find(n => n.id === hoveredId) ?? null : null;
+
+  const handleEnter = useCallback((id: number) => setHoveredId(id), []);
+  const handleLeave = useCallback(() => setHoveredId(null), []);
+
+  // Find character transition points
+  const transitions = useMemo(() => {
+    const pts: number[] = [];
+    nodes.forEach((n, i) => {
+      if (i > 0 && n.character !== nodes[i - 1].character) pts.push(i);
+    });
+    return pts;
+  }, [nodes]);
+
+  return (
+    <div>
+      {/* Header */}
+      <div className="field-header">
+        <div>
+          <div className="field-title">Combat Telemetry</div>
+          <div className="field-subtitle">
+            {nodes.length} snapshots · {nodes[nodes.length - 1]?.timeEnd.toFixed(1)}s rotation
+          </div>
+        </div>
+        <div className="char-legend">
+          {Object.entries(CHARACTER_MAP).map(([name, key]) => (
+            <div key={key} className="char-legend-item">
+              <div className={`char-legend-dot bg-${key}`} />
+              <span>{name}</span>
+            </div>
+          ))}
+        </div>
+      </div>
+
+      {/* Edge fades */}
+      <div className="tether-edge-left" />
+      <div className="tether-edge-right" />
+
+      {/* Scrollable field */}
+      <div className="tether-viewport" ref={scrollRef}>
+        <div className="tether-field" style={{ width: fieldWidth, height: FIELD_HEIGHT }}>
+          {/* Baseline */}
+          <div className="tether-baseline" style={{ top: BASELINE_Y }} />
+
+          {/* Character transition markers */}
+          {transitions.map(i => (
+            <div
+              key={`tr-${i}`}
+              className="absolute top-0 bottom-0 w-px pointer-events-none"
+              style={{
+                left: (nodes[i].x + nodes[i - 1].x) / 2,
+                background: `linear-gradient(to bottom, transparent, hsl(var(--foreground) / 0.04) 40%, hsl(var(--foreground) / 0.04) 60%, transparent)`,
+              }}
+            >
+              <div
+                className="absolute text-[8px] font-mono tracking-widest uppercase"
+                style={{
+                  top: FIELD_HEIGHT - 40,
+                  left: '50%',
+                  transform: 'translateX(-50%)',
+                  color: `hsl(var(--char-${CHARACTER_MAP[nodes[i].character as CharKey]}) / 0.35)`,
+                  whiteSpace: 'nowrap',
+                }}
+              >
+                {nodes[i].character}
+              </div>
+            </div>
+          ))}
+
+          {/* Buff zones */}
+          {buffZones.map((zone, i) => (
+            <div
+              key={`bz-${i}`}
+              className={cn(
+                "buff-zone",
+                hoveredId !== null && "opacity-30",
+              )}
+              style={{
+                left: zone.startX,
+                top: zone.y,
+                width: zone.endX - zone.startX,
+                height: zone.height,
+                background: `linear-gradient(135deg, hsl(var(--char-${zone.character}) / 0.04), hsl(var(--char-${zone.character}) / 0.02))`,
+                border: `1px solid hsl(var(--char-${zone.character}) / 0.08)`,
+                transition: 'opacity 0.5s ease',
+              }}
+            >
+              <span className="buff-zone-label">{zone.buff}</span>
+            </div>
+          ))}
+
+          {/* DPS spikes (subtle vertical lines for high-damage moments) */}
+          {nodes.filter(n => n.nd > 0.5).map(n => (
+            <div
+              key={`spike-${n.id}`}
+              className="dps-spike"
+              style={{
+                left: n.x,
+                height: n.nd * 120,
+                bottom: FIELD_HEIGHT - n.y,
+                opacity: n.nd * 0.08,
+              }}
+            />
+          ))}
+
+          {/* SVG tether lines */}
+          <svg
+            className="absolute inset-0 pointer-events-none"
+            width={fieldWidth}
+            height={FIELD_HEIGHT}
+            style={{ overflow: 'visible' }}
+          >
+            {/* Sequential lines */}
+            {nodes.map((node, i) => {
+              if (i === 0) return null;
+              const prev = nodes[i - 1];
+              const bothConnected = hoveredId !== null && connections.has(node.id) && connections.has(prev.id);
+              const isDimmed = hoveredId !== null && !bothConnected;
+              const charKey = CHARACTER_MAP[node.character as CharKey];
+
+              return (
+                <path
+                  key={`line-${i}`}
+                  d={curvePath(prev.x, prev.y, node.x, node.y)}
+                  fill="none"
+                  className={cn(
+                    "tether-line",
+                    bothConnected && "tether-line-active",
+                    isDimmed && "tether-line-dimmed",
+                  )}
+                  stroke={bothConnected
+                    ? `hsl(var(--char-${charKey}) / 0.65)`
+                    : `hsl(var(--tether) / var(--tether-idle))`
+                  }
+                  strokeWidth={bothConnected ? 1.5 : 0.7}
+                />
+              );
+            })}
+
+            {/* Extra tether arcs for shared-buff connections on hover */}
+            {hoveredNode && nodes
+              .filter(n => {
+                if (n.id === hoveredId) return false;
+                if (!connections.has(n.id)) return false;
+                const idx = nodes.findIndex(nd => nd.id === n.id);
+                const hovIdx = nodes.findIndex(nd => nd.id === hoveredId);
+                if (Math.abs(idx - hovIdx) === 1) return false; // already sequential
+                return n.buffs.some(b => hoveredNode.buffs.includes(b));
+              })
+              .map(n => (
+                <path
+                  key={`extra-${n.id}`}
+                  d={curvePath(hoveredNode.x, hoveredNode.y, n.x, n.y)}
+                  fill="none"
+                  className="tether-line-extra"
+                  stroke={`hsl(var(--char-${CHARACTER_MAP[hoveredNode.character as CharKey]}) / 0.25)`}
+                  strokeWidth={0.5}
+                  strokeDasharray="3 7"
+                />
+              ))
+            }
+          </svg>
+
+          {/* Nodes */}
+          {nodes.map(node => {
+            const charKey = CHARACTER_MAP[node.character as CharKey];
+            const isHovered = node.id === hoveredId;
+            const isConnected = connections.has(node.id);
+            const isDimmed = hoveredId !== null && !isConnected;
+
+            return (
+              <div
+                key={node.id}
+                className={cn(
+                  "tether-node",
+                  `tether-node-${charKey}`,
+                  isHovered && "tether-node-hovered",
+                  isConnected && !isHovered && hoveredId !== null && "tether-node-connected",
+                  isDimmed && "tether-node-dimmed",
+                )}
+                style={{
+                  left: node.x - node.size / 2,
+                  top: node.y - node.size / 2,
+                  width: node.size,
+                  height: node.size,
+                }}
+                onMouseEnter={() => handleEnter(node.id)}
+                onMouseLeave={handleLeave}
+              >
+                {/* Resource trail */}
+                <div
+                  className={`tether-trail tether-trail-${charKey}`}
+                  style={{ width: 4 + node.nd * 24 }}
+                />
+              </div>
+            );
+          })}
+
+          {/* Detail panel */}
+          {hoveredNode && <DetailPanel node={hoveredNode} />}
+        </div>
+      </div>
+    </div>
+  );
+};

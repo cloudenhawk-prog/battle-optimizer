@@ -1,0 +1,170 @@
+export interface Snapshot {
+  id: number;
+  character: 'Jiyan' | 'Mortefi' | 'Verina';
+  action: string;
+  timeStart: number;
+  timeEnd: number;
+  damage: number;
+  dps: number;
+  energy: number;
+  concerto: number;
+  forte: number;
+  conviction: number;
+  buffs: string[];
+  debuffs: string[];
+}
+
+const JIYAN_ACTIONS = [
+  { action: 'Intro: Windborne', dmgBase: 4200, dur: 0.8 },
+  { action: 'Basic Attack 1', dmgBase: 1800, dur: 0.45 },
+  { action: 'Basic Attack 2', dmgBase: 2400, dur: 0.45 },
+  { action: 'Basic Attack 3', dmgBase: 3100, dur: 0.55 },
+  { action: 'Resonance Skill', dmgBase: 11000, dur: 1.1 },
+  { action: 'Heavy: Tempest', dmgBase: 16500, dur: 1.4 },
+  { action: 'Forte: Emerald Storm', dmgBase: 30000, dur: 1.8 },
+  { action: 'Liberation: Qingloong', dmgBase: 42000, dur: 2.2 },
+  { action: 'Outro: Wind Spiral', dmgBase: 5500, dur: 0.7 },
+];
+
+const MORTEFI_ACTIONS = [
+  { action: 'Intro: Blazing Waltz', dmgBase: 3800, dur: 0.7 },
+  { action: 'Resonance Skill', dmgBase: 6200, dur: 0.9 },
+  { action: 'Basic Attack 1', dmgBase: 1500, dur: 0.4 },
+  { action: 'Basic Attack 2', dmgBase: 2000, dur: 0.4 },
+  { action: 'Liberation: Inferno', dmgBase: 14000, dur: 1.6 },
+  { action: 'Outro: Coordinated', dmgBase: 2200, dur: 0.6 },
+];
+
+const VERINA_ACTIONS = [
+  { action: 'Intro: Verdant Light', dmgBase: 1200, dur: 0.6 },
+  { action: 'Resonance Skill', dmgBase: 800, dur: 0.8 },
+  { action: 'Basic Attack 1', dmgBase: 600, dur: 0.35 },
+  { action: 'Liberation: Bloom', dmgBase: 500, dur: 1.4 },
+  { action: 'Outro: Renewal', dmgBase: 400, dur: 0.5 },
+];
+
+function vary(base: number, pct: number = 0.15): number {
+  return Math.round(base * (1 + (Math.random() * 2 - 1) * pct));
+}
+
+function generateRotation(): Snapshot[] {
+  const result: Snapshot[] = [];
+  let id = 0;
+  let time = 0;
+  let energy = 40;
+  let concerto = 0;
+  let forte = 0;
+  let conviction = 0;
+
+  const cycles = 4;
+
+  for (let c = 0; c < cycles; c++) {
+    // Jiyan phase
+    const jiyanBuffs = c > 0 ? ['Coordinated Attack'] : [];
+    for (const tmpl of JIYAN_ACTIONS) {
+      const dur = tmpl.dur * (0.9 + Math.random() * 0.2);
+      const dmg = vary(tmpl.dmgBase);
+      energy = Math.min(100, energy + dmg * 0.001 + 3);
+      forte = Math.min(100, forte + 8 + Math.random() * 5);
+      concerto = Math.min(100, concerto + 5 + Math.random() * 4);
+      conviction = Math.min(5, conviction + (tmpl.dmgBase > 10000 ? 1 : 0));
+
+      const buffs = [...jiyanBuffs];
+      if (forte > 60) buffs.push('Forte Resonance');
+      if (tmpl.action.includes('Liberation')) buffs.push('Resonance Liberation');
+
+      const debuffs: string[] = [];
+      if (tmpl.dmgBase > 15000) debuffs.push('Wind Shear');
+
+      result.push({
+        id: id++,
+        character: 'Jiyan',
+        action: tmpl.action,
+        timeStart: Math.round(time * 100) / 100,
+        timeEnd: Math.round((time + dur) * 100) / 100,
+        damage: dmg,
+        dps: Math.round(dmg / dur),
+        energy: Math.round(energy),
+        concerto: Math.round(concerto),
+        forte: Math.round(forte),
+        conviction,
+        buffs,
+        debuffs,
+      });
+      time += dur;
+    }
+
+    // Reset Jiyan resources on swap
+    forte = 0;
+    conviction = 0;
+    concerto = 0;
+
+    // Mortefi phase
+    for (const tmpl of MORTEFI_ACTIONS) {
+      const dur = tmpl.dur * (0.9 + Math.random() * 0.2);
+      const dmg = vary(tmpl.dmgBase);
+      energy = Math.min(100, energy + 4);
+      concerto = Math.min(100, concerto + 12);
+
+      const buffs: string[] = [];
+      if (tmpl.action.includes('Liberation')) buffs.push('Resonance Liberation');
+      if (tmpl.action.includes('Outro') || tmpl.action.includes('Liberation'))
+        buffs.push('Coordinated Attack');
+
+      result.push({
+        id: id++,
+        character: 'Mortefi',
+        action: tmpl.action,
+        timeStart: Math.round(time * 100) / 100,
+        timeEnd: Math.round((time + dur) * 100) / 100,
+        damage: dmg,
+        dps: Math.round(dmg / dur),
+        energy: Math.round(energy),
+        concerto: Math.round(concerto),
+        forte: 0,
+        conviction: 0,
+        buffs,
+        debuffs: [],
+      });
+      time += dur;
+    }
+
+    concerto = 0;
+
+    // Verina phase
+    for (const tmpl of VERINA_ACTIONS) {
+      const dur = tmpl.dur * (0.9 + Math.random() * 0.2);
+      const dmg = vary(tmpl.dmgBase);
+      energy = Math.min(100, energy + 3);
+      concerto = Math.min(100, concerto + 10);
+
+      const buffs: string[] = [];
+      if (tmpl.action.includes('Liberation')) buffs.push('Healing Zone');
+      if (tmpl.action.includes('Skill')) buffs.push('Healing Zone');
+
+      result.push({
+        id: id++,
+        character: 'Verina',
+        action: tmpl.action,
+        timeStart: Math.round(time * 100) / 100,
+        timeEnd: Math.round((time + dur) * 100) / 100,
+        damage: dmg,
+        dps: Math.round(dmg / dur),
+        energy: Math.round(energy),
+        concerto: Math.round(concerto),
+        forte: 0,
+        conviction: 0,
+        buffs,
+        debuffs: [],
+      });
+      time += dur;
+    }
+
+    concerto = 0;
+    energy = Math.max(20, energy - 30);
+  }
+
+  return result;
+}
+
+export const snapshots = generateRotation();
