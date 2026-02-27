@@ -254,7 +254,7 @@ export function DamageTimeline({ snapshots, damageEvents = [] }: DamageTimelineP
       // Check all negative statuses in this snapshot
       for (const [statusName, stacks] of Object.entries(snap.negativeStatuses || {})) {
         if (stacks > 0) {
-          const timeLeft = snap.negativeStatusesTimeLeft?.[statusName] || 0
+          //const timeLeft = snap.negativeStatusesTimeLeft?.[statusName] || 0
           const trackingKey = statusName
 
           if (!negativeStatusTracking.has(trackingKey)) {
