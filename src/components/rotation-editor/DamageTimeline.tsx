@@ -1,4 +1,4 @@
-import { useState, useMemo, useRef } from 'react'
+import { useState, useMemo, useRef, useLayoutEffect } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
 import type { Snapshot } from '../../types/snapshot'
 import type { DamageEvent } from '../../types/events'
@@ -115,8 +115,15 @@ export function DamageTimeline({ snapshots, damageEvents = [] }: DamageTimelineP
   const [mode, setMode] = useState<ChartMode>('cumulative')
   const [viewMode, setViewMode] = useState<ViewMode>('timeline')
   const [tooltipInfo] = useState<{ x: number; y: number; data: any } | null>(null) // TODO: Will be used with hover handlers
+  const [containerWidth, setContainerWidth] = useState(800)
   const containerRef = useRef<HTMLDivElement>(null)
   const svgRef = useRef<SVGSVGElement>(null)
+
+  useLayoutEffect(() => {
+    if (containerRef.current) {
+      setContainerWidth(containerRef.current.clientWidth)
+    }
+  }, [viewMode])
 
   // TODO: Data processing will be implemented here
   // Each snapshot/event can generate multiple (x,y) points for subactions or multi-hit abilities
@@ -334,7 +341,7 @@ export function DamageTimeline({ snapshots, damageEvents = [] }: DamageTimelineP
           )}
         </div>
 
-        <div className="timeline-stat-label">{viewMode === 'chart' ? (mode === 'dps' ? `Peak DPS` : `Total Damage`) : `${owners.length} Owners`}</div>
+        <div className="timeline-stat-label">{viewMode === 'chart' ? (mode === 'dps' ? 'Peak DPS' : 'Total Damage') : `${owners.length} Owners`}</div>
       </div>
 
       {/* Main Visualization Area */}
@@ -473,7 +480,7 @@ export function DamageTimeline({ snapshots, damageEvents = [] }: DamageTimelineP
             transition={{ duration: 0.15 }}
             className="timeline-tooltip"
             style={{
-              left: Math.min(tooltipInfo.x + 12, (containerRef.current?.clientWidth || 800) - 220),
+              left: Math.min(tooltipInfo.x + 12, containerWidth - 220),
               top: tooltipInfo.y - 10,
             }}>
             <div className="timeline-tooltip-header">
