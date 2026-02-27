@@ -17,10 +17,11 @@ type RotationEditorProps = {
   tableConfig: TableConfig
   columnVisibility: ColumnVisibility
   setColumnVisibility: React.Dispatch<React.SetStateAction<ColumnVisibility>>
+  onSnapshotsChange?: (snapshots: Snapshot[], damageEvents: DamageEvent[]) => void
 }
 
-export default function RotationEditor({ charactersInBattle, enemy, tableConfig, columnVisibility, setColumnVisibility }: RotationEditorProps) {
-  const { snapshots, damageEvents, handleCharacterSelect, handleActionSelect } = useRotationEditor({ charactersInBattle, tableConfig, enemy })
+export default function RotationEditor({ charactersInBattle, enemy, tableConfig, columnVisibility, setColumnVisibility, onSnapshotsChange }: RotationEditorProps) {
+  const { snapshots, damageEvents, handleCharacterSelect, handleActionSelect } = useRotationEditor({ charactersInBattle, tableConfig, enemy, onSnapshotsChange })
   const [overlayOpen, setOverlayOpen] = useState(false)
   const [overlayData, setOverlayData] = useState<null | { snapshot: Snapshot; damageEvents: DamageEvent[] }>(null)
 
