@@ -214,8 +214,10 @@ export function calculateAmplifyMultiplier(stats: CharacterStats, elements: Elem
 
   // Sum all status effect amplifications for applicable elements
   let statusAmplifies = 0
-  for (const element of elements) {
-    statusAmplifies += getStatusAmplifyDMG(stats, element)
+  if (dmgTypes.includes('NEGATIVE_STATUS')) {
+    for (const element of elements) {
+      statusAmplifies += getStatusAmplifyDMG(stats, element)
+    }
   }
 
   // All amplifications are additive, then add 1 for the base multiplier
