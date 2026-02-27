@@ -1,17 +1,9 @@
 TODO:
-Show a timeline under the table (see 'timeline-demo' folder)
-
-
-
 
 FROM TIME in currentState row should display - from the get-go, then the first registered fromTime recorded (likely 0)
 TO TIME in currentStqate row should display - from the get-go, then the last current toTime recorded
 
-
-
-
-
-Need a way to remove buffs - like FLeurdelys Mandata and sword buffs (they are timed but also disappear when she used liberation - i.e. swaps back)
+Need a way to remove buffs - like FLeurdelys Mandate and sword buffs (they are timed but also disappear when she used liberation - i.e. swaps back)
 
 TASK: Buffs/debuffs can be split into subgroups for each character and for shared (but would be difficult since some rely on 'active character' and 'N number of swaps')
 

@@ -41,11 +41,15 @@ export function RotationTable({ snapshots, charactersInBattle, tableConfig, onSe
   // Get the last snapshot that has an action selected
   const currentSnapshot = [...snapshots].reverse().find(s => s.action !== undefined && s.action !== '')
 
+  // Get the first fromTime from the first snapshot with an action
+  const firstSnapshot = snapshots.find(s => s.action !== undefined && s.action !== '')
+  const firstFromTime = firstSnapshot?.fromTime ?? 0
+
   return (
     <div className="tableWrapper">
       <table className="tableBase">
         <HeaderRow tableConfig={tableConfig} columnVisibility={columnVisibility} setColumnVisibility={setColumnVisibility} />
-        <CurrentStateRow snapshot={currentSnapshot || null} charactersInBattle={charactersInBattle} tableConfig={tableConfig} columnVisibility={columnVisibility} />
+        <CurrentStateRow snapshot={currentSnapshot || null} firstFromTime={firstFromTime} charactersInBattle={charactersInBattle} tableConfig={tableConfig} columnVisibility={columnVisibility} />
         <tbody>
           {snapshots.map((snapshot, idx) => (
             <BodyRow key={Number(snapshot.id)} snapshot={snapshot} charactersInBattle={charactersInBattle} tableConfig={tableConfig} onSelectCharacter={onSelectCharacter} onSelectAction={onSelectAction} onRowClick={onRowClick} isLastRow={idx === snapshots.length - 1} isNewRow={highlightIds.has(Number(snapshot.id))} columnVisibility={columnVisibility} />

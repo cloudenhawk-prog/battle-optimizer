@@ -41,12 +41,13 @@ function formatNumber(value: number): string {
 
 type CurrentStateRowProps = {
   snapshot: Snapshot | null
+  firstFromTime: number
   charactersInBattle: Character[]
   tableConfig: TableConfig
   columnVisibility: ColumnVisibility
 }
 
-export function CurrentStateRow({ snapshot, charactersInBattle, tableConfig, columnVisibility }: CurrentStateRowProps) {
+export function CurrentStateRow({ snapshot, firstFromTime, charactersInBattle, tableConfig, columnVisibility }: CurrentStateRowProps) {
   // Create initial snapshot if none exists or character not selected
   const displaySnapshot = snapshot || createInitialSnapshot()
   const hasCharacter = displaySnapshot.character && displaySnapshot.character !== ''
@@ -64,14 +65,22 @@ export function CurrentStateRow({ snapshot, charactersInBattle, tableConfig, col
         {tableConfig.basic.columns.map(col => {
           if (!columnVisibility[col.key]) return null
 
-          // From time - empty
+          // From time
           if (col.key === 'fromTime') {
-            return <td key={col.key} className="currentStateCell"></td>
+            return (
+              <td key={col.key} className="currentStateCell">
+                <div className="currentStateValue">{hasCharacter ? firstFromTime.toFixed(2) : '-'}</div>
+              </td>
+            )
           }
 
-          // To time - empty
+          // To time
           if (col.key === 'toTime') {
-            return <td key={col.key} className="currentStateCell"></td>
+            return (
+              <td key={col.key} className="currentStateCell">
+                <div className="currentStateValue">{hasCharacter ? displaySnapshot.toTime.toFixed(2) : '-'}</div>
+              </td>
+            )
           }
 
           // Damage
