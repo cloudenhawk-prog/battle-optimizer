@@ -272,7 +272,7 @@ export function DamageTimeline({ snapshots, damageEvents = [] }: DamageTimelineP
       const value = (maxValue / count) * i
       return { value, y: valueToY(value) }
     })
-  }, [maxValue])
+  }, [maxValue, valueToY])
 
   // X-axis ticks
   const xTicks = useMemo(() => {
@@ -282,7 +282,7 @@ export function DamageTimeline({ snapshots, damageEvents = [] }: DamageTimelineP
       ticks.push({ time: t, x: timeToX(t) })
     }
     return ticks
-  }, [maxTime])
+  }, [maxTime, timeToX])
 
   // TODO: Hover handlers for interactive data points
   // const handlePointHover = useCallback((data: any, e: React.MouseEvent) => {
