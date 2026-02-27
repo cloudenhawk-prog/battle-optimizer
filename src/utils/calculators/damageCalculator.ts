@@ -84,12 +84,6 @@ export function calculateDamage({ action, name, stats, damageModifiers, modifier
 
   const contributions = skipContributions || !ctx ? {} : calculateAllContrubutions(action, name, stats, damageModifiers, enemy, snapshotId, timeStamp, normalStrike, criticalStrike, average, ctx)
 
-  if (!skipContributions) {
-    console.log('Calculating damage for action:', action.name)
-    console.log('Modifiers: ', damageModifiers)
-    console.log('Contributions: ', contributions)
-  }
-
   const damageEvent: DamageEvent = {
     snapshotId,
     dealer: name,
@@ -171,7 +165,7 @@ export function calculateBonusMultiplier(stats: CharacterStats, elements: Elemen
   // Sum all element-specific bonuses
   let elementBonuses = 0
   for (const element of elements) {
-    if (element === 'NONE') continue
+    if (element === '') continue
     const elementKey = `${element.toLowerCase()}BonusDMG` as keyof CharacterStats
     elementBonuses += (stats[elementKey] as number) || 0
   }
@@ -205,7 +199,7 @@ export function calculateAmplifyMultiplier(stats: CharacterStats, elements: Elem
   // Sum all element-specific amplifications
   let elementAmplifies = 0
   for (const element of elements) {
-    if (element === 'NONE') continue
+    if (element === '') continue
     const elementKey = `${element.toLowerCase()}AmplifyDMG` as keyof CharacterStats
     elementAmplifies += (stats[elementKey] as number) || 0
   }
@@ -238,7 +232,7 @@ export function calculateTotalMultiplier(stats: CharacterStats, elements: Elemen
 
   // Multiply all element-specific total multipliers
   for (const element of elements) {
-    if (element === 'NONE') continue
+    if (element === '') continue
     const elementKey = `${element.toLowerCase()}TotalMultiplierDMG` as keyof CharacterStats
     result *= (stats[elementKey] as number) || 1
   }
@@ -332,17 +326,17 @@ function calculateResistanceMultiplier(stats: CharacterStats, enemyStats: EnemyS
 
   // For elemental resistance, use the worst (lowest) multiplier across all elements
   // Select the element used for elemental resistance calculations.
-  // Convention: use the first non-'NONE' element in the action's elements list.
+  // Convention: use the first non-empty element in the action's elements list.
   function chooseElementForResistance(list: ElementType[]): ElementType {
     for (const el of list) {
-      if (el !== 'NONE') return el
+      if (el !== '') return el
     }
-    return 'NONE'
+    return ''
   }
 
   let elementalResMultiplier = 1
   const chosenElement = chooseElementForResistance(elements)
-  if (chosenElement !== 'NONE') {
+  if (chosenElement !== '') {
     const elementResKey = `${chosenElement.toLowerCase()}RES` as keyof EnemyStats
     const enemyElementalRes = (enemyStats[elementResKey] as number) || 0
     elementalResMultiplier = 1 - (enemyElementalRes - elementalResPEN)

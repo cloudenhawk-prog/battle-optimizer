@@ -22,8 +22,6 @@ export default function DataOverlay({ snapshot, damageEvents = [], open, onClose
 
   if (!open || !snapshot) return null
 
-  console.log('Damage Events: ', damageEvents)
-
   const totalDamage = calculateTotalDamage(damageEvents)
   const duration = calculateDuration(snapshot)
 

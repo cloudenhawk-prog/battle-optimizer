@@ -132,13 +132,23 @@ export function DamageTimeline({ snapshots, damageEvents = [] }: DamageTimelineP
       return { maxValue: 1, maxTime: 1, owners: [], actionBlocks: [] }
     }
 
+    // Helper function to extract character name from dealer strings
+    // Dealers can be formatted as "CharacterName" or "CharacterName: ActionName"
+    const extractCharacterName = (dealer: string): string => {
+      const colonIndex = dealer.indexOf(':')
+      return colonIndex !== -1 ? dealer.substring(0, colonIndex).trim() : dealer
+    }
+
     // Collect all unique owner names and determine which are characters vs global sources
     const allOwnerNames = new Set<string>()
     snapshots.forEach(s => {
       if (s.character) allOwnerNames.add(s.character)
     })
     damageEvents.forEach(e => {
-      if (e.dealer) allOwnerNames.add(e.dealer)
+      if (e.dealer) {
+        const characterName = extractCharacterName(e.dealer)
+        allOwnerNames.add(characterName)
+      }
     })
 
     // Characters are those that have a color defined OR appear in snapshots with character field
@@ -162,7 +172,10 @@ export function DamageTimeline({ snapshots, damageEvents = [] }: DamageTimelineP
 
     // Also check if there are any damage events with non-character dealers
     if (!hasGlobalSources) {
-      hasGlobalSources = damageEvents.some(e => !characterOwners.has(e.dealer) && !snapshots.some(s => s.character === e.dealer))
+      hasGlobalSources = damageEvents.some(e => {
+        const characterName = extractCharacterName(e.dealer)
+        return !characterOwners.has(characterName) && !snapshots.some(s => s.character === characterName)
+      })
     }
 
     // Build owner list: individual characters + one "Global" entry if needed
@@ -191,57 +204,111 @@ export function DamageTimeline({ snapshots, damageEvents = [] }: DamageTimelineP
     }> = []
 
     // Process snapshots into action blocks
-    let currentBlock: (typeof blocks)[0] | null = null
+    // Each snapshot creates its own block to show individual action uses
     snapshots.forEach(snap => {
       const rawOwner = snap.character || 'Global'
       // Map to "Global" if not a recognized character
       const owner = characterOwners.has(rawOwner) ? rawOwner : 'Global'
       const attribution = snap.action || 'Unknown Action'
 
-      // Group consecutive snapshots with same owner AND attribution
-      if (!currentBlock || currentBlock.attribution !== attribution || currentBlock.owner !== owner) {
-        if (currentBlock) blocks.push(currentBlock)
-        currentBlock = {
+      blocks.push({
+        owner,
+        attribution,
+        startTime: snap.fromTime,
+        endTime: snap.toTime,
+        snapshots: [snap],
+      })
+    })
+
+    // Process damage events - extract character name from dealer and group appropriately
+    damageEvents.forEach(e => {
+      const characterName = extractCharacterName(e.dealer)
+      const owner = characterOwners.has(characterName) ? characterName : 'Global'
+      const attribution = e.actionName || e.dealer
+
+      // Check if we can merge with an existing block
+      const existingBlock = blocks.find(b => b.owner === owner && b.attribution === attribution && Math.abs(b.endTime - e.timeStamp) < 0.1)
+
+      if (existingBlock) {
+        // Extend the block to include this event
+        existingBlock.endTime = Math.max(existingBlock.endTime, e.timeStamp)
+      } else {
+        // Create a new block for this event
+        blocks.push({
           owner,
           attribution,
-          startTime: snap.fromTime,
-          endTime: snap.toTime,
-          snapshots: [snap],
-        }
-      } else {
-        currentBlock.endTime = snap.toTime
-        currentBlock.snapshots.push(snap)
+          startTime: e.timeStamp,
+          endTime: e.timeStamp,
+          snapshots: [],
+        })
       }
     })
-    if (currentBlock) blocks.push(currentBlock)
 
-    // Process damage events from non-character sources (negative statuses, etc.) into Global blocks
-    const globalDamageEvents = damageEvents.filter(e => !characterOwners.has(e.dealer))
-    if (globalDamageEvents.length > 0) {
-      // Group events by attribution (actionName) and create blocks
-      const eventsByAttribution = new Map<string, DamageEvent[]>()
-      globalDamageEvents.forEach(e => {
-        const key = e.actionName || e.dealer
-        if (!eventsByAttribution.has(key)) {
-          eventsByAttribution.set(key, [])
+    // Track negative status duration blocks
+    // Create blocks showing when each negative status is active (application to expiry)
+    const negativeStatusTracking = new Map<string, { startTime: number; lastSeenTime: number; wasActive: boolean }>()
+
+    snapshots.forEach(snap => {
+      const currentTime = snap.toTime
+
+      // Check all negative statuses in this snapshot
+      for (const [statusName, stacks] of Object.entries(snap.negativeStatuses || {})) {
+        if (stacks > 0) {
+          const timeLeft = snap.negativeStatusesTimeLeft?.[statusName] || 0
+          const trackingKey = statusName
+
+          if (!negativeStatusTracking.has(trackingKey)) {
+            // New negative status application - start a new duration block
+            negativeStatusTracking.set(trackingKey, {
+              startTime: currentTime,
+              lastSeenTime: currentTime,
+              wasActive: true,
+            })
+          } else {
+            // Status still active - update last seen time
+            const tracking = negativeStatusTracking.get(trackingKey)!
+
+            // If status was previously inactive, this is a new application - reset start time
+            if (!tracking.wasActive) {
+              tracking.startTime = currentTime
+            }
+
+            tracking.lastSeenTime = currentTime
+            tracking.wasActive = true
+          }
+        } else {
+          // Status has 0 stacks - check if it was previously active
+          const trackingKey = statusName
+          const tracking = negativeStatusTracking.get(trackingKey)
+
+          if (tracking && tracking.wasActive) {
+            // Status just ended - create a duration block
+            blocks.push({
+              owner: 'Global',
+              attribution: `${statusName} (Active)`,
+              startTime: tracking.startTime,
+              endTime: tracking.lastSeenTime,
+              snapshots: [],
+            })
+
+            // Mark as inactive so we can detect new applications
+            tracking.wasActive = false
+          }
         }
-        eventsByAttribution.get(key)!.push(e)
-      })
+      }
+    })
 
-      // Create blocks for each attribution group
-      eventsByAttribution.forEach((events, attribution) => {
-        const times = events.map(e => e.timeStamp).sort((a, b) => a - b)
-        const startTime = times[0]
-        const endTime = times[times.length - 1]
-
+    // Handle any negative statuses that are still active at the end
+    for (const [statusName, tracking] of negativeStatusTracking.entries()) {
+      if (tracking.wasActive) {
         blocks.push({
           owner: 'Global',
-          attribution,
-          startTime,
-          endTime,
-          snapshots: [], // No snapshots for pure damage events
+          attribution: `${statusName} (Active)`,
+          startTime: tracking.startTime,
+          endTime: tracking.lastSeenTime,
+          snapshots: [],
         })
-      })
+      }
     }
 
     // Placeholder values - will be calculated from actual data points
@@ -313,7 +380,7 @@ export function DamageTimeline({ snapshots, damageEvents = [] }: DamageTimelineP
         <div className="timeline-header-left">
           <div className="timeline-title">Combat Timeline</div>
           <div className="timeline-subtitle">
-            {snapshots.length} snapshots · {maxTime.toFixed(1)}s
+            {snapshots.length} {snapshots.length === 1 ? 'SEQUENCE' : 'SEQUENCES'} · {maxTime.toFixed(1)}s DURATION
           </div>
         </div>
 
@@ -341,7 +408,7 @@ export function DamageTimeline({ snapshots, damageEvents = [] }: DamageTimelineP
           )}
         </div>
 
-        <div className="timeline-stat-label">{viewMode === 'chart' ? (mode === 'dps' ? 'Peak DPS' : 'Total Damage') : `${owners.length} Owners`}</div>
+        <div className="timeline-stat-label">{viewMode === 'chart' ? (mode === 'dps' ? 'PEAK DPS' : 'TOTAL OUTPUT') : `DETECTED ${owners.length} ${owners.length === 1 ? 'SOURCE' : 'SOURCES'}`}</div>
       </div>
 
       {/* Main Visualization Area */}
