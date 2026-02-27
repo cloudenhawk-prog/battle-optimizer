@@ -1,6 +1,7 @@
 import type { Action } from '../types/action'
 import { aeroErosionExplosion } from './sideEffects'
 import { stacksOfCap } from '../utils/conditions/damageModifierConditions'
+import { always } from '../utils/conditions/damageModifierConditions'
 
 // ========== Mage Actions =====================================================================================================
 
@@ -396,7 +397,19 @@ export const cartethyiaTransform: Action = {
   ],
   energyCost: [{ energyType: 'energy', amount: 125 }],
   statusModifications: [],
-  damageModifiers: [],
+  damageModifiers: [
+    { // Basic 5 Fleurdelys, Mid-air 2, Enhanced Heavy, Resonance 2 apply 99 stacks of aero erosion
+      source: 'Cartethyia',
+      displayName: 'Mandate',
+      type: 'buff',
+      ownerCharacter: 'Cartethyia',
+      characterStats: { aeroErosionAmplifyDMG: 0.50 }, // Should lower dmg intervals between Aero Erosion by 50 %
+      condition: always(),
+      targetStrategy: 'all',
+      durationStrategy: { type: 'limited', timeDuration: 12 },
+      stackingStrategy: { maxStacks: 1, resetTimerOnApplication: true, stacksRemovedEachTime: 1 }
+    }
+  ],
   sideEffects: [],
 }
 
