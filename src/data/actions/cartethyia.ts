@@ -4,7 +4,7 @@ import { aeroErosionExplosion } from '../sideEffects'
 
 export const cartethyia_BA_1_4: Action = {
   name: 'Basic Attack 1-4',
-  displayName:'Basic Attack 1-4', 
+  displayName: 'Basic Attack 1-4',
   castTime: 3.2,
   multiplier: 1.5 * (4.78 + (2 * 3.94 + 5.25) + (4 * 4.28) + (3 * 2.52 + 7.54)) / 100, // CHECK SEQUENCE
   scaling: 'HP',
@@ -29,7 +29,7 @@ export const cartethyia_BA_1_4: Action = {
 
 export const cartethyia_BA_2_4: Action = {
   name: 'Basic Attack 2-4',
-  displayName:'Basic Attack 2-4', 
+  displayName: 'Basic Attack 2-4',
   castTime: 2.48,
   multiplier: 1.5 * ((2 * 3.94 + 5.25) + (4 * 4.28) + (3 * 2.52 + 7.54)) / 100, // CHECK SEQUENCE
   scaling: 'HP',
@@ -205,7 +205,7 @@ export const cartethyia_transform: Action = {
       ownerCharacter: 'Cartethyia',
       characterStats: { aeroErosionAmplifyDMG: 0.5 },
       condition: always(),
-      targetStrategy: 'self', // TODO : Update here if it works when swapped away - Do we need a type for things that also affect negative statuses? 
+      targetStrategy: 'self', // TODO : Update here if it works when swapped away - Do we need a type for things that also affect negative statuses?
       durationStrategy: { type: 'limited', timeDuration: 12 },
       stackingStrategy: { maxStacks: 1, resetTimerOnApplication: true, stacksRemovedEachTime: 1 },
     },

@@ -1,5 +1,5 @@
-import type { Action } from "../../types/action"
-import { always } from "../../utils/conditions/damageModifierConditions"
+import type { Action } from '../../types/action'
+import { always } from '../../utils/conditions/damageModifierConditions'
 
 export const roverAero_skill_1: Action = { // Create Animation-cancel Version
   name: 'Resonance Skill 1',
