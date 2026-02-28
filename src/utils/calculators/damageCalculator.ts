@@ -82,7 +82,7 @@ export function calculateDamage({ action, name, stats, damageModifiers, modifier
   const criticalStrike = normalStrike * finalStats.critDamage
   const average = normalStrike * critMultiplier
 
-  const contributions = skipContributions || !ctx ? {} : calculateAllContrubutions(action, name, stats, damageModifiers, enemy, snapshotId, timeStamp, normalStrike, criticalStrike, average, ctx)
+  const contributions = skipContributions || !damageModifiers.length ? {} : calculateAllContrubutions(action, name, stats, damageModifiers, enemy, snapshotId, timeStamp, normalStrike, criticalStrike, average, ctx)
 
   const damageEvent: DamageEvent = {
     snapshotId,
@@ -179,9 +179,12 @@ export function calculateBonusMultiplier(stats: CharacterStats, elements: Elemen
   }
 
   // Sum all status effect bonuses for applicable elements
+  // Status-specific bonuses only apply when NEGATIVE_STATUS is present in dmgTypes
   let statusBonuses = 0
-  for (const element of elements) {
-    statusBonuses += getStatusBonusDMG(stats, element)
+  if (dmgTypes.includes('NEGATIVE_STATUS')) {
+    for (const element of elements) {
+      statusBonuses += getStatusBonusDMG(stats, element)
+    }
   }
 
   // All bonuses are additive, then add 1 for the base multiplier
@@ -247,8 +250,11 @@ export function calculateTotalMultiplier(stats: CharacterStats, elements: Elemen
   }
 
   // Multiply all status effect total multipliers for applicable elements
-  for (const element of elements) {
-    result *= getStatusTotalMultiplierDMG(stats, element)
+  // Status-specific multipliers only apply when NEGATIVE_STATUS is present in dmgTypes
+  if (dmgTypes.includes('NEGATIVE_STATUS')) {
+    for (const element of elements) {
+      result *= getStatusTotalMultiplierDMG(stats, element)
+    }
   }
 
   return result
@@ -385,7 +391,7 @@ function convertLevelToDefense(level: number): number {
   return 8 * level + 792
 }
 
-export function calculateAllContrubutions(action: Action, name: string, stats: CharacterStats, damageModifiers: DamageModifier[], enemy: Enemy, snapshotId: number, timeStamp: number, normalStrike: number, criticalStrike: number, average: number, ctx: StepContext): Record<string, Contribution> {
+export function calculateAllContrubutions(action: Action, name: string, stats: CharacterStats, damageModifiers: DamageModifier[], enemy: Enemy, snapshotId: number, timeStamp: number, normalStrike: number, criticalStrike: number, average: number, ctx?: StepContext): Record<string, Contribution> {
   const results: Record<string, Contribution> = {}
 
   // For each modifier, recalculate damage without it
@@ -402,7 +408,7 @@ export function calculateAllContrubutions(action: Action, name: string, stats: C
       if (i === j) continue // Skip current modifier
 
       const otherMod = damageModifiers[j]
-      const conditionMultiplier = otherMod.condition ? otherMod.condition(ctx) : 1
+      const conditionMultiplier = otherMod.condition && ctx ? otherMod.condition(ctx) : 1
 
       if (otherMod.characterStats) {
         for (const [key, value] of Object.entries(otherMod.characterStats)) {
@@ -471,32 +477,71 @@ export function calculateAllContrubutions(action: Action, name: string, stats: C
 
 // ========== Negative Status Calculator =======================================================================================
 
-export function calculateDamageNegativeStatus(currStacks: number, element: ElementType, enemy: Enemy, negativeStatusName: string, characterStats: CharacterStats, dealer: string, snapshotId: number, timeStamp: number, actionName?: string): DamageEvent {
+/**
+ * Calculates negative status damage with proper modifier application.
+ *
+ * Unlike normal action damage which scales off character stats (ATK/HP/DEF),
+ * negative status damage uses FLAT values from a stack table. However, it still
+ * benefits from status-specific modifiers (bonus/amplify/totalMultiplier for the
+ * specific status type).
+ *
+ * Formula:
+ *   damage = baseDMG * resistanceMultipliers * statusModifierMultipliers
+ *
+ * Where:
+ *   - baseDMG = flat damage from stack table (e.g., 1654 for Aero Erosion stack 1)
+ *   - resistanceMultipliers = defense, resistance, elemental RES, damage reduction
+ *   - statusModifierMultipliers = (1 + statusBonus) * (1 + statusAmplify) * statusTotalMultiplier
+ *
+ * @param currStacks - Current stack count of the negative status
+ * @param element - Element type of the negative status
+ * @param enemy - Target enemy
+ * @param negativeStatusName - Name of the negative status
+ * @param baseStats - Base character stats (before modifiers) - used for level in defense calc
+ * @param modifierCharacterStats - Aggregated modifier stats from context
+ * @param modifierEnemyStats - Aggregated enemy modifier stats from context
+ * @param damageModifiers - Active damage modifiers from context (for contributions)
+ * @param dealer - Name of the damage dealer
+ * @param snapshotId - Current snapshot ID
+ * @param timeStamp - Time when damage occurs
+ * @param actionName - Optional action name override
+ * @param ctx - Optional step context (for contributions)
+ */
+export function calculateDamageNegativeStatus(currStacks: number, element: ElementType, enemy: Enemy, negativeStatusName: string, baseStats: CharacterStats, modifierCharacterStats: Partial<CharacterStats>, modifierEnemyStats: Partial<EnemyStats>, damageModifiers: DamageModifier[], dealer: string, snapshotId: number, timeStamp: number, actionName?: string, ctx?: StepContext): DamageEvent {
   const statusIdentifier = Object.entries(negativeStatuses).find(([, status]) => status.name === negativeStatusName)?.[0]
 
-  // Enemy Stats
-  const enemyStats = enemy.stats
-  const level = enemyStats.level
-  const resistance = enemyStats.resistance
-  const elementRES = enemyStats[`${element.toLowerCase()}RES` as keyof typeof enemyStats] as number
-  const damageReduction = enemyStats.damageReduction
-
-  // Damage Calculations
+  // Get base damage from stack table (this is a flat value, not a multiplier)
   const baseDMG = negativeStatuses[statusIdentifier].damage[currStacks]
 
-  const resistanceMultiplier = calculateResistanceMultiplierValue(0, resistance)
-  const defenseMultiplier = calculateDefenseMultiplier(level, level, 0)
-  const damageReductionMultiplier = 1 - damageReduction
+  // Merge base stats with modifiers to get final stats
+  const finalCharacterStats = mergeStats(baseStats, modifierCharacterStats)
+  const finalEnemyStats = mergeEnemyStats(enemy.stats, modifierEnemyStats)
+
+  // Calculate resistance multipliers
+  const level = finalCharacterStats.level
+  const enemyLevel = finalEnemyStats.level
+  const enemyResistance = finalEnemyStats.resistance
+  const enemyDamageReduction = finalEnemyStats.damageReduction
+  const elementRES = finalEnemyStats[`${element.toLowerCase()}RES` as keyof typeof finalEnemyStats] as number
+
+  const resistanceMultiplier = calculateResistanceMultiplierValue(0, enemyResistance)
+  const defenseMultiplier = calculateDefenseMultiplier(level, enemyLevel, 0)
+  const damageReductionMultiplier = 1 - enemyDamageReduction
   const elementalResMultiplier = 1 - elementRES
   const damageRES = resistanceMultiplier * defenseMultiplier * damageReductionMultiplier * elementalResMultiplier
 
-  // Apply negative status damage multipliers from character stats
-  const statusBonus = getStatusBonusDMG(characterStats, element)
-  const statusAmplify = getStatusAmplifyDMG(characterStats, element)
-  const statusTotalMultiplier = getStatusTotalMultiplierDMG(characterStats, element)
+  // Apply negative status damage multipliers from merged character stats
+  // These are only the status-specific modifiers (e.g., aeroErosionAmplifyDMG)
+  const statusBonus = getStatusBonusDMG(finalCharacterStats, element)
+  const statusAmplify = getStatusAmplifyDMG(finalCharacterStats, element)
+  const statusTotalMultiplier = getStatusTotalMultiplierDMG(finalCharacterStats, element)
   const statusMultiplier = (1 + statusBonus) * (1 + statusAmplify) * statusTotalMultiplier
 
+  // Final damage calculation
   const damage = baseDMG * damageRES * statusMultiplier
+
+  // Calculate contributions if requested
+  const contributions = !damageModifiers.length || !ctx ? {} : calculateNegativeStatusContributions(baseDMG, element, enemy, baseStats, damageModifiers, damage, ctx)
 
   const damageEvent: DamageEvent = {
     snapshotId,
@@ -509,9 +554,100 @@ export function calculateDamageNegativeStatus(currStacks: number, element: Eleme
     normalStrike: damage,
     criticalStrike: damage,
     average: damage,
-    contributions: {},
+    contributions,
     timeStamp,
   }
 
   return damageEvent
+}
+
+/**
+ * Calculates contributions for negative status damage.
+ * Similar to normal damage contributions but uses the flat damage formula.
+ */
+function calculateNegativeStatusContributions(baseDMG: number, element: ElementType, enemy: Enemy, baseStats: CharacterStats, damageModifiers: DamageModifier[], fullDamage: number, ctx: StepContext): Record<string, Contribution> {
+  const results: Record<string, Contribution> = {}
+
+  // For each modifier, recalculate damage without it
+  for (let i = 0; i < damageModifiers.length; i++) {
+    const mod = damageModifiers[i]
+    const keyBase = mod.source || `modifier_${i}`
+    const uniqueKey = keyBase in results ? `${keyBase}_${i}` : keyBase
+
+    // Rebuild modifiers without this one
+    const charModsWithout: Partial<CharacterStats> = {}
+    const enemyModsWithout: Partial<EnemyStats> = {}
+
+    for (let j = 0; j < damageModifiers.length; j++) {
+      if (i === j) continue // Skip current modifier
+
+      const otherMod = damageModifiers[j]
+      const conditionMultiplier = otherMod.condition && ctx ? otherMod.condition(ctx) : 1
+
+      if (otherMod.characterStats) {
+        for (const [key, value] of Object.entries(otherMod.characterStats)) {
+          const statKey = key as keyof CharacterStats
+          const currentVal = charModsWithout[statKey] as number | undefined
+          const modValue = (value as number) * conditionMultiplier
+          charModsWithout[statKey] = aggregateStat(currentVal, modValue, key) as any
+        }
+      }
+      if (otherMod.enemyStats) {
+        for (const [key, value] of Object.entries(otherMod.enemyStats)) {
+          const statKey = key as keyof EnemyStats
+          const currentVal = enemyModsWithout[statKey] as number | undefined
+          const modValue = (value as number) * conditionMultiplier
+          enemyModsWithout[statKey] = aggregateStat(currentVal, modValue, key) as any
+        }
+      }
+    }
+
+    // Recalculate damage without this modifier
+    const statsWithout = mergeStats(baseStats, charModsWithout)
+    const enemyStatsWithout = mergeEnemyStats(enemy.stats, enemyModsWithout)
+
+    // Resistance multipliers
+    const level = statsWithout.level
+    const enemyLevel = enemyStatsWithout.level
+    const enemyResistance = enemyStatsWithout.resistance
+    const enemyDamageReduction = enemyStatsWithout.damageReduction
+    const elementRES = enemyStatsWithout[`${element.toLowerCase()}RES` as keyof typeof enemyStatsWithout] as number
+
+    const resistanceMultiplier = calculateResistanceMultiplierValue(0, enemyResistance)
+    const defenseMultiplier = calculateDefenseMultiplier(level, enemyLevel, 0)
+    const damageReductionMultiplier = 1 - enemyDamageReduction
+    const elementalResMultiplier = 1 - elementRES
+    const damageRES = resistanceMultiplier * defenseMultiplier * damageReductionMultiplier * elementalResMultiplier
+
+    // Status multipliers
+    const statusBonus = getStatusBonusDMG(statsWithout, element)
+    const statusAmplify = getStatusAmplifyDMG(statsWithout, element)
+    const statusTotalMultiplier = getStatusTotalMultiplierDMG(statsWithout, element)
+    const statusMultiplier = (1 + statusBonus) * (1 + statusAmplify) * statusTotalMultiplier
+
+    const damageWithout = baseDMG * damageRES * statusMultiplier
+
+    // Calculate contribution
+    const contrib = fullDamage - damageWithout
+
+    const safePercent = (withVal: number, withoutVal: number) => {
+      if (!withoutVal || withoutVal === 0) return 0
+      return (withVal / withoutVal - 1) * 100
+    }
+
+    const pct = safePercent(fullDamage, damageWithout)
+
+    results[uniqueKey] = {
+      source: mod.source,
+      displayName: mod.displayName,
+      crit_damage_contributed: Math.max(0, contrib),
+      crit_percent_damage_contributed: pct,
+      normal_damage_contributed: Math.max(0, contrib),
+      normal_percent_damage_contributed: pct,
+      average_damage_contributed: Math.max(0, contrib),
+      average_percent_damage_contributed: pct,
+    }
+  }
+
+  return results
 }

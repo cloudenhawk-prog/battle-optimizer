@@ -4,6 +4,10 @@ import { calculateDamageNegativeStatus } from './damageCalculator'
 
 // ========== Aero Erosion Side Effect =========================================================================================
 
+/**
+ * Calculates damage from the Aero Erosion explosion side effect.
+ * Uses the unified damage pipeline to ensure proper modifier application.
+ */
 export function calculateAeroErosionSideEffectDamage(context: StepContext, sideEffectName: string, timeStamp: number): DamageEvent {
   const aeroErosionStacks = context.prev.negativeStatuses['Aero Erosion'] || 0
 
@@ -24,5 +28,5 @@ export function calculateAeroErosionSideEffectDamage(context: StepContext, sideE
     }
   }
 
-  return calculateDamageNegativeStatus(aeroErosionStacks, 'AERO', context.enemy, 'Aero Erosion', context.character.stats, `${context.character.name}: ${sideEffectName}`, context.snapshotId, timeStamp, sideEffectName)
+  return calculateDamageNegativeStatus(aeroErosionStacks, 'AERO', context.enemy, 'Aero Erosion', context.character.stats, context.aggregatedCharacterModifiers, context.aggregatedEnemyModifiers, context.damageModifiers, `${context.character.name}: ${sideEffectName}`, context.snapshotId, timeStamp, sideEffectName, context)
 }

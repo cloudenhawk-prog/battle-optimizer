@@ -3,7 +3,9 @@ import type { Snapshot } from '../../types/snapshot'
 import type { Action } from '../../types/action'
 import type { Enemy } from '../../types/enemy'
 import type { NegativeStatusInAction } from '../../types/negativeStatus'
-import type { CharacterStats } from '../../types/stats'
+import type { CharacterStats, EnemyStats } from '../../types/stats'
+import type { DamageModifier } from '../../types/modifiers'
+import type { StepContext } from '../../types/stepContext'
 import { calculateDamageNegativeStatus } from '../../utils/calculators/damageCalculator'
 
 // ========== Negative Status Helpers ==========================================================================================
@@ -19,7 +21,11 @@ export function processNegativeStatusStacks(
   _stacksPrev: Record<string, number>,
   enemy: Enemy,
   characterStats: CharacterStats,
+  modifierCharacterStats: Partial<CharacterStats>,
+  modifierEnemyStats: Partial<EnemyStats>,
+  damageModifiers: DamageModifier[],
   snapshotId: number,
+  ctx?: StepContext,
 ): {
   damageEvents: Record<string, DamageEvent[]>
   stacksCurr: Record<string, number>
@@ -53,7 +59,7 @@ export function processNegativeStatusStacks(
           damageEvents[name] = []
         }
 
-        damageEvents[name].push(calculateDamageNegativeStatus(currStacks, element, enemy, name, characterStats, name, snapshotId, lastDamageTime)) // DoT: dealer is the status itself
+        damageEvents[name].push(calculateDamageNegativeStatus(currStacks, element, enemy, name, characterStats, modifierCharacterStats, modifierEnemyStats, damageModifiers, name, snapshotId, lastDamageTime, undefined, ctx)) // DoT: dealer is the status itself
       }
 
       if (timeLeft <= 0) {
@@ -86,7 +92,7 @@ export function processNegativeStatusStacks(
           damageEvents[name] = []
         }
 
-        damageEvents[name].push(calculateDamageNegativeStatus(currStacks, element, enemy, name, characterStats, name, snapshotId, lastDamageTime))
+        damageEvents[name].push(calculateDamageNegativeStatus(currStacks, element, enemy, name, characterStats, modifierCharacterStats, modifierEnemyStats, damageModifiers, name, snapshotId, lastDamageTime, undefined, ctx))
 
         if (timeLeft <= 0) {
           currStacks -= stackConsume

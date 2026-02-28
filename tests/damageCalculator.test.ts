@@ -403,15 +403,15 @@ describe('damageCalculator', () => {
       expect(result).toBe(1.2)
     })
 
-    it('should apply status bonus DMG', () => {
+    it('should NOT apply status bonus DMG without NEGATIVE_STATUS dmgType', () => {
       const stats = createMockCharacterStats({
         aeroErosionBonusDMG: 0.15,
       })
 
       const result = calculateBonusMultiplier(stats, ['AERO'], ['BASIC'])
 
-      // Formula: 1 + 0 + 0 + 0 + 0.15 = 1.15
-      expect(result).toBe(1.15)
+      // Formula: 1 + 0 + 0 + 0 + 0 = 1.0 (status bonus not applied without NEGATIVE_STATUS)
+      expect(result).toBe(1.0)
     })
 
     it('should stack all bonus types additively', () => {
@@ -424,8 +424,8 @@ describe('damageCalculator', () => {
 
       const result = calculateBonusMultiplier(stats, ['SPECTRO'], ['LIBERATION'])
 
-      // Formula: 1 + 0.10 + 0.25 + 0.15 + 0.20 = 1.70
-      expect(result).toBeCloseTo(1.7, 5)
+      // Formula: 1 + 0.10 + 0.25 + 0.15 + 0 = 1.50 (status bonus not applied without NEGATIVE_STATUS)
+      expect(result).toBeCloseTo(1.5, 5)
     })
 
     it('should only apply relevant element bonus', () => {
@@ -546,8 +546,8 @@ describe('damageCalculator', () => {
 
       const result = calculateAmplifyMultiplier(stats, ['ELECTRO'], ['HEAVY'])
 
-      // Formula: 1 + 0 + 0 + 0 + 0.25 = 1.25
-      expect(result).toBe(1.25)
+      // Formula: 1 + 0 + 0 + 0 + 0 = 1.0 (status amplify not applied without NEGATIVE_STATUS)
+      expect(result).toBe(1.0)
     })
 
     it('should stack all amplify types additively', () => {
@@ -560,8 +560,8 @@ describe('damageCalculator', () => {
 
       const result = calculateAmplifyMultiplier(stats, ['FUSION'], ['COORDINATED'])
 
-      // Formula: 1 + 0.08 + 0.12 + 0.20 + 0.15 = 1.55
-      expect(result).toBeCloseTo(1.55, 5)
+      // Formula: 1 + 0.08 + 0.12 + 0.20 + 0 = 1.40 (status amplify not applied without NEGATIVE_STATUS)
+      expect(result).toBeCloseTo(1.4, 5)
     })
 
     it('should only apply relevant element amplify', () => {
@@ -642,10 +642,10 @@ describe('damageCalculator', () => {
 
       const result = calculateAmplifyMultiplier(stats, ['ELECTRO'], ['SKILL'])
 
-      // Formula: 1 + 0.10 + 0.15 + 0 + 0.25 = 1.50
-      // Status amplifier is still applied because it's tied to the element, not the damage type
-      // This demonstrates that status effects are ALWAYS considered when the element is present
-      expect(result).toBeCloseTo(1.5, 5)
+      // Formula: 1 + 0.10 + 0.15 + 0 + 0 = 1.25
+      // Status amplifier is NOT applied without NEGATIVE_STATUS dmgType
+      // This is the CORRECT behavior - status modifiers only apply to status damage
+      expect(result).toBeCloseTo(1.25, 5)
     })
   })
 
@@ -700,8 +700,8 @@ describe('damageCalculator', () => {
 
       const result = calculateTotalMultiplier(stats, ['FUSION'], ['INTRO'])
 
-      // Formula: 1 * 1 * 1 * 1.30 = 1.30
-      expect(result).toBe(1.3)
+      // Formula: 1 * 1 * 1 * 1 = 1.0 (status multiplier not applied without NEGATIVE_STATUS)
+      expect(result).toBe(1.0)
     })
 
     it('should multiply all total multipliers together', () => {
@@ -714,8 +714,8 @@ describe('damageCalculator', () => {
 
       const result = calculateTotalMultiplier(stats, ['AERO'], ['OUTRO'])
 
-      // Formula: 1.10 * 1.15 * 1.20 * 1.25 = 1.89750
-      expect(result).toBeCloseTo(1.8975, 5)
+      // Formula: 1.10 * 1.15 * 1.20 * 1 = 1.518 (status multiplier not applied without NEGATIVE_STATUS)
+      expect(result).toBeCloseTo(1.518, 5)
     })
 
     it('should only apply relevant element total multiplier', () => {

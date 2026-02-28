@@ -408,19 +408,37 @@ function DamageSourcesSection({ damageEvents, totalDamage, view, onViewChange }:
 }
 
 function ContributionsSection({ damageEvents, mode }: { damageEvents: DamageEvent[]; mode: 'average' | 'normal' | 'crit' }) {
-  // Aggregate all contributions from all damage events
-  const allContributions: Record<string, Contribution> = {}
+  const [contributionScope, setContributionScope] = useState<'action' | 'all'>('action')
 
-  damageEvents.forEach(event => {
+  // Filter events based on scope
+  const scopedEvents = contributionScope === 'action' 
+    ? damageEvents.filter(event => !event.dmgTypes.includes('NEGATIVE_STATUS'))
+    : damageEvents
+
+  // Calculate total damage for the selected scope
+  const totalDamageInScope = scopedEvents.reduce((sum, event) => {
+    const eventDamage = mode === 'average' ? event.average : mode === 'normal' ? event.normalStrike : event.criticalStrike
+    return sum + eventDamage
+  }, 0)
+
+  // Aggregate flat damage contributions from scoped events
+  const allContributions: Record<string, { source: string; displayName?: string; average: number; normal: number; crit: number }> = {}
+
+  scopedEvents.forEach(event => {
     Object.entries(event.contributions).forEach(([source, contrib]) => {
       if (!allContributions[source]) {
-        allContributions[source] = { ...contrib }
+        allContributions[source] = {
+          source: contrib.source,
+          displayName: contrib.displayName,
+          average: contrib.average_damage_contributed,
+          normal: contrib.normal_damage_contributed,
+          crit: contrib.crit_damage_contributed,
+        }
       } else {
-        // Sum up contributions from the same source
-        allContributions[source].average_damage_contributed += contrib.average_damage_contributed
-        allContributions[source].normal_damage_contributed += contrib.normal_damage_contributed
-        allContributions[source].crit_damage_contributed += contrib.crit_damage_contributed
-        // Recalculate percentages later if needed
+        // Sum up flat damage contributions
+        allContributions[source].average += contrib.average_damage_contributed
+        allContributions[source].normal += contrib.normal_damage_contributed
+        allContributions[source].crit += contrib.crit_damage_contributed
       }
     })
   })
@@ -429,14 +447,14 @@ function ContributionsSection({ damageEvents, mode }: { damageEvents: DamageEven
 
   // Sort by contribution amount (descending) based on current mode
   contributionsList.sort((a, b) => {
-    const aValue = mode === 'average' ? a.average_damage_contributed : mode === 'normal' ? a.normal_damage_contributed : a.crit_damage_contributed
-    const bValue = mode === 'average' ? b.average_damage_contributed : mode === 'normal' ? b.normal_damage_contributed : b.crit_damage_contributed
+    const aValue = mode === 'average' ? a.average : mode === 'normal' ? a.normal : a.crit
+    const bValue = mode === 'average' ? b.average : mode === 'normal' ? b.normal : b.crit
     return bValue - aValue
   })
 
   // Find max value for scaling
   const maxValue = contributionsList.reduce((max, contrib) => {
-    const value = mode === 'average' ? contrib.average_damage_contributed : mode === 'normal' ? contrib.normal_damage_contributed : contrib.crit_damage_contributed
+    const value = mode === 'average' ? contrib.average : mode === 'normal' ? contrib.normal : contrib.crit
     return Math.max(max, value)
   }, 0)
 
@@ -456,8 +474,15 @@ function ContributionsSection({ damageEvents, mode }: { damageEvents: DamageEven
           ) : (
             <div className="pillarGraphContainer">
               {contributionsList.map((contrib, index) => {
-                const damageValue = mode === 'average' ? contrib.average_damage_contributed : mode === 'normal' ? contrib.normal_damage_contributed : contrib.crit_damage_contributed
-                const percentValue = mode === 'average' ? contrib.average_percent_damage_contributed : mode === 'normal' ? contrib.normal_percent_damage_contributed : contrib.crit_percent_damage_contributed
+                const damageValue = mode === 'average' ? contrib.average : mode === 'normal' ? contrib.normal : contrib.crit
+                
+                // Calculate percentage as damage increase: (with / without) - 1
+                // Total damage WITH modifier = totalDamageInScope
+                // Total damage WITHOUT modifier = totalDamageInScope - damageValue
+                const damageWithout = totalDamageInScope - damageValue
+                const percentValue = damageWithout > 0 
+                  ? ((totalDamageInScope / damageWithout) - 1) * 100 
+                  : 0
 
                 // Scale height with a minimum of 15% for visibility
                 const rawHeightPercent = maxValue > 0 ? (damageValue / maxValue) * 100 : 0
@@ -482,6 +507,16 @@ function ContributionsSection({ damageEvents, mode }: { damageEvents: DamageEven
           )}
         </div>
         <div className="sectionBottomAccent magenta" />
+      </div>
+      <div className="contributionsHeader">
+        <div className="contributionScopeToggle">
+          <button className={`scopeButton ${contributionScope === 'action' ? 'active' : ''}`} onClick={() => setContributionScope('action')} title="Show contributions for action damage only">
+            Action
+          </button>
+          <button className={`scopeButton ${contributionScope === 'all' ? 'active' : ''}`} onClick={() => setContributionScope('all')} title="Show contributions for all damage (action + status effects + etc)">
+            All
+          </button>
+        </div>
       </div>
     </div>
   )

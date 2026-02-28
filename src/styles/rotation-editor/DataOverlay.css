@@ -1140,3 +1140,51 @@
     width: 300px;
   }
 }
+
+/* Contributions Header with Scope Toggle */
+.contributionsHeader {
+  display: flex;
+  justify-content: flex-start;
+  margin-top: 12px;
+}
+
+.contributionScopeToggle {
+  display: flex;
+  gap: 4px;
+  padding: 3px;
+  background: rgba(255, 255, 255, 0.03);
+  border-radius: 4px;
+  border: 1px solid var(--table-border);
+}
+
+.scopeButton {
+  padding: 4px 12px;
+  font-family:
+    system-ui,
+    -apple-system,
+    sans-serif;
+  font-size: 10px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  background: transparent;
+  border: none;
+  color: var(--table-text-subtle);
+  cursor: pointer;
+  border-radius: 3px;
+  transition: all 0.2s ease;
+  white-space: nowrap;
+}
+
+.scopeButton:hover {
+  background: rgba(255, 100, 255, 0.1);
+  color: var(--table-text);
+}
+
+.scopeButton.active {
+  background: rgba(255, 100, 255, 0.2);
+  color: rgba(255, 150, 255, 0.95);
+  box-shadow:
+    0 0 6px rgba(255, 100, 255, 0.2),
+    inset 0 0 6px rgba(255, 100, 255, 0.1);
+}
