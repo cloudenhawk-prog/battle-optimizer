@@ -2,8 +2,15 @@ TODO:
 
 Bug: Modifiers with type 'self' also affect side effects and negative statuses (like Mandate). There is no real logic to determine which other things aside from the main action which should be affected by a modifier. Right now it assumes that if the filter resolves to true, it affects everything in this snapshot.
 Possible solutions:
-Add a scope to target strategy? action, actionSideEffects, otherSideEffects (coordinated attacks etc?), negative statuses?
+Add a scope to target strategyS? action, actionSideEffects, otherSideEffects (coordinated attacks etc?), negative statuses?
 Any other ideas?
+
+Question: Should test if mandate works while fleurdelys is swapped off-field:
+Does it affect negative status damage?
+Does it affect other character's dealing
+aero erosion dmg?
+Mandate should only show up in the timeline if 1. the buff is active and 2. the buff affects the active character?
+OR it should show up as long as it's technically active (in which case cartethyia's permanent passive modifiers should always be present as long as condition is true)
 
 Need a way to remove buffs - like FLeurdelys Mandate and sword buffs (they are timed but also disappear when she used liberation - i.e. swaps back)
 

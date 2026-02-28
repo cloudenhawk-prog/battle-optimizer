@@ -30,7 +30,7 @@ export default function RotationEditorPage() {
 
       <RotationEditor charactersInBattle={characters} enemy={enemies[0]} tableConfig={tableConfig} columnVisibility={columnVisibility} setColumnVisibility={setColumnVisibility} onSnapshotsChange={handleSnapshotsChange} />
 
-      <DamageTimeline snapshots={snapshots} damageEvents={damageEvents} />
+      <DamageTimeline snapshots={snapshots} damageEvents={damageEvents} selectedCharacters={characters} />
     </div>
   )
 }

@@ -2,6 +2,7 @@ import { useState, useMemo, useRef, useLayoutEffect } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
 import type { Snapshot } from '../../types/snapshot'
 import type { DamageEvent } from '../../types/events'
+import type { Character } from '../../types/character'
 import '../../styles/rotation-editor/DamageTimeline.css'
 
 /**
@@ -106,12 +107,13 @@ function formatNumber(n: number): string {
   return Math.round(n).toString()
 }
 
-interface DamageTimelineProps {
+export interface DamageTimelineProps {
   snapshots: Snapshot[]
   damageEvents?: DamageEvent[]
+  selectedCharacters: Character[] // Added to access damage modifier metadata
 }
 
-export function DamageTimeline({ snapshots, damageEvents = [] }: DamageTimelineProps) {
+export function DamageTimeline({ snapshots, damageEvents = [], selectedCharacters }: DamageTimelineProps) {
   const [mode, setMode] = useState<ChartMode>('cumulative')
   const [viewMode, setViewMode] = useState<ViewMode>('timeline')
   const [tooltipInfo, setTooltipInfo] = useState<{ x: number; y: number; data: any } | null>(null)
@@ -322,40 +324,196 @@ export function DamageTimeline({ snapshots, damageEvents = [] }: DamageTimelineP
       }
     }
 
-    // Track buff/debuff duration blocks similar to negative statuses
-    const buffDebuffTracking = new Map<string, { startTime: number; lastSeenTime: number; wasActive: boolean; type: 'buff' | 'debuff' }>()
+    // Track buff/debuff duration blocks with intelligent filtering based on targeting strategy
+    //
+    // DISPLAY RULES:
+    // 1. Self-targeted permanent buffs: Only show during owner character's active time
+    // 2. Time-based buffs (any target): Show for full duration
+    // 3. All-targeted buffs: Show for full duration
+    // 4. Debuffs: Show for full duration (affect enemy, independent of character swaps)
+    //
+    const buffDebuffTracking = new Map<
+      string,
+      {
+        startTime: number
+        lastSeenTime: number
+        wasActive: boolean
+        type: 'buff' | 'debuff'
+        ownerCharacter?: string
+        targetStrategy?: string
+        durationStrategy?: string
+        activeCharacter?: string // Track which character was active when buff appeared
+      }
+    >()
     const buffDebuffBlocksList: Array<{
       name: string
       type: 'buff' | 'debuff'
       startTime: number
       endTime: number
+      ownerCharacter?: string
+      targetStrategy?: string
+      durationStrategy?: string
     }> = []
+
+    // Build a lookup map for buff/debuff metadata from damage modifiers
+    const buffMetadata = new Map<string, { ownerCharacter?: string; targetStrategy?: string; durationStrategy?: string }>()
+    selectedCharacters?.forEach(char => {
+      char.damageModifiers?.forEach(mod => {
+        if (mod.displayName) {
+          buffMetadata.set(mod.displayName, {
+            ownerCharacter: (mod as any).ownerCharacter,
+            targetStrategy: (mod as any).targetStrategy,
+            durationStrategy: (mod as any).durationStrategy?.type,
+          })
+        }
+      })
+    })
+
+    // Helper function to normalize buff names (remove spaces for comparison)
+    const normalizeName = (name: string) => name.replace(/\s+/g, '')
+
+    // Create a mapping from normalized names to original metadata names
+    const normalizedToOriginal = new Map<string, string>()
+    buffMetadata.forEach((meta, name) => {
+      normalizedToOriginal.set(normalizeName(name), name)
+    })
+
+    // 1️⃣ Identify permanent self buffs - these are contextual presence, not duration-based
+    const permanentSelfBuffs = new Set<string>()
+    buffMetadata.forEach((meta, name) => {
+      if (meta.targetStrategy === 'self' && meta.durationStrategy === 'permanent') {
+        console.log('Found permanent self buff:', name, meta)
+        permanentSelfBuffs.add(name)
+        // Also add the normalized version
+        permanentSelfBuffs.add(normalizeName(name))
+      }
+    })
+    console.log('Permanent self buffs:', Array.from(permanentSelfBuffs))
+
+    // 2️⃣ Build active character windows for deriving permanent self buff blocks
+    const activeWindows: Array<{
+      character: string
+      start: number
+      end: number
+    }> = []
+
+    if (snapshots.length > 0) {
+      let currentChar = snapshots[0]?.character
+      let windowStart = snapshots[0]?.fromTime ?? 0
+
+      snapshots.forEach((snap, i) => {
+        if (snap.character !== currentChar) {
+          // Character changed - close the previous window and start a new one
+          const windowEnd = snapshots[i - 1].toTime
+
+          activeWindows.push({
+            character: currentChar!,
+            start: windowStart,
+            end: windowEnd,
+          })
+
+          // New window starts where the previous one ended to avoid gaps/overlaps
+          currentChar = snap.character
+          windowStart = windowEnd
+        }
+      })
+
+      // Close the final window
+      if (currentChar) {
+        activeWindows.push({
+          character: currentChar,
+          start: windowStart,
+          end: snapshots[snapshots.length - 1].toTime,
+        })
+      }
+    }
+
+    // Diagnostic logging - remove after verification
+    console.log('Active Windows:', activeWindows)
+
+    // 3️⃣ Generate permanent self buff blocks directly from active windows
+    // These buffs exist whenever their owner is active - no duration tracking needed
+    activeWindows.forEach(window => {
+      console.log('Processing window:', window)
+
+      // Check all buffs that exist in any snapshot to find permanent self buffs for this character
+      const buffNamesInRotation = new Set<string>()
+      snapshots.forEach(snap => {
+        Object.keys(snap.buffs || {}).forEach(name => buffNamesInRotation.add(name))
+      })
+      console.log('All buff names in rotation:', Array.from(buffNamesInRotation))
+
+      buffNamesInRotation.forEach(buffName => {
+        if (!permanentSelfBuffs.has(buffName)) {
+          console.log(`  ${buffName} - not a permanent self buff`)
+          return
+        }
+
+        // Get metadata using normalized name lookup
+        const originalName = normalizedToOriginal.get(normalizeName(buffName)) || buffName
+        const meta = buffMetadata.get(originalName)
+        console.log(`  ${buffName} - IS permanent self buff, meta:`, meta, 'window character:', window.character)
+
+        if (meta?.ownerCharacter !== window.character) {
+          console.log(`    -> Skipping: owner ${meta?.ownerCharacter} !== window character ${window.character}`)
+          return
+        }
+
+        const block = {
+          name: buffName,
+          type: 'buff' as const,
+          startTime: window.start,
+          endTime: window.end,
+          ownerCharacter: window.character,
+          targetStrategy: meta.targetStrategy,
+          durationStrategy: meta.durationStrategy,
+        }
+
+        console.log('    -> Creating permanent buff block:', block)
+        buffDebuffBlocksList.push(block)
+      })
+    })
 
     snapshots.forEach(snap => {
       const currentTime = snap.toTime
+      const activeCharacter = snap.character
 
       // Process buffs
       for (const [buffName, stacks] of Object.entries(snap.buffs || {})) {
-        if (stacks > 0) {
-          const trackingKey = `buff:${buffName}`
+        // 4️⃣ Skip permanent self buffs - they're already handled via active windows
+        if (permanentSelfBuffs.has(buffName)) continue
 
+        const metadata = buffMetadata.get(buffName)
+        const trackingKey = `buff:${buffName}`
+
+        // For remaining buffs, check if they're active based on stacks
+        const effectivelyActive = stacks > 0
+
+        if (effectivelyActive) {
           if (!buffDebuffTracking.has(trackingKey)) {
             buffDebuffTracking.set(trackingKey, {
               startTime: currentTime,
               lastSeenTime: currentTime,
               wasActive: true,
               type: 'buff',
+              ownerCharacter: metadata?.ownerCharacter,
+              targetStrategy: metadata?.targetStrategy,
+              durationStrategy: metadata?.durationStrategy,
+              activeCharacter,
             })
           } else {
             const tracking = buffDebuffTracking.get(trackingKey)!
+
             if (!tracking.wasActive) {
+              // Buff was inactive, now becoming active - start a new block
               tracking.startTime = currentTime
+              tracking.activeCharacter = activeCharacter
             }
+
             tracking.lastSeenTime = currentTime
             tracking.wasActive = true
           }
         } else {
-          const trackingKey = `buff:${buffName}`
           const tracking = buffDebuffTracking.get(trackingKey)
           if (tracking && tracking.wasActive) {
             // Buff just became inactive - create a block for its duration
@@ -364,6 +522,9 @@ export function DamageTimeline({ snapshots, damageEvents = [] }: DamageTimelineP
               type: 'buff',
               startTime: tracking.startTime,
               endTime: tracking.lastSeenTime,
+              ownerCharacter: tracking.ownerCharacter,
+              targetStrategy: tracking.targetStrategy,
+              durationStrategy: tracking.durationStrategy,
             })
             tracking.wasActive = false
           }
@@ -372,26 +533,31 @@ export function DamageTimeline({ snapshots, damageEvents = [] }: DamageTimelineP
 
       // Process debuffs
       for (const [debuffName, stacks] of Object.entries(snap.debuffs || {})) {
-        if (stacks > 0) {
-          const trackingKey = `debuff:${debuffName}`
+        const metadata = buffMetadata.get(debuffName)
+        const trackingKey = `debuff:${debuffName}`
 
+        if (stacks > 0) {
           if (!buffDebuffTracking.has(trackingKey)) {
             buffDebuffTracking.set(trackingKey, {
               startTime: currentTime,
               lastSeenTime: currentTime,
               wasActive: true,
               type: 'debuff',
+              ownerCharacter: metadata?.ownerCharacter,
+              targetStrategy: metadata?.targetStrategy,
+              durationStrategy: metadata?.durationStrategy,
+              activeCharacter,
             })
           } else {
             const tracking = buffDebuffTracking.get(trackingKey)!
             if (!tracking.wasActive) {
               tracking.startTime = currentTime
+              tracking.activeCharacter = activeCharacter
             }
             tracking.lastSeenTime = currentTime
             tracking.wasActive = true
           }
         } else {
-          const trackingKey = `debuff:${debuffName}`
           const tracking = buffDebuffTracking.get(trackingKey)
           if (tracking && tracking.wasActive) {
             // Debuff just became inactive - create a block for its duration
@@ -400,6 +566,9 @@ export function DamageTimeline({ snapshots, damageEvents = [] }: DamageTimelineP
               type: 'debuff',
               startTime: tracking.startTime,
               endTime: tracking.lastSeenTime,
+              ownerCharacter: tracking.ownerCharacter,
+              targetStrategy: tracking.targetStrategy,
+              durationStrategy: tracking.durationStrategy,
             })
             tracking.wasActive = false
           }
@@ -416,6 +585,9 @@ export function DamageTimeline({ snapshots, damageEvents = [] }: DamageTimelineP
           type: tracking.type,
           startTime: tracking.startTime,
           endTime: tracking.lastSeenTime,
+          ownerCharacter: tracking.ownerCharacter,
+          targetStrategy: tracking.targetStrategy,
+          durationStrategy: tracking.durationStrategy,
         })
       }
     }
