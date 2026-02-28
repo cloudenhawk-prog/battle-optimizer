@@ -116,7 +116,7 @@ export interface DamageTimelineProps {
 export function DamageTimeline({ snapshots, damageEvents = [], selectedCharacters }: DamageTimelineProps) {
   const [mode, setMode] = useState<ChartMode>('cumulative')
   const [viewMode, setViewMode] = useState<ViewMode>('timeline')
-  const [tooltipInfo, setTooltipInfo] = useState<{ x: number; y: number; data: any } | null>(null)
+  const [tooltipInfo] = useState<{ x: number; y: number; data: any } | null>(null)
   const [hoveredBlock, setHoveredBlock] = useState<number | null>(null)
   const [containerWidth, setContainerWidth] = useState(800)
   const containerRef = useRef<HTMLDivElement>(null)
@@ -374,7 +374,7 @@ export function DamageTimeline({ snapshots, damageEvents = [], selectedCharacter
 
     // Create a mapping from normalized names to original metadata names
     const normalizedToOriginal = new Map<string, string>()
-    buffMetadata.forEach((meta, name) => {
+    buffMetadata.forEach((_meta, name) => {
       normalizedToOriginal.set(normalizeName(name), name)
     })
 
@@ -729,7 +729,7 @@ export function DamageTimeline({ snapshots, damageEvents = [], selectedCharacter
       maxDebuffSubLanes,
       maxSubLanesByOwner,
     }
-  }, [snapshots, damageEvents, mode])
+  }, [snapshots, damageEvents, mode, selectedCharacters])
 
   // Calculate dynamic swimlane heights based on sub-lane count
   const getSwimlaneHeight = (ownerName: string) => {
