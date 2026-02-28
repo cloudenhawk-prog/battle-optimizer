@@ -2,7 +2,7 @@ import { useState, useRef } from 'react'
 import { createPortal } from 'react-dom'
 import '../../styles/rotation-editor/DataOverlay.css'
 import type { Snapshot } from '../../types/snapshot'
-import type { DamageEvent, Contribution } from '../../types/events'
+import type { DamageEvent } from '../../types/events'
 
 // Pie chart colors - shared between pie chart and damage sources
 const PIE_CHART_COLORS = ['rgba(100, 150, 255, 0.7)', 'rgba(255, 150, 100, 0.7)', 'rgba(200, 150, 255, 0.7)']
@@ -411,9 +411,7 @@ function ContributionsSection({ damageEvents, mode }: { damageEvents: DamageEven
   const [contributionScope, setContributionScope] = useState<'action' | 'all'>('action')
 
   // Filter events based on scope
-  const scopedEvents = contributionScope === 'action' 
-    ? damageEvents.filter(event => !event.dmgTypes.includes('NEGATIVE_STATUS'))
-    : damageEvents
+  const scopedEvents = contributionScope === 'action' ? damageEvents.filter(event => !event.dmgTypes.includes('NEGATIVE_STATUS')) : damageEvents
 
   // Calculate total damage for the selected scope
   const totalDamageInScope = scopedEvents.reduce((sum, event) => {
@@ -475,14 +473,12 @@ function ContributionsSection({ damageEvents, mode }: { damageEvents: DamageEven
             <div className="pillarGraphContainer">
               {contributionsList.map((contrib, index) => {
                 const damageValue = mode === 'average' ? contrib.average : mode === 'normal' ? contrib.normal : contrib.crit
-                
+
                 // Calculate percentage as damage increase: (with / without) - 1
                 // Total damage WITH modifier = totalDamageInScope
                 // Total damage WITHOUT modifier = totalDamageInScope - damageValue
                 const damageWithout = totalDamageInScope - damageValue
-                const percentValue = damageWithout > 0 
-                  ? ((totalDamageInScope / damageWithout) - 1) * 100 
-                  : 0
+                const percentValue = damageWithout > 0 ? (totalDamageInScope / damageWithout - 1) * 100 : 0
 
                 // Scale height with a minimum of 15% for visibility
                 const rawHeightPercent = maxValue > 0 ? (damageValue / maxValue) * 100 : 0
