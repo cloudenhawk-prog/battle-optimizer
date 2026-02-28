@@ -156,14 +156,31 @@
 /* Action blocks - what action/event generated the damage */
 .timeline-action-block {
   transition:
-    opacity 0.3s cubic-bezier(0.16, 1, 0.3, 1),
-    fill 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+    opacity 0.2s cubic-bezier(0.16, 1, 0.3, 1),
+    fill 0.2s cubic-bezier(0.16, 1, 0.3, 1),
+    stroke 0.2s cubic-bezier(0.16, 1, 0.3, 1),
+    stroke-width 0.2s cubic-bezier(0.16, 1, 0.3, 1);
   cursor: pointer;
 }
 
 .timeline-action-block:hover {
   opacity: 1 !important;
-  filter: brightness(1.2);
+  filter: brightness(1.2) drop-shadow(0 0 8px currentColor);
+}
+
+/* Buff/Debuff blocks */
+.timeline-buff-block,
+.timeline-debuff-block {
+  transition:
+    opacity 0.2s cubic-bezier(0.16, 1, 0.3, 1),
+    fill 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+  cursor: pointer;
+}
+
+.timeline-buff-block:hover,
+.timeline-debuff-block:hover {
+  opacity: 1 !important;
+  filter: brightness(1.3);
 }
 
 /* ========== Legend ========== */

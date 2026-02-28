@@ -114,7 +114,8 @@ interface DamageTimelineProps {
 export function DamageTimeline({ snapshots, damageEvents = [] }: DamageTimelineProps) {
   const [mode, setMode] = useState<ChartMode>('cumulative')
   const [viewMode, setViewMode] = useState<ViewMode>('timeline')
-  const [tooltipInfo] = useState<{ x: number; y: number; data: any } | null>(null) // TODO: Will be used with hover handlers
+  const [tooltipInfo, setTooltipInfo] = useState<{ x: number; y: number; data: any } | null>(null)
+  const [hoveredBlock, setHoveredBlock] = useState<number | null>(null)
   const [containerWidth, setContainerWidth] = useState(800)
   const containerRef = useRef<HTMLDivElement>(null)
   const svgRef = useRef<SVGSVGElement>(null)
@@ -125,11 +126,21 @@ export function DamageTimeline({ snapshots, damageEvents = [] }: DamageTimelineP
     }
   }, [viewMode])
 
-  // TODO: Data processing will be implemented here
+  // Data processing: extract owners, action blocks, buff/debuff blocks, and calculate sub-lanes for overlaps
   // Each snapshot/event can generate multiple (x,y) points for subactions or multi-hit abilities
-  const { maxValue, maxTime, owners, actionBlocks } = useMemo(() => {
+  const { maxValue, maxTime, owners, actionBlocks, buffBlocks, debuffBlocks, maxBuffSubLanes, maxDebuffSubLanes, maxSubLanesByOwner } = useMemo(() => {
     if (!snapshots || snapshots.length === 0) {
-      return { maxValue: 1, maxTime: 1, owners: [], actionBlocks: [] }
+      return {
+        maxValue: 1,
+        maxTime: 1,
+        owners: [],
+        actionBlocks: [],
+        buffBlocks: [],
+        debuffBlocks: [],
+        maxBuffSubLanes: 0,
+        maxDebuffSubLanes: 0,
+        maxSubLanesByOwner: new Map<string, number>(),
+      }
     }
 
     // Helper function to extract character name from dealer strings
@@ -311,12 +322,270 @@ export function DamageTimeline({ snapshots, damageEvents = [] }: DamageTimelineP
       }
     }
 
+    // Track buff/debuff duration blocks similar to negative statuses
+    const buffDebuffTracking = new Map<string, { startTime: number; lastSeenTime: number; wasActive: boolean; type: 'buff' | 'debuff' }>()
+    const buffDebuffBlocksList: Array<{
+      name: string
+      type: 'buff' | 'debuff'
+      startTime: number
+      endTime: number
+    }> = []
+
+    snapshots.forEach(snap => {
+      const currentTime = snap.toTime
+
+      // Process buffs
+      for (const [buffName, stacks] of Object.entries(snap.buffs || {})) {
+        if (stacks > 0) {
+          const trackingKey = `buff:${buffName}`
+
+          if (!buffDebuffTracking.has(trackingKey)) {
+            buffDebuffTracking.set(trackingKey, {
+              startTime: currentTime,
+              lastSeenTime: currentTime,
+              wasActive: true,
+              type: 'buff',
+            })
+          } else {
+            const tracking = buffDebuffTracking.get(trackingKey)!
+            if (!tracking.wasActive) {
+              tracking.startTime = currentTime
+            }
+            tracking.lastSeenTime = currentTime
+            tracking.wasActive = true
+          }
+        } else {
+          const trackingKey = `buff:${buffName}`
+          const tracking = buffDebuffTracking.get(trackingKey)
+          if (tracking && tracking.wasActive) {
+            // Buff just became inactive - create a block for its duration
+            buffDebuffBlocksList.push({
+              name: buffName,
+              type: 'buff',
+              startTime: tracking.startTime,
+              endTime: tracking.lastSeenTime,
+            })
+            tracking.wasActive = false
+          }
+        }
+      }
+
+      // Process debuffs
+      for (const [debuffName, stacks] of Object.entries(snap.debuffs || {})) {
+        if (stacks > 0) {
+          const trackingKey = `debuff:${debuffName}`
+
+          if (!buffDebuffTracking.has(trackingKey)) {
+            buffDebuffTracking.set(trackingKey, {
+              startTime: currentTime,
+              lastSeenTime: currentTime,
+              wasActive: true,
+              type: 'debuff',
+            })
+          } else {
+            const tracking = buffDebuffTracking.get(trackingKey)!
+            if (!tracking.wasActive) {
+              tracking.startTime = currentTime
+            }
+            tracking.lastSeenTime = currentTime
+            tracking.wasActive = true
+          }
+        } else {
+          const trackingKey = `debuff:${debuffName}`
+          const tracking = buffDebuffTracking.get(trackingKey)
+          if (tracking && tracking.wasActive) {
+            // Debuff just became inactive - create a block for its duration
+            buffDebuffBlocksList.push({
+              name: debuffName,
+              type: 'debuff',
+              startTime: tracking.startTime,
+              endTime: tracking.lastSeenTime,
+            })
+            tracking.wasActive = false
+          }
+        }
+      }
+    })
+
+    // Handle any buffs/debuffs that are still active at the end
+    for (const [key, tracking] of buffDebuffTracking.entries()) {
+      if (tracking.wasActive) {
+        const name = key.replace(/^(buff|debuff):/, '')
+        buffDebuffBlocksList.push({
+          name,
+          type: tracking.type,
+          startTime: tracking.startTime,
+          endTime: tracking.lastSeenTime,
+        })
+      }
+    }
+
+    // Calculate sub-lanes for overlapping action blocks
+    // Sort blocks by start time, then by end time
+    const sortedBlocks = [...blocks].sort((a, b) => {
+      if (a.startTime !== b.startTime) return a.startTime - b.startTime
+      return a.endTime - b.endTime
+    })
+
+    // Assign sub-lanes to prevent overlap within each owner's swimlane
+    const blocksWithLanes = sortedBlocks.map(block => ({
+      ...block,
+      subLane: 0,
+    }))
+
+    // Group by owner for sub-lane calculation
+    const blocksByOwner = new Map<string, typeof blocksWithLanes>()
+    blocksWithLanes.forEach(block => {
+      if (!blocksByOwner.has(block.owner)) {
+        blocksByOwner.set(block.owner, [])
+      }
+      blocksByOwner.get(block.owner)!.push(block)
+    })
+
+    // Calculate sub-lanes for each owner separately
+    blocksByOwner.forEach(ownerBlocks => {
+      // Track which sub-lanes are occupied at each time point
+      const laneEndTimes: number[] = []
+
+      ownerBlocks.forEach(block => {
+        // Find the first available sub-lane (one that ends before this block starts)
+        let assignedLane = 0
+        for (let i = 0; i < laneEndTimes.length; i++) {
+          if (laneEndTimes[i] <= block.startTime) {
+            assignedLane = i
+            break
+          }
+        }
+
+        // If no available lane found, create a new one
+        if (assignedLane === 0 && laneEndTimes.length > 0 && laneEndTimes[0] > block.startTime) {
+          assignedLane = laneEndTimes.length
+        }
+
+        block.subLane = assignedLane
+
+        // Update the end time for this lane
+        if (assignedLane >= laneEndTimes.length) {
+          laneEndTimes.push(block.endTime)
+        } else {
+          laneEndTimes[assignedLane] = block.endTime
+        }
+      })
+    })
+
+    // Calculate max sub-lanes per owner for dynamic height
+    const maxSubLanesByOwner = new Map<string, number>()
+    blocksWithLanes.forEach(block => {
+      const current = maxSubLanesByOwner.get(block.owner) || 0
+      maxSubLanesByOwner.set(block.owner, Math.max(current, block.subLane + 1))
+    })
+
+    // Calculate sub-lanes for buff/debuff blocks
+    const buffBlocksWithLanes = buffDebuffBlocksList
+      .filter(b => b.type === 'buff')
+      .sort((a, b) => {
+        if (a.startTime !== b.startTime) return a.startTime - b.startTime
+        return a.endTime - b.endTime
+      })
+      .map(block => ({ ...block, subLane: 0 }))
+
+    const debuffBlocksWithLanes = buffDebuffBlocksList
+      .filter(b => b.type === 'debuff')
+      .sort((a, b) => {
+        if (a.startTime !== b.startTime) return a.startTime - b.startTime
+        return a.endTime - b.endTime
+      })
+      .map(block => ({ ...block, subLane: 0 }))
+
+    // Assign sub-lanes for buffs
+    const buffLaneEndTimes: number[] = []
+    buffBlocksWithLanes.forEach(block => {
+      let assignedLane = 0
+      for (let i = 0; i < buffLaneEndTimes.length; i++) {
+        if (buffLaneEndTimes[i] <= block.startTime) {
+          assignedLane = i
+          break
+        }
+      }
+      if (assignedLane === 0 && buffLaneEndTimes.length > 0 && buffLaneEndTimes[0] > block.startTime) {
+        assignedLane = buffLaneEndTimes.length
+      }
+      block.subLane = assignedLane
+      if (assignedLane >= buffLaneEndTimes.length) {
+        buffLaneEndTimes.push(block.endTime)
+      } else {
+        buffLaneEndTimes[assignedLane] = block.endTime
+      }
+    })
+
+    // Assign sub-lanes for debuffs
+    const debuffLaneEndTimes: number[] = []
+    debuffBlocksWithLanes.forEach(block => {
+      let assignedLane = 0
+      for (let i = 0; i < debuffLaneEndTimes.length; i++) {
+        if (debuffLaneEndTimes[i] <= block.startTime) {
+          assignedLane = i
+          break
+        }
+      }
+      if (assignedLane === 0 && debuffLaneEndTimes.length > 0 && debuffLaneEndTimes[0] > block.startTime) {
+        assignedLane = debuffLaneEndTimes.length
+      }
+      block.subLane = assignedLane
+      if (assignedLane >= debuffLaneEndTimes.length) {
+        debuffLaneEndTimes.push(block.endTime)
+      } else {
+        debuffLaneEndTimes[assignedLane] = block.endTime
+      }
+    })
+
+    const maxBuffSubLanes = buffLaneEndTimes.length
+    const maxDebuffSubLanes = debuffLaneEndTimes.length
+
     // Placeholder values - will be calculated from actual data points
     const maxT = Math.max(...snapshots.map(s => s.toTime), 1)
     const maxVal = mode === 'cumulative' ? 100000 : 10000
 
-    return { maxValue: maxVal, maxTime: maxT, owners: ownersList, actionBlocks: blocks }
+    return {
+      maxValue: maxVal,
+      maxTime: maxT,
+      owners: ownersList,
+      actionBlocks: blocksWithLanes,
+      buffBlocks: buffBlocksWithLanes,
+      debuffBlocks: debuffBlocksWithLanes,
+      maxBuffSubLanes,
+      maxDebuffSubLanes,
+      maxSubLanesByOwner,
+    }
   }, [snapshots, damageEvents, mode])
+
+  // Calculate dynamic swimlane heights based on sub-lane count
+  const getSwimlaneHeight = (ownerName: string) => {
+    const subLanes = maxSubLanesByOwner?.get(ownerName) || 1
+    // Base height + additional height for sub-lanes (but not 1:1 - use smaller increments)
+    return SWIMLANE_HEIGHT + (subLanes - 1) * 20
+  }
+
+  // Calculate cumulative Y positions for swimlanes
+  const getSwimlaneY = (ownerIndex: number) => {
+    let y = CHART_PADDING_TOP
+    for (let i = 0; i < ownerIndex; i++) {
+      y += getSwimlaneHeight(owners[i].name)
+    }
+    return y
+  }
+
+  // Calculate total height needed for all swimlanes
+  const totalSwimlanesHeight = owners.reduce((sum, owner) => sum + getSwimlaneHeight(owner.name), 0)
+
+  // Add buff/debuff section height - only if there are active buffs or debuffs
+  const BUFF_LANE_HEIGHT = 24
+  const BUFF_SECTION_SPACING = 8
+  const hasBuffs = maxBuffSubLanes > 0
+  const hasDebuffs = maxDebuffSubLanes > 0
+  const buffSectionHeight = hasBuffs ? maxBuffSubLanes * (BUFF_LANE_HEIGHT + BUFF_SECTION_SPACING) : 0
+  const debuffSectionHeight = hasDebuffs ? maxDebuffSubLanes * (BUFF_LANE_HEIGHT + BUFF_SECTION_SPACING) : 0
+  const BUFF_DEBUFF_SECTION_HEIGHT = buffSectionHeight + debuffSectionHeight
 
   // Chart dimensions
   const chartWidth = 1000
@@ -416,23 +685,24 @@ export function DamageTimeline({ snapshots, damageEvents = [] }: DamageTimelineP
         <AnimatePresence mode="wait">
           {viewMode === 'timeline' ? (
             <motion.div key="timeline-view" initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -10 }} transition={{ duration: 0.3 }} className="timeline-swimlanes">
-              <svg ref={svgRef} viewBox={`0 0 ${chartWidth} ${Math.max(CHART_HEIGHT, owners.length * SWIMLANE_HEIGHT + 100)}`} className="timeline-chart-svg" preserveAspectRatio="none">
+              <svg ref={svgRef} viewBox={`0 0 ${chartWidth} ${CHART_PADDING_TOP + totalSwimlanesHeight + BUFF_DEBUFF_SECTION_HEIGHT + 100}`} className="timeline-chart-svg" preserveAspectRatio="none">
                 {/* Owner-based swimlanes */}
                 {owners.map((owner, i) => {
-                  const y = CHART_PADDING_TOP + i * SWIMLANE_HEIGHT
+                  const y = getSwimlaneY(i)
+                  const height = getSwimlaneHeight(owner.name)
                   return (
                     <g key={owner.name}>
                       {/* Swimlane background */}
-                      <rect x={CHART_PADDING_LEFT} y={y} width={chartWidth - CHART_PADDING_LEFT - CHART_PADDING_RIGHT} height={SWIMLANE_HEIGHT - SWIMLANE_PADDING} fill={`${owner.color}08`} rx="4" opacity="0.3" />
+                      <rect x={CHART_PADDING_LEFT} y={y} width={chartWidth - CHART_PADDING_LEFT - CHART_PADDING_RIGHT} height={height - SWIMLANE_PADDING} fill={`${owner.color}08`} rx="4" opacity="0.3" />
 
                       {/* Owner label */}
-                      <text x={CHART_PADDING_LEFT - 12} y={y + SWIMLANE_HEIGHT / 2 + 3} textAnchor="end" className="timeline-swimlane-label" fill={owner.color}>
+                      <text x={CHART_PADDING_LEFT - 12} y={y + height / 2 + 3} textAnchor="end" className="timeline-swimlane-label" fill={owner.color}>
                         {owner.name}
                       </text>
 
                       {/* Time grid lines */}
                       {xTicks.map((tick, ti) => (
-                        <line key={`grid-${i}-${ti}`} x1={tick.x} y1={y} x2={tick.x} y2={y + SWIMLANE_HEIGHT - SWIMLANE_PADDING} stroke="rgba(255, 255, 255, 0.03)" strokeDasharray="2 4" />
+                        <line key={`grid-${i}-${ti}`} x1={tick.x} y1={y} x2={tick.x} y2={y + height} stroke="rgba(255, 255, 255, 0.03)" strokeDasharray="2 4" />
                       ))}
                     </g>
                   )
@@ -441,44 +711,202 @@ export function DamageTimeline({ snapshots, damageEvents = [] }: DamageTimelineP
                 {/* X-axis */}
                 {xTicks.map((tick, i) => (
                   <g key={`x-${i}`}>
-                    <line x1={tick.x} y1={CHART_PADDING_TOP} x2={tick.x} y2={CHART_PADDING_TOP + owners.length * SWIMLANE_HEIGHT} stroke="rgba(255, 255, 255, 0.06)" />
-                    <text x={tick.x} y={CHART_PADDING_TOP + owners.length * SWIMLANE_HEIGHT + 20} textAnchor="middle" className="timeline-axis-label">
+                    <line x1={tick.x} y1={CHART_PADDING_TOP} x2={tick.x} y2={CHART_PADDING_TOP + totalSwimlanesHeight + BUFF_DEBUFF_SECTION_HEIGHT} stroke="rgba(255, 255, 255, 0.06)" />
+                    <text x={tick.x} y={CHART_PADDING_TOP + totalSwimlanesHeight + BUFF_DEBUFF_SECTION_HEIGHT + 20} textAnchor="middle" className="timeline-axis-label">
                       {tick.time.toFixed(1)}s
                     </text>
                   </g>
                 ))}
 
-                {/* TODO: Action blocks will be rendered here */}
+                {/* Action blocks with sub-lanes and hover functionality */}
                 {/* Each action block shows attribution (what action/event) in the owner's swimlane */}
-                {actionBlocks.map((block, i) => {
-                  const ownerIndex = owners.findIndex(o => o.name === block.owner)
-                  if (ownerIndex === -1) return null
+                {/* Sort blocks so hovered block renders last (on top) */}
+                {[...actionBlocks]
+                  .sort((a, b) => {
+                    const aIndex = actionBlocks.indexOf(a)
+                    const bIndex = actionBlocks.indexOf(b)
+                    if (aIndex === hoveredBlock) return 1
+                    if (bIndex === hoveredBlock) return -1
+                    return 0
+                  })
+                  .map(block => {
+                    const blockIndex = actionBlocks.indexOf(block)
+                    const ownerIndex = owners.findIndex(o => o.name === block.owner)
+                    if (ownerIndex === -1) return null
 
-                  const y = CHART_PADDING_TOP + ownerIndex * SWIMLANE_HEIGHT + SWIMLANE_PADDING
-                  const x1 = timeToX(block.startTime)
-                  const x2 = timeToX(block.endTime)
-                  const w = Math.max(x2 - x1, 2)
-                  const owner = owners[ownerIndex]
+                    const swimlaneY = getSwimlaneY(ownerIndex)
+                    const swimlaneHeight = getSwimlaneHeight(block.owner)
+                    const maxSubLanes = maxSubLanesByOwner?.get(block.owner) || 1
+                    const subLaneHeight = (swimlaneHeight - SWIMLANE_PADDING * 2) / maxSubLanes
 
-                  return (
-                    <g key={`block-${i}`}>
-                      <rect x={x1} y={y} width={w} height={SWIMLANE_HEIGHT - SWIMLANE_PADDING * 2} rx="6" fill={`${owner.color}20`} stroke={`${owner.color}40`} strokeWidth="1" className="timeline-action-block" />
+                    const y = swimlaneY + SWIMLANE_PADDING + block.subLane * subLaneHeight
+                    const x1 = timeToX(block.startTime)
+                    const x2 = timeToX(block.endTime)
+                    const w = Math.max(x2 - x1, 2)
+                    const owner = owners[ownerIndex]
+                    const isHovered = hoveredBlock === blockIndex
 
-                      {/* Attribution label (if wide enough) */}
-                      {w > 40 && (
-                        <text x={x1 + w / 2} y={y + (SWIMLANE_HEIGHT - SWIMLANE_PADDING * 2) / 2 + 3} textAnchor="middle" className="timeline-action-label" fill={`${owner.color}80`}>
-                          {block.attribution.length > 12 && w < 80 ? block.attribution.slice(0, 10) + '…' : block.attribution}
+                    return (
+                      <g key={`block-${blockIndex}`} onMouseEnter={() => setHoveredBlock(blockIndex)} onMouseLeave={() => setHoveredBlock(null)} style={{ cursor: 'pointer' }}>
+                        <rect
+                          x={x1}
+                          y={y}
+                          width={w}
+                          height={subLaneHeight - 4}
+                          rx="6"
+                          fill={isHovered ? `${owner.color}40` : `${owner.color}20`}
+                          stroke={isHovered ? `${owner.color}80` : `${owner.color}40`}
+                          strokeWidth={isHovered ? '2' : '1'}
+                          className="timeline-action-block"
+                          style={{
+                            opacity: isHovered ? 1 : hoveredBlock !== null ? 0.4 : 0.8,
+                            transition: 'all 0.2s ease',
+                          }}
+                        />
+
+                        {/* Attribution label (if wide enough) */}
+                        {w > 40 && (
+                          <text
+                            x={x1 + w / 2}
+                            y={y + subLaneHeight / 2 - 2}
+                            textAnchor="middle"
+                            className="timeline-action-label"
+                            fill={isHovered ? `${owner.color}` : `${owner.color}80`}
+                            style={{
+                              opacity: isHovered ? 1 : hoveredBlock !== null ? 0.5 : 0.9,
+                              transition: 'all 0.2s ease',
+                            }}>
+                            {block.attribution.length > 12 && w < 80 ? block.attribution.slice(0, 10) + '…' : block.attribution}
+                          </text>
+                        )}
+
+                        {/* TODO: Individual data points (squares) will be rendered here */}
+                        {/* These represent individual hits/subactions within the block */}
+                      </g>
+                    )
+                  })}
+
+                {/* Buff/Debuff Section - only shown if there are active buffs or debuffs */}
+                {(hasBuffs || hasDebuffs) && (
+                  <g>
+                    {/* Buff swimlane - only if there are buffs */}
+                    {hasBuffs && (
+                      <g>
+                        {/* Buff section label */}
+                        <text x={CHART_PADDING_LEFT - 12} y={CHART_PADDING_TOP + totalSwimlanesHeight + buffSectionHeight / 2} textAnchor="end" className="timeline-swimlane-label" fill="rgba(74, 222, 128, 0.7)">
+                          BUFFS
                         </text>
-                      )}
 
-                      {/* TODO: Individual data points (squares) will be rendered here */}
-                      {/* These represent individual hits/subactions within the block */}
-                    </g>
-                  )
-                })}
+                        {/* Buff background */}
+                        <rect x={CHART_PADDING_LEFT} y={CHART_PADDING_TOP + totalSwimlanesHeight} width={chartWidth - CHART_PADDING_LEFT - CHART_PADDING_RIGHT} height={buffSectionHeight} fill="rgba(74, 222, 128, 0.03)" rx="4" opacity="0.5" />
+
+                        {/* Buff blocks with sub-lanes */}
+                        {buffBlocks.map((block, i) => {
+                          const blockIndex = actionBlocks.length + i // Offset by action blocks count
+                          const isHovered = hoveredBlock === blockIndex
+                          const y = CHART_PADDING_TOP + totalSwimlanesHeight + block.subLane * (BUFF_LANE_HEIGHT + BUFF_SECTION_SPACING)
+                          const x1 = timeToX(block.startTime)
+                          const x2 = timeToX(block.endTime)
+                          const w = Math.max(x2 - x1, 2)
+
+                          return (
+                            <g key={`buff-${i}`} onMouseEnter={() => setHoveredBlock(blockIndex)} onMouseLeave={() => setHoveredBlock(null)} style={{ cursor: 'pointer' }}>
+                              <rect
+                                x={x1}
+                                y={y}
+                                width={w}
+                                height={BUFF_LANE_HEIGHT}
+                                rx="4"
+                                fill={isHovered ? 'rgba(74, 222, 128, 0.35)' : 'rgba(74, 222, 128, 0.2)'}
+                                stroke={isHovered ? 'rgba(74, 222, 128, 0.6)' : 'rgba(74, 222, 128, 0.4)'}
+                                strokeWidth={isHovered ? '2' : '1'}
+                                className="timeline-buff-block"
+                                style={{
+                                  opacity: isHovered ? 1 : hoveredBlock !== null ? 0.4 : 0.8,
+                                  transition: 'all 0.2s ease',
+                                }}
+                              />
+                              {w > 50 && (
+                                <text
+                                  x={x1 + w / 2}
+                                  y={y + BUFF_LANE_HEIGHT / 2 + 4}
+                                  textAnchor="middle"
+                                  className="timeline-action-label"
+                                  fill="rgba(74, 222, 128, 0.9)"
+                                  style={{
+                                    opacity: isHovered ? 1 : hoveredBlock !== null ? 0.5 : 0.9,
+                                    transition: 'all 0.2s ease',
+                                  }}>
+                                  {block.name.length > 15 && w < 100 ? block.name.slice(0, 12) + '…' : block.name}
+                                </text>
+                              )}
+                            </g>
+                          )
+                        })}
+                      </g>
+                    )}
+
+                    {/* Debuff swimlane - only if there are debuffs */}
+                    {hasDebuffs && (
+                      <g>
+                        {/* Debuff section label */}
+                        <text x={CHART_PADDING_LEFT - 12} y={CHART_PADDING_TOP + totalSwimlanesHeight + buffSectionHeight + debuffSectionHeight / 2} textAnchor="end" className="timeline-swimlane-label" fill="rgba(248, 113, 113, 0.7)">
+                          DEBUFFS
+                        </text>
+
+                        {/* Debuff background */}
+                        <rect x={CHART_PADDING_LEFT} y={CHART_PADDING_TOP + totalSwimlanesHeight + buffSectionHeight} width={chartWidth - CHART_PADDING_LEFT - CHART_PADDING_RIGHT} height={debuffSectionHeight} fill="rgba(248, 113, 113, 0.03)" rx="4" opacity="0.5" />
+
+                        {/* Debuff blocks with sub-lanes */}
+                        {debuffBlocks.map((block, i) => {
+                          const blockIndex = actionBlocks.length + buffBlocks.length + i // Offset by action + buff blocks count
+                          const isHovered = hoveredBlock === blockIndex
+                          const y = CHART_PADDING_TOP + totalSwimlanesHeight + buffSectionHeight + block.subLane * (BUFF_LANE_HEIGHT + BUFF_SECTION_SPACING)
+                          const x1 = timeToX(block.startTime)
+                          const x2 = timeToX(block.endTime)
+                          const w = Math.max(x2 - x1, 2)
+
+                          return (
+                            <g key={`debuff-${i}`} onMouseEnter={() => setHoveredBlock(blockIndex)} onMouseLeave={() => setHoveredBlock(null)} style={{ cursor: 'pointer' }}>
+                              <rect
+                                x={x1}
+                                y={y}
+                                width={w}
+                                height={BUFF_LANE_HEIGHT}
+                                rx="4"
+                                fill={isHovered ? 'rgba(248, 113, 113, 0.35)' : 'rgba(248, 113, 113, 0.2)'}
+                                stroke={isHovered ? 'rgba(248, 113, 113, 0.6)' : 'rgba(248, 113, 113, 0.4)'}
+                                strokeWidth={isHovered ? '2' : '1'}
+                                className="timeline-debuff-block"
+                                style={{
+                                  opacity: isHovered ? 1 : hoveredBlock !== null ? 0.4 : 0.8,
+                                  transition: 'all 0.2s ease',
+                                }}
+                              />
+                              {w > 50 && (
+                                <text
+                                  x={x1 + w / 2}
+                                  y={y + BUFF_LANE_HEIGHT / 2 + 4}
+                                  textAnchor="middle"
+                                  className="timeline-action-label"
+                                  fill="rgba(248, 113, 113, 0.9)"
+                                  style={{
+                                    opacity: isHovered ? 1 : hoveredBlock !== null ? 0.5 : 0.9,
+                                    transition: 'all 0.2s ease',
+                                  }}>
+                                  {block.name.length > 15 && w < 100 ? block.name.slice(0, 12) + '…' : block.name}
+                                </text>
+                              )}
+                            </g>
+                          )
+                        })}
+                      </g>
+                    )}
+                  </g>
+                )}
 
                 {/* Axis title */}
-                <text x={chartWidth - CHART_PADDING_RIGHT} y={CHART_PADDING_TOP + owners.length * SWIMLANE_HEIGHT + 20} textAnchor="end" className="timeline-axis-title">
+                <text x={chartWidth - CHART_PADDING_RIGHT} y={CHART_PADDING_TOP + totalSwimlanesHeight + BUFF_DEBUFF_SECTION_HEIGHT + 20} textAnchor="end" className="timeline-axis-title">
                   TIME
                 </text>
               </svg>

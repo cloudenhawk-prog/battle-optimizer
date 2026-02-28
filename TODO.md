@@ -1,5 +1,10 @@
 TODO:
 
+Bug: Modifiers with type 'self' also affect side effects and negative statuses (like Mandate). There is no real logic to determine which other things aside from the main action which should be affected by a modifier. Right now it assumes that if the filter resolves to true, it affects everything in this snapshot.
+Possible solutions:
+Add a scope to target strategy? action, actionSideEffects, otherSideEffects (coordinated attacks etc?), negative statuses?
+Any other ideas?
+
 Need a way to remove buffs - like FLeurdelys Mandate and sword buffs (they are timed but also disappear when she used liberation - i.e. swaps back)
 
 TASK: Buffs/debuffs can be split into subgroups for each character and for shared (but would be difficult since some rely on 'active character' and 'N number of swaps')
