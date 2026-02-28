@@ -9,7 +9,6 @@ import { negativeStatuses } from '../../data/negativeStatuses'
 
 export function buildBuffColumns(selectedCharacters: Character[]): ColumnGroup | null {
   // Collect legacy buffs from statusModifications
-  const inherentBuffs = selectedCharacters.flatMap(c => c.buffs.map(b => b.name))
   const actionBuffs = selectedCharacters.flatMap(c => c.actions.flatMap(a => a.statusModifications.filter(mod => mod.type === 'buff').map(mod => mod.targetName)))
 
   // Collect damage modifiers of type 'buff' from characters
@@ -36,7 +35,7 @@ export function buildBuffColumns(selectedCharacters: Character[]): ColumnGroup |
     }
   }
 
-  const activeBuffs = Array.from(new Set([...inherentBuffs, ...actionBuffs, ...modifierNames]))
+  const activeBuffs = Array.from(new Set([...actionBuffs, ...modifierNames]))
 
   const columns: ColumnDef[] = activeBuffs
     .filter(buff => {

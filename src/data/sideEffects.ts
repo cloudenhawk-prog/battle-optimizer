@@ -4,7 +4,6 @@ import { removeNegativeStatusStacks } from '../utils/modifications/statusModific
 
 // ========== Side Effects =====================================================================================================
 
-// TODO: Have the removal amount of damage triggers be optional arguments
 export const aeroErosionExplosion: SideEffect = {
   name: 'Aero Erosion Explosion',
   damageDealt: calculateAeroErosionSideEffectDamage,

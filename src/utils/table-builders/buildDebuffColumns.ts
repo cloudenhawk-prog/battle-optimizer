@@ -9,7 +9,6 @@ import { negativeStatuses } from '../../data/negativeStatuses'
 
 export function buildDebuffColumns(selectedCharacters: Character[]): ColumnGroup | null {
   // Collect legacy debuffs from statusModifications
-  const inherentDebuffs = selectedCharacters.flatMap(c => c.debuffs.map(b => b.name))
   const actionDebuffs = selectedCharacters.flatMap(c => c.actions.flatMap(a => a.statusModifications.filter(mod => mod.type === 'debuff').map(mod => mod.targetName)))
 
   // Collect damage modifiers of type 'debuff' from characters
@@ -36,7 +35,7 @@ export function buildDebuffColumns(selectedCharacters: Character[]): ColumnGroup
     }
   }
 
-  const activeDebuffs = Array.from(new Set([...inherentDebuffs, ...actionDebuffs, ...modifierNames]))
+  const activeDebuffs = Array.from(new Set([...actionDebuffs, ...modifierNames]))
 
   const columns: ColumnDef[] = activeDebuffs
     .filter(debuff => {

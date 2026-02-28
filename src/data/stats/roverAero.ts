@@ -1,28 +1,29 @@
 import type { CharacterStats } from "../../types/stats";
 
-export const blueprint: CharacterStats = {
+export const roverAeroStats: CharacterStats = 
+{
   level: 90,
 
-  baseATK: 10000000000000,
-  flatATK: 0,
-  bonusATK: 0,
+  baseATK: 437 + 587.50,
+  flatATK: 150 + 2*100,
+  bonusATK: 0.12 + 2*0.18 + 5*0.09,
   amplifyATK: 0,
   totalMultiplierATK: 1.0,
 
-  baseHP: 10000000000000,
-  flatHP: 0,
+  baseHP: 10775,
+  flatHP: 2*2280,
   bonusHP: 0,
   amplifyHP: 0,
   totalMultiplierHP: 1.0,
 
-  baseDEF: 10000000000000,
+  baseDEF: 1136,
   flatDEF: 0,
   bonusDEF: 0,
   amplifyDEF: 0,
   totalMultiplierDEF: 1.0,
 
-  critRate: 0.05,
-  critDamage: 1.50,
+  critRate: 0.05 + 0.10 + 0.22 + 5*0.084,
+  critDamage: 1.50 + 5*0.168,
 
   bonusDMG: 0,
   amplifyDMG: 0,
@@ -96,7 +97,7 @@ export const blueprint: CharacterStats = {
   fusionAmplifyDMG: 0,
   fusionTotalMultiplierDMG: 1.0,
 
-  aeroBonusDMG: 0,
+  aeroBonusDMG: 0.15 + 0.60 + 2*0.30,
   aeroAmplifyDMG: 0,
   aeroTotalMultiplierDMG: 1.0,
 
@@ -112,6 +113,5 @@ export const blueprint: CharacterStats = {
   havocAmplifyDMG: 0,
   havocTotalMultiplierDMG: 1.0,
 
-  energyPercent: 1.0,
+  energyPercent: 1.0 + 0.3216,
 }
-

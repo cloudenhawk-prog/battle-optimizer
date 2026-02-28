@@ -7,6 +7,7 @@ import type { SideEffect, StatusModification } from './sideEffect'
 
 export type Action = {
   name: string
+  displayName?: string // TODO: if displayName exists use it in certain places like: selectors, timeline - not in places with lots of space and details
   castTime: number
   multiplier: number
   scaling: ScalingType
@@ -20,45 +21,23 @@ export type Action = {
   statusModifications: StatusModification[]
   damageModifiers: DamageModifier[]
   sideEffects: SideEffect[]
-}
-
-export type ActionExpanded = {
-  // TODO: this should become the new action type, and update resolvers accordingly
-  name: string
-  displayName: string
-  castTime: number
-  multipliers: number[]
-  scaling: ScalingType
-  elements: ElementType[]
-  dmgTypes: DamageType[]
-  cooldown: number
 
   castConditions: CastConditions
+  offtune: number
 
-  energiesGenerated: EnergyGeneration[][]
-  energiesCost: EnergyCost[]
-
-  statusModifications: StatusModification[]
-  damageModifiers: DamageModifier[]
-  sideEffects: SideEffect[]
-
-  other: Other
+  toolTip?: string // TODO : when hovered in selector, it shows tooltip - "Can only be used after Intro" "Assumes all 3 swords have been used"
 }
 
 export type CastConditions = {
   // TODO: redo resolvers flow and use new types - put into own types files
-  position: Position
-  previousAction: string
+  startState: Position
+  previousActions?: Action[]
   endState: Position
 }
 
-export type Other = {
-  // TODO: doesnt require any logic yet, just keep it as a type in its own file for now
-  hardness: number[]
-  toughness: number[]
-  offtune: number[]
-}
+// ============================================================
 
+// TODO: do we want/even need these?
 type BasicsStage = {
   multipliers: number[]
   energiesGenerated: EnergyGeneration[][]
@@ -66,9 +45,9 @@ type BasicsStage = {
   damageModifiers: DamageModifier[]
   sideEffects: SideEffect[]
   other: {
-    hardness: number[]
-    toughness: number[]
-    offtune: number[]
+    hardness: number
+    toughness: number
+    offtune: number
   }
 }
 

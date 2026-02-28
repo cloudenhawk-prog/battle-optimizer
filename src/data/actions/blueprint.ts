@@ -1,37 +1,30 @@
-// ========== Blueprint =======================================================================================================
+import type { Action } from "../../types/action";
 
-export const XXX = {
+export const blueprint: Action = {
   name: 'XXX',
   displayName: 'XXX',
-  castTime: 0,
-  multipliers: [],
+  castTime: 100,
+  multiplier: (100) / 100,
   scaling: 'ATK',
   elements: ['AERO'],
-  dmgTypes: ['BASIC'],
-  cooldown: 0,
-
-  castConditions: {
-    position: 'GROUND',
-    previousAction: '',
-    endState: 'GROUND',
-  },
-
-  energiesGenerated: [
-    [
-      { energyType: 'energy', amount: 999, share: 0.5, scalingStat: 'energyPercent' },
-      { energyType: 'concerto', amount: 999, share: 0 },
-      { energyType: 'forte', amount: 999, share: 0 },
-    ],
+  dmgTypes: ['LIBERATION'],
+  cooldown: 100,
+  energyGenerated: [
+    { energyType: 'energy', amount: 100, share: 0.5, scalingStat: 'energyPercent' },
+    { energyType: 'concerto', amount: 100, share: 0 },
+    { energyType: 'forte', amount: 100, share: 0 },
   ],
-  energiesCost: [],
-
+  energyCost: [{ energyType: 'energy', amount: 100 }],
   statusModifications: [],
   damageModifiers: [],
   sideEffects: [],
-
+  castConditions: {
+    startState: 'ANY',
+    endState: 'GROUND'
+  },
   other: {
-    hardness: [999],
-    toughness: [999],
-    offtune: [999],
+    hardness: 100,
+    toughness: 100,
+    offtune: 100
   },
 }
