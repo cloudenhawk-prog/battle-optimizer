@@ -1,6 +1,6 @@
-import type { Action } from "../../types/action"
-import { always, stacksOfCap } from "../../utils/conditions/damageModifierConditions"
-import { aeroErosionExplosion } from "../sideEffects"
+import type { Action } from '../../types/action'
+import { always, stacksOfCap } from '../../utils/conditions/damageModifierConditions'
+import { aeroErosionExplosion } from '../sideEffects'
 
 export const cartethyia_BA_1_4: Action = {
   name: 'Basic Attack 1-4',

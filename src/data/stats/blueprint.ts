@@ -1,4 +1,4 @@
-import type { CharacterStats } from "../../types/stats";
+import type { CharacterStats } from '../../types/stats'
 
 export const blueprint: CharacterStats = {
   level: 90,

@@ -1,7 +1,6 @@
-import type { CharacterStats } from "../../types/stats";
+import type { CharacterStats } from '../../types/stats'
 
-export const roverAeroStats: CharacterStats = 
-{
+export const roverAeroStats: CharacterStats = {
   level: 90,
 
   baseATK: 437 + 587.50,
