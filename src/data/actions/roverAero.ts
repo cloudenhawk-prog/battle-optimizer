@@ -4,7 +4,7 @@ import { always } from '../../utils/conditions/damageModifierConditions'
 export const roverAero_skill_1: Action = { // Create Animation-cancel Version
   name: 'Resonance Skill 1',
   displayName: 'Awakening Gale',
-  castTime: 1, // TODO
+  castTime: 1.00,
   multiplier: (66.44 + 99.66) / 100,
   scaling: 'ATK',
   elements: ['AERO'],
@@ -18,17 +18,17 @@ export const roverAero_skill_1: Action = { // Create Animation-cancel Version
   statusModifications: [],
   damageModifiers: [],
   sideEffects: [],
-  castConditions: { //TODO
+  castConditions: { // TODO - implement resolver logic for this
     startState: 'GROUND',
     endState: 'AIR'
   },
-  offtune: 0.76 // TODo
+  offtune: 0.76 // TODO - implement resolver logic for this
 }
 
 export const roverAero_skill_2: Action = { // Create Animation-cancel Version
   name: 'Resonance Skill 2',
   displayName: 'Skyfall Severance',
-  castTime: 1, // TODO
+  castTime: 0.84,
   multiplier: (3*23.37 + 105.15) / 100,
   scaling: 'ATK',
   elements: ['AERO'],
@@ -52,7 +52,7 @@ export const roverAero_skill_2: Action = { // Create Animation-cancel Version
 export const roverAero_liberation: Action = {
   name: 'Liberation',
   displayName: 'Omega Storm',
-  castTime: 1, // TODO
+  castTime: 0.08,
   multiplier: 1.2 * (536.79) / 100,
   scaling: 'ATK',
   elements: ['AERO'],
@@ -89,7 +89,7 @@ export const roverAero_liberation: Action = {
 export const roverAero_midair_1_2: Action = { // Create Animation-cancel Version
   name: 'Mid Air 1-2',
   displayName: 'Cloudburst Dance 1-2',
-  castTime: 1, // TODO
+  castTime: 0.80,
   multiplier: (128.80 + 141.47) / 100,
   scaling: 'ATK',
   elements: ['AERO'],
@@ -139,7 +139,7 @@ export const roverAero_midair_1_2: Action = { // Create Animation-cancel Version
 export const roverAero_skill_3: Action = { // Create 2 Animation-cancel Versions (cancel part 1, cancel part 2)
   name: 'Resonance Skill 3',
   displayName: 'Unbound Flow 1-2',
-  castTime: 1, // TODO
+  castTime: 1.67,
   multiplier: 1.3 * (5*34.30 + 723.03) / 100,
   scaling: 'ATK',
   elements: ['AERO'],
@@ -175,7 +175,7 @@ export const roverAero_skill_3: Action = { // Create 2 Animation-cancel Versions
 export const roverAero_plunge: Action = { // Create Animation-cancel Version
   name: 'Plunge',
   displayName: 'Plunge',
-  castTime: 1, // TODO
+  castTime: 0.83,
   multiplier: (140.76) / 100,
   scaling: 'ATK',
   elements: ['AERO'],
@@ -199,7 +199,7 @@ export const roverAero_plunge: Action = { // Create Animation-cancel Version
 export const roverAero_BA_4: Action = { // Create Animation-cancel Version
   name: 'Basic Attack 4',
   displayName: 'Basic Attack 4',
-  castTime: 1, // TODO
+  castTime: 0.43,
   multiplier: (76.72) / 100,
   scaling: 'ATK',
   elements: ['AERO'],
@@ -225,7 +225,7 @@ export const roverAero_BA_4: Action = { // Create Animation-cancel Version
 export const roverAero_intro: Action = {
   name: 'Intro Skill',
   displayName: 'Relentless Squall',
-  castTime: 1, // TODO
+  castTime: 1.42,
   multiplier: (79.53 +119.29) / 100,
   scaling: 'ATK',
   elements: ['AERO'],
@@ -254,7 +254,7 @@ export const roverAero_intro: Action = {
   sideEffects: [],
   castConditions: {
     startState: 'ANY',
-    endState: 'GROUND'
+    endState: 'AIR'
   },
   offtune: 0.46 + 0.69
 }
