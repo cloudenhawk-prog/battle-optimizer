@@ -567,7 +567,7 @@ export const cartethyia_forte: Action = {
 }
 
 export const cartethyia_conviction: Action = {
-  name: 'conviction Up',
+  name: 'Conviction Up',
   displayName: 'conviction Up',
   castTime: 0,
   multiplier: 0,

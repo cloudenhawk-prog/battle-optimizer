@@ -1,6 +1,28 @@
 import type { Action } from '../../types/action'
 import { always } from '../../utils/conditions/damageModifierConditions'
 
+// Best opening:
+// Skill 1
+// Air 1-2
+// Plunge (swap cancel)
+// Skill 1
+// Air 1-2
+// Plunge (swap cancel)
+// Skill 1 (cancel with liberation) (IF POSSIBLE)
+// Liberation
+// Skill 3 (swap cancel instantly)
+
+// 5.04 seconds = 80 concerto
+// 5.21 seconds = 100 concerto + swap + 20 extra concerto
+// All other rotations now only need to generate 80 concerto now (40 if counting liberation + skill 3 quickswap ending)
+
+
+// Other rotations:
+// Gain 120 windstring as fast as possible - you'll probably have enough concerto no matter what
+
+
+
+
 export const roverAero_skill_1: Action = {
   name: 'Resonance Skill 1',
   displayName: 'Awakening Gale',
