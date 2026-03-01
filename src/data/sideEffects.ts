@@ -7,5 +7,12 @@ import { removeNegativeStatusStacks } from '../utils/modifications/statusModific
 export const aeroErosionExplosion: SideEffect = {
   name: 'Aero Erosion Explosion',
   damageDealt: calculateAeroErosionSideEffectDamage,
-  statusModifications: [removeNegativeStatusStacks('Aero Erosion', 1)],
+  statusModifications: [removeNegativeStatusStacks('Aero Erosion', 1)]
+}
+
+export const nightmareKelpieOutroTrigger: SideEffect = {
+  name: 'Nightmare: Kelpie Outro Trigger',
+  damageDealt: calculateAeroErosionSideEffectDamage, // Any way to simply make it a damage event that scales with the character's stats? This is almost like an action: 405.00 % multipler, aero element, echo dmg type, generates 2.81 energy with 0.50 share, 0 cast time (it's simply a side effect that happens outside of the characters acting so it doesnt take up field time)
+  // https://encore.moe/echo/6000113?lang=en
+  statusModifications: []
 }

@@ -12,7 +12,7 @@ export type SideEffect = {
 // ========== Type: StatusModification =========================================================================================
 
 export type StatusModification = {
-  type: 'buff' | 'debuff' | 'negativeStatus'
+  type: 'buff' | 'debuff' | 'negativeStatus' // TODO - is buff/Debuff ever used here? Can side effect actually trigger buffs? Would they need to use Damage Modifiers (since these represet buffs/debuffs)
   targetName: string
   stackChange?: number
   durationChange?: number
