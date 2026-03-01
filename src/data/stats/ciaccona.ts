@@ -4,7 +4,7 @@ export const ciacconaStats: CharacterStats = {
   level: 90,
 
   baseATK: 375 + 587.50, // Character baseATK + Weapon baseATK
-  flatATK: 150 + 2*100, // Echo4 flatATK + Echo3's flatATK 
+  flatATK: 150 + 2*100, // Echo4 flatATK + Echo3's flatATK
   bonusATK: 2*0.18 + 5*0.09 + 0.12, // Echo1's baseAtkBonus + 5 x Substats + Inherent Stats
   amplifyATK: 0,
   totalMultiplierATK: 1.0,

@@ -1,6 +1,6 @@
-import type { Character } from "../../types/character";
-import { always } from "../../utils/conditions/damageModifierConditions";
-import { ciacconaStats } from "../stats/ciaccona";
+import type { Character } from '../../types/character'
+import { always } from '../../utils/conditions/damageModifierConditions'
+import { ciacconaStats } from '../stats/ciaccona'
 
 export const ciaccona: Character = {
   name: 'Ciaccona',

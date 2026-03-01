@@ -1,6 +1,6 @@
-import type { Action } from "../../types/action";
-import { always } from "../../utils/conditions/damageModifierConditions";
-import { nightmareKelpieOutroTrigger } from "../sideEffects";
+import type { Action } from '../../types/action'
+import { always } from '../../utils/conditions/damageModifierConditions'
+import { nightmareKelpieOutroTrigger } from '../sideEffects'
 
 // TODO - cast times and cancel versions cast times
 
