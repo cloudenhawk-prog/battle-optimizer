@@ -22,6 +22,38 @@ import { always } from '../../utils/conditions/damageModifierConditions'
 
 
 
+// NOTE: Can you transform to Fleurdelys to activate mandate, then go back in cartethyia form and make use of the Aero Erosion DMG buff on 3 swords plunge (once or twice)? (even if it works, need time to use liberation)
+
+// Try this TEAM OPENING:
+// Ciaconna   -  Skill (swap cancel) (echo if sword one)
+// Cartethyia -  Skill (swap cancel) (echo)
+// Rover      -  Skill 1 (echo)
+// Rover      -  Air 1-2
+// Rover      -  Plunge (swap cancel)
+// Ciaconna   -  Plunge + BA4 (swap cancel)
+// Rover      -  Skill 1
+// Rover      -  Air 1-2
+// Rover      -  Plunge (swap cancel)
+// Ciaconna   -  Plunge + BA4 (swap cancel) (echo if weird one)
+// Rover      -  Skill 1 (cancel with liberation)    <- Is this possible?
+// Rover      -  Liberation
+// Rover      -  Skill 3 (swap cancel instantly)
+// Ciaconna   -  Intro
+// Ciaconna   -  Forte
+// Ciaconna   -  (Skill if needed)
+// Ciaconna   -  Liberation
+// Cartethyia -  Intro
+// Cartethyia -  BA2-4
+// Cartethyia -  Plunge (3 swords) (worth swapping to rover here for plunge + skill 1 swap cancel?)
+// Cartethyia -  BA1-4 (or skip second round?)
+// Cartethyia -  Heavy
+// Cartethyia -  Skill
+// Cartethyia -  Plunge (3 swords)
+// Cartethyia -  Transform 
+// Cartethyia -  Some cool Cartethyia/Rover quickswap shit
+
+
+
 
 export const roverAero_skill_1: Action = {
   name: 'Resonance Skill 1',
