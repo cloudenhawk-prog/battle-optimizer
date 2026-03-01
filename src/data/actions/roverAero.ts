@@ -49,7 +49,7 @@ import { always } from '../../utils/conditions/damageModifierConditions'
 // Cartethyia -  Heavy
 // Cartethyia -  Skill
 // Cartethyia -  Plunge (3 swords)
-// Cartethyia -  Transform 
+// Cartethyia -  Transform
 // Cartethyia -  Some cool Cartethyia/Rover quickswap shit
 
 
