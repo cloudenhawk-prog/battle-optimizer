@@ -183,7 +183,7 @@ export const ciaccona_liberation: Action = {
   name: 'Liberation',
   displayName: 'Singers Triple Cadenza',
   castTime: 1.00, // TODO
-  multiplier: (1100.42) / 100, 
+  multiplier: (1100.42) / 100,
   scaling: 'ATK',
   elements: ['AERO'],
   dmgTypes: ['LIBERATION'],
