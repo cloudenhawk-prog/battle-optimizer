@@ -1,3 +1,5 @@
+CHECK ALL TODOS IN THE PROJECT AND UPDATE THIS LIST. CLEAN FORMATTING TOO!!!
+
 TODO:
 
 There should be a button to hide: 'permanent' damageModifiers with condition 'always' in the timeline and in the dataoverlay
