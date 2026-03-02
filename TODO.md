@@ -2,30 +2,37 @@
 
 # Timeline:
 
-Implement a linepath for the graphs (dps & total dmg)
+Linepath Graph : Implement a linepath for the graphs (dps & total dmg)
 
-Implement Hover handlers for interactive data points or other parts or info
+Hover Handlers : for interactive data points or other parts or info
 
-Timeline could get individual damage points within a snapshot (for example split damage into X intervals each time or static intervals of X units)
-Timeline graphs should have lines, points, squares to show when different things occured in what intervals or times
+Split snapshot into X points : Timeline could get individual damage points within a snapshot (for example split damage into X intervals each time or static intervals of X units).
+
+More graphics : Timeline graphs should have lines, points, squares to show when different things occured in what intervals or times
 
 Bug: Vertical lines in timeline seem to pop up in the beginning of actions, instead of when the damage procs (which by default right now is at the very end of the snapshot interval) (negative statuse aside). However, negative statuses have a different issue: it seems to always create a vertical line at 0.00s regardless of what happens or doesnt happen (although it is first created when the first negative status of that type is created/gets its first stack).
 
 Bug: vertical lines in GLOBAL (negative stasus is the only thing that inhabit this linepath atm) have their vertical lines inserted in the linepath underneath where they are supposed to - perhaps the calculation determining where to add them accidently adds +1 too many, or it might be caused by some other reason.
 
+MIN/MAX/AVEARAGE graphs in the same plot (and/or toggle). Since we calculate average damage, it could be cool to have MIN and MAX in a graph with colored areas - or even cooler: percentage based with colored areas (would require to do calculations on ALL damage instances though).
+
+Area with percentages - chance to deal different kinds of damages (can use estimate if precise numbers are too hard/branches into too many calculations)
+
+Toggle Hide Certain contributions: There should be a button to hide: 'permanent' damageModifiers with condition 'always' in the timeline and in the dataoverlay
+
 # Data Overlay:
 
-There should be a button to hide: 'permanent' damageModifiers with condition 'always' in the timeline and in the dataoverlay
+Toggle Hide Certain contributions: There should be a button to hide: 'permanent' damageModifiers with condition 'always' in the timeline and in the dataoverlay
 
-Data Overlay contributions sections should grow wider as more are added with a minimum width and a maximum width (at which point it becomes scrollable)
+Dynamic width for contributions : Data Overlay contributions sections should grow wider as more are added with a minimum width and a maximum width (at which point it becomes scrollable)
 
-Left Corner: The 3 buttons should have a title or helpful label -> we are swapping between scenarios like; too long but theoretically 'see scenario where everything crits'
+Top Left Corner: The 3 buttons should have a title or helpful label -> we are swapping between scenarios like; too long but theoretically 'see scenario where everything crits'
 
 Contributions: could also have hover - 'show more details'
 
 All Sections: could have a small button in the right corner for explanations
 
-Tether: Swap the bottom two labels: TETHER//V3.2.17 and LINK: ESTABLISHED PHASE DRIFT: 0.02' so tether is the in the left bottom corner
+Tether labels: Swap the bottom two labels: TETHER//V3.2.17 and LINK: ESTABLISHED PHASE DRIFT: 0.02' so tether is the in the left bottom corner
 
 General: Arrows up/down to swap between data overlays quickly. Also if you click outside the data overlay it should close
 
@@ -33,13 +40,15 @@ MODIFIER CONTRIBUTIONS: Remove empty shell for the pillars - It makes it seem li
 
 # Actions:
 
+Coordinated attacks + lasting attacking (phrolova + ciaconna ults). Is these the same concepts, but just whether it's cancelled when swapping back to the character?
+
 # Negative Statuses:
 
 Need a way to dynamically update negative status: max stacks and ticks frequency since some characters affect it
 
 # Data:
 
-Implement Data Checker that checks if everything is respected
+Implement Data Checker that checks if everything is respectedon start (uniqueness etc)
 
 Cartethyia BA3-5 action - tooltip: can be used when swapped in without intro
 Cartethyia's conviction generation is uncertain - need more testing
@@ -60,13 +69,13 @@ Normalize keywords: source, name, displayName. When is what used? What is unique
 
 Clean up types - determine where which types should live!
 
-Damage Modifiers: Do we need a type for things that also affect negative statuses? What do we do right now?
+Damage Modifiers: Do we need a type for buffs that also or do not affect negative statuses? What do we do right now?
 
-In StatusModification type under Side Effects, is 'buff/Debuff' ever used? Can side effect actually even trigger buffs? Would they need to use Damage Modifiers (since these represet buffs/debuffs)
+In StatusModification type under sideEffects.ts, is 'buff/Debuff' ever used? Can side effect actually even trigger buffs? Would they need to use Damage Modifiers (since these represet buffs/debuffs)
 
 # Table/Snapshot/Resolvers:
 
-When cooldowns are implemented there should be ways to lower them. Cartethyia lowers skill CD when consuming swords (1s each I think)
+Cooldowns : when implemented there should be ways to lower them. Cartethyia lowers skill CD when consuming swords (1s each I think)
 
 Check Resolver flow - do they have correct numbering? Do they split responsible up nicelly? Where do different things happen?
 
@@ -94,6 +103,8 @@ TASK: When a new snapshot is created, it should automatically set the character 
 (MAYBE IF NOT ALREADY): Damage Events should have type -> action, action-side-effect, negative-status such that we can put them together
 Context: Right now damage events only includes events from actions. We do not want a seperate event list for every type of damage event. Sorted by ID, these can be used by rows on-click overlay
 
+Task: Implement toggler to active/deactive the Selector Check on skill cost requrements (no need to update resolver, it's useful to see if energy becomes negative)
+
 # Tests:
 
 Update tests - simple, guaranteed correct. There is a chance we sometimes test wrong things or assume wrong logic (many tests area auto generated) (to help with this, make a lot of good helper mock methods)
@@ -109,90 +120,11 @@ TASK: Allow to click on groups to restore all icons instead of one at a time
 
 TASK: Turn phrolova into a see-through gif with AI? Or make the background move with some "animations"?
 
----
+Implement custom importable/exportable combos
 
----
-
----
-
-NOT SORTED YET
-
----
-
-Task: Implement tests for all reasonably-testable functions
-Context: Right now we aren't performing any tests other than an outdated DamageCalculator.test.ts. It would be best if all functions in hooks and utils are tested
-
-Task: Implement toggler to active/deactive the Selector Check on skill cost requrements (no need to update resolver, it's useful to see if energy becomes negative)
-Context: Right now energy stops characters from using actions if the requirement is not met. It would be nice with a toggle option that let's you bypass this
-
-Task: Implement more icon/button logic, split it into multiple css classes for different kinds
-Context: Right now you can hide/unhide columns with button presses. Make certain icons non-clickable/no animation like Character/Action. Make group headers hide all columns under the group at once.
-
-Task: Implement coordinated attacks
-Context: Coordinated attacks could work similar to negative statuses but have its own section (perhaps actually called DoT)
-
-Task: Implement source tracking on missing things
-Context: Right now we can apply negative statuses (and buffs/Debuffs/coordinated attacks). We need to make sure that we can track the source - who applied them? Since they may count towards tracking the damage contribution of each character
-
-Task: Implement a step in the useCharacterActions hook that creates references to all different effects before the first resolver
-Context: Right now the resolvers are doing A LOT of work with context but run-time isn't an issue. Later it might be useful to only have to iterate the context/snapshots once and directly collect and distribute all the effects and modifiers needed in future resolvers
-
-Task: Implement custom/dynamic outro trigger conditions
-Context: Right now the outro-intro flow is hardcoded using 100 Concerto energy. It might be useful to make this function more dynamically by letting each character define a custom outro-intro trigger condition
-
-Task: Implement dispatchable effects so damages and other things don't always proc at 'toTime'
-Context: Right now everything is summed up at the 'toTime' milestone. For a more detailed timeline in the future, and so that all damage is not necessarily triggered at once, it might be useful to create a queue that you can dispatch events to. The queue might be able to resolve/progress events, sorts the events at the time it happened, and more detailed create a timeline of action/effect starts, damage-procs, occurences, and event endings. This could be especially useful for outro skills, swap-cancelling, and delayed effects and damage procs. It might even automatically let us create Coordinated Attacks and alike really easily.
-
-Task: Implement custom importable combos
-Context: Characters might have certain combos they often use - like Cartethyia double Plunge pre-Fleurdelys combo. The idea would be: select a combo from some menu -> table automatically inserts all the rows
-
-Task: Character/gear builder
-Context: Would let you set up a character, automatically calculating stats.
-Task: Import characters/bosses in rotation editor
-Context: Would let you set up a "battle"
-
-The topbar layout changes every time an icon/column becomes hidden - likely reason: the icons are smaller than the empty placeholder in both directions
-
-Since we calculate average damage, it could be cool to have MIN and MAX in a graph with colored areas - or even cooler: percentage based with colored areas (would require to do calculations on ALL damage instances though).
-
-(Pending) Consider: when deleting rows, red highlight-fadeout effect before they are deleted
+The topbar layout changes every time an icon/column becomes hidden (I think this i still relevant)
 
 Allow multi-instance battle timeline -> Track boss HP - when dead, automatically proceed to next boss in the list.
-
-TODO Prioritering
-
-Høj prioritet (nu)
-
-- Type safety (Snapshot, actions)
-- Material UI migration for tables og dropdowns
-- Splitting af useRotationEditor.ts hook
-- Implementering af buffs/debuffs og negative status tracking
-
-Medium (fremtid):
-
-- Virtualized rows
-- Drag & drop kolonner
-- Color pickers / date pickers
-
-Lav (fremtid):
-
-- Analytics page
-- Settings page
-- Pie charts visualisering
-
----
-
----
-
----
-
----
-
----
-
-## MODIFIERS
-
----
 
 ---
 
@@ -231,15 +163,7 @@ The modifier system is now implemented with the following flow:
 
 ---
 
----
-
----
-
----
-
 ## ALGORITHMS
-
----
 
 ---
 
