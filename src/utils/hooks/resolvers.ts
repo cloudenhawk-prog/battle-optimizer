@@ -198,8 +198,6 @@ export function resolveSideEffectsAndStatuses(ctx: StepContext, setDamageEvents:
 
   // Negative Statuses
   helpNegativeStatuses(ctx, setDamageEvents, statusModifications)
-
-  // TODO: Buffs & Debuffs
 }
 
 function aggregateStatusModifications(ctx: StepContext) {
@@ -348,15 +346,9 @@ export function resolveModifierState(ctx: StepContext): void {
   })
 }
 
-// ========== Resolver 6: Side Effects ========================================================================================
-
-// TODO
-
 // ========== Resolver 7: Resources ===========================================================================================
 
 export function resolveResources(ctx: StepContext): void {
-  // TODO - error checking
-
   const current = ctx.current
   const character = ctx.character
   const action = ctx.action
@@ -540,36 +532,3 @@ export function aggregateStat(currentValue: number | undefined, incomingValue: n
 
   return isMultiplier ? current * incomingValue : current + incomingValue
 }
-
-/**
- * IMPLEMENTATION NOTES - Modifier System:
- *
- * The modifier system is now implemented with the following flow:
- *
- * 1. Resolver 0 (buildStepContext):
- *    - Handles swap-based expiration if a character swap occurred
- *    - Updates swapsLeft counter and removes expired modifiers
- *
- * 2. Resolver 2 (resolveDamageModifiers):
- *    - Collects all modifier blueprints from character/action/negative statuses
- *    - Activates new limited modifiers → creates ModifierInAction
- *    - Handles stacking (adds stacks, resets timers if configured)
- *    - Filters applicable modifiers (target strategy + permanent vs active)
- *    - Applies stack multipliers and aggregates stats
- *
- * 3. Resolver 5 (resolveModifierState):
- *    - Updates time-based modifiers (decrements timeLeft)
- *    - Removes stacks/expires modifiers when duration runs out
- *
- * Key Design Decisions:
- * - Permanent modifiers: Don't create ModifierInAction, applied directly each step
- * - Limited modifiers: Create ModifierInAction to track stacks/time/swaps
- * - Stacking: Handled in activateModifiers (adds to existing or creates new)
- * - Target strategies: Filtered in filterApplicableModifiers
- * - Stack multiplier: Applied before aggregating stats
- *
- * TODO - Future improvements:
- * - Normalize damage source interface (action, negative status, coordinated attack, etc.)
- * - Allow modifiers from triggers (e.g., "on basic attack, gain buff for 5s")
- * - Consider buff/debuff display columns in table
- */

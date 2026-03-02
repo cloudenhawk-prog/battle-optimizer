@@ -887,9 +887,6 @@ describe('damageCalculator', () => {
   // ========== Damage Calculator ================================================================================================
 
   describe('damageCalculator (integration)', () => {
-    // TODO - test all 3 scaling types
-    // TODO - test defensive stats interactions
-    // TODO - what happens to elemental RES when your dmg type has multiple elements? Refuse multiple elements?
     it('basic calculateDamage returns a valid result with defaults', () => {
       const action = createMockAction('Test Action')
       const name = 'Test Character Dealer'

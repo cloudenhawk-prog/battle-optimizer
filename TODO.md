@@ -1,59 +1,123 @@
-CHECK ALL TODOS IN THE PROJECT AND UPDATE THIS LIST. CLEAN FORMATTING TOO!!!
+### TODO:
 
-TODO:
+# Timeline:
 
-There should be a button to hide: 'permanent' damageModifiers with condition 'always' in the timeline and in the dataoverlay
-Data Overlay contributions sections should grow wider as more are added with a minimum width and a maximum width (at which point it becomes scrollable)
+Implement a linepath for the graphs (dps & total dmg)
 
-Important Task: Make it possible to delete rows (should character/action become locked when I row is created, or should reselection automatically delete the row(s) and create the new one?)
+Implement Hover handlers for interactive data points or other parts or info
 
-Since picking a character doesn't do anything until an action is also selected, it's a harmless thing to do. Therefore, when creating a new empty snapshot, might as well pre-select the same character as the previous row, since in most scenarios a character is performing multiple actions before swapping out
-
-
-Modifiers that only have 1 maxStack, the currentState row should display "ACTIVE" versus "INACTIVE" (with green vs red color text?). Modifiers with more than 1 maxStack should do like now, displaying   "currentStacks/maxStacks"
+Timeline could get individual damage points within a snapshot (for example split damage into X intervals each time or static intervals of X units)
+Timeline graphs should have lines, points, squares to show when different things occured in what intervals or times
 
 Bug: Vertical lines in timeline seem to pop up in the beginning of actions, instead of when the damage procs (which by default right now is at the very end of the snapshot interval) (negative statuse aside). However, negative statuses have a different issue: it seems to always create a vertical line at 0.00s regardless of what happens or doesnt happen (although it is first created when the first negative status of that type is created/gets its first stack).
 
 Bug: vertical lines in GLOBAL (negative stasus is the only thing that inhabit this linepath atm) have their vertical lines inserted in the linepath underneath where they are supposed to - perhaps the calculation determining where to add them accidently adds +1 too many, or it might be caused by some other reason.
+
+# Data Overlay:
+
+There should be a button to hide: 'permanent' damageModifiers with condition 'always' in the timeline and in the dataoverlay
+
+Data Overlay contributions sections should grow wider as more are added with a minimum width and a maximum width (at which point it becomes scrollable)
+
+Left Corner: The 3 buttons should have a title or helpful label -> we are swapping between scenarios like; too long but theoretically 'see scenario where everything crits'
+
+Contributions: could also have hover - 'show more details'
+
+All Sections: could have a small button in the right corner for explanations
+
+Tether: Swap the bottom two labels: TETHER//V3.2.17 and LINK: ESTABLISHED PHASE DRIFT: 0.02' so tether is the in the left bottom corner
+
+General: Arrows up/down to swap between data overlays quickly. Also if you click outside the data overlay it should close
+
+MODIFIER CONTRIBUTIONS: Remove empty shell for the pillars - It makes it seem like the biggest pillar is some sort of "max possible value" which is not the case: it's just used for scaling heights so it looks good.
+
+# Actions:
+
+# Negative Statuses:
+
+Need a way to dynamically update negative status: max stacks and ticks frequency since some characters affect it
+
+# Data:
+
+Implement Data Checker that checks if everything is respected
+
+Cartethyia BA3-5 action - tooltip: can be used when swapped in without intro
+Cartethyia's conviction generation is uncertain - need more testing
+Could technically add action: cartehyia_avatar & fleurdelys_avatar (can only be cast during mandate, has a cast time, might affect mandate related buffs)
+Need fleurdelys intro/outro - and logic in resolver to automatically determine which to use
+
+Mandate buff also does: Basic 5 Fleurdelys, Mid-air 2, Enhanced Heavy, Resonance 2 apply 99 stacks of aero erosion during this time
+Mandate buff also does: Lowers dmg intervals between Aero Erosion by 50 % (TODO : Test if it works when you swap away from her)
+Mandate buff: Does it work or not when swapped away?
+This might affect howe we want to show Mandate in timeline
+
+CharacterData: define data that later can be combined into a character object (resolve gear, echoes etc into stats, actions, modifiers). Makes stats mistakes less prone. Might give us an overview of what contributes with what stats
+Would be nice if it understood partial stats to simplify the data and make it less prone to mistakes
+
+# Types:
+
+Normalize keywords: source, name, displayName. When is what used? What is unique?
+
+Clean up types - determine where which types should live!
+
+Damage Modifiers: Do we need a type for things that also affect negative statuses? What do we do right now?
+
+In StatusModification type under Side Effects, is 'buff/Debuff' ever used? Can side effect actually even trigger buffs? Would they need to use Damage Modifiers (since these represet buffs/debuffs)
+
+# Table/Snapshot/Resolvers:
+
+When cooldowns are implemented there should be ways to lower them. Cartethyia lowers skill CD when consuming swords (1s each I think)
+
+Check Resolver flow - do they have correct numbering? Do they split responsible up nicelly? Where do different things happen?
+
+CastConditions + offtune need logic in resolvers (defined in actions)
+
+Action Selectors should get an upgrade. Actions should be able to define multiple different 'versions'. When one is hovered/clicked, these options should pop up. Like "Swap Cancel", "Default" - and be enforced: if swap cancel is chosen, the next row will not display that character
+
+Make it possible to delete rows (should character/action become locked when I row is created, or should reselection automatically delete the row(s) and create the new one?)
+
+Since picking a character doesn't do anything until an action is also selected, it's a harmless thing to do. Therefore, when creating a new empty snapshot, might as well pre-select the same character as the previous row, since in most scenarios a character is performing multiple actions before swapping out
+
+Modifiers that only have 1 maxStack, the currentState row should display "ACTIVE" versus "INACTIVE" (with green vs red color text?). Modifiers with more than 1 maxStack should do like now, displaying "currentStacks/maxStacks"
 
 Bug: Modifiers with type 'self' also affect side effects and negative statuses (like Mandate). There is no real logic to determine which other things aside from the main action which should be affected by a modifier. Right now it assumes that if the filter resolves to true, it affects everything in this snapshot.
 Possible solutions:
 Add a scope to target strategyS? action, actionSideEffects, otherSideEffects (coordinated attacks etc?), negative statuses?
 Any other ideas?
 
-Question: Should test if mandate works while fleurdelys is swapped off-field:
-Does it affect negative status damage?
-Does it affect other character's dealing
-aero erosion dmg?
-Mandate should only show up in the timeline if 1. the buff is active and 2. the buff affects the active character?
-OR it should show up as long as it's technically active (in which case cartethyia's permanent passive modifiers should always be present as long as condition is true)
-
 Need a way to remove buffs - like FLeurdelys Mandate and sword buffs (they are timed but also disappear when she used liberation - i.e. swaps back)
 
-TASK: Buffs/debuffs can be split into subgroups for each character and for shared (but would be difficult since some rely on 'active character' and 'N number of swaps')
+TASK: When a new row is added - play an animation similarly to the light that moves through the sections in data overlay - instead of using a green color?
+
+TASK: When a new snapshot is created, it should automatically set the character in the next one to the previous one
+
+(MAYBE IF NOT ALREADY): Damage Events should have type -> action, action-side-effect, negative-status such that we can put them together
+Context: Right now damage events only includes events from actions. We do not want a seperate event list for every type of damage event. Sorted by ID, these can be used by rows on-click overlay
+
+# Tests:
+
+Update tests - simple, guaranteed correct. There is a chance we sometimes test wrong things or assume wrong logic (many tests area auto generated) (to help with this, make a lot of good helper mock methods)
+
+# Other:
+
+Implement logic: if displayName exists use it in certain places like: selectors, timeline - not in places with lots of space and details - otherwise use name
+Use custom component for the 2 table Selectors - that way we can style them EXACTLY like we want, for example making them transparent
+
+Echoes + Weapons
 
 TASK: Allow to click on groups to restore all icons instead of one at a time
 
-- TASK: Data Overlay:
-- Left Corner: The 3 buttons should have a title or helpful label -> we are swapping between scenarios like; too long but theoretically 'see scenario where everything crits'
-- Contributions: could also have hover - 'show more details'
-- All Sections: could have a small button in the right corner for explanations
-- Tether: Swap the bottom two labels: TETHER//V3.2.17 and LINK: ESTABLISHED PHASE DRIFT: 0.02' so tether is the in the left bottom corner
-- General: Arrows up/down to swap between data overlays quickly. Also if you click outside the data overlay it should close
-- MODIFIER CONTRIBUTIONS: Remove empty shell for the pillars - It makes it seem like the biggest pillar is some sort of "max possible value" which is not the case: it's just used for scaling heights so it looks good.
-
-TASK: Make the sidebar icon-button spin similarly to the pie chart rings - let's see how it looks
 TASK: Turn phrolova into a see-through gif with AI? Or make the background move with some "animations"?
-TASK: When a new row is added - play an animation similarly to te light that moves through the sections in data overlay - instead of using a green color?
 
-TASK: When a new snapshot is created, it should automatically set the character in the next one to the previous one
-Context: Since you will often use multiple actions in a row, and setting it doesnt do anything problematic or unchangable
+---
 
-Task: Create data for Cartethyia's team so that we can more thoroughly "test" everything (including cooldowns - test in-game how much time is wasted on character swap, for example Cartethyia BA5 from scratch vs on swap)
-Context: Self-explanatory
+---
 
-Task: Damage Events should have type -> action, action-side-effect, negative-status such that we can put them together
-Context: Right now damage events only includes events from actions. We do not want a seperate event list for every type of damage event. Sorted by ID, these can be used by rows on-click overlay
+---
+
+NOT SORTED YET
+
+---
 
 Task: Implement tests for all reasonably-testable functions
 Context: Right now we aren't performing any tests other than an outdated DamageCalculator.test.ts. It would be best if all functions in hooks and utils are tested
@@ -87,114 +151,13 @@ Context: Would let you set up a character, automatically calculating stats.
 Task: Import characters/bosses in rotation editor
 Context: Would let you set up a "battle"
 
-ISSUES:
-
 The topbar layout changes every time an icon/column becomes hidden - likely reason: the icons are smaller than the empty placeholder in both directions
-
----
-
-COOL
-
----
 
 Since we calculate average damage, it could be cool to have MIN and MAX in a graph with colored areas - or even cooler: percentage based with colored areas (would require to do calculations on ALL damage instances though).
 
----
-
-Priority
-
----
-
-1. Fix basics
-   (In Progress) Design table: use cool icons. Make them clickable like the Sidebar (show/hide certain columns or groups of the table?)
-   (In Progress) Style the sidebar to look more like the table
-
-(Pending) Find all types of buffs/debuffs in the game and implement helper functions (in their own file?) to handle them - that let's us several buffs with different names, as long as we give them an effect that matches some expected behaviour
-
-OR
-
-(Pending) Clean up and Refactor code
-
-(Pending) use custom component for the 2 table Selectors - that way we can style them EXACTLY like we want, for example making them transparent
-
-(Pending) Implement tests on all functions that can be reasonably tested
-
-(Pending) Graphs that show the current performance in real-time (timeline up-down line graph & pie-charts)
-
-(Pending) When deleting rows, set TODO: updated damage logs (unless damage logs are saved in snapshot? Despite not being shown in table)
 (Pending) Consider: when deleting rows, red highlight-fadeout effect before they are deleted
-(Pending) Rows should have ON-CLICK that inspects the data associated with snapshot/logged damage
 
 Allow multi-instance battle timeline -> Track boss HP - when dead, automatically proceed to next boss in the list.
-Take the new 3.0 break mechanic into account
-
-Future refactor:
-
----
-
-1. State management
-
-Overvej at bruge Zustand eller React Context:
-
-- snapshots og charactersInBattle som global state
-- Reducer-style handlinger: ADD_SNAPSHOT, UPDATE_ACTION, RESET_CONCERTO
-  Dette gør undo/redo og multi-component updates lettere
-
----
-
-2. Performance og andet
-
-Virtualized table: Brug @tanstack/react-virtual til BodyRows
-Memoize:
-
-- tableConfig via useMemo
-- Render-funktioner for kolonner
-  Lazy load tunge sider: RotationEditor, Analytics
-
----
-
-Future styling:
-
----
-
-1. Erstat <table> og <select> med MUI:
-
-<TableContainer>, <Table>, <TableHead>, <TableBody>, <TableRow>, <TableCell>
-
-<Select> + <MenuItem> for dropdowns
-
-<TextField> til input
-
-<Button> og <IconButton> til handlinger
-
-Brug <Box> + MUI sx eller @emotion/styled til layout og spacing
-
-Implementer MUI Theme (farver, typography, spacing) for konsistens
-
----
-
-2. Styling
-
-Nu:
-Tailwind CSS + custom CSS
-
-Fremtid:
-Flyt alt table- og layout-styling til MUI komponenter
-Brug emotion styled eller sx props til custom styling
-Brug MUI tokens (palette, spacing, typography) i stedet for hardcoded CSS
-
-Future testing:
-
----
-
-3. Developer Experience
-
-Storybook til komponentudvikling (tables, dropdowns, lightbox)
-Vitest til unit tests af engine-moduler (damageCalculator, buffManager)
-Husky + lint-staged til pre-commit
-Eventuelt Zod til runtime validation af snapshots og actions
-
----
 
 TODO Prioritering
 
@@ -217,8 +180,73 @@ Lav (fremtid):
 - Settings page
 - Pie charts visualisering
 
+---
 
-_________________________________________________________________________________________________
+---
+
+---
+
+---
+
+---
+
+## MODIFIERS
+
+---
+
+---
+
+---
+
+---
+
+The modifier system is now implemented with the following flow:
+
+1.  Resolver 0 (buildStepContext):
+    Handles swap-based expiration if a character swap occurred
+    Updates swapsLeft counter and removes expired modifiers
+2.  Resolver 2 (resolveDamageModifiers):
+    Collects all modifier blueprints from character/action/negative statuses
+    Activates new limited modifiers → creates ModifierInAction
+    Handles stacking (adds stacks, resets timers if configured)
+    Filters applicable modifiers (target strategy + permanent vs active)
+    Applies stack multipliers and aggregates stats
+3.  Resolver 5 (resolveModifierState):
+    Updates time-based modifiers (decrements timeLeft)
+    Removes stacks/expires modifiers when duration runs out
+    Key Design Decisions:
+    Permanent modifiers: Don't create ModifierInAction, applied directly each step
+    Limited modifiers: Create ModifierInAction to track stacks/time/swaps
+    Stacking: Handled in activateModifiers (adds to existing or creates new)
+    Target strategies: Filtered in filterApplicableModifiers
+    Stack multiplier: Applied before aggregating stats
+    TODO - Future improvements:
+    Normalize damage source interface (action, negative status, coordinated attack, etc.)
+    Allow modifiers from triggers (e.g., "on basic attack, gain buff for 5s")
+    Consider buff/debuff display columns in table
+
+---
+
+---
+
+---
+
+---
+
+---
+
+---
+
+## ALGORITHMS
+
+---
+
+---
+
+---
+
+---
+
 // Best opening:
 // Skill 1
 // Air 1-2
@@ -234,40 +262,41 @@ ________________________________________________________________________________
 // 5.21 seconds = 100 concerto + swap + 20 extra concerto
 // All other rotations now only need to generate 80 concerto now (40 if counting liberation + skill 3 quickswap ending)
 
-_________________________________________________________________________________________________
+---
+
 // Other rotations:
 // Gain 120 windstring as fast as possible - you'll probably have enough concerto no matter what
 
-_________________________________________________________________________________________________
+---
 
 // NOTE: Can you transform to Fleurdelys to activate mandate, then go back in cartethyia form and make use of the Aero Erosion DMG buff on 3 swords plunge (once or twice)? (even if it works, need time to use liberation)
 
-_________________________________________________________________________________________________
+---
 
 // Try this TEAM OPENING:
-// Cartethyia -  Skill (swap cancel) (echo)
-// Ciaconna   -  Skill (swap cancel) (echo if sword one)
-// Rover      -  Skill 1 (echo)
-// Rover      -  Air 1-2
-// Rover      -  Plunge (swap cancel)
-// Ciaconna   -  Plunge + BA4 (swap cancel)
-// Rover      -  Skill 1
-// Rover      -  Air 1-2
-// Rover      -  Plunge (swap cancel)
-// Ciaconna   -  Plunge + BA4 (swap cancel) (echo if weird one)
-// Rover      -  Skill 1 (cancel with liberation)
-// Rover      -  Liberation
-// Rover      -  Skill 3 (swap cancel instantly)
-// Ciaconna   -  Intro
-// Ciaconna   -  Forte
-// Ciaconna   -  (Skill if needed)
-// Ciaconna   -  Liberation
-// Cartethyia -  Intro
-// Cartethyia -  BA2-4
-// Cartethyia -  Plunge (3 swords) (worth swapping to rover here for plunge + skill 1 swap cancel?)
-// Cartethyia -  BA1-4 (or skip second round?)
-// Cartethyia -  Heavy
-// Cartethyia -  Skill
-// Cartethyia -  Plunge (3 swords)
-// Cartethyia -  Transform
-// Cartethyia -  Some cool Cartethyia/Rover quickswap shit
+// Cartethyia - Skill (swap cancel) (echo)
+// Ciaconna - Skill (swap cancel) (echo if sword one)
+// Rover - Skill 1 (echo)
+// Rover - Air 1-2
+// Rover - Plunge (swap cancel)
+// Ciaconna - Plunge + BA4 (swap cancel)
+// Rover - Skill 1
+// Rover - Air 1-2
+// Rover - Plunge (swap cancel)
+// Ciaconna - Plunge + BA4 (swap cancel) (echo if weird one)
+// Rover - Skill 1 (cancel with liberation)
+// Rover - Liberation
+// Rover - Skill 3 (swap cancel instantly)
+// Ciaconna - Intro
+// Ciaconna - Forte
+// Ciaconna - (Skill if needed)
+// Ciaconna - Liberation
+// Cartethyia - Intro
+// Cartethyia - BA2-4
+// Cartethyia - Plunge (3 swords) (worth swapping to rover here for plunge + skill 1 swap cancel?)
+// Cartethyia - BA1-4 (or skip second round?)
+// Cartethyia - Heavy
+// Cartethyia - Skill
+// Cartethyia - Plunge (3 swords)
+// Cartethyia - Transform
+// Cartethyia - Some cool Cartethyia/Rover quickswap shit

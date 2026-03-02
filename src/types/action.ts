@@ -7,7 +7,7 @@ import type { SideEffect, StatusModification } from './sideEffect'
 
 export type Action = {
   name: string
-  displayName?: string // TODO: if displayName exists use it in certain places like: selectors, timeline - not in places with lots of space and details
+  displayName?: string
   castTime: number
   multiplier: number
   scaling: ScalingType
@@ -25,37 +25,11 @@ export type Action = {
   castConditions: CastConditions
   offtune: number
 
-  toolTip?: string // TODO : when hovered in selector, it shows tooltip - "Can only be used after Intro" "Assumes all 3 swords have been used"
+  toolTip?: string
 }
 
 export type CastConditions = {
-  // TODO: redo resolvers flow and use new types - put into own types files
   startState: Position
   previousActions?: Action[]
   endState: Position
-}
-
-// ============================================================
-
-// TODO: do we want/even need these?
-type BasicsStage = {
-  multipliers: number[]
-  energiesGenerated: EnergyGeneration[][]
-  statusModifications: StatusModification[]
-  damageModifiers: DamageModifier[]
-  sideEffects: SideEffect[]
-  other: {
-    hardness: number
-    toughness: number
-    offtune: number
-  }
-}
-
-export type BasicsData = {
-  scaling: ScalingType
-  elements: ElementType[]
-  dmgTypes: DamageType[]
-  cooldown: number
-  castConditions: CastConditions
-  stages: Record<number, BasicsStage>
 }

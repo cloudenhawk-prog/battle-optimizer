@@ -14,12 +14,11 @@ export type Character = {
   damageModifiers: DamageModifier[]
 }
 
-// TODO - define data that later can be combined into a character object (resolve gear, echoes etc into stats, actions, modifiers)
 export type CharacterData = {
   name: string
   actions: Action[]
   maxEnergies: Partial<Record<EnergyType, number>>
-  baseStats: Partial<CharacterStats> // TODO: make sure partial stats are handled
+  baseStats: Partial<CharacterStats>
   inherentStats: Partial<CharacterStats>
   gear: Gear
 }

@@ -771,8 +771,6 @@ export function DamageTimeline({ snapshots, damageEvents = [], selectedCharacter
     return CHART_HEIGHT - CHART_PADDING_BOTTOM - (v / maxValue) * USABLE_HEIGHT
   }
 
-  // TODO: Line path calculation will be implemented here
-
   // Y-axis ticks
   const yTicks = useMemo(() => {
     const count = 5
@@ -792,7 +790,7 @@ export function DamageTimeline({ snapshots, damageEvents = [], selectedCharacter
     return ticks
   }, [maxTime, timeToX])
 
-  // TODO: Hover handlers for interactive data points
+  // Hover handlers for interactive data points
   // const handlePointHover = useCallback((data: any, e: React.MouseEvent) => {
   //   const rect = containerRef.current?.getBoundingClientRect()
   //   if (!rect) return
@@ -951,9 +949,6 @@ export function DamageTimeline({ snapshots, damageEvents = [], selectedCharacter
                             {block.attribution.length > 12 && w < 80 ? block.attribution.slice(0, 10) + '…' : block.attribution}
                           </text>
                         )}
-
-                        {/* TODO: Individual data points (squares) will be rendered here */}
-                        {/* These represent individual hits/subactions within the block */}
                       </g>
                     )
                   })}
@@ -1108,9 +1103,6 @@ export function DamageTimeline({ snapshots, damageEvents = [], selectedCharacter
 
                 {/* Baseline */}
                 <line x1={CHART_PADDING_LEFT} y1={CHART_HEIGHT - CHART_PADDING_BOTTOM} x2={chartWidth - CHART_PADDING_RIGHT} y2={CHART_HEIGHT - CHART_PADDING_BOTTOM} stroke="rgba(255, 255, 255, 0.08)" />
-
-                {/* TODO: Chart data visualization (line/area) will be rendered here */}
-                {/* Data points as squares colored by character */}
 
                 {/* Axis labels */}
                 <text x={CHART_PADDING_LEFT - 8} y={CHART_PADDING_TOP - 12} textAnchor="end" className="timeline-axis-title">
