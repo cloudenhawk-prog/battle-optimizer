@@ -33,16 +33,36 @@ export function BodyRow({ snapshot, charactersInBattle, tableConfig, onSelectCha
         // avoid opening overlay when interacting with form controls inside the row
         const el = e.target as HTMLElement
         if (el.closest('select') || el.closest('button') || el.closest('input')) return
+        // Also avoid opening when clicking on ActionSelect dropdown elements (which are portaled)
+        if (el.closest('.actionSelectDropdown') || el.closest('.actionSelectWrapper')) return
         onRowClick?.(snapshot)
       }}>
       {/* Character select */}
       <td className="tableCellBody">
-        <CharacterSelect value={character} characters={charactersInBattle} onChange={characterName => onSelectCharacter(snapshotId, characterName)} />
+        <CharacterSelect
+          value={character}
+          characters={charactersInBattle}
+          onChange={characterName => {
+            console.log('📍 BodyRow - CharacterSelect onChange:', { snapshotId, characterName })
+            onSelectCharacter(snapshotId, characterName)
+          }}
+        />
       </td>
 
       {/* Action select */}
       <td className="tableCellBody">
-        <ActionSelect value={action} actions={charactersInBattle.find(c => c.name === character)?.actions ?? []} character={charactersInBattle.find(c => c.name === character)} currentEnergies={snapshot.charactersEnergies[character]} snapshot={snapshot} onChange={actionName => onSelectAction(snapshotId, actionName)} disabled={!character} />
+        <ActionSelect
+          value={action}
+          actions={charactersInBattle.find(c => c.name === character)?.actions ?? []}
+          character={charactersInBattle.find(c => c.name === character)}
+          currentEnergies={snapshot.charactersEnergies[character]}
+          snapshot={snapshot}
+          onChange={actionName => {
+            console.log('📍 BodyRow - ActionSelect onChange:', { snapshotId, actionName })
+            onSelectAction(snapshotId, actionName)
+          }}
+          disabled={!character}
+        />
       </td>
 
       {/* Basic columns */}

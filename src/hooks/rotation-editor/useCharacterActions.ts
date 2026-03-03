@@ -50,20 +50,52 @@ export function useCharacterActions({ setSnapshots, charactersInBattle, enemy, t
   const modifiersInAction = useRef<ModifierInAction[]>([])
 
   const handleCharacterSelect = (snapshotId: number, characterName: string) => {
-    setSnapshots(prev => prev.map(s => (Number(s.id) === snapshotId ? { ...s, character: characterName, action: '' } : s)).filter(s => Number(s.id) <= snapshotId))
+    console.log('🔵 handleCharacterSelect called:', { snapshotId, characterName })
+    setSnapshots(prev => {
+      console.log(
+        '🔵 Previous snapshots:',
+        prev.map(s => ({ id: s.id, char: s.character, action: s.action })),
+      )
+
+      // Update the character for the specified snapshot and clear its action
+      const updated = prev.map(s => (Number(s.id) === snapshotId ? { ...s, character: characterName, action: '' } : s))
+
+      // Keep all snapshots up to and including the current one, plus one blank row after
+      const currentIndex = updated.findIndex(s => Number(s.id) === snapshotId)
+      if (currentIndex === -1) return updated
+
+      // Keep snapshots up to current + 1 (the blank row)
+      const result = updated.slice(0, currentIndex + 2)
+      console.log(
+        '🔵 Updated snapshots:',
+        result.map(s => ({ id: s.id, char: s.character, action: s.action })),
+      )
+      return result
+    })
   }
 
   const handleActionSelect = (snapshotId: number, actionName: string) => {
+    console.log('🟢 handleActionSelect called:', { snapshotId, actionName })
     setSnapshots(prevSnapshots => {
+      console.log(
+        '🟢 Previous snapshots:',
+        prevSnapshots.map(s => ({ id: s.id, char: s.character, action: s.action })),
+      )
       let updated = copySnapshots(prevSnapshots)
 
       if (shouldTriggerOutroIntro(updated, snapshotId)) {
+        console.log('🟡 Triggering Outro/Intro flow')
         updated = handleOutroIntroFlow({ snapshots: updated, snapshotId, charactersMap, characterColumnsMap, globalColumns, enemy, setDamageEvents, negativeStatusesInAction, modifiersInAction })
         snapshotId += 2
       }
 
+      console.log('🟢 Calling updateSnapshotsWithAction:', { snapshotId, actionName })
       updated = updateSnapshotsWithAction({ snapshots: updated, snapshotId, actionName, charactersMap, characterColumnsMap, globalColumns, enemy, setDamageEvents, negativeStatusesInAction, modifiersInAction })
 
+      console.log(
+        '🟢 Final updated snapshots:',
+        updated.map(s => ({ id: s.id, char: s.character, action: s.action })),
+      )
       return updated
     })
   }
@@ -74,11 +106,22 @@ export function useCharacterActions({ setSnapshots, charactersInBattle, enemy, t
 // ========== Internal Helpers =================================================================================================
 
 function updateSnapshotsWithAction(params: { snapshots: Snapshot[]; snapshotId: number; actionName: string; charactersMap: Record<string, Character>; characterColumnsMap: Record<string, string[]>; globalColumns: GlobalColumns; enemy: Enemy; setDamageEvents: Dispatch<SetStateAction<DamageEvent[]>>; negativeStatusesInAction: React.MutableRefObject<NegativeStatusInAction[]>; modifiersInAction: React.MutableRefObject<ModifierInAction[]> }): Snapshot[] {
+  console.log('🟣 updateSnapshotsWithAction:', { snapshotId: params.snapshotId, actionName: params.actionName })
+
   // -------- Validate Input --------------------
   const validated = validateActionInputs(params)
-  if (!validated) return params.snapshots
-  const { index, character, action, snapshots, current, prev, enemy, negativeStatusesInAction, modifiersInAction, charactersMap, characterColumnsMap, globalColumns, setDamageEvents } = validated
+  if (!validated) {
+    console.log('❌ Validation failed!')
+    return params.snapshots
+  }
+  console.log('✅ Validation passed:', { index: validated.index, character: validated.character.name, action: validated.action.name })
+
+  const { index, character, action, snapshots, prev, enemy, negativeStatusesInAction, modifiersInAction, charactersMap, characterColumnsMap, globalColumns, setDamageEvents } = validated
   const updatedSnapshots = copySnapshots(snapshots)
+
+  // Get the current snapshot from the COPIED array, not the original
+  const current = updatedSnapshots[index]
+  console.log('🟣 Current snapshot before resolvers:', { id: current.id, char: current.character, action: current.action })
 
   // -------- Resolvers -------------------------
   const context = buildStepContext(index, current, prev, character, action, enemy, negativeStatusesInAction.current, modifiersInAction.current, charactersMap)
@@ -102,12 +145,18 @@ function updateSnapshotsWithAction(params: { snapshots: Snapshot[]; snapshotId: 
 
   // -------- Update snapshot -------------------
   updatedSnapshots[index] = { ...context.current }
+  console.log('🟣 Snapshot after resolvers:', { id: updatedSnapshots[index].id, char: updatedSnapshots[index].character, action: updatedSnapshots[index].action })
 
   // -------- Create Next Blank Snapshot --------
   if (index === updatedSnapshots.length - 1) {
+    console.log('🟣 Creating next blank snapshot')
     updatedSnapshots.push(createSnapshot(updatedSnapshots[updatedSnapshots.length - 1], charactersMap, characterColumnsMap, globalColumns))
   }
 
+  console.log(
+    '🟣 Returning updated snapshots:',
+    updatedSnapshots.map(s => ({ id: s.id, char: s.character, action: s.action })),
+  )
   return updatedSnapshots
 }
 
@@ -159,16 +208,32 @@ function validateActionInputs(params: { snapshots: Snapshot[]; snapshotId: numbe
   const { snapshots, snapshotId, actionName, enemy, negativeStatusesInAction, modifiersInAction, charactersMap, characterColumnsMap, globalColumns, setDamageEvents } = params
 
   const index = getSnapshotIndex(snapshots, snapshotId)
-  if (index === -1) return null
+  console.log('🔍 validateActionInputs - index:', index)
+  if (index === -1) {
+    console.log('❌ Invalid index')
+    return null
+  }
 
   const current = snapshots[index]
-  if (!current.character) return null
+  console.log('🔍 validateActionInputs - current snapshot:', { id: current.id, char: current.character })
+  if (!current.character) {
+    console.log('❌ No character in current snapshot')
+    return null
+  }
 
   const character = getCharacter(charactersMap, current.character)
-  if (!character) return null
+  console.log('🔍 validateActionInputs - character found:', character?.name)
+  if (!character) {
+    console.log('❌ Character not found in charactersMap')
+    return null
+  }
 
   const action = getActionFromCharacter(charactersMap, current.character, actionName)
-  if (!action) return null
+  console.log('🔍 validateActionInputs - action found:', action?.name)
+  if (!action) {
+    console.log('❌ Action not found')
+    return null
+  }
 
   const prev = getPrevSnapshot(snapshots, index)
 

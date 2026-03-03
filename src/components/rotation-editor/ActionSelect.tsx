@@ -37,8 +37,15 @@ export function ActionSelect({ value, actions, character, currentEnergies, snaps
   // Close dropdown when clicking outside
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
-      if (dropdownRef.current && !dropdownRef.current.contains(event.target as Node)) {
+      console.log('🖱️ Click detected, checking if outside dropdown')
+      const clickedButton = buttonRef.current && buttonRef.current.contains(event.target as Node)
+      const clickedDropdown = dropdownRef.current && dropdownRef.current.contains(event.target as Node)
+
+      if (!clickedButton && !clickedDropdown) {
+        console.log('✅ Click was outside, closing dropdown')
         setIsOpen(false)
+      } else {
+        console.log('❌ Click was inside dropdown or button, keeping it open')
       }
     }
 
@@ -102,13 +109,27 @@ export function ActionSelect({ value, actions, character, currentEnergies, snaps
   const selectedAction = actionStates.find(s => s.isCurrent)
   const displayText = selectedAction ? selectedAction.action.name : '-- Select Action --'
 
+  console.log('🔧 ActionSelect render:', {
+    value,
+    actionsCount: actions.length,
+    disabled,
+    actionStates: actionStates.map(s => ({
+      name: s.action.name,
+      isCurrent: s.isCurrent,
+      isUnaffordable: s.isUnaffordable,
+      isOnCooldown: s.isOnCooldown,
+      isSpecial: s.isSpecial,
+    })),
+  })
+
   const handleSelect = (actionName: string) => {
+    console.log('🎯 ActionSelect - handleSelect called:', actionName)
     onChange(actionName)
     setIsOpen(false)
   }
 
   return (
-    <div className="actionSelectWrapper" ref={dropdownRef}>
+    <div className="actionSelectWrapper">
       <button ref={buttonRef} className="actionSelectButton" onClick={() => !disabled && setIsOpen(!isOpen)} disabled={disabled} type="button">
         <span>{displayText}</span>
         <span className="actionSelectArrow">{isOpen ? '▲' : '▼'}</span>
@@ -117,6 +138,7 @@ export function ActionSelect({ value, actions, character, currentEnergies, snaps
       {isOpen &&
         createPortal(
           <div
+            ref={dropdownRef}
             className="actionSelectDropdown"
             style={{
               top: `${dropdownPosition.top}px`,
@@ -149,7 +171,24 @@ export function ActionSelect({ value, actions, character, currentEnergies, snaps
                   const canSelect = !isDisabled
 
                   return (
-                    <div key={action.name} className={`actionSelectRow ${isDisabled ? 'disabled' : ''} ${isCurrent ? 'selected' : ''} ${canSelect ? 'selectable' : ''}`} onClick={() => canSelect && handleSelect(action.name)}>
+                    <div
+                      key={action.name}
+                      className={`actionSelectRow ${isDisabled ? 'disabled' : ''} ${isCurrent ? 'selected' : ''} ${canSelect ? 'selectable' : ''}`}
+                      onClick={() => {
+                        console.log('🖱️ Action row clicked:', {
+                          actionName: action.name,
+                          canSelect,
+                          isDisabled,
+                          isUnaffordable,
+                          isOnCooldown,
+                          isCurrent,
+                        })
+                        if (canSelect) {
+                          handleSelect(action.name)
+                        } else {
+                          console.log('⚠️ Action not selectable!')
+                        }
+                      }}>
                       <div className="actionSelectCell actionNameCell">{action.name}</div>
                       <div className="actionSelectCell actionCooldownCell">{isOnCooldown ? `${cooldownRemaining.toFixed(1)}s` : ''}</div>
                       <div className="actionSelectCell actionEnergyCell">{missingEnergy.length > 0 ? <span className="energyMissing">{missingEnergy.map(e => `${e.current}/${e.needed} ${e.type}`).join(', ')}</span> : action.energyCost.length > 0 ? <span className="energyOk">✓</span> : ''}</div>
