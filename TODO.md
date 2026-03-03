@@ -75,9 +75,7 @@ In StatusModification type under sideEffects.ts, is 'buff/Debuff' ever used? Can
 
 # Table/Snapshot/Resolvers:
 
-    (IN PROGRESS) It should be possible to lower skill CD - for example Cartethyia when consuming swords (1s each I think)
-
-    (IN PROGRESS) Create custom component to selectors/hover - so we can add information like cooldowns, details, and potentially why an action is greyed out -> would also be cool if the selector list showed all CD beside their names!
+    (IN PROGRESS) It should be possible to lower skill CD - for example Cartethyia when consuming swords (1s each I think) (check if CDs work correctly, also in selectors)
 
 Dupe row button -> if you wish to cast the same action again
 
