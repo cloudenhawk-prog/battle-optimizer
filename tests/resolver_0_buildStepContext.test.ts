@@ -15,10 +15,11 @@ describe('buildStepContext', () => {
       const action = createMockAction('BasicAttack', { castTime: 2.5 })
       const enemy = createMockEnemy()
       const negativeStatuses = createMockNegativeStatuses()
+      const modifiersInAction: any[] = []
       const characterMap = { TestChar: character }
 
       // Act
-      const context = buildStepContext(snapshotId, current, prev, character, action, enemy, negativeStatuses, characterMap)
+      const context = buildStepContext(snapshotId, current, prev, character, action, enemy, negativeStatuses, modifiersInAction, characterMap)
 
       // Assert - context holds references (not copies)
       expect(context.snapshotId).toBe(snapshotId)
@@ -58,7 +59,7 @@ describe('buildStepContext', () => {
         const action = createMockAction('Action', { castTime })
         const characterMap = { TestChar: character }
 
-        const context = buildStepContext(1, current, prev, character, action, createMockEnemy(), [], characterMap)
+        const context = buildStepContext(1, current, prev, character, action, createMockEnemy(), [], [], characterMap)
 
         expect(context.fromTime).toBe(expectedFrom)
         expect(context.toTime).toBe(expectedTo)
@@ -75,7 +76,7 @@ describe('buildStepContext', () => {
       const ally2 = createMockCharacter('Ally2')
       const characterMap = { MainChar: character, Ally1: ally1, Ally2: ally2 }
 
-      const context = buildStepContext(1, current, prev, character, createMockAction('BasicAttack'), createMockEnemy(), [], characterMap)
+      const context = buildStepContext(1, current, prev, character, createMockAction('BasicAttack'), createMockEnemy(), [], [], characterMap)
 
       expect(context.allies).toHaveLength(2)
       expect(context.allies).toContain(ally1)
@@ -85,11 +86,11 @@ describe('buildStepContext', () => {
 
     it('should handle edge cases: solo character and empty map', () => {
       const solo = createMockCharacter('Solo')
-      const ctx1 = buildStepContext(1, createMockSnapshot({ id: '1' }), createMockSnapshot({ id: '0', toTime: 0 }), solo, createMockAction('Action'), createMockEnemy(), [], { Solo: solo })
+      const ctx1 = buildStepContext(1, createMockSnapshot({ id: '1' }), createMockSnapshot({ id: '0', toTime: 0 }), solo, createMockAction('Action'), createMockEnemy(), [], [], { Solo: solo })
       expect(ctx1.allies).toEqual([])
 
       // Empty map
-      const ctx2 = buildStepContext(1, createMockSnapshot({ id: '1' }), createMockSnapshot({ id: '0', toTime: 0 }), solo, createMockAction('Action'), createMockEnemy(), [], {})
+      const ctx2 = buildStepContext(1, createMockSnapshot({ id: '1' }), createMockSnapshot({ id: '0', toTime: 0 }), solo, createMockAction('Action'), createMockEnemy(), [], [], {})
       expect(ctx2.allies).toEqual([])
     })
   })
@@ -116,7 +117,7 @@ describe('buildStepContext', () => {
       const characterMap = { TestChar: character }
 
       // Act
-      buildStepContext(5, current, prev, character, action, createMockEnemy(), [], characterMap)
+      buildStepContext(5, current, prev, character, action, createMockEnemy(), [], [], characterMap)
 
       // Assert - ONLY action changes
       expect(current.action).toBe('NewAction')
@@ -139,7 +140,7 @@ describe('buildStepContext', () => {
       })
       const prevSnapshot = JSON.parse(JSON.stringify(prev))
 
-      buildStepContext(5, createMockSnapshot({ id: '5' }), prev, createMockCharacter('Char'), createMockAction('Action'), createMockEnemy(), [], { Char: createMockCharacter('Char') })
+      buildStepContext(5, createMockSnapshot({ id: '5' }), prev, createMockCharacter('Char'), createMockAction('Action'), createMockEnemy(), [], [], { Char: createMockCharacter('Char') })
 
       expect(prev).toEqual(prevSnapshot)
     })

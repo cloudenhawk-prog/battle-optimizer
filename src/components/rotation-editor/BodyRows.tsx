@@ -2,7 +2,8 @@ import '../../styles/rotation-editor/BodyRows.css'
 import type { Character } from '../../types/character'
 import type { ColumnDef, TableConfig, ColumnVisibility } from '../../types/tableDefinitions'
 import type { Snapshot } from '../../types/snapshot'
-import { buildActionOptions } from '../../utils/selectors/selectorHelpers'
+import { CharacterSelect } from './CharacterSelect'
+import { ActionSelect } from './ActionSelect'
 
 // ========== Component: Body Row ==============================================================================================
 
@@ -36,27 +37,12 @@ export function BodyRow({ snapshot, charactersInBattle, tableConfig, onSelectCha
       }}>
       {/* Character select */}
       <td className="tableCellBody">
-        <select className="selectInput" value={character} onChange={e => onSelectCharacter(snapshotId, e.target.value)}>
-          <option value="">-- Select Character --</option>
-          {charactersInBattle.map(c => (
-            <option key={c.name} value={c.name}>
-              {c.name}
-            </option>
-          ))}
-        </select>
+        <CharacterSelect value={character} characters={charactersInBattle} onChange={characterName => onSelectCharacter(snapshotId, characterName)} />
       </td>
 
       {/* Action select */}
       <td className="tableCellBody">
-        <select className="selectInput" value={action} onChange={e => onSelectAction(snapshotId, e.target.value)} disabled={!character}>
-          <option value="">-- Select Action --</option>
-          {buildActionOptions(
-            charactersInBattle.find(c => c.name === character)?.actions ?? [],
-            action,
-            charactersInBattle.find(c => c.name === character),
-            snapshot.charactersEnergies[character],
-          )}
-        </select>
+        <ActionSelect value={action} actions={charactersInBattle.find(c => c.name === character)?.actions ?? []} character={charactersInBattle.find(c => c.name === character)} currentEnergies={snapshot.charactersEnergies[character]} snapshot={snapshot} onChange={actionName => onSelectAction(snapshotId, actionName)} disabled={!character} />
       </td>
 
       {/* Basic columns */}

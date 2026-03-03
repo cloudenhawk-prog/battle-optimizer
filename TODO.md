@@ -75,7 +75,11 @@ In StatusModification type under sideEffects.ts, is 'buff/Debuff' ever used? Can
 
 # Table/Snapshot/Resolvers:
 
-Cooldowns : when implemented there should be ways to lower them. Cartethyia lowers skill CD when consuming swords (1s each I think)
+    (IN PROGRESS) It should be possible to lower skill CD - for example Cartethyia when consuming swords (1s each I think)
+
+    (IN PROGRESS) Create custom component to selectors/hover - so we can add information like cooldowns, details, and potentially why an action is greyed out -> would also be cool if the selector list showed all CD beside their names!
+
+Dupe row button -> if you wish to cast the same action again
 
 Check Resolver flow - do they have correct numbering? Do they split responsible up nicelly? Where do different things happen?
 
@@ -84,8 +88,6 @@ CastConditions + offtune need logic in resolvers (defined in actions)
 Action Selectors should get an upgrade. Actions should be able to define multiple different 'versions'. When one is hovered/clicked, these options should pop up. Like "Swap Cancel", "Default" - and be enforced: if swap cancel is chosen, the next row will not display that character
 
 Make it possible to delete rows (should character/action become locked when I row is created, or should reselection automatically delete the row(s) and create the new one?)
-
-Since picking a character doesn't do anything until an action is also selected, it's a harmless thing to do. Therefore, when creating a new empty snapshot, might as well pre-select the same character as the previous row, since in most scenarios a character is performing multiple actions before swapping out
 
 Modifiers that only have 1 maxStack, the currentState row should display "ACTIVE" versus "INACTIVE" (with green vs red color text?). Modifiers with more than 1 maxStack should do like now, displaying "currentStacks/maxStacks"
 

@@ -42,7 +42,8 @@ export function activateModifiers(modifiers: DamageModifier[], existingModifiers
 
   for (const modifier of modifiers) {
     // Skip permanent modifiers - they don't need tracking
-    if (modifier.durationStrategy.type === 'permanent') {
+    // Also skip if durationStrategy is missing (treat as permanent for backwards compatibility)
+    if (!modifier.durationStrategy || modifier.durationStrategy.type === 'permanent') {
       continue
     }
 

@@ -13,6 +13,7 @@ import { getNegativeStatusStacks, processNegativeStatusStacks, updateNegativeSta
 import { getCharacterEnergyState, updateEnergyValue } from './energyHelpers'
 import { updateModifiersForSwap, collectAllModifiers, activateModifiers, filterApplicableModifiers, applyStackMultiplier, updateModifiersForTime } from './modifierHelpers'
 import { updateModifierStacks } from './modifierStateHelpers'
+import { updateAllCharactersCooldowns, setActionOnCooldown } from './cooldownHelpers'
 
 // ========== Resolver 0: Build Step Context ==================================================================================
 
@@ -107,7 +108,7 @@ export function resolveDamageModifiers(ctx: StepContext) {
 
   // Step 3: Filter modifiers that apply to current context
   // This includes both permanent modifiers and active limited modifiers
-  const permanentModifiers = allModifiers.filter(mod => mod.durationStrategy.type === 'permanent')
+  const permanentModifiers = allModifiers.filter(mod => !mod.durationStrategy || mod.durationStrategy.type === 'permanent')
   ctx.permanentModifiers = permanentModifiers // Store for later use in resolveModifierState
   const applicableModifiers = filterApplicableModifiers(ctx.modifiersInAction, permanentModifiers, ctx)
 
@@ -117,7 +118,7 @@ export function resolveDamageModifiers(ctx: StepContext) {
   // Step 4: Aggregate stats from applicable modifiers
   for (const modifier of applicableModifiers) {
     // Apply stack multiplier for limited modifiers
-    const stackedModifier = modifier.durationStrategy.type === 'limited' ? applyStackMultiplier(modifier, ctx.modifiersInAction) : modifier
+    const stackedModifier = modifier.durationStrategy && modifier.durationStrategy.type === 'limited' ? applyStackMultiplier(modifier, ctx.modifiersInAction) : modifier
 
     const conditionMultiplier = stackedModifier.condition ? stackedModifier.condition(ctx) : 1
 
@@ -408,7 +409,34 @@ export function resolveResources(ctx: StepContext): void {
   }
 }
 
-// ========== Resolver 8: Events ==============================================================================================
+// ========== Resolver 6: Cooldowns ===========================================================================================
+
+export function resolveCooldowns(ctx: StepContext): void {
+  const current = ctx.current
+  const character = ctx.character
+  const action = ctx.action
+  const allies = ctx.allies
+  const elapsedTime = ctx.toTime - ctx.fromTime
+
+  // Update all characters' cooldowns for the elapsed time
+  const allCharacters = [character, ...allies]
+  current.charactersCooldowns = updateAllCharactersCooldowns(ctx.prev, allCharacters, elapsedTime)
+
+  // Set the used action on cooldown
+  current.charactersCooldowns[character.name] = setActionOnCooldown(current, character.name, action)
+
+  ctx.logs.push({
+    resolver: 'resolveCooldowns',
+    message: `Cooldowns updated: ${action.name} set on ${action.cooldown}s cooldown`,
+    details: {
+      elapsedTime,
+      actionCooldown: action.cooldown,
+      characterCooldowns: current.charactersCooldowns[character.name],
+    },
+  })
+}
+
+// ========== Resolver 7: Events ==============================================================================================
 
 // ========== Internal Helpers ================================================================================================
 

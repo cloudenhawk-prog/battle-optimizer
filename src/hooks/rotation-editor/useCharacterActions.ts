@@ -11,7 +11,7 @@ import { getCharacter, getPrevCharacter } from '../../utils/hooks/characterHelpe
 import { getConcertoValue } from '../../utils/hooks/energyHelpers'
 import { getActionFromCharacter } from '../../utils/hooks/actionHelpers'
 import { getSnapshotIndex, getPrevSnapshot, copySnapshots, getSnapshotById, assignCharacterToRow } from '../../utils/hooks/snapshotHelpers'
-import { buildStepContext, resolveTime, resolveDamageModifiers, resolveDamage, resolveSideEffectsAndStatuses, resolveModifierState, resolveResources } from '../../utils/hooks/resolvers'
+import { buildStepContext, resolveTime, resolveDamageModifiers, resolveDamage, resolveSideEffectsAndStatuses, resolveModifierState, resolveResources, resolveCooldowns } from '../../utils/hooks/resolvers'
 import { negativeStatuses as negativeStatusesData } from '../../data/negativeStatuses'
 import { createSnapshot } from '../../utils/hooks/snapshotHelpers'
 
@@ -94,6 +94,8 @@ function updateSnapshotsWithAction(params: { snapshots: Snapshot[]; snapshotId: 
   resolveModifierState(context)
 
   resolveResources(context)
+
+  resolveCooldowns(context)
 
   // -------- Update modifiersInAction ref ------
   modifiersInAction.current = context.modifiersInAction

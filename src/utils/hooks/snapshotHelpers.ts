@@ -28,8 +28,11 @@ export function assignCharacterToRow(row: Snapshot, character: string): Snapshot
   return { ...row, character }
 }
 
-export function createSnapshot(previousSnapshot: Snapshot, charactersMap: Record<string, Character>, _characterColumnsMap: Record<string, string[]>, globalColumns: GlobalColumns): Snapshot {
+export function createSnapshot(previousSnapshot: Snapshot, charactersMap: Record<string, Character>, _characterColumnsMap: Record<string, string[]>, globalColumns: GlobalColumns, fillInCharacter: boolean = true): Snapshot {
   const charactersEnergies = Object.fromEntries(Object.keys(charactersMap).map(charName => [charName, { ...previousSnapshot.charactersEnergies[charName] }]))
+
+  // Copy cooldowns from previous snapshot to carry them forward
+  const charactersCooldowns = Object.fromEntries(Object.keys(charactersMap).map(charName => [charName, { ...(previousSnapshot.charactersCooldowns?.[charName] ?? {}) }]))
 
   const basicValues = Object.fromEntries(globalColumns.basic.map(col => [col, 0]))
   const buffs = Object.fromEntries(globalColumns.buffs.map(col => [col, 0]))
@@ -42,7 +45,7 @@ export function createSnapshot(previousSnapshot: Snapshot, charactersMap: Record
 
   return {
     id: String(Number(previousSnapshot.id) + 1),
-    character: '',
+    character: fillInCharacter ? previousSnapshot.character : '',
     action: '',
     fromTime: 0,
     toTime: 0,
@@ -60,5 +63,6 @@ export function createSnapshot(previousSnapshot: Snapshot, charactersMap: Record
     debuffsMaxStacks,
     negativeStatuses,
     negativeStatusesTimeLeft: Object.fromEntries(globalColumns.negativeStatuses.map(col => [col, 0])),
+    charactersCooldowns,
   }
 }

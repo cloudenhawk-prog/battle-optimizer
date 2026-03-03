@@ -1,0 +1,37 @@
+/* -------------- Character Select ----------------- */
+
+.characterSelect {
+  position: relative;
+  background: var(--table-select-bg);
+  border: 1px solid var(--table-border);
+  border-radius: var(--rows-selectors-corner-radius);
+  padding: var(--rows-selectors-height) var(--rows-selectors-text-left-space);
+
+  font-size: var(--rows-selectors-text-size);
+  color: var(--table-text);
+
+  box-shadow: var(--table-shadow-select);
+  width: 100%;
+  cursor: pointer;
+  z-index: 10000;
+}
+
+.characterSelect:hover {
+  border-color: var(--table-hover-border);
+}
+
+.characterSelect:focus {
+  outline: none;
+  border-color: var(--table-hover-border);
+  box-shadow: 0 0 0 2px rgba(255, 255, 255, 0.1);
+}
+
+.characterSelect:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.characterSelect option {
+  color: var(--table-text);
+  background-color: var(--table-bg);
+}
