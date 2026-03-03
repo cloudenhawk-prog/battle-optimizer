@@ -19,5 +19,5 @@ export type Echo = {
   cost: number
   baseStats: Partial<CharacterStats>
   subStats: Partial<CharacterStats>
-  specialStats: Partial<CharacterStats> // TODO: 4 cost echoes equipped in main slot can have special stats - only 1 per character (consider how to implement this)
+  specialStats: Partial<CharacterStats>
 }

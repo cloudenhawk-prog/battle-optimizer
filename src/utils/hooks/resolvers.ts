@@ -13,6 +13,7 @@ import { getNegativeStatusStacks, processNegativeStatusStacks, updateNegativeSta
 import { getCharacterEnergyState, updateEnergyValue } from './energyHelpers'
 import { updateModifiersForSwap, collectAllModifiers, activateModifiers, filterApplicableModifiers, applyStackMultiplier, updateModifiersForTime } from './modifierHelpers'
 import { updateModifierStacks } from './modifierStateHelpers'
+import { updateAllCharactersCooldowns, setActionOnCooldown } from './cooldownHelpers'
 
 // ========== Resolver 0: Build Step Context ==================================================================================
 
@@ -107,7 +108,7 @@ export function resolveDamageModifiers(ctx: StepContext) {
 
   // Step 3: Filter modifiers that apply to current context
   // This includes both permanent modifiers and active limited modifiers
-  const permanentModifiers = allModifiers.filter(mod => mod.durationStrategy.type === 'permanent')
+  const permanentModifiers = allModifiers.filter(mod => !mod.durationStrategy || mod.durationStrategy.type === 'permanent')
   ctx.permanentModifiers = permanentModifiers // Store for later use in resolveModifierState
   const applicableModifiers = filterApplicableModifiers(ctx.modifiersInAction, permanentModifiers, ctx)
 
@@ -117,7 +118,7 @@ export function resolveDamageModifiers(ctx: StepContext) {
   // Step 4: Aggregate stats from applicable modifiers
   for (const modifier of applicableModifiers) {
     // Apply stack multiplier for limited modifiers
-    const stackedModifier = modifier.durationStrategy.type === 'limited' ? applyStackMultiplier(modifier, ctx.modifiersInAction) : modifier
+    const stackedModifier = modifier.durationStrategy && modifier.durationStrategy.type === 'limited' ? applyStackMultiplier(modifier, ctx.modifiersInAction) : modifier
 
     const conditionMultiplier = stackedModifier.condition ? stackedModifier.condition(ctx) : 1
 
@@ -198,8 +199,6 @@ export function resolveSideEffectsAndStatuses(ctx: StepContext, setDamageEvents:
 
   // Negative Statuses
   helpNegativeStatuses(ctx, setDamageEvents, statusModifications)
-
-  // TODO: Buffs & Debuffs
 }
 
 function aggregateStatusModifications(ctx: StepContext) {
@@ -348,15 +347,9 @@ export function resolveModifierState(ctx: StepContext): void {
   })
 }
 
-// ========== Resolver 6: Side Effects ========================================================================================
-
-// TODO
-
 // ========== Resolver 7: Resources ===========================================================================================
 
 export function resolveResources(ctx: StepContext): void {
-  // TODO - error checking
-
   const current = ctx.current
   const character = ctx.character
   const action = ctx.action
@@ -416,7 +409,34 @@ export function resolveResources(ctx: StepContext): void {
   }
 }
 
-// ========== Resolver 8: Events ==============================================================================================
+// ========== Resolver 6: Cooldowns ===========================================================================================
+
+export function resolveCooldowns(ctx: StepContext): void {
+  const current = ctx.current
+  const character = ctx.character
+  const action = ctx.action
+  const allies = ctx.allies
+  const elapsedTime = ctx.toTime - ctx.fromTime
+
+  // Update all characters' cooldowns for the elapsed time
+  const allCharacters = [character, ...allies]
+  current.charactersCooldowns = updateAllCharactersCooldowns(ctx.prev, allCharacters, elapsedTime)
+
+  // Set the used action on cooldown
+  current.charactersCooldowns[character.name] = setActionOnCooldown(current, character.name, action)
+
+  ctx.logs.push({
+    resolver: 'resolveCooldowns',
+    message: `Cooldowns updated: ${action.name} set on ${action.cooldown}s cooldown`,
+    details: {
+      elapsedTime,
+      actionCooldown: action.cooldown,
+      characterCooldowns: current.charactersCooldowns[character.name],
+    },
+  })
+}
+
+// ========== Resolver 7: Events ==============================================================================================
 
 // ========== Internal Helpers ================================================================================================
 
@@ -540,36 +560,3 @@ export function aggregateStat(currentValue: number | undefined, incomingValue: n
 
   return isMultiplier ? current * incomingValue : current + incomingValue
 }
-
-/**
- * IMPLEMENTATION NOTES - Modifier System:
- *
- * The modifier system is now implemented with the following flow:
- *
- * 1. Resolver 0 (buildStepContext):
- *    - Handles swap-based expiration if a character swap occurred
- *    - Updates swapsLeft counter and removes expired modifiers
- *
- * 2. Resolver 2 (resolveDamageModifiers):
- *    - Collects all modifier blueprints from character/action/negative statuses
- *    - Activates new limited modifiers → creates ModifierInAction
- *    - Handles stacking (adds stacks, resets timers if configured)
- *    - Filters applicable modifiers (target strategy + permanent vs active)
- *    - Applies stack multipliers and aggregates stats
- *
- * 3. Resolver 5 (resolveModifierState):
- *    - Updates time-based modifiers (decrements timeLeft)
- *    - Removes stacks/expires modifiers when duration runs out
- *
- * Key Design Decisions:
- * - Permanent modifiers: Don't create ModifierInAction, applied directly each step
- * - Limited modifiers: Create ModifierInAction to track stacks/time/swaps
- * - Stacking: Handled in activateModifiers (adds to existing or creates new)
- * - Target strategies: Filtered in filterApplicableModifiers
- * - Stack multiplier: Applied before aggregating stats
- *
- * TODO - Future improvements:
- * - Normalize damage source interface (action, negative status, coordinated attack, etc.)
- * - Allow modifiers from triggers (e.g., "on basic attack, gain buff for 5s")
- * - Consider buff/debuff display columns in table
- */

@@ -140,6 +140,7 @@ function createInitialSnapshot(): Snapshot {
     debuffsMaxStacks: {},
     negativeStatuses: {},
     negativeStatusesTimeLeft: {},
+    charactersCooldowns: {},
   }
 }
 

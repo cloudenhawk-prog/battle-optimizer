@@ -21,4 +21,5 @@ export interface Snapshot {
   debuffsMaxStacks: Record<string, number>
   negativeStatuses: Record<string, number>
   negativeStatusesTimeLeft: Record<string, number>
+  charactersCooldowns: Record<string, Record<string, number>>
 }

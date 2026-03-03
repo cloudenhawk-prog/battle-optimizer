@@ -28,9 +28,16 @@ export function createMockSnapshot(overrides: Partial<Snapshot> = {}): Snapshot 
     dps: 0,
     charactersEnergies: {},
     buffs: {},
+    buffsTimeLeft: {},
+    buffsSwapsLeft: {},
+    buffsMaxStacks: {},
     debuffs: {},
+    debuffsTimeLeft: {},
+    debuffsSwapsLeft: {},
+    debuffsMaxStacks: {},
     negativeStatuses: {},
     negativeStatusesTimeLeft: {},
+    charactersCooldowns: {},
     ...overrides,
   }
 }

@@ -19,7 +19,7 @@ describe('resolveTime', () => {
         const action = createMockAction('Action', { castTime })
         const characterMap = { Char: character }
 
-        const context = buildStepContext(1, current, prev, character, action, createMockEnemy(), [], characterMap)
+        const context = buildStepContext(1, current, prev, character, action, createMockEnemy(), [], [], characterMap)
         resolveTime(context)
 
         expect(current.fromTime).toBe(expectedFrom)
@@ -35,7 +35,7 @@ describe('resolveTime', () => {
       const action = createMockAction('Action', { castTime: 2.0 })
       const characterMap = { Char: character }
 
-      const context = buildStepContext(5, current, prev, character, action, createMockEnemy(), [], characterMap)
+      const context = buildStepContext(5, current, prev, character, action, createMockEnemy(), [], [], characterMap)
 
       // Act
       resolveTime(context)
@@ -66,7 +66,7 @@ describe('resolveTime', () => {
       const action = createMockAction('Action', { castTime: 2.5 })
       const characterMap = { Char: character }
 
-      const context = buildStepContext(5, current, prev, character, action, createMockEnemy(), [], characterMap)
+      const context = buildStepContext(5, current, prev, character, action, createMockEnemy(), [], [], characterMap)
 
       // Act
       resolveTime(context)
@@ -91,7 +91,7 @@ describe('resolveTime', () => {
       })
       const prevSnapshot = JSON.parse(JSON.stringify(prev))
 
-      const context = buildStepContext(5, createMockSnapshot({ id: '5' }), prev, createMockCharacter('Char'), createMockAction('Action', { castTime: 1.5 }), createMockEnemy(), [], { Char: createMockCharacter('Char') })
+      const context = buildStepContext(5, createMockSnapshot({ id: '5' }), prev, createMockCharacter('Char'), createMockAction('Action', { castTime: 1.5 }), createMockEnemy(), [], [], { Char: createMockCharacter('Char') })
 
       resolveTime(context)
 
@@ -107,7 +107,7 @@ describe('resolveTime', () => {
       const action = createMockAction('Action', { castTime: 2.0 })
       const characterMap = { Char: character }
 
-      const context = buildStepContext(5, current, prev, character, action, createMockEnemy(), [], characterMap)
+      const context = buildStepContext(5, current, prev, character, action, createMockEnemy(), [], [], characterMap)
 
       const initialLogCount = context.logs.length
       const contextFromBefore = context.fromTime

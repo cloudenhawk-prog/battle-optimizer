@@ -6,15 +6,12 @@
   border-radius: var(--table-corner-radius);
   background: var(--table-bg);
   backdrop-filter: var(--table-blur);
-  box-shadow:
-    var(--table-shadow-inner),
-    var(--table-shadow-main),
-    var(--table-shadow-glow);
+  box-shadow: var(--table-shadow-inner), var(--table-shadow-main), var(--table-shadow-glow);
   border: 1px solid var(--table-border);
 }
 
 .tableWrapper::before {
-  content: "";
+  content: '';
   position: absolute;
   inset: 0;
   border-radius: inherit;
@@ -32,13 +29,14 @@
   table-layout: fixed;
   border-collapse: collapse;
   background: transparent;
-  overflow: hidden; 
+  overflow: visible;
   border-radius: inherit;
 }
 
 /* -------------- Table Column Seperators --- */
 
 .charGroupHeader,
-.charGroupBody, .groupHeader {
+.charGroupBody,
+.groupHeader {
   border-left: 1px solid var(--table-border);
 }

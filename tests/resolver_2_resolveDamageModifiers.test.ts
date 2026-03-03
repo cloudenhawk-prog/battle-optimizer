@@ -19,7 +19,7 @@ describe('resolveDamageModifiers', () => {
       })
       const negativeStatuses = [createMockActiveNegativeStatus(burnStatus)]
 
-      const context = buildStepContext(1, createMockSnapshot({ id: '1' }), createMockSnapshot({ id: '0', toTime: 0 }), character, action, createMockEnemy(), negativeStatuses, { TestChar: character })
+      const context = buildStepContext(1, createMockSnapshot({ id: '1' }), createMockSnapshot({ id: '0', toTime: 0 }), character, action, createMockEnemy(), negativeStatuses, [], { TestChar: character })
 
       resolveDamageModifiers(context)
 
@@ -57,9 +57,9 @@ describe('resolveDamageModifiers', () => {
         duration: 5,
         damageModifiers: [{ source: 'status2', characterStats: { bonusATK: 20 } }],
       })
-      const negativeStatuses = [createMockActiveNegativeStatus(status1), createMockActiveNegativeStatus(status2)]
+      const negativeStatuses = [createMockActiveNegativeStatus(burnStatus), createMockActiveNegativeStatus(chillStatus)]
 
-      const context = buildStepContext(1, createMockSnapshot({ id: '1' }), createMockSnapshot({ id: '0', toTime: 0 }), createMockCharacter('TestChar'), createMockAction('Action'), createMockEnemy(), negativeStatuses, { TestChar: createMockCharacter('TestChar') })
+      const context = buildStepContext(1, createMockSnapshot({ id: '1' }), createMockSnapshot({ id: '0', toTime: 0 }), createMockCharacter('TestChar'), createMockAction('Action'), createMockEnemy(), negativeStatuses, [], { TestChar: createMockCharacter('TestChar') })
 
       resolveDamageModifiers(context)
 
@@ -375,7 +375,7 @@ describe('resolveDamageModifiers', () => {
       })
       const negativeStatuses = [createMockActiveNegativeStatus(burnStatus)]
 
-      const context = buildStepContext(1, createMockSnapshot({ id: '1' }), createMockSnapshot({ id: '0', toTime: 0 }), character, action, createMockEnemy(), negativeStatuses, { TestChar: character })
+      const context = buildStepContext(1, createMockSnapshot({ id: '1' }), createMockSnapshot({ id: '0', toTime: 0 }), character, action, createMockEnemy(), negativeStatuses, [], { TestChar: character })
 
       resolveDamageModifiers(context)
 

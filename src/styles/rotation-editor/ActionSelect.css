@@ -1,0 +1,154 @@
+/* -------------- Action Select Wrapper ----------------- */
+
+.actionSelectWrapper {
+  position: relative;
+  width: 100%;
+}
+
+/* -------------- Action Select Button ----------------- */
+
+.actionSelectButton {
+  background: var(--table-select-bg);
+  border: 1px solid var(--table-border);
+  border-radius: var(--rows-selectors-corner-radius);
+  padding: var(--rows-selectors-height) var(--rows-selectors-text-left-space);
+
+  font-size: var(--rows-selectors-text-size);
+  color: var(--table-text);
+
+  box-shadow: var(--table-shadow-select);
+  width: 100%;
+  cursor: pointer;
+
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  text-align: left;
+}
+
+.actionSelectButton:hover {
+  border-color: var(--table-hover-border);
+}
+
+.actionSelectButton:focus {
+  outline: none;
+  border-color: var(--table-hover-border);
+  box-shadow: 0 0 0 2px rgba(255, 255, 255, 0.1);
+}
+
+.actionSelectButton:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.actionSelectArrow {
+  font-size: 0.7em;
+  opacity: 0.7;
+}
+
+/* -------------- Action Select Dropdown ----------------- */
+
+.actionSelectDropdown {
+  position: fixed;
+  margin-top: 4px;
+  background: var(--table-bg);
+  border: 1px solid var(--table-border);
+  border-radius: var(--rows-selectors-corner-radius);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.5);
+  z-index: 10000;
+  max-height: 400px;
+  overflow-y: auto;
+  min-width: 300px;
+
+  /* Hide scrollbar for webkit browsers (Chrome, Safari, Edge) */
+  scrollbar-width: none; /* Firefox */
+  -ms-overflow-style: none; /* IE and Edge */
+}
+
+.actionSelectDropdown::-webkit-scrollbar {
+  display: none; /* Chrome, Safari, Opera */
+}
+
+/* -------------- Action Select Table ----------------- */
+
+.actionSelectTable {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+}
+
+.actionSelectHeader {
+  display: grid;
+  grid-template-columns: 2fr 1fr 1.5fr;
+  gap: 8px;
+  padding: 8px 12px;
+  background: var(--table-bg);
+  border-bottom: 1px solid var(--table-border);
+  font-weight: 600;
+  font-size: 0.85em;
+  color: var(--table-text);
+  position: sticky;
+  top: 0;
+  z-index: 10;
+}
+
+.actionSelectRow {
+  display: grid;
+  grid-template-columns: 2fr 1fr 1.5fr;
+  gap: 8px;
+  padding: 10px 12px;
+  border-bottom: 1px solid var(--table-border);
+  transition: background-color 0.15s ease;
+}
+
+.actionSelectRow:last-child {
+  border-bottom: none;
+}
+
+.actionSelectRow.selectable {
+  cursor: pointer;
+}
+
+.actionSelectRow.selectable:hover {
+  background: var(--table-hover-bg);
+}
+
+.actionSelectRow.disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.actionSelectRow.selected {
+  background: rgba(100, 150, 255, 0.15);
+}
+
+.actionSelectCell {
+  display: flex;
+  align-items: center;
+  font-size: var(--rows-selectors-text-size);
+  color: var(--table-text);
+}
+
+.actionNameCell {
+  font-weight: 500;
+}
+
+.actionCooldownCell,
+.actionEnergyCell {
+  justify-content: center;
+  background: rgba(255, 255, 255, 0.02);
+  padding: 4px 8px;
+  border-radius: 4px;
+}
+
+.energyMissing {
+  color: rgba(255, 120, 120, 1);
+  font-size: 0.9em;
+  font-weight: 500;
+}
+
+.energyOk {
+  color: rgba(120, 255, 150, 1);
+  font-size: 1.2em;
+  font-weight: 600;
+}

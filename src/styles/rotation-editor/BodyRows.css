@@ -6,9 +6,10 @@
   color: var(--table-text);
 
   text-align: center;
-  overflow: hidden;
+  overflow: visible;
   text-overflow: ellipsis;
   white-space: nowrap;
+  position: relative;
 }
 
 /* -------------- Effects ------------------- */
