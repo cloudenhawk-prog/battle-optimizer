@@ -1,5 +1,15 @@
 ### TODO:
 
+Possibility to lower cooldowns (example: Cartethyia when consuming swords)
+
+Selector options: split up in categories (actions should define category)
+Basics: BA, Aerial, Heavy
+Skills: Resonance Skill, Forte, Liberation
+Other: Things that don't fall into these categories?
+Categories can be defined dynamically (agregate all categories and prioritize: basics, skills first, Other last, and everything else in between sorted by name)
+Within each category ORDER BY 'name' or 'number' property
+Columns can have dynamic size to make sure everything fit?
+
 # Timeline:
 
 Linepath Graph : Implement a linepath for the graphs (dps & total dmg)
@@ -74,8 +84,6 @@ Damage Modifiers: Do we need a type for buffs that also or do not affect negativ
 In StatusModification type under sideEffects.ts, is 'buff/Debuff' ever used? Can side effect actually even trigger buffs? Would they need to use Damage Modifiers (since these represet buffs/debuffs)
 
 # Table/Snapshot/Resolvers:
-
-    (IN PROGRESS) It should be possible to lower skill CD - for example Cartethyia when consuming swords (1s each I think) (check if CDs work correctly, also in selectors)
 
 Dupe row button -> if you wish to cast the same action again
 
