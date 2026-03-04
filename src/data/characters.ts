@@ -1,8 +1,8 @@
 import type { Character } from '../types/character'
 import { cartethyia } from './characters/cartethyia'
-import { ciaccona } from './characters/ciaccona'
 import { roverAero } from './characters/roverAero'
+import { ciaccona } from './characters/ciaccona'
 
 // ========== Characters =======================================================================================================
 
-export const characters: Character[] = [cartethyia, roverAero, ciaccona]
+export const characters: Character[] = [cartethyia, ciaccona, roverAero]
