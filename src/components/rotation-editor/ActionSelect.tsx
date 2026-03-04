@@ -41,17 +41,13 @@ export function ActionSelect({ value, actions, character, currentEnergies, snaps
   // Close dropdown when clicking outside
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
-      console.log('🖱️ Click detected, checking if outside dropdown')
       const clickedButton = buttonRef.current && buttonRef.current.contains(event.target as Node)
       const clickedDropdown = dropdownRef.current && dropdownRef.current.contains(event.target as Node)
       const clickedVariantPopup = variantPopupRef.current && variantPopupRef.current.contains(event.target as Node)
 
       if (!clickedButton && !clickedDropdown && !clickedVariantPopup) {
-        console.log('✅ Click was outside, closing dropdown')
         setIsOpen(false)
         setExpandedGroup(null)
-      } else {
-        console.log('❌ Click was inside dropdown or button, keeping it open')
       }
     }
 
@@ -263,12 +259,6 @@ export function ActionSelect({ value, actions, character, currentEnergies, snaps
                             }}
                             className={`actionSelectRow ${groupIsDisabled ? 'disabled' : ''} ${group.isCurrent ? 'selected' : ''} ${groupCanSelect ? 'selectable' : ''} ${isExpanded ? 'expanded' : ''}`}
                             onClick={() => {
-                              console.log('🖱️ Group row clicked:', {
-                                groupKey: group.groupKey,
-                                isGroup: group.isGroup,
-                                hasMultipleVariants,
-                                isDisabled: groupIsDisabled,
-                              })
                               if (groupCanSelect) {
                                 handleGroupClick(group.groupKey, group)
                               }
@@ -283,7 +273,13 @@ export function ActionSelect({ value, actions, character, currentEnergies, snaps
                             </div>
                             <div className="actionSelectCell actionEnergyCell">
                               {/* Show energy status for the group */}
-                              {group.variants.some(v => v.missingEnergy.length > 0) ? <span className="energyMissing">{group.variants[0].missingEnergy.map(e => `${e.current.toFixed(2)}/${e.needed} ${e.type}`).join(', ')}</span> : group.variants[0].action.energyCost.length > 0 ? <span className="energyOk">✓</span> : ''}
+                              {(() => {
+                                const representative = group.variants.find(v => v.isCurrent) ?? group.variants.find(v => v.missingEnergy.length > 0) ?? group.variants[0]
+                                if (representative.missingEnergy.length > 0) {
+                                  return <span className="energyMissing">{representative.missingEnergy.map(e => `${e.current.toFixed(2)}/${e.needed} ${e.type}`).join(', ')}</span>
+                                }
+                                return representative.action.energyCost.length > 0 ? <span className="energyOk">✓</span> : ''
+                              })()}
                             </div>
                           </div>
                         </div>
@@ -335,11 +331,6 @@ export function ActionSelect({ value, actions, character, currentEnergies, snaps
                           className={`actionSelectVariantRow ${isDisabled ? 'disabled' : ''} ${isCurrent ? 'selected' : ''} ${canSelect ? 'selectable' : ''}`}
                           onClick={e => {
                             e.stopPropagation()
-                            console.log('🖱️ Variant row clicked:', {
-                              actionName: action.name,
-                              canSelect,
-                              isDisabled,
-                            })
                             if (canSelect) {
                               handleSelect(action.name)
                             }

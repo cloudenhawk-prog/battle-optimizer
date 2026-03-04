@@ -13,14 +13,14 @@ export function buildStatusEffectsColumns(selectedCharacters: Character[]): Colu
   const activeNegativeStatuses = Array.from(new Set(selectedCharacters.flatMap(c => c.actions.flatMap(action => action.statusModifications.filter(mod => mod.type === 'negativeStatus').map(mod => mod.targetName)))))
 
   if (activeNegativeStatuses.length > 0) {
+    const negativeStatusByName = new Map(Object.values(negativeStatuses).map(ns => [ns.name, ns]))
     const negativeStatusMetadata: StatusMetadata[] = activeNegativeStatuses.map(status => {
-      // Look up the negative status from the data to get its color
-      const negativeStatusData = Object.values(negativeStatuses).find(ns => ns.name === status)
+      const negativeStatusData = negativeStatusByName.get(status)
       return {
         key: status,
         label: status,
         icon: `/assets/${status.toLowerCase().replace(/\s+/g, '_')}.png`,
-        color: negativeStatusData?.color, // Optional color from data
+        color: negativeStatusData?.color,
       }
     })
 

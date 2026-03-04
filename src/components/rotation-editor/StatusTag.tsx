@@ -1,3 +1,4 @@
+import type { CSSProperties } from 'react'
 import '../../styles/rotation-editor/StatusTag.css'
 
 // ========== Component: Status Tag ============================================================================================
@@ -8,7 +9,7 @@ type StatusTagProps = {
   value: number
   maxStacks?: number
   type?: 'buff' | 'debuff' | 'negativeStatus'
-  color?: string // Optional custom color
+  color?: string
 }
 
 export function StatusTag({ icon, label, value, maxStacks, type, color }: StatusTagProps) {
@@ -34,7 +35,7 @@ export function StatusTag({ icon, label, value, maxStacks, type, color }: Status
     : undefined
 
   return (
-    <div className={`statusTag ${typeClass} ${color ? 'statusTag-custom' : ''}`} style={{ ...customStyle, ...customHoverStyle } as React.CSSProperties}>
+    <div className={`statusTag ${typeClass} ${color ? 'statusTag-custom' : ''}`} style={{ ...customStyle, ...customHoverStyle } as CSSProperties}>
       <div className="statusTagContent">
         <img src={icon} alt={label} className="statusTagIcon" />
         {displayValue !== undefined && <span className="statusTagValue">{displayValue}</span>}
