@@ -1,7 +1,7 @@
 import '../../styles/rotation-editor/ActionSelect.css'
 import { useState, useRef, useEffect } from 'react'
 import { createPortal } from 'react-dom'
-import type { Action } from '../../types/action'
+import type { Action, ActionCategory } from '../../types/action'
 import type { Character } from '../../types/character'
 import type { Snapshot } from '../../types/snapshot'
 import type { EnergyType } from '../../types/baseTypes'
@@ -109,6 +109,15 @@ export function ActionSelect({ value, actions, character, currentEnergies, snaps
   const selectedAction = actionStates.find(s => s.isCurrent)
   const displayText = selectedAction ? selectedAction.action.name : '-- Select Action --'
 
+  // Group actions by category and sort alphabetically within each category
+  const categoryOrder: ActionCategory[] = ['Basics', 'Skills', 'Other', 'Testing']
+  const actionsByCategory = categoryOrder
+    .map(category => ({
+      category,
+      actions: actionStates.filter(s => s.action.category === category).sort((a, b) => a.action.name.localeCompare(b.action.name)),
+    }))
+    .filter(group => group.actions.length > 0)
+
   console.log('🔧 ActionSelect render:', {
     value,
     actionsCount: actions.length,
@@ -161,40 +170,52 @@ export function ActionSelect({ value, actions, character, currentEnergies, snaps
                   </div>
                 </div>
               ) : (
-                actionStates.map(state => {
-                  const { action, isSpecial, isCurrent, isUnaffordable, isOnCooldown, cooldownRemaining, missingEnergy } = state
-
-                  // Hide special actions unless they're currently selected
-                  if (isSpecial && !isCurrent) return null
-
-                  const isDisabled = (isUnaffordable || isOnCooldown) && !isCurrent
-                  const canSelect = !isDisabled
-
-                  return (
-                    <div
-                      key={action.name}
-                      className={`actionSelectRow ${isDisabled ? 'disabled' : ''} ${isCurrent ? 'selected' : ''} ${canSelect ? 'selectable' : ''}`}
-                      onClick={() => {
-                        console.log('🖱️ Action row clicked:', {
-                          actionName: action.name,
-                          canSelect,
-                          isDisabled,
-                          isUnaffordable,
-                          isOnCooldown,
-                          isCurrent,
-                        })
-                        if (canSelect) {
-                          handleSelect(action.name)
-                        } else {
-                          console.log('⚠️ Action not selectable!')
-                        }
-                      }}>
-                      <div className="actionSelectCell actionNameCell">{action.name}</div>
-                      <div className="actionSelectCell actionCooldownCell">{isOnCooldown ? `${cooldownRemaining.toFixed(1)}s` : ''}</div>
-                      <div className="actionSelectCell actionEnergyCell">{missingEnergy.length > 0 ? <span className="energyMissing">{missingEnergy.map(e => `${e.current}/${e.needed} ${e.type}`).join(', ')}</span> : action.energyCost.length > 0 ? <span className="energyOk">✓</span> : ''}</div>
+                actionsByCategory.map(({ category, actions: categoryActions }) => (
+                  <div key={category}>
+                    {/* Category Header */}
+                    <div className="actionSelectCategoryHeader">
+                      <div className="actionSelectCell" style={{ gridColumn: '1 / -1', fontWeight: 'bold', fontSize: '0.9em' }}>
+                        {category}
+                      </div>
                     </div>
-                  )
-                })
+
+                    {/* Actions in this category */}
+                    {categoryActions.map(state => {
+                      const { action, isSpecial, isCurrent, isUnaffordable, isOnCooldown, cooldownRemaining, missingEnergy } = state
+
+                      // Hide special actions unless they're currently selected
+                      if (isSpecial && !isCurrent) return null
+
+                      const isDisabled = (isUnaffordable || isOnCooldown) && !isCurrent
+                      const canSelect = !isDisabled
+
+                      return (
+                        <div
+                          key={action.name}
+                          className={`actionSelectRow ${isDisabled ? 'disabled' : ''} ${isCurrent ? 'selected' : ''} ${canSelect ? 'selectable' : ''}`}
+                          onClick={() => {
+                            console.log('🖱️ Action row clicked:', {
+                              actionName: action.name,
+                              canSelect,
+                              isDisabled,
+                              isUnaffordable,
+                              isOnCooldown,
+                              isCurrent,
+                            })
+                            if (canSelect) {
+                              handleSelect(action.name)
+                            } else {
+                              console.log('⚠️ Action not selectable!')
+                            }
+                          }}>
+                          <div className="actionSelectCell actionNameCell">{action.name}</div>
+                          <div className="actionSelectCell actionCooldownCell">{isOnCooldown ? `${cooldownRemaining.toFixed(1)}s` : ''}</div>
+                          <div className="actionSelectCell actionEnergyCell">{missingEnergy.length > 0 ? <span className="energyMissing">{missingEnergy.map(e => `${e.current}/${e.needed} ${e.type}`).join(', ')}</span> : action.energyCost.length > 0 ? <span className="energyOk">✓</span> : ''}</div>
+                        </div>
+                      )
+                    })}
+                  </div>
+                ))
               )}
             </div>
           </div>,
