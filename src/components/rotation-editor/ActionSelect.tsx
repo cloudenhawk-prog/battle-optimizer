@@ -280,11 +280,11 @@ export function ActionSelect({ value, actions, character, currentEnergies, snaps
                             </div>
                             <div className="actionSelectCell actionCooldownCell">
                               {/* Show cooldown if all variants have the same cooldown */}
-                              {group.variants.every(v => v.isOnCooldown && v.cooldownRemaining === group.variants[0].cooldownRemaining) && `${group.variants[0].cooldownRemaining.toFixed(1)}s`}
+                              {group.variants.every(v => v.isOnCooldown && v.cooldownRemaining === group.variants[0].cooldownRemaining) && `${group.variants[0].cooldownRemaining.toFixed(2)}s`}
                             </div>
                             <div className="actionSelectCell actionEnergyCell">
                               {/* Show energy status for the group */}
-                              {group.variants.some(v => v.missingEnergy.length > 0) ? <span className="energyMissing">{group.variants[0].missingEnergy.map(e => `${e.current}/${e.needed} ${e.type}`).join(', ')}</span> : group.variants[0].action.energyCost.length > 0 ? <span className="energyOk">✓</span> : ''}
+                              {group.variants.some(v => v.missingEnergy.length > 0) ? <span className="energyMissing">{group.variants[0].missingEnergy.map(e => `${e.current.toFixed(2)}/${e.needed} ${e.type}`).join(', ')}</span> : group.variants[0].action.energyCost.length > 0 ? <span className="energyOk">✓</span> : ''}
                             </div>
                           </div>
                         </div>
@@ -348,8 +348,8 @@ export function ActionSelect({ value, actions, character, currentEnergies, snaps
                           <div className="actionSelectVariantCell">
                             <div className="variantName">{action.variantName || action.name}</div>
                             <div className="variantDetails">
-                              {isOnCooldown && <span className="variantCooldown">CD: {cooldownRemaining.toFixed(1)}s</span>}
-                              {missingEnergy.length > 0 ? <span className="energyMissing">{missingEnergy.map(e => `${e.current}/${e.needed} ${e.type}`).join(', ')}</span> : action.energyCost.length > 0 ? <span className="energyOk">✓</span> : null}
+                              {isOnCooldown && <span className="variantCooldown">CD: {cooldownRemaining.toFixed(2)}s</span>}
+                              {missingEnergy.length > 0 ? <span className="energyMissing">{missingEnergy.map(e => `${e.current.toFixed(2)}/${e.needed} ${e.type}`).join(', ')}</span> : action.energyCost.length > 0 ? <span className="energyOk">✓</span> : null}
                             </div>
                           </div>
                         </div>

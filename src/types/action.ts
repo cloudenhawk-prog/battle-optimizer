@@ -30,9 +30,8 @@ export type Action = {
 
   toolTip?: string
 
-  // For grouping related action variants in the UI
-  groupName?: string // The base action name that groups related actions together
-  variantName?: string // The specific variant (e.g., "Default", "Swap Cancel")
+  groupName?: string
+  variantName?: string
 }
 
 export type CastConditions = {
