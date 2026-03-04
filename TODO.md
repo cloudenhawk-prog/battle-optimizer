@@ -1,12 +1,8 @@
 ### TODO:
 
-Do columns inside the action selector have dynamic size to make sure everything fit?
+
 
 Possibility to lower cooldowns (example: Cartethyia when consuming swords)
-
-Negative statuses, buffs, debuffs should have default colors for their tags, but the underlying data should be allowed to define an optional color code that is used for its showcase.
-This way: Aero Erosion can have a green-ish color that fits with the theme
-Default colors: buffs: green like now, debuffs: red, negative statuses: purple like now
 
 # Timeline:
 

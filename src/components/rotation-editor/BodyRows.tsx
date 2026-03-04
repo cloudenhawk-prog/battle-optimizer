@@ -77,8 +77,7 @@ export function BodyRow({ snapshot, previousSnapshot, charactersInBattle, tableC
         )
       })}
 
-      {/* Character-specific columns */}
-      {tableConfig.characters.flatMap(group => renderBodyColumns(group.columns, columnVisibility, snapshot, character, action, charactersInBattle))}
+
 
       {/* Status effects columns (negative statuses, buffs, debuffs) */}
       {tableConfig.statusEffects && renderBodyColumnsWithTags(tableConfig.statusEffects.columns, columnVisibility, snapshot, previousSnapshot, character, action)}
@@ -87,58 +86,6 @@ export function BodyRow({ snapshot, previousSnapshot, charactersInBattle, tableC
 }
 
 // ========== Helper Functions =================================================================================================
-
-function renderBodyColumns(columns: ColumnDef[], columnVisibility: ColumnVisibility, snapshot: Snapshot, character: string, action: string, charactersInBattle?: Character[]) {
-  let firstVisible = true
-  const char = charactersInBattle?.find(c => c.name === character)
-  
-  return columns
-    .filter(col => columnVisibility[col.key])
-    .filter(col => !(col as any).isPermanent) // Hide permanent modifiers from body rows
-    .map(col => {
-      const className = firstVisible ? 'tableCellBody charGroupBody' : 'tableCellBody'
-      firstVisible = false
-
-      // Handle grouped energy columns (mandatory energies) - simple text display
-      if ((col as any).energyMetadata && Array.isArray((col as any).energyMetadata)) {
-        return (
-          <td key={col.key} className={className}>
-            {character && action ? (
-              <span>
-                {(col as any).energyMetadata
-                  .map((energyMeta: any) => {
-                    const current = snapshot.charactersEnergies[character]?.[energyMeta.key] || 0
-                    return `${Math.floor(current)}`
-                  })
-                  .join(' | ')}
-              </span>
-            ) : (
-              ''
-            )}
-          </td>
-        )
-      }
-
-      // Handle regular energy columns (special energies) - simple text display
-      const energyType = col.key.split('_')[1]
-      if (energyType && char) {
-        const current = snapshot.charactersEnergies[character]?.[energyType] || 0
-
-        return (
-          <td key={col.key} className={className}>
-            {character && action ? `${Math.floor(current)}` : ''}
-          </td>
-        )
-      }
-
-      // Fallback for non-energy columns
-      return (
-        <td key={col.key} className={className}>
-          {character && action ? col.render(snapshot) : ''}
-        </td>
-      )
-    })
-}
 
 function renderBodyColumnsWithTags(columns: ColumnDef[], columnVisibility: ColumnVisibility, snapshot: Snapshot, previousSnapshot: Snapshot | null, character: string, action: string) {
   let firstVisible = true

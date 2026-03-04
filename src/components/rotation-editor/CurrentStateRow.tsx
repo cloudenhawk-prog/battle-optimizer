@@ -1,6 +1,5 @@
 import '../../styles/rotation-editor/CurrentStateRow.css'
 import type { Snapshot } from '../../types/snapshot'
-import type { Character } from '../../types/character'
 import type { TableConfig, ColumnVisibility } from '../../types/tableDefinitions'
 import { StatusTagGroup } from './StatusTagGroup'
 
@@ -42,12 +41,11 @@ function formatNumber(value: number): string {
 type CurrentStateRowProps = {
   snapshot: Snapshot | null
   firstFromTime: number
-  charactersInBattle: Character[]
   tableConfig: TableConfig
   columnVisibility: ColumnVisibility
 }
 
-export function CurrentStateRow({ snapshot, firstFromTime, charactersInBattle, tableConfig, columnVisibility }: CurrentStateRowProps) {
+export function CurrentStateRow({ snapshot, firstFromTime, tableConfig, columnVisibility }: CurrentStateRowProps) {
   // Create initial snapshot if none exists or character not selected
   const displaySnapshot = snapshot || createInitialSnapshot()
   const hasCharacter = displaySnapshot.character && displaySnapshot.character !== ''
@@ -104,8 +102,7 @@ export function CurrentStateRow({ snapshot, firstFromTime, charactersInBattle, t
           return <td key={col.key} className="currentStateCell"></td>
         })}
 
-        {/* Character-specific columns (energies) */}
-        {tableConfig.characters.flatMap(group => renderStateColumns(group, columnVisibility, displaySnapshot, charactersInBattle))}
+
 
         {/* Status Effects columns (Negative Statuses, Buffs, Debuffs) */}
         {tableConfig.statusEffects && renderStatusColumns(tableConfig.statusEffects.columns, columnVisibility, displaySnapshot)}
@@ -136,62 +133,6 @@ function createInitialSnapshot(): Snapshot {
     negativeStatusesTimeLeft: {},
     charactersCooldowns: {},
   }
-}
-
-function renderStateColumns(group: any, columnVisibility: ColumnVisibility, snapshot: Snapshot, charactersInBattle: Character[]) {
-  // Extract character name from the group label
-  const characterName = group.label
-  const character = charactersInBattle.find(c => c.name === characterName)
-  const energies = (snapshot.charactersEnergies as any)?.[characterName] || {}
-
-  let firstVisible = true
-  return group.columns
-    .filter((col: any) => columnVisibility[col.key])
-    .map((col: any) => {
-      const className = firstVisible ? 'currentStateCell charGroupCell' : 'currentStateCell'
-      firstVisible = false
-
-      // Handle grouped energy column (mandatory energies)
-      if (col.energyMetadata && Array.isArray(col.energyMetadata)) {
-        return (
-          <td key={col.key} className={className}>
-            <div className="energyGroupDisplay">
-              {col.energyMetadata.map((energyMeta: any) => {
-                const current = energies[energyMeta.key] || 0
-                const max = character?.maxEnergies[energyMeta.key as keyof typeof character.maxEnergies] || 100
-                const percentage = Math.min((current / max) * 100, 100)
-
-                return (
-                  <div key={energyMeta.key} className="energyStackedItem">
-                    <div className="energyStackedBar" style={{ width: `${percentage}%` }} data-energy-type={energyMeta.key.toLowerCase()} />
-                    <span className="energyStackedText" title={energyMeta.label}>
-                      {energyMeta.label}: {Math.floor(current)}/{max}
-                    </span>
-                  </div>
-                )
-              })}
-            </div>
-          </td>
-        )
-      }
-
-      // Handle individual energy column (special energies)
-      const energyType = col.key.split('_')[1]
-      const current = energies[energyType] || 0
-      const max = character?.maxEnergies[energyType as keyof typeof character.maxEnergies] || 100
-      const percentage = Math.min((current / max) * 100, 100)
-
-      return (
-        <td key={col.key} className={className}>
-          <div className="energyStateDisplay">
-            <div className="energyStateBar" style={{ width: `${percentage}%` }} data-energy-type={energyType.toLowerCase()} />
-            <span className="energyStateText">
-              {Math.floor(current)}/{max}
-            </span>
-          </div>
-        </td>
-      )
-    })
 }
 
 function renderStatusColumns(columns: any[], columnVisibility: ColumnVisibility, snapshot: Snapshot) {

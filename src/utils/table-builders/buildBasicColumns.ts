@@ -32,7 +32,7 @@ export function buildBasicColumns(): ColumnGroup {
   ]
 
   return {
-    label: 'Basic',
+    label: 'General Information',
     columns: basicColumns,
     icon: 'assets/basic.png',
   }

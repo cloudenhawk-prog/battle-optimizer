@@ -30,6 +30,10 @@
   background-color: var(--table-border);
 }
 
+.groupHeaderStatic {
+  cursor: default;
+}
+
 /* -------------- Column Header ------------- */
 
 .tableCellHeader {

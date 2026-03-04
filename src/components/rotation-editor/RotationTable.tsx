@@ -3,6 +3,7 @@ import { useState, useEffect, useRef } from 'react'
 import { HeaderRow } from './HeaderRow'
 import { BodyRow } from './BodyRows'
 import { CurrentStateRow } from './CurrentStateRow'
+import { CharacterStateTracker } from './CharacterStateTracker'
 import type { TableConfig, ColumnVisibility } from '../../types/tableDefinitions'
 import type { Character } from '../../types/character'
 import type { Snapshot } from '../../types/snapshot'
@@ -46,20 +47,23 @@ export function RotationTable({ snapshots, charactersInBattle, tableConfig, onSe
   const firstFromTime = firstSnapshot?.fromTime ?? 0
 
   return (
-    <div className="tableWrapper">
-      <table className="tableBase">
-        <HeaderRow tableConfig={tableConfig} columnVisibility={columnVisibility} setColumnVisibility={setColumnVisibility} />
-        <CurrentStateRow snapshot={currentSnapshot || null} firstFromTime={firstFromTime} charactersInBattle={charactersInBattle} tableConfig={tableConfig} columnVisibility={columnVisibility} />
-        <tbody>
+    <>
+      <CharacterStateTracker snapshot={currentSnapshot || null} charactersInBattle={charactersInBattle} tableConfig={tableConfig} columnVisibility={columnVisibility} setColumnVisibility={setColumnVisibility} />
+      <div className="tableWrapper">
+        <table className="tableBase">
+          <HeaderRow tableConfig={tableConfig} columnVisibility={columnVisibility} setColumnVisibility={setColumnVisibility} />
+          <CurrentStateRow snapshot={currentSnapshot || null} firstFromTime={firstFromTime} tableConfig={tableConfig} columnVisibility={columnVisibility} />
+          <tbody>
           {snapshots.map((snapshot, idx) => {
             // For statuses, show the state from the PREVIOUS snapshot since statuses
             // are applied AFTER the action completes (not during)
             const previousSnapshot = idx > 0 ? snapshots[idx - 1] : null
             return <BodyRow key={Number(snapshot.id)} snapshot={snapshot} previousSnapshot={previousSnapshot} charactersInBattle={charactersInBattle} tableConfig={tableConfig} onSelectCharacter={onSelectCharacter} onSelectAction={onSelectAction} onRowClick={onRowClick} isLastRow={idx === snapshots.length - 1} isNewRow={highlightIds.has(Number(snapshot.id))} columnVisibility={columnVisibility} />
           })}
-        </tbody>
-      </table>
-    </div>
+          </tbody>
+        </table>
+      </div>
+    </>
   )
 }
 

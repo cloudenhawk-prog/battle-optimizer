@@ -215,7 +215,6 @@ export function ActionSelect({ value, actions, character, currentEnergies, snaps
             style={{
               top: `${dropdownPosition.top}px`,
               left: `${dropdownPosition.left}px`,
-              minWidth: `${Math.max(dropdownPosition.width, 300)}px`,
             }}>
             <div className="actionSelectTable">
               {/* Header */}
