@@ -1,0 +1,143 @@
+/* ========== Status Tag ==================================================================================================== */
+
+.statusTag {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 2px 4px;
+  margin: 2px;
+  background-color: rgba(255, 255, 255, 0.1);
+  border-radius: 4px;
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  cursor: pointer;
+  transition: all 0.2s ease;
+  min-width: 28px;
+  height: 24px;
+}
+
+.statusTag:hover {
+  background-color: rgba(255, 255, 255, 0.2);
+  border-color: rgba(255, 255, 255, 0.4);
+  transform: scale(1.05);
+}
+
+/* Type-specific styling */
+.statusTag-buff {
+  background-color: rgba(76, 175, 80, 0.15);
+  border-color: rgba(76, 175, 80, 0.3);
+}
+
+.statusTag-buff:hover {
+  background-color: rgba(76, 175, 80, 0.25);
+  border-color: rgba(76, 175, 80, 0.5);
+}
+
+.statusTag-debuff {
+  background-color: rgba(244, 67, 54, 0.15);
+  border-color: rgba(244, 67, 54, 0.3);
+}
+
+.statusTag-debuff:hover {
+  background-color: rgba(244, 67, 54, 0.25);
+  border-color: rgba(244, 67, 54, 0.5);
+}
+
+.statusTag-negativeStatus {
+  background-color: rgba(156, 39, 176, 0.15);
+  border-color: rgba(156, 39, 176, 0.3);
+}
+
+.statusTag-negativeStatus:hover {
+  background-color: rgba(156, 39, 176, 0.25);
+  border-color: rgba(156, 39, 176, 0.5);
+}
+
+/* Custom color styling (by inline styles) */
+.statusTag-custom:hover {
+  background-color: var(--custom-hover-bg) !important;
+  border-color: var(--custom-hover-border) !important;
+}
+
+.statusTagContent {
+  display: flex;
+  align-items: center;
+  gap: 2px;
+}
+
+.statusTagIcon {
+  width: 16px;
+  height: 16px;
+  object-fit: contain;
+}
+
+.statusTagValue {
+  font-size: 11px;
+  font-weight: 600;
+  color: #fff;
+  line-height: 1;
+}
+
+/* ========== Status Tag Tooltip ============================================================================================ */
+
+.statusTagTooltip {
+  position: absolute;
+  bottom: 100%;
+  left: 50%;
+  transform: translateX(-50%) translateY(-8px);
+  background-color: rgba(20, 20, 30, 0.98);
+  border: 1px solid rgba(255, 255, 255, 0.3);
+  border-radius: 6px;
+  padding: 8px 12px;
+  min-width: 120px;
+  pointer-events: none;
+  opacity: 0;
+  visibility: hidden;
+  transition:
+    opacity 0.2s ease,
+    visibility 0.2s ease,
+    transform 0.2s ease;
+  z-index: 1000;
+  white-space: nowrap;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.4);
+}
+
+.statusTagTooltip::after {
+  content: '';
+  position: absolute;
+  top: 100%;
+  left: 50%;
+  transform: translateX(-50%);
+  border: 6px solid transparent;
+  border-top-color: rgba(20, 20, 30, 0.98);
+}
+
+.statusTag:hover .statusTagTooltip {
+  opacity: 1;
+  visibility: visible;
+  transform: translateX(-50%) translateY(-4px);
+}
+
+.statusTagTooltipHeader {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  margin-bottom: 4px;
+}
+
+.statusTagTooltipIcon {
+  width: 20px;
+  height: 20px;
+  object-fit: contain;
+}
+
+.statusTagTooltipLabel {
+  font-size: 13px;
+  font-weight: 600;
+  color: #fff;
+}
+
+.statusTagTooltipValue {
+  font-size: 12px;
+  color: rgba(255, 255, 255, 0.8);
+}

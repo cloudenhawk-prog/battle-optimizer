@@ -5,9 +5,7 @@ import type { Snapshot } from './snapshot'
 export type TableConfig = {
   basic: ColumnGroup
   characters: ColumnGroup[]
-  negativeStatuses: ColumnGroup | null
-  buffs: ColumnGroup | null
-  debuffs: ColumnGroup | null
+  statusEffects: ColumnGroup | null
 }
 
 // ========== Type: Column Group ===============================================================================================
@@ -20,11 +18,20 @@ export type ColumnGroup = {
 
 // ========== Type: Column Def =================================================================================================
 
+export type StatusMetadata = {
+  key: string
+  label: string
+  icon: string
+  maxStacks?: number
+  color?: string // Optional color override
+}
+
 export type ColumnDef = {
   key: string
   label: string
   icon: string
   render: (snapshot: Snapshot) => React.ReactNode
+  statusMetadata?: StatusMetadata[] // For grouped status columns (buffs, debuffs, negativeStatuses)
 }
 
 // ========== Type: Columns Visibility =========================================================================================

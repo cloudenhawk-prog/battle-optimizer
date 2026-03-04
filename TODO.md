@@ -4,7 +4,11 @@ Do columns inside the action selector have dynamic size to make sure everything 
 
 Possibility to lower cooldowns (example: Cartethyia when consuming swords)
 
-Columns in the Rotations Table seem to all be the same size which makes the selector rows very too small. Any easy way to let these particular columns grow based on whats in them while having all other rows keep a fair share of the table? Or even better: all "basic columns" could have this mechanism (since this is essential information) while other groups all must share the remaining space
+Selectors should get more space in the table
+
+Negative statuses, buffs, debuffs should have default colors for their tags, but the underlying data should be allowed to define an optional color code that is used for its showcase.
+This way: Aero Erosion can have a green-ish color that fits with the theme
+Default colors: buffs: green like now, debuffs: red, negative statuses: purple like now
 
 # Timeline:
 

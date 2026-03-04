@@ -13,11 +13,18 @@ type UseSnapshotsProps = {
 export function useSnapshots({ charactersInBattle, tableConfig }: UseSnapshotsProps) {
   const charactersMap = Object.fromEntries(charactersInBattle.map(c => [c.name, c]))
   const characterColumnsMap = Object.fromEntries(charactersInBattle.map(c => [c.name, Object.keys(c.maxEnergies)]))
+
+  // Extract columns from statusEffects group
+  const statusEffectsColumns = tableConfig.statusEffects?.columns ?? []
+  const buffsCol = statusEffectsColumns.find(col => col.key === 'buffs')
+  const debuffsCol = statusEffectsColumns.find(col => col.key === 'debuffs')
+  const negativeStatusesCol = statusEffectsColumns.find(col => col.key === 'negativeStatuses')
+
   const globalColumns: GlobalColumns = {
     basic: tableConfig.basic.columns.map(col => col.key),
-    buffs: tableConfig.buffs?.columns.map(col => col.key) ?? [],
-    debuffs: tableConfig.debuffs?.columns.map(col => col.key) ?? [],
-    negativeStatuses: tableConfig.negativeStatuses?.columns.map(col => col.key) ?? [],
+    buffs: buffsCol?.statusMetadata?.map(meta => meta.key) ?? [],
+    debuffs: debuffsCol?.statusMetadata?.map(meta => meta.key) ?? [],
+    negativeStatuses: negativeStatusesCol?.statusMetadata?.map(meta => meta.key) ?? [],
   }
 
   const [snapshots, setSnapshots] = useState<Snapshot[]>([createEmptySnapshot(charactersMap, characterColumnsMap, globalColumns, tableConfig)])
@@ -35,9 +42,13 @@ function createEmptySnapshot(charactersMap: Record<string, Character>, character
   const debuffs = Object.fromEntries(globalColumns.debuffs.map(col => [col, 0]))
   const negativeStatuses = Object.fromEntries(globalColumns.negativeStatuses.map(col => [col, 0]))
 
-  // Get maxStacks from table config columns
-  const buffsMaxStacks = Object.fromEntries((tableConfig.buffs?.columns || []).map(col => [col.key, (col as any).maxStacks || 1]))
-  const debuffsMaxStacks = Object.fromEntries((tableConfig.debuffs?.columns || []).map(col => [col.key, (col as any).maxStacks || 1]))
+  // Get maxStacks from statusEffects columns metadata
+  const statusEffectsColumns = tableConfig.statusEffects?.columns ?? []
+  const buffsCol = statusEffectsColumns.find(col => col.key === 'buffs')
+  const debuffsCol = statusEffectsColumns.find(col => col.key === 'debuffs')
+
+  const buffsMaxStacks = Object.fromEntries((buffsCol?.statusMetadata || []).map(meta => [meta.key, meta.maxStacks || 1]))
+  const debuffsMaxStacks = Object.fromEntries((debuffsCol?.statusMetadata || []).map(meta => [meta.key, meta.maxStacks || 1]))
 
   return {
     id: '0',

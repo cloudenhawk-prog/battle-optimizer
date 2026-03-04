@@ -14,6 +14,7 @@ export type DamageModifier = {
   targetStrategy: TargetStrategy
   durationStrategy: DurationStrategy
   stackingStrategy: StackingStrategy
+  color?: string // Optional color override (e.g., '#4CAF50' for green)
 }
 
 // ========== Type: Target Strategy ============================================================================================

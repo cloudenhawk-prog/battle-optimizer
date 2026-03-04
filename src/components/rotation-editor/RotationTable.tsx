@@ -51,9 +51,12 @@ export function RotationTable({ snapshots, charactersInBattle, tableConfig, onSe
         <HeaderRow tableConfig={tableConfig} columnVisibility={columnVisibility} setColumnVisibility={setColumnVisibility} />
         <CurrentStateRow snapshot={currentSnapshot || null} firstFromTime={firstFromTime} charactersInBattle={charactersInBattle} tableConfig={tableConfig} columnVisibility={columnVisibility} />
         <tbody>
-          {snapshots.map((snapshot, idx) => (
-            <BodyRow key={Number(snapshot.id)} snapshot={snapshot} charactersInBattle={charactersInBattle} tableConfig={tableConfig} onSelectCharacter={onSelectCharacter} onSelectAction={onSelectAction} onRowClick={onRowClick} isLastRow={idx === snapshots.length - 1} isNewRow={highlightIds.has(Number(snapshot.id))} columnVisibility={columnVisibility} />
-          ))}
+          {snapshots.map((snapshot, idx) => {
+            // For statuses, show the state from the PREVIOUS snapshot since statuses
+            // are applied AFTER the action completes (not during)
+            const previousSnapshot = idx > 0 ? snapshots[idx - 1] : null
+            return <BodyRow key={Number(snapshot.id)} snapshot={snapshot} previousSnapshot={previousSnapshot} charactersInBattle={charactersInBattle} tableConfig={tableConfig} onSelectCharacter={onSelectCharacter} onSelectAction={onSelectAction} onRowClick={onRowClick} isLastRow={idx === snapshots.length - 1} isNewRow={highlightIds.has(Number(snapshot.id))} columnVisibility={columnVisibility} />
+          })}
         </tbody>
       </table>
     </div>
