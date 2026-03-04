@@ -1,14 +1,10 @@
 ### TODO:
 
+Do columns inside the action selector have dynamic size to make sure everything fit?
+
 Possibility to lower cooldowns (example: Cartethyia when consuming swords)
 
-Selector options: split up in categories (actions should define category)
-Basics: BA, Aerial, Heavy
-Skills: Resonance Skill, Forte, Liberation
-Other: Things that don't fall into these categories?
-Categories can be defined dynamically (agregate all categories and prioritize: basics, skills first, Other last, and everything else in between sorted by name)
-Within each category ORDER BY 'name' or 'number' property
-Columns can have dynamic size to make sure everything fit?
+Columns in the Rotations Table seem to all be the same size which makes the selector rows very too small. Any easy way to let these particular columns grow based on whats in them while having all other rows keep a fair share of the table? Or even better: all "basic columns" could have this mechanism (since this is essential information) while other groups all must share the remaining space
 
 # Timeline:
 

@@ -171,3 +171,91 @@
   opacity: 0.9;
   letter-spacing: 0.5px;
 }
+
+/* -------------- Action Variant Popup (Right Side) ----------------- */
+
+.actionSelectVariantPopup {
+  position: fixed;
+  background: var(--table-bg);
+  border: 2px solid var(--table-hover-border);
+  border-radius: var(--rows-selectors-corner-radius);
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.6);
+  z-index: 10001;
+  min-width: 250px;
+  max-width: 350px;
+  overflow: hidden;
+}
+
+.actionSelectVariantTable {
+  display: flex;
+  flex-direction: column;
+}
+
+.actionSelectVariantHeader {
+  padding: 12px 16px;
+  background: linear-gradient(135deg, rgba(100, 150, 255, 0.2), rgba(150, 100, 255, 0.15));
+  border-bottom: 1px solid var(--table-border);
+  text-align: center;
+}
+
+.actionSelectVariantHeader .actionSelectCell {
+  color: var(--table-text);
+  font-weight: bold;
+  font-size: 0.95em;
+  letter-spacing: 0.5px;
+  justify-content: center;
+}
+
+.actionSelectVariantRow {
+  padding: 12px 16px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+  transition: background-color 0.15s ease;
+  cursor: pointer;
+}
+
+.actionSelectVariantRow:last-child {
+  border-bottom: none;
+}
+
+.actionSelectVariantRow.selectable:hover {
+  background: rgba(100, 150, 255, 0.15);
+}
+
+.actionSelectVariantRow.selected {
+  background: rgba(100, 150, 255, 0.25);
+}
+
+.actionSelectVariantRow.disabled {
+  opacity: 0.4;
+  cursor: not-allowed;
+}
+
+.actionSelectVariantCell {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.variantName {
+  font-size: 0.95em;
+  font-weight: 500;
+  color: var(--table-text);
+}
+
+.variantDetails {
+  display: flex;
+  gap: 12px;
+  font-size: 0.85em;
+  align-items: center;
+}
+
+.variantCooldown {
+  color: rgba(255, 200, 100, 0.9);
+  font-weight: 500;
+}
+
+/* Highlight expanded group row */
+.actionSelectRow.expanded {
+  background: rgba(100, 150, 255, 0.1);
+  border-left: 3px solid rgba(100, 150, 255, 0.6);
+}

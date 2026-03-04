@@ -24,6 +24,8 @@ export const roverAero_skill_1: Action = {
     endState: 'AIR',
   },
   offtune: 0.76,
+  groupName: 'Resonance Skill 1',
+  variantName: 'Default',
 }
 
 export const roverAero_skill_1_swap_cancel: Action = {
@@ -49,6 +51,8 @@ export const roverAero_skill_1_swap_cancel: Action = {
     endState: 'GROUND',
   },
   offtune: 0.76,
+  groupName: 'Resonance Skill 1',
+  variantName: 'Swap Cancel',
 }
 
 export const roverAero_skill_2: Action = {
@@ -74,6 +78,8 @@ export const roverAero_skill_2: Action = {
     endState: 'AIR',
   },
   offtune: 3 * 0.11 + 0.48,
+  groupName: 'Resonance Skill 2',
+  variantName: 'Default',
 }
 
 export const roverAero_skill_2_swap_cancel: Action = {
@@ -99,6 +105,8 @@ export const roverAero_skill_2_swap_cancel: Action = {
     endState: 'AIR',
   },
   offtune: 3 * 0.11 + 0.48,
+  groupName: 'Resonance Skill 2',
+  variantName: 'Swap Cancel',
 }
 
 export const roverAero_liberation: Action = {
@@ -187,6 +195,8 @@ export const roverAero_midair_1_2: Action = {
     endState: 'AIR',
   },
   offtune: 0.29 + 0.32,
+  groupName: 'Mid Air 1-2',
+  variantName: 'Default',
 }
 
 export const roverAero_midair_1_2_swap_cancel: Action = {
@@ -237,6 +247,8 @@ export const roverAero_midair_1_2_swap_cancel: Action = {
     endState: 'AIR',
   },
   offtune: 0.29 + 0.32,
+  groupName: 'Mid Air 1-2',
+  variantName: 'Swap Cancel',
 }
 
 export const roverAero_skill_3: Action = {
@@ -274,6 +286,8 @@ export const roverAero_skill_3: Action = {
     endState: 'GROUND',
   },
   offtune: 5 * 0.6 + 2.83,
+  groupName: 'Resonance Skill 3',
+  variantName: 'Default',
 }
 
 export const roverAero_skill_3_swap_cancel_1: Action = {
@@ -311,6 +325,8 @@ export const roverAero_skill_3_swap_cancel_1: Action = {
     endState: 'GROUND',
   },
   offtune: 5 * 0.6 + 2.83,
+  groupName: 'Resonance Skill 3',
+  variantName: 'Swap Cancel 1',
 }
 
 export const roverAero_skill_3_swap_cancel_2: Action = {
@@ -348,6 +364,8 @@ export const roverAero_skill_3_swap_cancel_2: Action = {
     endState: 'GROUND',
   },
   offtune: 5 * 0.6 + 2.83,
+  groupName: 'Resonance Skill 3',
+  variantName: 'Swap Cancel 2',
 }
 
 export const roverAero_plunge: Action = {
@@ -373,6 +391,8 @@ export const roverAero_plunge: Action = {
     endState: 'GROUND',
   },
   offtune: 0.96,
+  groupName: 'Plunge',
+  variantName: 'Default',
 }
 
 export const roverAero_plunge_swap_cancel: Action = {
@@ -398,6 +418,8 @@ export const roverAero_plunge_swap_cancel: Action = {
     endState: 'AIR',
   },
   offtune: 0.96,
+  groupName: 'Plunge',
+  variantName: 'Swap Cancel',
 }
 
 export const roverAero_BA_4: Action = {
@@ -425,6 +447,8 @@ export const roverAero_BA_4: Action = {
     endState: 'GROUND',
   },
   offtune: 0.52,
+  groupName: 'Basic Attack 4',
+  variantName: 'Default',
 }
 
 export const roverAero_BA_4_swap_cancel: Action = {
@@ -452,6 +476,8 @@ export const roverAero_BA_4_swap_cancel: Action = {
     endState: 'GROUND',
   },
   offtune: 0.52,
+  groupName: 'Basic Attack 4',
+  variantName: 'Swap Cancel',
 }
 
 export const roverAero_intro: Action = {
