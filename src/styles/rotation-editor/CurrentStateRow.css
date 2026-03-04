@@ -29,7 +29,69 @@
   font-size: 16px;
 }
 
-/* Energy display in cells */
+/* Energy display in cells - Grouped (stacked) */
+.energyGroupDisplay {
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+  width: 100%;
+}
+
+.energyStackedItem {
+  position: relative;
+  width: 100%;
+  height: 18px;
+  background: var(--table-bg);
+  border: 1px solid var(--table-border);
+  border-radius: 2px;
+  overflow: hidden;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.energyStackedBar {
+  position: absolute;
+  left: 0;
+  top: 0;
+  height: 100%;
+  background: linear-gradient(90deg, rgba(100, 200, 255, 0.5), rgba(100, 200, 255, 0.8));
+  transition: width 0.3s ease;
+  border-radius: 1px;
+}
+
+.energyStackedBar[data-energy-type='concerto'] {
+  background: linear-gradient(90deg, rgba(255, 215, 0, 0.5), rgba(255, 215, 0, 0.8));
+}
+
+.energyStackedBar[data-energy-type='forte'] {
+  background: linear-gradient(90deg, rgba(50, 205, 50, 0.5), rgba(50, 205, 50, 0.8));
+}
+
+.energyStackedBar[data-energy-type='resonance'] {
+  background: linear-gradient(90deg, rgba(138, 43, 226, 0.5), rgba(138, 43, 226, 0.8));
+}
+
+.energyStackedBar[data-energy-type='rage'] {
+  background: linear-gradient(90deg, rgba(255, 69, 0, 0.5), rgba(255, 69, 0, 0.8));
+}
+
+.energyStackedBar[data-energy-type='conviction'] {
+  background: linear-gradient(90deg, rgba(255, 165, 0, 0.5), rgba(255, 165, 0, 0.8));
+}
+
+.energyStackedText {
+  position: relative;
+  z-index: 1;
+  font-family: monospace;
+  font-size: 11px;
+  color: var(--table-text);
+  font-weight: 600;
+  text-shadow: 0 0 2px rgba(0, 0, 0, 0.5);
+  white-space: nowrap;
+}
+
+/* Energy display in cells - Individual */
 .energyStateDisplay {
   position: relative;
   width: 100%;

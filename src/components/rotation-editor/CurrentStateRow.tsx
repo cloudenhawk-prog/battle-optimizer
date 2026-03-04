@@ -151,7 +151,31 @@ function renderStateColumns(group: any, columnVisibility: ColumnVisibility, snap
       const className = firstVisible ? 'currentStateCell charGroupCell' : 'currentStateCell'
       firstVisible = false
 
-      // Extract energy type from column key (format: "CharacterName_energyType")
+      // Handle grouped energy column (mandatory energies)
+      if (col.energyMetadata && Array.isArray(col.energyMetadata)) {
+        return (
+          <td key={col.key} className={className}>
+            <div className="energyGroupDisplay">
+              {col.energyMetadata.map((energyMeta: any) => {
+                const current = energies[energyMeta.key] || 0
+                const max = character?.maxEnergies[energyMeta.key as keyof typeof character.maxEnergies] || 100
+                const percentage = Math.min((current / max) * 100, 100)
+
+                return (
+                  <div key={energyMeta.key} className="energyStackedItem">
+                    <div className="energyStackedBar" style={{ width: `${percentage}%` }} data-energy-type={energyMeta.key.toLowerCase()} />
+                    <span className="energyStackedText" title={energyMeta.label}>
+                      {energyMeta.label}: {Math.floor(current)}/{max}
+                    </span>
+                  </div>
+                )
+              })}
+            </div>
+          </td>
+        )
+      }
+
+      // Handle individual energy column (special energies)
       const energyType = col.key.split('_')[1]
       const current = energies[energyType] || 0
       const max = character?.maxEnergies[energyType as keyof typeof character.maxEnergies] || 100
