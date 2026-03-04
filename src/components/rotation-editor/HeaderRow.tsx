@@ -47,60 +47,32 @@ export function HeaderRow({ tableConfig, columnVisibility, setColumnVisibility }
     <thead className="tableHeader">
       {/* Top-level group headers */}
       <tr>
+        {/* Group: Selectors (Character + Action) */}
+        <th className="groupHeader groupHeaderStatic" colSpan={2}>
+          <HeaderContent label="Selectors" icon="assets/selector.png" />
+        </th>
+
         {/* Group: Basic Columns */}
         {(() => {
           const visibleBasicCols = countVisible(tableConfig.basic.columns)
-          const basicColSpan = 2 + visibleBasicCols // Character + Action + visible columns
-          return basicColSpan > 0 ? (
-            <th className="groupHeader" colSpan={basicColSpan} onClick={() => handleGroupClick(tableConfig.basic.columns)}>
+          if (!visibleBasicCols) return null
+          return (
+            <th className="groupHeader" colSpan={visibleBasicCols} onClick={() => handleGroupClick(tableConfig.basic.columns)}>
               <HeaderContent label={tableConfig.basic.label} icon={tableConfig.basic.icon} />
             </th>
-          ) : null
+          )
         })()}
 
-        {/* Group: Character-specific */}
-        {tableConfig.characters.map(group => {
-          const visibleCols = group.columns.filter(col => columnVisibility[col.key]).length
-          if (!visibleCols) return null
-          return (
-            <th key={group.label} className="groupHeader" colSpan={visibleCols} onClick={() => handleGroupClick(group.columns)}>
-              <HeaderContent label={group.label} icon={group.icon} />
-            </th>
-          )
-        })}
 
-        {/* Group: Negative Statuses */}
-        {tableConfig.negativeStatuses &&
+
+        {/* Group: Status Effects */}
+        {tableConfig.statusEffects &&
           (() => {
-            const visibleCols = tableConfig.negativeStatuses.columns.filter(col => columnVisibility[col.key]).length
+            const visibleCols = tableConfig.statusEffects.columns.filter(col => columnVisibility[col.key]).length
             if (!visibleCols) return null
             return (
-              <th className="groupHeader" colSpan={visibleCols} onClick={() => handleGroupClick(tableConfig.negativeStatuses!.columns)}>
-                <HeaderContent label={tableConfig.negativeStatuses.label} icon={tableConfig.negativeStatuses.icon} />
-              </th>
-            )
-          })()}
-
-        {/* Group: Buffs */}
-        {tableConfig.buffs &&
-          (() => {
-            const visibleCols = tableConfig.buffs.columns.filter(col => columnVisibility[col.key]).length
-            if (!visibleCols) return null
-            return (
-              <th className="groupHeader" colSpan={visibleCols} onClick={() => handleGroupClick(tableConfig.buffs!.columns)}>
-                <HeaderContent label={tableConfig.buffs.label} icon={tableConfig.buffs.icon} />
-              </th>
-            )
-          })()}
-
-        {/* Group: Debuffs */}
-        {tableConfig.debuffs &&
-          (() => {
-            const visibleCols = tableConfig.debuffs.columns.filter(col => columnVisibility[col.key]).length
-            if (!visibleCols) return null
-            return (
-              <th className="groupHeader" colSpan={visibleCols} onClick={() => handleGroupClick(tableConfig.debuffs!.columns)}>
-                <HeaderContent label={tableConfig.debuffs.label} icon={tableConfig.debuffs.icon} />
+              <th className="groupHeader" colSpan={visibleCols} onClick={() => handleGroupClick(tableConfig.statusEffects!.columns)}>
+                <HeaderContent label={tableConfig.statusEffects.label} icon={tableConfig.statusEffects.icon} />
               </th>
             )
           })()}
@@ -137,17 +109,10 @@ export function HeaderRow({ tableConfig, columnVisibility, setColumnVisibility }
           )
         })}
 
-        {/* Character-specific Columns */}
-        {tableConfig.characters.flatMap(group => renderColumns(group.columns, columnVisibility, setColumnVisibility))}
 
-        {/* Negative Status Columns */}
-        {tableConfig.negativeStatuses && renderColumns(tableConfig.negativeStatuses.columns, columnVisibility, setColumnVisibility)}
 
-        {/* Buff Columns */}
-        {tableConfig.buffs && renderColumns(tableConfig.buffs.columns, columnVisibility, setColumnVisibility)}
-
-        {/* Debuff Columns */}
-        {tableConfig.debuffs && renderColumns(tableConfig.debuffs.columns, columnVisibility, setColumnVisibility)}
+        {/* Status Effects Columns (Negative Statuses, Buffs, Debuffs) */}
+        {tableConfig.statusEffects && renderColumns(tableConfig.statusEffects.columns, columnVisibility, setColumnVisibility)}
       </tr>
     </thead>
   )

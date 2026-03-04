@@ -19,7 +19,7 @@ export default function Topbar({ tableConfig, columnVisibility, setColumnVisibil
     }))
   }
 
-  const groups: ColumnGroup[] = [tableConfig.basic, ...tableConfig.characters, ...(tableConfig.negativeStatuses ? [tableConfig.negativeStatuses] : []), ...(tableConfig.buffs ? [tableConfig.buffs] : []), ...(tableConfig.debuffs ? [tableConfig.debuffs] : [])]
+  const groups: ColumnGroup[] = [tableConfig.basic, ...tableConfig.characters, ...(tableConfig.statusEffects ? [tableConfig.statusEffects] : [])]
 
   return (
     <div className="topbar">
@@ -29,9 +29,7 @@ export default function Topbar({ tableConfig, columnVisibility, setColumnVisibil
 
           <div className="topbarGroup">
             <div className="topbarGroupLabel">{group.label}</div>
-            <div className="topbarGroupButtons">
-              {renderGroupButtons(group, columnVisibility, toggleColumn)}
-            </div>
+            <div className="topbarGroupButtons">{renderGroupButtons(group, columnVisibility, toggleColumn)}</div>
           </div>
 
           {idx < groups.length - 1 && <div className="topbarSeparator" />}

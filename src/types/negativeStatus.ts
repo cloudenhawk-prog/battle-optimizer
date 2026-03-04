@@ -12,6 +12,7 @@ export type NegativeStatus = {
   element: ElementType
   reductionStrategy: ReductionStrategy
   damageModifiers: DamageModifier[]
+  color?: string
 }
 
 // ========== Type: Negative Status In Action ==================================================================================

@@ -1,6 +1,5 @@
 import type { Character } from '../../types/character'
-import type { ColumnGroup, ColumnDef } from '../../types/tableDefinitions'
-import type { Snapshot } from '../../types/snapshot'
+import type { ColumnGroup, ColumnDef, StatusMetadata } from '../../types/tableDefinitions'
 import type { DamageModifier } from '../../types/modifiers'
 import { createOptionalGroup } from './helpers'
 import { negativeStatuses } from '../../data/negativeStatuses'
@@ -37,10 +36,10 @@ export function buildBuffColumns(selectedCharacters: Character[]): ColumnGroup |
 
   const activeBuffs = Array.from(new Set([...actionBuffs, ...modifierNames]))
 
-  const columns: ColumnDef[] = activeBuffs
+  // Build metadata for all buffs (excluding permanent ones)
+  const statusMetadata: StatusMetadata[] = activeBuffs
     .filter(buff => {
       const key = buff.replace(/\s+/g, '')
-      // Filter out permanent modifiers - they don't need tracking in the table
       return !permanentModifiersSet.has(key)
     })
     .map(buff => {
@@ -50,14 +49,20 @@ export function buildBuffColumns(selectedCharacters: Character[]): ColumnGroup |
         key,
         label: buff,
         icon: `/assets/${key}.png`,
-        maxStacks, // Store maxStacks in column metadata
-        render: (snapshot: Snapshot) => {
-          const buffs = snapshot.buffs as Record<string, number> | undefined
-          const stacks = buffs?.[key]
-          return stacks !== undefined ? stacks : 0 // Show 0 instead of undefined
-        },
+        maxStacks,
       }
     })
+
+  // Create a single column that will render all buffs as tags
+  const columns: ColumnDef[] = [
+    {
+      key: 'buffs',
+      label: 'Buffs',
+      icon: 'assets/buffs.png',
+      statusMetadata,
+      render: () => null, // Rendering is handled by StatusTagGroup in the table
+    },
+  ]
 
   return createOptionalGroup({ label: 'Buffs', icon: 'assets/buffs.png' }, columns)
 }

@@ -56,8 +56,9 @@
   border-radius: var(--rows-selectors-corner-radius);
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.5);
   z-index: 10000;
-  max-height: 400px;
+  max-height: 500px;
   overflow-y: auto;
+  width: max-content;
   min-width: 300px;
 
   /* Hide scrollbar for webkit browsers (Chrome, Safari, Edge) */
@@ -98,7 +99,9 @@
   gap: 8px;
   padding: 10px 12px;
   border-bottom: 1px solid var(--table-border);
-  transition: background-color 0.15s ease;
+  border-left: 2px solid transparent;
+  margin-left: -2px;
+  transition: background-color 0.15s ease, border-color 0.15s ease, box-shadow 0.15s ease;
 }
 
 .actionSelectRow:last-child {
@@ -109,17 +112,19 @@
   cursor: pointer;
 }
 
+.actionSelectRow.selected {
+  border-left-color: rgba(255, 120, 120, 1);
+  box-shadow: inset 0 0 30px rgba(255, 120, 120, 0.35), 0 0 20px rgba(255, 120, 120, 0.45);
+}
+
 .actionSelectRow.selectable:hover {
-  background: var(--table-hover-bg);
+  background: rgba(100, 220, 255, 0.1);
+  box-shadow: inset 0 0 20px rgba(100, 220, 255, 0.15);
 }
 
 .actionSelectRow.disabled {
   opacity: 0.5;
   cursor: not-allowed;
-}
-
-.actionSelectRow.selected {
-  background: rgba(100, 150, 255, 0.15);
 }
 
 .actionSelectCell {
@@ -136,6 +141,10 @@
 .actionCooldownCell,
 .actionEnergyCell {
   justify-content: center;
+}
+
+.actionSelectRow .actionCooldownCell,
+.actionSelectRow .actionEnergyCell {
   background: rgba(255, 255, 255, 0.02);
   padding: 4px 8px;
   border-radius: 4px;
@@ -151,4 +160,124 @@
   color: rgba(120, 255, 150, 1);
   font-size: 1.2em;
   font-weight: 600;
+}
+
+/* -------------- Action Select Category Header ----------------- */
+
+.actionSelectCategoryHeader {
+  display: grid;
+  grid-template-columns: 2fr 1fr 1.5fr;
+  gap: 8px;
+  padding: 10px 12px;
+  background: rgba(0, 0, 0, 0.3);
+  border-bottom: 1px solid var(--table-border);
+}
+
+.actionSelectCategoryHeader .actionSelectCell {
+  font-weight: bold;
+  font-size: 0.9em;
+  color: var(--table-text);
+  opacity: 0.9;
+  letter-spacing: 0.5px;
+}
+
+/* -------------- Action Variant Popup (Right Side) ----------------- */
+
+.actionSelectVariantPopup {
+  position: fixed;
+  background: var(--table-bg);
+  border: 2px solid var(--table-hover-border);
+  border-radius: var(--rows-selectors-corner-radius);
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.6);
+  z-index: 10001;
+  min-width: 250px;
+  max-width: 350px;
+  overflow: hidden;
+}
+
+.actionSelectVariantTable {
+  display: flex;
+  flex-direction: column;
+}
+
+.actionSelectVariantHeader {
+  display: flex;
+  align-items: center;
+  padding: 8px 12px;
+  background: rgba(140, 180, 255, 0.18);
+  border-bottom: 1px solid rgba(140, 180, 255, 0.25);
+  font-weight: 600;
+  font-size: 0.95em;
+  color: var(--table-text);
+}
+
+.actionSelectVariantHeader .actionSelectCell {
+  color: var(--table-text);
+  font-weight: 600;
+  font-size: 0.95em;
+}
+
+.actionSelectVariantRow {
+  display: flex;
+  align-items: center;
+  padding: 10px 12px;
+  border-bottom: 1px solid var(--table-border);
+  border-left: 2px solid transparent;
+  margin-left: -2px;
+  transition: background-color 0.15s ease, border-color 0.15s ease, box-shadow 0.15s ease;
+  cursor: pointer;
+}
+
+.actionSelectVariantRow:last-child {
+  border-bottom: none;
+}
+
+.actionSelectVariantRow.selected {
+  border-left-color: rgba(255, 120, 120, 1);
+  box-shadow: inset 0 0 30px rgba(255, 120, 120, 0.35), 0 0 20px rgba(255, 120, 120, 0.45);
+}
+
+.actionSelectVariantRow.selectable:hover {
+  background: rgba(100, 220, 255, 0.1);
+  box-shadow: inset 0 0 20px rgba(100, 220, 255, 0.15);
+}
+
+.actionSelectVariantRow.disabled {
+  opacity: 0.4;
+  cursor: not-allowed;
+}
+
+.actionSelectVariantCell {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  gap: 6px;
+}
+
+.variantName {
+  font-size: var(--rows-selectors-text-size);
+  font-weight: 500;
+  color: var(--table-text);
+}
+
+.variantDetails {
+  display: flex;
+  gap: 12px;
+  font-size: 0.9em;
+  align-items: center;
+}
+
+.variantDetails:empty {
+  display: none;
+}
+
+.variantCooldown {
+  color: rgba(255, 200, 100, 0.9);
+  font-weight: 500;
+}
+
+/* Highlight expanded group row */
+.actionSelectRow.expanded {
+  border-left-color: rgba(255, 120, 120, 0.7);
+  box-shadow: inset 0 0 25px rgba(255, 120, 120, 0.2), 0 0 15px rgba(255, 120, 120, 0.25);
 }

@@ -1,0 +1,15 @@
+/* ========== Status Tag Group ============================================================================================== */
+
+.statusTagGroup {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 2px;
+  padding: 2px;
+  min-height: 28px;
+}
+
+.statusTagGroup.empty {
+  justify-content: center;
+  color: rgba(255, 255, 255, 0.3);
+}

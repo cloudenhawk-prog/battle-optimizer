@@ -3,8 +3,9 @@ import type { Action } from '../../types/action'
 export const blueprint: Action = {
   name: 'XXX',
   displayName: 'XXX',
+  category: 'Basics',
   castTime: 100,
-  multiplier: (100) / 100,
+  multiplier: 100 / 100,
   scaling: 'ATK',
   elements: ['AERO'],
   dmgTypes: ['LIBERATION'],
@@ -20,11 +21,11 @@ export const blueprint: Action = {
   sideEffects: [],
   castConditions: {
     startState: 'ANY',
-    endState: 'GROUND'
+    endState: 'GROUND',
   },
   other: {
     hardness: 100,
     toughness: 100,
-    offtune: 100
+    offtune: 100,
   },
 }

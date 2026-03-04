@@ -5,9 +5,12 @@ import type { SideEffect, StatusModification } from './sideEffect'
 
 // ========== Type: Action =====================================================================================================
 
+export type ActionCategory = 'Basics' | 'Skills' | 'Other' | 'Testing'
+
 export type Action = {
   name: string
   displayName?: string
+  category: ActionCategory
   castTime: number
   multiplier: number
   scaling: ScalingType
@@ -26,6 +29,9 @@ export type Action = {
   offtune: number
 
   toolTip?: string
+
+  groupName?: string
+  variantName?: string
 }
 
 export type CastConditions = {

@@ -1,7 +1,7 @@
 import '../../styles/rotation-editor/ActionSelect.css'
 import { useState, useRef, useEffect } from 'react'
 import { createPortal } from 'react-dom'
-import type { Action } from '../../types/action'
+import type { Action, ActionCategory } from '../../types/action'
 import type { Character } from '../../types/character'
 import type { Snapshot } from '../../types/snapshot'
 import type { EnergyType } from '../../types/baseTypes'
@@ -30,22 +30,24 @@ type ActionState = {
 
 export function ActionSelect({ value, actions, character, currentEnergies, snapshot, onChange, disabled = false }: ActionSelectProps) {
   const [isOpen, setIsOpen] = useState(false)
+  const [expandedGroup, setExpandedGroup] = useState<string | null>(null)
+  const [variantPopupPosition, setVariantPopupPosition] = useState({ top: 0, left: 0 })
   const dropdownRef = useRef<HTMLDivElement>(null)
+  const variantPopupRef = useRef<HTMLDivElement>(null)
   const buttonRef = useRef<HTMLButtonElement>(null)
+  const groupRowRefs = useRef<Map<string, HTMLDivElement>>(new Map())
   const [dropdownPosition, setDropdownPosition] = useState({ top: 0, left: 0, width: 0 })
 
   // Close dropdown when clicking outside
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
-      console.log('🖱️ Click detected, checking if outside dropdown')
       const clickedButton = buttonRef.current && buttonRef.current.contains(event.target as Node)
       const clickedDropdown = dropdownRef.current && dropdownRef.current.contains(event.target as Node)
+      const clickedVariantPopup = variantPopupRef.current && variantPopupRef.current.contains(event.target as Node)
 
-      if (!clickedButton && !clickedDropdown) {
-        console.log('✅ Click was outside, closing dropdown')
+      if (!clickedButton && !clickedDropdown && !clickedVariantPopup) {
         setIsOpen(false)
-      } else {
-        console.log('❌ Click was inside dropdown or button, keeping it open')
+        setExpandedGroup(null)
       }
     }
 
@@ -109,23 +111,89 @@ export function ActionSelect({ value, actions, character, currentEnergies, snaps
   const selectedAction = actionStates.find(s => s.isCurrent)
   const displayText = selectedAction ? selectedAction.action.name : '-- Select Action --'
 
+  // Group actions by groupName or show individually
+  type ActionGroup = {
+    groupKey: string // The key used for grouping (groupName or action.name)
+    displayName: string // What to show in the UI
+    isGroup: boolean // Whether this represents multiple actions
+    variants: ActionState[] // All action states in this group
+    isSelectable: boolean // Whether any variant is selectable
+    isCurrent: boolean // Whether any variant is current
+  }
+
+  const actionGroups: ActionGroup[] = []
+  const groupMap = new Map<string, ActionState[]>()
+
+  // First, organize actions into groups
+  for (const actionState of actionStates) {
+    const groupKey = actionState.action.groupName || actionState.action.name
+    if (!groupMap.has(groupKey)) {
+      groupMap.set(groupKey, [])
+    }
+    groupMap.get(groupKey)!.push(actionState)
+  }
+
+  // Then create ActionGroup objects
+  for (const [groupKey, variants] of groupMap.entries()) {
+    const isGroup = variants.length > 1 || variants[0].action.groupName !== undefined
+    const isSelectable = variants.some(v => !v.isOnCooldown && !v.isUnaffordable)
+    const isCurrent = variants.some(v => v.isCurrent)
+
+    actionGroups.push({
+      groupKey,
+      displayName: isGroup ? variants[0].action.groupName || variants[0].action.name : variants[0].action.name,
+      isGroup,
+      variants,
+      isSelectable,
+      isCurrent,
+    })
+  }
+
+  // Group actions by category and sort alphabetically within each category
+  const categoryOrder: ActionCategory[] = ['Basics', 'Skills', 'Other', 'Testing']
+  const groupsByCategory = categoryOrder
+    .map(category => ({
+      category,
+      groups: actionGroups.filter(g => g.variants[0].action.category === category).sort((a, b) => a.displayName.localeCompare(b.displayName)),
+    }))
+    .filter(categoryGroup => categoryGroup.groups.length > 0)
+
   console.log('🔧 ActionSelect render:', {
     value,
     actionsCount: actions.length,
     disabled,
-    actionStates: actionStates.map(s => ({
-      name: s.action.name,
-      isCurrent: s.isCurrent,
-      isUnaffordable: s.isUnaffordable,
-      isOnCooldown: s.isOnCooldown,
-      isSpecial: s.isSpecial,
-    })),
+    groupsCount: actionGroups.length,
+    expandedGroup,
   })
 
   const handleSelect = (actionName: string) => {
     console.log('🎯 ActionSelect - handleSelect called:', actionName)
     onChange(actionName)
     setIsOpen(false)
+    setExpandedGroup(null)
+  }
+
+  const handleGroupClick = (groupKey: string, group: ActionGroup) => {
+    if (group.isGroup) {
+      // Toggle expansion for groups with variants and position the popup
+      if (expandedGroup === groupKey) {
+        setExpandedGroup(null)
+      } else {
+        setExpandedGroup(groupKey)
+        const groupRow = groupRowRefs.current.get(groupKey)
+        if (groupRow && dropdownRef.current) {
+          const rowRect = groupRow.getBoundingClientRect()
+          const dropdownRect = dropdownRef.current.getBoundingClientRect()
+          setVariantPopupPosition({
+            top: rowRect.top,
+            left: dropdownRect.right + 8, // 8px gap
+          })
+        }
+      }
+    } else {
+      // Direct selection for non-grouped actions
+      handleSelect(group.variants[0].action.name)
+    }
   }
 
   return (
@@ -143,7 +211,6 @@ export function ActionSelect({ value, actions, character, currentEnergies, snaps
             style={{
               top: `${dropdownPosition.top}px`,
               left: `${dropdownPosition.left}px`,
-              minWidth: `${Math.max(dropdownPosition.width, 300)}px`,
             }}>
             <div className="actionSelectTable">
               {/* Header */}
@@ -154,48 +221,133 @@ export function ActionSelect({ value, actions, character, currentEnergies, snaps
               </div>
 
               {/* Rows */}
-              {actionStates.length === 0 ? (
+              {actionGroups.length === 0 ? (
                 <div className="actionSelectRow">
                   <div className="actionSelectCell" style={{ gridColumn: '1 / -1', justifyContent: 'center' }}>
                     No actions available
                   </div>
                 </div>
               ) : (
-                actionStates.map(state => {
-                  const { action, isSpecial, isCurrent, isUnaffordable, isOnCooldown, cooldownRemaining, missingEnergy } = state
-
-                  // Hide special actions unless they're currently selected
-                  if (isSpecial && !isCurrent) return null
-
-                  const isDisabled = (isUnaffordable || isOnCooldown) && !isCurrent
-                  const canSelect = !isDisabled
-
-                  return (
-                    <div
-                      key={action.name}
-                      className={`actionSelectRow ${isDisabled ? 'disabled' : ''} ${isCurrent ? 'selected' : ''} ${canSelect ? 'selectable' : ''}`}
-                      onClick={() => {
-                        console.log('🖱️ Action row clicked:', {
-                          actionName: action.name,
-                          canSelect,
-                          isDisabled,
-                          isUnaffordable,
-                          isOnCooldown,
-                          isCurrent,
-                        })
-                        if (canSelect) {
-                          handleSelect(action.name)
-                        } else {
-                          console.log('⚠️ Action not selectable!')
-                        }
-                      }}>
-                      <div className="actionSelectCell actionNameCell">{action.name}</div>
-                      <div className="actionSelectCell actionCooldownCell">{isOnCooldown ? `${cooldownRemaining.toFixed(1)}s` : ''}</div>
-                      <div className="actionSelectCell actionEnergyCell">{missingEnergy.length > 0 ? <span className="energyMissing">{missingEnergy.map(e => `${e.current}/${e.needed} ${e.type}`).join(', ')}</span> : action.energyCost.length > 0 ? <span className="energyOk">✓</span> : ''}</div>
+                groupsByCategory.map(({ category, groups }) => (
+                  <div key={category}>
+                    {/* Category Header */}
+                    <div className="actionSelectCategoryHeader">
+                      <div className="actionSelectCell" style={{ gridColumn: '1 / -1', fontWeight: 'bold', fontSize: '0.9em' }}>
+                        {category}
+                      </div>
                     </div>
-                  )
-                })
+
+                    {/* Groups in this category */}
+                    {groups.map(group => {
+                      const isExpanded = expandedGroup === group.groupKey
+                      const hasMultipleVariants = group.variants.length > 1
+
+                      // Check if any variant in this group is special and not current
+                      const hasSpecialNotCurrent = group.variants.some(v => v.isSpecial && !v.isCurrent)
+                      if (hasSpecialNotCurrent && !group.isCurrent) return null
+
+                      // For groups, check if any variant is available
+                      const groupIsDisabled = !group.isSelectable && !group.isCurrent
+                      const groupCanSelect = !groupIsDisabled || hasMultipleVariants
+
+                      return (
+                        <div key={group.groupKey}>
+                          {/* Group Row */}
+                          <div
+                            ref={el => {
+                              if (el) groupRowRefs.current.set(group.groupKey, el)
+                            }}
+                            className={`actionSelectRow ${groupIsDisabled ? 'disabled' : ''} ${group.isCurrent ? 'selected' : ''} ${groupCanSelect ? 'selectable' : ''} ${isExpanded ? 'expanded' : ''}`}
+                            onClick={() => {
+                              if (groupCanSelect) {
+                                handleGroupClick(group.groupKey, group)
+                              }
+                            }}>
+                            <div className="actionSelectCell actionNameCell">
+                              {group.displayName}
+                              {hasMultipleVariants && <span style={{ marginLeft: '8px', opacity: 0.6 }}>{isExpanded ? '▼' : '▶'}</span>}
+                            </div>
+                            <div className="actionSelectCell actionCooldownCell">
+                              {/* Show cooldown if all variants have the same cooldown */}
+                              {group.variants.every(v => v.isOnCooldown && v.cooldownRemaining === group.variants[0].cooldownRemaining) && `${group.variants[0].cooldownRemaining.toFixed(2)}s`}
+                            </div>
+                            <div className="actionSelectCell actionEnergyCell">
+                              {/* Show energy status for the group */}
+                              {(() => {
+                                const representative = group.variants.find(v => v.isCurrent) ?? group.variants.find(v => v.missingEnergy.length > 0) ?? group.variants[0]
+                                if (representative.missingEnergy.length > 0) {
+                                  return <span className="energyMissing">{representative.missingEnergy.map(e => `${e.current.toFixed(2)}/${e.needed} ${e.type}`).join(', ')}</span>
+                                }
+                                return representative.action.energyCost.length > 0 ? <span className="energyOk">✓</span> : ''
+                              })()}
+                            </div>
+                          </div>
+                        </div>
+                      )
+                    })}
+                  </div>
+                ))
               )}
+            </div>
+          </div>,
+          document.body,
+        )}
+
+      {/* Variant Popup (shown to the right when a group is expanded) */}
+      {isOpen &&
+        expandedGroup &&
+        createPortal(
+          <div
+            ref={variantPopupRef}
+            className="actionSelectVariantPopup"
+            style={{
+              top: `${variantPopupPosition.top}px`,
+              left: `${variantPopupPosition.left}px`,
+            }}>
+            <div className="actionSelectVariantTable">
+              {(() => {
+                const group = actionGroups.find(g => g.groupKey === expandedGroup)
+                if (!group) return null
+
+                return (
+                  <>
+                    {/* Variant Header */}
+                    <div className="actionSelectVariantHeader">
+                      <div className="actionSelectCell" style={{ fontWeight: 'bold', fontSize: '0.9em' }}>
+                        {group.displayName}
+                      </div>
+                    </div>
+
+                    {/* Variant Rows */}
+                    {group.variants.map(variant => {
+                      const { action, isCurrent, isUnaffordable, isOnCooldown, cooldownRemaining, missingEnergy } = variant
+
+                      const isDisabled = (isUnaffordable || isOnCooldown) && !isCurrent
+                      const canSelect = !isDisabled
+
+                      return (
+                        <div
+                          key={action.name}
+                          className={`actionSelectVariantRow ${isDisabled ? 'disabled' : ''} ${isCurrent ? 'selected' : ''} ${canSelect ? 'selectable' : ''}`}
+                          onClick={e => {
+                            e.stopPropagation()
+                            if (canSelect) {
+                              handleSelect(action.name)
+                            }
+                          }}>
+                          <div className="actionSelectVariantCell">
+                            <div className="variantName">{action.variantName || action.name}</div>
+                            <div className="variantDetails">
+                              {isOnCooldown && <span className="variantCooldown">CD: {cooldownRemaining.toFixed(2)}s</span>}
+                              {missingEnergy.length > 0 ? <span className="energyMissing">{missingEnergy.map(e => `${e.current.toFixed(2)}/${e.needed} ${e.type}`).join(', ')}</span> : action.energyCost.length > 0 ? <span className="energyOk">✓</span> : null}
+                            </div>
+                          </div>
+                        </div>
+                      )
+                    })}
+                  </>
+                )
+              })()}
             </div>
           </div>,
           document.body,

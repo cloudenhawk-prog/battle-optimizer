@@ -4,6 +4,7 @@ import { always } from '../../utils/conditions/damageModifierConditions'
 export const roverAero_skill_1: Action = {
   name: 'Resonance Skill 1',
   displayName: 'Awakening Gale',
+  category: 'Skills',
   castTime: 1.0,
   multiplier: (66.44 + 99.66) / 100,
   scaling: 'ATK',
@@ -23,11 +24,14 @@ export const roverAero_skill_1: Action = {
     endState: 'AIR',
   },
   offtune: 0.76,
+  groupName: 'Resonance Skill 1',
+  variantName: 'Default',
 }
 
 export const roverAero_skill_1_swap_cancel: Action = {
   name: 'Resonance Skill 1 (swap-cancel)',
   displayName: 'Awakening Gale (swap-cancel)',
+  category: 'Skills',
   castTime: 0.15,
   multiplier: (66.44 + 99.66) / 100,
   scaling: 'ATK',
@@ -47,11 +51,14 @@ export const roverAero_skill_1_swap_cancel: Action = {
     endState: 'GROUND',
   },
   offtune: 0.76,
+  groupName: 'Resonance Skill 1',
+  variantName: 'Swap Cancel',
 }
 
 export const roverAero_skill_2: Action = {
   name: 'Resonance Skill 2',
   displayName: 'Skyfall Severance',
+  category: 'Skills',
   castTime: 0.84,
   multiplier: (3 * 23.37 + 105.15) / 100,
   scaling: 'ATK',
@@ -71,11 +78,14 @@ export const roverAero_skill_2: Action = {
     endState: 'AIR',
   },
   offtune: 3 * 0.11 + 0.48,
+  groupName: 'Resonance Skill 2',
+  variantName: 'Default',
 }
 
 export const roverAero_skill_2_swap_cancel: Action = {
   name: 'Resonance Skill 2 (swap-cancel)',
   displayName: 'Skyfall Severance (swap-cancel)',
+  category: 'Skills',
   castTime: 0.19,
   multiplier: (3 * 23.37 + 105.15) / 100,
   scaling: 'ATK',
@@ -95,11 +105,14 @@ export const roverAero_skill_2_swap_cancel: Action = {
     endState: 'AIR',
   },
   offtune: 3 * 0.11 + 0.48,
+  groupName: 'Resonance Skill 2',
+  variantName: 'Swap Cancel',
 }
 
 export const roverAero_liberation: Action = {
   name: 'Liberation',
   displayName: 'Omega Storm',
+  category: 'Skills',
   castTime: 0.08,
   multiplier: (1.2 * 536.79) / 100,
   scaling: 'ATK',
@@ -137,6 +150,7 @@ export const roverAero_liberation: Action = {
 export const roverAero_midair_1_2: Action = {
   name: 'Mid Air 1-2',
   displayName: 'Cloudburst Dance 1-2',
+  category: 'Skills',
   castTime: 0.8,
   multiplier: (128.8 + 141.47) / 100,
   scaling: 'ATK',
@@ -181,11 +195,14 @@ export const roverAero_midair_1_2: Action = {
     endState: 'AIR',
   },
   offtune: 0.29 + 0.32,
+  groupName: 'Mid Air 1-2',
+  variantName: 'Default',
 }
 
 export const roverAero_midair_1_2_swap_cancel: Action = {
   name: 'Mid Air 1-2 (swap-cancel)',
   displayName: 'Cloudburst Dance 1-2 (swap-cancel)',
+  category: 'Skills',
   castTime: 0.55,
   multiplier: (128.8 + 141.47) / 100,
   scaling: 'ATK',
@@ -230,11 +247,14 @@ export const roverAero_midair_1_2_swap_cancel: Action = {
     endState: 'AIR',
   },
   offtune: 0.29 + 0.32,
+  groupName: 'Mid Air 1-2',
+  variantName: 'Swap Cancel',
 }
 
 export const roverAero_skill_3: Action = {
   name: 'Resonance Skill 3',
   displayName: 'Unbound Flow 1-2',
+  category: 'Skills',
   castTime: 1.67,
   multiplier: (1.3 * (5 * 34.3 + 723.03)) / 100,
   scaling: 'ATK',
@@ -266,11 +286,14 @@ export const roverAero_skill_3: Action = {
     endState: 'GROUND',
   },
   offtune: 5 * 0.6 + 2.83,
+  groupName: 'Resonance Skill 3',
+  variantName: 'Default',
 }
 
 export const roverAero_skill_3_swap_cancel_1: Action = {
   name: 'Resonance Skill 3 (swap-cancel 1)',
   displayName: 'Unbound Flow 1-2 (swap-cancel 1)',
+  category: 'Skills',
   castTime: 0.17,
   multiplier: (1.3 * (5 * 34.3 + 723.03)) / 100,
   scaling: 'ATK',
@@ -302,11 +325,14 @@ export const roverAero_skill_3_swap_cancel_1: Action = {
     endState: 'GROUND',
   },
   offtune: 5 * 0.6 + 2.83,
+  groupName: 'Resonance Skill 3',
+  variantName: 'Swap Cancel 1',
 }
 
 export const roverAero_skill_3_swap_cancel_2: Action = {
   name: 'Resonance Skill 3 (swap-cancel 2)',
   displayName: 'Unbound Flow 1-2 (swap-cancel 2)',
+  category: 'Skills',
   castTime: 1.33,
   multiplier: (1.3 * (5 * 34.3 + 723.03)) / 100,
   scaling: 'ATK',
@@ -338,11 +364,14 @@ export const roverAero_skill_3_swap_cancel_2: Action = {
     endState: 'GROUND',
   },
   offtune: 5 * 0.6 + 2.83,
+  groupName: 'Resonance Skill 3',
+  variantName: 'Swap Cancel 2',
 }
 
 export const roverAero_plunge: Action = {
   name: 'Plunge',
   displayName: 'Plunge',
+  category: 'Basics',
   castTime: 0.83,
   multiplier: 140.76 / 100,
   scaling: 'ATK',
@@ -362,11 +391,14 @@ export const roverAero_plunge: Action = {
     endState: 'GROUND',
   },
   offtune: 0.96,
+  groupName: 'Plunge',
+  variantName: 'Default',
 }
 
 export const roverAero_plunge_swap_cancel: Action = {
   name: 'Plunge (swap-cancel)',
   displayName: 'Plunge (swap-cancel)',
+  category: 'Basics',
   castTime: 0.18,
   multiplier: 140.76 / 100,
   scaling: 'ATK',
@@ -386,11 +418,14 @@ export const roverAero_plunge_swap_cancel: Action = {
     endState: 'AIR',
   },
   offtune: 0.96,
+  groupName: 'Plunge',
+  variantName: 'Swap Cancel',
 }
 
 export const roverAero_BA_4: Action = {
   name: 'Basic Attack 4',
   displayName: 'Basic Attack 4',
+  category: 'Basics',
   castTime: 0.43,
   multiplier: 76.72 / 100,
   scaling: 'ATK',
@@ -412,11 +447,14 @@ export const roverAero_BA_4: Action = {
     endState: 'GROUND',
   },
   offtune: 0.52,
+  groupName: 'Basic Attack 4',
+  variantName: 'Default',
 }
 
 export const roverAero_BA_4_swap_cancel: Action = {
   name: 'Basic Attack 4 (swap-cancel)',
   displayName: 'Basic Attack 4 (swap-cancel)',
+  category: 'Basics',
   castTime: 0.2,
   multiplier: 76.72 / 100,
   scaling: 'ATK',
@@ -438,11 +476,14 @@ export const roverAero_BA_4_swap_cancel: Action = {
     endState: 'GROUND',
   },
   offtune: 0.52,
+  groupName: 'Basic Attack 4',
+  variantName: 'Swap Cancel',
 }
 
 export const roverAero_intro: Action = {
   name: 'Intro Skill',
   displayName: 'Relentless Squall',
+  category: 'Other',
   castTime: 1.42,
   multiplier: (79.53 + 119.29) / 100,
   scaling: 'ATK',
@@ -480,6 +521,7 @@ export const roverAero_intro: Action = {
 export const roverAero_outro: Action = {
   name: 'Outro Skill',
   displayName: 'Storms Echo',
+  category: 'Other',
   castTime: 0,
   multiplier: 0 / 100,
   scaling: 'ATK',
@@ -503,6 +545,7 @@ export const roverAero_outro: Action = {
 export const roverAero_echo: Action = {
   name: 'Rover Echo Skill',
   displayName: 'Reminence: Fleurdelys',
+  category: 'Other',
   castTime: 0,
   multiplier: (8 * 27.36 + 136.8) / 100,
   scaling: 'ATK',
@@ -524,6 +567,7 @@ export const roverAero_echo: Action = {
 export const roverAero_energy: Action = {
   name: 'Energy Up',
   displayName: 'Energy Up',
+  category: 'Testing',
   castTime: 0,
   multiplier: 0,
   scaling: 'HP',
@@ -545,6 +589,7 @@ export const roverAero_energy: Action = {
 export const roverAero_concerto: Action = {
   name: 'Concerto Up',
   displayName: 'Concerto Up',
+  category: 'Testing',
   castTime: 0,
   multiplier: 0,
   scaling: 'HP',
@@ -566,6 +611,7 @@ export const roverAero_concerto: Action = {
 export const roverAero_forte: Action = {
   name: 'Forte Up',
   displayName: 'Forte Up',
+  category: 'Testing',
   castTime: 0,
   multiplier: 0,
   scaling: 'HP',

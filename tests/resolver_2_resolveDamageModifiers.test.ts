@@ -1,5 +1,5 @@
 import { buildStepContext, resolveDamageModifiers, aggregateStat } from '../src/utils/hooks/resolvers'
-import { createMockSnapshot, createMockCharacter, createMockAction, createMockEnemy, createMockNegativeStatus, createMockActiveNegativeStatus } from './testUtils'
+import { createMockSnapshot, createMockCharacter, createMockAction, createMockEnemy, createMockNegativeStatus, createMockActiveNegativeStatus, createMockDamageModifier } from './testUtils'
 
 /**
  * This resolver findes existing damage modifiers sources: character, action, negative statuses and adds up the stats.
@@ -8,14 +8,14 @@ describe('resolveDamageModifiers', () => {
   describe('Modifier Source Collection', () => {
     it('should collect and aggregate from all sources (character + action + negative statuses)', () => {
       const character = createMockCharacter('TestChar', {
-        damageModifiers: [{ source: 'character', characterStats: { bonusATK: 100 } }],
+        damageModifiers: [createMockDamageModifier('character', { characterStats: { bonusATK: 100 } })],
       })
       const action = createMockAction('Action', {
-        damageModifiers: [{ source: 'action', characterStats: { bonusATK: 50 } }],
+        damageModifiers: [createMockDamageModifier('action', { characterStats: { bonusATK: 50 } })],
       })
       const burnStatus = createMockNegativeStatus('Burn', {
         element: 'FUSION',
-        damageModifiers: [{ source: 'negStatus', characterStats: { bonusATK: 25 } }],
+        damageModifiers: [createMockDamageModifier('negStatus', { characterStats: { bonusATK: 25 } })],
       })
       const negativeStatuses = [createMockActiveNegativeStatus(burnStatus)]
 
@@ -33,13 +33,13 @@ describe('resolveDamageModifiers', () => {
     it('should handle multiple modifiers from same source', () => {
       const character = createMockCharacter('TestChar', {
         damageModifiers: [
-          { source: 'passive1', characterStats: { bonusATK: 100 } },
-          { source: 'passive2', characterStats: { bonusATK: 50 } },
-          { source: 'passive3', characterStats: { bonusATK: 30 } },
+          createMockDamageModifier('passive1', { characterStats: { bonusATK: 100 } }),
+          createMockDamageModifier('passive2', { characterStats: { bonusATK: 50 } }),
+          createMockDamageModifier('passive3', { characterStats: { bonusATK: 30 } }),
         ],
       })
 
-      const context = buildStepContext(1, createMockSnapshot({ id: '1' }), createMockSnapshot({ id: '0', toTime: 0 }), character, createMockAction('Action'), createMockEnemy(), [], { TestChar: character })
+      const context = buildStepContext(1, createMockSnapshot({ id: '1' }), createMockSnapshot({ id: '0', toTime: 0 }), character, createMockAction('Action'), createMockEnemy(), [], [], { TestChar: character })
 
       resolveDamageModifiers(context)
 
@@ -50,14 +50,14 @@ describe('resolveDamageModifiers', () => {
       const status1 = createMockNegativeStatus('Status1', {
         element: 'FUSION',
         duration: 10,
-        damageModifiers: [{ source: 'status1', characterStats: { bonusATK: 30 } }],
+        damageModifiers: [createMockDamageModifier('status1', { characterStats: { bonusATK: 30 } })],
       })
       const status2 = createMockNegativeStatus('Status2', {
         element: 'GLACIO',
         duration: 5,
-        damageModifiers: [{ source: 'status2', characterStats: { bonusATK: 20 } }],
+        damageModifiers: [createMockDamageModifier('status2', { characterStats: { bonusATK: 20 } })],
       })
-      const negativeStatuses = [createMockActiveNegativeStatus(burnStatus), createMockActiveNegativeStatus(chillStatus)]
+      const negativeStatuses = [createMockActiveNegativeStatus(status1), createMockActiveNegativeStatus(status2)]
 
       const context = buildStepContext(1, createMockSnapshot({ id: '1' }), createMockSnapshot({ id: '0', toTime: 0 }), createMockCharacter('TestChar'), createMockAction('Action'), createMockEnemy(), negativeStatuses, [], { TestChar: createMockCharacter('TestChar') })
 
@@ -69,15 +69,14 @@ describe('resolveDamageModifiers', () => {
     it('should aggregate both character and enemy stats from same modifier', () => {
       const character = createMockCharacter('TestChar', {
         damageModifiers: [
-          {
-            source: 'mixed',
+          createMockDamageModifier('mixed', {
             characterStats: { bonusATK: 100 },
             enemyStats: { glacioRES: -0.2 },
-          },
+          }),
         ],
       })
 
-      const context = buildStepContext(1, createMockSnapshot({ id: '1' }), createMockSnapshot({ id: '0', toTime: 0 }), character, createMockAction('Action'), createMockEnemy(), [], { TestChar: character })
+      const context = buildStepContext(1, createMockSnapshot({ id: '1' }), createMockSnapshot({ id: '0', toTime: 0 }), character, createMockAction('Action'), createMockEnemy(), [], [], { TestChar: character })
 
       resolveDamageModifiers(context)
 
@@ -90,12 +89,12 @@ describe('resolveDamageModifiers', () => {
     it('should correctly aggregate additive stats', () => {
       const character = createMockCharacter('TestChar', {
         damageModifiers: [
-          { source: 'mod1', characterStats: { bonusATK: 100, critRate: 0.2, energyPercent: 1.5 } },
-          { source: 'mod2', characterStats: { bonusATK: 50, critRate: 0.15, energyPercent: 0.3 } },
+          createMockDamageModifier('mod1', { characterStats: { bonusATK: 100, critRate: 0.2, energyPercent: 1.5 } }),
+          createMockDamageModifier('mod2', { characterStats: { bonusATK: 50, critRate: 0.15, energyPercent: 0.3 } }),
         ],
       })
 
-      const context = buildStepContext(1, createMockSnapshot({ id: '1' }), createMockSnapshot({ id: '0', toTime: 0 }), character, createMockAction('Action'), createMockEnemy(), [], { TestChar: character })
+      const context = buildStepContext(1, createMockSnapshot({ id: '1' }), createMockSnapshot({ id: '0', toTime: 0 }), character, createMockAction('Action'), createMockEnemy(), [], [], { TestChar: character })
 
       resolveDamageModifiers(context)
 
@@ -107,12 +106,12 @@ describe('resolveDamageModifiers', () => {
     it('should correctly aggregate multiplicative stats', () => {
       const character = createMockCharacter('TestChar', {
         damageModifiers: [
-          { source: 'mod1', characterStats: { totalMultiplierATK: 1.2, totalMultiplierDMG: 1.15 } },
-          { source: 'mod2', characterStats: { totalMultiplierATK: 1.1, totalMultiplierDMG: 1.1 } },
+          createMockDamageModifier('mod1', { characterStats: { totalMultiplierATK: 1.2, totalMultiplierDMG: 1.15 } }),
+          createMockDamageModifier('mod2', { characterStats: { totalMultiplierATK: 1.1, totalMultiplierDMG: 1.1 } }),
         ],
       })
 
-      const context = buildStepContext(1, createMockSnapshot({ id: '1' }), createMockSnapshot({ id: '0', toTime: 0 }), character, createMockAction('Action'), createMockEnemy(), [], { TestChar: character })
+      const context = buildStepContext(1, createMockSnapshot({ id: '1' }), createMockSnapshot({ id: '0', toTime: 0 }), character, createMockAction('Action'), createMockEnemy(), [], [], { TestChar: character })
 
       resolveDamageModifiers(context)
 
@@ -123,28 +122,26 @@ describe('resolveDamageModifiers', () => {
     it('should handle additive and multiplicative stats independently', () => {
       const character = createMockCharacter('TestChar', {
         damageModifiers: [
-          {
-            source: 'mixed',
+          createMockDamageModifier('mixed', {
             characterStats: {
               bonusATK: 100,
               totalMultiplierATK: 1.2,
               critRate: 0.2,
               totalMultiplierDMG: 1.15,
             },
-          },
-          {
-            source: 'mixed2',
+          }),
+          createMockDamageModifier('mixed2', {
             characterStats: {
               bonusATK: 50,
               totalMultiplierATK: 1.1,
               critRate: 0.1,
               totalMultiplierDMG: 1.1,
             },
-          },
+          }),
         ],
       })
 
-      const context = buildStepContext(1, createMockSnapshot({ id: '1' }), createMockSnapshot({ id: '0', toTime: 0 }), character, createMockAction('Action'), createMockEnemy(), [], { TestChar: character })
+      const context = buildStepContext(1, createMockSnapshot({ id: '1' }), createMockSnapshot({ id: '0', toTime: 0 }), character, createMockAction('Action'), createMockEnemy(), [], [], { TestChar: character })
 
       resolveDamageModifiers(context)
 
@@ -161,7 +158,7 @@ describe('resolveDamageModifiers', () => {
       const character = createMockCharacter('TestChar')
       const action = createMockAction('Action')
 
-      const context = buildStepContext(1, createMockSnapshot({ id: '1' }), createMockSnapshot({ id: '0', toTime: 0 }), character, action, createMockEnemy(), [], { TestChar: character })
+      const context = buildStepContext(1, createMockSnapshot({ id: '1' }), createMockSnapshot({ id: '0', toTime: 0 }), character, action, createMockEnemy(), [], [], { TestChar: character })
 
       resolveDamageModifiers(context)
 
@@ -183,13 +180,13 @@ describe('resolveDamageModifiers', () => {
   describe('Enemy Stat Aggregation', () => {
     it('should aggregate enemy resistance stats (additive)', () => {
       const character = createMockCharacter('TestChar', {
-        damageModifiers: [{ source: 'weapon', enemyStats: { glacioRES: -0.2 } }],
+        damageModifiers: [createMockDamageModifier('weapon', { enemyStats: { glacioRES: -0.2 } })],
       })
       const action = createMockAction('Action', {
-        damageModifiers: [{ source: 'action', enemyStats: { glacioRES: -0.15 } }],
+        damageModifiers: [createMockDamageModifier('action', { enemyStats: { glacioRES: -0.15 } })],
       })
 
-      const context = buildStepContext(1, createMockSnapshot({ id: '1' }), createMockSnapshot({ id: '0', toTime: 0 }), character, action, createMockEnemy(), [], { TestChar: character })
+      const context = buildStepContext(1, createMockSnapshot({ id: '1' }), createMockSnapshot({ id: '0', toTime: 0 }), character, action, createMockEnemy(), [], [], { TestChar: character })
 
       resolveDamageModifiers(context)
 
@@ -198,13 +195,13 @@ describe('resolveDamageModifiers', () => {
 
     it('should use reverse multiplicative formula for damageReduction: 1 - (1-a) * (1-b)', () => {
       const character = createMockCharacter('TestChar', {
-        damageModifiers: [{ source: 'buff1', enemyStats: { damageReduction: 0.5 } }],
+        damageModifiers: [createMockDamageModifier('buff1', { enemyStats: { damageReduction: 0.5 } })],
       })
       const action = createMockAction('Action', {
-        damageModifiers: [{ source: 'buff2', enemyStats: { damageReduction: 0.5 } }],
+        damageModifiers: [createMockDamageModifier('buff2', { enemyStats: { damageReduction: 0.5 } })],
       })
 
-      const context = buildStepContext(1, createMockSnapshot({ id: '1' }), createMockSnapshot({ id: '0', toTime: 0 }), character, action, createMockEnemy(), [], { TestChar: character })
+      const context = buildStepContext(1, createMockSnapshot({ id: '1' }), createMockSnapshot({ id: '0', toTime: 0 }), character, action, createMockEnemy(), [], [], { TestChar: character })
 
       resolveDamageModifiers(context)
 
@@ -215,13 +212,13 @@ describe('resolveDamageModifiers', () => {
 
     it('should handle zero damageReduction as identity (leave unchanged)', () => {
       const character = createMockCharacter('TestChar', {
-        damageModifiers: [{ source: 'buff1', enemyStats: { damageReduction: 0.3 } }],
+        damageModifiers: [createMockDamageModifier('buff1', { enemyStats: { damageReduction: 0.3 } })],
       })
       const action = createMockAction('Action', {
-        damageModifiers: [{ source: 'buff2', enemyStats: { damageReduction: 0 } }],
+        damageModifiers: [createMockDamageModifier('buff2', { enemyStats: { damageReduction: 0 } })],
       })
 
-      const context = buildStepContext(1, createMockSnapshot({ id: '1' }), createMockSnapshot({ id: '0', toTime: 0 }), character, action, createMockEnemy(), [], { TestChar: character })
+      const context = buildStepContext(1, createMockSnapshot({ id: '1' }), createMockSnapshot({ id: '0', toTime: 0 }), character, action, createMockEnemy(), [], [], { TestChar: character })
 
       resolveDamageModifiers(context)
 
@@ -231,13 +228,13 @@ describe('resolveDamageModifiers', () => {
 
     it('should handle negative damageReduction (damage amplification)', () => {
       const character = createMockCharacter('TestChar', {
-        damageModifiers: [{ source: 'buff1', enemyStats: { damageReduction: 0.3 } }],
+        damageModifiers: [createMockDamageModifier('buff1', { enemyStats: { damageReduction: 0.3 } })],
       })
       const action = createMockAction('Action', {
-        damageModifiers: [{ source: 'debuff', enemyStats: { damageReduction: -0.2 } }],
+        damageModifiers: [createMockDamageModifier('debuff', { enemyStats: { damageReduction: -0.2 } })],
       })
 
-      const context = buildStepContext(1, createMockSnapshot({ id: '1' }), createMockSnapshot({ id: '0', toTime: 0 }), character, action, createMockEnemy(), [], { TestChar: character })
+      const context = buildStepContext(1, createMockSnapshot({ id: '1' }), createMockSnapshot({ id: '0', toTime: 0 }), character, action, createMockEnemy(), [], [], { TestChar: character })
 
       resolveDamageModifiers(context)
 
@@ -247,7 +244,7 @@ describe('resolveDamageModifiers', () => {
     })
 
     it('should initialize all enemy stats to 0', () => {
-      const context = buildStepContext(1, createMockSnapshot({ id: '1' }), createMockSnapshot({ id: '0', toTime: 0 }), createMockCharacter('TestChar'), createMockAction('Action'), createMockEnemy(), [], { TestChar: createMockCharacter('TestChar') })
+      const context = buildStepContext(1, createMockSnapshot({ id: '1' }), createMockSnapshot({ id: '0', toTime: 0 }), createMockCharacter('TestChar'), createMockAction('Action'), createMockEnemy(), [], [], { TestChar: createMockCharacter('TestChar') })
 
       resolveDamageModifiers(context)
 
@@ -267,15 +264,14 @@ describe('resolveDamageModifiers', () => {
     it('should apply condition multiplier to all stats in modifier', () => {
       const character = createMockCharacter('TestChar', {
         damageModifiers: [
-          {
-            source: 'conditional',
+          createMockDamageModifier('conditional', {
             characterStats: { bonusATK: 100, critRate: 0.2 },
             condition: () => 2,
-          },
+          }),
         ],
       })
 
-      const context = buildStepContext(1, createMockSnapshot({ id: '1' }), createMockSnapshot({ id: '0', toTime: 0 }), character, createMockAction('Action'), createMockEnemy(), [], { TestChar: character })
+      const context = buildStepContext(1, createMockSnapshot({ id: '1' }), createMockSnapshot({ id: '0', toTime: 0 }), character, createMockAction('Action'), createMockEnemy(), [], [], { TestChar: character })
 
       resolveDamageModifiers(context)
 
@@ -286,12 +282,12 @@ describe('resolveDamageModifiers', () => {
     it('should treat missing condition as multiplier of 1', () => {
       const character = createMockCharacter('TestChar', {
         damageModifiers: [
-          { source: 'noCondition', characterStats: { bonusATK: 100 } },
-          { source: 'withCondition', characterStats: { bonusATK: 50 }, condition: () => 1 },
+          createMockDamageModifier('noCondition', { characterStats: { bonusATK: 100 } }),
+          createMockDamageModifier('withCondition', { characterStats: { bonusATK: 50 }, condition: () => 1 }),
         ],
       })
 
-      const context = buildStepContext(1, createMockSnapshot({ id: '1' }), createMockSnapshot({ id: '0', toTime: 0 }), character, createMockAction('Action'), createMockEnemy(), [], { TestChar: character })
+      const context = buildStepContext(1, createMockSnapshot({ id: '1' }), createMockSnapshot({ id: '0', toTime: 0 }), character, createMockAction('Action'), createMockEnemy(), [], [], { TestChar: character })
 
       resolveDamageModifiers(context)
 
@@ -301,12 +297,12 @@ describe('resolveDamageModifiers', () => {
     it('should handle condition returning 0 (disabled modifier)', () => {
       const character = createMockCharacter('TestChar', {
         damageModifiers: [
-          { source: 'active', characterStats: { bonusATK: 100 } },
-          { source: 'disabled', characterStats: { bonusATK: 500 }, condition: () => 0 },
+          createMockDamageModifier('active', { characterStats: { bonusATK: 100 } }),
+          createMockDamageModifier('disabled', { characterStats: { bonusATK: 500 }, condition: () => 0 }),
         ],
       })
 
-      const context = buildStepContext(1, createMockSnapshot({ id: '1' }), createMockSnapshot({ id: '0', toTime: 0 }), character, createMockAction('Action'), createMockEnemy(), [], { TestChar: character })
+      const context = buildStepContext(1, createMockSnapshot({ id: '1' }), createMockSnapshot({ id: '0', toTime: 0 }), character, createMockAction('Action'), createMockEnemy(), [], [], { TestChar: character })
 
       resolveDamageModifiers(context)
 
@@ -316,15 +312,14 @@ describe('resolveDamageModifiers', () => {
     it('should handle fractional condition multipliers', () => {
       const character = createMockCharacter('TestChar', {
         damageModifiers: [
-          {
-            source: 'partial',
+          createMockDamageModifier('partial', {
             characterStats: { bonusATK: 100 },
             condition: () => 0.5,
-          },
+          }),
         ],
       })
 
-      const context = buildStepContext(1, createMockSnapshot({ id: '1' }), createMockSnapshot({ id: '0', toTime: 0 }), character, createMockAction('Action'), createMockEnemy(), [], { TestChar: character })
+      const context = buildStepContext(1, createMockSnapshot({ id: '1' }), createMockSnapshot({ id: '0', toTime: 0 }), character, createMockAction('Action'), createMockEnemy(), [], [], { TestChar: character })
 
       resolveDamageModifiers(context)
 
@@ -335,18 +330,17 @@ describe('resolveDamageModifiers', () => {
       let capturedContext: any = null
       const character = createMockCharacter('TestChar', {
         damageModifiers: [
-          {
-            source: 'contextCheck',
+          createMockDamageModifier('contextCheck', {
             characterStats: { bonusATK: 100 },
             condition: ctx => {
               capturedContext = ctx
               return 1
             },
-          },
+          }),
         ],
       })
 
-      const context = buildStepContext(1, createMockSnapshot({ id: '1' }), createMockSnapshot({ id: '0', toTime: 0 }), character, createMockAction('TestAction'), createMockEnemy(), [], { TestChar: character })
+      const context = buildStepContext(1, createMockSnapshot({ id: '1' }), createMockSnapshot({ id: '0', toTime: 0 }), character, createMockAction('TestAction'), createMockEnemy(), [], [], { TestChar: character })
 
       resolveDamageModifiers(context)
 
@@ -359,9 +353,9 @@ describe('resolveDamageModifiers', () => {
 
   describe('Context State Management', () => {
     it('should collect all modifiers into context.damageModifiers for damage calculator', () => {
-      const charMod = { source: 'passive', characterStats: { bonusATK: 50 } }
-      const actionMod = { source: 'skillBonus', characterStats: { bonusATK: 30 } }
-      const statusMod = { source: 'burn', enemyStats: { fusionRES: -0.1 } }
+      const charMod = createMockDamageModifier('passive', { characterStats: { bonusATK: 50 } })
+      const actionMod = createMockDamageModifier('skillBonus', { characterStats: { bonusATK: 30 } })
+      const statusMod = createMockDamageModifier('burn', { enemyStats: { fusionRES: -0.1 } })
 
       const character = createMockCharacter('TestChar', {
         damageModifiers: [charMod],
@@ -381,19 +375,19 @@ describe('resolveDamageModifiers', () => {
 
       // Verify all modifiers are collected
       expect(context.damageModifiers).toHaveLength(3)
-      expect(context.damageModifiers).toContainEqual(charMod)
-      expect(context.damageModifiers).toContainEqual(actionMod)
-      expect(context.damageModifiers).toContainEqual(statusMod)
+      expect(context.damageModifiers[0].source).toBe('passive')
+      expect(context.damageModifiers[1].source).toBe('skillBonus')
+      expect(context.damageModifiers[2].source).toBe('burn')
 
       // Verify they're in the correct order (character -> action -> negative statuses)
-      expect(context.damageModifiers[0]).toBe(charMod)
-      expect(context.damageModifiers[1]).toBe(actionMod)
-      expect(context.damageModifiers[2]).toBe(statusMod)
+      expect(context.damageModifiers[0].characterStats).toEqual(charMod.characterStats)
+      expect(context.damageModifiers[1].characterStats).toEqual(actionMod.characterStats)
+      expect(context.damageModifiers[2].enemyStats).toEqual(statusMod.enemyStats)
     })
 
     it('should write aggregated modifiers to context', () => {
       const character = createMockCharacter('TestChar', {
-        damageModifiers: [{ source: 'test', characterStats: { bonusATK: 100 } }],
+        damageModifiers: [createMockDamageModifier('test', { characterStats: { bonusATK: 100 } })],
       })
 
       const context = buildStepContext(
@@ -402,9 +396,10 @@ describe('resolveDamageModifiers', () => {
         createMockSnapshot({ id: '0', toTime: 0 }),
         character,
         createMockAction('Action', {
-          damageModifiers: [{ source: 'action', enemyStats: { glacioRES: -0.1 } }],
+          damageModifiers: [createMockDamageModifier('action', { enemyStats: { glacioRES: -0.1 } })],
         }),
         createMockEnemy(),
+        [],
         [],
         { TestChar: character },
       )
@@ -418,7 +413,7 @@ describe('resolveDamageModifiers', () => {
     })
 
     it('should append log entry', () => {
-      const context = buildStepContext(1, createMockSnapshot({ id: '1' }), createMockSnapshot({ id: '0', toTime: 0 }), createMockCharacter('TestChar'), createMockAction('Action'), createMockEnemy(), [], { TestChar: createMockCharacter('TestChar') })
+      const context = buildStepContext(1, createMockSnapshot({ id: '1' }), createMockSnapshot({ id: '0', toTime: 0 }), createMockCharacter('TestChar'), createMockAction('Action'), createMockEnemy(), [], [], { TestChar: createMockCharacter('TestChar') })
 
       const initialLogCount = context.logs.length
       resolveDamageModifiers(context)
@@ -438,10 +433,11 @@ describe('resolveDamageModifiers', () => {
         current,
         prev,
         createMockCharacter('TestChar', {
-          damageModifiers: [{ source: 'test', characterStats: { bonusATK: 100 } }],
+          damageModifiers: [createMockDamageModifier('test', { characterStats: { bonusATK: 100 } })],
         }),
         createMockAction('Action'),
         createMockEnemy(),
+        [],
         [],
         { TestChar: createMockCharacter('TestChar') },
       )
@@ -460,7 +456,7 @@ describe('resolveDamageModifiers', () => {
       const character = createMockCharacter('TestChar', { damageModifiers: [] })
       const action = createMockAction('Action', { damageModifiers: [] })
 
-      const context = buildStepContext(1, createMockSnapshot({ id: '1' }), createMockSnapshot({ id: '0', toTime: 0 }), character, action, createMockEnemy(), [], { TestChar: character })
+      const context = buildStepContext(1, createMockSnapshot({ id: '1' }), createMockSnapshot({ id: '0', toTime: 0 }), character, action, createMockEnemy(), [], [], { TestChar: character })
 
       resolveDamageModifiers(context)
 
@@ -474,7 +470,7 @@ describe('resolveDamageModifiers', () => {
       const character = createMockCharacter('TestChar', { damageModifiers: undefined })
       const action = createMockAction('Action', { damageModifiers: undefined })
 
-      const context = buildStepContext(1, createMockSnapshot({ id: '1' }), createMockSnapshot({ id: '0', toTime: 0 }), character, action, createMockEnemy(), [], { TestChar: character })
+      const context = buildStepContext(1, createMockSnapshot({ id: '1' }), createMockSnapshot({ id: '0', toTime: 0 }), character, action, createMockEnemy(), [], [], { TestChar: character })
 
       resolveDamageModifiers(context)
 
@@ -484,10 +480,10 @@ describe('resolveDamageModifiers', () => {
 
     it('should handle modifiers with only characterStats', () => {
       const character = createMockCharacter('TestChar', {
-        damageModifiers: [{ source: 'charOnly', characterStats: { bonusATK: 100 } }],
+        damageModifiers: [createMockDamageModifier('charOnly', { characterStats: { bonusATK: 100 } })],
       })
 
-      const context = buildStepContext(1, createMockSnapshot({ id: '1' }), createMockSnapshot({ id: '0', toTime: 0 }), character, createMockAction('Action'), createMockEnemy(), [], { TestChar: character })
+      const context = buildStepContext(1, createMockSnapshot({ id: '1' }), createMockSnapshot({ id: '0', toTime: 0 }), character, createMockAction('Action'), createMockEnemy(), [], [], { TestChar: character })
 
       resolveDamageModifiers(context)
 
@@ -497,10 +493,10 @@ describe('resolveDamageModifiers', () => {
 
     it('should handle modifiers with only enemyStats', () => {
       const character = createMockCharacter('TestChar', {
-        damageModifiers: [{ source: 'enemyOnly', enemyStats: { glacioRES: -0.2 } }],
+        damageModifiers: [createMockDamageModifier('enemyOnly', { enemyStats: { glacioRES: -0.2 } })],
       })
 
-      const context = buildStepContext(1, createMockSnapshot({ id: '1' }), createMockSnapshot({ id: '0', toTime: 0 }), character, createMockAction('Action'), createMockEnemy(), [], { TestChar: character })
+      const context = buildStepContext(1, createMockSnapshot({ id: '1' }), createMockSnapshot({ id: '0', toTime: 0 }), character, createMockAction('Action'), createMockEnemy(), [], [], { TestChar: character })
 
       resolveDamageModifiers(context)
 
@@ -511,12 +507,12 @@ describe('resolveDamageModifiers', () => {
     it('should handle negative values in additive stats', () => {
       const character = createMockCharacter('TestChar', {
         damageModifiers: [
-          { source: 'buff', characterStats: { bonusATK: 100 } },
-          { source: 'debuff', characterStats: { bonusATK: -50 } },
+          createMockDamageModifier('buff', { characterStats: { bonusATK: 100 } }),
+          createMockDamageModifier('debuff', { characterStats: { bonusATK: -50 } }),
         ],
       })
 
-      const context = buildStepContext(1, createMockSnapshot({ id: '1' }), createMockSnapshot({ id: '0', toTime: 0 }), character, createMockAction('Action'), createMockEnemy(), [], { TestChar: character })
+      const context = buildStepContext(1, createMockSnapshot({ id: '1' }), createMockSnapshot({ id: '0', toTime: 0 }), character, createMockAction('Action'), createMockEnemy(), [], [], { TestChar: character })
 
       resolveDamageModifiers(context)
 
@@ -526,12 +522,12 @@ describe('resolveDamageModifiers', () => {
     it('should handle multipliers less than 1 (reduction effects)', () => {
       const character = createMockCharacter('TestChar', {
         damageModifiers: [
-          { source: 'buff', characterStats: { totalMultiplierATK: 1.5 } },
-          { source: 'debuff', characterStats: { totalMultiplierATK: 0.8 } }, // 20% reduction
+          createMockDamageModifier('buff', { characterStats: { totalMultiplierATK: 1.5 } }),
+          createMockDamageModifier('debuff', { characterStats: { totalMultiplierATK: 0.8 } }), // 20% reduction
         ],
       })
 
-      const context = buildStepContext(1, createMockSnapshot({ id: '1' }), createMockSnapshot({ id: '0', toTime: 0 }), character, createMockAction('Action'), createMockEnemy(), [], { TestChar: character })
+      const context = buildStepContext(1, createMockSnapshot({ id: '1' }), createMockSnapshot({ id: '0', toTime: 0 }), character, createMockAction('Action'), createMockEnemy(), [], [], { TestChar: character })
 
       resolveDamageModifiers(context)
 

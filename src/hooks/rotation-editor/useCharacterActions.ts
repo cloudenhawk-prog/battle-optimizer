@@ -28,11 +28,18 @@ type UseCharacterActionsProps = {
 export function useCharacterActions({ setSnapshots, charactersInBattle, enemy, tableConfig, setDamageEvents }: UseCharacterActionsProps) {
   const charactersMap: Record<string, Character> = Object.fromEntries(charactersInBattle.map(c => [c.name, c]))
   const characterColumnsMap: Record<string, string[]> = Object.fromEntries(tableConfig.characters.map(c => [c.label, c.columns.map(col => col.key.split('_')[1])]))
+
+  // Extract columns from statusEffects group
+  const statusEffectsColumns = tableConfig.statusEffects?.columns ?? []
+  const buffsCol = statusEffectsColumns.find(col => col.key === 'buffs')
+  const debuffsCol = statusEffectsColumns.find(col => col.key === 'debuffs')
+  const negativeStatusesCol = statusEffectsColumns.find(col => col.key === 'negativeStatuses')
+
   const globalColumns: GlobalColumns = {
     basic: tableConfig.basic.columns.map(col => col.key),
-    buffs: tableConfig.buffs?.columns.map(col => col.key) ?? [],
-    debuffs: tableConfig.debuffs?.columns.map(col => col.key) ?? [],
-    negativeStatuses: tableConfig.negativeStatuses?.columns.map(col => col.key) ?? [],
+    buffs: buffsCol?.statusMetadata?.map(meta => meta.key) ?? [],
+    debuffs: debuffsCol?.statusMetadata?.map(meta => meta.key) ?? [],
+    negativeStatuses: negativeStatusesCol?.statusMetadata?.map(meta => meta.key) ?? [],
   }
 
   const negativeStatusesInAction = useRef<NegativeStatusInAction[]>(

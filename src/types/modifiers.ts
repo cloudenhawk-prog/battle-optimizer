@@ -14,6 +14,7 @@ export type DamageModifier = {
   targetStrategy: TargetStrategy
   durationStrategy: DurationStrategy
   stackingStrategy: StackingStrategy
+  color?: string
 }
 
 // ========== Type: Target Strategy ============================================================================================

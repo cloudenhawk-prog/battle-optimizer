@@ -1,6 +1,5 @@
 import type { Character } from '../../types/character'
-import type { ColumnGroup, ColumnDef } from '../../types/tableDefinitions'
-import type { Snapshot } from '../../types/snapshot'
+import type { ColumnGroup, ColumnDef, StatusMetadata } from '../../types/tableDefinitions'
 import type { DamageModifier } from '../../types/modifiers'
 import { createOptionalGroup } from './helpers'
 import { negativeStatuses } from '../../data/negativeStatuses'
@@ -37,10 +36,10 @@ export function buildDebuffColumns(selectedCharacters: Character[]): ColumnGroup
 
   const activeDebuffs = Array.from(new Set([...actionDebuffs, ...modifierNames]))
 
-  const columns: ColumnDef[] = activeDebuffs
+  // Build metadata for all debuffs (excluding permanent ones)
+  const statusMetadata: StatusMetadata[] = activeDebuffs
     .filter(debuff => {
       const key = debuff.replace(/\s+/g, '')
-      // Filter out permanent modifiers - they don't need tracking in the table
       return !permanentModifiersSet.has(key)
     })
     .map(debuff => {
@@ -50,14 +49,20 @@ export function buildDebuffColumns(selectedCharacters: Character[]): ColumnGroup
         key,
         label: debuff,
         icon: `/assets/${key}.png`,
-        maxStacks, // Store maxStacks in column metadata
-        render: (snapshot: Snapshot) => {
-          const debuffs = snapshot.debuffs as Record<string, number> | undefined
-          const stacks = debuffs?.[key]
-          return stacks !== undefined ? stacks : 0 // Show 0 instead of undefined
-        },
+        maxStacks,
       }
     })
+
+  // Create a single column that will render all debuffs as tags
+  const columns: ColumnDef[] = [
+    {
+      key: 'debuffs',
+      label: 'Debuffs',
+      icon: 'assets/debuffs.png',
+      statusMetadata,
+      render: () => null, // Rendering is handled by StatusTagGroup in the table
+    },
+  ]
 
   return createOptionalGroup({ label: 'Debuffs', icon: 'assets/debuffs.png' }, columns)
 }

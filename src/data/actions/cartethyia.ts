@@ -7,6 +7,7 @@ import { aeroErosionExplosion } from '../sideEffects'
 export const cartethyia_BA_1_4: Action = {
   name: 'Basic Attack 1-4',
   displayName: 'Basic Attack 1-4',
+  category: 'Basics',
   castTime: 3.2,
   multiplier: (1.5 * (4.78 + (2 * 3.94 + 5.25) + 4 * 4.28 + (3 * 2.52 + 7.54))) / 100,
   scaling: 'HP',
@@ -32,6 +33,7 @@ export const cartethyia_BA_1_4: Action = {
 export const cartethyia_BA_2_4: Action = {
   name: 'Basic Attack 2-4',
   displayName: 'Basic Attack 2-4',
+  category: 'Basics',
   castTime: 2.48,
   multiplier: (1.5 * (2 * 3.94 + 5.25 + 4 * 4.28 + (3 * 2.52 + 7.54))) / 100,
   scaling: 'HP',
@@ -58,6 +60,7 @@ export const cartethyia_BA_2_4: Action = {
 export const cartethyia_heavy: Action = {
   name: 'Heavy Attack',
   displayName: 'Heavy Attack',
+  category: 'Basics',
   castTime: 1,
   multiplier: (1.5 * (3 * 2.08 + 6.24)) / 100,
   scaling: 'HP',
@@ -83,6 +86,7 @@ export const cartethyia_heavy: Action = {
 export const cartethyia_plunge_1: Action = {
   name: 'Plunge Attack (0-1 swords)',
   displayName: 'Plunge Attack 1',
+  category: 'Basics',
   castTime: 1,
   multiplier: (3 * 5.65) / 100,
   scaling: 'HP',
@@ -108,6 +112,7 @@ export const cartethyia_plunge_1: Action = {
 export const cartethyia_lunge_2: Action = {
   name: 'Plunge Attack (2 swords)',
   displayName: 'Plunge Attack 2',
+  category: 'Basics',
   castTime: 1,
   multiplier: (3 * (3 * 3.3)) / 100,
   scaling: 'HP',
@@ -133,6 +138,7 @@ export const cartethyia_lunge_2: Action = {
 export const cartethyiaPlunge_3: Action = {
   name: 'Plunge Attack (3 swords)',
   displayName: 'Plunge Attack 3',
+  category: 'Basics',
   castTime: 1,
   multiplier: (3 * (3 * 11.29)) / 100,
   scaling: 'HP',
@@ -158,6 +164,7 @@ export const cartethyiaPlunge_3: Action = {
 export const cartethyia_skill: Action = {
   name: 'Resonance Skill',
   displayName: 'Sword to Bear Their Names',
+  category: 'Skills',
   castTime: 1,
   multiplier: (3 * 6.89 + 8.86) / 100,
   scaling: 'HP',
@@ -183,6 +190,7 @@ export const cartethyia_skill: Action = {
 export const cartethyia_transform: Action = {
   name: 'Flerudelys Form',
   displayName: 'A Knights Heartfelt Prayers',
+  category: 'Skills',
   castTime: 0.16,
   multiplier: 0,
   scaling: 'HP',
@@ -219,6 +227,7 @@ export const cartethyia_transform: Action = {
 export const fleurdelys_BA_1_5: Action = {
   name: 'Basic 1-5 (Fleurdelys)',
   displayName: 'Basic 1-5',
+  category: 'Basics',
   castTime: 3.4,
   multiplier: (6.49 + (3.63 + 3 * 1.82) + (3 * 2.13 + 4.26) + 5 * 2.74 + (7.2 + 28.8)) / 100,
   scaling: 'HP',
@@ -244,6 +253,7 @@ export const fleurdelys_BA_1_5: Action = {
 export const fleurdelys_BA_3_5: Action = {
   name: 'Basic 3-5 (Fleurdelys)',
   displayName: 'Basic 3-5',
+  category: 'Basics',
   castTime: 2.67,
   multiplier: (3 * 2.13 + 4.26 + 5 * 2.74 + (7.2 + 28.8)) / 100,
   scaling: 'HP',
@@ -270,6 +280,7 @@ export const fleurdelys_BA_3_5: Action = {
 export const fleurdelys_heavy_1: Action = {
   name: 'Heavy Attack (Fleurdelys)',
   displayName: 'Heavy Attack 1',
+  category: 'Basics',
   castTime: 0.65,
   multiplier: (4.28 + 9.97) / 100,
   scaling: 'HP',
@@ -295,6 +306,7 @@ export const fleurdelys_heavy_1: Action = {
 export const fleurdelys_heavy_2: Action = {
   name: 'Enhanced Heavy Attack (Fleurdelys)',
   displayName: 'Heavy Attack 2',
+  category: 'Basics',
   castTime: 0.73,
   multiplier: (2 * 7.78 + 3.89) / 100,
   scaling: 'HP',
@@ -320,6 +332,7 @@ export const fleurdelys_heavy_2: Action = {
 export const fleurdelys_midair_1_3: Action = {
   name: 'Mid-air Attack 1-3 (Fleurdelys)',
   displayName: 'Mid-air Attack 1-3',
+  category: 'Basics',
   castTime: 2.47,
   multiplier: (2 * 2.99 + 3.08 + (2 * 7.39 + 14.77) + 2.2) / 100,
   scaling: 'HP',
@@ -345,6 +358,7 @@ export const fleurdelys_midair_1_3: Action = {
 export const fleurdelys_midair_1_2: Action = {
   name: 'Mid-air Attack 1-2 (Fleurdelys)',
   displayName: 'Mid-air Attack 1-2',
+  category: 'Basics',
   castTime: 1.63,
   multiplier: (2 * 2.99 + 3.08 + (2 * 7.39 + 14.77)) / 100,
   scaling: 'HP',
@@ -370,6 +384,7 @@ export const fleurdelys_midair_1_2: Action = {
 export const fleurdelys_skill_1: Action = {
   name: 'Resonance Skill 1 (Fleurdelys)',
   displayName: 'Sword to Answer Waves Call',
+  category: 'Skills',
   castTime: 0.9,
   multiplier: (4 * 1.86 + 17.36) / 100,
   scaling: 'HP',
@@ -395,6 +410,7 @@ export const fleurdelys_skill_1: Action = {
 export const fleurdelys_skill_2: Action = {
   name: 'Resonance Skill 2 (Fleurdelys)',
   displayName: 'May Tempest Break the Tides',
+  category: 'Skills',
   castTime: 1.53,
   multiplier: (2 * 1.86 + 3 * 7.03) / 100,
   scaling: 'HP',
@@ -420,6 +436,7 @@ export const fleurdelys_skill_2: Action = {
 export const fleurdelys_liberation: Action = {
   name: 'Liberation (Fleurdelys)',
   displayName: 'Blade of Howling Squall',
+  category: 'Skills',
   castTime: 0.03,
   multiplier: (2 * (7 * 13.12)) / 100, // CHECK SEQUENCE
   scaling: 'HP',
@@ -456,6 +473,7 @@ export const fleurdelys_liberation: Action = {
 export const cartethyia_intro: Action = {
   name: 'Intro',
   displayName: 'Sword to Mark Tides Trace',
+  category: 'Other',
   castTime: 0.92,
   multiplier: (1.5 * (3 * 2.08 + 6.24)) / 100,
   scaling: 'HP',
@@ -481,6 +499,7 @@ export const cartethyia_intro: Action = {
 export const cartethyia_outro: Action = {
   name: 'Outro',
   displayName: 'Winds Divine Blessing',
+  category: 'Other',
   castTime: 0,
   multiplier: 0,
   scaling: 'HP',
@@ -502,6 +521,7 @@ export const cartethyia_outro: Action = {
 export const cartethyia_energy: Action = {
   name: 'Energy Up',
   displayName: 'Energy Up',
+  category: 'Testing',
   castTime: 0,
   multiplier: 0,
   scaling: 'HP',
@@ -523,6 +543,7 @@ export const cartethyia_energy: Action = {
 export const cartethyia_concerto: Action = {
   name: 'Concerto Up',
   displayName: 'Concerto Up',
+  category: 'Testing',
   castTime: 0,
   multiplier: 0,
   scaling: 'HP',
@@ -544,6 +565,7 @@ export const cartethyia_concerto: Action = {
 export const cartethyia_forte: Action = {
   name: 'Forte Up',
   displayName: 'Forte Up',
+  category: 'Testing',
   castTime: 0,
   multiplier: 0,
   scaling: 'HP',
@@ -565,6 +587,7 @@ export const cartethyia_forte: Action = {
 export const cartethyia_conviction: Action = {
   name: 'Conviction Up',
   displayName: 'conviction Up',
+  category: 'Testing',
   castTime: 0,
   multiplier: 0,
   scaling: 'HP',

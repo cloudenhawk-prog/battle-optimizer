@@ -4,11 +4,13 @@ import type { ColumnDef, TableConfig, ColumnVisibility } from '../../types/table
 import type { Snapshot } from '../../types/snapshot'
 import { CharacterSelect } from './CharacterSelect'
 import { ActionSelect } from './ActionSelect'
+import { StatusTagGroup } from './StatusTagGroup'
 
 // ========== Component: Body Row ==============================================================================================
 
 type BodyRowProps = {
   snapshot: Snapshot
+  previousSnapshot: Snapshot | null
   charactersInBattle: Character[]
   tableConfig: TableConfig
   onSelectCharacter: (snapshotId: number, characterName: string) => void
@@ -19,7 +21,7 @@ type BodyRowProps = {
   onRowClick?: (snapshot: Snapshot) => void
 }
 
-export function BodyRow({ snapshot, charactersInBattle, tableConfig, onSelectCharacter, onSelectAction, isLastRow = false, isNewRow = false, columnVisibility, onRowClick }: BodyRowProps) {
+export function BodyRow({ snapshot, previousSnapshot, charactersInBattle, tableConfig, onSelectCharacter, onSelectAction, isLastRow = false, isNewRow = false, columnVisibility, onRowClick }: BodyRowProps) {
   const snapshotId = Number(snapshot.id)
   const character = snapshot.character ?? ''
   const action = snapshot.action ?? ''
@@ -75,31 +77,62 @@ export function BodyRow({ snapshot, charactersInBattle, tableConfig, onSelectCha
         )
       })}
 
-      {/* Character-specific columns */}
-      {tableConfig.characters.flatMap(group => renderBodyColumns(group.columns, columnVisibility, snapshot, character, action))}
 
-      {/* Negative status columns */}
-      {tableConfig.negativeStatuses && renderBodyColumns(tableConfig.negativeStatuses.columns, columnVisibility, snapshot, character, action)}
 
-      {/* Buff columns */}
-      {tableConfig.buffs && renderBodyColumns(tableConfig.buffs.columns, columnVisibility, snapshot, character, action)}
-
-      {/* Debuff columns */}
-      {tableConfig.debuffs && renderBodyColumns(tableConfig.debuffs.columns, columnVisibility, snapshot, character, action)}
+      {/* Status effects columns (negative statuses, buffs, debuffs) */}
+      {tableConfig.statusEffects && renderBodyColumnsWithTags(tableConfig.statusEffects.columns, columnVisibility, snapshot, previousSnapshot, character, action)}
     </tr>
   )
 }
 
 // ========== Helper Functions =================================================================================================
 
-function renderBodyColumns(columns: ColumnDef[], columnVisibility: ColumnVisibility, snapshot: Snapshot, character: string, action: string) {
+function renderBodyColumnsWithTags(columns: ColumnDef[], columnVisibility: ColumnVisibility, snapshot: Snapshot, previousSnapshot: Snapshot | null, character: string, action: string) {
   let firstVisible = true
   return columns
     .filter(col => columnVisibility[col.key])
-    .filter(col => !(col as any).isPermanent) // Hide permanent modifiers from body rows
     .map(col => {
       const className = firstVisible ? 'tableCellBody charGroupBody' : 'tableCellBody'
       firstVisible = false
+
+      // If the column has statusMetadata, render tags
+      if (col.statusMetadata) {
+        // Use PREVIOUS snapshot's status data, since statuses are applied AFTER the action
+        // completes, not during. If no previous snapshot exists, show empty (0 stacks).
+        const sourceSnapshot = previousSnapshot
+        let statusData: Record<string, number> | undefined
+        let statusType: 'buff' | 'debuff' | 'negativeStatus' = 'buff'
+
+        if (col.key === 'negativeStatuses') {
+          statusData = sourceSnapshot?.negativeStatuses as Record<string, number> | undefined
+          statusType = 'negativeStatus'
+        } else if (col.key === 'buffs') {
+          statusData = sourceSnapshot?.buffs as Record<string, number> | undefined
+          statusType = 'buff'
+        } else if (col.key === 'debuffs') {
+          statusData = sourceSnapshot?.debuffs as Record<string, number> | undefined
+          statusType = 'debuff'
+        }
+
+        const statuses =
+          col.statusMetadata?.map(meta => ({
+            key: meta.key,
+            label: meta.label,
+            icon: meta.icon,
+            value: statusData?.[meta.key] ?? 0,
+            maxStacks: meta.maxStacks,
+            type: statusType,
+            color: meta.color,
+          })) ?? []
+
+        return (
+          <td key={col.key} className={className}>
+            {character && action ? <StatusTagGroup statuses={statuses} /> : ''}
+          </td>
+        )
+      }
+
+      // Otherwise, render normally
       return (
         <td key={col.key} className={className}>
           {character && action ? col.render(snapshot) : ''}

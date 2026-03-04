@@ -17,9 +17,7 @@ export function flattenTableColumns(tableConfig: TableConfig): ColumnDef[] {
     allColumns.push(...group.columns)
   })
 
-  if (tableConfig.negativeStatuses) allColumns.push(...tableConfig.negativeStatuses.columns)
-  if (tableConfig.buffs) allColumns.push(...tableConfig.buffs.columns)
-  if (tableConfig.debuffs) allColumns.push(...tableConfig.debuffs.columns)
+  if (tableConfig.statusEffects) allColumns.push(...tableConfig.statusEffects.columns)
 
   return allColumns
 }

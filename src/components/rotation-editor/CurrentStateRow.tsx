@@ -1,8 +1,7 @@
 import '../../styles/rotation-editor/CurrentStateRow.css'
 import type { Snapshot } from '../../types/snapshot'
-import type { Character } from '../../types/character'
 import type { TableConfig, ColumnVisibility } from '../../types/tableDefinitions'
-import { negativeStatuses } from '../../data/negativeStatuses'
+import { StatusTagGroup } from './StatusTagGroup'
 
 // ========== Helper Functions =================================================================================================
 
@@ -42,12 +41,11 @@ function formatNumber(value: number): string {
 type CurrentStateRowProps = {
   snapshot: Snapshot | null
   firstFromTime: number
-  charactersInBattle: Character[]
   tableConfig: TableConfig
   columnVisibility: ColumnVisibility
 }
 
-export function CurrentStateRow({ snapshot, firstFromTime, charactersInBattle, tableConfig, columnVisibility }: CurrentStateRowProps) {
+export function CurrentStateRow({ snapshot, firstFromTime, tableConfig, columnVisibility }: CurrentStateRowProps) {
   // Create initial snapshot if none exists or character not selected
   const displaySnapshot = snapshot || createInitialSnapshot()
   const hasCharacter = displaySnapshot.character && displaySnapshot.character !== ''
@@ -104,17 +102,10 @@ export function CurrentStateRow({ snapshot, firstFromTime, charactersInBattle, t
           return <td key={col.key} className="currentStateCell"></td>
         })}
 
-        {/* Character-specific columns (energies) */}
-        {tableConfig.characters.flatMap(group => renderStateColumns(group, columnVisibility, displaySnapshot, charactersInBattle))}
 
-        {/* Negative status columns */}
-        {tableConfig.negativeStatuses && renderNegativeStatusColumns(tableConfig.negativeStatuses.columns, columnVisibility, displaySnapshot.negativeStatuses, displaySnapshot.negativeStatusesTimeLeft)}
 
-        {/* Buff columns */}
-        {tableConfig.buffs && renderModifierColumns(tableConfig.buffs.columns, columnVisibility, displaySnapshot.buffs, displaySnapshot.buffsTimeLeft, displaySnapshot.buffsSwapsLeft, displaySnapshot.buffsMaxStacks)}
-
-        {/* Debuff columns */}
-        {tableConfig.debuffs && renderModifierColumns(tableConfig.debuffs.columns, columnVisibility, displaySnapshot.debuffs, displaySnapshot.debuffsTimeLeft, displaySnapshot.debuffsSwapsLeft, displaySnapshot.debuffsMaxStacks)}
+        {/* Status Effects columns (Negative Statuses, Buffs, Debuffs) */}
+        {tableConfig.statusEffects && renderStatusColumns(tableConfig.statusEffects.columns, columnVisibility, displaySnapshot)}
       </tr>
     </tbody>
   )
@@ -144,39 +135,7 @@ function createInitialSnapshot(): Snapshot {
   }
 }
 
-function renderStateColumns(group: any, columnVisibility: ColumnVisibility, snapshot: Snapshot, charactersInBattle: Character[]) {
-  // Extract character name from the group label
-  const characterName = group.label
-  const character = charactersInBattle.find(c => c.name === characterName)
-  const energies = (snapshot.charactersEnergies as any)?.[characterName] || {}
-
-  let firstVisible = true
-  return group.columns
-    .filter((col: any) => columnVisibility[col.key])
-    .map((col: any) => {
-      const className = firstVisible ? 'currentStateCell charGroupCell' : 'currentStateCell'
-      firstVisible = false
-
-      // Extract energy type from column key (format: "CharacterName_energyType")
-      const energyType = col.key.split('_')[1]
-      const current = energies[energyType] || 0
-      const max = character?.maxEnergies[energyType as keyof typeof character.maxEnergies] || 100
-      const percentage = Math.min((current / max) * 100, 100)
-
-      return (
-        <td key={col.key} className={className}>
-          <div className="energyStateDisplay">
-            <div className="energyStateBar" style={{ width: `${percentage}%` }} data-energy-type={energyType.toLowerCase()} />
-            <span className="energyStateText">
-              {Math.floor(current)}/{max}
-            </span>
-          </div>
-        </td>
-      )
-    })
-}
-
-function renderNegativeStatusColumns(columns: any[], columnVisibility: ColumnVisibility, negativeStatusesRecord: Record<string, number>, negativeStatusesTimeLeft: Record<string, number>) {
+function renderStatusColumns(columns: any[], columnVisibility: ColumnVisibility, snapshot: Snapshot) {
   let firstVisible = true
   return columns
     .filter((col: any) => columnVisibility[col.key])
@@ -184,65 +143,42 @@ function renderNegativeStatusColumns(columns: any[], columnVisibility: ColumnVis
       const className = firstVisible ? 'currentStateCell charGroupCell' : 'currentStateCell'
       firstVisible = false
 
-      const currentStacks = negativeStatusesRecord[col.key] || 0
-      // Find the negative status by matching the name property (col.key is the display name like "Aero Erosion")
-      const negativeStatusData = Object.values(negativeStatuses).find(ns => ns.name === col.key)
-      const maxStacks = negativeStatusData?.maxStacksDefault || 0
-      const timeLeft = negativeStatusesTimeLeft[col.key] || 0
+      // If the column has statusMetadata, render tags
+      if (col.statusMetadata) {
+        // Access snapshot data directly based on column key
+        let statusData: Record<string, number> | undefined
+        let statusType: 'buff' | 'debuff' | 'negativeStatus' = 'buff'
 
-      return (
-        <td key={col.key} className={className}>
-          <div className="statusStateDisplay">
-            <div className="statusStateContent">
-              <div className="statusStateStacks">
-                {currentStacks}/{maxStacks}
-              </div>
-              <div className="statusStateTime">{timeLeft.toFixed(1)}s</div>
-            </div>
-          </div>
-        </td>
-      )
-    })
-}
+        if (col.key === 'negativeStatuses') {
+          statusData = snapshot.negativeStatuses as Record<string, number> | undefined
+          statusType = 'negativeStatus'
+        } else if (col.key === 'buffs') {
+          statusData = snapshot.buffs as Record<string, number> | undefined
+          statusType = 'buff'
+        } else if (col.key === 'debuffs') {
+          statusData = snapshot.debuffs as Record<string, number> | undefined
+          statusType = 'debuff'
+        }
 
-function renderModifierColumns(columns: any[], columnVisibility: ColumnVisibility, modifierStacks: Record<string, number>, modifierTimeLeft: Record<string, number>, modifierSwapsLeft: Record<string, number>, modifierMaxStacks: Record<string, number>) {
-  let firstVisible = true
-  return columns
-    .filter((col: any) => columnVisibility[col.key])
-    .map((col: any) => {
-      const className = firstVisible ? 'currentStateCell charGroupCell' : 'currentStateCell'
-      firstVisible = false
+        const statuses =
+          col.statusMetadata?.map((meta: any) => ({
+            key: meta.key,
+            label: meta.label,
+            icon: meta.icon,
+            value: statusData?.[meta.key] ?? 0,
+            maxStacks: meta.maxStacks,
+            type: statusType,
+            color: meta.color,
+          })) ?? []
 
-      const currentStacks = modifierStacks[col.key] || 0
-      // Use maxStacks from snapshot if available, otherwise fall back to column metadata
-      const maxStacks = modifierMaxStacks[col.key] ?? col.maxStacks ?? 1
-      const timeLeft = modifierTimeLeft[col.key]
-      const swapsLeft = modifierSwapsLeft[col.key]
-
-      // Determine display: show time if not infinite, otherwise show swaps if not infinite, otherwise show ∞
-      let timerDisplay = ''
-      if (timeLeft === Infinity && swapsLeft === Infinity) {
-        timerDisplay = '∞'
-      } else if (timeLeft !== undefined && timeLeft !== Infinity && timeLeft !== 0) {
-        timerDisplay = `${timeLeft.toFixed(1)}s`
-      } else if (swapsLeft !== undefined && swapsLeft !== Infinity && swapsLeft !== 0) {
-        timerDisplay = `${swapsLeft} swap${swapsLeft !== 1 ? 's' : ''}`
-      } else {
-        // Default display for limited modifiers with no data yet
-        timerDisplay = '0.0s'
+        return (
+          <td key={col.key} className={className}>
+            <StatusTagGroup statuses={statuses} />
+          </td>
+        )
       }
 
-      return (
-        <td key={col.key} className={className}>
-          <div className="statusStateDisplay">
-            <div className="statusStateContent">
-              <div className="statusStateStacks">
-                {currentStacks}/{maxStacks}
-              </div>
-              <div className="statusStateTime">{timerDisplay}</div>
-            </div>
-          </div>
-        </td>
-      )
+      // Otherwise, render empty (shouldn't happen with new structure)
+      return <td key={col.key} className={className}></td>
     })
 }

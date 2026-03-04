@@ -1,5 +1,9 @@
 ### TODO:
 
+Move the character groups into its own little "table" / state tracker - while it's fine to keep the energies inside the snapshots for tracking and logging like we do now, we have no purpose in showing all the old values. The user only really need to know the current values as we go. Putting energies in their own little section as a state tracker for characters will make the table less messy while at the same time allow us to style it better. Before we had compacted all basic energy types into the same column which looked ugly and took up too much vertical space. Now we can spread it out a little and make use of our vertical space. We could reuse the hiding logic we already do where you can click on the icon buttons to show/hide the energies. But not having them be part of the same table would give us much more flexibility in what we do with them
+
+Possibility to lower cooldowns (example: Cartethyia when consuming swords)
+
 # Timeline:
 
 Linepath Graph : Implement a linepath for the graphs (dps & total dmg)
@@ -74,8 +78,6 @@ Damage Modifiers: Do we need a type for buffs that also or do not affect negativ
 In StatusModification type under sideEffects.ts, is 'buff/Debuff' ever used? Can side effect actually even trigger buffs? Would they need to use Damage Modifiers (since these represet buffs/debuffs)
 
 # Table/Snapshot/Resolvers:
-
-    (IN PROGRESS) It should be possible to lower skill CD - for example Cartethyia when consuming swords (1s each I think) (check if CDs work correctly, also in selectors)
 
 Dupe row button -> if you wish to cast the same action again
 

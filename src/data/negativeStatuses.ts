@@ -26,6 +26,7 @@ export const negativeStatuses: Record<string, NegativeStatus> = {
       resetTimerOnApplication: true,
     },
     damageModifiers: [],
+    color: '#4db84d', // Green-ish color matching aero theme
   },
   spectroFrazzle: {
     name: 'Spectro Frazzle',
