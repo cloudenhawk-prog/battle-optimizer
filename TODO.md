@@ -1,5 +1,7 @@
 ### TODO:
 
+Add icons to all: actions, characters, modifiers, negative statuses
+
 > Action/Table: Coordinated attacks + lasting attacking (phrolova + ciaconna ults). Is these the same concepts, but just whether it's cancelled when swapping back to the character?
 
 > Possibility to lower cooldowns (example: Cartethyia when consuming swords)

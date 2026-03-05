@@ -13,6 +13,7 @@ export type TableConfig = {
 export type ColumnGroup = {
   label: string
   icon: string
+  nametag?: string
   columns: ColumnDef[]
 }
 

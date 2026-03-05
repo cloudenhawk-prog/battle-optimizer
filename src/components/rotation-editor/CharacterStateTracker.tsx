@@ -52,8 +52,17 @@ export function CharacterStateTracker({ snapshot, charactersInBattle, tableConfi
           <div key={group.label} className="stateTrackerCard">
             {/* Character header */}
             <div className="stateTrackerHeader">
-              <img src={group.icon} alt={group.label} className="stateTrackerCharIcon" onClick={() => handleGroupClick(group.columns)} />
-              <span className="stateTrackerCharName">{group.label}</span>
+              {group.nametag ? (
+                <div className="stateTrackerNametag">
+                  <img src={group.nametag} alt={group.label} className="stateTrackerNametagImg" onClick={() => handleGroupClick(group.columns)} />
+                  <span className="stateTrackerNametagLabel">{group.label}</span>
+                </div>
+              ) : (
+                <>
+                  <img src={group.icon} alt={group.label} className="stateTrackerCharIcon" />
+                  <span className="stateTrackerCharName">{group.label}</span>
+                </>
+              )}
             </div>
 
             {/* Energy bars */}
