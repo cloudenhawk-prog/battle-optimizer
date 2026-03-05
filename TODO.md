@@ -103,9 +103,6 @@ Need a way to remove buffs - like FLeurdelys Mandate and sword buffs (they are t
 
 TASK: When a new row is added - play an animation similarly to the light that moves through the sections in data overlay - instead of using a green color?
 
-(MAYBE IF NOT ALREADY): Damage Events should have type -> action, action-side-effect, negative-status such that we can put them together
-Context: Right now damage events only includes events from actions. We do not want a seperate event list for every type of damage event. Sorted by ID, these can be used by rows on-click overlay
-
 Task: Implement toggler to active/deactive the Selector Check on skill cost requrements (no need to update resolver, it's useful to see if energy becomes negative)
 
 # Tests:
