@@ -1,6 +1,9 @@
 ### TODO:
 
-Add icons to all: actions, characters, modifiers, negative statuses
+> Add icons to all: actions, characters, modifiers, negative statuses
+
+> Character selected in table -> Glow around the character's energy window (the selected character currently - meaning in the furthest down snapshot at any given point).
+> LOCK previous snapshots while you're at it - we don't support deletions atm anyway. Meaning every snapshot except the last one should be locked at any given time.
 
 > Action/Table: Coordinated attacks + lasting attacking (phrolova + ciaconna ults). Is these the same concepts, but just whether it's cancelled when swapping back to the character?
 
