@@ -210,6 +210,7 @@ export const cartethyia_transform: Action = {
       type: 'buff',
       ownerCharacter: 'Cartethyia',
       characterStats: { aeroErosionAmplifyDMG: 0.5 },
+      negativeStatusEffects: [{ targetStatus: 'Aero Erosion', property: 'frequency', value: -0.5 }],
       condition: always(),
       targetStrategy: 'self',
       durationStrategy: { type: 'limited', timeDuration: 12 },

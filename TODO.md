@@ -1,7 +1,5 @@
 ### TODO:
 
-> Negative Statuses: Need a way to dynamically update negative status: max stacks and ticks frequency since some characters affect it
-
 > Action/Table: Coordinated attacks + lasting attacking (phrolova + ciaconna ults). Is these the same concepts, but just whether it's cancelled when swapping back to the character?
 
 > Possibility to lower cooldowns (example: Cartethyia when consuming swords)

@@ -5,7 +5,13 @@ import type { Snapshot } from '../../types/snapshot'
 import type { DamageEvent } from '../../types/events'
 
 // Pie chart colors - shared between pie chart and damage sources
-const PIE_CHART_COLORS = ['rgba(100, 150, 255, 0.7)', 'rgba(255, 150, 100, 0.7)', 'rgba(200, 150, 255, 0.7)']
+const PIE_CHART_COLORS = [
+  'rgba(100, 150, 255, 0.7)', // blue
+  'rgba(255, 150, 100, 0.7)', // orange
+  'rgba(100, 220, 175, 0.7)', // teal
+  'rgba(255, 200, 80,  0.7)', // gold
+  'rgba(200, 100, 255, 0.7)', // violet
+]
 
 // ========== Main Component =====================================================================================================
 
@@ -19,6 +25,7 @@ type DataOverlayProps = {
 export default function DataOverlay({ snapshot, damageEvents = [], open, onClose }: DataOverlayProps) {
   const [mode, setMode] = useState<'average' | 'normal' | 'crit'>('average')
   const [pieChartView, setPieChartView] = useState<'events' | 'types'>('events')
+  const [highlightedIndex, setHighlightedIndex] = useState<number | null>(null)
 
   if (!open || !snapshot) return null
 
@@ -33,11 +40,11 @@ export default function DataOverlay({ snapshot, damageEvents = [], open, onClose
           <HudOverlay mode={mode} onModeChange={setMode} />
 
           {/* Central Pie Chart */}
-          <PieChartCenter damageEvents={damageEvents} totalDamage={totalDamage} view={pieChartView} />
+          <PieChartCenter damageEvents={damageEvents} totalDamage={totalDamage} view={pieChartView} highlightedIndex={highlightedIndex} onSliceHover={setHighlightedIndex} />
 
           {/* Radial Sections */}
           <CombatOverviewSection totalDamage={totalDamage} duration={duration} snapshot={snapshot} />
-          <DamageSourcesSection damageEvents={damageEvents} totalDamage={totalDamage} view={pieChartView} onViewChange={setPieChartView} />
+          <DamageSourcesSection damageEvents={damageEvents} totalDamage={totalDamage} view={pieChartView} onViewChange={setPieChartView} externalHighlightedIndex={highlightedIndex} onRowHighlight={setHighlightedIndex} />
           <ContributionsSection damageEvents={damageEvents} mode={mode} />
         </div>
       </div>
@@ -109,11 +116,11 @@ function HudOverlay({ mode, onModeChange }: { mode: 'average' | 'normal' | 'crit
   )
 }
 
-function PieChartCenter({ damageEvents, totalDamage, view }: { damageEvents: DamageEvent[]; totalDamage: number; view: 'events' | 'types' }) {
+function PieChartCenter({ damageEvents, totalDamage, view, highlightedIndex, onSliceHover }: { damageEvents: DamageEvent[]; totalDamage: number; view: 'events' | 'types'; highlightedIndex: number | null; onSliceHover: (index: number | null) => void }) {
   if (damageEvents.length === 0) return null
 
   // Aggregate damage by type if in 'types' view
-  const displayData = view === 'types' ? aggregateDamageByType(damageEvents) : damageEvents.map(e => ({ name: e.actionName, damage: e.average, event: e }))
+  const displayData = view === 'types' ? aggregateDamageByType(damageEvents) : aggregateEventsByName(damageEvents)
 
   // Format total damage for display
   const formattedDamage = totalDamage >= 1000 ? `${(totalDamage / 1000).toFixed(1)}k` : totalDamage.toFixed(0)
@@ -144,16 +151,35 @@ function PieChartCenter({ damageEvents, totalDamage, view }: { damageEvents: Dam
 
       {/* Pie chart SVG */}
       {displayData.length === 1 ? (
-        <svg viewBox="0 0 200 200" className="pieChartSvg">
-          <circle cx="100" cy="100" r="90" fill={PIE_CHART_COLORS[0]} stroke="rgba(30, 30, 40, 0.95)" strokeWidth="2" className="pieSlice" />
+        <svg viewBox="0 0 200 200" className="pieChartSvg" style={{ overflow: 'visible' }}>
+          <circle
+            cx="100" cy="100" r="90"
+            fill={PIE_CHART_COLORS[0]}
+            stroke="rgba(30, 30, 40, 0.95)"
+            strokeWidth="2"
+            className={`pieSlice${highlightedIndex === 0 ? ' highlighted' : ''}`}
+            style={{ cursor: 'pointer' }}
+            onMouseEnter={() => onSliceHover(0)}
+            onMouseLeave={() => onSliceHover(null)}
+          />
         </svg>
       ) : (
-        <svg viewBox="0 0 200 200" className="pieChartSvg">
+        <svg viewBox="0 0 200 200" className="pieChartSvg" style={{ overflow: 'visible' }}>
           {calculatePieSlices(
             displayData.map(d => d.damage),
             PIE_CHART_COLORS,
           ).map((slice, index) => (
-            <path key={index} d={slice.path} fill={slice.color} stroke="rgba(30, 30, 40, 0.95)" strokeWidth="2" className="pieSlice" />
+            <path
+              key={index}
+              d={slice.path}
+              fill={slice.color}
+              stroke="rgba(30, 30, 40, 0.95)"
+              strokeWidth="2"
+              className={`pieSlice${highlightedIndex === index ? ' highlighted' : ''}`}
+              style={{ cursor: 'pointer' }}
+              onMouseEnter={() => onSliceHover(index)}
+              onMouseLeave={() => onSliceHover(null)}
+            />
           ))}
         </svg>
       )}
@@ -213,17 +239,20 @@ function CombatOverviewSection({ totalDamage, duration, snapshot }: { totalDamag
   )
 }
 
-function DamageSourcesSection({ damageEvents, totalDamage, view, onViewChange }: { damageEvents: DamageEvent[]; totalDamage: number; view: 'events' | 'types'; onViewChange: (view: 'events' | 'types') => void }) {
-  const [hoveredItem, setHoveredItem] = useState<{ name: string; damage: number; index: number; event?: DamageEvent } | null>(null)
+type DisplayItem = { name: string; damage: number; index: number; count?: number; events?: DamageEvent[]; event?: DamageEvent }
+
+function DamageSourcesSection({ damageEvents, totalDamage, view, onViewChange, externalHighlightedIndex, onRowHighlight }: { damageEvents: DamageEvent[]; totalDamage: number; view: 'events' | 'types'; onViewChange: (view: 'events' | 'types') => void; externalHighlightedIndex: number | null; onRowHighlight: (index: number | null) => void }) {
+  const [hoveredItem, setHoveredItem] = useState<DisplayItem | null>(null)
   const [showTooltip, setShowTooltip] = useState(false)
-  const [pinnedItem, setPinnedItem] = useState<{ name: string; damage: number; index: number; event?: DamageEvent } | null>(null)
+  const [pinnedItem, setPinnedItem] = useState<DisplayItem | null>(null)
   const hoverTimeoutRef = useRef<number | null>(null)
 
-  const handleMouseEnter = (item: { name: string; damage: number; index: number; event?: DamageEvent }) => {
+  const handleMouseEnter = (item: DisplayItem) => {
     // Don't change hover state if an item is pinned
     if (pinnedItem) return
 
     setHoveredItem(item)
+    onRowHighlight(item.index)
     // Small delay to ensure layout is stable before showing tooltip
     if (hoverTimeoutRef.current !== null) {
       clearTimeout(hoverTimeoutRef.current)
@@ -242,19 +271,22 @@ function DamageSourcesSection({ damageEvents, totalDamage, view, onViewChange }:
     }
     setHoveredItem(null)
     setShowTooltip(false)
+    onRowHighlight(null)
   }
 
-  const handleClick = (item: { name: string; damage: number; index: number; event?: DamageEvent }) => {
+  const handleClick = (item: DisplayItem) => {
     if (pinnedItem && pinnedItem.name === item.name && pinnedItem.index === item.index) {
       // Unpin if clicking the same item
       setPinnedItem(null)
       setHoveredItem(null)
       setShowTooltip(false)
+      onRowHighlight(null)
     } else {
       // Pin the clicked item
       setPinnedItem(item)
       setHoveredItem(item)
       setShowTooltip(true)
+      onRowHighlight(item.index)
     }
   }
 
@@ -297,7 +329,7 @@ function DamageSourcesSection({ damageEvents, totalDamage, view, onViewChange }:
   }
 
   // Prepare display data based on view
-  const displayData = view === 'types' ? aggregateDamageByType(damageEvents) : damageEvents.map(e => ({ name: e.actionName, damage: e.average, event: e }))
+  const displayData = view === 'types' ? aggregateDamageByType(damageEvents) : aggregateEventsByName(damageEvents)
 
   return (
     <div className="radialSection damageSourcesSection" onClick={handleClickAway}>
@@ -313,17 +345,26 @@ function DamageSourcesSection({ damageEvents, totalDamage, view, onViewChange }:
             const pct = totalDamage > 0 ? (item.damage / totalDamage) * 100 : 0
             const pieColor = PIE_CHART_COLORS[index % PIE_CHART_COLORS.length]
             const isPinned = pinnedItem && pinnedItem.name === item.name && pinnedItem.index === index
+            // externalHighlight: pie slice is hovered over this row's index, but the row isn't already internally hovered/pinned
+            const isExternallyHighlighted = externalHighlightedIndex === index && hoveredItem?.index !== index && pinnedItem?.index !== index
+            const count = 'count' in item ? item.count : undefined
+            const label = (
+              <>
+                {item.name}
+                {count !== undefined && count > 1 && <span className="eventCountBadge">×{count}</span>}
+              </>
+            )
             return (
               <div
                 key={index}
-                className={`damageSourceRow ${isPinned ? 'pinned' : ''}`}
+                className={`damageSourceRow ${isPinned ? 'pinned' : ''} ${isExternallyHighlighted ? 'externalHighlight' : ''}`}
                 onMouseEnter={() => handleMouseEnter({ ...item, index })}
                 onMouseLeave={handleMouseLeave}
                 onClick={e => {
                   e.stopPropagation()
                   handleClick({ ...item, index })
                 }}>
-                <DataRow label={item.name} value={`${item.damage.toFixed(0)} (${pct.toFixed(1)}%)`} barPct={pct} customColor={pieColor} />
+                <DataRow label={label} value={`${item.damage.toFixed(0)} (${pct.toFixed(1)}%)`} barPct={pct} customColor={pieColor} />
               </div>
             )
           })}
@@ -349,42 +390,64 @@ function DamageSourcesSection({ damageEvents, totalDamage, view, onViewChange }:
             {hoveredItem.name}
           </div>
           <div className="pieTooltipDivider" />
-          {view === 'events' && hoveredItem.event && (
-            <>
-              <div className="pieTooltipRow">
-                <span className="pieTooltipLabel">Dealer</span>
-                <span className="pieTooltipValue">{hoveredItem.event.dealer}</span>
-              </div>
-              <div className="pieTooltipRow">
-                <span className="pieTooltipLabel">Target</span>
-                <span className="pieTooltipValue">{hoveredItem.event.target}</span>
-              </div>
-              <div className="pieTooltipRow">
-                <span className="pieTooltipLabel">Avg Damage</span>
-                <span className="pieTooltipValue pieTooltipHighlight" style={{ color: PIE_CHART_COLORS[hoveredItem.index % PIE_CHART_COLORS.length] }}>
-                  {hoveredItem.event.average.toFixed(0)}
-                </span>
-              </div>
-              <div className="pieTooltipRow">
-                <span className="pieTooltipLabel">Normal Hit</span>
-                <span className="pieTooltipValue">{hoveredItem.event.normalStrike.toFixed(0)}</span>
-              </div>
-              <div className="pieTooltipRow">
-                <span className="pieTooltipLabel">Critical Hit</span>
-                <span className="pieTooltipValue">{hoveredItem.event.criticalStrike.toFixed(0)}</span>
-              </div>
-              {hoveredItem.event.elements.length > 0 && (
+          {view === 'events' && (() => {
+            const representativeEvent = hoveredItem.events?.[0] ?? hoveredItem.event
+            const hitCount = hoveredItem.count ?? 1
+            if (!representativeEvent) return null
+            const perHit = hitCount > 1 ? hoveredItem.damage / hitCount : null
+            return (
+              <>
+                {hitCount > 1 && (
+                  <div className="pieTooltipRow">
+                    <span className="pieTooltipLabel">Hits</span>
+                    <span className="pieTooltipValue pieTooltipHighlight" style={{ color: PIE_CHART_COLORS[hoveredItem.index % PIE_CHART_COLORS.length] }}>×{hitCount}</span>
+                  </div>
+                )}
                 <div className="pieTooltipRow">
-                  <span className="pieTooltipLabel">Elements</span>
-                  <span className="pieTooltipValue">{hoveredItem.event.elements.join(', ')}</span>
+                  <span className="pieTooltipLabel">Dealer</span>
+                  <span className="pieTooltipValue">{representativeEvent.dealer}</span>
                 </div>
-              )}
-              <div className="pieTooltipRow">
-                <span className="pieTooltipLabel">Damage Types</span>
-                <span className="pieTooltipValue">{hoveredItem.event.dmgTypes.join(', ')}</span>
-              </div>
-            </>
-          )}
+                <div className="pieTooltipRow">
+                  <span className="pieTooltipLabel">Target</span>
+                  <span className="pieTooltipValue">{representativeEvent.target}</span>
+                </div>
+                <div className="pieTooltipRow">
+                  <span className="pieTooltipLabel">{hitCount > 1 ? 'Total Damage' : 'Avg Damage'}</span>
+                  <span className="pieTooltipValue pieTooltipHighlight" style={{ color: PIE_CHART_COLORS[hoveredItem.index % PIE_CHART_COLORS.length] }}>
+                    {hoveredItem.damage.toFixed(0)}
+                  </span>
+                </div>
+                {perHit !== null && (
+                  <div className="pieTooltipRow">
+                    <span className="pieTooltipLabel">Per Hit</span>
+                    <span className="pieTooltipValue">{perHit.toFixed(0)}</span>
+                  </div>
+                )}
+                {hitCount === 1 && (
+                  <>
+                    <div className="pieTooltipRow">
+                      <span className="pieTooltipLabel">Normal Hit</span>
+                      <span className="pieTooltipValue">{representativeEvent.normalStrike.toFixed(0)}</span>
+                    </div>
+                    <div className="pieTooltipRow">
+                      <span className="pieTooltipLabel">Critical Hit</span>
+                      <span className="pieTooltipValue">{representativeEvent.criticalStrike.toFixed(0)}</span>
+                    </div>
+                  </>
+                )}
+                {representativeEvent.elements.length > 0 && (
+                  <div className="pieTooltipRow">
+                    <span className="pieTooltipLabel">Elements</span>
+                    <span className="pieTooltipValue">{representativeEvent.elements.join(', ')}</span>
+                  </div>
+                )}
+                <div className="pieTooltipRow">
+                  <span className="pieTooltipLabel">Damage Types</span>
+                  <span className="pieTooltipValue">{representativeEvent.dmgTypes.join(', ')}</span>
+                </div>
+              </>
+            )
+          })()}
           {view === 'types' && (
             <>
               <div className="pieTooltipRow">
@@ -518,7 +581,7 @@ function ContributionsSection({ damageEvents, mode }: { damageEvents: DamageEven
   )
 }
 
-function DataRow({ label, value, barPct, barExcessPct, color = 'cyan', customColor }: { label: string; value: string; barPct?: number; barExcessPct?: number; color?: 'cyan' | 'amber' | 'magenta' | 'purple'; customColor?: string }) {
+function DataRow({ label, value, barPct, barExcessPct, color = 'cyan', customColor }: { label: React.ReactNode; value: string; barPct?: number; barExcessPct?: number; color?: 'cyan' | 'amber' | 'magenta' | 'purple'; customColor?: string }) {
   return (
     <div className="dataRow">
       <div className="dataRowTop">
@@ -581,6 +644,23 @@ function calculatePieSlices(damageValues: number[], colors: string[]) {
       color: colors[index % colors.length],
     }
   })
+}
+
+function aggregateEventsByName(damageEvents: DamageEvent[]): Array<{ name: string; damage: number; count: number; events: DamageEvent[] }> {
+  const map = new Map<string, { damage: number; count: number; events: DamageEvent[] }>()
+
+  for (const e of damageEvents) {
+    const existing = map.get(e.actionName)
+    if (existing) {
+      existing.damage += e.average
+      existing.count++
+      existing.events.push(e)
+    } else {
+      map.set(e.actionName, { damage: e.average, count: 1, events: [e] })
+    }
+  }
+
+  return Array.from(map.entries()).map(([name, data]) => ({ name, ...data }))
 }
 
 function aggregateDamageByType(damageEvents: DamageEvent[]): Array<{ name: string; damage: number; event?: DamageEvent }> {
