@@ -4,7 +4,7 @@ import type { Action } from '../../types/action'
 import type { Enemy } from '../../types/enemy'
 import type { NegativeStatusInAction } from '../../types/negativeStatus'
 import type { CharacterStats, EnemyStats } from '../../types/stats'
-import type { DamageModifier, ModifierInAction } from '../../types/modifiers'
+import type { DamageModifier } from '../../types/modifiers'
 import type { StepContext } from '../../types/stepContext'
 import { calculateDamageNegativeStatus } from '../../utils/calculators/damageCalculator'
 
