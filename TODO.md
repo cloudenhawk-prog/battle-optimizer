@@ -86,11 +86,9 @@ In StatusModification type under sideEffects.ts, is 'buff/Debuff' ever used? Can
 
 Dupe row button -> if you wish to cast the same action again
 
-Check Resolver flow - do they have correct numbering? Do they split responsible up nicelly? Where do different things happen?
+Check Resolver flow - overall do they have correct numbering? Do they split responsible up nicelly? Where do different things happen?
 
 CastConditions + offtune need logic in resolvers (defined in actions)
-
-Action Selectors should get an upgrade. Actions should be able to define multiple different 'versions'. When one is hovered/clicked, these options should pop up. Like "Swap Cancel", "Default" - and be enforced: if swap cancel is chosen, the next row will not display that character
 
 Make it possible to delete rows (should character/action become locked when I row is created, or should reselection automatically delete the row(s) and create the new one?)
 
@@ -104,8 +102,6 @@ Any other ideas?
 Need a way to remove buffs - like FLeurdelys Mandate and sword buffs (they are timed but also disappear when she used liberation - i.e. swaps back)
 
 TASK: When a new row is added - play an animation similarly to the light that moves through the sections in data overlay - instead of using a green color?
-
-TASK: When a new snapshot is created, it should automatically set the character in the next one to the previous one
 
 (MAYBE IF NOT ALREADY): Damage Events should have type -> action, action-side-effect, negative-status such that we can put them together
 Context: Right now damage events only includes events from actions. We do not want a seperate event list for every type of damage event. Sorted by ID, these can be used by rows on-click overlay
@@ -140,6 +136,7 @@ Allow multi-instance battle timeline -> Track boss HP - when dead, automatically
 ---
 
 The modifier system is now implemented with the following flow:
+Update tests if this hasnt already been taken into account:
 
 1.  Resolver 0 (buildStepContext):
     Handles swap-based expiration if a character swap occurred
