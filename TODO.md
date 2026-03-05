@@ -1,8 +1,24 @@
 ### TODO:
 
-Move the character groups into its own little "table" / state tracker - while it's fine to keep the energies inside the snapshots for tracking and logging like we do now, we have no purpose in showing all the old values. The user only really need to know the current values as we go. Putting energies in their own little section as a state tracker for characters will make the table less messy while at the same time allow us to style it better. Before we had compacted all basic energy types into the same column which looked ugly and took up too much vertical space. Now we can spread it out a little and make use of our vertical space. We could reuse the hiding logic we already do where you can click on the icon buttons to show/hide the energies. But not having them be part of the same table would give us much more flexibility in what we do with them
+> Negative Statuses: Need a way to dynamically update negative status: max stacks and ticks frequency since some characters affect it
 
-Possibility to lower cooldowns (example: Cartethyia when consuming swords)
+> Action/Table: Coordinated attacks + lasting attacking (phrolova + ciaconna ults). Is these the same concepts, but just whether it's cancelled when swapping back to the character?
+
+> Possibility to lower cooldowns (example: Cartethyia when consuming swords)
+
+> Modifiers (buffs) can affect how actions behave, like Mandate. Need an easy way to handle this. For example:
+>
+> > Side Effects behaviour can depend on a modifier (active, inactive, stacks etc)
+> > StatusModification can depend on modifier (for example the number of stacks the action apply, can be negative, zero, positive)
+> > Damage etc of an action could scale differently based on modifiers.
+> > Essentially modifiers (buffs/debuffs) can do other things than strictly buff changes based on how a specific character may interact with it
+> > Concrete needs for Cartethyia:
+> > Mandate buff also does: Basic 5 Fleurdelys, Mid-air 2, Enhanced Heavy, Resonance 2 apply 99 stacks of aero erosion during this time
+> > Mandate buff also does: Lowers dmg intervals between Aero Erosion by 50 % (TODO : Test if it works when you swap away from her)
+> > Mandate buff: Does it work or not when swapped away?
+> > This might affect howe we want to show Mandate in timeline
+
+> Timeline should not display permanently but be something you open and generate based on snapshots + damage events
 
 # Timeline:
 
@@ -44,32 +60,21 @@ MODIFIER CONTRIBUTIONS: Remove empty shell for the pillars - It makes it seem li
 
 # Actions:
 
-Coordinated attacks + lasting attacking (phrolova + ciaconna ults). Is these the same concepts, but just whether it's cancelled when swapping back to the character?
-
 # Negative Statuses:
-
-Need a way to dynamically update negative status: max stacks and ticks frequency since some characters affect it
 
 # Data:
 
-Implement Data Checker that checks if everything is respectedon start (uniqueness etc)
+Implement Data Checker that checks if everything is respected on app-start or when rendering rotationEditorPage for the first time (things that must be unique are unique etc). characters, actions, stats, modifiers, etc (includes: Normalize keywords: source, name, displayName. When is what used? What is unique?)
 
 Cartethyia BA3-5 action - tooltip: can be used when swapped in without intro
 Cartethyia's conviction generation is uncertain - need more testing
 Could technically add action: cartehyia_avatar & fleurdelys_avatar (can only be cast during mandate, has a cast time, might affect mandate related buffs)
 Need fleurdelys intro/outro - and logic in resolver to automatically determine which to use
 
-Mandate buff also does: Basic 5 Fleurdelys, Mid-air 2, Enhanced Heavy, Resonance 2 apply 99 stacks of aero erosion during this time
-Mandate buff also does: Lowers dmg intervals between Aero Erosion by 50 % (TODO : Test if it works when you swap away from her)
-Mandate buff: Does it work or not when swapped away?
-This might affect howe we want to show Mandate in timeline
-
 CharacterData: define data that later can be combined into a character object (resolve gear, echoes etc into stats, actions, modifiers). Makes stats mistakes less prone. Might give us an overview of what contributes with what stats
 Would be nice if it understood partial stats to simplify the data and make it less prone to mistakes
 
 # Types:
-
-Normalize keywords: source, name, displayName. When is what used? What is unique?
 
 Clean up types - determine where which types should live!
 
@@ -81,11 +86,9 @@ In StatusModification type under sideEffects.ts, is 'buff/Debuff' ever used? Can
 
 Dupe row button -> if you wish to cast the same action again
 
-Check Resolver flow - do they have correct numbering? Do they split responsible up nicelly? Where do different things happen?
+Check Resolver flow - overall do they have correct numbering? Do they split responsible up nicelly? Where do different things happen?
 
 CastConditions + offtune need logic in resolvers (defined in actions)
-
-Action Selectors should get an upgrade. Actions should be able to define multiple different 'versions'. When one is hovered/clicked, these options should pop up. Like "Swap Cancel", "Default" - and be enforced: if swap cancel is chosen, the next row will not display that character
 
 Make it possible to delete rows (should character/action become locked when I row is created, or should reselection automatically delete the row(s) and create the new one?)
 
@@ -99,11 +102,6 @@ Any other ideas?
 Need a way to remove buffs - like FLeurdelys Mandate and sword buffs (they are timed but also disappear when she used liberation - i.e. swaps back)
 
 TASK: When a new row is added - play an animation similarly to the light that moves through the sections in data overlay - instead of using a green color?
-
-TASK: When a new snapshot is created, it should automatically set the character in the next one to the previous one
-
-(MAYBE IF NOT ALREADY): Damage Events should have type -> action, action-side-effect, negative-status such that we can put them together
-Context: Right now damage events only includes events from actions. We do not want a seperate event list for every type of damage event. Sorted by ID, these can be used by rows on-click overlay
 
 Task: Implement toggler to active/deactive the Selector Check on skill cost requrements (no need to update resolver, it's useful to see if energy becomes negative)
 
@@ -135,6 +133,7 @@ Allow multi-instance battle timeline -> Track boss HP - when dead, automatically
 ---
 
 The modifier system is now implemented with the following flow:
+Update tests if this hasnt already been taken into account:
 
 1.  Resolver 0 (buildStepContext):
     Handles swap-based expiration if a character swap occurred
