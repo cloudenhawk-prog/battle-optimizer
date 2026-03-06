@@ -48,7 +48,7 @@ export function buildDebuffColumns(selectedCharacters: Character[]): ColumnGroup
       return {
         key,
         label: debuff,
-        icon: `/assets/${key}.png`,
+        icon: `/assets/${debuff.toLowerCase().replace(/\s+/g, '_')}.png`,
         maxStacks,
       }
     })

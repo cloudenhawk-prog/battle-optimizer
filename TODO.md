@@ -2,10 +2,10 @@
 
 > Add icons to all: actions, characters, modifiers, negative statuses
 > > Recheck all existing icons and decide which to use
-> > Forte energy bar color should be purple instead of green
-> > Rename character_item.png to character_nametag.png
-> > Add more information to the character window: Their Sequence and weapon (for example S3R1)
-> > > Add top right corner clickable to inspect character: stats (base and current) (later: weapon, echoes etc)
+
+> Cartethyia liberation should end mandate
+
+> Inspect character: stats (base and current) (later: weapon, echoes, sequence lvl etc)
 
 > Character selected in table -> Glow around the character's energy window (the selected character currently - meaning in the furthest down snapshot at any given point).
 > > Selected character should show up in sidebar like Phrolova - might need to define custom coordinate/size helpers if there isn't an easy fit-it-all solution

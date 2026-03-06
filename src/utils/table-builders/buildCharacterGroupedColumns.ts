@@ -23,7 +23,7 @@ export function buildCharacterGroupsColumns(selectedCharacters: Character[]): Co
     return {
       label: c.name,
       icon: `/assets/character_${c.name.toLowerCase()}.png`,
-      nametag: `/assets/${c.name.toLowerCase()}_item.png`,
+      nametag: `/assets/nametag_${c.name.toLowerCase()}.png`,
       columns,
     }
   })
