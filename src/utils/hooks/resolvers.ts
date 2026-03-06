@@ -275,7 +275,7 @@ function helpModifierStatusModifications(
   const anyChanges = types.some(t => Object.keys(statusModifications[t]).length > 0)
   if (!anyChanges) return
 
-  const applied: { type: string; targetName: string; stackChange: number }[] = []
+  const applied: { type: string; targetName: string; requestedStackChange: number; effectiveDelta: number; stacksBefore: number; stacksAfter: number }[] = []
 
   ctx.modifiersInAction = ctx.modifiersInAction
     .map(mia => {
@@ -301,8 +301,17 @@ function helpModifierStatusModifications(
       const maxStacks = mia.modifier.stackingStrategy?.maxStacks
       const unclampedStacks = mia.currentStacks + changes.stackChange
       const clampedStacks = maxStacks != null ? Math.min(Math.max(unclampedStacks, 0), maxStacks) : Math.max(unclampedStacks, 0)
-      applied.push({ type: mia.modifier.type, targetName: mia.modifier.displayName, stackChange: changes.stackChange })
-      return { ...mia, currentStacks: clampedStacks }
+      const effectiveDelta = clampedStacks - mia.currentStacks
+
+      // When stacks are added, mirror activateModifiers: reset timers if resetTimerOnApplication is set
+      const isAddingStacks = effectiveDelta > 0
+      const shouldResetTimer = isAddingStacks && mia.modifier.stackingStrategy?.resetTimerOnApplication
+      const limited = shouldResetTimer && mia.modifier.durationStrategy?.type === 'limited' ? mia.modifier.durationStrategy : null
+      const newTimeLeft = shouldResetTimer ? (limited?.timeDuration ?? Infinity) : mia.timeLeft
+      const newSwapsLeft = shouldResetTimer ? (limited?.numberOfSwaps ?? Infinity) : mia.swapsLeft
+
+      applied.push({ type: mia.modifier.type, targetName: mia.modifier.displayName, requestedStackChange: changes.stackChange, effectiveDelta, stacksBefore: mia.currentStacks, stacksAfter: clampedStacks })
+      return { ...mia, currentStacks: clampedStacks, timeLeft: newTimeLeft, swapsLeft: newSwapsLeft }
     })
     .filter(mia => mia.currentStacks > 0)
 
