@@ -199,6 +199,9 @@ export function resolveSideEffectsAndStatuses(ctx: StepContext, setDamageEvents:
 
   // Negative Statuses
   helpNegativeStatuses(ctx, setDamageEvents, statusModifications)
+
+  // Buff/Debuff modifier stack modifications (e.g. an action forcefully ending a buff)
+  helpModifierStatusModifications(ctx, statusModifications)
 }
 
 function aggregateStatusModifications(ctx: StepContext) {
@@ -262,6 +265,63 @@ function aggregateModification(
   entry.stackChange += stackChange
   entry.durationChange += durationChange
   entry.refreshDuration ||= refreshDuration
+}
+
+function helpModifierStatusModifications(
+  ctx: StepContext,
+  statusModifications: ReturnType<typeof aggregateStatusModifications>,
+): void {
+  const types = ['buff', 'debuff'] as const
+  const anyChanges = types.some(t => Object.keys(statusModifications[t]).length > 0)
+  if (!anyChanges) return
+
+  const applied: { type: string; targetName: string; requestedStackChange: number; effectiveDelta: number; stacksBefore: number; stacksAfter: number }[] = []
+
+  ctx.modifiersInAction = ctx.modifiersInAction
+    .map(mia => {
+      const bucket = statusModifications[mia.modifier.type as 'buff' | 'debuff']
+      if (!bucket) return mia
+      const changes = bucket[mia.modifier.displayName]
+      if (!changes) return mia
+      // Duration-related modifications are not currently supported for buffs/debuffs.
+      // Log and ignore them explicitly to avoid silent no-ops.
+      if (changes.durationChange !== 0 || changes.refreshDuration) {
+        ctx.logs.push({
+          resolver: 'helpModifierStatusModifications',
+          message: 'Duration modifications for buffs/debuffs are not supported and will be ignored.',
+          details: {
+            type: mia.modifier.type,
+            targetName: mia.modifier.displayName,
+            durationChange: changes.durationChange,
+            refreshDuration: changes.refreshDuration,
+          },
+        })
+      }
+      if (changes.stackChange === 0) return mia
+      const maxStacks = mia.modifier.stackingStrategy?.maxStacks
+      const unclampedStacks = mia.currentStacks + changes.stackChange
+      const clampedStacks = maxStacks != null ? Math.min(Math.max(unclampedStacks, 0), maxStacks) : Math.max(unclampedStacks, 0)
+      const effectiveDelta = clampedStacks - mia.currentStacks
+
+      // When stacks are added, mirror activateModifiers: reset timers if resetTimerOnApplication is set
+      const isAddingStacks = effectiveDelta > 0
+      const shouldResetTimer = isAddingStacks && mia.modifier.stackingStrategy?.resetTimerOnApplication
+      const limited = shouldResetTimer && mia.modifier.durationStrategy?.type === 'limited' ? mia.modifier.durationStrategy : null
+      const newTimeLeft = shouldResetTimer ? (limited?.timeDuration ?? Infinity) : mia.timeLeft
+      const newSwapsLeft = shouldResetTimer ? (limited?.numberOfSwaps ?? Infinity) : mia.swapsLeft
+
+      applied.push({ type: mia.modifier.type, targetName: mia.modifier.displayName, requestedStackChange: changes.stackChange, effectiveDelta, stacksBefore: mia.currentStacks, stacksAfter: clampedStacks })
+      return { ...mia, currentStacks: clampedStacks, timeLeft: newTimeLeft, swapsLeft: newSwapsLeft }
+    })
+    .filter(mia => mia.currentStacks > 0)
+
+  if (applied.length > 0) {
+    ctx.logs.push({
+      resolver: 'helpModifierStatusModifications',
+      message: 'Buff/debuff stack modifications applied',
+      details: { applied },
+    })
+  }
 }
 
 function helpSideEffectsDamage(ctx: StepContext, setDamageEvents: Dispatch<SetStateAction<DamageEvent[]>>): void {

@@ -450,7 +450,7 @@ export const fleurdelys_liberation: Action = {
     { energyType: 'concerto', amount: 20, share: 0 },
   ],
   energyCost: [{ energyType: 'conviction', amount: 120 }],
-  statusModifications: [{ type: 'negativeStatus', targetName: 'Aero Erosion', stackChange: -100 }],
+  statusModifications: [{ type: 'negativeStatus', targetName: 'Aero Erosion', stackChange: -100 }, { type: 'buff', targetName: 'Mandate', stackChange: -1 }],
   damageModifiers: [
     {
       source: 'Liberation Stacks',
