@@ -57,6 +57,7 @@ export function CharacterStateTracker({ snapshot, charactersInBattle, tableConfi
             <div key={group.label} className="stateTrackerCard">
               {/* Gear icon - top right corner */}
               <button
+                type="button"
                 className="stateTrackerGearBtn"
                 onClick={() => setProfileOpen(group.label)}
                 title="Character Profile"

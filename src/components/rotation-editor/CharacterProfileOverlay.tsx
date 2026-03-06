@@ -10,11 +10,11 @@ type CharacterProfileOverlayProps = {
 
 export function CharacterProfileOverlay({ characterName, onClose }: CharacterProfileOverlayProps) {
   return createPortal(
-    <div className="charProfileOverlay" onClick={onClose} role="dialog" aria-modal="true">
+    <div className="charProfileOverlay" onClick={onClose} role="dialog" aria-modal="true" aria-labelledby="charProfileTitle">
       <div className="charProfileContent" onClick={e => e.stopPropagation()}>
         <div className="charProfileHeader">
-          <h2 className="charProfileTitle">{characterName}</h2>
-          <button className="overlayCloseButton" onClick={onClose}>✕</button>
+          <h2 id="charProfileTitle" className="charProfileTitle">{characterName}</h2>
+          <button className="overlayCloseButton" onClick={onClose} aria-label="Close">✕</button>
         </div>
         <div className="charProfileBody" />
       </div>
