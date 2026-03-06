@@ -199,6 +199,9 @@ export function resolveSideEffectsAndStatuses(ctx: StepContext, setDamageEvents:
 
   // Negative Statuses
   helpNegativeStatuses(ctx, setDamageEvents, statusModifications)
+
+  // Buff/Debuff modifier stack modifications (e.g. an action forcefully ending a buff)
+  helpModifierStatusModifications(ctx, statusModifications)
 }
 
 function aggregateStatusModifications(ctx: StepContext) {
@@ -262,6 +265,36 @@ function aggregateModification(
   entry.stackChange += stackChange
   entry.durationChange += durationChange
   entry.refreshDuration ||= refreshDuration
+}
+
+function helpModifierStatusModifications(
+  ctx: StepContext,
+  statusModifications: ReturnType<typeof aggregateStatusModifications>,
+): void {
+  const types = ['buff', 'debuff'] as const
+  const anyChanges = types.some(t => Object.keys(statusModifications[t]).length > 0)
+  if (!anyChanges) return
+
+  const applied: { type: string; targetName: string; stackChange: number }[] = []
+
+  ctx.modifiersInAction = ctx.modifiersInAction
+    .map(mia => {
+      const bucket = statusModifications[mia.modifier.type as 'buff' | 'debuff']
+      if (!bucket) return mia
+      const changes = bucket[mia.modifier.displayName]
+      if (!changes || changes.stackChange === 0) return mia
+      applied.push({ type: mia.modifier.type, targetName: mia.modifier.displayName, stackChange: changes.stackChange })
+      return { ...mia, currentStacks: mia.currentStacks + changes.stackChange }
+    })
+    .filter(mia => mia.currentStacks > 0)
+
+  if (applied.length > 0) {
+    ctx.logs.push({
+      resolver: 'helpModifierStatusModifications',
+      message: 'Buff/debuff stack modifications applied',
+      details: { applied },
+    })
+  }
 }
 
 function helpSideEffectsDamage(ctx: StepContext, setDamageEvents: Dispatch<SetStateAction<DamageEvent[]>>): void {

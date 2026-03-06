@@ -1,8 +1,5 @@
 ### TODO:
 
-> Add icons to all: actions, characters, modifiers, negative statuses
-> > Recheck all existing icons and decide which to use
-
 > Cartethyia liberation should end mandate
 
 > Inspect character: stats (base and current) (later: weapon, echoes, sequence lvl etc)
