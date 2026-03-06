@@ -78,6 +78,48 @@
   line-height: 1;
 }
 
+/* ACTIVE / INACTIVE text label for single-stack modifiers */
+.statusTagStatus {
+  font-size: 9px;
+  font-weight: 700;
+  line-height: 1;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+}
+
+.statusTagStatus-active {
+  color: #4caf50;
+  text-shadow: 0 0 4px rgba(76, 175, 80, 0.6);
+}
+
+.statusTagStatus-inactive {
+  color: rgba(255, 255, 255, 0.35);
+}
+
+/* Dim the icon when a single-stack modifier is inactive */
+.statusTagIcon-inactive {
+  opacity: 0.35;
+  filter: grayscale(0.6);
+}
+
+/* Subdued overall styling when a single-stack modifier is inactive.
+   Compound selectors override the type-specific backgrounds without !important. */
+.statusTag-inactive,
+.statusTag-buff.statusTag-inactive,
+.statusTag-debuff.statusTag-inactive,
+.statusTag-negativeStatus.statusTag-inactive {
+  background-color: rgba(255, 255, 255, 0.04);
+  border-color: rgba(255, 255, 255, 0.1);
+}
+
+.statusTag-inactive:hover,
+.statusTag-buff.statusTag-inactive:hover,
+.statusTag-debuff.statusTag-inactive:hover,
+.statusTag-negativeStatus.statusTag-inactive:hover {
+  background-color: rgba(255, 255, 255, 0.08);
+  border-color: rgba(255, 255, 255, 0.18);
+}
+
 /* ========== Status Tag Tooltip ============================================================================================ */
 
 .statusTagTooltip {

@@ -13,11 +13,19 @@ type StatusTagProps = {
 }
 
 export function StatusTag({ icon, label, value, maxStacks, type, color }: StatusTagProps) {
-  // Don't render if value is 0 or undefined
-  if (!value || value === 0) return null
+  const isSingleStack = maxStacks === 1
+  const isActive = value > 0
 
-  const displayValue = maxStacks && maxStacks > 1 ? value : undefined
+  // For multi-stack modifiers: don't render when value is 0
+  // For single-stack modifiers: always render (showing ACTIVE or INACTIVE)
+  if (!isSingleStack && (!value || value === 0)) return null
+
+  // Single-stack → ACTIVE / INACTIVE label; multi-stack → numeric count
+  const displayValue = maxStacks !== undefined && maxStacks > 1 ? value : undefined
+  const displayStatus = isSingleStack ? (isActive ? 'ACTIVE' : 'INACTIVE') : undefined
+
   const typeClass = type ? `statusTag-${type}` : ''
+  const inactiveClass = isSingleStack && !isActive ? 'statusTag-inactive' : ''
 
   // If a custom color is provided, use inline styles to override
   const customStyle = color
@@ -34,11 +42,17 @@ export function StatusTag({ icon, label, value, maxStacks, type, color }: Status
       }
     : undefined
 
+  const tagClasses = ['statusTag', typeClass, inactiveClass, color ? 'statusTag-custom' : ''].filter(Boolean).join(' ')
+  const iconClasses = ['statusTagIcon', isSingleStack && !isActive ? 'statusTagIcon-inactive' : ''].filter(Boolean).join(' ')
+
   return (
-    <div className={`statusTag ${typeClass} ${color ? 'statusTag-custom' : ''}`} style={{ ...customStyle, ...customHoverStyle } as CSSProperties}>
+    <div className={tagClasses} style={{ ...customStyle, ...customHoverStyle } as CSSProperties}>
       <div className="statusTagContent">
-        <img src={icon} alt={label} className="statusTagIcon" />
+        <img src={icon} alt={label} className={iconClasses} />
         {displayValue !== undefined && <span className="statusTagValue">{displayValue}</span>}
+        {displayStatus !== undefined && (
+          <span className={`statusTagStatus ${isActive ? 'statusTagStatus-active' : 'statusTagStatus-inactive'}`}>{displayStatus}</span>
+        )}
       </div>
       <div className="statusTagTooltip">
         <div className="statusTagTooltipHeader">
@@ -46,8 +60,7 @@ export function StatusTag({ icon, label, value, maxStacks, type, color }: Status
           <span className="statusTagTooltipLabel">{label}</span>
         </div>
         <div className="statusTagTooltipValue">
-          Stacks: {value}
-          {maxStacks && maxStacks > 1 && ` / ${maxStacks}`}
+          {isSingleStack ? (isActive ? 'ACTIVE' : 'INACTIVE') : `Stacks: ${value}${maxStacks && maxStacks > 1 ? ` / ${maxStacks}` : ''}`}
         </div>
       </div>
     </div>

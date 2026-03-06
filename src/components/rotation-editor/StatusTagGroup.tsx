@@ -18,16 +18,17 @@ type StatusTagGroupProps = {
 }
 
 export function StatusTagGroup({ statuses }: StatusTagGroupProps) {
-  // Filter out statuses with 0 or undefined values
-  const activeStatuses = statuses.filter(s => s.value && s.value > 0)
+  // Single-stack modifiers (maxStacks === 1) are always shown so they can display
+  // ACTIVE / INACTIVE. Multi-stack modifiers are only shown when value > 0.
+  const visibleStatuses = statuses.filter(s => s.maxStacks === 1 || (s.value && s.value > 0))
 
-  if (activeStatuses.length === 0) {
+  if (visibleStatuses.length === 0) {
     return <div className="statusTagGroup empty">-</div>
   }
 
   return (
     <div className="statusTagGroup">
-      {activeStatuses.map(status => (
+      {visibleStatuses.map(status => (
         <StatusTag key={status.key} icon={status.icon} label={status.label} value={status.value} maxStacks={status.maxStacks} type={status.type} color={status.color} />
       ))}
     </div>
