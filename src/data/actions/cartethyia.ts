@@ -209,6 +209,7 @@ export const cartethyia_transform: Action = {
       displayName: 'Mandate',
       type: 'buff',
       ownerCharacter: 'Cartethyia',
+      color: '#1e90ff',
       characterStats: { aeroErosionAmplifyDMG: 0.5 },
       negativeStatusEffects: [{ targetStatus: 'Aero Erosion', property: 'frequency', value: -0.5 }],
       condition: always(),

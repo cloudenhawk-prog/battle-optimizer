@@ -16,6 +16,7 @@
   border-radius: var(--table-corner-radius);
   box-shadow: var(--table-shadow-inner), var(--table-shadow-main), var(--table-shadow-glow);
   overflow: hidden;
+  position: relative;
 }
 
 /* ===== Card Header ===== */
@@ -209,7 +210,7 @@
 }
 
 .stateTrackerBar[data-energy-type='forte'] {
-  background: linear-gradient(90deg, rgba(50, 205, 50, 0.5), rgba(50, 205, 50, 0.8));
+  background: linear-gradient(90deg, rgba(180, 80, 255, 0.5), rgba(180, 80, 255, 0.8));
 }
 
 .stateTrackerBar[data-energy-type='resonance'] {
@@ -233,4 +234,113 @@
   font-weight: 600;
   text-shadow: 0 0 3px rgba(0, 0, 0, 0.6);
   white-space: nowrap;
+}
+
+/* ===== Gear Button ===== */
+
+.stateTrackerGearBtn {
+  position: absolute;
+  top: 7px;
+  right: 8px;
+  z-index: 10;
+  background: var(--table-icon-bg);
+  border: 1px solid var(--table-border);
+  border-radius: 50%;
+  width: 26px;
+  height: 26px;
+  padding: 3px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  opacity: var(--table-icon-opacity);
+  box-shadow:
+    0 3px 8px rgba(0, 0, 0, 0.2),
+    inset 0 1px 0 rgba(255, 255, 255, var(--table-icon-box-strength));
+  transition: transform var(--table-icon-animation-speed) ease,
+              box-shadow var(--table-icon-animation-speed) ease,
+              opacity var(--table-icon-animation-speed) ease;
+}
+
+.stateTrackerGearBtn img {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+}
+
+.stateTrackerGearBtn:hover {
+  transform: translateY(var(--table-icon-hover-y-jump)) scale(var(--table-icon-hover-size));
+  box-shadow: 0 6px 14px rgba(0, 0, 0, 0.32),
+              inset 0 1px 0 rgba(255, 255, 255, var(--table-icon-hover-box-strength));
+  opacity: var(--table-icon-hover-opacity);
+}
+
+.stateTrackerGearBtn:active {
+  transform: scale(var(--table-icon-clicked-size));
+}
+
+/* ===== Character Profile Overlay ===== */
+
+.charProfileOverlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(25, 25, 30, 0.75);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 200;
+  backdrop-filter: blur(12px);
+}
+
+.charProfileContent {
+  background: var(--table-bg);
+  border: 1px solid var(--table-border);
+  border-radius: var(--table-corner-radius);
+  width: 90%;
+  max-width: 900px;
+  height: 80vh;
+  max-height: 80vh;
+  overflow: hidden;
+  box-shadow: var(--table-shadow-inner), var(--table-shadow-main), var(--table-shadow-glow);
+  display: flex;
+  flex-direction: column;
+  user-select: none;
+  cursor: default;
+  position: relative;
+}
+
+.charProfileContent::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  pointer-events: none;
+  box-shadow:
+    inset 0 0 0 1px var(--table-border),
+    var(--table-shadow-inner-glow);
+}
+
+.charProfileHeader {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 24px;
+  padding: 20px 28px;
+  background: var(--table-header-bg);
+  border-bottom: 1px solid var(--table-border);
+}
+
+.charProfileTitle {
+  margin: 0;
+  font-size: 18px;
+  font-weight: 600;
+  color: var(--table-text-dim);
+  text-transform: uppercase;
+  letter-spacing: 0.15em;
+  font-family: system-ui, -apple-system, sans-serif;
+}
+
+.charProfileBody {
+  flex: 1;
+  overflow: auto;
 }

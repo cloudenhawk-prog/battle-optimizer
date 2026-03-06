@@ -67,7 +67,7 @@ export function buildStatusEffectsColumns(selectedCharacters: Character[]): Colu
       return {
         key,
         label: buff,
-        icon: `/assets/${key}.png`,
+        icon: `/assets/${buff.toLowerCase().replace(/\s+/g, '_')}.png`,
         maxStacks,
         color,
       }
@@ -117,7 +117,7 @@ export function buildStatusEffectsColumns(selectedCharacters: Character[]): Colu
       return {
         key,
         label: debuff,
-        icon: `/assets/${key}.png`,
+        icon: `/assets/${debuff.toLowerCase().replace(/\s+/g, '_')}.png`,
         maxStacks,
         color,
       }
@@ -133,5 +133,11 @@ export function buildStatusEffectsColumns(selectedCharacters: Character[]): Colu
     })
   }
 
-  return createOptionalGroup({ label: 'Status Effects', icon: 'assets/negativeStatuses.png' }, columns)
+  return createOptionalGroup(
+    {
+      label: 'Status Effects',
+      icon: 'assets/statuses.png'
+    },
+    columns
+  )
 }

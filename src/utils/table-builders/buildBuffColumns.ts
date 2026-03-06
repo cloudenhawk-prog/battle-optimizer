@@ -48,7 +48,7 @@ export function buildBuffColumns(selectedCharacters: Character[]): ColumnGroup |
       return {
         key,
         label: buff,
-        icon: `/assets/${key}.png`,
+        icon: `/assets/${buff.toLowerCase().replace(/\s+/g, '_')}.png`,
         maxStacks,
       }
     })
