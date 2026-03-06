@@ -14,7 +14,18 @@ export type DamageModifier = {
   targetStrategy: TargetStrategy
   durationStrategy: DurationStrategy
   stackingStrategy: StackingStrategy
+  negativeStatusEffects?: NegativeStatusEffect[]
   color?: string
+}
+
+// ========== Type: Negative Status Effect =====================================================================================
+
+export type NegativeStatusEffectProperty = 'frequency'
+
+export type NegativeStatusEffect = {
+  targetStatus: string
+  property: NegativeStatusEffectProperty
+  value: number // Percentage modifier: -0.5 = -50% frequency (ticks faster), +0.5 = +50% (ticks slower)
 }
 
 // ========== Type: Target Strategy ============================================================================================

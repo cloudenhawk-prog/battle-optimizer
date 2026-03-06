@@ -24,9 +24,9 @@
   display: flex;
   align-items: center;
   gap: 8px;
-  padding: 10px 14px;
   background: var(--table-header-bg);
   border-bottom: 1px solid var(--table-border);
+  overflow: hidden;
 }
 
 .stateTrackerCharIcon {
@@ -64,6 +64,59 @@
   font-weight: var(--group-text-weight);
   color: var(--table-text);
   letter-spacing: 0.04em;
+}
+
+/* ===== Nametag Header ===== */
+
+.stateTrackerNametag {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  pointer-events: none;
+}
+
+.stateTrackerNametagImg {
+  width: 100%;
+  height: 85px;
+  object-fit: contain;
+  opacity: 0.85;
+  pointer-events: auto;
+  cursor: pointer;
+  margin-top: -10px;
+  margin-bottom: -10px;
+  filter: drop-shadow(0 2px 6px rgba(0, 0, 0, 0.4));
+  transition: opacity var(--table-icon-animation-speed) ease,
+              filter var(--table-icon-animation-speed) ease,
+              transform var(--table-icon-animation-speed) ease;
+}
+
+.stateTrackerNametagImg:hover {
+  opacity: 1;
+  transform: scale(1.04);
+  filter: drop-shadow(0 0 10px rgba(255, 255, 255, 0.25)) drop-shadow(0 4px 12px rgba(0, 0, 0, 0.5));
+}
+
+.stateTrackerNametagImg:active {
+  transform: scale(0.97);
+  opacity: 0.75;
+}
+
+.stateTrackerNametagLabel {
+  position: absolute;
+  font-size: 0.9rem;
+  font-weight: 700;
+  color: var(--table-text);
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  text-shadow: 0 1px 4px rgba(0, 0, 0, 0.7);
+  pointer-events: none;
+  transition: text-shadow var(--table-icon-animation-speed) ease;
+}
+
+.stateTrackerNametagImg:hover ~ .stateTrackerNametagLabel {
+  text-shadow: 0 0 8px rgba(255, 255, 255, 0.5), 0 1px 4px rgba(0, 0, 0, 0.8);
 }
 
 /* ===== Energy List ===== */

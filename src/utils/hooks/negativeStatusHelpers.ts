@@ -10,6 +10,43 @@ import { calculateDamageNegativeStatus } from '../../utils/calculators/damageCal
 
 // ========== Negative Status Helpers ==========================================================================================
 
+export function computeEffectiveFrequency(
+  statusName: string,
+  baseFrequency: number,
+  ctx?: StepContext,
+): number {
+  if (!ctx) return baseFrequency
+
+  let totalModifier = 0
+
+  // Gather frequency effects from applicable damage modifiers (already filtered by target strategy)
+  for (const modifier of ctx.damageModifiers) {
+    if (!modifier.negativeStatusEffects) continue
+
+    const conditionMultiplier = modifier.condition ? modifier.condition(ctx) : 1
+    if (conditionMultiplier === 0) continue
+
+    // Find stack count for limited modifiers
+    let stackMultiplier = 1
+    if (modifier.durationStrategy?.type === 'limited') {
+      const mia = ctx.modifiersInAction.find(
+        m => m.modifier.source === modifier.source && m.modifier.displayName === modifier.displayName,
+      )
+      if (mia) stackMultiplier = mia.currentStacks
+    }
+
+    for (const effect of modifier.negativeStatusEffects) {
+      if (effect.targetStatus === statusName && effect.property === 'frequency') {
+        totalModifier += effect.value * conditionMultiplier * stackMultiplier
+      }
+    }
+  }
+
+  // Clamp so frequency never goes below 10% of base (prevent near-zero/negative)
+  const effectiveMultiplier = Math.max(0.1, 1 + totalModifier)
+  return baseFrequency * effectiveMultiplier
+}
+
 export function getNegativeStatusStacks(snapshot: Snapshot): Record<string, number> {
   return { ...snapshot.negativeStatuses }
 }
@@ -48,7 +85,7 @@ export function processNegativeStatusStacks(
       const element = nsa.negativeStatus.element
 
       let lastDamageTime = nsa.lastDamageTime
-      const frequency = nsa.negativeStatus.frequency
+      const frequency = computeEffectiveFrequency(name, nsa.negativeStatus.frequency, ctx)
       let timeLeft = nsa.timeLeft
 
       while (lastDamageTime + frequency <= toTime && timeLeft - frequency >= 0) {
@@ -79,7 +116,7 @@ export function processNegativeStatusStacks(
       const element = nsa.negativeStatus.element
 
       let lastDamageTime = nsa.lastDamageTime
-      const frequency = nsa.negativeStatus.frequency
+      const frequency = computeEffectiveFrequency(name, nsa.negativeStatus.frequency, ctx)
       let timeLeft = nsa.timeLeft
       let currStacks = nsa.currentStacks
       const stackConsume = reducStrat.stackConsumption
