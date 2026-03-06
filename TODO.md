@@ -1,7 +1,5 @@
 ### TODO:
 
-> Cartethyia liberation should end mandate
-
 > Inspect character: stats (base and current) (later: weapon, echoes, sequence lvl etc)
 
 > Character selected in table -> Glow around the character's energy window (the selected character currently - meaning in the furthest down snapshot at any given point).

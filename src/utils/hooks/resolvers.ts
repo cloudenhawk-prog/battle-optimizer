@@ -282,9 +282,27 @@ function helpModifierStatusModifications(
       const bucket = statusModifications[mia.modifier.type as 'buff' | 'debuff']
       if (!bucket) return mia
       const changes = bucket[mia.modifier.displayName]
-      if (!changes || changes.stackChange === 0) return mia
+      if (!changes) return mia
+      // Duration-related modifications are not currently supported for buffs/debuffs.
+      // Log and ignore them explicitly to avoid silent no-ops.
+      if (changes.durationChange !== 0 || changes.refreshDuration) {
+        ctx.logs.push({
+          resolver: 'helpModifierStatusModifications',
+          message: 'Duration modifications for buffs/debuffs are not supported and will be ignored.',
+          details: {
+            type: mia.modifier.type,
+            targetName: mia.modifier.displayName,
+            durationChange: changes.durationChange,
+            refreshDuration: changes.refreshDuration,
+          },
+        })
+      }
+      if (changes.stackChange === 0) return mia
+      const maxStacks = mia.modifier.stackingStrategy?.maxStacks
+      const unclampedStacks = mia.currentStacks + changes.stackChange
+      const clampedStacks = maxStacks != null ? Math.min(Math.max(unclampedStacks, 0), maxStacks) : Math.max(unclampedStacks, 0)
       applied.push({ type: mia.modifier.type, targetName: mia.modifier.displayName, stackChange: changes.stackChange })
-      return { ...mia, currentStacks: mia.currentStacks + changes.stackChange }
+      return { ...mia, currentStacks: clampedStacks }
     })
     .filter(mia => mia.currentStacks > 0)
 
