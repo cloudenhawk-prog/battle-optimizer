@@ -345,4 +345,104 @@ describe('processCoordinatedAttacks — per-tick buff/debuff statusModifications
     // 1 tick * stackChange 2 = +2 stacks → 3 total
     expect(ctx.modifiersInAction[0].currentStacks).toBe(3)
   })
+
+  it('resets timeLeft to timeDuration when stacks are added and resetTimerOnApplication is true', () => {
+    const targetMod = createMockDamageModifier('src-buff', {
+      displayName: 'Resetting Buff',
+      type: 'buff',
+      durationStrategy: { type: 'limited', timeDuration: 10 },
+      stackingStrategy: { maxStacks: 5, resetTimerOnApplication: true, stacksRemovedEachTime: 1 },
+    })
+    const existingMia: ModifierInAction = {
+      modifier: targetMod,
+      applicationTime: 0,
+      timeLeft: 2, // almost expired
+      swapsLeft: Infinity,
+      currentStacks: 1,
+      targetCharacter: null,
+    }
+    const ca = createMockCoordinatedAttack('Slash', {
+      frequency: 1,
+      duration: 10,
+      statusModifications: [{ type: 'buff', targetName: 'Resetting Buff', stackChange: 1 }],
+    })
+    const activeAttack = createMockCoordinatedAttackInAction(ca, 'TestChar', { timeLeft: 10, lastDamageTime: 0 })
+    const ctx = buildCtx({
+      modifiersInAction: [existingMia],
+      coordinatedAttacksInAction: [activeAttack],
+      castTime: 1,
+    })
+
+    processCoordinatedAttacks(ctx, noopSetDamageEvents)
+
+    // 1 tick fires, stacks go 1→2, resetTimerOnApplication resets timeLeft to timeDuration
+    expect(ctx.modifiersInAction[0].currentStacks).toBe(2)
+    expect(ctx.modifiersInAction[0].timeLeft).toBe(10)
+  })
+
+  it('does NOT reset timeLeft when resetTimerOnApplication is false', () => {
+    const targetMod = createMockDamageModifier('src-buff', {
+      displayName: 'Non-Resetting Buff',
+      type: 'buff',
+      durationStrategy: { type: 'limited', timeDuration: 10 },
+      stackingStrategy: { maxStacks: 5, resetTimerOnApplication: false, stacksRemovedEachTime: 1 },
+    })
+    const existingMia: ModifierInAction = {
+      modifier: targetMod,
+      applicationTime: 0,
+      timeLeft: 2,
+      swapsLeft: Infinity,
+      currentStacks: 1,
+      targetCharacter: null,
+    }
+    const ca = createMockCoordinatedAttack('Slash', {
+      frequency: 1,
+      duration: 10,
+      statusModifications: [{ type: 'buff', targetName: 'Non-Resetting Buff', stackChange: 1 }],
+    })
+    const activeAttack = createMockCoordinatedAttackInAction(ca, 'TestChar', { timeLeft: 10, lastDamageTime: 0 })
+    const ctx = buildCtx({
+      modifiersInAction: [existingMia],
+      coordinatedAttacksInAction: [activeAttack],
+      castTime: 1,
+    })
+
+    processCoordinatedAttacks(ctx, noopSetDamageEvents)
+
+    expect(ctx.modifiersInAction[0].currentStacks).toBe(2)
+    expect(ctx.modifiersInAction[0].timeLeft).toBe(2) // unchanged
+  })
+
+  it('does NOT reset timeLeft when stacks are removed even if resetTimerOnApplication is true', () => {
+    const targetMod = createMockDamageModifier('src-buff', {
+      displayName: 'Draining Buff',
+      type: 'buff',
+      durationStrategy: { type: 'limited', timeDuration: 10 },
+      stackingStrategy: { maxStacks: 5, resetTimerOnApplication: true, stacksRemovedEachTime: 1 },
+    })
+    const existingMia: ModifierInAction = {
+      modifier: targetMod,
+      applicationTime: 0,
+      timeLeft: 7,
+      swapsLeft: Infinity,
+      currentStacks: 3,
+      targetCharacter: null,
+    }
+    const ca = createMockCoordinatedAttack('Slash', {
+      frequency: 1,
+      duration: 10,
+      statusModifications: [{ type: 'buff', targetName: 'Draining Buff', stackChange: -1 }],
+    })
+    const activeAttack = createMockCoordinatedAttackInAction(ca, 'TestChar', { timeLeft: 10, lastDamageTime: 0 })
+    const ctx = buildCtx({
+      modifiersInAction: [existingMia],
+      coordinatedAttacksInAction: [activeAttack],
+      castTime: 1,
+    })
+
+    processCoordinatedAttacks(ctx, noopSetDamageEvents)
+
+    expect(ctx.modifiersInAction[0].currentStacks).toBe(2)
+    expect(ctx.modifiersInAction[0].timeLeft).toBe(7) // not reset because stacks were removed
+  })
 })

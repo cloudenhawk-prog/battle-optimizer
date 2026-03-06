@@ -1,5 +1,45 @@
 import type { Action } from '../../types/action'
 
+export const blueprint_intro: Action = {
+  name: 'Intro Skill',
+  displayName: 'XXX Intro',
+  category: 'Other',
+  castTime: 0,
+  multiplier: 0,
+  scaling: 'ATK',
+  elements: [''],
+  dmgTypes: ['INTRO'],
+  cooldown: 0,
+  energyGenerated: [],
+  energyCost: [],
+  statusModifications: [],
+  damageModifiers: [],
+  sideEffects: [],
+  coordinatedAttacks: [],
+  castConditions: { startState: 'ANY', endState: 'ANY' },
+  offtune: 0,
+}
+
+export const blueprint_outro: Action = {
+  name: 'Outro Skill',
+  displayName: 'XXX Outro',
+  category: 'Other',
+  castTime: 0,
+  multiplier: 0,
+  scaling: 'ATK',
+  elements: [''],
+  dmgTypes: ['OUTRO'],
+  cooldown: 0,
+  energyGenerated: [],
+  energyCost: [],
+  statusModifications: [],
+  damageModifiers: [],
+  sideEffects: [],
+  coordinatedAttacks: [],
+  castConditions: { startState: 'ANY', endState: 'ANY' },
+  offtune: 0,
+}
+
 export const blueprint: Action = {
   name: 'XXX',
   displayName: 'XXX',

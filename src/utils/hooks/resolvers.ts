@@ -491,8 +491,8 @@ export function resolveResources(ctx: StepContext): void {
     }
   }
 
-  // Handle Outro
-  if (action.name === 'Outro' && energiesCurr?.concerto !== undefined) {
+  // Drain concerto to 0 when any OUTRO action is cast (concerto is the universal trigger cost)
+  if ((action.dmgTypes as string[]).includes('OUTRO') && energiesCurr?.concerto !== undefined) {
     energiesCurr.concerto = 0
   }
 }

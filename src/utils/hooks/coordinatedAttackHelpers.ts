@@ -162,7 +162,10 @@ function makeActionFromCoordinatedAttack(ca: CoordinatedAttack): Action {
  *  - Computes damage hits using the OWNER character's base stats + the aggregated modifiers
  *    already collected by resolveDamageModifiers.
  *  - Applies per-hit energy generation to the owner (and allies via share).
- *  - Accumulates per-hit negative status stack modifications and applies them once at the end.
+ *  - Accumulates per-hit status modifications (negativeStatus, buff, debuff) multiplied by hit
+ *    count and applies them once at the end. Buff/debuff stack changes mirror
+ *    helpModifierStatusModifications: when stacks are added and resetTimerOnApplication is true,
+ *    timeLeft/swapsLeft are reset to the modifier's configured duration.
  *  - For swap-required attacks: if the owner character just became active again
  *    (ctx.lastSwappedToCharacter === ownerCharacter), ticks only up to fromTime then deactivates.
  */
@@ -292,10 +295,20 @@ export function processCoordinatedAttacks(ctx: StepContext, setDamageEvents: Dis
         const changes = bucket[mia.modifier.displayName]
         if (!changes || changes.stackChange === 0) return mia
         const maxStacks = mia.modifier.stackingStrategy?.maxStacks
-        const newStacks = maxStacks != null
-          ? Math.min(Math.max(mia.currentStacks + changes.stackChange, 0), maxStacks)
-          : Math.max(mia.currentStacks + changes.stackChange, 0)
-        return { ...mia, currentStacks: newStacks }
+        const unclampedStacks = mia.currentStacks + changes.stackChange
+        const clampedStacks = maxStacks != null
+          ? Math.min(Math.max(unclampedStacks, 0), maxStacks)
+          : Math.max(unclampedStacks, 0)
+        const effectiveDelta = clampedStacks - mia.currentStacks
+
+        // Mirror helpModifierStatusModifications: reset timers when stacks are added and resetTimerOnApplication is set
+        const isAddingStacks = effectiveDelta > 0
+        const shouldResetTimer = isAddingStacks && mia.modifier.stackingStrategy?.resetTimerOnApplication
+        const limited = shouldResetTimer && mia.modifier.durationStrategy?.type === 'limited' ? mia.modifier.durationStrategy : null
+        const newTimeLeft = shouldResetTimer ? (limited?.timeDuration ?? Infinity) : mia.timeLeft
+        const newSwapsLeft = shouldResetTimer ? (limited?.numberOfSwaps ?? Infinity) : mia.swapsLeft
+
+        return { ...mia, currentStacks: clampedStacks, timeLeft: newTimeLeft, swapsLeft: newSwapsLeft }
       })
       .filter(mia => mia.currentStacks > 0)
   }

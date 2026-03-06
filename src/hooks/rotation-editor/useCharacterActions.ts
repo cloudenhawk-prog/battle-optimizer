@@ -201,21 +201,24 @@ function handleOutroIntroFlow(params: { snapshots: Snapshot[]; snapshotId: numbe
 
   const prevCharObj = charactersMap[prevChar]
   const currCharObj = charactersMap[currChar]
-  const outroActionName = prevCharObj ? getActionNameByDmgType(prevCharObj, 'OUTRO') : undefined
-  const introActionName = currCharObj ? getActionNameByDmgType(currCharObj, 'INTRO') : undefined
+
+  if (!prevCharObj) throw new Error(`handleOutroIntroFlow: character '${prevChar}' not found in charactersMap`)
+  if (!currCharObj) throw new Error(`handleOutroIntroFlow: character '${currChar}' not found in charactersMap`)
+
+  const outroActionName = getActionNameByDmgType(prevCharObj, 'OUTRO')
+  const introActionName = getActionNameByDmgType(currCharObj, 'INTRO')
+
+  if (!outroActionName) throw new Error(`handleOutroIntroFlow: character '${prevChar}' has no OUTRO action — every character must define one`)
+  if (!introActionName) throw new Error(`handleOutroIntroFlow: character '${currChar}' has no INTRO action — every character must define one`)
 
   // Force Outro row
   updated[snapshotId] = assignCharacterToRow(updated[snapshotId], prevChar)
-  if (outroActionName) {
-    updated = updateSnapshotsWithAction({ snapshots: updated, snapshotId, actionName: outroActionName, charactersMap, characterColumnsMap, globalColumns, enemy, setDamageEvents, negativeStatusesInAction, modifiersInAction, coordinatedAttacksInAction })
-  }
+  updated = updateSnapshotsWithAction({ snapshots: updated, snapshotId, actionName: outroActionName, charactersMap, characterColumnsMap, globalColumns, enemy, setDamageEvents, negativeStatusesInAction, modifiersInAction, coordinatedAttacksInAction })
 
   // Insert Intro row
   const introId = snapshotId + 1
   updated[introId] = assignCharacterToRow(updated[introId], currChar)
-  if (introActionName) {
-    updated = updateSnapshotsWithAction({ snapshots: updated, snapshotId: introId, actionName: introActionName, charactersMap, characterColumnsMap, globalColumns, enemy, setDamageEvents, negativeStatusesInAction, modifiersInAction, coordinatedAttacksInAction })
-  }
+  updated = updateSnapshotsWithAction({ snapshots: updated, snapshotId: introId, actionName: introActionName, charactersMap, characterColumnsMap, globalColumns, enemy, setDamageEvents, negativeStatusesInAction, modifiersInAction, coordinatedAttacksInAction })
 
   // Prepare the next blank row for the real action
   const nextId = introId + 1

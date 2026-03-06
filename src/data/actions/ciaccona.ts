@@ -218,8 +218,8 @@ export const ciaccona_liberation: Action = {
       scaling: 'ATK',
       elements: ['AERO'],
       dmgTypes: ['LIBERATION'],
-      frequency: 1.0, // TODO: frequency unknown
-      duration: 20 * 0.5,       // 20 ticks * frequency = 10s; capped by swapRequired as well
+      frequency: 1.6, // TODO: frequency unknown - first tick should be at 1.6, not 0.00
+      duration: 20 * 1.6, // TODO: duration unknown
       swapRequired: true,
       energyGenerated: [],
       statusModifications: [{ type: 'negativeStatus', targetName: 'Aero Erosion', stackChange: 1 }],
