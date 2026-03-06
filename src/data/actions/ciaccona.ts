@@ -206,14 +206,25 @@ export const ciaccona_liberation: Action = {
   energyCost: [{ energyType: 'energy', amount: 125 }],
   statusModifications: [],
   damageModifiers: [],
-  sideEffects: [
-    // TODO : Need a way to dispatch:
-    // Coordinated Attacks (similar to a dot effect, but owned by a character - they do attack at certain intervals)
-    // Off-field actions like Phrolova/Ciaconna liberation (ends when swapping back to the character) (should we treat these as coordinated attacks too?)
-    // Use boolean to determine if the effect ends when swapping back to the character or not
-    // Use some kind of condition function to allow dynamic damage dealt (for example when certain conditions are true, deals more damage or whatever), but can also be static
-    // Should show up on the timeline
-    // 6.12%*20 (20 hits doing 6.12 % each and applying 1 stack of aero erosion) (20 times 0.22 offtune) (uncertain damage frequency/duration, might apply aero buff meanwhile too)
+  sideEffects: [],
+  coordinatedAttacks: [
+    {
+      // Singers Triple Cadenza: 20 coordinated hits, each 6.12% ATK, AERO LIBERATION
+      // Ends immediately when Ciaccona swaps back in
+      // TODO: confirm exact frequency and total duration from frame data
+      name: 'Singers Triple Cadenza (Coordinated)',
+      displayName: "Singers Triple Cadenza (Coordinated)",
+      multiplier: 6.12 / 100,
+      scaling: 'ATK',
+      elements: ['AERO'],
+      dmgTypes: ['LIBERATION'],
+      frequency: 1.0, // TODO: frequency unknown
+      duration: 20 * 0.5,       // 20 ticks * frequency = 10s; capped by swapRequired as well
+      swapRequired: true,
+      energyGenerated: [],
+      statusModifications: [{ type: 'negativeStatus', targetName: 'Aero Erosion', stackChange: 1 }],
+      offtune: 0.22,
+    },
   ],
   castConditions: {
     startState: 'GROUND',
@@ -342,4 +353,69 @@ export const ciaccona_echo: Action = {
   offtune: 0,
 }
 
-// TODO - energies up
+
+export const ciaccona_energy: Action = {
+  name: 'Energy Up',
+  displayName: 'Energy Up',
+  category: 'Testing',
+  castTime: 0,
+  multiplier: 0,
+  scaling: 'HP',
+  elements: [''],
+  dmgTypes: [''],
+  cooldown: 0,
+  energyGenerated: [{ energyType: 'energy', amount: 1000, share: 0 }],
+  energyCost: [],
+  statusModifications: [],
+  damageModifiers: [],
+  sideEffects: [],
+  castConditions: {
+    startState: 'ANY',
+    endState: 'ANY',
+  },
+  offtune: 0,
+}
+
+export const ciaccona_concerto: Action = {
+  name: 'Concerto Up',
+  displayName: 'Concerto Up',
+  category: 'Testing',
+  castTime: 0,
+  multiplier: 0,
+  scaling: 'HP',
+  elements: [''],
+  dmgTypes: [''],
+  cooldown: 0,
+  energyGenerated: [{ energyType: 'concerto', amount: 1000, share: 0 }],
+  energyCost: [],
+  statusModifications: [],
+  damageModifiers: [],
+  sideEffects: [],
+  castConditions: {
+    startState: 'ANY',
+    endState: 'ANY',
+  },
+  offtune: 0,
+}
+
+export const ciaccona_forte: Action = {
+  name: 'Forte Up',
+  displayName: 'Forte Up',
+  category: 'Testing',
+  castTime: 0,
+  multiplier: 0,
+  scaling: 'HP',
+  elements: [''],
+  dmgTypes: [''],
+  cooldown: 0,
+  energyGenerated: [{ energyType: 'forte', amount: 1000, share: 0 }],
+  energyCost: [],
+  statusModifications: [],
+  damageModifiers: [],
+  sideEffects: [],
+  castConditions: {
+    startState: 'ANY',
+    endState: 'ANY',
+  },
+  offtune: 0,
+}

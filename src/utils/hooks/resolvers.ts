@@ -8,7 +8,9 @@ import type { Action } from '../../types/action'
 import type { Character } from '../../types/character'
 import type { Enemy } from '../../types/enemy'
 import type { NegativeStatusInAction } from '../../types/negativeStatus'
+import type { CoordinatedAttackInAction } from '../../types/coordinatedAttack'
 import { calculateDamage } from '../../utils/calculators/damageCalculator'
+import { activateCoordinatedAttacks, processCoordinatedAttacks, updateCoordinatedAttackSnapshot } from './coordinatedAttackHelpers'
 import { getNegativeStatusStacks, processNegativeStatusStacks, updateNegativeStatusStacks } from './negativeStatusHelpers'
 import { getCharacterEnergyState, updateEnergyValue } from './energyHelpers'
 import { updateModifiersForSwap, collectAllModifiers, activateModifiers, filterApplicableModifiers, applyStackMultiplier, updateModifiersForTime } from './modifierHelpers'
@@ -17,7 +19,7 @@ import { updateAllCharactersCooldowns, setActionOnCooldown } from './cooldownHel
 
 // ========== Resolver 0: Build Step Context ==================================================================================
 
-export function buildStepContext(snapshotId: number, current: Snapshot, prev: Snapshot, character: Character, action: Action, enemy: Enemy, negativeStatusesInAction: NegativeStatusInAction[], modifiersInAction: ModifierInAction[], characterMap: Record<string, Character>): StepContext {
+export function buildStepContext(snapshotId: number, current: Snapshot, prev: Snapshot, character: Character, action: Action, enemy: Enemy, negativeStatusesInAction: NegativeStatusInAction[], modifiersInAction: ModifierInAction[], characterMap: Record<string, Character>, coordinatedAttacksInAction: CoordinatedAttackInAction[] = []): StepContext {
   const fromTime = prev.toTime
   const toTime = fromTime + action.castTime
   current.action = action.name
@@ -57,6 +59,7 @@ export function buildStepContext(snapshotId: number, current: Snapshot, prev: Sn
 
     modifiersInAction: updatedModifiersInAction,
     negativeStatusesInAction,
+    coordinatedAttacksInAction,
 
     permanentModifiers: [],
     damageModifiers: [],
@@ -379,6 +382,31 @@ export function helpNegativeStatuses(ctx: StepContext, setDamageEvents: Dispatch
     resolver: 'resolveNegativeStatuses',
     message: `Negative statuses resolved: +${totalDmgNegativeStatuses} dmg`,
     details: { damageEventsCount: allDamageEvents.length, totalDamage: totalDmgNegativeStatuses, damageEvents: allDamageEvents },
+  })
+}
+
+// ========== Resolver 4.5: Coordinated Attacks ===============================================================================
+
+/**
+ * Ticks all active coordinated attacks for the current step window [fromTime, toTime].
+ *
+ * Runs after resolveSideEffectsAndStatuses so that ctx.damageModifiers and
+ * ctx.aggregatedCharacterModifiers are already populated. Runs before resolveResources so
+ * that per-hit energy is stacked on top of the main action energy.
+ */
+export function resolveCoordinatedAttacks(ctx: StepContext, setDamageEvents: Dispatch<SetStateAction<DamageEvent[]>>): void {
+  activateCoordinatedAttacks(ctx)
+  processCoordinatedAttacks(ctx, setDamageEvents)
+  updateCoordinatedAttackSnapshot(ctx)
+
+  ctx.logs.push({
+    resolver: 'resolveCoordinatedAttacks',
+    message: `Coordinated attacks processed: ${ctx.coordinatedAttacksInAction.filter(a => a.applicationTime !== -1).length} active`,
+    details: {
+      active: ctx.coordinatedAttacksInAction
+        .filter(a => a.applicationTime !== -1)
+        .map(a => ({ name: a.coordinatedAttack.name, owner: a.ownerCharacter, timeLeft: a.timeLeft })),
+    },
   })
 }
 

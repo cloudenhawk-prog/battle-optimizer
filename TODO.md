@@ -6,9 +6,6 @@
 > > Selected character should show up in sidebar like Phrolova - might need to define custom coordinate/size helpers if there isn't an easy fit-it-all solution
 > > LOCK previous snapshots while you're at it - we don't support deletions atm anyway. Meaning every snapshot except the last one should be locked at any given time.
 
-
-> Action/Table: Coordinated attacks + lasting attacking (phrolova + ciaconna ults). Is these the same concepts, but just whether it's cancelled when swapping back to the character?
-
 > Possibility to lower cooldowns (example: Cartethyia when consuming swords)
 
 > Modifiers (buffs) can affect how actions behave, like Mandate. Need an easy way to handle this. For example:

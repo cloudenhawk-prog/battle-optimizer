@@ -1,0 +1,324 @@
+import type { Dispatch, SetStateAction } from 'react'
+import type { CoordinatedAttack } from '../../types/coordinatedAttack'
+import type { DamageEvent } from '../../types/events'
+import type { StepContext } from '../../types/stepContext'
+import type { Character } from '../../types/character'
+import type { Action } from '../../types/action'
+import type { CharacterStats } from '../../types/stats'
+import type { ModifierInAction } from '../../types/modifiers'
+import { calculateDamage } from '../calculators/damageCalculator'
+import { updateEnergyValue } from './energyHelpers'
+import { getNegativeStatusStacks, updateNegativeStatusStacks } from './negativeStatusHelpers'
+
+// ========== Coordinated Attack Helpers =======================================================================================
+
+/**
+ * Inspect the current action and activate (or refresh) any coordinated attacks it defines.
+ * New entries are pushed directly onto ctx.coordinatedAttacksInAction (in-place mutation so
+ * the ref in useCharacterActions stays in sync without an explicit assignment).
+ */
+export function activateCoordinatedAttacks(ctx: StepContext): void {
+  for (const ca of ctx.action.coordinatedAttacks ?? []) {
+    const existing = ctx.coordinatedAttacksInAction.find(
+      caia => caia.coordinatedAttack.name === ca.name && caia.ownerCharacter === ctx.character.name,
+    )
+
+    if (existing) {
+      // Refresh: reset duration and last-damage anchor to the end of this cast
+      existing.applicationTime = ctx.toTime
+      existing.timeLeft = ca.duration
+      existing.lastDamageTime = ctx.toTime
+      ensureLinkedModifiersActive(ca, ctx)
+    } else {
+      ctx.coordinatedAttacksInAction.push({
+        coordinatedAttack: ca,
+        ownerCharacter: ctx.character.name,
+        applicationTime: ctx.toTime,
+        timeLeft: ca.duration,
+        lastDamageTime: ctx.toTime,
+      })
+      ensureLinkedModifiersActive(ca, ctx)
+    }
+  }
+}
+
+// ========== Linked Modifier Helpers =========================================================================================
+
+/**
+ * Ensures all linkedModifiers for a coordinated attack are present in ctx.modifiersInAction.
+ * Called on both initial activation and refresh (re-cast). Does not duplicate if already present.
+ */
+function ensureLinkedModifiersActive(ca: CoordinatedAttack, ctx: StepContext): void {
+  for (const modifier of ca.linkedModifiers ?? []) {
+    const alreadyPresent = ctx.modifiersInAction.some(
+      mia => mia.modifier.source === modifier.source && mia.modifier.displayName === modifier.displayName,
+    )
+    if (!alreadyPresent) {
+      ctx.modifiersInAction.push({
+        modifier,
+        applicationTime: ctx.toTime,
+        timeLeft: Infinity,
+        swapsLeft: Infinity,
+        currentStacks: 1,
+        targetCharacter: null,
+      } satisfies ModifierInAction)
+    }
+  }
+}
+
+/**
+ * Removes all linkedModifiers for a coordinated attack from ctx.modifiersInAction.
+ * Called when the attack expires (time or swap-cancel).
+ */
+function removeLinkedModifiers(ca: CoordinatedAttack, ctx: StepContext): void {
+  if (!ca.linkedModifiers?.length) return
+  const toRemove = new Set(ca.linkedModifiers.map(m => `${m.source}::${m.displayName}`))
+  ctx.modifiersInAction = ctx.modifiersInAction.filter(
+    mia => !toRemove.has(`${mia.modifier.source}::${mia.modifier.displayName}`),
+  )
+}
+
+// ========== Per-hit Energy  ==================================================================================================
+
+function applyEnergyPerHit(ctx: StepContext, ownerCharacter: string, ownerCharObj: Character, energyGenerated: CoordinatedAttack['energyGenerated']): void {
+  const current = ctx.current
+  const allCharacters = [ctx.character, ...ctx.allies]
+
+  // Owner energy
+  const ownerEnergies = current.charactersEnergies[ownerCharacter]
+  if (ownerEnergies) {
+    for (const gen of energyGenerated) {
+      const max = ownerCharObj.maxEnergies?.[gen.energyType] ?? Infinity
+      let amount = gen.amount
+      if (amount > 0 && gen.scalingStat) {
+        const scaling = (ownerCharObj.stats?.[gen.scalingStat as keyof CharacterStats] as number) ?? 1
+        amount *= scaling
+      }
+      ownerEnergies[gen.energyType] = updateEnergyValue(ownerEnergies[gen.energyType], amount, max)
+    }
+  }
+
+  // Ally energy share
+  for (const ally of allCharacters) {
+    if (ally.name === ownerCharacter) continue
+    const allyEnergies = current.charactersEnergies[ally.name]
+    const allyMax = ally.maxEnergies
+
+    for (const gen of energyGenerated) {
+      if (gen.share <= 0) continue
+      if (!(gen.energyType in allyMax)) continue
+
+      let amount = gen.amount * gen.share
+      if (amount > 0 && gen.scalingStat) {
+        const scaling = (ally.stats?.[gen.scalingStat as keyof CharacterStats] as number) ?? 1
+        amount *= scaling
+      }
+
+      const prevValue = allyEnergies?.[gen.energyType] ?? 0
+      const maxValue = allyMax[gen.energyType] ?? Infinity
+      if (allyEnergies) {
+        allyEnergies[gen.energyType] = updateEnergyValue(prevValue, amount, maxValue)
+      }
+    }
+  }
+}
+
+// ========== Fake Action Builder ==============================================================================================
+
+/**
+ * Wraps a CoordinatedAttack definition in an Action-shaped object so that the existing
+ * calculateDamage pipeline (which consumes Action) can be reused without modification.
+ * Only the fields actually read by calculateDamage (scaling, multiplier, elements, dmgTypes,
+ * name) are meaningful; all other fields carry safe empty/zero defaults.
+ */
+function makeActionFromCoordinatedAttack(ca: CoordinatedAttack): Action {
+  return {
+    name: ca.name,
+    displayName: ca.displayName ?? ca.name,
+    category: 'Other',
+    castTime: 0,
+    multiplier: ca.multiplier,
+    scaling: ca.scaling,
+    elements: ca.elements,
+    dmgTypes: ca.dmgTypes,
+    cooldown: 0,
+    energyGenerated: [],
+    energyCost: [],
+    statusModifications: [],
+    damageModifiers: [],
+    sideEffects: [],
+    coordinatedAttacks: [],
+    castConditions: { startState: 'ANY', endState: 'ANY' },
+    offtune: 0,
+  }
+}
+
+// ========== Main Processing ==================================================================================================
+
+/**
+ * Tick all active coordinated attacks for the current step window [fromTime, toTime].
+ *
+ * For each attack:
+ *  - Computes damage hits using the OWNER character's base stats + the aggregated modifiers
+ *    already collected by resolveDamageModifiers.
+ *  - Applies per-hit energy generation to the owner (and allies via share).
+ *  - Accumulates per-hit negative status stack modifications and applies them once at the end.
+ *  - For swap-required attacks: if the owner character just became active again
+ *    (ctx.lastSwappedToCharacter === ownerCharacter), ticks only up to fromTime then deactivates.
+ */
+export function processCoordinatedAttacks(ctx: StepContext, setDamageEvents: Dispatch<SetStateAction<DamageEvent[]>>): void {
+  if (ctx.coordinatedAttacksInAction.length === 0) return
+
+  const allCharacters = [ctx.character, ...ctx.allies]
+  const allDamageEvents: DamageEvent[] = []
+  let totalCoordDamage = 0
+
+  // Accumulated negative-status stack changes from per-hit modifications across all attacks
+  const accumulatedNegativeStatusMods: Record<string, { stackChange: number; durationChange: number; refreshDuration: boolean }> = {}
+
+  // Accumulated buff/debuff stack changes from per-hit modifications across all attacks
+  const accumulatedBuffDebuffMods: {
+    buff: Record<string, { stackChange: number }>
+    debuff: Record<string, { stackChange: number }>
+  } = { buff: {}, debuff: {} }
+
+  for (const caia of ctx.coordinatedAttacksInAction) {
+    if (caia.applicationTime === -1) continue
+
+    const ca = caia.coordinatedAttack
+    const ownerChar = allCharacters.find(c => c.name === caia.ownerCharacter)
+    if (!ownerChar) continue
+
+    // Determines the tick boundary for this step
+    // Swap-required: if the owner just swapped back in, only tick up to fromTime then expire
+    const isReturnToOwner = ca.swapRequired && ctx.lastSwappedToCharacter === caia.ownerCharacter
+    const tickEndTime = isReturnToOwner ? ctx.fromTime : ctx.toTime
+
+    const fakeAction = makeActionFromCoordinatedAttack(ca)
+
+    let lastDamageTime = caia.lastDamageTime
+    let timeLeft = caia.timeLeft
+    let hitCount = 0
+
+    while (lastDamageTime + ca.frequency <= tickEndTime && timeLeft > 0) {
+      lastDamageTime += ca.frequency
+      timeLeft -= ca.frequency
+      hitCount++
+
+      const conditionMultiplier = ca.condition ? ca.condition(ctx) : 1
+      if (conditionMultiplier === 0) continue
+
+      const { average, damageEvent } = calculateDamage({
+        action: fakeAction,
+        name: `${caia.ownerCharacter}: ${ca.displayName ?? ca.name}`,
+        stats: ownerChar.stats,
+        damageModifiers: ctx.damageModifiers,
+        modifierCharacterStats: ctx.aggregatedCharacterModifiers,
+        modifierEnemyStats: ctx.aggregatedEnemyModifiers,
+        enemy: ctx.enemy,
+        snapshotId: ctx.snapshotId,
+        timeStamp: lastDamageTime,
+        ctx,
+      })
+
+      const scaledAverage = Math.ceil(average * conditionMultiplier)
+      const scaledEvent = conditionMultiplier === 1 ? damageEvent : {
+        ...damageEvent,
+        normalStrike: damageEvent.normalStrike * conditionMultiplier,
+        criticalStrike: damageEvent.criticalStrike * conditionMultiplier,
+        average: scaledAverage,
+      }
+
+      allDamageEvents.push(scaledEvent)
+      totalCoordDamage += scaledAverage
+    }
+
+    // Per-hit energy generation (applied once per tick, repeated hitCount times)
+    if (hitCount > 0 && ca.energyGenerated.length > 0) {
+      for (let i = 0; i < hitCount; i++) {
+        applyEnergyPerHit(ctx, caia.ownerCharacter, ownerChar, ca.energyGenerated)
+      }
+    }
+
+    // Accumulate per-hit negative status stack modifications (multiply stackChange by hitCount)
+    if (hitCount > 0) {
+      for (const mod of ca.statusModifications) {
+        if (mod.type === 'negativeStatus') {
+          const existing = accumulatedNegativeStatusMods[mod.targetName] ?? { stackChange: 0, durationChange: 0, refreshDuration: false }
+          accumulatedNegativeStatusMods[mod.targetName] = {
+            stackChange: existing.stackChange + (mod.stackChange ?? 0) * hitCount,
+            durationChange: existing.durationChange + (mod.durationChange ?? 0) * hitCount,
+            refreshDuration: existing.refreshDuration || (mod.refreshDuration ?? false),
+          }
+        } else if (mod.type === 'buff' || mod.type === 'debuff') {
+          const bucket = accumulatedBuffDebuffMods[mod.type]
+          const existing = bucket[mod.targetName] ?? { stackChange: 0 }
+          bucket[mod.targetName] = { stackChange: existing.stackChange + (mod.stackChange ?? 0) * hitCount }
+        }
+      }
+    }
+
+    // Update or expire the attack state
+    if (timeLeft <= 0 || isReturnToOwner) {
+      removeLinkedModifiers(ca, ctx)
+      caia.applicationTime = -1
+      caia.timeLeft = 0
+      caia.lastDamageTime = 0
+    } else {
+      caia.lastDamageTime = lastDamageTime
+      caia.timeLeft = timeLeft
+    }
+  }
+
+  // Flush damage events and accumulate into snapshot
+  if (allDamageEvents.length > 0) {
+    setDamageEvents(prev => [...prev, ...allDamageEvents])
+    ctx.current.damage += totalCoordDamage
+  }
+
+  // Apply aggregated negative-status modifications from per-hit effects
+  if (Object.keys(accumulatedNegativeStatusMods).length > 0) {
+    const stacksCurr = getNegativeStatusStacks(ctx.current)
+    updateNegativeStatusStacks(ctx.current, stacksCurr, ctx.action, ctx.negativeStatusesInAction, accumulatedNegativeStatusMods)
+  }
+
+  // Apply aggregated buff/debuff stack modifications from per-hit effects
+  for (const type of ['buff', 'debuff'] as const) {
+    const bucket = accumulatedBuffDebuffMods[type]
+    if (!Object.keys(bucket).length) continue
+    ctx.modifiersInAction = ctx.modifiersInAction
+      .map(mia => {
+        if (mia.modifier.type !== type) return mia
+        const changes = bucket[mia.modifier.displayName]
+        if (!changes || changes.stackChange === 0) return mia
+        const maxStacks = mia.modifier.stackingStrategy?.maxStacks
+        const newStacks = maxStacks != null
+          ? Math.min(Math.max(mia.currentStacks + changes.stackChange, 0), maxStacks)
+          : Math.max(mia.currentStacks + changes.stackChange, 0)
+        return { ...mia, currentStacks: newStacks }
+      })
+      .filter(mia => mia.currentStacks > 0)
+  }
+}
+
+// ========== Snapshot State ==================================================================================================
+
+/**
+ * Writes the current active/inactive state and remaining duration of all tracked
+ * coordinated attacks into the snapshot so it can be displayed in the rotation table.
+ *
+ * Key format: "<ownerCharacter>: <attackName>"
+ */
+export function updateCoordinatedAttackSnapshot(ctx: StepContext): void {
+  const coordAttacks: Record<string, number> = {}
+  const coordAttacksTimeLeft: Record<string, number> = {}
+
+  for (const caia of ctx.coordinatedAttacksInAction) {
+    const key = `${caia.ownerCharacter}: ${caia.coordinatedAttack.name}`
+    coordAttacks[key] = caia.applicationTime !== -1 ? 1 : 0
+    coordAttacksTimeLeft[key] = caia.timeLeft
+  }
+
+  ctx.current.coordinatedAttacks = coordAttacks
+  ctx.current.coordinatedAttacksTimeLeft = coordAttacksTimeLeft
+}

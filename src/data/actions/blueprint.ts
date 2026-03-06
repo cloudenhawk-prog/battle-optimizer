@@ -19,13 +19,13 @@ export const blueprint: Action = {
   statusModifications: [],
   damageModifiers: [],
   sideEffects: [],
+  coordinatedAttacks: [],
   castConditions: {
     startState: 'ANY',
     endState: 'GROUND',
   },
-  other: {
-    hardness: 100,
-    toughness: 100,
-    offtune: 100,
-  },
+  offtune: 100,
+  toolTip: 'XXX',
+  groupName: 'XXX',
+  variantName: 'XXX'
 }

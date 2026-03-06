@@ -76,6 +76,18 @@ export function HeaderRow({ tableConfig, columnVisibility, setColumnVisibility }
               </th>
             )
           })()}
+
+        {/* Group: Other */}
+        {tableConfig.other &&
+          (() => {
+            const visibleCols = tableConfig.other.columns.filter(col => columnVisibility[col.key]).length
+            if (!visibleCols) return null
+            return (
+              <th className="groupHeader" colSpan={visibleCols} onClick={() => handleGroupClick(tableConfig.other!.columns)}>
+                <HeaderContent label={tableConfig.other.label} icon={tableConfig.other.icon} />
+              </th>
+            )
+          })()}
       </tr>
 
       {/* Column labels */}
@@ -113,6 +125,9 @@ export function HeaderRow({ tableConfig, columnVisibility, setColumnVisibility }
 
         {/* Status Effects Columns (Negative Statuses, Buffs, Debuffs) */}
         {tableConfig.statusEffects && renderColumns(tableConfig.statusEffects.columns, columnVisibility, setColumnVisibility)}
+
+        {/* Other Columns (Coordinated Attacks, etc.) */}
+        {tableConfig.other && renderColumns(tableConfig.other.columns, columnVisibility, setColumnVisibility)}
       </tr>
     </thead>
   )

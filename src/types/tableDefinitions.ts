@@ -6,6 +6,7 @@ export type TableConfig = {
   basic: ColumnGroup
   characters: ColumnGroup[]
   statusEffects: ColumnGroup | null
+  other: ColumnGroup | null
 }
 
 // ========== Type: Column Group ===============================================================================================

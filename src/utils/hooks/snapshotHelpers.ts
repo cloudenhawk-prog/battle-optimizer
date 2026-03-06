@@ -63,6 +63,8 @@ export function createSnapshot(previousSnapshot: Snapshot, charactersMap: Record
     debuffsMaxStacks,
     negativeStatuses,
     negativeStatusesTimeLeft: Object.fromEntries(globalColumns.negativeStatuses.map(col => [col, 0])),
+    coordinatedAttacks: {},
+    coordinatedAttacksTimeLeft: {},
     charactersCooldowns,
   }
 }

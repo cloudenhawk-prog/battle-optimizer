@@ -5,6 +5,7 @@ import type { Enemy } from './enemy'
 import type { CharacterStats, EnemyStats } from './stats'
 import type { NegativeStatusInAction } from './negativeStatus'
 import type { DamageModifier, ModifierInAction } from './modifiers'
+import type { CoordinatedAttackInAction } from './coordinatedAttack'
 
 // ========== Type: Step Context ===============================================================================================
 
@@ -25,8 +26,8 @@ export type StepContext = {
 
   // Runtime state for active modifiers (similar to negativeStatusesInAction)
   modifiersInAction: ModifierInAction[]
-
   negativeStatusesInAction: NegativeStatusInAction[]
+  coordinatedAttacksInAction: CoordinatedAttackInAction[]
 
   // All permanent modifiers for this step (used for display tracking)
   permanentModifiers: DamageModifier[]
