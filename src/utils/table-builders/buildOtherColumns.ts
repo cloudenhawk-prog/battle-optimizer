@@ -14,7 +14,7 @@ export function buildOtherColumns(selectedCharacters: Character[]): ColumnGroup 
       (a.coordinatedAttacks ?? []).map(ca => ({
         key: `${c.name}: ${ca.name}`,
         label: `${c.name}: ${ca.displayName ?? ca.name}`,
-        icon: `/assets/coordinated_attack.png`,
+        icon: '/assets/coordinated_attack.png',
         maxStacks: 1,
         color: ca.color ?? COORDINATED_ATTACK_COLOR,
       })),
