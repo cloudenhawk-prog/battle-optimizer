@@ -213,7 +213,7 @@ export const ciaccona_liberation: Action = {
       // Ends immediately when Ciaccona swaps back in
       // TODO: confirm exact frequency and total duration from frame data
       name: 'Singers Triple Cadenza (Coordinated)',
-      displayName: "Singers Triple Cadenza (Coordinated)",
+      displayName: 'Singers Triple Cadenza (Coordinated)',
       multiplier: 6.12 / 100,
       scaling: 'ATK',
       elements: ['AERO'],
