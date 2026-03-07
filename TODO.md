@@ -1,5 +1,9 @@
 ### TODO:
 
+Update rover actions to follow convention from Ciaconna
+Test and update Cartethyia
+Go through all 3 characters
+
 Need a way to determine which buffs/debuffs to show
 > All limited buffs
 > But what about: permanent modifiers that only affect certain characters at certain times
