@@ -1,6 +1,7 @@
 import type { Character } from '../../types/character'
 import type { ColumnGroup, ColumnDef, StatusMetadata } from '../../types/tableDefinitions'
 import { createOptionalGroup } from './helpers'
+import { makeCoordinatedAttackKey } from '../hooks/coordinatedAttackHelpers'
 
 const COORDINATED_ATTACK_COLOR = '#00BFFF'
 
@@ -10,9 +11,9 @@ export function buildCoordinatedAttackColumns(selectedCharacters: Character[]): 
   const coordAttacksMeta: StatusMetadata[] = selectedCharacters.flatMap(c =>
     c.actions.flatMap(a =>
       (a.coordinatedAttacks ?? []).map(ca => ({
-        key: `${c.name}: ${ca.name}`,
+        key: makeCoordinatedAttackKey(c.name, ca.name),
         label: `${c.name}: ${ca.displayName ?? ca.name}`,
-        icon: `/assets/${(ca.displayName ?? ca.name).toLowerCase().replace(/\s+/g, '_')}.png`,
+        icon: ca.icon ?? `/assets/${ca.name.toLowerCase().replace(/\s+/g, '_')}.png`,
         maxStacks: 1,
         color: ca.color ?? COORDINATED_ATTACK_COLOR,
       })),

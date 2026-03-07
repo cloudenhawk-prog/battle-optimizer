@@ -75,6 +75,9 @@ export type CoordinatedAttack = {
   /** Toughness damage per tick, for display / tracking purposes only */
   offtune?: number
 
+  /** Explicit icon asset path. When omitted, the icon is derived from `name`. */
+  icon?: string
+
   color?: string
 }
 

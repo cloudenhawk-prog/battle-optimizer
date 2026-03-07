@@ -5,6 +5,8 @@ import type { Snapshot } from '../../types/snapshot'
 import { CharacterSelect } from './CharacterSelect'
 import { ActionSelect } from './ActionSelect'
 import { StatusTagGroup } from './StatusTagGroup'
+import { parseCoordinatedAttackKey } from '../../utils/hooks/coordinatedAttackHelpers'
+import { isSwapRequiredLocked } from '../../utils/hooks/snapshotHelpers'
 
 // ========== Component: Body Row ==============================================================================================
 
@@ -30,12 +32,8 @@ export function BodyRow({ snapshot, previousSnapshot, charactersInBattle, tableC
   const lockedCharacters = new Set<string>()
   if (previousSnapshot) {
     const prevChar = previousSnapshot.character ?? ''
-    for (const [key, active] of Object.entries(previousSnapshot.coordinatedAttacks ?? {})) {
-      if (active !== 1) continue
-      const ownerName = key.slice(0, key.indexOf(': '))
-      if (ownerName === prevChar && (previousSnapshot.coordinatedAttacksSwapRequired?.[key] ?? false)) {
-        lockedCharacters.add(ownerName)
-      }
+    if (prevChar && isSwapRequiredLocked(previousSnapshot, prevChar)) {
+      lockedCharacters.add(prevChar)
     }
   }
 
@@ -143,8 +141,7 @@ function renderBodyColumnsWithTags(columns: ColumnDef[], columnVisibility: Colum
           if (prevData) {
             const merged: Record<string, number> = {}
             for (const [key, active] of Object.entries(prevData)) {
-              const ownerName = key.slice(0, key.indexOf(': '))
-              if ((swapReqFlags?.[key] ?? false) && ownerName === character) {
+              if ((swapReqFlags?.[key] ?? false) && parseCoordinatedAttackKey(key).owner === character) {
                 merged[key] = 0
               } else {
                 merged[key] = active

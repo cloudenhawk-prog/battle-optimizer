@@ -317,11 +317,34 @@ export function processCoordinatedAttacks(ctx: StepContext, setDamageEvents: Dis
 
 // ========== Snapshot State ==================================================================================================
 
+// ========== Key Utilities ===================================================================================================
+
+/**
+ * Coordinated-attack snapshot keys have the form "<ownerCharacter>: <attackName>".
+ *
+ * The owner prefix exists because the same attack name can independently be triggered
+ * by multiple characters (each instance tracks its own state).  Within a single owner
+ * however, attack names must be unique — two identically-named attacks from the same
+ * owner are intentionally treated as the same effect and share one slot (e.g. Aero
+ * Erosion contributions from different sources all collapse into a single entry).
+ */
+export function makeCoordinatedAttackKey(owner: string, attackName: string): string {
+  return `${owner}: ${attackName}`
+}
+
+/**
+ * Splits a coordinated-attack snapshot key back into its constituent parts.
+ */
+export function parseCoordinatedAttackKey(key: string): { owner: string; attackName: string } {
+  const sep = key.indexOf(': ')
+  return { owner: key.slice(0, sep), attackName: key.slice(sep + 2) }
+}
+
+// ========== Snapshot State ==================================================================================================
+
 /**
  * Writes the current active/inactive state and remaining duration of all tracked
  * coordinated attacks into the snapshot so it can be displayed in the rotation table.
- *
- * Key format: "<ownerCharacter>: <attackName>"
  */
 export function updateCoordinatedAttackSnapshot(ctx: StepContext): void {
   const coordAttacks: Record<string, number> = {}
@@ -329,7 +352,7 @@ export function updateCoordinatedAttackSnapshot(ctx: StepContext): void {
   const coordAttacksSwapRequired: Record<string, boolean> = {}
 
   for (const caia of ctx.coordinatedAttacksInAction) {
-    const key = `${caia.ownerCharacter}: ${caia.coordinatedAttack.name}`
+    const key = makeCoordinatedAttackKey(caia.ownerCharacter, caia.coordinatedAttack.name)
     coordAttacks[key] = caia.applicationTime !== -1 ? 1 : 0
     coordAttacksTimeLeft[key] = caia.timeLeft
     coordAttacksSwapRequired[key] = caia.coordinatedAttack.swapRequired ?? false

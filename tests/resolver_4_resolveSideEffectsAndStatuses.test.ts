@@ -175,7 +175,7 @@ describe('resolveSideEffectsAndStatuses — helpModifierStatusModifications', ()
 
       const appliedLog = ctx.logs.find(l => l.resolver === 'helpModifierStatusModifications' && l.message.includes('applied'))
       expect(appliedLog).toBeDefined()
-      expect((appliedLog!.details as any).applied).toEqual([{ type: 'buff', targetName: 'Mandate', stackChange: -1 }])
+      expect((appliedLog!.details as any).applied).toEqual([{ type: 'buff', targetName: 'Mandate', requestedStackChange: -1, effectiveDelta: -1, stacksBefore: 1, stacksAfter: 0 }])
     })
   })
 })
