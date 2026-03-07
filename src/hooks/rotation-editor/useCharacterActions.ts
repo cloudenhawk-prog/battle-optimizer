@@ -5,13 +5,14 @@ import type { Enemy } from '../../types/enemy'
 import type { DamageEvent } from '../../types/events'
 import type { NegativeStatusInAction } from '../../types/negativeStatus'
 import type { ModifierInAction } from '../../types/modifiers'
+import type { CoordinatedAttackInAction } from '../../types/coordinatedAttack'
 import type { GlobalColumns, TableConfig } from '../../types/tableDefinitions'
 import { useRef } from 'react'
 import { getCharacter, getPrevCharacter } from '../../utils/hooks/characterHelpers'
 import { getConcertoValue } from '../../utils/hooks/energyHelpers'
-import { getActionFromCharacter } from '../../utils/hooks/actionHelpers'
+import { getActionFromCharacter, getActionNameByDmgType } from '../../utils/hooks/actionHelpers'
 import { getSnapshotIndex, getPrevSnapshot, copySnapshots, getSnapshotById, assignCharacterToRow } from '../../utils/hooks/snapshotHelpers'
-import { buildStepContext, resolveTime, resolveDamageModifiers, resolveDamage, resolveSideEffectsAndStatuses, resolveModifierState, resolveResources, resolveCooldowns } from '../../utils/hooks/resolvers'
+import { buildStepContext, resolveTime, resolveDamageModifiers, resolveDamage, resolveSideEffectsAndStatuses, resolveModifierState, resolveResources, resolveCooldowns, resolveCoordinatedAttacks } from '../../utils/hooks/resolvers'
 import { negativeStatuses as negativeStatusesData } from '../../data/negativeStatuses'
 import { createSnapshot } from '../../utils/hooks/snapshotHelpers'
 
@@ -56,6 +57,9 @@ export function useCharacterActions({ setSnapshots, charactersInBattle, enemy, t
   // Initially empty - modifiers are activated when applied by actions/characters
   const modifiersInAction = useRef<ModifierInAction[]>([])
 
+  // Track active coordinated attacks during the rotation
+  const coordinatedAttacksInAction = useRef<CoordinatedAttackInAction[]>([])
+
   const handleCharacterSelect = (snapshotId: number, characterName: string) => {
     console.log('🔵 handleCharacterSelect called:', { snapshotId, characterName })
     setSnapshots(prev => {
@@ -92,12 +96,12 @@ export function useCharacterActions({ setSnapshots, charactersInBattle, enemy, t
 
       if (shouldTriggerOutroIntro(updated, snapshotId)) {
         console.log('🟡 Triggering Outro/Intro flow')
-        updated = handleOutroIntroFlow({ snapshots: updated, snapshotId, charactersMap, characterColumnsMap, globalColumns, enemy, setDamageEvents, negativeStatusesInAction, modifiersInAction })
+        updated = handleOutroIntroFlow({ snapshots: updated, snapshotId, charactersMap, characterColumnsMap, globalColumns, enemy, setDamageEvents, negativeStatusesInAction, modifiersInAction, coordinatedAttacksInAction })
         snapshotId += 2
       }
 
       console.log('🟢 Calling updateSnapshotsWithAction:', { snapshotId, actionName })
-      updated = updateSnapshotsWithAction({ snapshots: updated, snapshotId, actionName, charactersMap, characterColumnsMap, globalColumns, enemy, setDamageEvents, negativeStatusesInAction, modifiersInAction })
+      updated = updateSnapshotsWithAction({ snapshots: updated, snapshotId, actionName, charactersMap, characterColumnsMap, globalColumns, enemy, setDamageEvents, negativeStatusesInAction, modifiersInAction, coordinatedAttacksInAction })
 
       console.log(
         '🟢 Final updated snapshots:',
@@ -107,12 +111,12 @@ export function useCharacterActions({ setSnapshots, charactersInBattle, enemy, t
     })
   }
 
-  return { handleCharacterSelect, handleActionSelect }
+  return { handleCharacterSelect, handleActionSelect, coordinatedAttacksInAction }
 }
 
 // ========== Internal Helpers =================================================================================================
 
-function updateSnapshotsWithAction(params: { snapshots: Snapshot[]; snapshotId: number; actionName: string; charactersMap: Record<string, Character>; characterColumnsMap: Record<string, string[]>; globalColumns: GlobalColumns; enemy: Enemy; setDamageEvents: Dispatch<SetStateAction<DamageEvent[]>>; negativeStatusesInAction: React.MutableRefObject<NegativeStatusInAction[]>; modifiersInAction: React.MutableRefObject<ModifierInAction[]> }): Snapshot[] {
+function updateSnapshotsWithAction(params: { snapshots: Snapshot[]; snapshotId: number; actionName: string; charactersMap: Record<string, Character>; characterColumnsMap: Record<string, string[]>; globalColumns: GlobalColumns; enemy: Enemy; setDamageEvents: Dispatch<SetStateAction<DamageEvent[]>>; negativeStatusesInAction: React.MutableRefObject<NegativeStatusInAction[]>; modifiersInAction: React.MutableRefObject<ModifierInAction[]>; coordinatedAttacksInAction: React.MutableRefObject<CoordinatedAttackInAction[]> }): Snapshot[] {
   console.log('🟣 updateSnapshotsWithAction:', { snapshotId: params.snapshotId, actionName: params.actionName })
 
   // -------- Validate Input --------------------
@@ -123,7 +127,7 @@ function updateSnapshotsWithAction(params: { snapshots: Snapshot[]; snapshotId: 
   }
   console.log('✅ Validation passed:', { index: validated.index, character: validated.character.name, action: validated.action.name })
 
-  const { index, character, action, snapshots, prev, enemy, negativeStatusesInAction, modifiersInAction, charactersMap, characterColumnsMap, globalColumns, setDamageEvents } = validated
+  const { index, character, action, snapshots, prev, enemy, negativeStatusesInAction, modifiersInAction, coordinatedAttacksInAction, charactersMap, characterColumnsMap, globalColumns, setDamageEvents } = validated
   const updatedSnapshots = copySnapshots(snapshots)
 
   // Get the current snapshot from the COPIED array, not the original
@@ -131,7 +135,7 @@ function updateSnapshotsWithAction(params: { snapshots: Snapshot[]; snapshotId: 
   console.log('🟣 Current snapshot before resolvers:', { id: current.id, char: current.character, action: current.action })
 
   // -------- Resolvers -------------------------
-  const context = buildStepContext(index, current, prev, character, action, enemy, negativeStatusesInAction.current, modifiersInAction.current, charactersMap)
+  const context = buildStepContext(index, current, prev, character, action, enemy, negativeStatusesInAction.current, modifiersInAction.current, charactersMap, coordinatedAttacksInAction.current)
 
   resolveTime(context)
 
@@ -140,6 +144,8 @@ function updateSnapshotsWithAction(params: { snapshots: Snapshot[]; snapshotId: 
   resolveDamage(context, setDamageEvents)
 
   resolveSideEffectsAndStatuses(context, setDamageEvents)
+
+  resolveCoordinatedAttacks(context, setDamageEvents)
 
   resolveModifierState(context)
 
@@ -185,22 +191,34 @@ function shouldTriggerOutroIntro(snapshots: Snapshot[], snapshotId: number): boo
 
 // =============================================================================================================================
 
-function handleOutroIntroFlow(params: { snapshots: Snapshot[]; snapshotId: number; charactersMap: Record<string, Character>; characterColumnsMap: Record<string, string[]>; globalColumns: GlobalColumns; enemy: Enemy; setDamageEvents: Dispatch<SetStateAction<DamageEvent[]>>; negativeStatusesInAction: React.MutableRefObject<NegativeStatusInAction[]>; modifiersInAction: React.MutableRefObject<ModifierInAction[]> }): Snapshot[] {
-  const { snapshots, snapshotId, charactersMap, characterColumnsMap, globalColumns, enemy, setDamageEvents, negativeStatusesInAction, modifiersInAction } = params
+function handleOutroIntroFlow(params: { snapshots: Snapshot[]; snapshotId: number; charactersMap: Record<string, Character>; characterColumnsMap: Record<string, string[]>; globalColumns: GlobalColumns; enemy: Enemy; setDamageEvents: Dispatch<SetStateAction<DamageEvent[]>>; negativeStatusesInAction: React.MutableRefObject<NegativeStatusInAction[]>; modifiersInAction: React.MutableRefObject<ModifierInAction[]>; coordinatedAttacksInAction: React.MutableRefObject<CoordinatedAttackInAction[]> }): Snapshot[] {
+  const { snapshots, snapshotId, charactersMap, characterColumnsMap, globalColumns, enemy, setDamageEvents, negativeStatusesInAction, modifiersInAction, coordinatedAttacksInAction } = params
 
   let updated = copySnapshots(snapshots)
 
   const prevChar = getPrevCharacter(updated, snapshotId)!
   const currChar = getSnapshotById(updated, snapshotId)!.character!
 
+  const prevCharObj = charactersMap[prevChar]
+  const currCharObj = charactersMap[currChar]
+
+  if (!prevCharObj) throw new Error(`handleOutroIntroFlow: character '${prevChar}' not found in charactersMap`)
+  if (!currCharObj) throw new Error(`handleOutroIntroFlow: character '${currChar}' not found in charactersMap`)
+
+  const outroActionName = getActionNameByDmgType(prevCharObj, 'OUTRO')
+  const introActionName = getActionNameByDmgType(currCharObj, 'INTRO')
+
+  if (!outroActionName) throw new Error(`handleOutroIntroFlow: character '${prevChar}' has no OUTRO action — every character must define one`)
+  if (!introActionName) throw new Error(`handleOutroIntroFlow: character '${currChar}' has no INTRO action — every character must define one`)
+
   // Force Outro row
   updated[snapshotId] = assignCharacterToRow(updated[snapshotId], prevChar)
-  updated = updateSnapshotsWithAction({ snapshots: updated, snapshotId, actionName: 'Outro', charactersMap, characterColumnsMap, globalColumns, enemy, setDamageEvents, negativeStatusesInAction, modifiersInAction })
+  updated = updateSnapshotsWithAction({ snapshots: updated, snapshotId, actionName: outroActionName, charactersMap, characterColumnsMap, globalColumns, enemy, setDamageEvents, negativeStatusesInAction, modifiersInAction, coordinatedAttacksInAction })
 
   // Insert Intro row
   const introId = snapshotId + 1
   updated[introId] = assignCharacterToRow(updated[introId], currChar)
-  updated = updateSnapshotsWithAction({ snapshots: updated, snapshotId: introId, actionName: 'Intro', charactersMap, characterColumnsMap, globalColumns, enemy, setDamageEvents, negativeStatusesInAction, modifiersInAction })
+  updated = updateSnapshotsWithAction({ snapshots: updated, snapshotId: introId, actionName: introActionName, charactersMap, characterColumnsMap, globalColumns, enemy, setDamageEvents, negativeStatusesInAction, modifiersInAction, coordinatedAttacksInAction })
 
   // Prepare the next blank row for the real action
   const nextId = introId + 1
@@ -211,8 +229,8 @@ function handleOutroIntroFlow(params: { snapshots: Snapshot[]; snapshotId: numbe
 
 // =============================================================================================================================
 
-function validateActionInputs(params: { snapshots: Snapshot[]; snapshotId: number; actionName: string; charactersMap: Record<string, Character>; characterColumnsMap: Record<string, string[]>; globalColumns: GlobalColumns; enemy: Enemy; negativeStatusesInAction: React.MutableRefObject<NegativeStatusInAction[]>; modifiersInAction: React.MutableRefObject<ModifierInAction[]>; setDamageEvents: Dispatch<SetStateAction<DamageEvent[]>> }) {
-  const { snapshots, snapshotId, actionName, enemy, negativeStatusesInAction, modifiersInAction, charactersMap, characterColumnsMap, globalColumns, setDamageEvents } = params
+function validateActionInputs(params: { snapshots: Snapshot[]; snapshotId: number; actionName: string; charactersMap: Record<string, Character>; characterColumnsMap: Record<string, string[]>; globalColumns: GlobalColumns; enemy: Enemy; negativeStatusesInAction: React.MutableRefObject<NegativeStatusInAction[]>; modifiersInAction: React.MutableRefObject<ModifierInAction[]>; coordinatedAttacksInAction: React.MutableRefObject<CoordinatedAttackInAction[]>; setDamageEvents: Dispatch<SetStateAction<DamageEvent[]>> }) {
+  const { snapshots, snapshotId, actionName, enemy, negativeStatusesInAction, modifiersInAction, coordinatedAttacksInAction, charactersMap, characterColumnsMap, globalColumns, setDamageEvents } = params
 
   const index = getSnapshotIndex(snapshots, snapshotId)
   console.log('🔍 validateActionInputs - index:', index)
@@ -244,5 +262,5 @@ function validateActionInputs(params: { snapshots: Snapshot[]; snapshotId: numbe
 
   const prev = getPrevSnapshot(snapshots, index)
 
-  return { index, character, action, snapshots, current, prev, enemy, negativeStatusesInAction, modifiersInAction, charactersMap, characterColumnsMap, globalColumns, setDamageEvents }
+  return { index, character, action, snapshots, current, prev, enemy, negativeStatusesInAction, modifiersInAction, coordinatedAttacksInAction, charactersMap, characterColumnsMap, globalColumns, setDamageEvents }
 }

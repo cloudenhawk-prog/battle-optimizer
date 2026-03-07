@@ -18,6 +18,7 @@ export function flattenTableColumns(tableConfig: TableConfig): ColumnDef[] {
   })
 
   if (tableConfig.statusEffects) allColumns.push(...tableConfig.statusEffects.columns)
+  if (tableConfig.other) allColumns.push(...tableConfig.other.columns)
 
   return allColumns
 }

@@ -81,6 +81,9 @@ export function BodyRow({ snapshot, previousSnapshot, charactersInBattle, tableC
 
       {/* Status effects columns (negative statuses, buffs, debuffs) */}
       {tableConfig.statusEffects && renderBodyColumnsWithTags(tableConfig.statusEffects.columns, columnVisibility, snapshot, previousSnapshot, character, action)}
+
+      {/* Other columns (coordinated attacks, etc.) */}
+      {tableConfig.other && renderBodyColumnsWithTags(tableConfig.other.columns, columnVisibility, snapshot, previousSnapshot, character, action)}
     </tr>
   )
 }
@@ -112,6 +115,9 @@ function renderBodyColumnsWithTags(columns: ColumnDef[], columnVisibility: Colum
         } else if (col.key === 'debuffs') {
           statusData = sourceSnapshot?.debuffs as Record<string, number> | undefined
           statusType = 'debuff'
+        } else if (col.key === 'coordinatedAttacks') {
+          statusData = sourceSnapshot?.coordinatedAttacks as Record<string, number> | undefined
+          statusType = 'buff'
         }
 
         const statuses =

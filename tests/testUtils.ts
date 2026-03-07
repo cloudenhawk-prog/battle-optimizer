@@ -14,6 +14,7 @@ import type { Buff, Debuff } from '../src/types/buff'
 import type { DamageModifier } from '../src/types/modifiers'
 import type { CharacterStats, EnemyStats } from '../src/types/stats'
 import type { Contribution } from '../src/types/events'
+import type { CoordinatedAttack, CoordinatedAttackInAction } from '../src/types/coordinatedAttack'
 
 // ========== Snapshot Mocks ===================================================================================================
 
@@ -37,6 +38,8 @@ export function createMockSnapshot(overrides: Partial<Snapshot> = {}): Snapshot 
     debuffsMaxStacks: {},
     negativeStatuses: {},
     negativeStatusesTimeLeft: {},
+    coordinatedAttacks: {},
+    coordinatedAttacksTimeLeft: {},
     charactersCooldowns: {},
     ...overrides,
   }
@@ -296,6 +299,39 @@ export function createMockDamageModifierList(count = 1, prefix = 'mod'): DamageM
 
 export function createEmptyDamageModifierList(): DamageModifier[] {
   return []
+}
+
+// ========== Coordinated Attack Mocks =========================================================================================
+
+export function createMockCoordinatedAttack(name: string, overrides: Partial<CoordinatedAttack> = {}): CoordinatedAttack {
+  return {
+    name,
+    multiplier: 0.1,
+    scaling: 'ATK',
+    elements: ['FUSION'],
+    dmgTypes: ['COORDINATED'],
+    frequency: 1.0,
+    duration: 10,
+    swapRequired: false,
+    energyGenerated: [],
+    statusModifications: [],
+    ...overrides,
+  }
+}
+
+export function createMockCoordinatedAttackInAction(
+  coordinatedAttack: CoordinatedAttack,
+  ownerCharacter: string,
+  overrides: Partial<CoordinatedAttackInAction> = {},
+): CoordinatedAttackInAction {
+  return {
+    coordinatedAttack,
+    ownerCharacter,
+    applicationTime: 0,
+    timeLeft: coordinatedAttack.duration,
+    lastDamageTime: 0,
+    ...overrides,
+  }
 }
 
 // ========== Test Helpers: Aggregation & Contribution Assertions ======================================================
