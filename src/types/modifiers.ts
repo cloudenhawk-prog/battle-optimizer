@@ -20,7 +20,7 @@ export type DamageModifier = {
 
 // ========== Type: Negative Status Effect =====================================================================================
 
-export type NegativeStatusEffectProperty = 'frequency'
+export type NegativeStatusEffectProperty = 'frequency' | 'maxStacks'
 
 export type NegativeStatusEffect = {
   targetStatus: string

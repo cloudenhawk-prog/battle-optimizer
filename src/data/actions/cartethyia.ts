@@ -211,7 +211,10 @@ export const cartethyia_transform: Action = {
       ownerCharacter: 'Cartethyia',
       color: '#1e90ff',
       characterStats: { aeroErosionAmplifyDMG: 0.5 },
-      negativeStatusEffects: [{ targetStatus: 'Aero Erosion', property: 'frequency', value: -0.5 }],
+      negativeStatusEffects: [
+        { targetStatus: 'Aero Erosion', property: 'frequency', value: -0.5 },
+        { targetStatus: 'Aero Erosion', property: 'maxStacks', value: 3 },
+      ],
       condition: always(),
       targetStrategy: 'self',
       durationStrategy: { type: 'limited', timeDuration: 12 },
@@ -221,7 +224,7 @@ export const cartethyia_transform: Action = {
   sideEffects: [],
   castConditions: {
     startState: 'ANY',
-    endState: 'PRESERVED',
+    endState: 'PRESERVE',
   },
   offtune: 0.0,
 }

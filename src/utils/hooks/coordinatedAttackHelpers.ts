@@ -284,7 +284,7 @@ export function processCoordinatedAttacks(ctx: StepContext, setDamageEvents: Dis
   // Apply aggregated negative-status modifications from per-hit effects
   if (Object.keys(accumulatedNegativeStatusMods).length > 0) {
     const stacksCurr = getNegativeStatusStacks(ctx.current)
-    updateNegativeStatusStacks(ctx.current, stacksCurr, ctx.action, ctx.negativeStatusesInAction, accumulatedNegativeStatusMods)
+    updateNegativeStatusStacks(ctx.current, stacksCurr, ctx.action, ctx.negativeStatusesInAction, accumulatedNegativeStatusMods, ctx)
   }
 
   // Apply aggregated buff/debuff stack modifications from per-hit effects

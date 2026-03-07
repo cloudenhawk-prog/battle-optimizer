@@ -366,7 +366,7 @@ export function helpNegativeStatuses(ctx: StepContext, setDamageEvents: Dispatch
 
   const stacksPrev = getNegativeStatusStacks(prev)
   const { damageEvents, stacksCurr } = processNegativeStatusStacks(negativeStatusesInAction, fromTime, toTime, stacksPrev, enemy, ctx.character.stats, ctx.aggregatedCharacterModifiers, ctx.aggregatedEnemyModifiers, ctx.damageModifiers, ctx.snapshotId, ctx)
-  updateNegativeStatusStacks(current, stacksCurr, action, negativeStatusesInAction, statusModifications.negativeStatus)
+  updateNegativeStatusStacks(current, stacksCurr, action, negativeStatusesInAction, statusModifications.negativeStatus, ctx)
 
   // Collect all damage events and filter out zero-damage events
   const allDamageEvents = Object.values(damageEvents)

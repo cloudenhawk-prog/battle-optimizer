@@ -3,8 +3,8 @@ import { always } from '../../utils/conditions/damageModifierConditions'
 import { nightmareKelpieOutroTrigger } from '../sideEffects'
 
 export const ciaccona_BA_3_4_cancel_with_E: Action = {
-  name: 'Basic Attack 3-4 (E cancel)',
-  displayName: 'Basic Attack 3-4 (E cancel)',
+  name: 'Basic Attack 3-4 (skill cancel)',
+  displayName: 'Basic Attack 3-4 (skill cancel)',
   category: 'Basics',
   castTime: 0.73,
   multiplier: (4 * 33.02 + 4 * 61.14) / 100,
@@ -39,6 +39,8 @@ export const ciaccona_BA_3_4_cancel_with_E: Action = {
   },
   offtune: 4 * 0.16 + 4 * 0.3,
   toolTip: 'Can be cast after Intro Skill',
+  groupName: 'Basic Attack 3-4',
+  variantName: 'Cancel With Skill'
 }
 
 export const ciaccona_BA_3_4_cancel_with_swap: Action = {
@@ -78,11 +80,13 @@ export const ciaccona_BA_3_4_cancel_with_swap: Action = {
   },
   offtune: 4 * 0.16 + 4 * 0.3,
   toolTip: 'Can be cast after Intro Skill',
+  groupName: 'Basic Attack 3-4',
+  variantName: 'Cancel With Swap'
 }
 
 export const ciaccona_midair_2_BA_4_cancel_with_E: Action = {
-  name: 'Mid Air 2 -> Basic Attack 4 (E cancel)',
-  displayName: 'Mid Air 2 -> Basic Attack 4 (E cancel)',
+  name: 'Mid Air 2 -> Basic Attack 4 (skill cancel)',
+  displayName: 'Mid Air 2 -> Basic Attack 4 (skill cancel)',
   category: 'Basics',
   castTime: 0.82,
   multiplier: (4 * 24.46 + 4 * 61.14) / 100,
@@ -117,6 +121,8 @@ export const ciaccona_midair_2_BA_4_cancel_with_E: Action = {
   },
   offtune: 4 * 0.12 + 4 * 0.3,
   toolTip: 'Can be cast if swapped in mid-air',
+  groupName: 'MA2 -> BA4',
+  variantName: 'Cancel With Skill'
 }
 
 export const ciaccona_midair_2_BA_4_cancel_with_swap: Action = {
@@ -156,6 +162,8 @@ export const ciaccona_midair_2_BA_4_cancel_with_swap: Action = {
   },
   offtune: 4 * 0.12 + 4 * 0.3,
   toolTip: 'Can be cast if swapped in mid-air',
+  groupName: 'MA2 -> BA4',
+  variantName: 'Cancel With Swap'
 }
 
 export const ciaccona_skill: Action = {
@@ -181,6 +189,8 @@ export const ciaccona_skill: Action = {
     endState: 'PRESERVE',
   },
   offtune: 4 * 0.13,
+  groupName: 'Resonance Skill',
+  variantName: 'Default'
 }
 
 export const ciaccona_skill_cancel_with_swap: Action = {
@@ -206,6 +216,8 @@ export const ciaccona_skill_cancel_with_swap: Action = {
     endState: 'PRESERVE',
   },
   offtune: 4 * 0.13,
+  groupName: 'Resonance Skill',
+  variantName: 'Cancel With Swap'
 }
 
 export const ciaccona_liberation: Action = {
@@ -246,7 +258,7 @@ export const ciaccona_liberation: Action = {
     startState: 'GROUND',
     endState: 'GROUND',
   },
-  offtune: 4.8,
+  offtune: 4.8
 }
 
 export const ciaccona_heavy: Action = {
@@ -272,6 +284,8 @@ export const ciaccona_heavy: Action = {
     endState: 'GROUND',
   },
   offtune: 10 * 0.05 + 0.47,
+  groupName: 'Heavy Attack',
+  variantName: 'Default'
 }
 
 export const ciaccona_heavy_cancel_with_swap: Action = {
@@ -297,6 +311,8 @@ export const ciaccona_heavy_cancel_with_swap: Action = {
     endState: 'GROUND',
   },
   offtune: 10 * 0.05 + 0.47,
+  groupName: 'Heavy Attack',
+  variantName: 'Cancel With Swap'
 }
 
 export const ciaccona_intro: Action = {
@@ -322,9 +338,10 @@ export const ciaccona_intro: Action = {
     startState: 'ANY',
     endState: 'GROUND',
   },
-  offtune: 0.93,
+  offtune: 0.93
 }
 
+// TODO - test ciaconna outro: Static Mist Outro buff, Aero Erosion amp outro buff, Nightmare Kelpio DMG trigger
 export const ciaccona_outro: Action = {
   name: 'Outro Skill',
   displayName: 'Windcalling Tune',

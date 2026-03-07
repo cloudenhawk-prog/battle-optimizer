@@ -47,6 +47,31 @@ export function computeEffectiveFrequency(
   return baseFrequency * effectiveMultiplier
 }
 
+export function computeEffectiveMaxStacks(
+  statusName: string,
+  baseMaxStacks: number,
+  ctx?: StepContext,
+): number {
+  if (!ctx) return baseMaxStacks
+
+  let totalModifier = 0
+
+  for (const modifier of ctx.damageModifiers) {
+    if (!modifier.negativeStatusEffects) continue
+
+    const conditionMultiplier = modifier.condition ? modifier.condition(ctx) : 1
+    if (conditionMultiplier === 0) continue
+
+    for (const effect of modifier.negativeStatusEffects) {
+      if (effect.targetStatus === statusName && effect.property === 'maxStacks') {
+        totalModifier += effect.value * conditionMultiplier
+      }
+    }
+  }
+
+  return baseMaxStacks + totalModifier
+}
+
 export function getNegativeStatusStacks(snapshot: Snapshot): Record<string, number> {
   return { ...snapshot.negativeStatuses }
 }
@@ -169,6 +194,7 @@ export function updateNegativeStatusStacks(
       refreshDuration: boolean
     }
   >,
+  ctx?: StepContext,
 ): void {
   // Apply all aggregated status modifications (from both action and side effects)
   for (const [name, mod] of Object.entries(negativeStatusModifications)) {
@@ -176,7 +202,7 @@ export function updateNegativeStatusStacks(
 
     if (!statusInAction) continue
 
-    const maxStacks = statusInAction.negativeStatus.maxStacksDefault
+    const maxStacks = computeEffectiveMaxStacks(name, statusInAction.negativeStatus.maxStacksDefault, ctx)
 
     // Apply stack change
     stacksCurr[name] = (stacksCurr[name] ?? 0) + mod.stackChange

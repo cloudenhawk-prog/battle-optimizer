@@ -25,7 +25,7 @@ export const roverAero_skill_1: Action = {
   },
   offtune: 0.76,
   groupName: 'Resonance Skill 1',
-  variantName: 'Default',
+  variantName: 'Default'
 }
 
 export const roverAero_skill_1_swap_cancel: Action = {
@@ -52,7 +52,7 @@ export const roverAero_skill_1_swap_cancel: Action = {
   },
   offtune: 0.76,
   groupName: 'Resonance Skill 1',
-  variantName: 'Swap Cancel',
+  variantName: 'Swap Cancel'
 }
 
 export const roverAero_skill_2: Action = {
@@ -79,7 +79,7 @@ export const roverAero_skill_2: Action = {
   },
   offtune: 3 * 0.11 + 0.48,
   groupName: 'Resonance Skill 2',
-  variantName: 'Default',
+  variantName: 'Default'
 }
 
 export const roverAero_skill_2_swap_cancel: Action = {
@@ -106,7 +106,7 @@ export const roverAero_skill_2_swap_cancel: Action = {
   },
   offtune: 3 * 0.11 + 0.48,
   groupName: 'Resonance Skill 2',
-  variantName: 'Swap Cancel',
+  variantName: 'Swap Cancel'
 }
 
 export const roverAero_liberation: Action = {
@@ -144,7 +144,7 @@ export const roverAero_liberation: Action = {
     startState: 'ANY',
     endState: 'GROUND',
   },
-  offtune: 4.8,
+  offtune: 4.8
 }
 
 export const roverAero_midair_1_2: Action = {
@@ -196,7 +196,7 @@ export const roverAero_midair_1_2: Action = {
   },
   offtune: 0.29 + 0.32,
   groupName: 'Mid Air 1-2',
-  variantName: 'Default',
+  variantName: 'Default'
 }
 
 export const roverAero_midair_1_2_swap_cancel: Action = {
@@ -248,7 +248,7 @@ export const roverAero_midair_1_2_swap_cancel: Action = {
   },
   offtune: 0.29 + 0.32,
   groupName: 'Mid Air 1-2',
-  variantName: 'Swap Cancel',
+  variantName: 'Swap Cancel'
 }
 
 export const roverAero_skill_3: Action = {
@@ -287,7 +287,7 @@ export const roverAero_skill_3: Action = {
   },
   offtune: 5 * 0.6 + 2.83,
   groupName: 'Resonance Skill 3',
-  variantName: 'Default',
+  variantName: 'Default'
 }
 
 export const roverAero_skill_3_swap_cancel_1: Action = {
@@ -326,7 +326,7 @@ export const roverAero_skill_3_swap_cancel_1: Action = {
   },
   offtune: 5 * 0.6 + 2.83,
   groupName: 'Resonance Skill 3',
-  variantName: 'Swap Cancel 1',
+  variantName: 'Swap Cancel 1'
 }
 
 export const roverAero_skill_3_swap_cancel_2: Action = {
@@ -365,7 +365,7 @@ export const roverAero_skill_3_swap_cancel_2: Action = {
   },
   offtune: 5 * 0.6 + 2.83,
   groupName: 'Resonance Skill 3',
-  variantName: 'Swap Cancel 2',
+  variantName: 'Swap Cancel 2'
 }
 
 export const roverAero_plunge: Action = {
@@ -392,7 +392,7 @@ export const roverAero_plunge: Action = {
   },
   offtune: 0.96,
   groupName: 'Plunge',
-  variantName: 'Default',
+  variantName: 'Default'
 }
 
 export const roverAero_plunge_swap_cancel: Action = {
@@ -419,7 +419,7 @@ export const roverAero_plunge_swap_cancel: Action = {
   },
   offtune: 0.96,
   groupName: 'Plunge',
-  variantName: 'Swap Cancel',
+  variantName: 'Swap Cancel'
 }
 
 export const roverAero_BA_4: Action = {
@@ -448,7 +448,7 @@ export const roverAero_BA_4: Action = {
   },
   offtune: 0.52,
   groupName: 'Basic Attack 4',
-  variantName: 'Default',
+  variantName: 'Default'
 }
 
 export const roverAero_BA_4_swap_cancel: Action = {
@@ -477,7 +477,7 @@ export const roverAero_BA_4_swap_cancel: Action = {
   },
   offtune: 0.52,
   groupName: 'Basic Attack 4',
-  variantName: 'Swap Cancel',
+  variantName: 'Swap Cancel'
 }
 
 export const roverAero_intro: Action = {
@@ -532,14 +532,24 @@ export const roverAero_outro: Action = {
   energyCost: [],
   statusModifications: [],
   damageModifiers: [
-    // TODO : for 40s: increase the maximum stack of Aero Erosion the 3
+    {
+      source: 'Rover Outro Buff',
+      displayName: "Aeolian Realm",
+      type: 'buff',
+      ownerCharacter: 'Rover',
+      condition: always(),
+      negativeStatusEffects: [{ targetStatus: 'Aero Erosion', property: 'maxStacks', value: 3 }],
+      targetStrategy: 'all',
+      durationStrategy: { type: 'limited', timeDuration: 40 },
+      stackingStrategy: { maxStacks: 1, resetTimerOnApplication: true, stacksRemovedEachTime: 1 },
+    },
   ],
   sideEffects: [],
   castConditions: {
     startState: 'ANY',
     endState: 'ANY',
   },
-  offtune: 0,
+  offtune: 0
 }
 
 export const roverAero_echo: Action = {
@@ -561,7 +571,7 @@ export const roverAero_echo: Action = {
     startState: 'ANY',
     endState: 'ANY',
   },
-  offtune: 0,
+  offtune: 0
 }
 
 export const roverAero_energy: Action = {
@@ -583,7 +593,7 @@ export const roverAero_energy: Action = {
     startState: 'ANY',
     endState: 'ANY',
   },
-  offtune: 0,
+  offtune: 0
 }
 
 export const roverAero_concerto: Action = {
@@ -605,7 +615,7 @@ export const roverAero_concerto: Action = {
     startState: 'ANY',
     endState: 'ANY',
   },
-  offtune: 0,
+  offtune: 0
 }
 
 export const roverAero_forte: Action = {
@@ -627,5 +637,5 @@ export const roverAero_forte: Action = {
     startState: 'ANY',
     endState: 'ANY',
   },
-  offtune: 0,
+  offtune: 0
 }
