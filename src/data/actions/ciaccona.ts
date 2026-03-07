@@ -2,14 +2,11 @@ import type { Action } from '../../types/action'
 import { always } from '../../utils/conditions/damageModifierConditions'
 import { nightmareKelpieOutroTrigger } from '../sideEffects'
 
-// TODO - cast times and cancel versions cast times
-
-export const ciaccona_BA_3_4_cancel: Action = {
-  // TODO : Always cancel
-  name: 'Basic Attack 3-4',
-  displayName: 'Basic Attack 3-4',
+export const ciaccona_BA_3_4_cancel_with_E: Action = {
+  name: 'Basic Attack 3-4 (E cancel)',
+  displayName: 'Basic Attack 3-4 (E cancel)',
   category: 'Basics',
-  castTime: 1.0, // TODO
+  castTime: 0.73,
   multiplier: (4 * 33.02 + 4 * 61.14) / 100,
   scaling: 'ATK',
   elements: ['AERO'],
@@ -44,12 +41,50 @@ export const ciaccona_BA_3_4_cancel: Action = {
   toolTip: 'Can be cast after Intro Skill',
 }
 
-export const ciaccona_midair_2_BA_4_cancel: Action = {
-  // TODO : Always cancel
-  name: 'Mid Air 2 -> Basic Attack 4 (swap-cancel)',
-  displayName: 'Mid Air 2 -> Basic Attack 4 (swap-cancel)',
+export const ciaccona_BA_3_4_cancel_with_swap: Action = {
+  name: 'Basic Attack 3-4 (swap cancel)',
+  displayName: 'Basic Attack 3-4 (swap cancel)',
   category: 'Basics',
-  castTime: 1.0, // TODO
+  castTime: 0.87,
+  multiplier: (4 * 33.02 + 4 * 61.14) / 100,
+  scaling: 'ATK',
+  elements: ['AERO'],
+  dmgTypes: ['BASIC'],
+  cooldown: 0,
+  energyGenerated: [
+    { energyType: 'energy', amount: 4 * 0.51 + 4 * 0.94, share: 0.5, scalingStat: 'energyPercent' },
+    { energyType: 'concerto', amount: 4 * 1.62 + 4 * 3.0, share: 0 },
+    { energyType: 'forte', amount: 1, share: 0 },
+  ],
+  energyCost: [],
+  statusModifications: [{ type: 'negativeStatus', targetName: 'Aero Erosion', stackChange: 1 }],
+  damageModifiers: [
+    {
+      source: 'Ciaconna Ensemble Sylph',
+      displayName: 'Ensemble Sylph',
+      type: 'buff',
+      ownerCharacter: 'Ciaccona',
+      condition: always(),
+      characterStats: { aeroBonusDMG: 0.24 },
+      targetStrategy: 'all',
+      durationStrategy: { type: 'permanent' },
+      stackingStrategy: { maxStacks: 1, resetTimerOnApplication: true, stacksRemovedEachTime: 1 },
+    },
+  ],
+  sideEffects: [],
+  castConditions: {
+    startState: 'GROUND',
+    endState: 'GROUND',
+  },
+  offtune: 4 * 0.16 + 4 * 0.3,
+  toolTip: 'Can be cast after Intro Skill',
+}
+
+export const ciaccona_midair_2_BA_4_cancel_with_E: Action = {
+  name: 'Mid Air 2 -> Basic Attack 4 (E cancel)',
+  displayName: 'Mid Air 2 -> Basic Attack 4 (E cancel)',
+  category: 'Basics',
+  castTime: 0.82,
   multiplier: (4 * 24.46 + 4 * 61.14) / 100,
   scaling: 'ATK',
   elements: ['AERO'],
@@ -81,63 +116,22 @@ export const ciaccona_midair_2_BA_4_cancel: Action = {
     endState: 'GROUND',
   },
   offtune: 4 * 0.12 + 4 * 0.3,
-  toolTip: 'Can be cast if swapped in after a plunge swap cancel attack',
-}
-
-export const ciaccona_midair_1_2_BA_4_cancel: Action = {
-  // TODO : Always cancel
-  name: 'Mid Air 1-2 -> Basic Attack 4 (swap-cancel)',
-  displayName: 'Mid Air 1-2 -> Basic Attack 4 (swap-cancel)',
-  category: 'Basics',
-  castTime: 1.0, // TODO
-  multiplier: (2 * 55.43 + 4 * 24.46 + 4 * 61.14) / 100,
-  scaling: 'ATK',
-  elements: ['AERO'],
-  dmgTypes: ['BASIC'],
-  cooldown: 0,
-  energyGenerated: [
-    { energyType: 'energy', amount: 2 * 0.85 + 4 * 0.38 + 4 * 0.94, share: 0.5, scalingStat: 'energyPercent' },
-    { energyType: 'concerto', amount: 2 * 2.72 + 4 * 1.2 + 4 * 3.0, share: 0 },
-    { energyType: 'forte', amount: 1, share: 0 },
-  ],
-  energyCost: [],
-  statusModifications: [{ type: 'negativeStatus', targetName: 'Aero Erosion', stackChange: 1 }],
-  damageModifiers: [
-    {
-      source: 'Ciaconna Ensemble Sylph',
-      displayName: 'Ensemble Sylph',
-      type: 'buff',
-      ownerCharacter: 'Ciaccona',
-      condition: always(),
-      characterStats: { aeroBonusDMG: 0.24 },
-      targetStrategy: 'all',
-      durationStrategy: { type: 'permanent' },
-      stackingStrategy: { maxStacks: 1, resetTimerOnApplication: true, stacksRemovedEachTime: 1 },
-    },
-  ],
-  sideEffects: [],
-  castConditions: {
-    startState: 'GROUND',
-    endState: 'GROUND',
-  },
-  offtune: 2 * 0.27 + 4 * 0.12 + 4 * 0.3,
   toolTip: 'Can be cast if swapped in mid-air',
 }
 
-export const ciaccona_jump_midair_1_2_BA_4_cancel: Action = {
-  // TODO : Always cancel
-  name: 'Jump -> Mid Air 1-2 -> Basic Attack 4 (cancel)',
-  displayName: 'Jump -> Mid Air 1-2 -> Basic Attack 4 (cancel)',
+export const ciaccona_midair_2_BA_4_cancel_with_swap: Action = {
+  name: 'Mid Air 2 -> Basic Attack 4 (swap cancel)',
+  displayName: 'Mid Air 2 -> Basic Attack 4 (swap cancel)',
   category: 'Basics',
-  castTime: 1.0, // TODO
-  multiplier: (2 * 55.43 + 4 * 24.46 + 4 * 61.14) / 100,
+  castTime: 0.95,
+  multiplier: (4 * 24.46 + 4 * 61.14) / 100,
   scaling: 'ATK',
   elements: ['AERO'],
   dmgTypes: ['BASIC'],
   cooldown: 0,
   energyGenerated: [
-    { energyType: 'energy', amount: 2 * 0.85 + 4 * 0.38 + 4 * 0.94, share: 0.5, scalingStat: 'energyPercent' },
-    { energyType: 'concerto', amount: 2 * 2.72 + 4 * 1.2 + 4 * 3.0, share: 0 },
+    { energyType: 'energy', amount: 4 * 0.38 + 4 * 0.94, share: 0.5, scalingStat: 'energyPercent' },
+    { energyType: 'concerto', amount: 4 * 1.2 + 4 * 3.0, share: 0 },
     { energyType: 'forte', amount: 1, share: 0 },
   ],
   energyCost: [],
@@ -160,15 +154,15 @@ export const ciaccona_jump_midair_1_2_BA_4_cancel: Action = {
     startState: 'GROUND',
     endState: 'GROUND',
   },
-  offtune: 2 * 0.27 + 4 * 0.12 + 4 * 0.3,
+  offtune: 4 * 0.12 + 4 * 0.3,
+  toolTip: 'Can be cast if swapped in mid-air',
 }
 
 export const ciaccona_skill: Action = {
-  // TODO : Create animation cancel version
   name: 'Resonance Skill',
   displayName: 'Harmonic Allegro',
   category: 'Skills',
-  castTime: 1.0, // TODO
+  castTime: 0.65,
   multiplier: (4 * 40.39) / 100,
   scaling: 'ATK',
   elements: ['AERO'],
@@ -184,7 +178,32 @@ export const ciaccona_skill: Action = {
   sideEffects: [],
   castConditions: {
     startState: 'ANY',
-    endState: 'ANY', // TODO : technically preserves the previous state
+    endState: 'PRESERVE',
+  },
+  offtune: 4 * 0.13,
+}
+
+export const ciaccona_skill_cancel_with_swap: Action = {
+  name: 'Resonance Skill (swap cancel)',
+  displayName: 'Harmonic Allegro (swap cancel)',
+  category: 'Skills',
+  castTime: 0.15,
+  multiplier: (4 * 40.39) / 100,
+  scaling: 'ATK',
+  elements: ['AERO'],
+  dmgTypes: ['SKILL'],
+  cooldown: 10,
+  energyGenerated: [
+    { energyType: 'energy', amount: 4 * 2.4, share: 0.5, scalingStat: 'energyPercent' },
+    { energyType: 'concerto', amount: 15, share: 0 },
+  ],
+  energyCost: [],
+  statusModifications: [{ type: 'negativeStatus', targetName: 'Aero Erosion', stackChange: 1 }],
+  damageModifiers: [],
+  sideEffects: [],
+  castConditions: {
+    startState: 'ANY',
+    endState: 'PRESERVE',
   },
   offtune: 4 * 0.13,
 }
@@ -193,7 +212,7 @@ export const ciaccona_liberation: Action = {
   name: 'Liberation',
   displayName: 'Singers Triple Cadenza',
   category: 'Skills',
-  castTime: 1.0, // TODO
+  castTime: 1.0, // TODO - test from cast start until next character can act (cart E)
   multiplier: 1100.42 / 100,
   scaling: 'ATK',
   elements: ['AERO'],
@@ -209,17 +228,14 @@ export const ciaccona_liberation: Action = {
   sideEffects: [],
   coordinatedAttacks: [
     {
-      // Singers Triple Cadenza: 20 coordinated hits, each 6.12% ATK, AERO LIBERATION
-      // Ends immediately when Ciaccona swaps back in
-      // TODO: confirm exact frequency and total duration from frame data
       name: 'Singers Triple Cadenza (Coordinated)',
       displayName: 'Singers Triple Cadenza (Coordinated)',
       multiplier: 6.12 / 100,
       scaling: 'ATK',
       elements: ['AERO'],
       dmgTypes: ['LIBERATION'],
-      frequency: 1.6, // TODO: frequency unknown - first tick should be at 1.6, not 0.00
-      duration: 20 * 1.6, // TODO: duration unknown
+      frequency: 1.6, // TODO: test in tower
+      duration: 20 * 1.6, // TODO: test in tower
       swapRequired: true,
       energyGenerated: [],
       statusModifications: [{ type: 'negativeStatus', targetName: 'Aero Erosion', stackChange: 1 }],
@@ -234,11 +250,35 @@ export const ciaccona_liberation: Action = {
 }
 
 export const ciaccona_heavy: Action = {
-  // TODO : Create animation cancel version
   name: 'Heavy Attack',
   displayName: 'Quadruple Downbeat',
   category: 'Basics',
-  castTime: 1.0, // TODO
+  castTime: 1.13,
+  multiplier: (1.3 * (10 * 31.41 + 314.03)) / 100,
+  scaling: 'ATK',
+  elements: ['AERO'],
+  dmgTypes: ['HEAVY'],
+  cooldown: 0,
+  energyGenerated: [
+    { energyType: 'energy', amount: 10 * 0.75 + 7.47, share: 0.5, scalingStat: 'energyPercent' },
+    { energyType: 'concerto', amount: 25, share: 0 },
+  ],
+  energyCost: [],
+  statusModifications: [{ type: 'negativeStatus', targetName: 'Aero Erosion', stackChange: 1 }],
+  damageModifiers: [],
+  sideEffects: [],
+  castConditions: {
+    startState: 'GROUND',
+    endState: 'GROUND',
+  },
+  offtune: 10 * 0.05 + 0.47,
+}
+
+export const ciaccona_heavy_cancel_with_swap: Action = {
+  name: 'Heavy Attack (swap cancel)',
+  displayName: 'Quadruple Downbeat (swap cancel)',
+  category: 'Basics',
+  castTime: 0.15,
   multiplier: (1.3 * (10 * 31.41 + 314.03)) / 100,
   scaling: 'ATK',
   elements: ['AERO'],
@@ -263,7 +303,7 @@ export const ciaccona_intro: Action = {
   name: 'Intro Skill',
   displayName: 'Roaming with the Wind',
   category: 'Other',
-  castTime: 1.002, // TODO
+  castTime: 0.95,
   multiplier: 189.11 / 100,
   scaling: 'ATK',
   elements: ['AERO'],
@@ -352,7 +392,6 @@ export const ciaccona_echo: Action = {
   },
   offtune: 0,
 }
-
 
 export const ciaccona_energy: Action = {
   name: 'Energy Up',
