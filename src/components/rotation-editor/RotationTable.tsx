@@ -46,9 +46,13 @@ export function RotationTable({ snapshots, charactersInBattle, tableConfig, onSe
   const firstSnapshot = snapshots.find(s => s.action !== undefined && s.action !== '')
   const firstFromTime = firstSnapshot?.fromTime ?? 0
 
+  // The active character is whoever is selected in the last (current) row
+  const lastSnapshot = snapshots.length > 0 ? snapshots[snapshots.length - 1] : null
+  const activeCharacterName = lastSnapshot?.character || null
+
   return (
     <>
-      <CharacterStateTracker snapshot={currentSnapshot || null} charactersInBattle={charactersInBattle} tableConfig={tableConfig} columnVisibility={columnVisibility} setColumnVisibility={setColumnVisibility} />
+      <CharacterStateTracker snapshot={currentSnapshot || null} charactersInBattle={charactersInBattle} tableConfig={tableConfig} columnVisibility={columnVisibility} setColumnVisibility={setColumnVisibility} activeCharacterName={activeCharacterName} />
       <div className="tableWrapper">
         <table className="tableBase">
           <HeaderRow tableConfig={tableConfig} columnVisibility={columnVisibility} setColumnVisibility={setColumnVisibility} />

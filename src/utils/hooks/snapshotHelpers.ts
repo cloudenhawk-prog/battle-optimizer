@@ -43,9 +43,19 @@ export function createSnapshot(previousSnapshot: Snapshot, charactersMap: Record
   const buffsMaxStacks = { ...previousSnapshot.buffsMaxStacks }
   const debuffsMaxStacks = { ...previousSnapshot.debuffsMaxStacks }
 
+  const prevChar = previousSnapshot.character ?? ''
+  const isPrevCharLocked =
+    fillInCharacter &&
+    prevChar !== '' &&
+    Object.entries(previousSnapshot.coordinatedAttacks ?? {}).some(([key, active]) => {
+      if (active !== 1) return false
+      const ownerName = key.slice(0, key.indexOf(': '))
+      return ownerName === prevChar && (previousSnapshot.coordinatedAttacksSwapRequired?.[key] ?? false)
+    })
+
   return {
     id: String(Number(previousSnapshot.id) + 1),
-    character: fillInCharacter ? previousSnapshot.character : '',
+    character: fillInCharacter && !isPrevCharLocked ? previousSnapshot.character : '',
     action: '',
     fromTime: 0,
     toTime: 0,
@@ -65,6 +75,7 @@ export function createSnapshot(previousSnapshot: Snapshot, charactersMap: Record
     negativeStatusesTimeLeft: Object.fromEntries(globalColumns.negativeStatuses.map(col => [col, 0])),
     coordinatedAttacks: {},
     coordinatedAttacksTimeLeft: {},
+    coordinatedAttacksSwapRequired: {},
     charactersCooldowns,
   }
 }

@@ -26,6 +26,18 @@ export function BodyRow({ snapshot, previousSnapshot, charactersInBattle, tableC
   const character = snapshot.character ?? ''
   const action = snapshot.action ?? ''
 
+  const lockedCharacters = new Set<string>()
+  if (previousSnapshot) {
+    const prevChar = previousSnapshot.character ?? ''
+    for (const [key, active] of Object.entries(previousSnapshot.coordinatedAttacks ?? {})) {
+      if (active !== 1) continue
+      const ownerName = key.slice(0, key.indexOf(': '))
+      if (ownerName === prevChar && (previousSnapshot.coordinatedAttacksSwapRequired?.[key] ?? false)) {
+        lockedCharacters.add(ownerName)
+      }
+    }
+  }
+
   return (
     <tr
       className={`tableBody ${isLastRow ? 'lastRowClass' : ''} ${isNewRow ? 'rowHighlight' : ''}`}
@@ -48,6 +60,7 @@ export function BodyRow({ snapshot, previousSnapshot, charactersInBattle, tableC
             console.log('📍 BodyRow - CharacterSelect onChange:', { snapshotId, characterName })
             onSelectCharacter(snapshotId, characterName)
           }}
+          lockedCharacters={lockedCharacters}
         />
       </td>
 
@@ -116,7 +129,22 @@ function renderBodyColumnsWithTags(columns: ColumnDef[], columnVisibility: Colum
           statusData = sourceSnapshot?.debuffs as Record<string, number> | undefined
           statusType = 'debuff'
         } else if (col.key === 'coordinatedAttacks') {
-          statusData = sourceSnapshot?.coordinatedAttacks as Record<string, number> | undefined
+          // Use previous snapshot, but cancel any swapRequired attack owned by the current
+          // character since isReturnToOwner expires it at fromTime (before this row's effects).
+          const prevData = sourceSnapshot?.coordinatedAttacks
+          const swapReqFlags = sourceSnapshot?.coordinatedAttacksSwapRequired
+          if (prevData) {
+            const merged: Record<string, number> = {}
+            for (const [key, active] of Object.entries(prevData)) {
+              const ownerName = key.slice(0, key.indexOf(': '))
+              if ((swapReqFlags?.[key] ?? false) && ownerName === character) {
+                merged[key] = 0
+              } else {
+                merged[key] = active
+              }
+            }
+            statusData = merged
+          }
           statusType = 'buff'
         }
 

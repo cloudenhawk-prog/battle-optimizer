@@ -106,6 +106,9 @@ export function CurrentStateRow({ snapshot, firstFromTime, tableConfig, columnVi
 
         {/* Status Effects columns (Negative Statuses, Buffs, Debuffs) */}
         {tableConfig.statusEffects && renderStatusColumns(tableConfig.statusEffects.columns, columnVisibility, displaySnapshot)}
+
+        {/* Other columns (Coordinated Attacks, etc.) */}
+        {tableConfig.other && renderStatusColumns(tableConfig.other.columns, columnVisibility, displaySnapshot)}
       </tr>
     </tbody>
   )
@@ -132,6 +135,9 @@ function createInitialSnapshot(): Snapshot {
     negativeStatuses: {},
     negativeStatusesTimeLeft: {},
     charactersCooldowns: {},
+    coordinatedAttacks: {},
+    coordinatedAttacksTimeLeft: {},
+    coordinatedAttacksSwapRequired: {},
   }
 }
 
@@ -158,6 +164,9 @@ function renderStatusColumns(columns: any[], columnVisibility: ColumnVisibility,
         } else if (col.key === 'debuffs') {
           statusData = snapshot.debuffs as Record<string, number> | undefined
           statusType = 'debuff'
+        } else if (col.key === 'coordinatedAttacks') {
+          statusData = snapshot.coordinatedAttacks as Record<string, number> | undefined
+          statusType = 'buff'
         }
 
         const statuses =

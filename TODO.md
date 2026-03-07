@@ -1,5 +1,7 @@
 ### TODO:
 
+> The data verification script should also generate a file that states: which images do we expect in different places and which ones do we actually have in assets already vs missing.
+
 > Inspect character: stats (base and current) (later: weapon, echoes, sequence lvl etc)
 
 > Character selected in table -> Glow around the character's energy window (the selected character currently - meaning in the furthest down snapshot at any given point).
@@ -20,10 +22,10 @@
 > > Mandate buff: Does it work or not when swapped away?
 > > This might affect howe we want to show Mandate in timeline
 
-> Timeline should not display permanently but be something you open and generate based on snapshots + damage events
-> > HIDE IT for now - then we will simplify it once we start working on it again
-
 # Timeline:
+
+Timeline should not display permanently but be something you open and generate based on snapshots + damage events
+HIDE IT for now - then we will simplify it once we start working on it again
 
 Linepath Graph : Implement a linepath for the graphs (dps & total dmg)
 

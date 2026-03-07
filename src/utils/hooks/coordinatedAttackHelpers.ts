@@ -326,13 +326,16 @@ export function processCoordinatedAttacks(ctx: StepContext, setDamageEvents: Dis
 export function updateCoordinatedAttackSnapshot(ctx: StepContext): void {
   const coordAttacks: Record<string, number> = {}
   const coordAttacksTimeLeft: Record<string, number> = {}
+  const coordAttacksSwapRequired: Record<string, boolean> = {}
 
   for (const caia of ctx.coordinatedAttacksInAction) {
     const key = `${caia.ownerCharacter}: ${caia.coordinatedAttack.name}`
     coordAttacks[key] = caia.applicationTime !== -1 ? 1 : 0
     coordAttacksTimeLeft[key] = caia.timeLeft
+    coordAttacksSwapRequired[key] = caia.coordinatedAttack.swapRequired ?? false
   }
 
   ctx.current.coordinatedAttacks = coordAttacks
   ctx.current.coordinatedAttacksTimeLeft = coordAttacksTimeLeft
+  ctx.current.coordinatedAttacksSwapRequired = coordAttacksSwapRequired
 }
