@@ -141,7 +141,8 @@ export async function checkAssets(): Promise<void> {
       const url = path.startsWith('/') ? path : `/${path}`
       try {
         const res = await fetch(url, { method: 'HEAD' })
-        return { path: url, ok: res.ok }
+        const contentType = res.headers.get('content-type') ?? ''
+        return { path: url, ok: res.ok && !contentType.startsWith('text/html') }
       } catch {
         return { path: url, ok: false }
       }

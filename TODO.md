@@ -1,5 +1,12 @@
 ### TODO:
 
+Need a way to determine which buffs/debuffs to show
+> All limited buffs
+> But what about: permanent modifiers that only affect certain characters at certain times
+> > Show if relevant in current snapshot?
+> > Show these in the character window instead?
+
+
 > The data verification script should also generate a file that states: which images do we expect in different places and which ones do we actually have in assets already vs missing.
 
 > Inspect character: stats (base and current) (later: weapon, echoes, sequence lvl etc)
