@@ -559,7 +559,7 @@ export const roverAero_echo: Action = {
   sideEffects: [],
   castConditions: {
     startState: 'ANY',
-    endState: 'GROUND',
+    endState: 'ANY',
   },
   offtune: 0,
 }

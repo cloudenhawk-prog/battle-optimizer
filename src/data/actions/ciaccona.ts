@@ -46,8 +46,8 @@ export const ciaccona_BA_3_4_cancel: Action = {
 
 export const ciaccona_midair_2_BA_4_cancel: Action = {
   // TODO : Always cancel
-  name: 'Mid Air 1-2 -> Basic Attack 4',
-  displayName: 'Mid Air 1-2 -> Basic Attack 4',
+  name: 'Mid Air 2 -> Basic Attack 4 (swap-cancel)',
+  displayName: 'Mid Air 2 -> Basic Attack 4 (swap-cancel)',
   category: 'Basics',
   castTime: 1.0, // TODO
   multiplier: (4 * 24.46 + 4 * 61.14) / 100,
@@ -86,8 +86,8 @@ export const ciaccona_midair_2_BA_4_cancel: Action = {
 
 export const ciaccona_midair_1_2_BA_4_cancel: Action = {
   // TODO : Always cancel
-  name: 'Mid Air 1-2 -> Basic Attack 4',
-  displayName: 'Mid Air 1-2 -> Basic Attack 4',
+  name: 'Mid Air 1-2 -> Basic Attack 4 (swap-cancel)',
+  displayName: 'Mid Air 1-2 -> Basic Attack 4 (swap-cancel)',
   category: 'Basics',
   castTime: 1.0, // TODO
   multiplier: (2 * 55.43 + 4 * 24.46 + 4 * 61.14) / 100,
@@ -126,8 +126,8 @@ export const ciaccona_midair_1_2_BA_4_cancel: Action = {
 
 export const ciaccona_jump_midair_1_2_BA_4_cancel: Action = {
   // TODO : Always cancel
-  name: 'Jump -> Mid Air 1-2 -> Basic Attack 4',
-  displayName: 'Jump -> Mid Air 1-2 -> Basic Attack 4',
+  name: 'Jump -> Mid Air 1-2 -> Basic Attack 4 (cancel)',
+  displayName: 'Jump -> Mid Air 1-2 -> Basic Attack 4 (cancel)',
   category: 'Basics',
   castTime: 1.0, // TODO
   multiplier: (2 * 55.43 + 4 * 24.46 + 4 * 61.14) / 100,
