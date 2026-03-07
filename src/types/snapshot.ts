@@ -23,5 +23,6 @@ export interface Snapshot {
   negativeStatusesTimeLeft: Record<string, number>
   coordinatedAttacks: Record<string, number>
   coordinatedAttacksTimeLeft: Record<string, number>
+  coordinatedAttacksSwapRequired: Record<string, boolean>
   charactersCooldowns: Record<string, Record<string, number>>
 }

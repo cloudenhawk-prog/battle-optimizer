@@ -7,6 +7,7 @@ import type { Action } from '../../types/action'
 import type { CharacterStats } from '../../types/stats'
 import type { ModifierInAction } from '../../types/modifiers'
 import { calculateDamage } from '../calculators/damageCalculator'
+import { makeCoordinatedAttackKey } from '../coordinatedAttackKey'
 import { updateEnergyValue } from './energyHelpers'
 import { getNegativeStatusStacks, updateNegativeStatusStacks } from './negativeStatusHelpers'
 
@@ -317,22 +318,29 @@ export function processCoordinatedAttacks(ctx: StepContext, setDamageEvents: Dis
 
 // ========== Snapshot State ==================================================================================================
 
+// ========== Key Utilities ===================================================================================================
+
+export { makeCoordinatedAttackKey, parseCoordinatedAttackKey } from '../coordinatedAttackKey'
+
+// ========== Snapshot State ==================================================================================================
+
 /**
  * Writes the current active/inactive state and remaining duration of all tracked
  * coordinated attacks into the snapshot so it can be displayed in the rotation table.
- *
- * Key format: "<ownerCharacter>: <attackName>"
  */
 export function updateCoordinatedAttackSnapshot(ctx: StepContext): void {
   const coordAttacks: Record<string, number> = {}
   const coordAttacksTimeLeft: Record<string, number> = {}
+  const coordAttacksSwapRequired: Record<string, boolean> = {}
 
   for (const caia of ctx.coordinatedAttacksInAction) {
-    const key = `${caia.ownerCharacter}: ${caia.coordinatedAttack.name}`
+    const key = makeCoordinatedAttackKey(caia.ownerCharacter, caia.coordinatedAttack.name)
     coordAttacks[key] = caia.applicationTime !== -1 ? 1 : 0
     coordAttacksTimeLeft[key] = caia.timeLeft
+    coordAttacksSwapRequired[key] = caia.coordinatedAttack.swapRequired ?? false
   }
 
   ctx.current.coordinatedAttacks = coordAttacks
   ctx.current.coordinatedAttacksTimeLeft = coordAttacksTimeLeft
+  ctx.current.coordinatedAttacksSwapRequired = coordAttacksSwapRequired
 }

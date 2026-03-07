@@ -13,9 +13,10 @@ type CharacterStateTrackerProps = {
   tableConfig: TableConfig
   columnVisibility: ColumnVisibility
   setColumnVisibility: React.Dispatch<React.SetStateAction<ColumnVisibility>>
+  activeCharacterName?: string | null
 }
 
-export function CharacterStateTracker({ snapshot, charactersInBattle, tableConfig, columnVisibility, setColumnVisibility }: CharacterStateTrackerProps) {
+export function CharacterStateTracker({ snapshot, charactersInBattle, tableConfig, columnVisibility, setColumnVisibility, activeCharacterName }: CharacterStateTrackerProps) {
   const [profileOpen, setProfileOpen] = useState<string | null>(null)
 
   function handleGroupClick(groupColumns: { key: string }[]) {
@@ -53,8 +54,10 @@ export function CharacterStateTracker({ snapshot, charactersInBattle, tableConfi
 
           const energies = (snapshot?.charactersEnergies as any)?.[character.name] || {}
 
+          const isActive = activeCharacterName === group.label
+
           return (
-            <div key={group.label} className="stateTrackerCard">
+            <div key={group.label} className={`stateTrackerCard${isActive ? ' stateTrackerCard--active' : ''}`}>
               {/* Gear icon - top right corner */}
               <button
                 type="button"

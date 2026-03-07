@@ -1,6 +1,7 @@
 import type { Snapshot } from '../../types/snapshot'
 import type { Character } from '../../types/character'
 import type { GlobalColumns } from '../../types/tableDefinitions'
+import { parseCoordinatedAttackKey } from './coordinatedAttackHelpers'
 
 // ========== Snapshot Helpers ================================================================================================
 
@@ -28,6 +29,19 @@ export function assignCharacterToRow(row: Snapshot, character: string): Snapshot
   return { ...row, character }
 }
 
+/**
+ * Returns true if the given character has at least one active swap-required coordinated
+ * attack in the snapshot
+ * In this context, "swap-required" means the attack's owner is required to swap away
+ * After casting and cannot be selected as the active character in the next snapshot row.
+ */
+export function isSwapRequiredLocked(snapshot: Snapshot, characterName: string): boolean {
+  return Object.entries(snapshot.coordinatedAttacks ?? {}).some(([key, active]) => {
+    if (active !== 1) return false
+    return parseCoordinatedAttackKey(key).owner === characterName && (snapshot.coordinatedAttacksSwapRequired?.[key] ?? false)
+  })
+}
+
 export function createSnapshot(previousSnapshot: Snapshot, charactersMap: Record<string, Character>, _characterColumnsMap: Record<string, string[]>, globalColumns: GlobalColumns, fillInCharacter: boolean = true): Snapshot {
   const charactersEnergies = Object.fromEntries(Object.keys(charactersMap).map(charName => [charName, { ...previousSnapshot.charactersEnergies[charName] }]))
 
@@ -43,9 +57,15 @@ export function createSnapshot(previousSnapshot: Snapshot, charactersMap: Record
   const buffsMaxStacks = { ...previousSnapshot.buffsMaxStacks }
   const debuffsMaxStacks = { ...previousSnapshot.debuffsMaxStacks }
 
+  const prevChar = previousSnapshot.character ?? ''
+  const isPrevCharLocked =
+    fillInCharacter &&
+    prevChar !== '' &&
+    isSwapRequiredLocked(previousSnapshot, prevChar)
+
   return {
     id: String(Number(previousSnapshot.id) + 1),
-    character: fillInCharacter ? previousSnapshot.character : '',
+    character: fillInCharacter && !isPrevCharLocked ? previousSnapshot.character : '',
     action: '',
     fromTime: 0,
     toTime: 0,
@@ -65,6 +85,7 @@ export function createSnapshot(previousSnapshot: Snapshot, charactersMap: Record
     negativeStatusesTimeLeft: Object.fromEntries(globalColumns.negativeStatuses.map(col => [col, 0])),
     coordinatedAttacks: {},
     coordinatedAttacksTimeLeft: {},
+    coordinatedAttacksSwapRequired: {},
     charactersCooldowns,
   }
 }

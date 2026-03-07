@@ -5,6 +5,8 @@ import type { Snapshot } from '../../types/snapshot'
 import { CharacterSelect } from './CharacterSelect'
 import { ActionSelect } from './ActionSelect'
 import { StatusTagGroup } from './StatusTagGroup'
+import { parseCoordinatedAttackKey } from '../../utils/hooks/coordinatedAttackHelpers'
+import { isSwapRequiredLocked } from '../../utils/hooks/snapshotHelpers'
 
 // ========== Component: Body Row ==============================================================================================
 
@@ -25,6 +27,15 @@ export function BodyRow({ snapshot, previousSnapshot, charactersInBattle, tableC
   const snapshotId = Number(snapshot.id)
   const character = snapshot.character ?? ''
   const action = snapshot.action ?? ''
+  const isLocked = !isLastRow && !!character && !!action
+
+  const lockedCharacters = new Set<string>()
+  if (previousSnapshot) {
+    const prevChar = previousSnapshot.character ?? ''
+    if (prevChar && isSwapRequiredLocked(previousSnapshot, prevChar)) {
+      lockedCharacters.add(prevChar)
+    }
+  }
 
   return (
     <tr
@@ -41,30 +52,37 @@ export function BodyRow({ snapshot, previousSnapshot, charactersInBattle, tableC
       }}>
       {/* Character select */}
       <td className="tableCellBody">
-        <CharacterSelect
-          value={character}
-          characters={charactersInBattle}
-          onChange={characterName => {
-            console.log('📍 BodyRow - CharacterSelect onChange:', { snapshotId, characterName })
-            onSelectCharacter(snapshotId, characterName)
-          }}
-        />
+        {isLocked
+          ? <div className="lockedSelectorText">{character}</div>
+          : <CharacterSelect
+              value={character}
+              characters={charactersInBattle}
+              onChange={characterName => {
+                console.log('📍 BodyRow - CharacterSelect onChange:', { snapshotId, characterName })
+                onSelectCharacter(snapshotId, characterName)
+              }}
+              lockedCharacters={lockedCharacters}
+            />}
       </td>
 
       {/* Action select */}
       <td className="tableCellBody">
-        <ActionSelect
-          value={action}
-          actions={charactersInBattle.find(c => c.name === character)?.actions ?? []}
-          character={charactersInBattle.find(c => c.name === character)}
-          currentEnergies={snapshot.charactersEnergies[character]}
-          snapshot={snapshot}
-          onChange={actionName => {
-            console.log('📍 BodyRow - ActionSelect onChange:', { snapshotId, actionName })
-            onSelectAction(snapshotId, actionName)
-          }}
-          disabled={!character}
-        />
+        {isLocked
+          ? <div className="lockedSelectorText">
+              {charactersInBattle.find(c => c.name === character)?.actions.find(a => a.name === action)?.displayName ?? action}
+            </div>
+          : <ActionSelect
+              value={action}
+              actions={charactersInBattle.find(c => c.name === character)?.actions ?? []}
+              character={charactersInBattle.find(c => c.name === character)}
+              currentEnergies={snapshot.charactersEnergies[character]}
+              snapshot={snapshot}
+              onChange={actionName => {
+                console.log('📍 BodyRow - ActionSelect onChange:', { snapshotId, actionName })
+                onSelectAction(snapshotId, actionName)
+              }}
+              disabled={!character}
+            />}
       </td>
 
       {/* Basic columns */}
@@ -116,7 +134,21 @@ function renderBodyColumnsWithTags(columns: ColumnDef[], columnVisibility: Colum
           statusData = sourceSnapshot?.debuffs as Record<string, number> | undefined
           statusType = 'debuff'
         } else if (col.key === 'coordinatedAttacks') {
-          statusData = sourceSnapshot?.coordinatedAttacks as Record<string, number> | undefined
+          // Use previous snapshot, but cancel any swapRequired attack owned by the current
+          // character since isReturnToOwner expires it at fromTime (before this row's effects).
+          const prevData = sourceSnapshot?.coordinatedAttacks
+          const swapReqFlags = sourceSnapshot?.coordinatedAttacksSwapRequired
+          if (prevData) {
+            const merged: Record<string, number> = {}
+            for (const [key, active] of Object.entries(prevData)) {
+              if ((swapReqFlags?.[key] ?? false) && parseCoordinatedAttackKey(key).owner === character) {
+                merged[key] = 0
+              } else {
+                merged[key] = active
+              }
+            }
+            statusData = merged
+          }
           statusType = 'buff'
         }
 

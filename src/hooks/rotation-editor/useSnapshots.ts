@@ -70,5 +70,9 @@ function createEmptySnapshot(charactersMap: Record<string, Character>, character
     debuffsMaxStacks,
     negativeStatuses,
     negativeStatusesTimeLeft: Object.fromEntries(globalColumns.negativeStatuses.map(col => [col, 0])),
+    coordinatedAttacks: {},
+    coordinatedAttacksTimeLeft: {},
+    coordinatedAttacksSwapRequired: {},
+    charactersCooldowns: {},
   }
 }

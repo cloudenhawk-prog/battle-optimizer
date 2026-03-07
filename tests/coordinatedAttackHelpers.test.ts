@@ -1,6 +1,6 @@
 import type { ModifierInAction } from '../src/types/modifiers'
 import type { CoordinatedAttackInAction } from '../src/types/coordinatedAttack'
-import { activateCoordinatedAttacks, processCoordinatedAttacks } from '../src/utils/hooks/coordinatedAttackHelpers'
+import { activateCoordinatedAttacks, processCoordinatedAttacks, updateCoordinatedAttackSnapshot } from '../src/utils/hooks/coordinatedAttackHelpers'
 import { buildStepContext } from '../src/utils/hooks/resolvers'
 import {
   createMockSnapshot,
@@ -444,5 +444,55 @@ describe('processCoordinatedAttacks — per-tick buff/debuff statusModifications
 
     expect(ctx.modifiersInAction[0].currentStacks).toBe(2)
     expect(ctx.modifiersInAction[0].timeLeft).toBe(7) // not reset because stacks were removed
+  })
+})
+
+// ========== updateCoordinatedAttackSnapshot — coordinatedAttacksSwapRequired =============================================
+
+describe('updateCoordinatedAttackSnapshot — coordinatedAttacksSwapRequired', () => {
+  it('sets swapRequired to true for a swapRequired attack', () => {
+    const ca = createMockCoordinatedAttack('Echo Strike', { swapRequired: true })
+    const activeAttack = createMockCoordinatedAttackInAction(ca, 'TestChar', { timeLeft: 5 })
+    const ctx = buildCtx({ coordinatedAttacksInAction: [activeAttack] })
+
+    updateCoordinatedAttackSnapshot(ctx)
+
+    expect(ctx.current.coordinatedAttacksSwapRequired['TestChar: Echo Strike']).toBe(true)
+  })
+
+  it('sets swapRequired to false for an attack without swapRequired', () => {
+    const ca = createMockCoordinatedAttack('Normal Slash') // swapRequired defaults to false in the mock
+    const activeAttack = createMockCoordinatedAttackInAction(ca, 'TestChar', { timeLeft: 5 })
+    const ctx = buildCtx({ coordinatedAttacksInAction: [activeAttack] })
+
+    updateCoordinatedAttackSnapshot(ctx)
+
+    expect(ctx.current.coordinatedAttacksSwapRequired['TestChar: Normal Slash']).toBe(false)
+  })
+
+  it('writes correct per-key flags when swap and non-swap attacks coexist', () => {
+    const caSwap = createMockCoordinatedAttack('Swap Strike', { swapRequired: true })
+    const caFree = createMockCoordinatedAttack('Free Strike', { swapRequired: false })
+    const swapAttack = createMockCoordinatedAttackInAction(caSwap, 'TestChar', { timeLeft: 5 })
+    const freeAttack = createMockCoordinatedAttackInAction(caFree, 'TestChar', { timeLeft: 3 })
+    const ctx = buildCtx({ coordinatedAttacksInAction: [swapAttack, freeAttack] })
+
+    updateCoordinatedAttackSnapshot(ctx)
+
+    expect(ctx.current.coordinatedAttacksSwapRequired['TestChar: Swap Strike']).toBe(true)
+    expect(ctx.current.coordinatedAttacksSwapRequired['TestChar: Free Strike']).toBe(false)
+  })
+
+  it('still writes the swapRequired flag for an inactive (expired) attack, with active flag set to 0', () => {
+    // applicationTime=-1 marks an expired attack; the swapRequired flag must still be persisted
+    // so that display/row-locking logic reading coordinatedAttacksSwapRequired stays consistent
+    const ca = createMockCoordinatedAttack('Expired Strike', { swapRequired: true })
+    const inactiveAttack = createMockCoordinatedAttackInAction(ca, 'TestChar', { timeLeft: 0, applicationTime: -1 })
+    const ctx = buildCtx({ coordinatedAttacksInAction: [inactiveAttack] })
+
+    updateCoordinatedAttackSnapshot(ctx)
+
+    expect(ctx.current.coordinatedAttacks['TestChar: Expired Strike']).toBe(0)
+    expect(ctx.current.coordinatedAttacksSwapRequired['TestChar: Expired Strike']).toBe(true)
   })
 })

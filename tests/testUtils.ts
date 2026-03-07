@@ -40,6 +40,7 @@ export function createMockSnapshot(overrides: Partial<Snapshot> = {}): Snapshot 
     negativeStatusesTimeLeft: {},
     coordinatedAttacks: {},
     coordinatedAttacksTimeLeft: {},
+    coordinatedAttacksSwapRequired: {},
     charactersCooldowns: {},
     ...overrides,
   }
