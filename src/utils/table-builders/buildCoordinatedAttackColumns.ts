@@ -1,7 +1,7 @@
 import type { Character } from '../../types/character'
 import type { ColumnGroup, ColumnDef, StatusMetadata } from '../../types/tableDefinitions'
 import { createOptionalGroup } from './helpers'
-import { makeCoordinatedAttackKey } from '../hooks/coordinatedAttackHelpers'
+import { makeCoordinatedAttackKey } from '../coordinatedAttackKey'
 
 const COORDINATED_ATTACK_COLOR = '#00BFFF'
 

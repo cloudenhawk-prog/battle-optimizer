@@ -31,7 +31,9 @@ export function assignCharacterToRow(row: Snapshot, character: string): Snapshot
 
 /**
  * Returns true if the given character has at least one active swap-required coordinated
- * attack in the snapshot (i.e. the character is forced to remain on-field).
+ * attack in the snapshot
+ * In this context, "swap-required" means the attack's owner is required to swap away
+ * After casting and cannot be selected as the active character in the next snapshot row.
  */
 export function isSwapRequiredLocked(snapshot: Snapshot, characterName: string): boolean {
   return Object.entries(snapshot.coordinatedAttacks ?? {}).some(([key, active]) => {

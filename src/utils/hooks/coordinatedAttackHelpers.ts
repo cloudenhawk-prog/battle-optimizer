@@ -7,6 +7,7 @@ import type { Action } from '../../types/action'
 import type { CharacterStats } from '../../types/stats'
 import type { ModifierInAction } from '../../types/modifiers'
 import { calculateDamage } from '../calculators/damageCalculator'
+import { makeCoordinatedAttackKey } from '../coordinatedAttackKey'
 import { updateEnergyValue } from './energyHelpers'
 import { getNegativeStatusStacks, updateNegativeStatusStacks } from './negativeStatusHelpers'
 
@@ -319,26 +320,7 @@ export function processCoordinatedAttacks(ctx: StepContext, setDamageEvents: Dis
 
 // ========== Key Utilities ===================================================================================================
 
-/**
- * Coordinated-attack snapshot keys have the form "<ownerCharacter>: <attackName>".
- *
- * The owner prefix exists because the same attack name can independently be triggered
- * by multiple characters (each instance tracks its own state).  Within a single owner
- * however, attack names must be unique — two identically-named attacks from the same
- * owner are intentionally treated as the same effect and share one slot (e.g. Aero
- * Erosion contributions from different sources all collapse into a single entry).
- */
-export function makeCoordinatedAttackKey(owner: string, attackName: string): string {
-  return `${owner}: ${attackName}`
-}
-
-/**
- * Splits a coordinated-attack snapshot key back into its constituent parts.
- */
-export function parseCoordinatedAttackKey(key: string): { owner: string; attackName: string } {
-  const sep = key.indexOf(': ')
-  return { owner: key.slice(0, sep), attackName: key.slice(sep + 2) }
-}
+export { makeCoordinatedAttackKey, parseCoordinatedAttackKey } from '../coordinatedAttackKey'
 
 // ========== Snapshot State ==================================================================================================
 
