@@ -12,7 +12,7 @@ export function buildCoordinatedAttackColumns(selectedCharacters: Character[]): 
       (a.coordinatedAttacks ?? []).map(ca => ({
         key: `${c.name}: ${ca.name}`,
         label: `${c.name}: ${ca.displayName ?? ca.name}`,
-        icon: '/assets/coordinated_attack.png',
+        icon: `/assets/${(ca.displayName ?? ca.name).toLowerCase().replace(/\s+/g, '_')}.png`,
         maxStacks: 1,
         color: ca.color ?? COORDINATED_ATTACK_COLOR,
       })),
