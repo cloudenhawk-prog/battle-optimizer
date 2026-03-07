@@ -25,6 +25,7 @@ export function BodyRow({ snapshot, previousSnapshot, charactersInBattle, tableC
   const snapshotId = Number(snapshot.id)
   const character = snapshot.character ?? ''
   const action = snapshot.action ?? ''
+  const isLocked = !isLastRow && !!character && !!action
 
   const lockedCharacters = new Set<string>()
   if (previousSnapshot) {
@@ -53,31 +54,37 @@ export function BodyRow({ snapshot, previousSnapshot, charactersInBattle, tableC
       }}>
       {/* Character select */}
       <td className="tableCellBody">
-        <CharacterSelect
-          value={character}
-          characters={charactersInBattle}
-          onChange={characterName => {
-            console.log('📍 BodyRow - CharacterSelect onChange:', { snapshotId, characterName })
-            onSelectCharacter(snapshotId, characterName)
-          }}
-          lockedCharacters={lockedCharacters}
-        />
+        {isLocked
+          ? <div className="lockedSelectorText">{character}</div>
+          : <CharacterSelect
+              value={character}
+              characters={charactersInBattle}
+              onChange={characterName => {
+                console.log('📍 BodyRow - CharacterSelect onChange:', { snapshotId, characterName })
+                onSelectCharacter(snapshotId, characterName)
+              }}
+              lockedCharacters={lockedCharacters}
+            />}
       </td>
 
       {/* Action select */}
       <td className="tableCellBody">
-        <ActionSelect
-          value={action}
-          actions={charactersInBattle.find(c => c.name === character)?.actions ?? []}
-          character={charactersInBattle.find(c => c.name === character)}
-          currentEnergies={snapshot.charactersEnergies[character]}
-          snapshot={snapshot}
-          onChange={actionName => {
-            console.log('📍 BodyRow - ActionSelect onChange:', { snapshotId, actionName })
-            onSelectAction(snapshotId, actionName)
-          }}
-          disabled={!character}
-        />
+        {isLocked
+          ? <div className="lockedSelectorText">
+              {charactersInBattle.find(c => c.name === character)?.actions.find(a => a.name === action)?.displayName ?? action}
+            </div>
+          : <ActionSelect
+              value={action}
+              actions={charactersInBattle.find(c => c.name === character)?.actions ?? []}
+              character={charactersInBattle.find(c => c.name === character)}
+              currentEnergies={snapshot.charactersEnergies[character]}
+              snapshot={snapshot}
+              onChange={actionName => {
+                console.log('📍 BodyRow - ActionSelect onChange:', { snapshotId, actionName })
+                onSelectAction(snapshotId, actionName)
+              }}
+              disabled={!character}
+            />}
       </td>
 
       {/* Basic columns */}

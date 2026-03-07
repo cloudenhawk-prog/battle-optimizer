@@ -4,9 +4,7 @@
 
 > Inspect character: stats (base and current) (later: weapon, echoes, sequence lvl etc)
 
-> Character selected in table -> Glow around the character's energy window (the selected character currently - meaning in the furthest down snapshot at any given point).
-> > Selected character should show up in sidebar like Phrolova - might need to define custom coordinate/size helpers if there isn't an easy fit-it-all solution
-> > LOCK previous snapshots while you're at it - we don't support deletions atm anyway. Meaning every snapshot except the last one should be locked at any given time.
+> Selected character should show up in sidebar like Phrolova - might need to define custom coordinate/size helpers if there isn't an easy fit-it-all solution
 
 > Possibility to lower cooldowns (example: Cartethyia when consuming swords)
 
