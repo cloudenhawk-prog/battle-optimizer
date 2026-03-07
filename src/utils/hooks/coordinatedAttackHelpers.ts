@@ -203,13 +203,14 @@ export function processCoordinatedAttacks(ctx: StepContext, setDamageEvents: Dis
     let timeLeft = caia.timeLeft
     let hitCount = 0
 
-    while (lastDamageTime + ca.frequency <= tickEndTime && timeLeft > 0) {
+    while (lastDamageTime + ca.frequency <= tickEndTime && timeLeft >= ca.frequency) {
       lastDamageTime += ca.frequency
       timeLeft -= ca.frequency
-      hitCount++
 
       const conditionMultiplier = ca.condition ? ca.condition(ctx) : 1
       if (conditionMultiplier === 0) continue
+
+      hitCount++
 
       const { average, damageEvent } = calculateDamage({
         action: fakeAction,
