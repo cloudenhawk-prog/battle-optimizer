@@ -2,7 +2,8 @@ import type { Action } from '../../types/action'
 import { always } from '../../utils/conditions/damageModifierConditions'
 import { nightmareKelpieOutroTrigger } from '../sideEffects'
 
-export const ciaccona_BA_3_4_cancel_with_E: Action = {
+// ========== Basic Attack 3-4 =================================================================================================
+const ciaccona_BA_3_4_cancel_with_E: Action = {
   name: 'Basic Attack 3-4 (skill cancel)',
   displayName: 'Basic Attack 3-4 (skill cancel)',
   category: 'Basics',
@@ -43,7 +44,7 @@ export const ciaccona_BA_3_4_cancel_with_E: Action = {
   variantName: 'Cancel With Skill'
 }
 
-export const ciaccona_BA_3_4_cancel_with_swap: Action = {
+const ciaccona_BA_3_4_cancel_with_swap: Action = {
   name: 'Basic Attack 3-4 (swap cancel)',
   displayName: 'Basic Attack 3-4 (swap cancel)',
   category: 'Basics',
@@ -84,7 +85,8 @@ export const ciaccona_BA_3_4_cancel_with_swap: Action = {
   variantName: 'Cancel With Swap'
 }
 
-export const ciaccona_midair_2_BA_4_cancel_with_E: Action = {
+// ========== MA2 -> BA4 =======================================================================================================
+const ciaccona_midair_2_BA_4_cancel_with_E: Action = {
   name: 'Mid Air 2 -> Basic Attack 4 (skill cancel)',
   displayName: 'Mid Air 2 -> Basic Attack 4 (skill cancel)',
   category: 'Basics',
@@ -125,7 +127,7 @@ export const ciaccona_midair_2_BA_4_cancel_with_E: Action = {
   variantName: 'Cancel With Skill'
 }
 
-export const ciaccona_midair_2_BA_4_cancel_with_swap: Action = {
+const ciaccona_midair_2_BA_4_cancel_with_swap: Action = {
   name: 'Mid Air 2 -> Basic Attack 4 (swap cancel)',
   displayName: 'Mid Air 2 -> Basic Attack 4 (swap cancel)',
   category: 'Basics',
@@ -166,7 +168,8 @@ export const ciaccona_midair_2_BA_4_cancel_with_swap: Action = {
   variantName: 'Cancel With Swap'
 }
 
-export const ciaccona_skill: Action = {
+// ========== Resonance Skill ==================================================================================================
+const ciaccona_skill: Action = {
   name: 'Resonance Skill',
   displayName: 'Harmonic Allegro',
   category: 'Skills',
@@ -193,7 +196,7 @@ export const ciaccona_skill: Action = {
   variantName: 'Default'
 }
 
-export const ciaccona_skill_cancel_with_swap: Action = {
+const ciaccona_skill_cancel_with_swap: Action = {
   name: 'Resonance Skill (swap cancel)',
   displayName: 'Harmonic Allegro (swap cancel)',
   category: 'Skills',
@@ -220,7 +223,8 @@ export const ciaccona_skill_cancel_with_swap: Action = {
   variantName: 'Cancel With Swap'
 }
 
-export const ciaccona_liberation: Action = {
+// ========== Liberation =======================================================================================================
+const ciaccona_liberation: Action = {
   name: 'Liberation',
   displayName: 'Singers Triple Cadenza',
   category: 'Skills',
@@ -261,7 +265,8 @@ export const ciaccona_liberation: Action = {
   offtune: 4.8
 }
 
-export const ciaccona_heavy: Action = {
+// ========== Heavy Attack =====================================================================================================
+const ciaccona_heavy: Action = {
   name: 'Heavy Attack',
   displayName: 'Quadruple Downbeat',
   category: 'Basics',
@@ -288,7 +293,7 @@ export const ciaccona_heavy: Action = {
   variantName: 'Default'
 }
 
-export const ciaccona_heavy_cancel_with_swap: Action = {
+const ciaccona_heavy_cancel_with_swap: Action = {
   name: 'Heavy Attack (swap cancel)',
   displayName: 'Quadruple Downbeat (swap cancel)',
   category: 'Basics',
@@ -315,7 +320,8 @@ export const ciaccona_heavy_cancel_with_swap: Action = {
   variantName: 'Cancel With Swap'
 }
 
-export const ciaccona_intro: Action = {
+// ========== Intro & Outro ====================================================================================================
+const ciaccona_intro: Action = {
   name: 'Intro Skill',
   displayName: 'Roaming with the Wind',
   category: 'Other',
@@ -342,7 +348,7 @@ export const ciaccona_intro: Action = {
 }
 
 // TODO - test ciaconna outro: Static Mist Outro buff, Aero Erosion amp outro buff, Nightmare Kelpio DMG trigger
-export const ciaccona_outro: Action = {
+const ciaccona_outro: Action = {
   name: 'Outro Skill',
   displayName: 'Windcalling Tune',
   category: 'Other',
@@ -388,7 +394,8 @@ export const ciaccona_outro: Action = {
   offtune: 0,
 }
 
-export const ciaccona_echo: Action = {
+// ========== Echo Skill =======================================================================================================
+const ciaccona_echo: Action = {
   name: 'Ciaccona Echo Skill',
   displayName: 'Nightmare: Kelpie',
   category: 'Other',
@@ -410,7 +417,8 @@ export const ciaccona_echo: Action = {
   offtune: 0,
 }
 
-export const ciaccona_energy: Action = {
+// ========== Energies =========================================================================================================
+const ciaccona_energy: Action = {
   name: 'Energy Up',
   displayName: 'Energy Up',
   category: 'Testing',
@@ -432,7 +440,7 @@ export const ciaccona_energy: Action = {
   offtune: 0,
 }
 
-export const ciaccona_concerto: Action = {
+const ciaccona_concerto: Action = {
   name: 'Concerto Up',
   displayName: 'Concerto Up',
   category: 'Testing',
@@ -454,7 +462,7 @@ export const ciaccona_concerto: Action = {
   offtune: 0,
 }
 
-export const ciaccona_forte: Action = {
+const ciaccona_forte: Action = {
   name: 'Forte Up',
   displayName: 'Forte Up',
   category: 'Testing',
@@ -474,4 +482,22 @@ export const ciaccona_forte: Action = {
     endState: 'ANY',
   },
   offtune: 0,
+}
+
+export {
+  ciaccona_BA_3_4_cancel_with_E,
+  ciaccona_BA_3_4_cancel_with_swap,
+  ciaccona_midair_2_BA_4_cancel_with_E,
+  ciaccona_midair_2_BA_4_cancel_with_swap,
+  ciaccona_skill,
+  ciaccona_skill_cancel_with_swap,
+  ciaccona_liberation,
+  ciaccona_heavy,
+  ciaccona_heavy_cancel_with_swap,
+  ciaccona_intro,
+  ciaccona_outro,
+  ciaccona_echo,
+  ciaccona_energy,
+  ciaccona_concerto,
+  ciaccona_forte
 }
