@@ -211,7 +211,10 @@ export const cartethyia_transform: Action = {
       ownerCharacter: 'Cartethyia',
       color: '#1e90ff',
       characterStats: { aeroErosionAmplifyDMG: 0.5 },
-      negativeStatusEffects: [{ targetStatus: 'Aero Erosion', property: 'frequency', value: -0.5 }],
+      negativeStatusEffects: [
+        { targetStatus: 'Aero Erosion', property: 'frequency', value: -0.5 },
+        { targetStatus: 'Aero Erosion', property: 'maxStacks', value: 3 },
+      ],
       condition: always(),
       targetStrategy: 'self',
       durationStrategy: { type: 'limited', timeDuration: 12 },
@@ -221,7 +224,7 @@ export const cartethyia_transform: Action = {
   sideEffects: [],
   castConditions: {
     startState: 'ANY',
-    endState: 'PRESERVED',
+    endState: 'PRESERVE',
   },
   offtune: 0.0,
 }
@@ -509,6 +512,28 @@ export const cartethyia_outro: Action = {
   dmgTypes: ['OUTRO'],
   cooldown: 0,
   energyGenerated: [],
+  energyCost: [],
+  statusModifications: [],
+  damageModifiers: [],
+  sideEffects: [],
+  castConditions: {
+    startState: 'ANY',
+    endState: 'ANY',
+  },
+  offtune: 0,
+}
+
+export const cartethyia_echo: Action = {
+  name: 'Cartethyia Echo Skill',
+  displayName: 'Reminence: Fleurdelys',
+  category: 'Other',
+  castTime: 0,
+  multiplier: (8 * 27.36 + 136.8) / 100,
+  scaling: 'ATK',
+  elements: ['AERO'],
+  dmgTypes: ['ECHO'],
+  cooldown: 20,
+  energyGenerated: [{ energyType: 'energy', amount: 8 * 0.38 + 1.9, share: 0.5, scalingStat: 'energyPercent' }],
   energyCost: [],
   statusModifications: [],
   damageModifiers: [],

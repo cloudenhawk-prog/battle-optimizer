@@ -1,5 +1,16 @@
 ### TODO:
 
+Update rover actions to follow convention from Ciaconna
+Test and update Cartethyia
+Go through all 3 characters
+
+Need a way to determine which buffs/debuffs to show
+> All limited buffs
+> But what about: permanent modifiers that only affect certain characters at certain times
+> > Show if relevant in current snapshot?
+> > Show these in the character window instead?
+
+
 > The data verification script should also generate a file that states: which images do we expect in different places and which ones do we actually have in assets already vs missing.
 
 > Inspect character: stats (base and current) (later: weapon, echoes, sequence lvl etc)
@@ -8,17 +19,17 @@
 
 > Possibility to lower cooldowns (example: Cartethyia when consuming swords)
 
-> Modifiers (buffs) can affect how actions behave, like Mandate. Need an easy way to handle this. For example:
->
-> > Side Effects behaviour can depend on a modifier (active, inactive, stacks etc)
-> > StatusModification can depend on modifier (for example the number of stacks the action apply, can be negative, zero, positive)
-> > Damage etc of an action could scale differently based on modifiers.
-> > Essentially modifiers (buffs/debuffs) can do other things than strictly buff changes based on how a specific character may interact with it
-> > Concrete needs for Cartethyia:
-> > Mandate buff also does: Basic 5 Fleurdelys, Mid-air 2, Enhanced Heavy, Resonance 2 apply 99 stacks of aero erosion during this time
-> > Mandate buff also does: Lowers dmg intervals between Aero Erosion by 50 % (TODO : Test if it works when you swap away from her)
-> > Mandate buff: Does it work or not when swapped away?
-> > This might affect howe we want to show Mandate in timeline
+
+# Fairly Important:
+Modifiers (buffs) can affect how actions behave, like Mandate. Need an easy way to handle this. For example:
+Side Effects behaviour can depend on a modifier (active, inactive, stacks etc)
+StatusModification can depend on modifier (for example the number of stacks the action apply, can be negative, zero, positive)
+Damage etc of an action could scale differently based on modifiers.
+Essentially modifiers (buffs/debuffs) can do other things than strictly buff changes based on how a specific character may interact with it
+Concrete needs for Cartethyia:Mandate buff also does: Basic 5 Fleurdelys, Mid-air 2, Enhanced Heavy, Resonance 2 apply 99 stacks of aero erosion during this time
+Mandate buff also does: Lowers dmg intervals between Aero Erosion by 50 % (TODO : Test if it works when you swap away from her)
+Mandate buff: Does it work or not when swapped away?
+This might affect how we want to show Mandate in timeline
 
 # Timeline:
 

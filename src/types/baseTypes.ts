@@ -8,4 +8,4 @@ export type DamageType = 'BASIC' | 'HEAVY' | 'SKILL' | 'LIBERATION' | 'COORDINAT
 
 export type EnergyType = 'energy' | 'forte' | 'concerto' | 'rage' | 'conviction'
 
-export type Position = 'GROUND' | 'AIR' | 'PRESERVED' | 'ANY'
+export type Position = 'GROUND' | 'AIR' | 'PRESERVE' | 'ANY'
