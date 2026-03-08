@@ -253,14 +253,14 @@ function validateActionInputs(params: { snapshots: Snapshot[]; snapshotId: numbe
     return null
   }
 
-  const action = getActionFromCharacter(charactersMap, current.character, actionName)
+  const prev = getPrevSnapshot(snapshots, index)
+
+  const action = getActionFromCharacter(charactersMap, current.character, actionName, prev)
   console.log('🔍 validateActionInputs - action found:', action?.name)
   if (!action) {
     console.log('❌ Action not found')
     return null
   }
-
-  const prev = getPrevSnapshot(snapshots, index)
 
   return { index, character, action, snapshots, current, prev, enemy, negativeStatusesInAction, modifiersInAction, coordinatedAttacksInAction, charactersMap, characterColumnsMap, globalColumns, setDamageEvents }
 }

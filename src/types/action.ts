@@ -3,6 +3,7 @@ import type { ScalingType, ElementType, Position, DamageType } from './baseTypes
 import type { DamageModifier } from './modifiers'
 import type { SideEffect, StatusModification } from './sideEffect'
 import type { CoordinatedAttack } from './coordinatedAttack'
+import type { Snapshot } from './snapshot'
 
 // ========== Type: Action =====================================================================================================
 
@@ -34,10 +35,16 @@ export type Action = {
 
   groupName?: string
   variantName?: string
+
+  /** When present, the system calls this before executing the action to dynamically
+   *  select the actual variant to run (e.g. picking the right plunge tier based on forte).
+   *  The returned Action is used in place of this one for all resolvers. */
+  resolveVariant?: (prevSnapshot: Snapshot | undefined, characterName: string) => Action
 }
 
 export type CastConditions = {
-  startState: Position
   previousActions?: Action[]
+  startState: Position
   endState: Position
+  persistenceTime?: number
 }

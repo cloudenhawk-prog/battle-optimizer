@@ -1,13 +1,19 @@
 import type { Character } from '../../types/character'
 import type { DamageType } from '../../types/baseTypes'
+import type { Snapshot } from '../../types/snapshot'
 import { getCharacter } from './characterHelpers'
 
 // ========== Action Helpers ===================================================================================================
 
-export function getActionFromCharacter(charactersMap: Record<string, Character>, characterName: string, actionName: string) {
+export function getActionFromCharacter(charactersMap: Record<string, Character>, characterName: string, actionName: string, prevSnapshot?: Snapshot) {
   const character = getCharacter(charactersMap, characterName)
   if (!character) return undefined
-  return character.actions.find(a => a.name === actionName)
+  const action = character.actions.find(a => a.name === actionName)
+  if (!action) return undefined
+  if (action.resolveVariant) {
+    return action.resolveVariant(prevSnapshot, characterName)
+  }
+  return action
 }
 
 /**

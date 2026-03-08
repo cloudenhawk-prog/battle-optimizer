@@ -50,6 +50,7 @@ const roverAero_skill_1_cancel_with_swap: Action = {
   castConditions: {
     startState: 'GROUND',
     endState: 'GROUND',
+    persistenceTime: 1.4
   },
   offtune: 0.76,
   groupName: 'Resonance Skill 1',
