@@ -83,7 +83,7 @@ function verifyCharacter(character: Character, negativeStatusNames: Set<string>)
     if (missing.length) throw new Error(`missing: ${missing.join(', ')}`)
   })
 
-  // --- One check per action covering all logical validations ---
+  // --- One check per action covering all logical validations (including coordinated attacks) ---
   for (const action of actions) {
     check(`Action: ${action.name}`, () => {
       const errors: string[] = []
@@ -98,6 +98,16 @@ function verifyCharacter(character: Character, negativeStatusNames: Set<string>)
       for (const mod of action.statusModifications)
         if (mod.type === 'negativeStatus' && !negativeStatusNames.has(mod.targetName))
           errors.push(`unknown negative status "${mod.targetName}"`)
+      for (const ca of action.coordinatedAttacks ?? []) {
+        if (ca.multiplier < 0) errors.push(`[CA "${ca.name}"] multiplier ${ca.multiplier}`)
+        if (ca.frequency <= 0) errors.push(`[CA "${ca.name}"] frequency ${ca.frequency}`)
+        if (ca.duration <= 0) errors.push(`[CA "${ca.name}"] duration ${ca.duration}`)
+        for (const eg of ca.energyGenerated)
+          if (eg.amount < 0) errors.push(`[CA "${ca.name}"] energyGenerated "${eg.energyType}" ${eg.amount}`)
+        for (const mod of ca.statusModifications)
+          if (mod.type === 'negativeStatus' && !negativeStatusNames.has(mod.targetName))
+            errors.push(`[CA "${ca.name}"] unknown negative status "${mod.targetName}"`)
+      }
       if (errors.length) throw new Error(errors.join('; '))
     })
   }
@@ -168,6 +178,7 @@ function collectAssetPaths(): string[] {
   const paths = new Set<string>()
 
   // Fixed icons used directly by table builder files (buildBasicColumns, buildOtherColumns, etc.)
+  // and rotation-editor components (HeaderRow).
   const fixedAssets = [
     'assets/basic.png',
     'assets/fromTime.png',
@@ -178,8 +189,11 @@ function collectAssetPaths(): string[] {
     'assets/negativeStatuses.png',
     'assets/buffs.png',
     'assets/debuffs.png',
+    'assets/statuses.png',        // buildStatusEffectsColumns — Status Effects group icon
     'assets/coordinated_attack.png',
-    'assets/action.png',
+    'assets/action.png',          // HeaderRow
+    'assets/character.png',       // HeaderRow
+    'assets/selector.png',        // HeaderRow
   ]
   for (const p of fixedAssets) paths.add(p)
 

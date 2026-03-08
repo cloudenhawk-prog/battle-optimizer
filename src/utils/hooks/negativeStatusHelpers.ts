@@ -62,14 +62,24 @@ export function computeEffectiveMaxStacks(
     const conditionMultiplier = modifier.condition ? modifier.condition(ctx) : 1
     if (conditionMultiplier === 0) continue
 
+    // Mirror stack handling from computeEffectiveFrequency
+    let stackMultiplier = 1
+    if (modifier.durationStrategy?.type === 'limited') {
+      const mia = ctx.modifiersInAction.find(
+        m => m.modifier.source === modifier.source && m.modifier.displayName === modifier.displayName,
+      )
+      if (mia) stackMultiplier = mia.currentStacks
+    }
+
     for (const effect of modifier.negativeStatusEffects) {
       if (effect.targetStatus === statusName && effect.property === 'maxStacks') {
-        totalModifier += effect.value * conditionMultiplier
+        totalModifier += effect.value * conditionMultiplier * stackMultiplier
       }
     }
   }
 
-  return baseMaxStacks + totalModifier
+  // Ensure max stacks is a non-negative integer
+  return Math.max(0, Math.floor(baseMaxStacks + totalModifier))
 }
 
 export function getNegativeStatusStacks(snapshot: Snapshot): Record<string, number> {

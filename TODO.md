@@ -29,7 +29,7 @@ Essentially modifiers (buffs/debuffs) can do other things than strictly buff cha
 Concrete needs for Cartethyia:Mandate buff also does: Basic 5 Fleurdelys, Mid-air 2, Enhanced Heavy, Resonance 2 apply 99 stacks of aero erosion during this time
 Mandate buff also does: Lowers dmg intervals between Aero Erosion by 50 % (TODO : Test if it works when you swap away from her)
 Mandate buff: Does it work or not when swapped away?
-This might affect howe we want to show Mandate in timeline
+This might affect how we want to show Mandate in timeline
 
 # Timeline:
 
