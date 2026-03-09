@@ -25,4 +25,10 @@ export interface Snapshot {
   coordinatedAttacksTimeLeft: Record<string, number>
   coordinatedAttacksSwapRequired: Record<string, boolean>
   charactersCooldowns: Record<string, Record<string, number>>
+  /** Resolved position (GROUND or AIR) for each character after their last action. */
+  charactersPositions: Record<string, 'GROUND' | 'AIR'>
+  /** Absolute time until which each character's persistence is active (0 = no persistence). */
+  charactersPersistentUntil: Record<string, number>
+  /** Name of the last action each character cast. */
+  charactersLastAction: Record<string, string>
 }

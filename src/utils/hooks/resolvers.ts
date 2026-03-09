@@ -526,6 +526,53 @@ export function resolveCooldowns(ctx: StepContext): void {
 
 // ========== Resolver 7: Events ==============================================================================================
 
+// ========== Resolver 8: Cast State ==========================================================================================
+
+/**
+ * Updates each character's resolved position, persistence window, and last-action tracking
+ * after the current action completes.
+ *
+ * - charactersPositions: resolved to GROUND or AIR (PRESERVE/ANY keep the previous value)
+ * - charactersPersistentUntil: absolute time until which the character persists on-field state
+ *   after being swapped out (counted from fromTime, per the spec)
+ * - charactersLastAction: the name of the last action this character cast; cleared for the
+ *   active character if no persistenceTime is set AND the next step swaps away (handled by
+ *   ActionSelect reading the persistence window rather than explicit clearing)
+ */
+export function resolveCastState(ctx: StepContext): void {
+  const charName = ctx.character.name
+
+  // Determine the new resolved position for the active character
+  const prevPosition: 'GROUND' | 'AIR' = ctx.prev.charactersPositions?.[charName] ?? 'GROUND'
+  const rawEndState = ctx.action.castConditions.endState
+  const newPosition: 'GROUND' | 'AIR' =
+    rawEndState === 'PRESERVE' || rawEndState === 'ANY' ? prevPosition : (rawEndState as 'GROUND' | 'AIR')
+
+  ctx.current.charactersPositions = {
+    ...(ctx.prev.charactersPositions ?? {}),
+    [charName]: newPosition,
+  }
+
+  // Track how long this character persists with their current state after swapping out
+  const persistenceTime = ctx.action.castConditions.persistenceTime ?? 0
+  ctx.current.charactersPersistentUntil = {
+    ...(ctx.prev.charactersPersistentUntil ?? {}),
+    [charName]: persistenceTime > 0 ? ctx.fromTime + persistenceTime : 0,
+  }
+
+  // Record this action as the character's last personal action
+  ctx.current.charactersLastAction = {
+    ...(ctx.prev.charactersLastAction ?? {}),
+    [charName]: ctx.action.name,
+  }
+
+  ctx.logs.push({
+    resolver: 'resolveCastState',
+    message: `Cast state resolved for ${charName}: position=${newPosition}, persistentUntil=${ctx.current.charactersPersistentUntil[charName]}`,
+    details: { prevPosition, rawEndState, newPosition, persistenceTime },
+  })
+}
+
 // ========== Internal Helpers ================================================================================================
 
 function initializeEmptyCharacterStats(): Partial<CharacterStats> {

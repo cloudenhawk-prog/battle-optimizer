@@ -26,6 +26,8 @@ type ActionState = {
   isOnCooldown: boolean
   cooldownRemaining: number
   missingEnergy: Array<{ type: EnergyType; needed: number; current: number }>
+  isWrongPosition: boolean
+  isPreviousActionMismatch: boolean
 }
 
 export function ActionSelect({ value, actions, character, currentEnergies, snapshot, onChange, disabled = false }: ActionSelectProps) {
@@ -96,6 +98,37 @@ export function ActionSelect({ value, actions, character, currentEnergies, snaps
 
     const isOnCooldown = cooldownRemaining > 0
 
+    // Determine character's effective position and last action
+    // - If same character as previous snapshot: use stored position/lastAction directly
+    // - If swapping back: use stored state only when within the persistence window
+    // - Otherwise (outside persistence or no persistence): position resets to GROUND, combo breaks
+    let charPosition: 'GROUND' | 'AIR' = 'GROUND'
+    let charLastAction: string | undefined = undefined
+
+    if (character && snapshot) {
+      const charName = character.name
+      const storedPosition = snapshot.charactersPositions?.[charName] ?? 'GROUND'
+      const persistentUntil = snapshot.charactersPersistentUntil?.[charName] ?? 0
+      const isPrevCharacter = snapshot.character === charName
+      const isWithinPersistence = persistentUntil > 0 && snapshot.toTime <= persistentUntil
+
+      if (isPrevCharacter || isWithinPersistence) {
+        charPosition = storedPosition
+        charLastAction = snapshot.charactersLastAction?.[charName]
+      }
+    }
+
+    // Goal 1: position check
+    const isWrongPosition =
+      action.castConditions.startState !== 'ANY' &&
+      action.castConditions.startState !== charPosition
+
+    // Goal 2: previousActions check
+    const previousActionsConstraint = action.castConditions.previousActions
+    const isPreviousActionMismatch =
+      !!previousActionsConstraint?.length &&
+      !previousActionsConstraint.some(pa => pa.name === charLastAction)
+
     return {
       action,
       isSpecial,
@@ -104,6 +137,8 @@ export function ActionSelect({ value, actions, character, currentEnergies, snaps
       isOnCooldown,
       cooldownRemaining,
       missingEnergy,
+      isWrongPosition,
+      isPreviousActionMismatch,
     }
   }
 
@@ -136,7 +171,7 @@ export function ActionSelect({ value, actions, character, currentEnergies, snaps
   // Then create ActionGroup objects
   for (const [groupKey, variants] of groupMap.entries()) {
     const isGroup = variants.length > 1 || variants[0].action.groupName !== undefined
-    const isSelectable = variants.some(v => !v.isOnCooldown && !v.isUnaffordable)
+    const isSelectable = variants.some(v => !v.isOnCooldown && !v.isUnaffordable && !v.isWrongPosition && !v.isPreviousActionMismatch)
     const isCurrent = variants.some(v => v.isCurrent)
 
     actionGroups.push({
@@ -320,9 +355,9 @@ export function ActionSelect({ value, actions, character, currentEnergies, snaps
 
                     {/* Variant Rows */}
                     {group.variants.map(variant => {
-                      const { action, isCurrent, isUnaffordable, isOnCooldown, cooldownRemaining, missingEnergy } = variant
+                      const { action, isCurrent, isUnaffordable, isOnCooldown, cooldownRemaining, missingEnergy, isWrongPosition, isPreviousActionMismatch } = variant
 
-                      const isDisabled = (isUnaffordable || isOnCooldown) && !isCurrent
+                      const isDisabled = (isUnaffordable || isOnCooldown || isWrongPosition || isPreviousActionMismatch) && !isCurrent
                       const canSelect = !isDisabled
 
                       return (

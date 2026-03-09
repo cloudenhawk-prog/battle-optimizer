@@ -92,8 +92,8 @@ const cartethyia_BA_2_4: Action = {
 }
 
 const cartethyia_BA_2_4_cancel_with_jump: Action = {
-  name: 'Basic Attack 2-4',
-  displayName: 'Basic Attack 2-4',
+  name: 'Basic Attack 2-4 (jump cancel)',
+  displayName: 'Basic Attack 2-4 (jump cancel)',
   category: 'Basics',
   castTime: 2.15,
   multiplier: (1.5 * (2 * 3.94 + 5.25 + 4 * 4.28 + (3 * 2.52 + 7.54))) / 100,
@@ -1109,5 +1109,14 @@ const cartethyia_conviction: Action = {
 }
 
 export {
-  cartethyia_BA_1_4
+  cartethyia_BA_1_4_cancel_with_E,
+  cartethyia_BA_1_4_cancel_with_swap,
+  cartethyia_BA_2_4,
+  cartethyia_BA_2_4_cancel_with_jump,
+  cartethyia_BA_2_4_cancel_with_swap,
+  cartethyia_heavy,
+  cartethyia_heavy_cancel_with_swap,
+  cartethyia_intro,
+  cartethyia_outro,
+  cartethyia_echo
 }

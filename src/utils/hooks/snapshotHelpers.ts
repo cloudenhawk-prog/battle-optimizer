@@ -48,6 +48,11 @@ export function createSnapshot(previousSnapshot: Snapshot, charactersMap: Record
   // Copy cooldowns from previous snapshot to carry them forward
   const charactersCooldowns = Object.fromEntries(Object.keys(charactersMap).map(charName => [charName, { ...(previousSnapshot.charactersCooldowns?.[charName] ?? {}) }]))
 
+  // Copy cast-state fields from previous snapshot to carry them forward
+  const charactersPositions = { ...(previousSnapshot.charactersPositions ?? {}) }
+  const charactersPersistentUntil = { ...(previousSnapshot.charactersPersistentUntil ?? {}) }
+  const charactersLastAction = { ...(previousSnapshot.charactersLastAction ?? {}) }
+
   const basicValues = Object.fromEntries(globalColumns.basic.map(col => [col, 0]))
   const buffs = Object.fromEntries(globalColumns.buffs.map(col => [col, 0]))
   const debuffs = Object.fromEntries(globalColumns.debuffs.map(col => [col, 0]))
@@ -87,5 +92,8 @@ export function createSnapshot(previousSnapshot: Snapshot, charactersMap: Record
     coordinatedAttacksTimeLeft: {},
     coordinatedAttacksSwapRequired: {},
     charactersCooldowns,
+    charactersPositions,
+    charactersPersistentUntil,
+    charactersLastAction,
   }
 }

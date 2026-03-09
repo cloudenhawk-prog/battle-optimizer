@@ -45,6 +45,8 @@ export type Action = {
 export type CastConditions = {
   previousActions?: Action[]
   startState: Position
+  /** Position stored for this character when they are swapped out. Defaults to endState if omitted. */
+  swapOutState?: Position
   endState: Position
-  persistenceTime?: number
+  persistenceTime?: number // When a character starts casting an action, even if swapped out, their position is saved/persist for X amount of time, to allow combo chaining/swapping
 }

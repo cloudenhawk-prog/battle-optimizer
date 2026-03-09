@@ -54,6 +54,17 @@ export function CharacterStateTracker({ snapshot, charactersInBattle, tableConfi
 
           const energies = (snapshot?.charactersEnergies as any)?.[character.name] || {}
 
+          // Compute effective position for display:
+          // - Active character → use their stored position
+          // - Inactive within persistence → use their own stored position
+          // - Inactive outside persistence → sync to active character's position
+          const storedPosition: 'GROUND' | 'AIR' = snapshot?.charactersPositions?.[character.name] ?? 'GROUND'
+          const persistentUntil = snapshot?.charactersPersistentUntil?.[character.name] ?? 0
+          const isActiveChar = snapshot?.character === character.name
+          const isWithinPersistence = persistentUntil > 0 && (snapshot?.toTime ?? 0) <= persistentUntil
+          const activeCharPosition: 'GROUND' | 'AIR' = snapshot?.character ? (snapshot.charactersPositions?.[snapshot.character] ?? 'GROUND') : 'GROUND'
+          const displayPosition: 'GROUND' | 'AIR' = (isActiveChar || isWithinPersistence) ? storedPosition : activeCharPosition
+
           const isActive = activeCharacterName === group.label
 
           return (
@@ -81,6 +92,13 @@ export function CharacterStateTracker({ snapshot, charactersInBattle, tableConfi
                     <span className="stateTrackerCharName">{group.label}</span>
                   </>
                 )}
+              </div>
+
+              {/* Position badge */}
+              <div className="stateTrackerPositionRow">
+                <span className={`stateTrackerPositionBadge stateTrackerPositionBadge--${displayPosition.toLowerCase()}${!isActiveChar && !isWithinPersistence ? ' stateTrackerPositionBadge--synced' : ''}`}>
+                  {displayPosition === 'AIR' ? '▲ AIR' : '▼ GROUND'}
+                </span>
               </div>
 
               {/* Energy bars */}
