@@ -652,23 +652,42 @@ const roverAero_forte: Action = {
 }
 
 export {
+  // Resonance Skill 1
   roverAero_skill_1,
   roverAero_skill_1_cancel_with_swap,
+
+  // Resonance Skill 2
   roverAero_skill_2,
   roverAero_skill_2_cancel_with_swap,
+
+  // Resonance Skill 3
   roverAero_skill_3,
   roverAero_skill_3_cancel_with_swap_1,
   roverAero_skill_3_cancel_with_swap_2,
+
+  // Liberation
   roverAero_liberation,
+
+  // Mid Air 1-2
   roverAero_midair_1_2,
   roverAero_midair_1_2_cancel_with_swap,
+
+  // Plunge
   roverAero_plunge,
   roverAero_plunge_cancel_with_swap,
+
+  // Basic Attack 4
   roverAero_BA_4,
   roverAero_BA_4_cancel_with_swap,
+
+  // Intro / Outro
   roverAero_intro,
   roverAero_outro,
+
+  // Echo
   roverAero_echo,
+
+  // Testing
   roverAero_energy,
   roverAero_concerto,
   roverAero_forte

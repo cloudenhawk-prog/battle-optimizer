@@ -1,11 +1,11 @@
 import type { Character } from '../../types/character'
 import { always, atLeastOneStackOf, stacksOf } from '../../utils/conditions/damageModifierConditions'
-import { cartethyia_BA_1_4_cancel_with_E, cartethyia_BA_1_4_cancel_with_swap, cartethyia_BA_2_4, cartethyia_BA_2_4_cancel_with_jump, cartethyia_BA_2_4_cancel_with_swap, cartethyia_heavy, cartethyia_heavy_cancel_with_swap, cartethyia_intro, cartethyia_outro, cartethyia_echo } from '../actions/cartethyia'
+import * as cartethyiaActions from '../actions/cartethyia'
 import { cartethyiaStats } from '../stats/cartethyia'
 
 export const cartethyia: Character = {
   name: 'Cartethyia',
-  actions: [cartethyia_BA_1_4_cancel_with_E, cartethyia_BA_1_4_cancel_with_swap, cartethyia_BA_2_4, cartethyia_BA_2_4_cancel_with_jump, cartethyia_BA_2_4_cancel_with_swap, cartethyia_heavy, cartethyia_heavy_cancel_with_swap, cartethyia_intro, cartethyia_outro, cartethyia_echo],
+  actions: Object.values(cartethyiaActions),
   maxEnergies: { energy: 125, concerto: 100, forte: 3, conviction: 120 },
   stats: cartethyiaStats,
   damageModifiers: [

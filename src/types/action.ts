@@ -49,4 +49,11 @@ export type CastConditions = {
   swapOutState?: Position
   endState: Position
   persistenceTime?: number // When a character starts casting an action, even if swapped out, their position is saved/persist for X amount of time, to allow combo chaining/swapping
+  /** When true, the action can only be cast if either:
+   *  - The last action in the timeline was cast by a different character, OR
+   *  - This character's last personal action was their Intro skill. */
+  requiresSwapIn?: boolean
+  /** When true, the character must swap out after this action — they will be locked from
+   *  being selected as the active character in the immediately following row. */
+  requiresSwapOut?: boolean
 }

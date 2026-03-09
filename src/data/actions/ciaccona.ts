@@ -3,7 +3,7 @@ import { always } from '../../utils/conditions/damageModifierConditions'
 import { nightmareKelpieOutroTrigger } from '../sideEffects'
 
 // ========== Basic Attack 3-4 =================================================================================================
-const ciaccona_BA_3_4_cancel_with_E: Action = {
+const ciaccona_BA_3_4_cancel_with_skill: Action = {
   name: 'Basic Attack 3-4 (skill cancel)',
   displayName: 'Basic Attack 3-4 (skill cancel)',
   category: 'Basics',
@@ -37,6 +37,7 @@ const ciaccona_BA_3_4_cancel_with_E: Action = {
   castConditions: {
     startState: 'GROUND',
     endState: 'GROUND',
+    requiresSwapIn: true, // TODO : Double Check that it's possible
   },
   offtune: 4 * 0.16 + 4 * 0.3,
   toolTip: 'Can be cast after Intro Skill',
@@ -77,7 +78,11 @@ const ciaccona_BA_3_4_cancel_with_swap: Action = {
   sideEffects: [],
   castConditions: {
     startState: 'GROUND',
+    swapOutState: 'AIR', // TODO : Double Check
     endState: 'GROUND',
+    requiresSwapIn: true, // TODO : Double Check that it's possible
+    requiresSwapOut: true,
+    persistenceTime: 100 // TODO : Persistence Time
   },
   offtune: 4 * 0.16 + 4 * 0.3,
   toolTip: 'Can be cast after Intro Skill',
@@ -86,7 +91,7 @@ const ciaccona_BA_3_4_cancel_with_swap: Action = {
 }
 
 // ========== MA2 -> BA4 =======================================================================================================
-const ciaccona_midair_2_BA_4_cancel_with_E: Action = {
+const ciaccona_midair_2_BA_4_cancel_with_skill: Action = {
   name: 'Mid Air 2 -> Basic Attack 4 (skill cancel)',
   displayName: 'Mid Air 2 -> Basic Attack 4 (skill cancel)',
   category: 'Basics',
@@ -120,6 +125,7 @@ const ciaccona_midair_2_BA_4_cancel_with_E: Action = {
   castConditions: {
     startState: 'GROUND',
     endState: 'GROUND',
+    requiresSwapIn: true
   },
   offtune: 4 * 0.12 + 4 * 0.3,
   toolTip: 'Can be cast if swapped in mid-air',
@@ -160,7 +166,11 @@ const ciaccona_midair_2_BA_4_cancel_with_swap: Action = {
   sideEffects: [],
   castConditions: {
     startState: 'GROUND',
+    swapOutState: 'GROUND', // TODO : Double Check
     endState: 'GROUND',
+    requiresSwapIn: true,
+    requiresSwapOut: true,
+    persistenceTime: 100 // TODO : Persistence Time
   },
   offtune: 4 * 0.12 + 4 * 0.3,
   toolTip: 'Can be cast if swapped in mid-air',
@@ -216,7 +226,10 @@ const ciaccona_skill_cancel_with_swap: Action = {
   sideEffects: [],
   castConditions: {
     startState: 'ANY',
+    swapOutState: 'PRESERVE',
     endState: 'PRESERVE',
+    requiresSwapOut: true,
+    persistenceTime: 100 // TODO : Persistence Time
   },
   offtune: 4 * 0.13,
   groupName: 'Resonance Skill',
@@ -228,7 +241,7 @@ const ciaccona_liberation: Action = {
   name: 'Liberation',
   displayName: 'Singers Triple Cadenza',
   category: 'Skills',
-  castTime: 1.0, // TODO - test from cast start until next character can act (cart E)
+  castTime: 1.0, // TODO - test from CAST START to next character can act (cart E)
   multiplier: 1100.42 / 100,
   scaling: 'ATK',
   elements: ['AERO'],
@@ -285,8 +298,8 @@ const ciaccona_heavy: Action = {
   damageModifiers: [],
   sideEffects: [],
   castConditions: {
-    startState: 'GROUND',
-    endState: 'GROUND',
+    startState: 'GROUND', // TODO : ANY ?
+    endState: 'GROUND', // TODO : PRESERVE ?
   },
   offtune: 10 * 0.05 + 0.47,
   groupName: 'Heavy Attack',
@@ -312,8 +325,11 @@ const ciaccona_heavy_cancel_with_swap: Action = {
   damageModifiers: [],
   sideEffects: [],
   castConditions: {
-    startState: 'GROUND',
-    endState: 'GROUND',
+    startState: 'GROUND', // TODO : ANY ?
+    swapOutState: 'PRESERVE', // TODO : Double Check
+    endState: 'GROUND', // TODO : PRESERVE ?
+    requiresSwapOut: true,
+    persistenceTime: 100 // TODO : Persistence Time
   },
   offtune: 10 * 0.05 + 0.47,
   groupName: 'Heavy Attack',
@@ -347,7 +363,6 @@ const ciaccona_intro: Action = {
   offtune: 0.93
 }
 
-// TODO - test ciaconna outro: Static Mist Outro buff, Aero Erosion amp outro buff, Nightmare Kelpio DMG trigger
 const ciaccona_outro: Action = {
   name: 'Outro Skill',
   displayName: 'Windcalling Tune',
@@ -373,7 +388,6 @@ const ciaccona_outro: Action = {
       durationStrategy: { type: 'limited', timeDuration: 30 },
       stackingStrategy: { maxStacks: 1, resetTimerOnApplication: true, stacksRemovedEachTime: 1 },
     },
-    // 14 seconds: 10 % ATK bonus to incoming resonator
     {
       source: 'Static Mist Outro Buff',
       displayName: 'Static Mist Outro Buff',
@@ -382,7 +396,7 @@ const ciaccona_outro: Action = {
       condition: always(),
       characterStats: { bonusATK: 0.1 },
       targetStrategy: 'nextSwap',
-      durationStrategy: { type: 'limited', timeDuration: 14, numberOfSwaps: 1 }, // TODO : should this be 0 or 1 if I want it to only work on the incoming character (nextSwap) then disappear instantly if you swap away from the character
+      durationStrategy: { type: 'limited', timeDuration: 14, numberOfSwaps: 1 }, // TODO : Double Check if it should be 0 or 1?
       stackingStrategy: { maxStacks: 1, resetTimerOnApplication: true, stacksRemovedEachTime: 1 },
     },
   ],
@@ -396,7 +410,7 @@ const ciaccona_outro: Action = {
 
 // ========== Echo Skill =======================================================================================================
 const ciaccona_echo: Action = {
-  name: 'Ciaccona Echo Skill',
+  name: 'Echo Skill',
   displayName: 'Nightmare: Kelpie',
   category: 'Other',
   castTime: 0,
@@ -485,18 +499,33 @@ const ciaccona_forte: Action = {
 }
 
 export {
-  ciaccona_BA_3_4_cancel_with_E,
+  // Basic Attack 3-4
+  ciaccona_BA_3_4_cancel_with_skill,
   ciaccona_BA_3_4_cancel_with_swap,
-  ciaccona_midair_2_BA_4_cancel_with_E,
+
+  // Mid Air 2 -> Basic Attack 4
+  ciaccona_midair_2_BA_4_cancel_with_skill,
   ciaccona_midair_2_BA_4_cancel_with_swap,
+
+  // Resonance Skill
   ciaccona_skill,
   ciaccona_skill_cancel_with_swap,
+
+  // Liberation
   ciaccona_liberation,
+
+  // Heavy Attack
   ciaccona_heavy,
   ciaccona_heavy_cancel_with_swap,
+
+  // Intro / Outro
   ciaccona_intro,
   ciaccona_outro,
+
+  // Echo
   ciaccona_echo,
+
+  // Testing
   ciaccona_energy,
   ciaccona_concerto,
   ciaccona_forte

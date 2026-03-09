@@ -108,6 +108,28 @@ function verifyCharacter(character: Character, negativeStatusNames: Set<string>)
           if (mod.type === 'negativeStatus' && !negativeStatusNames.has(mod.targetName))
             errors.push(`[CA "${ca.name}"] unknown negative status "${mod.targetName}"`)
       }
+      // Swap-cancel variants must declare all three swap-related cast conditions
+      if (action.variantName === 'Cancel With Swap') {
+        const cc = action.castConditions
+        if (cc.persistenceTime == null) errors.push('Cancel With Swap variant missing castConditions.persistenceTime')
+        if (cc.swapOutState == null) errors.push('Cancel With Swap variant missing castConditions.swapOutState')
+        if (cc.requiresSwapOut !== true) errors.push('Cancel With Swap variant missing castConditions.requiresSwapOut: true')
+      }
+      // Non-swap-out actions must NOT define persistenceTime or swapOutState
+      if (action.variantName !== 'Cancel With Swap') {
+        const cc = action.castConditions
+        if (cc.persistenceTime != null) errors.push('non-swap-cancel action must not define castConditions.persistenceTime')
+        if (cc.swapOutState != null) errors.push('non-swap-cancel action must not define castConditions.swapOutState')
+      }
+      // castConditions state constraints
+      const cc = action.castConditions
+      if (cc.startState === 'PRESERVE') errors.push('castConditions.startState must not be "PRESERVE"')
+      if (cc.endState === 'ANY') errors.push('castConditions.endState must not be "ANY"')
+      if (cc.swapOutState === 'ANY') errors.push('castConditions.swapOutState must not be "ANY"')
+      if (cc.persistenceTime != null && cc.persistenceTime < action.castTime)
+        errors.push(`castConditions.persistenceTime (${cc.persistenceTime}) must be >= castTime (${action.castTime})`)
+      if (cc.previousActions != null && cc.previousActions.length === 0)
+        errors.push('castConditions.previousActions must not be an empty array')
       if (errors.length) throw new Error(errors.join('; '))
     })
   }

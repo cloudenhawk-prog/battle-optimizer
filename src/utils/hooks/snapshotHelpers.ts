@@ -36,10 +36,12 @@ export function assignCharacterToRow(row: Snapshot, character: string): Snapshot
  * After casting and cannot be selected as the active character in the next snapshot row.
  */
 export function isSwapRequiredLocked(snapshot: Snapshot, characterName: string): boolean {
-  return Object.entries(snapshot.coordinatedAttacks ?? {}).some(([key, active]) => {
+  const hasRequiresSwapOut = snapshot.charactersRequiresSwapOut?.[characterName] === true
+  const hasCoordinatedSwapRequired = Object.entries(snapshot.coordinatedAttacks ?? {}).some(([key, active]) => {
     if (active !== 1) return false
     return parseCoordinatedAttackKey(key).owner === characterName && (snapshot.coordinatedAttacksSwapRequired?.[key] ?? false)
   })
+  return hasRequiresSwapOut || hasCoordinatedSwapRequired
 }
 
 export function createSnapshot(previousSnapshot: Snapshot, charactersMap: Record<string, Character>, _characterColumnsMap: Record<string, string[]>, globalColumns: GlobalColumns, fillInCharacter: boolean = true): Snapshot {
@@ -95,5 +97,6 @@ export function createSnapshot(previousSnapshot: Snapshot, charactersMap: Record
     charactersPositions,
     charactersPersistentUntil,
     charactersLastAction,
+    charactersRequiresSwapOut: {},
   }
 }

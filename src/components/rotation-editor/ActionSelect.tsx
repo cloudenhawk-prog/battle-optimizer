@@ -28,6 +28,7 @@ type ActionState = {
   missingEnergy: Array<{ type: EnergyType; needed: number; current: number }>
   isWrongPosition: boolean
   isPreviousActionMismatch: boolean
+  isRequiresSwapIn: boolean
 }
 
 export function ActionSelect({ value, actions, character, currentEnergies, snapshot, onChange, disabled = false }: ActionSelectProps) {
@@ -129,6 +130,20 @@ export function ActionSelect({ value, actions, character, currentEnergies, snaps
       !!previousActionsConstraint?.length &&
       !previousActionsConstraint.some(pa => pa.name === charLastAction)
 
+    // Goal 3: requiresSwapIn check
+    // Allowed if: the last timeline action was cast by a different character (justSwappedIn),
+    // OR this character's last personal action was their Intro skill.
+    let isRequiresSwapIn = false
+    if (action.castConditions.requiresSwapIn && character && snapshot) {
+      const charName = character.name
+      const justSwappedIn = snapshot.character !== charName
+      const lastActionName = snapshot.charactersLastAction?.[charName]
+      const lastActionWasIntro =
+        lastActionName !== undefined &&
+        character.actions.some(a => a.name === lastActionName && a.dmgTypes.includes('INTRO'))
+      isRequiresSwapIn = !justSwappedIn && !lastActionWasIntro
+    }
+
     return {
       action,
       isSpecial,
@@ -139,6 +154,7 @@ export function ActionSelect({ value, actions, character, currentEnergies, snaps
       missingEnergy,
       isWrongPosition,
       isPreviousActionMismatch,
+      isRequiresSwapIn,
     }
   }
 
@@ -171,7 +187,7 @@ export function ActionSelect({ value, actions, character, currentEnergies, snaps
   // Then create ActionGroup objects
   for (const [groupKey, variants] of groupMap.entries()) {
     const isGroup = variants.length > 1 || variants[0].action.groupName !== undefined
-    const isSelectable = variants.some(v => !v.isOnCooldown && !v.isUnaffordable && !v.isWrongPosition && !v.isPreviousActionMismatch)
+    const isSelectable = variants.some(v => !v.isOnCooldown && !v.isUnaffordable && !v.isWrongPosition && !v.isPreviousActionMismatch && !v.isRequiresSwapIn)
     const isCurrent = variants.some(v => v.isCurrent)
 
     actionGroups.push({
@@ -355,9 +371,9 @@ export function ActionSelect({ value, actions, character, currentEnergies, snaps
 
                     {/* Variant Rows */}
                     {group.variants.map(variant => {
-                      const { action, isCurrent, isUnaffordable, isOnCooldown, cooldownRemaining, missingEnergy, isWrongPosition, isPreviousActionMismatch } = variant
+                      const { action, isCurrent, isUnaffordable, isOnCooldown, cooldownRemaining, missingEnergy, isWrongPosition, isPreviousActionMismatch, isRequiresSwapIn } = variant
 
-                      const isDisabled = (isUnaffordable || isOnCooldown || isWrongPosition || isPreviousActionMismatch) && !isCurrent
+                      const isDisabled = (isUnaffordable || isOnCooldown || isWrongPosition || isPreviousActionMismatch || isRequiresSwapIn) && !isCurrent
                       const canSelect = !isDisabled
 
                       return (

@@ -31,4 +31,6 @@ export interface Snapshot {
   charactersPersistentUntil: Record<string, number>
   /** Name of the last action each character cast. */
   charactersLastAction: Record<string, string>
+  /** Whether each character must be swapped out in the immediately following row. */
+  charactersRequiresSwapOut: Record<string, boolean>
 }

@@ -1,8 +1,25 @@
 ### TODO:
 
-Update rover actions to follow convention from Ciaconna
-Test and update Cartethyia
-Go through all 3 characters
+Form logic:
+- Actions locked behind Form (some can be cast universally)
+- Character Window shows Form
+- Form should be managable through actions and time - potentially tied to buffs
+- Form can run out of time or be manually changed
+- Actions should be locked based on Form
+- Cartethyia: Transform (to Fleur + Mandate) / Cart->Fleur / Fleur->Cart : only and freely during mandate -> might need some kind of condition like (Form, Mandate_is_active) -> (Boolean)
+    - Create fleurdelys_transform (To Cartethyia Form)
+    - Create cartethyia_transform_during_mandate (To Fleurdelys Form BUT ONLY DURING MANDATE)
+- Intro Skill should be cast based on current form
+- Add Sequence 1-3 to Cartethyia data
+- Handle future casts: When an action requires a skill to be cast after it, all other characters/actions should be LOCKED
+- Need a way to force certain skills to be cast within a certain time limit of a different action - and whether that makes it go on cooldown or not (Fleurdelys Skill 2)
+    - Should also force it to be cast after Skill 1 (during the window)
+- Does Fleurdelys have an Outro? Or do we only need multiple intros?
+- Split Fleurdelys forte into 3 different sword bars (how do we do this with forte being mandatory?)
+
+
+- Test ciaconna outro: Static Mist Outro buff, Aero Erosion amp outro buff, Nightmare Kelpio DMG trigger
+
 
 Need a way to determine which buffs/debuffs to show
 > All limited buffs

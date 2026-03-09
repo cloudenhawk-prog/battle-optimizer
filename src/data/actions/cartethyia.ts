@@ -2,12 +2,10 @@ import type { Action } from '../../types/action'
 import { always, stacksOfCap } from '../../utils/conditions/damageModifierConditions'
 import { aeroErosionExplosion } from '../sideEffects'
 
-// TODO: add sequences (S1-3)
-
 // ========== Basic Attack 1-4 =================================================================================================
-const cartethyia_BA_1_4_cancel_with_E: Action = { // TODO: this should only be performable if the skill would be castable afterwards: energy + CD - and forcefully cast that skill
-  name: 'Basic Attack 1-4',
-  displayName: 'Basic Attack 1-4',
+const cartethyia_BA_1_4_cancel_with_skill: Action = {
+  name: 'Basic Attack 1-4 (skill cancel)',
+  displayName: 'Basic Attack 1-4 (skill cancel)',
   category: 'Basics',
   castTime: 2.32,
   multiplier: (1.5 * (4.78 + (2 * 3.94 + 5.25) + 4 * 4.28 + (3 * 2.52 + 7.54))) / 100,
@@ -54,7 +52,10 @@ const cartethyia_BA_1_4_cancel_with_swap: Action = {
   sideEffects: [],
   castConditions: {
     startState: 'GROUND',
+    swapOutState: 'GROUND', // TODO : Double Check
     endState: 'GROUND',
+    requiresSwapOut: true,
+    persistenceTime: 100 // TODO : Persistence Time
   },
   offtune: 0.22 + (2 * 0.18 + 0.25) + 4 * 0.2 + (3 * 0.12 + 0.35),
   groupName: 'Basic Attack 1-4',
@@ -84,9 +85,10 @@ const cartethyia_BA_2_4: Action = {
   castConditions: {
     startState: 'GROUND',
     endState: 'GROUND',
+    requiresSwapIn: true,
   },
   offtune: 2 * 0.18 + 0.25 + 4 * 0.2 + (3 * 0.12 + 0.35),
-  toolTip: 'Can be cast after intro', // TODO: First action on a swap-in should have a boolean. Used to determine if this action is castable
+  toolTip: 'Can be cast after intro',
   groupName: 'Basic Attack 2-4',
   variantName: 'Default'
 }
@@ -113,6 +115,7 @@ const cartethyia_BA_2_4_cancel_with_jump: Action = {
   castConditions: {
     startState: 'GROUND',
     endState: 'AIR',
+    requiresSwapIn: true,
   },
   offtune: 2 * 0.18 + 0.25 + 4 * 0.2 + (3 * 0.12 + 0.35),
   toolTip: 'Can be cast after intro',
@@ -141,7 +144,11 @@ const cartethyia_BA_2_4_cancel_with_swap: Action = {
   sideEffects: [],
   castConditions: {
     startState: 'GROUND',
+    swapOutState: 'GROUND', // TODO : Double Check
     endState: 'GROUND',
+    requiresSwapIn: true,
+    requiresSwapOut: true,
+    persistenceTime: 100 // TODO : Persistence Time
   },
   offtune: 2 * 0.18 + 0.25 + 4 * 0.2 + (3 * 0.12 + 0.35),
   toolTip: 'Can be cast after intro',
@@ -199,7 +206,10 @@ const cartethyia_heavy_cancel_with_swap: Action = {
   sideEffects: [],
   castConditions: {
     startState: 'ANY',
+    swapOutState: 'PRESERVE', // TODO : Double Check
     endState: 'PRESERVE',
+    requiresSwapOut: true,
+    persistenceTime: 100 // TODO : Persistence Time
   },
   offtune: 3 * 0.13 + 0.4,
   groupName: 'Heavy Attack',
@@ -207,11 +217,11 @@ const cartethyia_heavy_cancel_with_swap: Action = {
 }
 
 // ========== Plunge Attack ====================================================================================================
-export const cartethyia_plunge: Action = {
+const cartethyia_plunge: Action = {
   name: 'Plunge Attack',
   displayName: 'Plunge Attack',
   category: 'Basics',
-  castTime: 1.00, // TODOTODOTODO
+  castTime: 1.00, // TODO : Cast Time
   multiplier: 0,
   scaling: 'HP',
   elements: ['AERO'],
@@ -222,7 +232,10 @@ export const cartethyia_plunge: Action = {
   statusModifications: [],
   damageModifiers: [],
   sideEffects: [],
-  castConditions: { startState: 'AIR', endState: 'GROUND' },
+  castConditions: {
+    startState: 'AIR',
+    endState: 'GROUND'
+  },
   offtune: 0,
   groupName: 'Plunge Attack',
   variantName: 'Default',
@@ -237,11 +250,11 @@ export const cartethyia_plunge: Action = {
   }
 }
 
-export const cartethyia_plunge_cancel_with_swap: Action = {
+const cartethyia_plunge_cancel_with_swap: Action = {
   name: 'Plunge Attack (swap cancel)',
   displayName: 'Plunge Attack (swap cancel)',
   category: 'Basics',
-  castTime: 0.33, // TODO
+  castTime: 0.33, // TODO : Cast Time
   multiplier: 0,
   scaling: 'HP',
   elements: ['AERO'],
@@ -252,7 +265,13 @@ export const cartethyia_plunge_cancel_with_swap: Action = {
   statusModifications: [],
   damageModifiers: [],
   sideEffects: [],
-  castConditions: { startState: 'AIR', endState: 'GROUND' },
+  castConditions: {
+    startState: 'AIR',
+    swapOutState: 'AIR', // TODO : Double Check
+    endState: 'GROUND',
+    requiresSwapOut: true,
+    persistenceTime: 100 // TODO : Persistence Time
+  },
   offtune: 0,
   groupName: 'Plunge Attack',
   variantName: 'Cancel With Swap',
@@ -267,6 +286,7 @@ export const cartethyia_plunge_cancel_with_swap: Action = {
   }
 }
 
+// Internal Action used as a varaint for the main plunge actions
 const cartethyia_plunge_1: Action = {
   name: 'Plunge Attack (0-1 swords)',
   displayName: 'Plunge Attack 1',
@@ -293,6 +313,7 @@ const cartethyia_plunge_1: Action = {
   toolTip: 'Can be cast with 0-1 swords',
 }
 
+// Internal Action used as a varaint for the main plunge actions
 const cartethyia_plunge_2: Action = {
   name: 'Plunge Attack (2 swords)',
   displayName: 'Plunge Attack 2',
@@ -319,6 +340,7 @@ const cartethyia_plunge_2: Action = {
   toolTip: 'Can be cast with 2 swords',
 }
 
+// Internal Action used as a varaint for the main plunge actions
 const cartethyiaPlunge_3: Action = {
   name: 'Plunge Attack (3 swords)',
   displayName: 'Plunge Attack 3',
@@ -350,7 +372,7 @@ const cartethyia_skill: Action = {
   name: 'Resonance Skill',
   displayName: 'Sword to Bear Their Names',
   category: 'Skills',
-  castTime: 1, // TODO
+  castTime: 1, // TODO : Cast Time
   multiplier: (3 * 6.89 + 8.86) / 100,
   scaling: 'HP',
   elements: ['AERO'],
@@ -370,7 +392,7 @@ const cartethyia_skill: Action = {
     endState: 'AIR',
   },
   offtune: 3 * 0.17 + 0.22,
-  groupName: 'Plunge Attack',
+  groupName: 'Resonance Skill',
   variantName: 'Default'
 }
 
@@ -378,7 +400,7 @@ const cartethyia_skill_cancel_with_swap: Action = {
   name: 'Resonance Skill (swap cancel)',
   displayName: 'Sword to Bear Their Names (swap cancel)',
   category: 'Skills',
-  castTime: 1, // TODO
+  castTime: 1, // TODO : Cast Time
   multiplier: (3 * 6.89 + 8.86) / 100,
   scaling: 'HP',
   elements: ['AERO'],
@@ -395,21 +417,22 @@ const cartethyia_skill_cancel_with_swap: Action = {
   sideEffects: [],
   castConditions: {
     startState: 'ANY',
+    swapOutState: 'PRESERVE', // TODO : Double Check
     endState: 'AIR',
-    persistenceTime: 1.05 // TODO - if swapped back to this character before this time limit, currentState should become this action's endState (Important: THIS TIMER STARTS as the action starts, not the time at which it is done)
-  }, // TODO - all swap cancel versions should have a persistence time
-  // TODO - this should also allow for "previous skill casted", for example for rover cloud strikes
+    requiresSwapOut: true,
+    persistenceTime: 1.05
+  },
   offtune: 3 * 0.17 + 0.22,
-  groupName: 'Plunge Attack',
+  groupName: 'Resonance Skill',
   variantName: 'Cancel With Swap'
 }
 
 // ========== Transform ========================================================================================================
-const cartethyia_transform: Action = { // TODO - characters should be able to set which transformation they are in, actions should define which they work in
-  name: 'To Flerudelys Form', // TODO - might need swap cancel version
+const cartethyia_transform: Action = {
+  name: 'To Flerudelys Form',
   displayName: 'A Knights Heartfelt Prayers',
   category: 'Skills',
-  castTime: 0.16, // TODO - transforming during mandate needs its own transform action with lower CD and different cast time
+  castTime: 0.16,
   multiplier: 0,
   scaling: 'HP',
   elements: [''],
@@ -433,7 +456,7 @@ const cartethyia_transform: Action = { // TODO - characters should be able to se
         { targetStatus: 'Aero Erosion', property: 'frequency', value: -0.5 },
         { targetStatus: 'Aero Erosion', property: 'maxStacks', value: 3 },
       ],
-      condition: always(), // Might rely on the form the character is in
+      condition: always(),
       targetStrategy: 'self',
       durationStrategy: { type: 'limited', timeDuration: 12 },
       stackingStrategy: { maxStacks: 1, resetTimerOnApplication: true, stacksRemovedEachTime: 1 },
@@ -445,18 +468,14 @@ const cartethyia_transform: Action = { // TODO - characters should be able to se
     endState: 'PRESERVE',
   },
   offtune: 0.0
-  // TODO: Group name and variant name if needed
 }
 
-// TODO: const fleurdelys_transform
-
 // ========== Basic 1-5 ========================================================================================================
-// TODO: Action selector should only show actions based on form - OR have a section for each
 const fleurdelys_BA_1_5: Action = {
   name: 'Basic 1-5',
   displayName: 'Basic 1-5',
   category: 'Basics',
-  castTime: 3.4,
+  castTime: 3.4, // TODO
   multiplier: (6.49 + (3.63 + 3 * 1.82) + (3 * 2.13 + 4.26) + 5 * 2.74 + (7.2 + 28.8)) / 100,
   scaling: 'HP',
   elements: ['AERO'],
@@ -501,7 +520,10 @@ const fleurdelys_BA_1_5_cancel_with_swap: Action = {
   sideEffects: [aeroErosionExplosion],
   castConditions: {
     startState: 'GROUND',
+    swapOutState: 'GROUND', // TODO : Double Check
     endState: 'GROUND',
+    requiresSwapOut: true,
+    persistenceTime: 100 // TODO : Persistence Time
   },
   offtune: 0.24 + (0.24 + 3 * 0.12) + (3 * 0.14 + 1.26) + 5 * 0.14 + (0.13 + 0.51),
   groupName: 'Basic 1-5',
@@ -513,7 +535,7 @@ const fleurdelys_BA_3_5: Action = {
   name: 'Basic 3-5',
   displayName: 'Basic 3-5',
   category: 'Basics',
-  castTime: 2.67,
+  castTime: 2.67, // TODO
   multiplier: (3 * 2.13 + 4.26 + 5 * 2.74 + (7.2 + 28.8)) / 100,
   scaling: 'HP',
   elements: ['AERO'],
@@ -531,6 +553,7 @@ const fleurdelys_BA_3_5: Action = {
   castConditions: {
     startState: 'GROUND',
     endState: 'GROUND',
+    requiresSwapIn: true,
   },
   offtune: 3 * 0.14 + 1.26 + 5 * 0.14 + (0.13 + 0.51),
   toolTip: 'Can be cast when quick swapped in without intro',
@@ -559,7 +582,11 @@ const fleurdelys_BA_3_5_cancel_with_swap: Action = {
   sideEffects: [aeroErosionExplosion],
   castConditions: {
     startState: 'GROUND',
+    swapOutState: 'GROUND', // TODO : Double Check
     endState: 'GROUND',
+    requiresSwapIn: true,
+    requiresSwapOut: true,
+    persistenceTime: 100 // TODO : Persistence Time
   },
   offtune: 3 * 0.14 + 1.26 + 5 * 0.14 + (0.13 + 0.51),
   toolTip: 'Can be cast when quick swapped in without intro',
@@ -572,7 +599,7 @@ const fleurdelys_heavy_1: Action = {
   name: 'Heavy Attack 1',
   displayName: 'Heavy Attack 1',
   category: 'Basics',
-  castTime: 0.65,
+  castTime: 0.65, // TODO
   multiplier: (4.28 + 9.97) / 100,
   scaling: 'HP',
   elements: ['AERO'],
@@ -617,7 +644,10 @@ const fleurdelys_heavy_1_cancel_with_swap: Action = {
   sideEffects: [],
   castConditions: {
     startState: 'GROUND',
+    swapOutState: 'GROUND', // TODO : Double Check
     endState: 'GROUND',
+    requiresSwapOut: true,
+    persistenceTime: 100 // TODO : Persistence Time
   },
   offtune: 0.17 + 0.39,
   groupName: 'Heavy Attack 1',
@@ -625,11 +655,11 @@ const fleurdelys_heavy_1_cancel_with_swap: Action = {
 }
 
 // ========== Heavy Attack 2 ===================================================================================================
-const fleurdelys_heavy_2: Action = { // Previous action must be heavy attack 1 fleurdelys
+const fleurdelys_heavy_2: Action = {
   name: 'Enhanced Heavy Attack',
   displayName: 'Heavy Attack 2',
   category: 'Basics',
-  castTime: 0.73,
+  castTime: 0.73, // TODO
   multiplier: (2 * 7.78 + 3.89) / 100,
   scaling: 'HP',
   elements: ['AERO'],
@@ -645,6 +675,7 @@ const fleurdelys_heavy_2: Action = { // Previous action must be heavy attack 1 f
   damageModifiers: [],
   sideEffects: [],
   castConditions: {
+    previousActions: [fleurdelys_heavy_1, fleurdelys_heavy_1_cancel_with_swap],
     startState: 'GROUND',
     endState: 'GROUND',
   },
@@ -653,7 +684,7 @@ const fleurdelys_heavy_2: Action = { // Previous action must be heavy attack 1 f
   variantName: 'Default'
 }
 
-const fleurdelys_heavy_2_cancel_with_swap: Action = { // Previous action must be heavy attack 1 fleurdelys
+const fleurdelys_heavy_2_cancel_with_swap: Action = {
   name: 'Enhanced Heavy Attack (swap cancel)',
   displayName: 'Heavy Attack 2 (swap cancel)',
   category: 'Basics',
@@ -673,8 +704,12 @@ const fleurdelys_heavy_2_cancel_with_swap: Action = { // Previous action must be
   damageModifiers: [],
   sideEffects: [],
   castConditions: {
+    previousActions: [fleurdelys_heavy_1, fleurdelys_heavy_1_cancel_with_swap],
     startState: 'GROUND',
+    swapOutState: 'GROUND', // TODO : Double Check
     endState: 'GROUND',
+    requiresSwapOut: true,
+    persistenceTime: 100 // TODO : Persistence Time
   },
   offtune: 3 * 0.31 + 0.15,
   groupName: 'Heavy Attack 2',
@@ -686,7 +721,7 @@ const fleurdelys_midair_1_3: Action = {
   name: 'Mid-air Attack 1-3',
   displayName: 'Mid-air Attack 1-3',
   category: 'Basics',
-  castTime: 2.47,
+  castTime: 2.47, // TODO
   multiplier: (2 * 2.99 + 3.08 + (2 * 7.39 + 14.77) + 2.2) / 100,
   scaling: 'HP',
   elements: ['AERO'],
@@ -731,7 +766,10 @@ const fleurdelys_midair_1_3_cancel_with_swap: Action = {
   sideEffects: [aeroErosionExplosion],
   castConditions: {
     startState: 'AIR',
+    swapOutState: 'AIR', // TODO : Double Check
     endState: 'GROUND',
+    requiresSwapOut: true,
+    persistenceTime: 100 // TODO : Persistence Time
   },
   offtune: 2 * 0.21 + 0.22 + (2 * 0.16 + 0.33) + 0.15,
   groupName: 'Mid-air Attack 1-3',
@@ -743,7 +781,7 @@ const fleurdelys_midair_1_2: Action = {
   name: 'Mid-air Attack 1-2',
   displayName: 'Mid-air Attack 1-2',
   category: 'Basics',
-  castTime: 1.63,
+  castTime: 1.63, // TODO
   multiplier: (2 * 2.99 + 3.08 + (2 * 7.39 + 14.77)) / 100,
   scaling: 'HP',
   elements: ['AERO'],
@@ -788,7 +826,10 @@ const fleurdelys_midair_1_2_cancel_with_swap: Action = {
   sideEffects: [aeroErosionExplosion],
   castConditions: {
     startState: 'AIR',
+    swapOutState: 'AIR', // TODO : Double Check
     endState: 'AIR',
+    requiresSwapOut: true,
+    persistenceTime: 100 // TODO : Persistence Time
   },
   offtune: 2 * 0.21 + 0.22 + (2 * 0.16 + 0.33),
   groupName: 'Mid-air Attack 1-2',
@@ -800,7 +841,7 @@ const fleurdelys_skill_1: Action = {
   name: 'Resonance Skill 1',
   displayName: 'Sword to Answer Waves Call',
   category: 'Skills',
-  castTime: 0.9,
+  castTime: 0.9, // TODO
   multiplier: (4 * 1.86 + 17.36) / 100,
   scaling: 'HP',
   elements: ['AERO'],
@@ -845,7 +886,10 @@ const fleurdelys_skill_1_cancel_with_swap: Action = {
   sideEffects: [],
   castConditions: {
     startState: 'ANY',
+    swapOutState: 'GROUND', // TODO : Double Check
     endState: 'AIR',
+    requiresSwapOut: true,
+    persistenceTime: 100 // TODO : Persistence Time
   },
   offtune: 4 * 0.06 + 0.51,
   groupName: 'Resonance Skill 1',
@@ -857,7 +901,7 @@ const fleurdelys_skill_2: Action = {
   name: 'Resonance Skill 2',
   displayName: 'May Tempest Break the Tides',
   category: 'Skills',
-  castTime: 1.53,
+  castTime: 1.53, // TODO
   multiplier: (2 * 1.86 + 3 * 7.03) / 100,
   scaling: 'HP',
   elements: ['AERO'],
@@ -902,7 +946,10 @@ const fleurdelys_skill_2_cancel_with_swap: Action = {
   sideEffects: [aeroErosionExplosion],
   castConditions: {
     startState: 'ANY',
+    swapOutState: 'AIR', // TODO : Double Check
     endState: 'GROUND',
+    requiresSwapOut: true,
+    persistenceTime: 100 // TODO : Persistence Time
   },
   offtune: 2 * 0.06 + 3 * 0.21,
   groupName: 'Resonance Skill 2',
@@ -915,7 +962,7 @@ const fleurdelys_liberation: Action = {
   displayName: 'Blade of Howling Squall',
   category: 'Skills',
   castTime: 0.03,
-  multiplier: (2 * (7 * 13.12)) / 100, // CHECK SEQUENCE
+  multiplier: (2 * (7 * 13.12)) / 100,
   scaling: 'HP',
   elements: ['AERO'],
   dmgTypes: ['LIBERATION'],
@@ -948,11 +995,11 @@ const fleurdelys_liberation: Action = {
 }
 
 // ========== Intro & Outro ====================================================================================================
-const cartethyia_intro: Action = { // TODO: needs intro for fleurdelys too - and a way for resolver to determine which to use
+const cartethyia_intro: Action = {
   name: 'Intro',
   displayName: 'Sword to Mark Tides Trace',
   category: 'Other',
-  castTime: 0.92,
+  castTime: 0.92, // TODO
   multiplier: (1.5 * (3 * 2.08 + 6.24)) / 100,
   scaling: 'HP',
   elements: ['AERO'],
@@ -974,7 +1021,7 @@ const cartethyia_intro: Action = { // TODO: needs intro for fleurdelys too - and
   offtune: 3 * 0.12 + 0.35
 }
 
-const cartethyia_outro: Action = { // TODO: needs intro for fleurdelys too - and a way for resolver to determine which to use
+const cartethyia_outro: Action = {
   name: 'Outro',
   displayName: 'Winds Divine Blessing',
   category: 'Other',
@@ -997,8 +1044,8 @@ const cartethyia_outro: Action = { // TODO: needs intro for fleurdelys too - and
 }
 
 // ========== Echo Skill =======================================================================================================
-const cartethyia_echo: Action = { // TODO - some actions should be usable regardless of form
-  name: 'Cartethyia Echo Skill',
+const cartethyia_echo: Action = {
+  name: 'Echo Skill',
   displayName: 'Reminence: Fleurdelys',
   category: 'Other',
   castTime: 0,
@@ -1088,7 +1135,7 @@ const cartethyia_forte: Action = {
 
 const cartethyia_conviction: Action = {
   name: 'Conviction Up',
-  displayName: 'conviction Up',
+  displayName: 'Conviction Up',
   category: 'Testing',
   castTime: 0,
   multiplier: 0,
@@ -1099,7 +1146,7 @@ const cartethyia_conviction: Action = {
   energyGenerated: [{ energyType: 'conviction', amount: 1000, share: 0 }],
   energyCost: [],
   statusModifications: [],
-  damageModifiers: [],
+  damageModifiers: [], 
   sideEffects: [],
   castConditions: {
     startState: 'ANY',
@@ -1109,14 +1156,71 @@ const cartethyia_conviction: Action = {
 }
 
 export {
-  cartethyia_BA_1_4_cancel_with_E,
+  // Basic Attack 1-4
+  cartethyia_BA_1_4_cancel_with_skill,
   cartethyia_BA_1_4_cancel_with_swap,
+
+  // Basic Attack 2-4
   cartethyia_BA_2_4,
   cartethyia_BA_2_4_cancel_with_jump,
   cartethyia_BA_2_4_cancel_with_swap,
+
+  // Heavy Attack
   cartethyia_heavy,
   cartethyia_heavy_cancel_with_swap,
+
+  // Plunge
+  cartethyia_plunge,
+  cartethyia_plunge_cancel_with_swap,
+
+  // Resonance Skill
+  cartethyia_skill,
+  cartethyia_skill_cancel_with_swap,
+
+  // Transform
+  cartethyia_transform,
+
+  // Fleurdelys Basics
+  fleurdelys_BA_1_5,
+  fleurdelys_BA_1_5_cancel_with_swap,
+
+  fleurdelys_BA_3_5,
+  fleurdelys_BA_3_5_cancel_with_swap,
+
+  // Fleurdelys Heavy
+  fleurdelys_heavy_1,
+  fleurdelys_heavy_1_cancel_with_swap,
+
+  fleurdelys_heavy_2,
+  fleurdelys_heavy_2_cancel_with_swap,
+
+  // Fleurdelys Mid-air
+  fleurdelys_midair_1_3,
+  fleurdelys_midair_1_3_cancel_with_swap,
+
+  fleurdelys_midair_1_2,
+  fleurdelys_midair_1_2_cancel_with_swap,
+
+  // Fleurdelys Skills
+  fleurdelys_skill_1,
+  fleurdelys_skill_1_cancel_with_swap,
+
+  fleurdelys_skill_2,
+  fleurdelys_skill_2_cancel_with_swap,
+
+  // Liberation
+  fleurdelys_liberation,
+
+  // Intro / Outro
   cartethyia_intro,
   cartethyia_outro,
-  cartethyia_echo
+
+  // Echo
+  cartethyia_echo,
+
+  // Testing
+  cartethyia_energy,
+  cartethyia_concerto,
+  cartethyia_forte,
+  cartethyia_conviction
 }

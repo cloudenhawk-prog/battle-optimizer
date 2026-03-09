@@ -566,6 +566,11 @@ export function resolveCastState(ctx: StepContext): void {
     [charName]: ctx.action.name,
   }
 
+  // Track whether this character must swap out after this action
+  ctx.current.charactersRequiresSwapOut = {
+    [charName]: ctx.action.castConditions.requiresSwapOut ?? false,
+  }
+
   ctx.logs.push({
     resolver: 'resolveCastState',
     message: `Cast state resolved for ${charName}: position=${newPosition}, persistentUntil=${ctx.current.charactersPersistentUntil[charName]}`,
