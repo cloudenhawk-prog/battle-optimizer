@@ -1146,7 +1146,7 @@ const cartethyia_conviction: Action = {
   energyGenerated: [{ energyType: 'conviction', amount: 1000, share: 0 }],
   energyCost: [],
   statusModifications: [],
-  damageModifiers: [], 
+  damageModifiers: [],
   sideEffects: [],
   castConditions: {
     startState: 'ANY',
