@@ -56,7 +56,7 @@ describe('resolveTime', () => {
         toTime: 0,
         damage: 500,
         dps: 25,
-        charactersEnergies: { concerto: 80 },
+        charactersEnergies: { Char: { concerto: 80 } },
         buffs: { buff1: 5 },
         debuffs: { debuff1: 3 },
         negativeStatuses: { burn: 2 },
@@ -76,7 +76,7 @@ describe('resolveTime', () => {
       expect(current.toTime).toBe(12.5)
       expect(current.damage).toBe(500)
       expect(current.dps).toBe(25)
-      expect(current.charactersEnergies).toEqual({ concerto: 80 })
+      expect(current.charactersEnergies).toEqual({ Char: { concerto: 80 } })
       expect(current.buffs).toEqual({ buff1: 5 })
       expect(current.debuffs).toEqual({ debuff1: 3 })
       expect(current.negativeStatuses).toEqual({ burn: 2 })

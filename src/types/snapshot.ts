@@ -10,7 +10,7 @@ export interface Snapshot {
   toTime: number
   damage: number
   dps: number
-  charactersEnergies: Partial<Record<EnergyType, number>>
+  charactersEnergies: Record<string, Partial<Record<EnergyType, number>>>
   buffs: Record<string, number>
   buffsTimeLeft: Record<string, number>
   buffsSwapsLeft: Record<string, number>
@@ -33,4 +33,9 @@ export interface Snapshot {
   charactersLastAction: Record<string, string>
   /** Whether each character must be swapped out in the immediately following row. */
   charactersRequiresSwapOut: Record<string, boolean>
+  /** Display name of the resolved action variant (e.g. "Plunge Attack 1 (swap cancel)").
+   *  Present only when resolveVariant produced a tier-specific display name that differs
+   *  from the selectable action's own displayName. Used by the row display in place of the
+   *  parent action's displayName so the exact resolved tier is visible to the user. */
+  resolvedDisplayName?: string
 }

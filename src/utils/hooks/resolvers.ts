@@ -23,6 +23,7 @@ export function buildStepContext(snapshotId: number, current: Snapshot, prev: Sn
   const fromTime = prev.toTime
   const toTime = fromTime + action.castTime
   current.action = action.name
+  current.resolvedDisplayName = action.displayName
 
   const allies = []
   for (const [name, char] of Object.entries(characterMap)) {

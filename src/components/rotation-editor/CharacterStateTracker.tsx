@@ -52,7 +52,7 @@ export function CharacterStateTracker({ snapshot, charactersInBattle, tableConfi
           const visibleColumns = group.columns.filter(col => columnVisibility[col.key])
           if (visibleColumns.length === 0) return null
 
-          const energies = (snapshot?.charactersEnergies as any)?.[character.name] || {}
+          const energies = snapshot?.charactersEnergies[character.name] ?? {}
 
           // Compute effective position for display:
           // - Active character → use their stored position

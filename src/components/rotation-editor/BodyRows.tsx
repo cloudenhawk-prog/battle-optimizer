@@ -69,7 +69,7 @@ export function BodyRow({ snapshot, previousSnapshot, charactersInBattle, tableC
       <td className="tableCellBody">
         {isLocked
           ? <div className="lockedSelectorText">
-              {charactersInBattle.find(c => c.name === character)?.actions.find(a => a.name === action)?.displayName ?? action}
+              {snapshot.resolvedDisplayName ?? charactersInBattle.find(c => c.name === character)?.actions.find(a => a.name === action)?.displayName ?? action}
             </div>
           : <ActionSelect
               value={action}

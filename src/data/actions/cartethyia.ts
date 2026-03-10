@@ -217,7 +217,7 @@ const cartethyia_heavy_cancel_with_swap: Action = {
 }
 
 // ========== Plunge Attack ====================================================================================================
-const cartethyia_plunge: Action = {
+const cartethyia_plunge: Action = { // TODO: If the sub actions aren't necessary in full, could simply define the rows we need to update (multipliers & offtune & substring to append to name...?)
   name: 'Plunge Attack',
   displayName: 'Plunge Attack',
   category: 'Basics',
@@ -240,13 +240,22 @@ const cartethyia_plunge: Action = {
   groupName: 'Plunge Attack',
   variantName: 'Default',
   resolveVariant(prevSnapshot, characterName) {
-    const forte: number = (prevSnapshot?.charactersEnergies as any)?.[characterName]?.forte ?? 0
+    const forte: number = prevSnapshot?.charactersEnergies[characterName]?.forte ?? 0
     const base =
       forte >= 3 ? cartethyiaPlunge_3 :
       forte >= 2 ? cartethyia_plunge_2 :
       forte >= 1 ? cartethyia_plunge_1 :
       { ...cartethyia_plunge_1, energyCost: [] }
-    return { ...base, castTime: this.castTime, offtune: this.offtune }
+    return {
+      ...base,
+      name: this.name,
+      groupName: this.groupName,
+      variantName: this.variantName,
+      castTime: this.castTime,
+      castConditions: this.castConditions,
+      cooldown: this.cooldown,
+      offtune: this.offtune,
+    }
   }
 }
 
@@ -276,13 +285,23 @@ const cartethyia_plunge_cancel_with_swap: Action = {
   groupName: 'Plunge Attack',
   variantName: 'Cancel With Swap',
   resolveVariant(prevSnapshot, characterName) {
-    const forte: number = (prevSnapshot?.charactersEnergies as any)?.[characterName]?.forte ?? 0
+    const forte: number = prevSnapshot?.charactersEnergies[characterName]?.forte ?? 0
     const base =
       forte >= 3 ? cartethyiaPlunge_3 :
       forte >= 2 ? cartethyia_plunge_2 :
       forte >= 1 ? cartethyia_plunge_1 :
       { ...cartethyia_plunge_1, energyCost: [] }
-    return { ...base, castTime: this.castTime, offtune: this.offtune }
+    return {
+      ...base,
+      name: this.name,
+      displayName: `${base.displayName} (swap cancel)`,
+      groupName: this.groupName,
+      variantName: this.variantName,
+      castTime: this.castTime,
+      castConditions: this.castConditions,
+      cooldown: this.cooldown,
+      offtune: this.offtune,
+    }
   }
 }
 

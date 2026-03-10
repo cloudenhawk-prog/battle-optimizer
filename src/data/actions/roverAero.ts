@@ -45,11 +45,13 @@ const roverAero_skill_1_cancel_with_swap: Action = {
   ],
   energyCost: [],
   statusModifications: [],
-    damageModifiers: [],
+  damageModifiers: [],
   sideEffects: [],
   castConditions: {
     startState: 'GROUND',
-    endState: 'GROUND',
+    swapOutState: 'GROUND',
+    endState: 'AIR',
+    requiresSwapOut: true,
     persistenceTime: 1.4
   },
   offtune: 0.76,
