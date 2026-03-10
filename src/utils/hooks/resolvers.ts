@@ -538,9 +538,11 @@ export function resolveCooldowns(ctx: StepContext): void {
 export function resolveCastState(ctx: StepContext): void {
   const charName = ctx.character.name
 
-  // Determine the new resolved position for the active character
+  // Determine the new resolved position for the active character.
+  // For swap-cancel variants, swapOutState overrides endState (it's the position the character
+  // lands in after being swapped out mid-action). Falls back to endState for all other actions.
   const prevPosition: 'GROUND' | 'AIR' = ctx.prev.charactersPositions?.[charName] ?? 'GROUND'
-  const rawEndState = ctx.action.castConditions.endState
+  const rawEndState = ctx.action.castConditions.swapOutState ?? ctx.action.castConditions.endState
   const newPosition: 'GROUND' | 'AIR' = rawEndState === 'PRESERVE' || rawEndState === 'ANY' ? prevPosition : (rawEndState as 'GROUND' | 'AIR')
 
   ctx.current.charactersPositions = {

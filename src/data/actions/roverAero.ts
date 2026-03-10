@@ -107,7 +107,10 @@ const roverAero_skill_2_cancel_with_swap: Action = {
   sideEffects: [],
   castConditions: {
     startState: 'AIR',
+    swapOutState: 'AIR',
     endState: 'AIR',
+    requiresSwapOut: true,
+    persistenceTime: 100 // TODO
   },
   offtune: 3 * 0.11 + 0.48,
   groupName: 'Resonance Skill 2',
@@ -186,7 +189,10 @@ const roverAero_skill_3_cancel_with_swap_1: Action = {
   sideEffects: [],
   castConditions: {
     startState: 'GROUND',
+    swapOutState: 'GROUND',
     endState: 'GROUND',
+    requiresSwapOut: true,
+    persistenceTime: 100 // TODO
   },
   offtune: 5 * 0.6 + 2.83,
   groupName: 'Resonance Skill 3',
@@ -225,7 +231,10 @@ const roverAero_skill_3_cancel_with_swap_2: Action = {
   sideEffects: [],
   castConditions: {
     startState: 'GROUND',
+    swapOutState: 'GROUND',
     endState: 'GROUND',
+    requiresSwapOut: true,
+    persistenceTime: 100 // TODO
   },
   offtune: 5 * 0.6 + 2.83,
   groupName: 'Resonance Skill 3',
@@ -369,7 +378,10 @@ const roverAero_midair_1_2_cancel_with_swap: Action = {
   castConditions: {
     startState: 'AIR',
     previousActions: [roverAero_skill_1],
+    swapOutState: 'AIR',
     endState: 'AIR',
+    requiresSwapOut: true,
+    persistenceTime: 100 // TODO
   },
   offtune: 0.29 + 0.32,
   groupName: 'Mid Air 1-2',
@@ -424,7 +436,10 @@ const roverAero_plunge_cancel_with_swap: Action = {
   sideEffects: [],
   castConditions: {
     startState: 'AIR',
-    endState: 'AIR',
+    swapOutState: 'AIR',
+    endState: 'GROUND',
+    requiresSwapOut: true,
+    persistenceTime: 100 // TODO
   },
   offtune: 0.96,
   groupName: 'Plunge',
@@ -483,7 +498,10 @@ const roverAero_BA_4_cancel_with_swap: Action = {
   castConditions: {
     startState: 'GROUND',
     previousActions: [roverAero_plunge],
+    swapOutState: 'GROUND',
     endState: 'GROUND',
+    requiresSwapOut: true,
+    persistenceTime: 100 // TODO
   },
   offtune: 0.52,
   groupName: 'Basic Attack 4',

@@ -138,6 +138,11 @@ function createInitialSnapshot(): Snapshot {
     coordinatedAttacks: {},
     coordinatedAttacksTimeLeft: {},
     coordinatedAttacksSwapRequired: {},
+    charactersPositions: {},
+    charactersPersistentUntil: {},
+    charactersLastAction: {},
+    charactersRequiresSwapOut: {},
+    charactersForms: {},
   }
 }
 

@@ -49,7 +49,10 @@ export type Action = {
 export type CastConditions = {
   previousActions?: Action[]
   startState: Position
-  /** Position stored for this character when they are swapped out. Defaults to endState if omitted. */
+  /** Position stored for this character after they are swapped out mid-action.
+   *  Required for 'Cancel With Swap' variants; must not be set on any other action.
+   *  Note: endState is NOT used as a fallback — it describes where the character ends up
+   *  if they finish the action normally (or are swapped back in during persistenceTime). */
   swapOutState?: Position
   endState: Position
   persistenceTime?: number // When a character starts casting an action, even if swapped out, their position is saved/persist for X amount of time, to allow combo chaining/swapping

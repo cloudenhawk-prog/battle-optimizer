@@ -305,7 +305,7 @@ const cartethyia_plunge_cancel_with_swap: Action = {
   }
 }
 
-// Internal Action used as a varaint for the main plunge actions
+// Internal Action used as a variant for the main plunge actions
 const cartethyia_plunge_1: Action = {
   name: 'Plunge Attack (0-1 swords)',
   displayName: 'Plunge Attack 1',
@@ -332,7 +332,7 @@ const cartethyia_plunge_1: Action = {
   toolTip: 'Can be cast with 0-1 swords',
 }
 
-// Internal Action used as a varaint for the main plunge actions
+// Internal Action used as a variant for the main plunge actions
 const cartethyia_plunge_2: Action = {
   name: 'Plunge Attack (2 swords)',
   displayName: 'Plunge Attack 2',
@@ -359,7 +359,7 @@ const cartethyia_plunge_2: Action = {
   toolTip: 'Can be cast with 2 swords',
 }
 
-// Internal Action used as a varaint for the main plunge actions
+// Internal Action used as a variant for the main plunge actions
 const cartethyiaPlunge_3: Action = {
   name: 'Plunge Attack (3 swords)',
   displayName: 'Plunge Attack 3',
@@ -448,7 +448,7 @@ const cartethyia_skill_cancel_with_swap: Action = {
 
 // ========== Transform ========================================================================================================
 const cartethyia_transform: Action = {
-  name: 'To Flerudelys Form',
+  name: 'To Fleurdelys Form',
   displayName: 'A Knights Heartfelt Prayers',
   category: 'Skills',
   castTime: 0.16,

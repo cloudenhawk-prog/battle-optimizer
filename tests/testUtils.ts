@@ -45,6 +45,8 @@ export function createMockSnapshot(overrides: Partial<Snapshot> = {}): Snapshot 
     charactersPositions: {},
     charactersPersistentUntil: {},
     charactersLastAction: {},
+    charactersRequiresSwapOut: {},
+    charactersForms: {},
     ...overrides,
   }
 }

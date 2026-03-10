@@ -14,7 +14,10 @@ type ActionSelectProps = {
   actions: Action[]
   character?: Character
   currentEnergies?: Partial<Record<EnergyType, number>>
-  snapshot?: Snapshot
+  /** The resolved snapshot from the row immediately before this one.  All cast-condition
+   *  checks (position, persistence, cooldowns, last action, form, requiresSwapIn) must be
+   *  evaluated against the state at the END of the previous row, not the current one. */
+  previousSnapshot?: Snapshot | null
   onChange: (actionName: string) => void
   disabled?: boolean
 }
@@ -34,7 +37,7 @@ type ActionState = {
   isCustomCanCastFailed: boolean
 }
 
-export function ActionSelect({ value, actions, character, currentEnergies, snapshot, onChange, disabled = false }: ActionSelectProps) {
+export function ActionSelect({ value, actions, character, currentEnergies, previousSnapshot, onChange, disabled = false }: ActionSelectProps) {
   const [isOpen, setIsOpen] = useState(false)
   const [expandedGroup, setExpandedGroup] = useState<string | null>(null)
   const [variantPopupPosition, setVariantPopupPosition] = useState({ top: 0, left: 0 })
@@ -96,8 +99,8 @@ export function ActionSelect({ value, actions, character, currentEnergies, snaps
 
     // Check if action is on cooldown
     // Variants (actions with same groupName) share cooldowns
-    if (character && snapshot && snapshot.charactersCooldowns) {
-      const characterCooldowns = snapshot.charactersCooldowns[character.name] ?? {}
+    if (character && previousSnapshot && previousSnapshot.charactersCooldowns) {
+      const characterCooldowns = previousSnapshot.charactersCooldowns[character.name] ?? {}
       const cooldownKey = getActionCooldownKey(action)
       cooldownRemaining = characterCooldowns[cooldownKey] ?? 0
     }
@@ -111,16 +114,16 @@ export function ActionSelect({ value, actions, character, currentEnergies, snaps
     let charPosition: 'GROUND' | 'AIR' = 'GROUND'
     let charLastAction: string | undefined = undefined
 
-    if (character && snapshot) {
+    if (character && previousSnapshot) {
       const charName = character.name
-      const storedPosition = snapshot.charactersPositions?.[charName] ?? 'GROUND'
-      const persistentUntil = snapshot.charactersPersistentUntil?.[charName] ?? 0
-      const isPrevCharacter = snapshot.character === charName
-      const isWithinPersistence = persistentUntil > 0 && snapshot.toTime <= persistentUntil
+      const storedPosition = previousSnapshot.charactersPositions?.[charName] ?? 'GROUND'
+      const persistentUntil = previousSnapshot.charactersPersistentUntil?.[charName] ?? 0
+      const isPrevCharacter = previousSnapshot.character === charName
+      const isWithinPersistence = persistentUntil > 0 && previousSnapshot.toTime <= persistentUntil
 
       if (isPrevCharacter || isWithinPersistence) {
         charPosition = storedPosition
-        charLastAction = snapshot.charactersLastAction?.[charName]
+        charLastAction = previousSnapshot.charactersLastAction?.[charName]
       }
     }
 
@@ -135,10 +138,10 @@ export function ActionSelect({ value, actions, character, currentEnergies, snaps
     // Allowed if: the last timeline action was cast by a different character (justSwappedIn),
     // OR this character's last personal action was their Intro skill.
     let isRequiresSwapIn = false
-    if (action.castConditions.requiresSwapIn && character && snapshot) {
+    if (action.castConditions.requiresSwapIn && character && previousSnapshot) {
       const charName = character.name
-      const justSwappedIn = snapshot.character !== charName
-      const lastActionName = snapshot.charactersLastAction?.[charName]
+      const justSwappedIn = previousSnapshot.character !== charName
+      const lastActionName = previousSnapshot.charactersLastAction?.[charName]
       const lastActionWasIntro = lastActionName !== undefined && character.actions.some(a => a.name === lastActionName && a.dmgTypes.includes('INTRO'))
       isRequiresSwapIn = !justSwappedIn && !lastActionWasIntro
     }
@@ -146,9 +149,9 @@ export function ActionSelect({ value, actions, character, currentEnergies, snaps
     // Goal 4: form check
     // Check if action requires a specific form and if character is in that form
     let isWrongForm = false
-    if (character && snapshot && action.castConditions.requiredForms !== undefined) {
+    if (character && previousSnapshot && action.castConditions.requiredForms !== undefined) {
       const charName = character.name
-      const currentForm = snapshot.charactersForms?.[charName] ?? ''
+      const currentForm = previousSnapshot.charactersForms?.[charName] ?? ''
 
       // If requiredForms is empty array, action can't be cast
       if (action.castConditions.requiredForms.length === 0) {
@@ -168,8 +171,8 @@ export function ActionSelect({ value, actions, character, currentEnergies, snaps
     // Goal 5: customCanCast check
     // Check if action has a custom validation function
     let isCustomCanCastFailed = false
-    if (action.castConditions.customCanCast && character && snapshot) {
-      isCustomCanCastFailed = !action.castConditions.customCanCast(snapshot, character.name)
+    if (action.castConditions.customCanCast && character && previousSnapshot) {
+      isCustomCanCastFailed = !action.castConditions.customCanCast(previousSnapshot, character.name)
     }
 
     return {

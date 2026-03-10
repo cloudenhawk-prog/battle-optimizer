@@ -108,15 +108,22 @@ function verifyCharacter(character: Character, negativeStatusNames: Set<string>)
           if (mod.type === 'negativeStatus' && !negativeStatusNames.has(mod.targetName))
             errors.push(`[CA "${ca.name}"] unknown negative status "${mod.targetName}"`)
       }
-      // Swap-cancel variants must declare all three swap-related cast conditions
-      if (action.variantName === 'Cancel With Swap') {
+      // variantName drives the intent; requiresSwapOut is the runtime flag.
+      // Cross-validating both catches: (a) forgetting requiresSwapOut on a swap variant,
+      // and (b) setting swapOutState/persistenceTime without the runtime flag being set.
+      const isSwapCancelByName = action.variantName?.startsWith('Cancel With Swap') ?? false
+      const isSwapCancelByFlag = action.castConditions.requiresSwapOut === true
+      // variantName declares swap-cancel intent → requiresSwapOut must be set
+      if (isSwapCancelByName && !isSwapCancelByFlag)
+        errors.push('Cancel With Swap variant missing castConditions.requiresSwapOut: true')
+      // requiresSwapOut set → must also declare swapOutState and persistenceTime
+      if (isSwapCancelByFlag) {
         const cc = action.castConditions
-        if (cc.persistenceTime == null) errors.push('Cancel With Swap variant missing castConditions.persistenceTime')
-        if (cc.swapOutState == null) errors.push('Cancel With Swap variant missing castConditions.swapOutState')
-        if (cc.requiresSwapOut !== true) errors.push('Cancel With Swap variant missing castConditions.requiresSwapOut: true')
+        if (cc.persistenceTime == null) errors.push('swap-cancel action missing castConditions.persistenceTime')
+        if (cc.swapOutState == null) errors.push('swap-cancel action missing castConditions.swapOutState')
       }
-      // Non-swap-out actions must NOT define persistenceTime or swapOutState
-      if (action.variantName !== 'Cancel With Swap') {
+      // Neither flag nor name → must NOT define persistenceTime or swapOutState
+      if (!isSwapCancelByFlag && !isSwapCancelByName) {
         const cc = action.castConditions
         if (cc.persistenceTime != null) errors.push('non-swap-cancel action must not define castConditions.persistenceTime')
         if (cc.swapOutState != null) errors.push('non-swap-cancel action must not define castConditions.swapOutState')

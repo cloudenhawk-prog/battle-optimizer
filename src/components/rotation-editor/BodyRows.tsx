@@ -76,7 +76,7 @@ export function BodyRow({ snapshot, previousSnapshot, charactersInBattle, tableC
               actions={charactersInBattle.find(c => c.name === character)?.actions ?? []}
               character={charactersInBattle.find(c => c.name === character)}
               currentEnergies={snapshot.charactersEnergies[character]}
-              snapshot={snapshot}
+              previousSnapshot={previousSnapshot}
               onChange={actionName => {
                 console.log('📍 BodyRow - ActionSelect onChange:', { snapshotId, actionName })
                 onSelectAction(snapshotId, actionName)
