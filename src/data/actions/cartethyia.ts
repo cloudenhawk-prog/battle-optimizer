@@ -1080,9 +1080,9 @@ const cartethyia_echo: Action = {
   sideEffects: [],
   castConditions: {
     startState: 'ANY',
-    endState: 'ANY',
+    endState: 'PRESERVE',
   },
-  offtune: 0,
+  offtune: 0
 }
 
 // ========== Energies =========================================================================================================

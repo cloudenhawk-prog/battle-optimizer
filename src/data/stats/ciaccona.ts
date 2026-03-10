@@ -1,6 +1,6 @@
 import type { CharacterStats } from '../../types/stats'
 
-export const ciacconaStats: CharacterStats = {
+export const ciaccona_stats: CharacterStats = {
   level: 90,
 
   baseATK: 375 + 587.50, // Character baseATK + Weapon baseATK
@@ -113,5 +113,10 @@ export const ciacconaStats: CharacterStats = {
   havocTotalMultiplierDMG: 1.0,
 
   energyPercent: 1.0 + 0.128, // Character baseEN + Weapon baseEN
+}
+
+export const ciaccona_inherentStats: Partial<CharacterStats> = {
+  critDamage: 0.16,
+  bonusATK: 0.12
 }
 

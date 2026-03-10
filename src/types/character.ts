@@ -9,20 +9,11 @@ import type { Form } from './form'
 
 export type Character = {
   name: string
-  actions: Action[]
   maxEnergies: Partial<Record<EnergyType, number>>
-  stats: CharacterStats
+  actions: Action[]
   damageModifiers: DamageModifier[]
-  /** Forms available to this character. If undefined/empty, character has no forms.
-   *  One form should be marked as isDefault: true, otherwise the first form is used as default. */
-  forms?: Form[]
-}
-
-export type CharacterData = {
-  name: string
-  actions: Action[]
-  maxEnergies: Partial<Record<EnergyType, number>>
-  baseStats: Partial<CharacterStats>
+  stats: CharacterStats
   inherentStats: Partial<CharacterStats>
   gear: Gear
+  forms?: Form[]
 }

@@ -1,6 +1,10 @@
 ### TODO:
+- Fix Rover Data
+- Clean data and data type files
+- nightmareKelpieOutroTrigger: you should be able to choose a damageCalculationStrategy: it could function like a stats scaling like character Action or a Negative Status damage calculation. Might need to define certain properties like an Action or negative status damage event (see what Aero Erosion Explosion does)
 
-- - Form System
+
+- - Form System (WIP)
 - Character has a state tracking Form
 - Character Window Shows form
 - Actions are locked behind Forms or Universal
@@ -9,13 +13,15 @@
 - Each form should be able to define their own intro/outro skills OR use default ones (typically they only have custom intro skills)
 
 - - - Cartethyia Specific Form Implementations:
+- Add 2 forms to Cartethyia Character Data
+- Add Actions:
 - Transform: To Fleurdelys Form -> Triggers Mandate : energy cost and high cooldown
 - Cartethyia To Fleurdelys (during Mandate) : free and low cooldown
   - Create cartethyia_transform_during_mandate
 - Fleurdelys To Cartethyia : free and low cooldown (if Mandate doesn't exist you can't swap back to Fleurdelys after though) (Can't cast if Conviction is full === 120)
   - Create fleurdelys_transform
 - TLDR: Essentially Fleurdelys Form revolves around Mandate: when the buff is gone, anything that forces a Fleurdelys->Cartethyia transform will make you unable to swap back until the base Transform skill is off cooldown
-
+  
 - - - Cartethyia Data:
 - Add Sequence 1-3
 - Update stats

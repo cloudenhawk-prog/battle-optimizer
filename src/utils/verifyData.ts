@@ -74,12 +74,12 @@ function verifyCharacter(character: Character, negativeStatusNames: Set<string>)
     }
   })
 
-  // --- Required action types (convention: names contain "Intro" / "Outro" / "Echo Skill") ---
+  // --- Required action types (convention: names contain "Intro" / "Outro"; ECHO actions identified by dmgTypes) ---
   check('Required actions (Intro / Outro / Echo Skill)', () => {
     const missing: string[] = []
     if (!actions.some(a => a.name.includes('Intro'))) missing.push('Intro')
     if (!actions.some(a => a.name.includes('Outro'))) missing.push('Outro')
-    if (!actions.some(a => a.name.includes('Echo Skill'))) missing.push('Echo Skill')
+    if (!actions.some(a => (a.dmgTypes as string[]).includes('ECHO'))) missing.push('Echo Skill')
     if (missing.length) throw new Error(`missing: ${missing.join(', ')}`)
   })
 

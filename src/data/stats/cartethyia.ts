@@ -1,6 +1,6 @@
 import type { CharacterStats } from '../../types/stats'
 
-export const cartethyiaStats: CharacterStats = {
+export const cartethyia_stats: CharacterStats = {
   level: 90,
 
   baseATK: 724, // TODO each line should document where stats come from - then lookup sequences, echoes, weapon, inherent stats, inherent passives skills
@@ -113,4 +113,9 @@ export const cartethyiaStats: CharacterStats = {
   havocTotalMultiplierDMG: 1.0,
 
   energyPercent: 1.1,
+}
+
+export const cartethyia_inherentStats: Partial<CharacterStats> = {
+  critRate: 0.08,
+  bonusHP: 0.12
 }

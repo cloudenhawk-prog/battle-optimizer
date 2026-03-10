@@ -1,23 +1,62 @@
+import type { Action } from './action'
+import type { CoordinatedAttack } from './coordinatedAttack'
 import type { DamageModifier } from './modifiers'
+import type { SideEffect } from './sideEffect'
 import type { CharacterStats } from './stats'
 
 // ========== Type: Gear =======================================================================================================
-
 export type Gear = {
-  weapon: Weapon | null
-  echoes: Echo[]
+  weapon: Weapon
+  echoSlots: EchoSlots
+  setBonus?: EchoSetBonus
 }
 
+// ========== Type: Weapon =====================================================================================================
 export type Weapon = {
   name: string
   stats: Partial<CharacterStats>
-  damageModifiers: DamageModifier[]
+  injectedModifiers?: InjectedModifier[]
 }
 
+// ========== Type: Echo =======================================================================================================
 export type Echo = {
   name: string
   cost: number
   baseStats: Partial<CharacterStats>
   subStats: Partial<CharacterStats>
-  specialStats: Partial<CharacterStats>
+  firstSlotStats?: Partial<CharacterStats>
+  conditionalStats?: EchoConditionalStats
+  echoSkill?: Action
+  injectedModifiers?: InjectedModifier[]
+  injectedSideEffects?: InjectedSideEffect[]
+}
+
+export type EchoSlots = {
+  1: Echo | null
+  2: Echo | null
+  3: Echo | null
+  4: Echo | null
+  5: Echo | null
+}
+
+export type EchoConditionalStats = {
+  condition: (characterName: string) => boolean
+  stats: Partial<CharacterStats>
+}
+// ========== Type: Set Bonus ==================================================================================================
+export type EchoSetBonus = {
+  name: string
+  stats: Partial<CharacterStats>
+  injectedModifiers?: InjectedModifier[]
+}
+
+// ========== Type: Shared =====================================================================================================
+export type InjectedModifier = {
+  targets: Array<'character' | Action | CoordinatedAttack>
+  modifiers: DamageModifier[]
+}
+
+export type InjectedSideEffect = {
+  targets: Action[]
+  sideEffects: SideEffect[]
 }

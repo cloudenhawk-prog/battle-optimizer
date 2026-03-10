@@ -1,6 +1,6 @@
 import type { Action } from '../../types/action'
 import { always } from '../../utils/conditions/damageModifierConditions'
-import { nightmareKelpieOutroTrigger } from '../sideEffects'
+import { ciaccona_singers_triple_cadenza_coordinated } from '../coordinatedAttacks/ciaccona'
 
 // ========== Basic Attack 3-4 =================================================================================================
 const ciaccona_BA_3_4_cancel_with_skill: Action = {
@@ -255,22 +255,7 @@ const ciaccona_liberation: Action = {
   statusModifications: [],
   damageModifiers: [],
   sideEffects: [],
-  coordinatedAttacks: [
-    {
-      name: 'Singers Triple Cadenza (Coordinated)',
-      displayName: 'Singers Triple Cadenza (Coordinated)',
-      multiplier: 6.12 / 100,
-      scaling: 'ATK',
-      elements: ['AERO'],
-      dmgTypes: ['LIBERATION'],
-      frequency: 1.6, // TODO: test in tower
-      duration: 20 * 1.6, // TODO: test in tower
-      swapRequired: true,
-      energyGenerated: [],
-      statusModifications: [{ type: 'negativeStatus', targetName: 'Aero Erosion', stackChange: 1 }],
-      offtune: 0.22,
-    },
-  ],
+  coordinatedAttacks: [ciaccona_singers_triple_cadenza_coordinated],
   castConditions: {
     startState: 'GROUND',
     endState: 'GROUND',
@@ -387,20 +372,9 @@ const ciaccona_outro: Action = {
       targetStrategy: 'all',
       durationStrategy: { type: 'limited', timeDuration: 30 },
       stackingStrategy: { maxStacks: 1, resetTimerOnApplication: true, stacksRemovedEachTime: 1 },
-    },
-    {
-      source: 'Static Mist Outro Buff',
-      displayName: 'Static Mist Outro Buff',
-      type: 'buff',
-      ownerCharacter: 'Ciaccona',
-      condition: always(),
-      characterStats: { bonusATK: 0.1 },
-      targetStrategy: 'nextSwap',
-      durationStrategy: { type: 'limited', timeDuration: 14, numberOfSwaps: 1 }, // TODO : Double Check if it should be 0 or 1?
-      stackingStrategy: { maxStacks: 1, resetTimerOnApplication: true, stacksRemovedEachTime: 1 },
-    },
+    }
   ],
-  sideEffects: [nightmareKelpieOutroTrigger],
+  sideEffects: [],
   castConditions: {
     startState: 'ANY',
     endState: 'ANY',
