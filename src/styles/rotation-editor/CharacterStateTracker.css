@@ -231,8 +231,6 @@
 .stateTrackerEnergies {
   display: flex;
   flex-direction: column;
-  display: flex;
-  flex-direction: column;
   padding: 10px 14px;
   gap: 6px;
 }
