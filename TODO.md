@@ -32,6 +32,12 @@
 - - - User Test:
 - Ciaconna outro: Static Mist Outro buff, Aero Erosion amp outro buff, Nightmare Kelpio DMG trigger
 
+- - - Wishes:
+- Gear/Echo system
+  - Allows us to compute stats more safely
+  - Allows us to define modifiers that dynamically are added to characters
+    - How do we handle this if a modifier is connected to an action? For example Static Mist Outro Buff (dynamically inject into data? Or some resolver logic?)
+
 Need a way to determine which buffs/debuffs to show
 
 > All limited buffs
