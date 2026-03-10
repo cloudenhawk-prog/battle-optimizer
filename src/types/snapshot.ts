@@ -36,9 +36,9 @@ export interface Snapshot {
   /** The current form name for each character.
    *  Undefined/empty string means the character has no forms or is in their default form. */
   charactersForms: Record<string, string>
-  /** Display name of the resolved action variant (e.g. "Plunge Attack 1 (swap cancel)").
-   *  Present only when resolveVariant produced a tier-specific display name that differs
-   *  from the selectable action's own displayName. Used by the row display in place of the
-   *  parent action's displayName so the exact resolved tier is visible to the user. */
+  /** Display label of the resolved action variant for this snapshot row (e.g. "Plunge Attack 1 (swap cancel)").
+   *  This is the resolved action's display name as shown to the user, and may be identical
+   *  to or differ from the selectable action's own displayName. When present, UIs should
+   *  prefer this over the parent action's displayName so the exact resolved variant is visible. */
   resolvedDisplayName?: string
 }
