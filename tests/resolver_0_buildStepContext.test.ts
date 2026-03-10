@@ -105,7 +105,7 @@ describe('buildStepContext', () => {
         toTime: 888,
         damage: 1234,
         dps: 567,
-        charactersEnergies: { concerto: 50 },
+        charactersEnergies: { TestChar: { concerto: 50 } },
         buffs: { testBuff: 10 },
         debuffs: { testDebuff: 5 },
         negativeStatuses: { burn: 3 },
@@ -125,7 +125,7 @@ describe('buildStepContext', () => {
       expect(current.toTime).toBe(888)
       expect(current.damage).toBe(1234)
       expect(current.dps).toBe(567)
-      expect(current.charactersEnergies).toEqual({ concerto: 50 })
+      expect(current.charactersEnergies).toEqual({ TestChar: { concerto: 50 } })
       expect(current.buffs).toEqual({ testBuff: 10 })
       expect(current.debuffs).toEqual({ testDebuff: 5 })
       expect(current.negativeStatuses).toEqual({ burn: 3 })

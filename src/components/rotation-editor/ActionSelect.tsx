@@ -5,6 +5,7 @@ import type { Action, ActionCategory } from '../../types/action'
 import type { Character } from '../../types/character'
 import type { Snapshot } from '../../types/snapshot'
 import type { EnergyType } from '../../types/baseTypes'
+import { getActionCooldownKey } from '../../utils/hooks/cooldownHelpers'
 
 // ========== Component: Action Select =========================================================================================
 
@@ -13,7 +14,10 @@ type ActionSelectProps = {
   actions: Action[]
   character?: Character
   currentEnergies?: Partial<Record<EnergyType, number>>
-  snapshot?: Snapshot
+  /** The resolved snapshot from the row immediately before this one.  All cast-condition
+   *  checks (position, persistence, cooldowns, last action, form, requiresSwapIn) must be
+   *  evaluated against the state at the END of the previous row, not the current one. */
+  previousSnapshot?: Snapshot | null
   onChange: (actionName: string) => void
   disabled?: boolean
 }
@@ -26,9 +30,14 @@ type ActionState = {
   isOnCooldown: boolean
   cooldownRemaining: number
   missingEnergy: Array<{ type: EnergyType; needed: number; current: number }>
+  isWrongPosition: boolean
+  isPreviousActionMismatch: boolean
+  isRequiresSwapIn: boolean
+  isWrongForm: boolean
+  isCustomCanCastFailed: boolean
 }
 
-export function ActionSelect({ value, actions, character, currentEnergies, snapshot, onChange, disabled = false }: ActionSelectProps) {
+export function ActionSelect({ value, actions, character, currentEnergies, previousSnapshot, onChange, disabled = false }: ActionSelectProps) {
   const [isOpen, setIsOpen] = useState(false)
   const [expandedGroup, setExpandedGroup] = useState<string | null>(null)
   const [variantPopupPosition, setVariantPopupPosition] = useState({ top: 0, left: 0 })
@@ -89,12 +98,82 @@ export function ActionSelect({ value, actions, character, currentEnergies, snaps
     }
 
     // Check if action is on cooldown
-    if (character && snapshot && snapshot.charactersCooldowns) {
-      const characterCooldowns = snapshot.charactersCooldowns[character.name] ?? {}
-      cooldownRemaining = characterCooldowns[action.name] ?? 0
+    // Variants (actions with same groupName) share cooldowns
+    if (character && previousSnapshot && previousSnapshot.charactersCooldowns) {
+      const characterCooldowns = previousSnapshot.charactersCooldowns[character.name] ?? {}
+      const cooldownKey = getActionCooldownKey(action)
+      cooldownRemaining = characterCooldowns[cooldownKey] ?? 0
     }
 
     const isOnCooldown = cooldownRemaining > 0
+
+    // Determine character's effective position and last action
+    // - If same character as previous snapshot: use stored position/lastAction directly
+    // - If swapping back: use stored state only when within the persistence window
+    // - Otherwise (outside persistence or no persistence): position resets to GROUND, combo breaks
+    let charPosition: 'GROUND' | 'AIR' = 'GROUND'
+    let charLastAction: string | undefined = undefined
+
+    if (character && previousSnapshot) {
+      const charName = character.name
+      const storedPosition = previousSnapshot.charactersPositions?.[charName] ?? 'GROUND'
+      const persistentUntil = previousSnapshot.charactersPersistentUntil?.[charName] ?? 0
+      const isPrevCharacter = previousSnapshot.character === charName
+      const isWithinPersistence = persistentUntil > 0 && previousSnapshot.toTime <= persistentUntil
+
+      if (isPrevCharacter || isWithinPersistence) {
+        charPosition = storedPosition
+        charLastAction = previousSnapshot.charactersLastAction?.[charName]
+      }
+    }
+
+    // Goal 1: position check
+    const isWrongPosition = action.castConditions.startState !== 'ANY' && action.castConditions.startState !== charPosition
+
+    // Goal 2: previousActions check
+    const previousActionsConstraint = action.castConditions.previousActions
+    const isPreviousActionMismatch = !!previousActionsConstraint?.length && !previousActionsConstraint.some(pa => pa.name === charLastAction)
+
+    // Goal 3: requiresSwapIn check
+    // Allowed if: the last timeline action was cast by a different character (justSwappedIn),
+    // OR this character's last personal action was their Intro skill.
+    let isRequiresSwapIn = false
+    if (action.castConditions.requiresSwapIn && character && previousSnapshot) {
+      const charName = character.name
+      const justSwappedIn = previousSnapshot.character !== charName
+      const lastActionName = previousSnapshot.charactersLastAction?.[charName]
+      const lastActionWasIntro = lastActionName !== undefined && character.actions.some(a => a.name === lastActionName && a.dmgTypes.includes('INTRO'))
+      isRequiresSwapIn = !justSwappedIn && !lastActionWasIntro
+    }
+
+    // Goal 4: form check
+    // Check if action requires a specific form and if character is in that form
+    let isWrongForm = false
+    if (character && previousSnapshot && action.castConditions.requiredForms !== undefined) {
+      const charName = character.name
+      const currentForm = previousSnapshot.charactersForms?.[charName] ?? ''
+
+      // If requiredForms is empty array, action can't be cast
+      if (action.castConditions.requiredForms.length === 0) {
+        isWrongForm = true
+      } else if (action.castConditions.requiredForms.length > 0) {
+        // Check if current form is in the required forms list
+        // If current form is empty string, use default form
+        if (!currentForm) {
+          const defaultForm = character.forms?.find(f => f.isDefault) ?? character.forms?.[0]
+          isWrongForm = !action.castConditions.requiredForms.includes(defaultForm?.name ?? '')
+        } else {
+          isWrongForm = !action.castConditions.requiredForms.includes(currentForm)
+        }
+      }
+    }
+
+    // Goal 5: customCanCast check
+    // Check if action has a custom validation function
+    let isCustomCanCastFailed = false
+    if (action.castConditions.customCanCast && character && previousSnapshot) {
+      isCustomCanCastFailed = !action.castConditions.customCanCast(previousSnapshot, character.name)
+    }
 
     return {
       action,
@@ -104,10 +183,21 @@ export function ActionSelect({ value, actions, character, currentEnergies, snaps
       isOnCooldown,
       cooldownRemaining,
       missingEnergy,
+      isWrongPosition,
+      isPreviousActionMismatch,
+      isRequiresSwapIn,
+      isWrongForm,
+      isCustomCanCastFailed,
     }
   }
 
-  const actionStates = actions.map(getActionState)
+  // Filter out intro/outro actions - they're automatically triggered, not user-selectable
+  const selectableActions = actions.filter(action => {
+    const isIntroOutro = action.dmgTypes.includes('INTRO') || action.dmgTypes.includes('OUTRO')
+    return !isIntroOutro
+  })
+
+  const actionStates = selectableActions.map(getActionState)
   const selectedAction = actionStates.find(s => s.isCurrent)
   const displayText = selectedAction ? selectedAction.action.name : '-- Select Action --'
 
@@ -136,7 +226,7 @@ export function ActionSelect({ value, actions, character, currentEnergies, snaps
   // Then create ActionGroup objects
   for (const [groupKey, variants] of groupMap.entries()) {
     const isGroup = variants.length > 1 || variants[0].action.groupName !== undefined
-    const isSelectable = variants.some(v => !v.isOnCooldown && !v.isUnaffordable)
+    const isSelectable = variants.some(v => !v.isOnCooldown && !v.isUnaffordable && !v.isWrongPosition && !v.isPreviousActionMismatch && !v.isRequiresSwapIn && !v.isWrongForm && !v.isCustomCanCastFailed)
     const isCurrent = variants.some(v => v.isCurrent)
 
     actionGroups.push({
@@ -320,9 +410,9 @@ export function ActionSelect({ value, actions, character, currentEnergies, snaps
 
                     {/* Variant Rows */}
                     {group.variants.map(variant => {
-                      const { action, isCurrent, isUnaffordable, isOnCooldown, cooldownRemaining, missingEnergy } = variant
+                      const { action, isCurrent, isUnaffordable, isOnCooldown, cooldownRemaining, missingEnergy, isWrongPosition, isPreviousActionMismatch, isRequiresSwapIn, isWrongForm, isCustomCanCastFailed } = variant
 
-                      const isDisabled = (isUnaffordable || isOnCooldown) && !isCurrent
+                      const isDisabled = (isUnaffordable || isOnCooldown || isWrongPosition || isPreviousActionMismatch || isRequiresSwapIn || isWrongForm || isCustomCanCastFailed) && !isCurrent
                       const canSelect = !isDisabled
 
                       return (

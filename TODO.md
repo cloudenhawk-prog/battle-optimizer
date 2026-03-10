@@ -1,15 +1,50 @@
 ### TODO:
 
-Update rover actions to follow convention from Ciaconna
-Test and update Cartethyia
-Go through all 3 characters
+- - Form System
+- Character has a state tracking Form
+- Character Window Shows form
+- Actions are locked behind Forms or Universal
+- Form can be changed through actions when conditions are met, or denied when conditions are not met (Cartethyia can swap freely during Mandate, but otherwise needs Energy and has cooldown)
+  - We could solve this by having special Swap Actions only available when, for example, a specific buff is active (Mandate for Cartethyia)
+- Each form should be able to define their own intro/outro skills OR use default ones (typically they only have custom intro skills)
+
+- - - Cartethyia Specific Form Implementations:
+- Transform: To Fleurdelys Form -> Triggers Mandate : energy cost and high cooldown
+- Cartethyia To Fleurdelys (during Mandate) : free and low cooldown
+  - Create cartethyia_transform_during_mandate
+- Fleurdelys To Cartethyia : free and low cooldown (if Mandate doesn't exist you can't swap back to Fleurdelys after though) (Can't cast if Conviction is full === 120)
+  - Create fleurdelys_transform
+- TLDR: Essentially Fleurdelys Form revolves around Mandate: when the buff is gone, anything that forces a Fleurdelys->Cartethyia transform will make you unable to swap back until the base Transform skill is off cooldown
+
+- - - Cartethyia Data:
+- Add Sequence 1-3
+- Update stats
+- Fleurdelys Intro (no outro?)
+- Split Forte into 3 different sword bars (how do we do this with forte being mandatory?)
+
+- - - Action Logic:
+- Handle future casts: When an action requires a skill to be cast after it, all other characters/actions should be LOCKED
+- Need a way to only allow certain skills to be cast within a certain time limit of a different action - and whether that makes it go on cooldown or not (Fleurdelys Skill 2)
+  - Should also force it to be cast after Skill 1 (during the window)
+  - Should also decide whether it persists through swaps or not
+  - TLDR: Basically a skill combo system: Skill 1 -> Skill 2 (example: Fleurdelys)
+
+- - - User Test:
+- Ciaconna outro: Static Mist Outro buff, Aero Erosion amp outro buff, Nightmare Kelpio DMG trigger
+
+- - - Wishes:
+- Gear/Echo system
+  - Allows us to compute stats more safely
+  - Allows us to define modifiers that dynamically are added to characters
+    - How do we handle this if a modifier is connected to an action? For example Static Mist Outro Buff (dynamically inject into data? Or some resolver logic?)
 
 Need a way to determine which buffs/debuffs to show
+
 > All limited buffs
 > But what about: permanent modifiers that only affect certain characters at certain times
+>
 > > Show if relevant in current snapshot?
 > > Show these in the character window instead?
-
 
 > The data verification script should also generate a file that states: which images do we expect in different places and which ones do we actually have in assets already vs missing.
 
@@ -19,8 +54,8 @@ Need a way to determine which buffs/debuffs to show
 
 > Possibility to lower cooldowns (example: Cartethyia when consuming swords)
 
-
 # Fairly Important:
+
 Modifiers (buffs) can affect how actions behave, like Mandate. Need an easy way to handle this. For example:
 Side Effects behaviour can depend on a modifier (active, inactive, stacks etc)
 StatusModification can depend on modifier (for example the number of stacks the action apply, can be negative, zero, positive)

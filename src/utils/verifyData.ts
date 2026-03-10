@@ -108,6 +108,35 @@ function verifyCharacter(character: Character, negativeStatusNames: Set<string>)
           if (mod.type === 'negativeStatus' && !negativeStatusNames.has(mod.targetName))
             errors.push(`[CA "${ca.name}"] unknown negative status "${mod.targetName}"`)
       }
+      // variantName drives the intent; requiresSwapOut is the runtime flag.
+      // Cross-validating both catches: (a) forgetting requiresSwapOut on a swap variant,
+      // and (b) setting swapOutState/persistenceTime without the runtime flag being set.
+      const isSwapCancelByName = action.variantName?.startsWith('Cancel With Swap') ?? false
+      const isSwapCancelByFlag = action.castConditions.requiresSwapOut === true
+      // variantName declares swap-cancel intent → requiresSwapOut must be set
+      if (isSwapCancelByName && !isSwapCancelByFlag)
+        errors.push('Cancel With Swap variant missing castConditions.requiresSwapOut: true')
+      // requiresSwapOut set → must also declare swapOutState and persistenceTime
+      if (isSwapCancelByFlag) {
+        const cc = action.castConditions
+        if (cc.persistenceTime == null) errors.push('swap-cancel action missing castConditions.persistenceTime')
+        if (cc.swapOutState == null) errors.push('swap-cancel action missing castConditions.swapOutState')
+      }
+      // Neither flag nor name → must NOT define persistenceTime or swapOutState
+      if (!isSwapCancelByFlag && !isSwapCancelByName) {
+        const cc = action.castConditions
+        if (cc.persistenceTime != null) errors.push('non-swap-cancel action must not define castConditions.persistenceTime')
+        if (cc.swapOutState != null) errors.push('non-swap-cancel action must not define castConditions.swapOutState')
+      }
+      // castConditions state constraints
+      const cc = action.castConditions
+      if (cc.startState === 'PRESERVE') errors.push('castConditions.startState must not be "PRESERVE"')
+      if (cc.endState === 'ANY') errors.push('castConditions.endState must not be "ANY"')
+      if (cc.swapOutState === 'ANY') errors.push('castConditions.swapOutState must not be "ANY"')
+      if (cc.persistenceTime != null && cc.persistenceTime < action.castTime)
+        errors.push(`castConditions.persistenceTime (${cc.persistenceTime}) must be >= castTime (${action.castTime})`)
+      if (cc.previousActions != null && cc.previousActions.length === 0)
+        errors.push('castConditions.previousActions must not be an empty array')
       if (errors.length) throw new Error(errors.join('; '))
     })
   }

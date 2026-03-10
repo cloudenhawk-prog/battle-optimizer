@@ -52,19 +52,31 @@ export function CharacterStateTracker({ snapshot, charactersInBattle, tableConfi
           const visibleColumns = group.columns.filter(col => columnVisibility[col.key])
           if (visibleColumns.length === 0) return null
 
-          const energies = (snapshot?.charactersEnergies as any)?.[character.name] || {}
+          const energies = snapshot?.charactersEnergies[character.name] ?? {}
+
+          // Compute effective position for display:
+          // - Active character → use their stored position
+          // - Inactive within persistence → use their own stored position
+          // - Inactive outside persistence → sync to active character's position
+          const storedPosition: 'GROUND' | 'AIR' = snapshot?.charactersPositions?.[character.name] ?? 'GROUND'
+          const persistentUntil = snapshot?.charactersPersistentUntil?.[character.name] ?? 0
+          const isActiveChar = snapshot?.character === character.name
+          const isWithinPersistence = persistentUntil > 0 && (snapshot?.toTime ?? 0) <= persistentUntil
+          const activeCharPosition: 'GROUND' | 'AIR' = snapshot?.character ? (snapshot.charactersPositions?.[snapshot.character] ?? 'GROUND') : 'GROUND'
+          const displayPosition: 'GROUND' | 'AIR' = isActiveChar || isWithinPersistence ? storedPosition : activeCharPosition
+
+          // Get current form for this character
+          const currentFormName = snapshot?.charactersForms?.[character.name] ?? ''
+          const currentForm = character.forms?.find(f => f.name === currentFormName)
+          const defaultForm = character.forms?.find(f => f.isDefault) ?? character.forms?.[0]
+          const displayForm = currentForm || defaultForm
 
           const isActive = activeCharacterName === group.label
 
           return (
             <div key={group.label} className={`stateTrackerCard${isActive ? ' stateTrackerCard--active' : ''}`}>
               {/* Gear icon - top right corner */}
-              <button
-                type="button"
-                className="stateTrackerGearBtn"
-                onClick={() => setProfileOpen(group.label)}
-                title="Character Profile"
-              >
+              <button type="button" className="stateTrackerGearBtn" onClick={() => setProfileOpen(group.label)} title="Character Profile">
                 <img src="/assets/gear.png" alt="Profile" />
               </button>
 
@@ -82,6 +94,21 @@ export function CharacterStateTracker({ snapshot, charactersInBattle, tableConfi
                   </>
                 )}
               </div>
+
+              {/* Position badge */}
+              <div className="stateTrackerPositionRow">
+                <span className={`stateTrackerPositionBadge stateTrackerPositionBadge--${displayPosition.toLowerCase()}${!isActiveChar && !isWithinPersistence ? ' stateTrackerPositionBadge--synced' : ''}`}>{displayPosition === 'AIR' ? '▲ AIR' : '▼ GROUND'}</span>
+              </div>
+
+              {/* Form badge (if character has forms) */}
+              {displayForm && (
+                <div className="stateTrackerFormRow">
+                  <span className="stateTrackerFormBadge">
+                    {displayForm.icon && <img src={displayForm.icon} alt={displayForm.name} className="stateTrackerFormIcon" />}
+                    {displayForm.displayName || displayForm.name}
+                  </span>
+                </div>
+              )}
 
               {/* Energy bars */}
               <div className="stateTrackerEnergies">
@@ -110,9 +137,7 @@ export function CharacterStateTracker({ snapshot, charactersInBattle, tableConfi
         })}
       </div>
 
-      {profileOpen !== null && (
-        <CharacterProfileOverlay characterName={profileOpen} onClose={() => setProfileOpen(null)} />
-      )}
+      {profileOpen !== null && <CharacterProfileOverlay characterName={profileOpen} onClose={() => setProfileOpen(null)} />}
     </>
   )
 }

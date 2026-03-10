@@ -10,7 +10,7 @@ export interface Snapshot {
   toTime: number
   damage: number
   dps: number
-  charactersEnergies: Partial<Record<EnergyType, number>>
+  charactersEnergies: Record<string, Partial<Record<EnergyType, number>>>
   buffs: Record<string, number>
   buffsTimeLeft: Record<string, number>
   buffsSwapsLeft: Record<string, number>
@@ -25,4 +25,20 @@ export interface Snapshot {
   coordinatedAttacksTimeLeft: Record<string, number>
   coordinatedAttacksSwapRequired: Record<string, boolean>
   charactersCooldowns: Record<string, Record<string, number>>
+  /** Resolved position (GROUND or AIR) for each character after their last action. */
+  charactersPositions: Record<string, 'GROUND' | 'AIR'>
+  /** Absolute time until which each character's persistence is active (0 = no persistence). */
+  charactersPersistentUntil: Record<string, number>
+  /** Name of the last action each character cast. */
+  charactersLastAction: Record<string, string>
+  /** Whether each character must be swapped out in the immediately following row. */
+  charactersRequiresSwapOut: Record<string, boolean>
+  /** The current form name for each character.
+   *  Undefined/empty string means the character has no forms or is in their default form. */
+  charactersForms: Record<string, string>
+  /** Display label of the resolved action variant for this snapshot row (e.g. "Plunge Attack 1 (swap cancel)").
+   *  This is the resolved action's display name as shown to the user, and may be identical
+   *  to or differ from the selectable action's own displayName. When present, UIs should
+   *  prefer this over the parent action's displayName so the exact resolved variant is visible. */
+  resolvedDisplayName?: string
 }

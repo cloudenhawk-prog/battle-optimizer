@@ -12,7 +12,7 @@ import { getCharacter, getPrevCharacter } from '../../utils/hooks/characterHelpe
 import { getConcertoValue } from '../../utils/hooks/energyHelpers'
 import { getActionFromCharacter, getActionNameByDmgType } from '../../utils/hooks/actionHelpers'
 import { getSnapshotIndex, getPrevSnapshot, copySnapshots, getSnapshotById, assignCharacterToRow } from '../../utils/hooks/snapshotHelpers'
-import { buildStepContext, resolveTime, resolveDamageModifiers, resolveDamage, resolveSideEffectsAndStatuses, resolveModifierState, resolveResources, resolveCooldowns, resolveCoordinatedAttacks } from '../../utils/hooks/resolvers'
+import { buildStepContext, resolveTime, resolveDamageModifiers, resolveDamage, resolveSideEffectsAndStatuses, resolveModifierState, resolveResources, resolveCooldowns, resolveCoordinatedAttacks, resolveCastState } from '../../utils/hooks/resolvers'
 import { negativeStatuses as negativeStatusesData } from '../../data/negativeStatuses'
 import { createSnapshot } from '../../utils/hooks/snapshotHelpers'
 
@@ -153,6 +153,8 @@ function updateSnapshotsWithAction(params: { snapshots: Snapshot[]; snapshotId: 
 
   resolveCooldowns(context)
 
+  resolveCastState(context)
+
   // -------- Update modifiersInAction ref ------
   modifiersInAction.current = context.modifiersInAction
 
@@ -205,8 +207,13 @@ function handleOutroIntroFlow(params: { snapshots: Snapshot[]; snapshotId: numbe
   if (!prevCharObj) throw new Error(`handleOutroIntroFlow: character '${prevChar}' not found in charactersMap`)
   if (!currCharObj) throw new Error(`handleOutroIntroFlow: character '${currChar}' not found in charactersMap`)
 
-  const outroActionName = getActionNameByDmgType(prevCharObj, 'OUTRO')
-  const introActionName = getActionNameByDmgType(currCharObj, 'INTRO')
+  // Get current forms for both characters
+  const prevSnapshot = getPrevSnapshot(updated, snapshotId)
+  const prevCharForm = prevSnapshot?.charactersForms?.[prevChar] ?? ''
+  const currCharForm = prevSnapshot?.charactersForms?.[currChar] ?? ''
+
+  const outroActionName = getActionNameByDmgType(prevCharObj, 'OUTRO', prevCharForm)
+  const introActionName = getActionNameByDmgType(currCharObj, 'INTRO', currCharForm)
 
   if (!outroActionName) throw new Error(`handleOutroIntroFlow: character '${prevChar}' has no OUTRO action — every character must define one`)
   if (!introActionName) throw new Error(`handleOutroIntroFlow: character '${currChar}' has no INTRO action — every character must define one`)
@@ -253,14 +260,14 @@ function validateActionInputs(params: { snapshots: Snapshot[]; snapshotId: numbe
     return null
   }
 
-  const action = getActionFromCharacter(charactersMap, current.character, actionName)
+  const prev = getPrevSnapshot(snapshots, index)
+
+  const action = getActionFromCharacter(charactersMap, current.character, actionName, prev)
   console.log('🔍 validateActionInputs - action found:', action?.name)
   if (!action) {
     console.log('❌ Action not found')
     return null
   }
-
-  const prev = getPrevSnapshot(snapshots, index)
 
   return { index, character, action, snapshots, current, prev, enemy, negativeStatusesInAction, modifiersInAction, coordinatedAttacksInAction, charactersMap, characterColumnsMap, globalColumns, setDamageEvents }
 }

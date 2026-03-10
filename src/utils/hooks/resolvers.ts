@@ -23,6 +23,7 @@ export function buildStepContext(snapshotId: number, current: Snapshot, prev: Sn
   const fromTime = prev.toTime
   const toTime = fromTime + action.castTime
   current.action = action.name
+  current.resolvedDisplayName = action.displayName
 
   const allies = []
   for (const [name, char] of Object.entries(characterMap)) {
@@ -270,10 +271,7 @@ function aggregateModification(
   entry.refreshDuration ||= refreshDuration
 }
 
-function helpModifierStatusModifications(
-  ctx: StepContext,
-  statusModifications: ReturnType<typeof aggregateStatusModifications>,
-): void {
+function helpModifierStatusModifications(ctx: StepContext, statusModifications: ReturnType<typeof aggregateStatusModifications>): void {
   const types = ['buff', 'debuff'] as const
   const anyChanges = types.some(t => Object.keys(statusModifications[t]).length > 0)
   if (!anyChanges) return
@@ -403,9 +401,7 @@ export function resolveCoordinatedAttacks(ctx: StepContext, setDamageEvents: Dis
     resolver: 'resolveCoordinatedAttacks',
     message: `Coordinated attacks processed: ${ctx.coordinatedAttacksInAction.filter(a => a.applicationTime !== -1).length} active`,
     details: {
-      active: ctx.coordinatedAttacksInAction
-        .filter(a => a.applicationTime !== -1)
-        .map(a => ({ name: a.coordinatedAttack.name, owner: a.ownerCharacter, timeLeft: a.timeLeft })),
+      active: ctx.coordinatedAttacksInAction.filter(a => a.applicationTime !== -1).map(a => ({ name: a.coordinatedAttack.name, owner: a.ownerCharacter, timeLeft: a.timeLeft })),
     },
   })
 }
@@ -525,6 +521,77 @@ export function resolveCooldowns(ctx: StepContext): void {
 }
 
 // ========== Resolver 7: Events ==============================================================================================
+
+// ========== Resolver 8: Cast State ==========================================================================================
+
+/**
+ * Updates each character's resolved position, persistence window, and last-action tracking
+ * after the current action completes.
+ *
+ * - charactersPositions: resolved to GROUND or AIR (PRESERVE/ANY keep the previous value)
+ * - charactersPersistentUntil: absolute time until which the character persists on-field state
+ *   after being swapped out (counted from fromTime, per the spec)
+ * - charactersLastAction: the name of the last action this character cast; cleared for the
+ *   active character if no persistenceTime is set AND the next step swaps away (handled by
+ *   ActionSelect reading the persistence window rather than explicit clearing)
+ */
+export function resolveCastState(ctx: StepContext): void {
+  const charName = ctx.character.name
+
+  // Determine the new resolved position for the active character.
+  // For swap-cancel variants, swapOutState overrides endState (it's the position the character
+  // lands in after being swapped out mid-action). Falls back to endState for all other actions.
+  const prevPosition: 'GROUND' | 'AIR' = ctx.prev.charactersPositions?.[charName] ?? 'GROUND'
+  const rawEndState = ctx.action.castConditions.swapOutState ?? ctx.action.castConditions.endState
+  const newPosition: 'GROUND' | 'AIR' = rawEndState === 'PRESERVE' || rawEndState === 'ANY' ? prevPosition : (rawEndState as 'GROUND' | 'AIR')
+
+  ctx.current.charactersPositions = {
+    ...(ctx.prev.charactersPositions ?? {}),
+    [charName]: newPosition,
+  }
+
+  // Track how long this character persists with their current state after swapping out
+  const persistenceTime = ctx.action.castConditions.persistenceTime ?? 0
+  ctx.current.charactersPersistentUntil = {
+    ...(ctx.prev.charactersPersistentUntil ?? {}),
+    [charName]: persistenceTime > 0 ? ctx.fromTime + persistenceTime : 0,
+  }
+
+  // Record this action as the character's last personal action
+  ctx.current.charactersLastAction = {
+    ...(ctx.prev.charactersLastAction ?? {}),
+    [charName]: ctx.action.name,
+  }
+
+  // Track whether this character must swap out after this action
+  ctx.current.charactersRequiresSwapOut = {
+    [charName]: ctx.action.castConditions.requiresSwapOut ?? false,
+  }
+
+  // Handle form changes if this action changes the character's form
+  if (ctx.action.formChange) {
+    ctx.current.charactersForms = {
+      ...(ctx.prev.charactersForms ?? {}),
+      [charName]: ctx.action.formChange,
+    }
+    ctx.logs.push({
+      resolver: 'resolveCastState',
+      message: `Form changed for ${charName}: ${ctx.prev.charactersForms?.[charName] || 'default'} → ${ctx.action.formChange}`,
+      details: { formChange: ctx.action.formChange },
+    })
+  } else {
+    // Preserve current form
+    ctx.current.charactersForms = {
+      ...(ctx.prev.charactersForms ?? {}),
+    }
+  }
+
+  ctx.logs.push({
+    resolver: 'resolveCastState',
+    message: `Cast state resolved for ${charName}: position=${newPosition}, persistentUntil=${ctx.current.charactersPersistentUntil[charName]}`,
+    details: { prevPosition, rawEndState, newPosition, persistenceTime },
+  })
+}
 
 // ========== Internal Helpers ================================================================================================
 

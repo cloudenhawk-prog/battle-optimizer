@@ -17,19 +17,22 @@
   box-shadow: var(--table-shadow-inner), var(--table-shadow-main), var(--table-shadow-glow);
   overflow: hidden;
   position: relative;
-  transition: border-color 0.35s ease, box-shadow 0.35s ease;
+  transition:
+    border-color 0.35s ease,
+    box-shadow 0.35s ease;
 }
 
 /* ===== Active (In-Play) Card ===== */
 
 @keyframes activeCardPulse {
-  0%, 100% {
+  0%,
+  100% {
     box-shadow:
       var(--table-shadow-inner),
       var(--table-shadow-main),
       0 0 0 1px rgba(80, 220, 255, 0.45),
       0 0 18px rgba(80, 220, 255, 0.22),
-      0 0 40px rgba(80, 220, 255, 0.10);
+      0 0 40px rgba(80, 220, 255, 0.1);
   }
   50% {
     box-shadow:
@@ -47,14 +50,11 @@
 }
 
 .stateTrackerCard--active .stateTrackerHeader {
-  background: linear-gradient(
-    to right,
-    rgba(80, 220, 255, 0.10),
-    rgba(80, 220, 255, 0.05) 60%,
-    transparent
-  );
+  background: linear-gradient(to right, rgba(80, 220, 255, 0.1), rgba(80, 220, 255, 0.05) 60%, transparent);
   border-bottom-color: rgba(80, 220, 255, 0.2);
-  transition: background 0.35s ease, border-bottom-color 0.35s ease;
+  transition:
+    background 0.35s ease,
+    border-bottom-color 0.35s ease;
 }
 
 /* ===== Card Header ===== */
@@ -81,16 +81,18 @@
   box-shadow:
     0 4px 10px rgba(0, 0, 0, 0.25),
     inset 0 1px 0 rgba(255, 255, 255, var(--table-icon-box-strength));
-  transition: transform var(--table-icon-animation-speed) ease,
-              box-shadow var(--table-icon-animation-speed) ease,
-              opacity var(--table-icon-animation-speed) ease;
+  transition:
+    transform var(--table-icon-animation-speed) ease,
+    box-shadow var(--table-icon-animation-speed) ease,
+    opacity var(--table-icon-animation-speed) ease;
 }
 
 .stateTrackerCharIcon:hover,
 .stateTrackerCharIcon:focus {
   transform: translateY(var(--table-icon-hover-y-jump)) scale(var(--table-icon-hover-size));
-  box-shadow: 0 8px 18px rgba(0, 0, 0, 0.32),
-              inset 0 1px 0 rgba(255, 255, 255, var(--table-icon-hover-box-strength));
+  box-shadow:
+    0 8px 18px rgba(0, 0, 0, 0.32),
+    inset 0 1px 0 rgba(255, 255, 255, var(--table-icon-hover-box-strength));
   opacity: var(--table-icon-hover-opacity);
 }
 
@@ -126,9 +128,10 @@
   margin-top: -10px;
   margin-bottom: -10px;
   filter: drop-shadow(0 2px 6px rgba(0, 0, 0, 0.4));
-  transition: opacity var(--table-icon-animation-speed) ease,
-              filter var(--table-icon-animation-speed) ease,
-              transform var(--table-icon-animation-speed) ease;
+  transition:
+    opacity var(--table-icon-animation-speed) ease,
+    filter var(--table-icon-animation-speed) ease,
+    transform var(--table-icon-animation-speed) ease;
 }
 
 .stateTrackerNametagImg:hover {
@@ -155,7 +158,72 @@
 }
 
 .stateTrackerNametagImg:hover ~ .stateTrackerNametagLabel {
-  text-shadow: 0 0 8px rgba(255, 255, 255, 0.5), 0 1px 4px rgba(0, 0, 0, 0.8);
+  text-shadow:
+    0 0 8px rgba(255, 255, 255, 0.5),
+    0 1px 4px rgba(0, 0, 0, 0.8);
+}
+
+/* ===== Position Badge ===== */
+
+.stateTrackerPositionRow {
+  display: flex;
+  justify-content: center;
+  padding: 4px 14px 0;
+}
+
+.stateTrackerPositionBadge {
+  font-size: 0.65rem;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  padding: 2px 8px;
+  border-radius: 4px;
+  border: 1px solid transparent;
+}
+
+.stateTrackerPositionBadge--ground {
+  color: rgba(180, 200, 160, 0.9);
+  background: rgba(60, 90, 50, 0.35);
+  border-color: rgba(120, 160, 90, 0.3);
+}
+
+.stateTrackerPositionBadge--air {
+  color: rgba(140, 190, 255, 0.9);
+  background: rgba(40, 70, 130, 0.35);
+  border-color: rgba(80, 140, 220, 0.3);
+}
+
+/* Synced state (inactive, no persistence): slightly dimmed to signal it's derived */
+.stateTrackerPositionBadge--synced {
+  opacity: 0.55;
+}
+
+/* ===== Form Badge ===== */
+
+.stateTrackerFormRow {
+  display: flex;
+  justify-content: center;
+  padding: 4px 14px 0;
+}
+
+.stateTrackerFormBadge {
+  font-size: 0.7rem;
+  font-weight: 600;
+  letter-spacing: 0.05em;
+  padding: 3px 10px;
+  border-radius: 5px;
+  border: 1px solid rgba(160, 140, 220, 0.35);
+  color: rgba(220, 200, 255, 0.9);
+  background: rgba(80, 60, 120, 0.35);
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.stateTrackerFormIcon {
+  width: 14px;
+  height: 14px;
+  object-fit: contain;
 }
 
 /* ===== Energy List ===== */
@@ -197,16 +265,18 @@
   box-shadow:
     0 3px 8px rgba(0, 0, 0, 0.2),
     inset 0 1px 0 rgba(255, 255, 255, var(--table-icon-box-strength));
-  transition: transform var(--table-icon-animation-speed) ease,
-              box-shadow var(--table-icon-animation-speed) ease,
-              opacity var(--table-icon-animation-speed) ease;
+  transition:
+    transform var(--table-icon-animation-speed) ease,
+    box-shadow var(--table-icon-animation-speed) ease,
+    opacity var(--table-icon-animation-speed) ease;
 }
 
 .stateTrackerEnergyIcon:hover,
 .stateTrackerEnergyIcon:focus {
   transform: translateY(var(--table-icon-hover-y-jump)) scale(var(--table-icon-hover-size));
-  box-shadow: 0 6px 14px rgba(0, 0, 0, 0.32),
-              inset 0 1px 0 rgba(255, 255, 255, var(--table-icon-hover-box-strength));
+  box-shadow:
+    0 6px 14px rgba(0, 0, 0, 0.32),
+    inset 0 1px 0 rgba(255, 255, 255, var(--table-icon-hover-box-strength));
   opacity: var(--table-icon-hover-opacity);
 }
 
@@ -295,9 +365,10 @@
   box-shadow:
     0 3px 8px rgba(0, 0, 0, 0.2),
     inset 0 1px 0 rgba(255, 255, 255, var(--table-icon-box-strength));
-  transition: transform var(--table-icon-animation-speed) ease,
-              box-shadow var(--table-icon-animation-speed) ease,
-              opacity var(--table-icon-animation-speed) ease;
+  transition:
+    transform var(--table-icon-animation-speed) ease,
+    box-shadow var(--table-icon-animation-speed) ease,
+    opacity var(--table-icon-animation-speed) ease;
 }
 
 .stateTrackerGearBtn img {
@@ -309,8 +380,9 @@
 .stateTrackerGearBtn:hover,
 .stateTrackerGearBtn:focus-visible {
   transform: translateY(var(--table-icon-hover-y-jump)) scale(var(--table-icon-hover-size));
-  box-shadow: 0 6px 14px rgba(0, 0, 0, 0.32),
-              inset 0 1px 0 rgba(255, 255, 255, var(--table-icon-hover-box-strength));
+  box-shadow:
+    0 6px 14px rgba(0, 0, 0, 0.32),
+    inset 0 1px 0 rgba(255, 255, 255, var(--table-icon-hover-box-strength));
   opacity: var(--table-icon-hover-opacity);
 }
 
@@ -381,7 +453,10 @@
   color: var(--table-text-dim);
   text-transform: uppercase;
   letter-spacing: 0.15em;
-  font-family: system-ui, -apple-system, sans-serif;
+  font-family:
+    system-ui,
+    -apple-system,
+    sans-serif;
 }
 
 .charProfileBody {

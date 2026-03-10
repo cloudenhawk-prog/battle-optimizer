@@ -42,6 +42,11 @@ export function createMockSnapshot(overrides: Partial<Snapshot> = {}): Snapshot 
     coordinatedAttacksTimeLeft: {},
     coordinatedAttacksSwapRequired: {},
     charactersCooldowns: {},
+    charactersPositions: {},
+    charactersPersistentUntil: {},
+    charactersLastAction: {},
+    charactersRequiresSwapOut: {},
+    charactersForms: {},
     ...overrides,
   }
 }
@@ -184,6 +189,7 @@ export function createMockCharacter(name: string, overrides: Partial<Character> 
 export function createMockAction(name: string, overrides: Partial<Action> = {}): Action {
   return {
     name,
+    category: 'Basics',
     castTime: 1.0,
     multiplier: 100,
     scaling: 'ATK',
@@ -195,6 +201,11 @@ export function createMockAction(name: string, overrides: Partial<Action> = {}):
     statusModifications: [],
     damageModifiers: [],
     sideEffects: [],
+    castConditions: {
+      startState: 'ANY',
+      endState: 'GROUND',
+    },
+    offtune: 0,
     ...overrides,
   }
 }

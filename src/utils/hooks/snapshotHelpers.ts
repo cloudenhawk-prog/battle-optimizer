@@ -36,10 +36,12 @@ export function assignCharacterToRow(row: Snapshot, character: string): Snapshot
  * After casting and cannot be selected as the active character in the next snapshot row.
  */
 export function isSwapRequiredLocked(snapshot: Snapshot, characterName: string): boolean {
-  return Object.entries(snapshot.coordinatedAttacks ?? {}).some(([key, active]) => {
+  const hasRequiresSwapOut = snapshot.charactersRequiresSwapOut?.[characterName] === true
+  const hasCoordinatedSwapRequired = Object.entries(snapshot.coordinatedAttacks ?? {}).some(([key, active]) => {
     if (active !== 1) return false
     return parseCoordinatedAttackKey(key).owner === characterName && (snapshot.coordinatedAttacksSwapRequired?.[key] ?? false)
   })
+  return hasRequiresSwapOut || hasCoordinatedSwapRequired
 }
 
 export function createSnapshot(previousSnapshot: Snapshot, charactersMap: Record<string, Character>, _characterColumnsMap: Record<string, string[]>, globalColumns: GlobalColumns, fillInCharacter: boolean = true): Snapshot {
@@ -47,6 +49,12 @@ export function createSnapshot(previousSnapshot: Snapshot, charactersMap: Record
 
   // Copy cooldowns from previous snapshot to carry them forward
   const charactersCooldowns = Object.fromEntries(Object.keys(charactersMap).map(charName => [charName, { ...(previousSnapshot.charactersCooldowns?.[charName] ?? {}) }]))
+
+  // Copy cast-state fields from previous snapshot to carry them forward
+  const charactersPositions = { ...(previousSnapshot.charactersPositions ?? {}) }
+  const charactersPersistentUntil = { ...(previousSnapshot.charactersPersistentUntil ?? {}) }
+  const charactersLastAction = { ...(previousSnapshot.charactersLastAction ?? {}) }
+  const charactersForms = { ...(previousSnapshot.charactersForms ?? {}) }
 
   const basicValues = Object.fromEntries(globalColumns.basic.map(col => [col, 0]))
   const buffs = Object.fromEntries(globalColumns.buffs.map(col => [col, 0]))
@@ -58,10 +66,7 @@ export function createSnapshot(previousSnapshot: Snapshot, charactersMap: Record
   const debuffsMaxStacks = { ...previousSnapshot.debuffsMaxStacks }
 
   const prevChar = previousSnapshot.character ?? ''
-  const isPrevCharLocked =
-    fillInCharacter &&
-    prevChar !== '' &&
-    isSwapRequiredLocked(previousSnapshot, prevChar)
+  const isPrevCharLocked = fillInCharacter && prevChar !== '' && isSwapRequiredLocked(previousSnapshot, prevChar)
 
   return {
     id: String(Number(previousSnapshot.id) + 1),
@@ -87,5 +92,10 @@ export function createSnapshot(previousSnapshot: Snapshot, charactersMap: Record
     coordinatedAttacksTimeLeft: {},
     coordinatedAttacksSwapRequired: {},
     charactersCooldowns,
+    charactersPositions,
+    charactersPersistentUntil,
+    charactersLastAction,
+    charactersRequiresSwapOut: {},
+    charactersForms,
   }
 }

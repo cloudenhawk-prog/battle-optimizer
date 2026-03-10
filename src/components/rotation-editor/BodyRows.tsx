@@ -69,14 +69,14 @@ export function BodyRow({ snapshot, previousSnapshot, charactersInBattle, tableC
       <td className="tableCellBody">
         {isLocked
           ? <div className="lockedSelectorText">
-              {charactersInBattle.find(c => c.name === character)?.actions.find(a => a.name === action)?.displayName ?? action}
+              {snapshot.resolvedDisplayName ?? charactersInBattle.find(c => c.name === character)?.actions.find(a => a.name === action)?.displayName ?? action}
             </div>
           : <ActionSelect
               value={action}
               actions={charactersInBattle.find(c => c.name === character)?.actions ?? []}
               character={charactersInBattle.find(c => c.name === character)}
               currentEnergies={snapshot.charactersEnergies[character]}
-              snapshot={snapshot}
+              previousSnapshot={previousSnapshot}
               onChange={actionName => {
                 console.log('📍 BodyRow - ActionSelect onChange:', { snapshotId, actionName })
                 onSelectAction(snapshotId, actionName)
