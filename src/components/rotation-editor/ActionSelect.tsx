@@ -5,6 +5,7 @@ import type { Action, ActionCategory } from '../../types/action'
 import type { Character } from '../../types/character'
 import type { Snapshot } from '../../types/snapshot'
 import type { EnergyType } from '../../types/baseTypes'
+import { getActionCooldownKey } from '../../utils/hooks/cooldownHelpers'
 
 // ========== Component: Action Select =========================================================================================
 
@@ -29,6 +30,8 @@ type ActionState = {
   isWrongPosition: boolean
   isPreviousActionMismatch: boolean
   isRequiresSwapIn: boolean
+  isWrongForm: boolean
+  isCustomCanCastFailed: boolean
 }
 
 export function ActionSelect({ value, actions, character, currentEnergies, snapshot, onChange, disabled = false }: ActionSelectProps) {
@@ -92,9 +95,11 @@ export function ActionSelect({ value, actions, character, currentEnergies, snaps
     }
 
     // Check if action is on cooldown
+    // Variants (actions with same groupName) share cooldowns
     if (character && snapshot && snapshot.charactersCooldowns) {
       const characterCooldowns = snapshot.charactersCooldowns[character.name] ?? {}
-      cooldownRemaining = characterCooldowns[action.name] ?? 0
+      const cooldownKey = getActionCooldownKey(action)
+      cooldownRemaining = characterCooldowns[cooldownKey] ?? 0
     }
 
     const isOnCooldown = cooldownRemaining > 0
@@ -120,15 +125,11 @@ export function ActionSelect({ value, actions, character, currentEnergies, snaps
     }
 
     // Goal 1: position check
-    const isWrongPosition =
-      action.castConditions.startState !== 'ANY' &&
-      action.castConditions.startState !== charPosition
+    const isWrongPosition = action.castConditions.startState !== 'ANY' && action.castConditions.startState !== charPosition
 
     // Goal 2: previousActions check
     const previousActionsConstraint = action.castConditions.previousActions
-    const isPreviousActionMismatch =
-      !!previousActionsConstraint?.length &&
-      !previousActionsConstraint.some(pa => pa.name === charLastAction)
+    const isPreviousActionMismatch = !!previousActionsConstraint?.length && !previousActionsConstraint.some(pa => pa.name === charLastAction)
 
     // Goal 3: requiresSwapIn check
     // Allowed if: the last timeline action was cast by a different character (justSwappedIn),
@@ -138,10 +139,37 @@ export function ActionSelect({ value, actions, character, currentEnergies, snaps
       const charName = character.name
       const justSwappedIn = snapshot.character !== charName
       const lastActionName = snapshot.charactersLastAction?.[charName]
-      const lastActionWasIntro =
-        lastActionName !== undefined &&
-        character.actions.some(a => a.name === lastActionName && a.dmgTypes.includes('INTRO'))
+      const lastActionWasIntro = lastActionName !== undefined && character.actions.some(a => a.name === lastActionName && a.dmgTypes.includes('INTRO'))
       isRequiresSwapIn = !justSwappedIn && !lastActionWasIntro
+    }
+
+    // Goal 4: form check
+    // Check if action requires a specific form and if character is in that form
+    let isWrongForm = false
+    if (character && snapshot && action.castConditions.requiredForms !== undefined) {
+      const charName = character.name
+      const currentForm = snapshot.charactersForms?.[charName] ?? ''
+
+      // If requiredForms is empty array, action can't be cast
+      if (action.castConditions.requiredForms.length === 0) {
+        isWrongForm = true
+      } else if (action.castConditions.requiredForms.length > 0) {
+        // Check if current form is in the required forms list
+        // If current form is empty string, use default form
+        if (!currentForm) {
+          const defaultForm = character.forms?.find(f => f.isDefault) ?? character.forms?.[0]
+          isWrongForm = !action.castConditions.requiredForms.includes(defaultForm?.name ?? '')
+        } else {
+          isWrongForm = !action.castConditions.requiredForms.includes(currentForm)
+        }
+      }
+    }
+
+    // Goal 5: customCanCast check
+    // Check if action has a custom validation function
+    let isCustomCanCastFailed = false
+    if (action.castConditions.customCanCast && character && snapshot) {
+      isCustomCanCastFailed = !action.castConditions.customCanCast(snapshot, character.name)
     }
 
     return {
@@ -155,10 +183,18 @@ export function ActionSelect({ value, actions, character, currentEnergies, snaps
       isWrongPosition,
       isPreviousActionMismatch,
       isRequiresSwapIn,
+      isWrongForm,
+      isCustomCanCastFailed,
     }
   }
 
-  const actionStates = actions.map(getActionState)
+  // Filter out intro/outro actions - they're automatically triggered, not user-selectable
+  const selectableActions = actions.filter(action => {
+    const isIntroOutro = action.dmgTypes.includes('INTRO') || action.dmgTypes.includes('OUTRO')
+    return !isIntroOutro
+  })
+
+  const actionStates = selectableActions.map(getActionState)
   const selectedAction = actionStates.find(s => s.isCurrent)
   const displayText = selectedAction ? selectedAction.action.name : '-- Select Action --'
 
@@ -187,7 +223,7 @@ export function ActionSelect({ value, actions, character, currentEnergies, snaps
   // Then create ActionGroup objects
   for (const [groupKey, variants] of groupMap.entries()) {
     const isGroup = variants.length > 1 || variants[0].action.groupName !== undefined
-    const isSelectable = variants.some(v => !v.isOnCooldown && !v.isUnaffordable && !v.isWrongPosition && !v.isPreviousActionMismatch && !v.isRequiresSwapIn)
+    const isSelectable = variants.some(v => !v.isOnCooldown && !v.isUnaffordable && !v.isWrongPosition && !v.isPreviousActionMismatch && !v.isRequiresSwapIn && !v.isWrongForm && !v.isCustomCanCastFailed)
     const isCurrent = variants.some(v => v.isCurrent)
 
     actionGroups.push({
@@ -371,9 +407,9 @@ export function ActionSelect({ value, actions, character, currentEnergies, snaps
 
                     {/* Variant Rows */}
                     {group.variants.map(variant => {
-                      const { action, isCurrent, isUnaffordable, isOnCooldown, cooldownRemaining, missingEnergy, isWrongPosition, isPreviousActionMismatch, isRequiresSwapIn } = variant
+                      const { action, isCurrent, isUnaffordable, isOnCooldown, cooldownRemaining, missingEnergy, isWrongPosition, isPreviousActionMismatch, isRequiresSwapIn, isWrongForm, isCustomCanCastFailed } = variant
 
-                      const isDisabled = (isUnaffordable || isOnCooldown || isWrongPosition || isPreviousActionMismatch || isRequiresSwapIn) && !isCurrent
+                      const isDisabled = (isUnaffordable || isOnCooldown || isWrongPosition || isPreviousActionMismatch || isRequiresSwapIn || isWrongForm || isCustomCanCastFailed) && !isCurrent
                       const canSelect = !isDisabled
 
                       return (

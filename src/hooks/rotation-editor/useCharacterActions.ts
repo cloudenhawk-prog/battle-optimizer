@@ -207,8 +207,13 @@ function handleOutroIntroFlow(params: { snapshots: Snapshot[]; snapshotId: numbe
   if (!prevCharObj) throw new Error(`handleOutroIntroFlow: character '${prevChar}' not found in charactersMap`)
   if (!currCharObj) throw new Error(`handleOutroIntroFlow: character '${currChar}' not found in charactersMap`)
 
-  const outroActionName = getActionNameByDmgType(prevCharObj, 'OUTRO')
-  const introActionName = getActionNameByDmgType(currCharObj, 'INTRO')
+  // Get current forms for both characters
+  const prevSnapshot = getPrevSnapshot(updated, snapshotId)
+  const prevCharForm = prevSnapshot?.charactersForms?.[prevChar] ?? ''
+  const currCharForm = prevSnapshot?.charactersForms?.[currChar] ?? ''
+
+  const outroActionName = getActionNameByDmgType(prevCharObj, 'OUTRO', prevCharForm)
+  const introActionName = getActionNameByDmgType(currCharObj, 'INTRO', currCharForm)
 
   if (!outroActionName) throw new Error(`handleOutroIntroFlow: character '${prevChar}' has no OUTRO action — every character must define one`)
   if (!introActionName) throw new Error(`handleOutroIntroFlow: character '${currChar}' has no INTRO action — every character must define one`)

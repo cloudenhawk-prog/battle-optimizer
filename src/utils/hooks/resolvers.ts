@@ -271,10 +271,7 @@ function aggregateModification(
   entry.refreshDuration ||= refreshDuration
 }
 
-function helpModifierStatusModifications(
-  ctx: StepContext,
-  statusModifications: ReturnType<typeof aggregateStatusModifications>,
-): void {
+function helpModifierStatusModifications(ctx: StepContext, statusModifications: ReturnType<typeof aggregateStatusModifications>): void {
   const types = ['buff', 'debuff'] as const
   const anyChanges = types.some(t => Object.keys(statusModifications[t]).length > 0)
   if (!anyChanges) return
@@ -404,9 +401,7 @@ export function resolveCoordinatedAttacks(ctx: StepContext, setDamageEvents: Dis
     resolver: 'resolveCoordinatedAttacks',
     message: `Coordinated attacks processed: ${ctx.coordinatedAttacksInAction.filter(a => a.applicationTime !== -1).length} active`,
     details: {
-      active: ctx.coordinatedAttacksInAction
-        .filter(a => a.applicationTime !== -1)
-        .map(a => ({ name: a.coordinatedAttack.name, owner: a.ownerCharacter, timeLeft: a.timeLeft })),
+      active: ctx.coordinatedAttacksInAction.filter(a => a.applicationTime !== -1).map(a => ({ name: a.coordinatedAttack.name, owner: a.ownerCharacter, timeLeft: a.timeLeft })),
     },
   })
 }
@@ -546,8 +541,7 @@ export function resolveCastState(ctx: StepContext): void {
   // Determine the new resolved position for the active character
   const prevPosition: 'GROUND' | 'AIR' = ctx.prev.charactersPositions?.[charName] ?? 'GROUND'
   const rawEndState = ctx.action.castConditions.endState
-  const newPosition: 'GROUND' | 'AIR' =
-    rawEndState === 'PRESERVE' || rawEndState === 'ANY' ? prevPosition : (rawEndState as 'GROUND' | 'AIR')
+  const newPosition: 'GROUND' | 'AIR' = rawEndState === 'PRESERVE' || rawEndState === 'ANY' ? prevPosition : (rawEndState as 'GROUND' | 'AIR')
 
   ctx.current.charactersPositions = {
     ...(ctx.prev.charactersPositions ?? {}),
@@ -570,6 +564,24 @@ export function resolveCastState(ctx: StepContext): void {
   // Track whether this character must swap out after this action
   ctx.current.charactersRequiresSwapOut = {
     [charName]: ctx.action.castConditions.requiresSwapOut ?? false,
+  }
+
+  // Handle form changes if this action changes the character's form
+  if (ctx.action.formChange) {
+    ctx.current.charactersForms = {
+      ...(ctx.prev.charactersForms ?? {}),
+      [charName]: ctx.action.formChange,
+    }
+    ctx.logs.push({
+      resolver: 'resolveCastState',
+      message: `Form changed for ${charName}: ${ctx.prev.charactersForms?.[charName] || 'default'} → ${ctx.action.formChange}`,
+      details: { formChange: ctx.action.formChange },
+    })
+  } else {
+    // Preserve current form
+    ctx.current.charactersForms = {
+      ...(ctx.prev.charactersForms ?? {}),
+    }
   }
 
   ctx.logs.push({

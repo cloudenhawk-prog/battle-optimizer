@@ -2,12 +2,13 @@ import type { EnergyType } from '../../types/baseTypes'
 import type { Action } from '../../types/action'
 import type { Character } from '../../types/character'
 import type { Snapshot } from '../../types/snapshot'
+import { getActionCooldownKey } from '../hooks/cooldownHelpers'
 
 // ========== Build Action Options =============================================================================================
 
 export function buildActionOptions(actions: Action[], currentAction: string, character?: Character, currentEnergies?: Partial<Record<EnergyType, number>>, snapshot?: Snapshot) {
   return actions.map(a => {
-    const isSpecial = a.name === 'Intro' || a.name === 'Outro'
+    const isSpecial = a.dmgTypes.includes('INTRO') || a.dmgTypes.includes('OUTRO')
     const isCurrent = a.name === currentAction
 
     let isUnaffordable = false
@@ -24,9 +25,11 @@ export function buildActionOptions(actions: Action[], currentAction: string, cha
     }
 
     // Check if action is on cooldown
+    // Variants (actions with same groupName) share cooldowns
     if (character && snapshot && snapshot.charactersCooldowns) {
       const characterCooldowns = snapshot.charactersCooldowns[character.name] ?? {}
-      const cooldownRemaining = characterCooldowns[a.name] ?? 0
+      const cooldownKey = getActionCooldownKey(a)
+      const cooldownRemaining = characterCooldowns[cooldownKey] ?? 0
       if (cooldownRemaining > 0) {
         isOnCooldown = true
       }

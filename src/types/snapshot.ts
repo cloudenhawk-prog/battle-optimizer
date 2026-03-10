@@ -33,6 +33,9 @@ export interface Snapshot {
   charactersLastAction: Record<string, string>
   /** Whether each character must be swapped out in the immediately following row. */
   charactersRequiresSwapOut: Record<string, boolean>
+  /** The current form name for each character.
+   *  Undefined/empty string means the character has no forms or is in their default form. */
+  charactersForms: Record<string, string>
   /** Display name of the resolved action variant (e.g. "Plunge Attack 1 (swap cancel)").
    *  Present only when resolveVariant produced a tier-specific display name that differs
    *  from the selectable action's own displayName. Used by the row display in place of the

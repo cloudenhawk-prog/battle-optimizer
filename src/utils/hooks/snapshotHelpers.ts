@@ -54,6 +54,7 @@ export function createSnapshot(previousSnapshot: Snapshot, charactersMap: Record
   const charactersPositions = { ...(previousSnapshot.charactersPositions ?? {}) }
   const charactersPersistentUntil = { ...(previousSnapshot.charactersPersistentUntil ?? {}) }
   const charactersLastAction = { ...(previousSnapshot.charactersLastAction ?? {}) }
+  const charactersForms = { ...(previousSnapshot.charactersForms ?? {}) }
 
   const basicValues = Object.fromEntries(globalColumns.basic.map(col => [col, 0]))
   const buffs = Object.fromEntries(globalColumns.buffs.map(col => [col, 0]))
@@ -65,10 +66,7 @@ export function createSnapshot(previousSnapshot: Snapshot, charactersMap: Record
   const debuffsMaxStacks = { ...previousSnapshot.debuffsMaxStacks }
 
   const prevChar = previousSnapshot.character ?? ''
-  const isPrevCharLocked =
-    fillInCharacter &&
-    prevChar !== '' &&
-    isSwapRequiredLocked(previousSnapshot, prevChar)
+  const isPrevCharLocked = fillInCharacter && prevChar !== '' && isSwapRequiredLocked(previousSnapshot, prevChar)
 
   return {
     id: String(Number(previousSnapshot.id) + 1),
@@ -98,5 +96,6 @@ export function createSnapshot(previousSnapshot: Snapshot, charactersMap: Record
     charactersPersistentUntil,
     charactersLastAction,
     charactersRequiresSwapOut: {},
+    charactersForms,
   }
 }

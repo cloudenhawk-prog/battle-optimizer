@@ -36,6 +36,10 @@ export type Action = {
   groupName?: string
   variantName?: string
 
+  /** If specified, casting this action changes the character's form to the specified form name.
+   *  The form must exist in the character's forms array. */
+  formChange?: string
+
   /** When present, the system calls this before executing the action to dynamically
    *  select the actual variant to run (e.g. picking the right plunge tier based on forte).
    *  The returned Action is used in place of this one for all resolvers. */
@@ -56,4 +60,11 @@ export type CastConditions = {
   /** When true, the character must swap out after this action — they will be locked from
    *  being selected as the active character in the immediately following row. */
   requiresSwapOut?: boolean
+  /** Forms required to cast this action. If undefined, action is available in all forms.
+   *  If empty array, action can't be cast (typically used with customCanCast function). */
+  requiredForms?: string[]
+  /** Custom function to determine if the action can be cast.
+   *  Used for complex conditions (e.g., checking if a specific buff is active).
+   *  Return true if castable, false otherwise. */
+  customCanCast?: (prevSnapshot: Snapshot | undefined, characterName: string) => boolean
 }
