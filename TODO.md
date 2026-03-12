@@ -1,6 +1,11 @@
 ### TODO:
 - Let character stats be partial to minimize risk of mistakes
+
 - Add sequence to characters and weapons (might be called smth else for weapons). Later we can do smth with it
+
+- Add action "wait until swap available" (closest swap; requires at least one swap to be on cooldown)
+. Add action "wait 0.05 seconds"
+- Add action "wait until cooldown" (current character's closest cooldown)
 
 - Clean/fix Action data
 - nightmareKelpieOutroTrigger: you should be able to choose a damageCalculationStrategy: it could function like a stats scaling like character Action or a Negative Status damage calculation. Might need to define certain properties like an Action or negative status damage event (see what Aero Erosion Explosion does)
