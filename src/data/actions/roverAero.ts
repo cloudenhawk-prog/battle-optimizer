@@ -576,7 +576,7 @@ const roverAero_outro: Action = {
   sideEffects: [],
   castConditions: {
     startState: 'ANY',
-    endState: 'ANY',
+    endState: 'PRESERVE',
   },
   offtune: 0
 }
@@ -599,7 +599,7 @@ const roverAero_energy: Action = {
   sideEffects: [],
   castConditions: {
     startState: 'ANY',
-    endState: 'ANY',
+    endState: 'PRESERVE',
   },
   offtune: 0
 }
@@ -621,7 +621,7 @@ const roverAero_concerto: Action = {
   sideEffects: [],
   castConditions: {
     startState: 'ANY',
-    endState: 'ANY',
+    endState: 'PRESERVE',
   },
   offtune: 0
 }
@@ -643,7 +643,7 @@ const roverAero_forte: Action = {
   sideEffects: [],
   castConditions: {
     startState: 'ANY',
-    endState: 'ANY',
+    endState: 'PRESERVE',
   },
   offtune: 0
 }

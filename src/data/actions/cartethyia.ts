@@ -482,6 +482,7 @@ const cartethyia_transform: Action = {
     },
   ],
   sideEffects: [],
+  formChange: 'Fleurdelys',
   castConditions: {
     startState: 'ANY',
     endState: 'PRESERVE',
@@ -533,7 +534,7 @@ const cartethyia_outro: Action = {
   sideEffects: [],
   castConditions: {
     startState: 'ANY',
-    endState: 'ANY',
+    endState: 'PRESERVE',
   },
   offtune: 0,
 }
@@ -1055,6 +1056,7 @@ const fleurdelys_liberation: Action = {
     },
   ],
   sideEffects: [],
+  formChange: 'Cartethyia',
   castConditions: {
     startState: 'ANY',
     endState: 'GROUND',
@@ -1108,7 +1110,7 @@ const cartethyia_energy: Action = {
   sideEffects: [],
   castConditions: {
     startState: 'ANY',
-    endState: 'ANY',
+    endState: 'PRESERVE',
   },
   offtune: 0,
 }
@@ -1130,7 +1132,7 @@ const cartethyia_concerto: Action = {
   sideEffects: [],
   castConditions: {
     startState: 'ANY',
-    endState: 'ANY',
+    endState: 'PRESERVE',
   },
   offtune: 0,
 }
@@ -1152,7 +1154,7 @@ const cartethyia_forte: Action = {
   sideEffects: [],
   castConditions: {
     startState: 'ANY',
-    endState: 'ANY',
+    endState: 'PRESERVE',
   },
   offtune: 0,
 }
@@ -1174,7 +1176,7 @@ const cartethyia_conviction: Action = {
   sideEffects: [],
   castConditions: {
     startState: 'ANY',
-    endState: 'ANY',
+    endState: 'PRESERVE',
   },
   offtune: 0,
 }

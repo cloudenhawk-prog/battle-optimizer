@@ -377,7 +377,7 @@ const ciaccona_outro: Action = {
   sideEffects: [],
   castConditions: {
     startState: 'ANY',
-    endState: 'ANY',
+    endState: 'PRESERVE',
   },
   offtune: 0,
 }
@@ -400,7 +400,7 @@ const ciaccona_energy: Action = {
   sideEffects: [],
   castConditions: {
     startState: 'ANY',
-    endState: 'ANY',
+    endState: 'PRESERVE',
   },
   offtune: 0,
 }
@@ -422,7 +422,7 @@ const ciaccona_concerto: Action = {
   sideEffects: [],
   castConditions: {
     startState: 'ANY',
-    endState: 'ANY',
+    endState: 'PRESERVE',
   },
   offtune: 0,
 }
@@ -444,7 +444,7 @@ const ciaccona_forte: Action = {
   sideEffects: [],
   castConditions: {
     startState: 'ANY',
-    endState: 'ANY',
+    endState: 'PRESERVE',
   },
   offtune: 0,
 }
