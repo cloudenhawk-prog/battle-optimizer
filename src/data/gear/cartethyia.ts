@@ -29,7 +29,7 @@ const cartethyia_cost_4_echo_1: Echo = {
   subStats: { critRate: 0.075, critDamage: 0.150, bonusHP: 0.079 },
   firstSlotStats: { aeroBonusDMG: 0.10 },
   conditionalStats: {
-    condition: (name) => name === 'Cartethyia',
+    condition: (name) => name === 'Cartethyia' || name === 'Rover',
     stats: { aeroBonusDMG: 0.10 },
   },
   echoSkill: {
@@ -56,7 +56,7 @@ const cartethyia_cost_4_echo_1: Echo = {
 }
 
 const cartethyia_cost_4_echo_2: Echo = {
-  name: 'Nightmare: Kelpie', // TODO
+  name: 'Nightmare: Kelpie', // TODO - copy Ciaccona's - shouldnt matter since only 1st slot echoes get firstSlotStats and inject sideEffects/modifiers (MAKE SURE)
   cost: 4,
   baseStats: { flatATK: 150, critDamage: 0.44 },
   subStats: { critRate: 0.075, critDamage: 0.150, bonusHP: 0.079 },

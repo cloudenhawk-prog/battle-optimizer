@@ -382,29 +382,6 @@ const ciaccona_outro: Action = {
   offtune: 0,
 }
 
-// ========== Echo Skill =======================================================================================================
-const ciaccona_echo: Action = {
-  name: 'Echo Skill',
-  displayName: 'Nightmare: Kelpie',
-  category: 'Other',
-  castTime: 0,
-  multiplier: 405 / 100,
-  scaling: 'ATK',
-  elements: ['GLACIO'],
-  dmgTypes: ['ECHO'],
-  cooldown: 25,
-  energyGenerated: [{ energyType: 'energy', amount: 2.81, share: 0.5, scalingStat: 'energyPercent' }],
-  energyCost: [],
-  statusModifications: [],
-  damageModifiers: [],
-  sideEffects: [],
-  castConditions: {
-    startState: 'GROUND',
-    endState: 'ANY',
-  },
-  offtune: 0,
-}
-
 // ========== Energies =========================================================================================================
 const ciaccona_energy: Action = {
   name: 'Energy Up',
@@ -495,9 +472,6 @@ export {
   // Intro / Outro
   ciaccona_intro,
   ciaccona_outro,
-
-  // Echo
-  ciaccona_echo,
 
   // Testing
   ciaccona_energy,

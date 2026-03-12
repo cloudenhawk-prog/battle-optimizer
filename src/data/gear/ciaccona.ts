@@ -20,7 +20,7 @@ const ciaccona_weapon: Weapon = {
           condition: always(),
           characterStats: { bonusATK: 0.15 },
           targetStrategy: 'nextSwap',
-          durationStrategy: { type: 'limited', timeDuration: 14, numberOfSwaps: 1 }, // TODO: would this correctly give only the next character after the outro 15 % ATK for 14 seconds (or until swapped again ONCE)?
+          durationStrategy: { type: 'limited', timeDuration: 14, numberOfSwaps: 1 }, // TODO: would this correctly give only the next character after the outro 15 % ATK for 14 seconds (NOT herself, and not 2 future characters, just the next one until swapped out again)?
           stackingStrategy: { maxStacks: 1, resetTimerOnApplication: true, stacksRemovedEachTime: 1 },
         }
       ]
@@ -129,7 +129,7 @@ const ciaccona_set_bonus: EchoSetBonus = {
 }
 
 export {
-  // Weapon¨
+  // Weapon
   ciaccona_weapon,
 
   // Echoes

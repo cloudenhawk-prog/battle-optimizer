@@ -27,10 +27,10 @@ export function getActionNameByDmgType(character: Character, dmgType: DamageType
     const form = character.forms.find(f => f.name === formName)
     if (form) {
       if (dmgType === 'INTRO' && form.introAction) {
-        return form.introAction
+        return form.introAction.name
       }
       if (dmgType === 'OUTRO' && form.outroAction) {
-        return form.outroAction
+        return form.outroAction.name
       }
     }
   }

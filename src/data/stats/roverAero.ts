@@ -114,3 +114,7 @@ export const roverAeroStats: CharacterStats = {
 
   energyPercent: 1.0 + 0.3216,
 }
+
+export const roverAero_inherentStats: Partial<CharacterStats> = {
+  bonusATK: 0.12
+}

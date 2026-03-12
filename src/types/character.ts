@@ -15,5 +15,7 @@ export type Character = {
   stats: CharacterStats
   inherentStats: Partial<CharacterStats>
   gear: Gear
+  /** The name of the default form. If undefined, the first form in the array is used, or no form mechanic applies. */
+  defaultForm?: string
   forms?: Form[]
 }
