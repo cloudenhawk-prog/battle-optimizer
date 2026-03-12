@@ -3,26 +3,26 @@ import type { CharacterStats } from '../../types/stats'
 export const roverAeroStats: CharacterStats = {
   level: 90,
 
-  baseATK: 437 + 587.50, // Character base + Weapon base
-  flatATK: 150 + 2*100, // Echo4 base + Echo3's base
-  bonusATK: 0.12 + 2*0.18 + 5*0.09,
+  baseATK: 437,
+  flatATK: 0,
+  bonusATK: 0,
   amplifyATK: 0,
   totalMultiplierATK: 1.0,
 
-  baseHP: 10775, // Character base
-  flatHP: 2*2280,
+  baseHP: 10775,
+  flatHP: 0,
   bonusHP: 0,
   amplifyHP: 0,
   totalMultiplierHP: 1.0,
 
-  baseDEF: 1136, // Character base
+  baseDEF: 1136,
   flatDEF: 0,
   bonusDEF: 0,
   amplifyDEF: 0,
   totalMultiplierDEF: 1.0,
 
-  critRate: 0.05 + 0.10 + 0.22 + 5*0.084, // Character base + ...
-  critDamage: 1.50 + 5*0.168, // Character base + ...
+  critRate: 0.05,
+  critDamage: 1.50,
 
   bonusDMG: 0,
   amplifyDMG: 0,
@@ -96,7 +96,7 @@ export const roverAeroStats: CharacterStats = {
   fusionAmplifyDMG: 0,
   fusionTotalMultiplierDMG: 1.0,
 
-  aeroBonusDMG: 0.15 + 0.60 + 2*0.30,
+  aeroBonusDMG: 0,
   aeroAmplifyDMG: 0,
   aeroTotalMultiplierDMG: 1.0,
 
@@ -112,7 +112,7 @@ export const roverAeroStats: CharacterStats = {
   havocAmplifyDMG: 0,
   havocTotalMultiplierDMG: 1.0,
 
-  energyPercent: 1.0 + 0.3216,
+  energyPercent: 1.0
 }
 
 export const roverAero_inherentStats: Partial<CharacterStats> = {

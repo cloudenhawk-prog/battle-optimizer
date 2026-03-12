@@ -3,15 +3,15 @@ import type { CharacterStats } from '../../types/stats'
 export const cartethyia_stats: CharacterStats = {
   level: 90,
 
-  baseATK: 724, // TODO each line should document where stats come from - then lookup sequences, echoes, weapon, inherent stats, inherent passives skills
-  flatATK: 300,
+  baseATK: 312,
+  flatATK: 0,
   bonusATK: 0,
   amplifyATK: 0,
   totalMultiplierATK: 1.0,
 
   baseHP: 14800,
-  flatHP: 6840,
-  bonusHP: 2.096,
+  flatHP: 0,
+  bonusHP: 0,
   amplifyHP: 0,
   totalMultiplierHP: 1.0,
 
@@ -21,8 +21,8 @@ export const cartethyia_stats: CharacterStats = {
   amplifyDEF: 0,
   totalMultiplierDEF: 1.0,
 
-  critRate: 0.87,
-  critDamage: 2.78,
+  critRate: 0.05,
+  critDamage: 1.50,
 
   bonusDMG: 0,
   amplifyDMG: 0,
@@ -96,7 +96,7 @@ export const cartethyia_stats: CharacterStats = {
   fusionAmplifyDMG: 0,
   fusionTotalMultiplierDMG: 1.0,
 
-  aeroBonusDMG: 0.50,
+  aeroBonusDMG: 0,
   aeroAmplifyDMG: 0,
   aeroTotalMultiplierDMG: 1.0,
 
@@ -112,7 +112,7 @@ export const cartethyia_stats: CharacterStats = {
   havocAmplifyDMG: 0,
   havocTotalMultiplierDMG: 1.0,
 
-  energyPercent: 1.1,
+  energyPercent: 1.0,
 }
 
 export const cartethyia_inherentStats: Partial<CharacterStats> = {

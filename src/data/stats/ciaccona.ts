@@ -3,26 +3,26 @@ import type { CharacterStats } from '../../types/stats'
 export const ciaccona_stats: CharacterStats = {
   level: 90,
 
-  baseATK: 375 + 587.50, // Character baseATK + Weapon baseATK
-  flatATK: 150 + 2*100, // Echo4 flatATK + Echo3's flatATK
-  bonusATK: 2*0.18 + 5*0.09 + 0.12, // Echo1's baseAtkBonus + 5 x Substats + Inherent Stats
+  baseATK: 375,
+  flatATK: 0,
+  bonusATK: 0,
   amplifyATK: 0,
   totalMultiplierATK: 1.0,
 
-  baseHP: 12237, // Character baseHP
-  flatHP: 2*2280, // Echo 1's baseHP
+  baseHP: 12237,
+  flatHP: 0,
   bonusHP: 0,
   amplifyHP: 0,
   totalMultiplierHP: 1.0,
 
-  baseDEF: 1197, // Character baseDEF
+  baseDEF: 1197,
   flatDEF: 0,
   bonusDEF: 0,
   amplifyDEF: 0,
   totalMultiplierDEF: 1.0,
 
-  critRate: 0.05 + 0.243 + 5*0.084, // Character baseCRIT + Weapon baseCRIT + 5 x Substats
-  critDamage: 1.50 + 0.44 + 5*0.168 + 0.16, // Character baseCDMG + Echo4 flatCRIT + 5 x Substats + Inherent Stats
+  critRate: 0.05,
+  critDamage: 1.50,
 
   bonusDMG: 0,
   amplifyDMG: 0,
@@ -96,11 +96,11 @@ export const ciaccona_stats: CharacterStats = {
   fusionAmplifyDMG: 0,
   fusionTotalMultiplierDMG: 1.0,
 
-  aeroBonusDMG: 0.10 + 2*0.30 + 0.12, // Echo Set Effect + Echo3's flatAero + Echo4 Mainslot Kelpie
+  aeroBonusDMG: 0,
   aeroAmplifyDMG: 0,
   aeroTotalMultiplierDMG: 1.0,
 
-  glacioBonusDMG: 0.12, // Echo4 Mainslot Kelpie
+  glacioBonusDMG: 0,
   glacioAmplifyDMG: 0,
   glacioTotalMultiplierDMG: 1.0,
 
@@ -112,7 +112,7 @@ export const ciaccona_stats: CharacterStats = {
   havocAmplifyDMG: 0,
   havocTotalMultiplierDMG: 1.0,
 
-  energyPercent: 1.0 + 0.128, // Character baseEN + Weapon baseEN
+  energyPercent: 1.0
 }
 
 export const ciaccona_inherentStats: Partial<CharacterStats> = {
