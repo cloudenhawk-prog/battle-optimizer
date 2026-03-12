@@ -108,7 +108,7 @@ const cartethyia_set_bonus: EchoSetBonus = {
 }
 
 export {
-  // Weapon¨
+  // Weapon
   cartethyia_weapon,
 
   // Echoes

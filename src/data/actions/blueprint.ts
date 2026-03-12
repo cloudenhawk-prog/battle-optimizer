@@ -1,45 +1,5 @@
 import type { Action } from '../../types/action'
 
-export const blueprint_intro: Action = {
-  name: 'Intro Skill',
-  displayName: 'XXX Intro',
-  category: 'Other',
-  castTime: 0,
-  multiplier: 0,
-  scaling: 'ATK',
-  elements: [''],
-  dmgTypes: ['INTRO'],
-  cooldown: 0,
-  energyGenerated: [],
-  energyCost: [],
-  statusModifications: [],
-  damageModifiers: [],
-  sideEffects: [],
-  coordinatedAttacks: [],
-  castConditions: { startState: 'ANY', endState: 'ANY' },
-  offtune: 0,
-}
-
-export const blueprint_outro: Action = {
-  name: 'Outro Skill',
-  displayName: 'XXX Outro',
-  category: 'Other',
-  castTime: 0,
-  multiplier: 0,
-  scaling: 'ATK',
-  elements: [''],
-  dmgTypes: ['OUTRO'],
-  cooldown: 0,
-  energyGenerated: [],
-  energyCost: [],
-  statusModifications: [],
-  damageModifiers: [],
-  sideEffects: [],
-  coordinatedAttacks: [],
-  castConditions: { startState: 'ANY', endState: 'ANY' },
-  offtune: 0,
-}
-
 export const blueprint: Action = {
   name: 'XXX',
   displayName: 'XXX',
@@ -59,13 +19,23 @@ export const blueprint: Action = {
   statusModifications: [],
   damageModifiers: [],
   sideEffects: [],
-  coordinatedAttacks: [],
+  coordinatedAttacks: [], // Optional
   castConditions: {
+    previousActions: [], // Optional
     startState: 'ANY',
-    endState: 'GROUND',
+    swapOutState: null, // Optional
+    endState: 'PRESERVE',
+    persistenceTime: null, // Optional
+    requiresSwapIn: null, // Optional
+    requiresSwapOut: null, // Optional
+    requiredForms: null, // Optional
+    customCanCast: null // Optional
   },
   offtune: 100,
-  toolTip: 'XXX',
-  groupName: 'XXX',
-  variantName: 'XXX'
+  toolTip: null, // Optional
+  groupName: null, // Optional
+  variantName: null, // Optional
+  formChange: null, // Optional
+  resolveVariant: null // Optional
 }
+

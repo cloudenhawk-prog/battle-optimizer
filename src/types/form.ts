@@ -29,6 +29,6 @@ export type Form = {
    *  If undefined, falls back to the default form's outro action. */
   outroAction?: Action
 
-  /** Icon or visual indicator for this form (optional) */
+  /** Icon or visual indicator for this form */
   icon: string
 }

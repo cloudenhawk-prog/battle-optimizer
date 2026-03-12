@@ -11,7 +11,7 @@ export type ActionCategory = 'Basics' | 'Skills' | 'Other' | 'Testing'
 
 export type Action = {
   name: string
-  displayName?: string
+  displayName: string
   category: ActionCategory
   castTime: number
   multiplier: number
