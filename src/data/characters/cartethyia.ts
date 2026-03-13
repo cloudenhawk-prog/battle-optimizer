@@ -24,5 +24,6 @@ export const cartethyia: Character = {
       5: cartethyia_cost_1_echo_3
     },
     setBonus: cartethyia_set_bonus
-  }
+  },
+  sequence: 3
 }

@@ -23,6 +23,7 @@ export const ciaccona: Character = {
       4: ciaccona_cost_1_echo_1,
       5: ciaccona_cost_1_echo_2
     },
-    setBonus: ciaccona_set_bonus
-  }
+    setBonus: ciaccona_set_bonus,
+  },
+  sequence: 0
 }

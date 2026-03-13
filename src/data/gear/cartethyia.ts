@@ -15,10 +15,10 @@ const cartethyia_weapon: Weapon = {
         {
           source: "Defier's Thorn", displayName: 'A Free Knight\'s Tarantella (2)', type: 'buff', ownerCharacter: 'Cartethyia', condition: atLeastOneStackOf('Aero Erosion'), characterStats: { amplifyDMG: 0.2 }, targetStrategy: 'self', durationStrategy: { type: 'permanent' }, stackingStrategy: { maxStacks: 1, resetTimerOnApplication: false, stacksRemovedEachTime: 0 }
         }
-        
       ]
     }
-  ]
+  ],
+  rank: 1
 }
 
 // ========== Echoes ===========================================================================================================

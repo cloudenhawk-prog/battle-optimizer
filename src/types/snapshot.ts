@@ -36,6 +36,9 @@ export interface Snapshot {
   /** The current form name for each character.
    *  Undefined/empty string means the character has no forms or is in their default form. */
   charactersForms: Record<string, string>
+  /** Absolute time until which each character's swap cooldown is active (0 = no swap cooldown).
+   *  Set to fromTime + 1 when a character is swapped out; prevents them being selected until expired. */
+  charactersSwapCooldownUntil: Record<string, number>
   /** Display label of the resolved action variant for this snapshot row (e.g. "Plunge Attack 1 (swap cancel)").
    *  This is the resolved action's display name as shown to the user, and may be identical
    *  to or differ from the selectable action's own displayName. When present, UIs should

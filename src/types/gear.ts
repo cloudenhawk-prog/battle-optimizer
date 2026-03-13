@@ -16,6 +16,7 @@ export type Weapon = {
   name: string
   stats: Partial<CharacterStats>
   injectedModifiers?: InjectedModifier[]
+  rank: 1 | 2 | 3 | 4 | 5
 }
 
 // ========== Type: Echo =======================================================================================================

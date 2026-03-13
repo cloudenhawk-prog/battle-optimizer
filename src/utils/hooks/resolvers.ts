@@ -586,10 +586,19 @@ export function resolveCastState(ctx: StepContext): void {
     }
   }
 
+  // Handle swap cooldown: when a different character takes over, the previous character
+  // cannot be swapped back in for 1 second (measured from the start of the current action).
+  const prevCharName = ctx.prev.character
+  const swapOccurred = !!prevCharName && prevCharName !== charName
+  ctx.current.charactersSwapCooldownUntil = {
+    ...(ctx.prev.charactersSwapCooldownUntil ?? {}),
+    ...(swapOccurred ? { [prevCharName!]: ctx.fromTime + 1 } : {}),
+  }
+
   ctx.logs.push({
     resolver: 'resolveCastState',
     message: `Cast state resolved for ${charName}: position=${newPosition}, persistentUntil=${ctx.current.charactersPersistentUntil[charName]}`,
-    details: { prevPosition, rawEndState, newPosition, persistenceTime },
+    details: { prevPosition, rawEndState, newPosition, persistenceTime, swapOccurred, swapCooldownUntil: ctx.current.charactersSwapCooldownUntil[prevCharName ?? ''] },
   })
 }
 

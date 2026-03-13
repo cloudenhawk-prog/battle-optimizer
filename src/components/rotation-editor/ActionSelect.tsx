@@ -35,6 +35,8 @@ type ActionState = {
   isRequiresSwapIn: boolean
   isWrongForm: boolean
   isCustomCanCastFailed: boolean
+  isOnSwapCooldown: boolean
+  swapCooldownRemaining: number
 }
 
 export function ActionSelect({ value, actions, character, currentEnergies, previousSnapshot, onChange, disabled = false }: ActionSelectProps) {
@@ -175,6 +177,19 @@ export function ActionSelect({ value, actions, character, currentEnergies, previ
       isCustomCanCastFailed = !action.castConditions.customCanCast(previousSnapshot, character.name)
     }
 
+    // Goal 6: swap cooldown check
+    // The character cannot be swapped in until their 1-second swap cooldown expires.
+    let isOnSwapCooldown = false
+    let swapCooldownRemaining = 0
+    if (character && previousSnapshot) {
+      const cooldownUntil = previousSnapshot.charactersSwapCooldownUntil?.[character.name] ?? 0
+      const remaining = cooldownUntil - previousSnapshot.toTime
+      if (remaining > 0) {
+        isOnSwapCooldown = true
+        swapCooldownRemaining = remaining
+      }
+    }
+
     return {
       action,
       isSpecial,
@@ -188,6 +203,8 @@ export function ActionSelect({ value, actions, character, currentEnergies, previ
       isRequiresSwapIn,
       isWrongForm,
       isCustomCanCastFailed,
+      isOnSwapCooldown,
+      swapCooldownRemaining,
     }
   }
 
@@ -226,7 +243,7 @@ export function ActionSelect({ value, actions, character, currentEnergies, previ
   // Then create ActionGroup objects
   for (const [groupKey, variants] of groupMap.entries()) {
     const isGroup = variants.length > 1 || variants[0].action.groupName !== undefined
-    const isSelectable = variants.some(v => !v.isOnCooldown && !v.isUnaffordable && !v.isWrongPosition && !v.isPreviousActionMismatch && !v.isRequiresSwapIn && !v.isWrongForm && !v.isCustomCanCastFailed)
+    const isSelectable = variants.some(v => !v.isOnCooldown && !v.isUnaffordable && !v.isWrongPosition && !v.isPreviousActionMismatch && !v.isRequiresSwapIn && !v.isWrongForm && !v.isCustomCanCastFailed && !v.isOnSwapCooldown)
     const isCurrent = variants.some(v => v.isCurrent)
 
     actionGroups.push({
@@ -410,9 +427,9 @@ export function ActionSelect({ value, actions, character, currentEnergies, previ
 
                     {/* Variant Rows */}
                     {group.variants.map(variant => {
-                      const { action, isCurrent, isUnaffordable, isOnCooldown, cooldownRemaining, missingEnergy, isWrongPosition, isPreviousActionMismatch, isRequiresSwapIn, isWrongForm, isCustomCanCastFailed } = variant
+                      const { action, isCurrent, isUnaffordable, isOnCooldown, cooldownRemaining, missingEnergy, isWrongPosition, isPreviousActionMismatch, isRequiresSwapIn, isWrongForm, isCustomCanCastFailed, isOnSwapCooldown, swapCooldownRemaining } = variant
 
-                      const isDisabled = (isUnaffordable || isOnCooldown || isWrongPosition || isPreviousActionMismatch || isRequiresSwapIn || isWrongForm || isCustomCanCastFailed) && !isCurrent
+                      const isDisabled = (isUnaffordable || isOnCooldown || isWrongPosition || isPreviousActionMismatch || isRequiresSwapIn || isWrongForm || isCustomCanCastFailed || isOnSwapCooldown) && !isCurrent
                       const canSelect = !isDisabled
 
                       return (
@@ -429,6 +446,7 @@ export function ActionSelect({ value, actions, character, currentEnergies, previ
                             <div className="variantName">{action.variantName || action.name}</div>
                             <div className="variantDetails">
                               {isOnCooldown && <span className="variantCooldown">CD: {cooldownRemaining.toFixed(2)}s</span>}
+                              {isOnSwapCooldown && <span className="variantCooldown">Swap CD: {swapCooldownRemaining.toFixed(2)}s</span>}
                               {missingEnergy.length > 0 ? <span className="energyMissing">{missingEnergy.map(e => `${e.current.toFixed(2)}/${e.needed} ${e.type}`).join(', ')}</span> : action.energyCost.length > 0 ? <span className="energyOk">✓</span> : null}
                             </div>
                           </div>

@@ -17,4 +17,5 @@ export type Character = {
   gear: Gear
   defaultForm?: string
   forms?: Form[]
+  sequence: 0 | 1 | 2 | 3 | 4 | 5 | 6
 }

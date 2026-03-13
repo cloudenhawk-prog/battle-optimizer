@@ -20,5 +20,6 @@ export const roverAero: Character = {
       5: roverAero_cost_1_echo_2
     },
     setBonus: roverAero_set_bonus
-  }
+  },
+  sequence: 6
 }

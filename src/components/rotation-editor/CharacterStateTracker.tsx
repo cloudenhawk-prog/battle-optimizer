@@ -54,6 +54,10 @@ export function CharacterStateTracker({ snapshot, charactersInBattle, tableConfi
 
           const energies = snapshot?.charactersEnergies[character.name] ?? {}
 
+          // Compute remaining swap cooldown for display
+          const swapCooldownUntil = snapshot?.charactersSwapCooldownUntil?.[character.name] ?? 0
+          const swapCooldownRemaining = Math.max(0, swapCooldownUntil - (snapshot?.toTime ?? 0))
+
           // Compute effective position for display:
           // - Active character → use their stored position
           // - Inactive within persistence → use their own stored position
@@ -111,6 +115,12 @@ export function CharacterStateTracker({ snapshot, charactersInBattle, tableConfi
                       {displayForm.icon && <img src={displayForm.icon} alt={displayForm.name} className="stateTrackerFormIcon" />}
                       {displayForm.displayName || displayForm.name}
                     </span>
+                  </div>
+                )}
+                {swapCooldownRemaining > 0 && (
+                  <div className="stateTrackerStateItem">
+                    <span className="stateTrackerStateLabel">Swap CD</span>
+                    <span className="stateTrackerSwapCooldownBadge">{swapCooldownRemaining.toFixed(2)}s</span>
                   </div>
                 )}
               </div>

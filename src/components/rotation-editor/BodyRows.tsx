@@ -35,6 +35,14 @@ export function BodyRow({ snapshot, previousSnapshot, charactersInBattle, tableC
     if (prevChar && isSwapRequiredLocked(previousSnapshot, prevChar)) {
       lockedCharacters.add(prevChar)
     }
+    // Lock characters that are still within their 1-second swap cooldown
+    const swapCooldowns = previousSnapshot.charactersSwapCooldownUntil ?? {}
+    const prevToTime = previousSnapshot.toTime
+    for (const [charName, cooldownUntil] of Object.entries(swapCooldowns)) {
+      if (cooldownUntil - prevToTime > 0) {
+        lockedCharacters.add(charName)
+      }
+    }
   }
 
   return (

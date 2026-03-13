@@ -1,7 +1,4 @@
 ### TODO:
-
-- Add sequence to characters and weapons (might be called smth else for weapons). Later we can do smth with it
-
 - Add action "wait until swap available" (closest swap; requires at least one swap to be on cooldown)
   . Add action "wait 0.05 seconds"
 - Add action "wait until cooldown" (current character's closest cooldown)

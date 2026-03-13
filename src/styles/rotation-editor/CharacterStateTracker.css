@@ -240,6 +240,19 @@
   object-fit: contain;
 }
 
+/* ===== Swap Cooldown Badge ===== */
+
+.stateTrackerSwapCooldownBadge {
+  font-size: 0.7rem;
+  font-weight: 600;
+  letter-spacing: 0.05em;
+  padding: 3px 10px;
+  border-radius: 5px;
+  border: 1px solid rgba(255, 160, 80, 0.45);
+  color: rgba(255, 200, 120, 0.95);
+  background: rgba(120, 60, 20, 0.45);
+}
+
 /* ===== Energy List ===== */
 
 .stateTrackerEnergies {

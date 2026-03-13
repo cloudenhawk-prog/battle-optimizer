@@ -79,5 +79,6 @@ function createEmptySnapshot(charactersMap: Record<string, Character>, character
     charactersLastAction: {},
     charactersRequiresSwapOut: {},
     charactersForms: {},
+    charactersSwapCooldownUntil: {},
   }
 }
