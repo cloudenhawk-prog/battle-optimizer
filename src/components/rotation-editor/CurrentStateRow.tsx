@@ -143,6 +143,7 @@ function createInitialSnapshot(): Snapshot {
     charactersLastAction: {},
     charactersRequiresSwapOut: {},
     charactersForms: {},
+    charactersSwapCooldownUntil: {}
   }
 }
 

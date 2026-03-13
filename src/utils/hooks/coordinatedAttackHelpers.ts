@@ -216,7 +216,7 @@ export function processCoordinatedAttacks(ctx: StepContext, setDamageEvents: Dis
       const { average, damageEvent } = calculateDamage({
         action: fakeAction,
         name: `${caia.ownerCharacter}: ${ca.displayName ?? ca.name}`,
-        stats: ownerChar.stats,
+        stats: ownerChar.stats as CharacterStats,
         damageModifiers: ctx.damageModifiers,
         modifierCharacterStats: ctx.aggregatedCharacterModifiers,
         modifierEnemyStats: ctx.aggregatedEnemyModifiers,

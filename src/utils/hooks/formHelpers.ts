@@ -18,7 +18,7 @@ export function getCurrentForm(character: Character, formName?: string) {
   }
 
   // Return default form or first form
-  return character.forms.find(f => f.isDefault) ?? character.forms[0]
+  return character.forms.find(f => f.name === character.defaultForm) ?? character.forms[0]
 }
 
 /**
@@ -41,7 +41,7 @@ export function getAvailableActionsForForm(character: Character, formName?: stri
 
   // Filter actions based on form's availableActions
   // If availableActions is empty array, no actions are available (locked form)
-  return character.actions.filter(action => currentForm.availableActions!.includes(action.name))
+  return character.actions.filter(action => currentForm.availableActions!.some(a => a.name === action.name))
 }
 
 /**
@@ -52,6 +52,6 @@ export function getDefaultFormName(character: Character): string {
     return ''
   }
 
-  const defaultForm = character.forms.find(f => f.isDefault) ?? character.forms[0]
+  const defaultForm = character.forms.find(f => f.name === character.defaultForm) ?? character.forms[0]
   return defaultForm.name
 }

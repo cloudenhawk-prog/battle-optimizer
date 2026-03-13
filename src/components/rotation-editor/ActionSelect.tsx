@@ -162,7 +162,7 @@ export function ActionSelect({ value, actions, character, currentEnergies, previ
         // Check if current form is in the required forms list
         // If current form is empty string, use default form
         if (!currentForm) {
-          const defaultForm = character.forms?.find(f => f.isDefault) ?? character.forms?.[0]
+          const defaultForm = character.forms?.find(f => f.name === character.defaultForm) ?? character.forms?.[0]
           isWrongForm = !action.castConditions.requiredForms.includes(defaultForm?.name ?? '')
         } else {
           isWrongForm = !action.castConditions.requiredForms.includes(currentForm)

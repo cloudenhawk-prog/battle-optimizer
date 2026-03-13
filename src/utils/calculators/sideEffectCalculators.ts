@@ -1,5 +1,6 @@
 import type { StepContext } from '../../types/stepContext'
 import type { DamageEvent } from '../../types/events'
+import type { CharacterStats } from '../../types/stats'
 import { calculateDamageNegativeStatus } from './damageCalculator'
 
 // ========== Aero Erosion Side Effect =========================================================================================
@@ -28,5 +29,5 @@ export function calculateAeroErosionSideEffectDamage(context: StepContext, sideE
     }
   }
 
-  return calculateDamageNegativeStatus(aeroErosionStacks, 'AERO', context.enemy, 'Aero Erosion', context.character.stats, context.aggregatedCharacterModifiers, context.aggregatedEnemyModifiers, context.damageModifiers, `${context.character.name}: ${sideEffectName}`, context.snapshotId, timeStamp, sideEffectName, context)
+  return calculateDamageNegativeStatus(aeroErosionStacks, 'AERO', context.enemy, 'Aero Erosion', context.character.stats as CharacterStats, context.aggregatedCharacterModifiers, context.aggregatedEnemyModifiers, context.damageModifiers, `${context.character.name}: ${sideEffectName}`, context.snapshotId, timeStamp, sideEffectName, context)
 }
