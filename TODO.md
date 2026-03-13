@@ -78,6 +78,8 @@ This might affect how we want to show Mandate in timeline
 
 # Timeline:
 
+Add a settings/configuration button. Each existing potential character, global event, buff, debuff, coodinated attack etc should have a toggle where you can choose whether to display it or not in the timeline.
+
 Timeline should not display permanently but be something you open and generate based on snapshots + damage events
 HIDE IT for now - then we will simplify it once we start working on it again
 
