@@ -84,12 +84,35 @@ function verifyCharacter(character: Character, negativeStatusNames: Set<string>)
   if (forms && forms.length > 0) {
     const baseFormName = defaultForm ?? forms[0].name
     const baseForm = forms.find(f => f.name === baseFormName)
-    check(`Base form "${baseFormName}": exactly 1 Intro and 1 Outro`, () => {
+    check(`Base form "${baseFormName}": exactly 1 Intro and 1 Outro (correct dmgTypes, present in character.actions)`, () => {
       const errors: string[] = []
-      if (!baseForm) { errors.push(`form "${baseFormName}" not found in forms array`) }
-      else {
-        if (!baseForm.introAction) errors.push('missing introAction')
-        if (!baseForm.outroAction) errors.push('missing outroAction')
+      if (!baseForm) {
+        errors.push(`form "${baseFormName}" not found in forms array`)
+      } else {
+        const actionNames = new Set(actions.map(a => a.name))
+        const intro = baseForm.introAction
+        const outro = baseForm.outroAction
+
+        if (!intro) {
+          errors.push('missing introAction')
+        } else {
+          if (!intro.dmgTypes.includes('INTRO'))
+            errors.push(`introAction "${intro.name}" missing dmgType INTRO (got [${intro.dmgTypes.join(', ')}])`)
+          if (!actionNames.has(intro.name))
+            errors.push(`introAction "${intro.name}" not found in character.actions`)
+        }
+
+        if (!outro) {
+          errors.push('missing outroAction')
+        } else {
+          if (!outro.dmgTypes.includes('OUTRO'))
+            errors.push(`outroAction "${outro.name}" missing dmgType OUTRO (got [${outro.dmgTypes.join(', ')}])`)
+          if (!actionNames.has(outro.name))
+            errors.push(`outroAction "${outro.name}" not found in character.actions`)
+        }
+
+        if (intro && outro && intro.name === outro.name)
+          errors.push(`introAction and outroAction must be distinct (both are "${intro.name}")`)
       }
       if (errors.length) throw new Error(errors.join('; '))
     })

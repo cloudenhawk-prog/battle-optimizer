@@ -23,19 +23,19 @@ export const blueprint: Action = {
   castConditions: {
     previousActions: [], // Optional
     startState: 'ANY',
-    swapOutState: null, // Optional
+    swapOutState: undefined, // Optional
     endState: 'PRESERVE',
-    persistenceTime: null, // Optional
-    requiresSwapIn: null, // Optional
-    requiresSwapOut: null, // Optional
-    requiredForms: null, // Optional
-    customCanCast: null // Optional
+    persistenceTime: undefined, // Optional
+    requiresSwapIn: undefined, // Optional
+    requiresSwapOut: undefined, // Optional
+    requiredForms: undefined, // Optional
+    customCanCast: undefined // Optional
   },
   offtune: 100,
-  toolTip: null, // Optional
-  groupName: null, // Optional
-  variantName: null, // Optional
-  formChange: null, // Optional
-  resolveVariant: null // Optional
+  toolTip: undefined, // Optional
+  groupName: undefined, // Optional
+  variantName: undefined, // Optional
+  formChange: undefined, // Optional
+  resolveVariant: undefined // Optional
 }
 
