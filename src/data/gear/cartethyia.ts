@@ -35,7 +35,7 @@ const cartethyia_cost_4_echo_1: Echo = {
   echoSkill: {
     name: 'Reminiscence: Fleurdelys (Active)',
     displayName: 'Reminiscence: Fleurdelys (Active)',
-    category: 'Other',
+    category: 'Echo Skill',
     castTime: 0,
     multiplier: (8 * 27.36 + 136.8) / 100,
     scaling: 'ATK',

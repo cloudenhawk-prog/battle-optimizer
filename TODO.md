@@ -4,7 +4,7 @@
 - Add action "wait until cooldown" (current character's closest cooldown)
 
 - Clean/fix Action data
-- nightmareKelpieOutroTrigger: you should be able to choose a damageCalculationStrategy: it could function like a stats scaling like character Action or a Negative Status damage calculation. Might need to define certain properties like an Action or negative status damage event (see what Aero Erosion Explosion does)
+- nightmareKelpieOutroTrigger: you should be able to choose a damageCalculationStrategy: it could function like a stats scaling like character Action or a Negative Status damage calculation. Might need to define certain propertiPes like an Action or negative status damage event (see what Aero Erosion Explosion does)
 
 - - Form System (WIP)
 - Character has a state tracking Form

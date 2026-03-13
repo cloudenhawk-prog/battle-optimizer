@@ -26,7 +26,7 @@ const ciaccona_weapon: Weapon = {
       ]
     }
   ],
-  rank:3
+  rank: 3
 }
 
 // ========== Echoes ===========================================================================================================
@@ -39,7 +39,7 @@ const ciaccona_cost_4_echo_1: Echo = {
   echoSkill: {
     name: 'Nightmare: Kelpie (Active)',
     displayName: 'Nightmare: Kelpie (Active)',
-    category: 'Other',
+    category: 'Echo Skill',
     castTime: 0,
     multiplier: 405 / 100,
     scaling: 'ATK',
