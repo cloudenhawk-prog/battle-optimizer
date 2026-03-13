@@ -492,7 +492,7 @@ const cartethyia_transform: Action = {
 
 // ========== Intro & Outro ====================================================================================================
 const cartethyia_intro: Action = {
-  name: 'Intro',
+  name: 'Cartethyia Intro',
   displayName: 'Sword to Mark Tides Trace',
   category: 'Other',
   castTime: 0.92, // TODO
@@ -1067,7 +1067,7 @@ const fleurdelys_liberation: Action = {
 
 
 const fleurdelys_intro: Action = { // TODO: Define Fleyrdelys' real intro
-  name: 'Intro',
+  name: 'Fleurdelys Intro',
   displayName: 'Sword to Mark Tides Trace',
   category: 'Other',
   castTime: 0.92,

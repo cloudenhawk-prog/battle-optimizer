@@ -146,7 +146,7 @@ function makeActionFromCoordinatedAttack(ca: CoordinatedAttack): Action {
     energyGenerated: [],
     energyCost: [],
     statusModifications: [],
-    damageModifiers: [],
+    damageModifiers: ca.damageModifiers ?? [],
     sideEffects: [],
     coordinatedAttacks: [],
     castConditions: { startState: 'ANY', endState: 'ANY' },

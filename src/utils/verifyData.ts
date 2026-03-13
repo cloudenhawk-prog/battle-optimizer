@@ -66,11 +66,9 @@ function verifyCharacter(character: Character, negativeStatusNames: Set<string>)
   }
 
   // --- Action name uniqueness ---
-  // Intro/Outro actions are form-scoped (one per form) and validated separately; skip them here.
   check('Action names unique', () => {
     const seenNames = new Set<string>()
     for (const action of actions) {
-      if ((action.dmgTypes as string[]).includes('INTRO') || (action.dmgTypes as string[]).includes('OUTRO')) continue
       if (seenNames.has(action.name)) throw new Error(`duplicate "${action.name}"`)
       seenNames.add(action.name)
     }
