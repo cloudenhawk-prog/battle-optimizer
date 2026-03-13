@@ -62,6 +62,13 @@ export type CoordinatedAttack = {
   condition?: (ctx: StepContext) => number
 
   /**
+   * Modifiers applied on each damage tick of this coordinated attack.
+   * Behaves like Action.damageModifiers — each tick triggers these modifiers,
+   * allowing time-limited buffs to be refreshed on every hit.
+   */
+  damageModifiers?: DamageModifier[]
+
+  /**
    * Modifiers that are active exactly while this coordinated attack is alive.
    * They are injected into modifiersInAction when the attack activates (or refreshes)
    * and removed when the attack expires or is swap-cancelled.

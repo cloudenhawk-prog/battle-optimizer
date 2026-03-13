@@ -53,7 +53,7 @@ export function verifyData(): void {
 }
 
 function verifyCharacter(character: Character, negativeStatusNames: Set<string>): CharacterCheckResult {
-  const { name, actions, maxEnergies, stats } = character
+  const { name, actions, maxEnergies, stats, forms, defaultForm } = character
   const checks: CharacterCheckResult['checks'] = []
 
   const check = (label: string, fn: () => void) => {
@@ -74,14 +74,59 @@ function verifyCharacter(character: Character, negativeStatusNames: Set<string>)
     }
   })
 
-  // --- Required action types (convention: names contain "Intro" / "Outro" / "Echo Skill") ---
-  check('Required actions (Intro / Outro / Echo Skill)', () => {
-    const missing: string[] = []
-    if (!actions.some(a => a.name.includes('Intro'))) missing.push('Intro')
-    if (!actions.some(a => a.name.includes('Outro'))) missing.push('Outro')
-    if (!actions.some(a => a.name.includes('Echo Skill'))) missing.push('Echo Skill')
-    if (missing.length) throw new Error(`missing: ${missing.join(', ')}`)
+  // --- Required action types ---
+  check('Required actions (Echo Skill)', () => {
+    if (!actions.some(a => (a.dmgTypes as string[]).includes('ECHO')))
+      throw new Error('missing: Echo Skill')
   })
+
+  // Intro/Outro: base form must have exactly one each; non-base forms may have 0 or 1.
+  if (forms && forms.length > 0) {
+    const baseFormName = defaultForm ?? forms[0].name
+    const baseForm = forms.find(f => f.name === baseFormName)
+    check(`Base form "${baseFormName}": exactly 1 Intro and 1 Outro (correct dmgTypes, present in character.actions)`, () => {
+      const errors: string[] = []
+      if (!baseForm) {
+        errors.push(`form "${baseFormName}" not found in forms array`)
+      } else {
+        const actionNames = new Set(actions.map(a => a.name))
+        const intro = baseForm.introAction
+        const outro = baseForm.outroAction
+
+        if (!intro) {
+          errors.push('missing introAction')
+        } else {
+          if (!intro.dmgTypes.includes('INTRO'))
+            errors.push(`introAction "${intro.name}" missing dmgType INTRO (got [${intro.dmgTypes.join(', ')}])`)
+          if (!actionNames.has(intro.name))
+            errors.push(`introAction "${intro.name}" not found in character.actions`)
+        }
+
+        if (!outro) {
+          errors.push('missing outroAction')
+        } else {
+          if (!outro.dmgTypes.includes('OUTRO'))
+            errors.push(`outroAction "${outro.name}" missing dmgType OUTRO (got [${outro.dmgTypes.join(', ')}])`)
+          if (!actionNames.has(outro.name))
+            errors.push(`outroAction "${outro.name}" not found in character.actions`)
+        }
+
+        if (intro && outro && intro.name === outro.name)
+          errors.push(`introAction and outroAction must be distinct (both are "${intro.name}")`)
+      }
+      if (errors.length) throw new Error(errors.join('; '))
+    })
+  } else {
+    // No forms — check character.actions for exactly 1 Intro and 1 Outro by name convention.
+    check('Required actions (Intro / Outro)', () => {
+      const errors: string[] = []
+      const introCount = actions.filter(a => a.name.includes('Intro')).length
+      const outroCount = actions.filter(a => a.name.includes('Outro')).length
+      if (introCount !== 1) errors.push(`expected exactly 1 Intro, found ${introCount}`)
+      if (outroCount !== 1) errors.push(`expected exactly 1 Outro, found ${outroCount}`)
+      if (errors.length) throw new Error(errors.join('; '))
+    })
+  }
 
   // --- One check per action covering all logical validations (including coordinated attacks) ---
   for (const action of actions) {

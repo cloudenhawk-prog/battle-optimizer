@@ -68,7 +68,8 @@ export function CharacterStateTracker({ snapshot, charactersInBattle, tableConfi
           // Get current form for this character
           const currentFormName = snapshot?.charactersForms?.[character.name] ?? ''
           const currentForm = character.forms?.find(f => f.name === currentFormName)
-          const defaultForm = character.forms?.find(f => f.isDefault) ?? character.forms?.[0]
+          const defaultFormName = character.defaultForm ?? character.forms?.[0]?.name
+          const defaultForm = character.forms?.find(f => f.name === defaultFormName)
           const displayForm = currentForm || defaultForm
 
           const isActive = activeCharacterName === group.label
@@ -95,20 +96,24 @@ export function CharacterStateTracker({ snapshot, charactersInBattle, tableConfi
                 )}
               </div>
 
-              {/* Position badge */}
-              <div className="stateTrackerPositionRow">
-                <span className={`stateTrackerPositionBadge stateTrackerPositionBadge--${displayPosition.toLowerCase()}${!isActiveChar && !isWithinPersistence ? ' stateTrackerPositionBadge--synced' : ''}`}>{displayPosition === 'AIR' ? '▲ AIR' : '▼ GROUND'}</span>
-              </div>
-
-              {/* Form badge (if character has forms) */}
-              {displayForm && (
-                <div className="stateTrackerFormRow">
-                  <span className="stateTrackerFormBadge">
-                    {displayForm.icon && <img src={displayForm.icon} alt={displayForm.name} className="stateTrackerFormIcon" />}
-                    {displayForm.displayName || displayForm.name}
+              {/* State section: position + form as labeled chips */}
+              <div className="stateTrackerStates">
+                <div className="stateTrackerStateItem">
+                  <span className="stateTrackerStateLabel">Position</span>
+                  <span className={`stateTrackerPositionBadge stateTrackerPositionBadge--${displayPosition.toLowerCase()}${!isActiveChar && !isWithinPersistence ? ' stateTrackerPositionBadge--synced' : ''}`}>
+                    {displayPosition === 'AIR' ? '▲ Air' : '▼ Ground'}
                   </span>
                 </div>
-              )}
+                {displayForm && (
+                  <div className="stateTrackerStateItem">
+                    <span className="stateTrackerStateLabel">Form</span>
+                    <span className="stateTrackerFormBadge">
+                      {displayForm.icon && <img src={displayForm.icon} alt={displayForm.name} className="stateTrackerFormIcon" />}
+                      {displayForm.displayName || displayForm.name}
+                    </span>
+                  </div>
+                )}
+              </div>
 
               {/* Energy bars */}
               <div className="stateTrackerEnergies">

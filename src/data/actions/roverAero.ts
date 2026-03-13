@@ -576,30 +576,7 @@ const roverAero_outro: Action = {
   sideEffects: [],
   castConditions: {
     startState: 'ANY',
-    endState: 'ANY',
-  },
-  offtune: 0
-}
-
-// ========== Echo Skill =======================================================================================================
-const roverAero_echo: Action = {
-  name: 'Rover Echo Skill',
-  displayName: 'Reminence: Fleurdelys',
-  category: 'Other',
-  castTime: 0,
-  multiplier: (8 * 27.36 + 136.8) / 100,
-  scaling: 'ATK',
-  elements: ['AERO'],
-  dmgTypes: ['ECHO'],
-  cooldown: 20,
-  energyGenerated: [{ energyType: 'energy', amount: 8 * 0.38 + 1.9, share: 0.5, scalingStat: 'energyPercent' }],
-  energyCost: [],
-  statusModifications: [],
-  damageModifiers: [],
-  sideEffects: [],
-  castConditions: {
-    startState: 'ANY',
-    endState: 'ANY',
+    endState: 'PRESERVE',
   },
   offtune: 0
 }
@@ -622,7 +599,7 @@ const roverAero_energy: Action = {
   sideEffects: [],
   castConditions: {
     startState: 'ANY',
-    endState: 'ANY',
+    endState: 'PRESERVE',
   },
   offtune: 0
 }
@@ -644,7 +621,7 @@ const roverAero_concerto: Action = {
   sideEffects: [],
   castConditions: {
     startState: 'ANY',
-    endState: 'ANY',
+    endState: 'PRESERVE',
   },
   offtune: 0
 }
@@ -666,7 +643,7 @@ const roverAero_forte: Action = {
   sideEffects: [],
   castConditions: {
     startState: 'ANY',
-    endState: 'ANY',
+    endState: 'PRESERVE',
   },
   offtune: 0
 }
@@ -703,9 +680,6 @@ export {
   // Intro / Outro
   roverAero_intro,
   roverAero_outro,
-
-  // Echo
-  roverAero_echo,
 
   // Testing
   roverAero_energy,

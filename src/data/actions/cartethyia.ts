@@ -482,11 +482,61 @@ const cartethyia_transform: Action = {
     },
   ],
   sideEffects: [],
+  formChange: 'Fleurdelys',
   castConditions: {
     startState: 'ANY',
     endState: 'PRESERVE',
   },
   offtune: 0.0
+}
+
+// ========== Intro & Outro ====================================================================================================
+const cartethyia_intro: Action = {
+  name: 'Cartethyia Intro',
+  displayName: 'Sword to Mark Tides Trace',
+  category: 'Other',
+  castTime: 0.92, // TODO
+  multiplier: (1.5 * (3 * 2.08 + 6.24)) / 100,
+  scaling: 'HP',
+  elements: ['AERO'],
+  dmgTypes: ['INTRO'],
+  cooldown: 0,
+  energyGenerated: [
+    { energyType: 'energy', amount: 3 * 1.67 + 5.0, share: 0.5, scalingStat: 'energyPercent' },
+    { energyType: 'concerto', amount: 10, share: 0 },
+    { energyType: 'forte', amount: 1, share: 0 },
+  ],
+  energyCost: [],
+  statusModifications: [],
+  damageModifiers: [],
+  sideEffects: [],
+  castConditions: {
+    startState: 'ANY',
+    endState: 'GROUND',
+  },
+  offtune: 3 * 0.12 + 0.35
+}
+
+const cartethyia_outro: Action = {
+  name: 'Outro',
+  displayName: 'Winds Divine Blessing',
+  category: 'Other',
+  castTime: 0,
+  multiplier: 0,
+  scaling: 'HP',
+  elements: ['AERO'],
+  dmgTypes: ['OUTRO'],
+  cooldown: 0,
+  energyGenerated: [],
+  energyCost: [],
+  statusModifications: [],
+  damageModifiers: [],
+  sideEffects: [],
+  castConditions: {
+    startState: 'ANY',
+    endState: 'PRESERVE',
+  },
+  offtune: 0,
 }
 
 // ========== Basic 1-5 ========================================================================================================
@@ -1006,6 +1056,7 @@ const fleurdelys_liberation: Action = {
     },
   ],
   sideEffects: [],
+  formChange: 'Cartethyia',
   castConditions: {
     startState: 'ANY',
     endState: 'GROUND',
@@ -1013,13 +1064,14 @@ const fleurdelys_liberation: Action = {
   offtune: 7 * 2.4
 }
 
-// ========== Intro & Outro ====================================================================================================
-const cartethyia_intro: Action = {
-  name: 'Intro',
+
+
+const fleurdelys_intro: Action = { // TODO: Define Fleyrdelys' real intro
+  name: 'Fleurdelys Intro',
   displayName: 'Sword to Mark Tides Trace',
   category: 'Other',
-  castTime: 0.92, // TODO
-  multiplier: (1.5 * (3 * 2.08 + 6.24)) / 100,
+  castTime: 0.92,
+  multiplier: (3 * (3 * 2.08 + 6.24)) / 100,
   scaling: 'HP',
   elements: ['AERO'],
   dmgTypes: ['INTRO'],
@@ -1040,51 +1092,6 @@ const cartethyia_intro: Action = {
   offtune: 3 * 0.12 + 0.35
 }
 
-const cartethyia_outro: Action = {
-  name: 'Outro',
-  displayName: 'Winds Divine Blessing',
-  category: 'Other',
-  castTime: 0,
-  multiplier: 0,
-  scaling: 'HP',
-  elements: ['AERO'],
-  dmgTypes: ['OUTRO'],
-  cooldown: 0,
-  energyGenerated: [],
-  energyCost: [],
-  statusModifications: [],
-  damageModifiers: [],
-  sideEffects: [],
-  castConditions: {
-    startState: 'ANY',
-    endState: 'ANY',
-  },
-  offtune: 0,
-}
-
-// ========== Echo Skill =======================================================================================================
-const cartethyia_echo: Action = {
-  name: 'Echo Skill',
-  displayName: 'Reminence: Fleurdelys',
-  category: 'Other',
-  castTime: 0,
-  multiplier: (8 * 27.36 + 136.8) / 100,
-  scaling: 'ATK',
-  elements: ['AERO'],
-  dmgTypes: ['ECHO'],
-  cooldown: 20,
-  energyGenerated: [{ energyType: 'energy', amount: 8 * 0.38 + 1.9, share: 0.5, scalingStat: 'energyPercent' }],
-  energyCost: [],
-  statusModifications: [],
-  damageModifiers: [],
-  sideEffects: [],
-  castConditions: {
-    startState: 'ANY',
-    endState: 'ANY',
-  },
-  offtune: 0,
-}
-
 // ========== Energies =========================================================================================================
 const cartethyia_energy: Action = {
   name: 'Energy Up',
@@ -1103,7 +1110,7 @@ const cartethyia_energy: Action = {
   sideEffects: [],
   castConditions: {
     startState: 'ANY',
-    endState: 'ANY',
+    endState: 'PRESERVE',
   },
   offtune: 0,
 }
@@ -1125,7 +1132,7 @@ const cartethyia_concerto: Action = {
   sideEffects: [],
   castConditions: {
     startState: 'ANY',
-    endState: 'ANY',
+    endState: 'PRESERVE',
   },
   offtune: 0,
 }
@@ -1147,7 +1154,7 @@ const cartethyia_forte: Action = {
   sideEffects: [],
   castConditions: {
     startState: 'ANY',
-    endState: 'ANY',
+    endState: 'PRESERVE',
   },
   offtune: 0,
 }
@@ -1169,77 +1176,66 @@ const cartethyia_conviction: Action = {
   sideEffects: [],
   castConditions: {
     startState: 'ANY',
-    endState: 'ANY',
+    endState: 'PRESERVE',
   },
   offtune: 0,
 }
 
-export {
-  // Basic Attack 1-4
+export const cartethyia_actions = [
   cartethyia_BA_1_4_cancel_with_skill,
   cartethyia_BA_1_4_cancel_with_swap,
-
-  // Basic Attack 2-4
   cartethyia_BA_2_4,
   cartethyia_BA_2_4_cancel_with_jump,
   cartethyia_BA_2_4_cancel_with_swap,
-
-  // Heavy Attack
   cartethyia_heavy,
   cartethyia_heavy_cancel_with_swap,
-
-  // Plunge
   cartethyia_plunge,
   cartethyia_plunge_cancel_with_swap,
-
-  // Resonance Skill
   cartethyia_skill,
   cartethyia_skill_cancel_with_swap,
-
-  // Transform
   cartethyia_transform,
+]
 
-  // Fleurdelys Basics
+export const fleurdelys_actions = [
   fleurdelys_BA_1_5,
   fleurdelys_BA_1_5_cancel_with_swap,
-
   fleurdelys_BA_3_5,
   fleurdelys_BA_3_5_cancel_with_swap,
-
-  // Fleurdelys Heavy
   fleurdelys_heavy_1,
   fleurdelys_heavy_1_cancel_with_swap,
-
   fleurdelys_heavy_2,
   fleurdelys_heavy_2_cancel_with_swap,
-
-  // Fleurdelys Mid-air
   fleurdelys_midair_1_3,
   fleurdelys_midair_1_3_cancel_with_swap,
-
   fleurdelys_midair_1_2,
   fleurdelys_midair_1_2_cancel_with_swap,
-
-  // Fleurdelys Skills
   fleurdelys_skill_1,
   fleurdelys_skill_1_cancel_with_swap,
-
   fleurdelys_skill_2,
   fleurdelys_skill_2_cancel_with_swap,
-
-  // Liberation
   fleurdelys_liberation,
+]
 
-  // Intro / Outro
-  cartethyia_intro,
-  cartethyia_outro,
-
-  // Echo
-  cartethyia_echo,
-
-  // Testing
+export const universal_actions = [
   cartethyia_energy,
   cartethyia_concerto,
   cartethyia_forte,
-  cartethyia_conviction
-}
+  cartethyia_conviction,
+]
+
+export const cartethyia_intro_outro_actions = [
+  cartethyia_intro,
+  cartethyia_outro,
+]
+
+export const fleurdelys_intro_outro_actions = [
+  fleurdelys_intro
+]
+
+export const all_actions = [
+  ...cartethyia_actions,
+  ...fleurdelys_actions,
+  ...universal_actions,
+  ...cartethyia_intro_outro_actions,
+  ...fleurdelys_intro_outro_actions
+]

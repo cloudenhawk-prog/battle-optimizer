@@ -1,10 +1,23 @@
 import type { Character } from '../../types/character'
-import { blueprint, blueprint_intro, blueprint_outro } from '../actions/blueprint'
 
-export const XX: Character = {
+export const blueprint: Character = {
   name: 'XXX',
-  actions: [blueprint, blueprint_intro, blueprint_outro],
   maxEnergies: { energy: 100, concerto: 100, forte: 100 },
+  actions: [],
+  damageModifiers: [],
   stats: null,
-  damageModifiers: []
+  inherentStats: null,
+  gear: {
+    weapon: null,
+    echoSlots:  {
+      1: null,
+      2: null,
+      3: null,
+      4: null,
+      5: null
+    },
+    setBonus: null
+  },
+  defaultForm: null, // Optional
+  forms: [] // Optional
 }
