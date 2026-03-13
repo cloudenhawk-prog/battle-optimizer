@@ -1092,10 +1092,32 @@ const fleurdelys_intro: Action = { // TODO: Define Fleyrdelys' real intro
   offtune: 3 * 0.12 + 0.35
 }
 
-// ========== Energies =========================================================================================================
+// ========== Swaps ============================================================================================================
+const cartethyia_wait_005: Action = {
+  name: 'Wait 0.05s',
+  displayName: 'Wait 0.05s',
+  category: 'Other',
+  castTime: 0.05,
+  multiplier: 0,
+  scaling: 'HP',
+  elements: [''],
+  dmgTypes: [''],
+  cooldown: 0,
+  energyGenerated: [],
+  energyCost: [],
+  statusModifications: [],
+  damageModifiers: [],
+  sideEffects: [],
+  castConditions: {
+    startState: 'ANY',
+    endState: 'PRESERVE',
+  },
+  offtune: 0,
+}
+
 const cartethyia_wait_for_swap: Action = {
-  name: 'Wait Until Swap Available',
-  displayName: 'Wait Until Swap Available',
+  name: 'Wait Until Next Swap Is Available',
+  displayName: 'Wait Until Next Swap Is Available',
   category: 'Other',
   castTime: 0, // resolved dynamically via resolveVariant
   multiplier: 0,
@@ -1118,8 +1140,6 @@ const cartethyia_wait_for_swap: Action = {
     },
   },
   offtune: 0,
-  groupName: 'Wait Until Swap Available',
-  variantName: 'Default',
   resolveVariant(prevSnapshot) {
     const cooldowns = prevSnapshot?.charactersSwapCooldownUntil ?? {}
     const toTime = prevSnapshot?.toTime ?? 0
@@ -1131,6 +1151,7 @@ const cartethyia_wait_for_swap: Action = {
   },
 }
 
+// ========== Energies =========================================================================================================
 const cartethyia_energy: Action = {
   name: 'Energy Up',
   displayName: 'Energy Up',
@@ -1255,6 +1276,7 @@ export const fleurdelys_actions = [
 ]
 
 export const universal_actions = [
+  cartethyia_wait_005,
   cartethyia_wait_for_swap,
   cartethyia_energy,
   cartethyia_concerto,
