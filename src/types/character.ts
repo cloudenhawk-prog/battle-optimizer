@@ -12,7 +12,7 @@ export type Character = {
   maxEnergies: Partial<Record<EnergyType, number>>
   actions: Action[]
   damageModifiers: DamageModifier[]
-  stats: CharacterStats
+  stats: Partial<CharacterStats>
   inherentStats: Partial<CharacterStats>
   gear: Gear
   defaultForm?: string

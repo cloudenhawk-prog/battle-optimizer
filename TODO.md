@@ -1,15 +1,13 @@
 ### TODO:
-- Let character stats be partial to minimize risk of mistakes
 
 - Add sequence to characters and weapons (might be called smth else for weapons). Later we can do smth with it
 
 - Add action "wait until swap available" (closest swap; requires at least one swap to be on cooldown)
-. Add action "wait 0.05 seconds"
+  . Add action "wait 0.05 seconds"
 - Add action "wait until cooldown" (current character's closest cooldown)
 
 - Clean/fix Action data
 - nightmareKelpieOutroTrigger: you should be able to choose a damageCalculationStrategy: it could function like a stats scaling like character Action or a Negative Status damage calculation. Might need to define certain properties like an Action or negative status damage event (see what Aero Erosion Explosion does)
-
 
 - - Form System (WIP)
 - Character has a state tracking Form
@@ -28,7 +26,6 @@
 - Fleurdelys To Cartethyia : free and low cooldown (if Mandate doesn't exist you can't swap back to Fleurdelys after though) (Can't cast if Conviction is full === 120)
   - Create fleurdelys_transform
 - TLDR: Essentially Fleurdelys Form revolves around Mandate: when the buff is gone, anything that forces a Fleurdelys->Cartethyia transform will make you unable to swap back until the base Transform skill is off cooldown
-  
 - - - Cartethyia Data:
 - Add Sequence 1-3
 - Update stats

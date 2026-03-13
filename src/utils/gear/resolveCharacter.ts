@@ -1,4 +1,5 @@
 import type { Character } from '../../types/character'
+import { getDefaultCharacterStats } from '../../types/stats'
 import { mergeStats } from '../calculators/damageCalculator'
 import { resolveGear } from './resolveGear'
 
@@ -9,6 +10,7 @@ import { resolveGear } from './resolveGear'
  * Mutates `character` in place — call once per character before using it in any calculation.
  *
  * Resolution order:
+ *  0. Default stats (all multipliers = 1, critRate = 0.05, critDamage = 1.5, rest = 0)
  *  1. Base stats (`character.stats`)
  *  2. Inherent stats (`character.inherentStats`)
  *  3. Weapon stats (`character.gear.weapon.stats`)
@@ -24,8 +26,9 @@ export function resolveCharacter(character: Character): void {
   const { name, actions, gear, inherentStats, damageModifiers } = character
   const slots = gear.echoSlots
 
-  // ---- 1 & 2: Base stats + inherent stats ----
-  let resolved = mergeStats(character.stats, inherentStats)
+  // ---- 0: Start with defaults, then 1 & 2: Base stats + inherent stats ----
+  let resolved = mergeStats(getDefaultCharacterStats(), character.stats)
+  resolved = mergeStats(resolved, inherentStats)
 
   // ---- 3: Weapon stats ----
   resolved = mergeStats(resolved, gear.weapon.stats)
