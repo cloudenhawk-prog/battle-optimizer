@@ -104,9 +104,13 @@ export function CharacterStateTracker({ snapshot, charactersInBattle, tableConfi
               <div className="stateTrackerStates">
                 <div className="stateTrackerStateItem">
                   <span className="stateTrackerStateLabel">Position</span>
-                  <span className={`stateTrackerPositionBadge stateTrackerPositionBadge--${displayPosition.toLowerCase()}${!isActiveChar && !isWithinPersistence ? ' stateTrackerPositionBadge--synced' : ''}`}>
-                    {displayPosition === 'AIR' ? '▲ Air' : '▼ Ground'}
-                  </span>
+                  {!isActiveChar && !isWithinPersistence ? (
+                    <span className="stateTrackerPositionBadge stateTrackerPositionBadge--offfield">Off Field</span>
+                  ) : (
+                    <span className={`stateTrackerPositionBadge stateTrackerPositionBadge--${displayPosition.toLowerCase()}`}>
+                      {displayPosition === 'AIR' ? '▲ Air' : '▼ Ground'}
+                    </span>
+                  )}
                 </div>
                 {displayForm && (
                   <div className="stateTrackerStateItem">
@@ -115,6 +119,12 @@ export function CharacterStateTracker({ snapshot, charactersInBattle, tableConfi
                       {displayForm.icon && <img src={displayForm.icon} alt={displayForm.name} className="stateTrackerFormIcon" />}
                       {displayForm.displayName || displayForm.name}
                     </span>
+                  </div>
+                )}
+                {!isActiveChar && isWithinPersistence && (
+                  <div className="stateTrackerStateItem">
+                    <span className="stateTrackerStateLabel">Lingers</span>
+                    <span className="stateTrackerPersistBadge">{(persistentUntil - (snapshot?.toTime ?? 0)).toFixed(2)}s</span>
                   </div>
                 )}
                 {swapCooldownRemaining > 0 && (

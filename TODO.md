@@ -1,10 +1,13 @@
 ### TODO:
-- Add action "wait until swap available" (closest swap; requires at least one swap to be on cooldown)
-  . Add action "wait 0.05 seconds"
 - Add action "wait until cooldown" (current character's closest cooldown)
 
+- When an action or a character is not selectable, hovering it should display a tooltip telling you why it's not selectable based on whatever condition is not fufilled (sometimes multiple can be fufilled, but it's fine to just use the first one if that's easier). If it's equally easy to show all the reasons that's preferable, but not if it's a lot of extra work.
+If we end up only showing the first reason we encounter, we might want to check reasons in the order that makes most sense.
+
 - Clean/fix Action data
-- nightmareKelpieOutroTrigger: you should be able to choose a damageCalculationStrategy: it could function like a stats scaling like character Action or a Negative Status damage calculation. Might need to define certain propertiPes like an Action or negative status damage event (see what Aero Erosion Explosion does)
+- nightmareKelpieOutroTrigger: you should be able to choose a damageCalculationStrategy: it could function like a stats scaling like character Action or a Negative Status damage calculation. Might need to define certain propertiPes like an Action or negative status damage event (see what Aero Erosion Explosion does).
+
+
 
 - - Form System (WIP)
 - Character has a state tracking Form

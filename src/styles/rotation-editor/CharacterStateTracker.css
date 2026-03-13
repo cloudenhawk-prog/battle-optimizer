@@ -213,9 +213,11 @@
   border-color: rgba(80, 140, 220, 0.3);
 }
 
-/* Synced state (inactive, no persistence): slightly dimmed to signal it's derived */
-.stateTrackerPositionBadge--synced {
-  opacity: 0.55;
+/* Off-field state: character is fully swapped out, not on field */
+.stateTrackerPositionBadge--offfield {
+  color: rgba(160, 155, 170, 0.7);
+  background: rgba(80, 75, 90, 0.25);
+  border-color: rgba(120, 115, 135, 0.3);
 }
 
 /* ===== Form Badge ===== */
@@ -241,6 +243,17 @@
 }
 
 /* ===== Swap Cooldown Badge ===== */
+
+.stateTrackerPersistBadge {
+  font-size: 0.7rem;
+  font-weight: 600;
+  letter-spacing: 0.05em;
+  padding: 3px 10px;
+  border-radius: 5px;
+  border: 1px solid rgba(120, 200, 255, 0.35);
+  color: rgba(160, 220, 255, 0.95);
+  background: rgba(20, 60, 100, 0.4);
+}
 
 .stateTrackerSwapCooldownBadge {
   font-size: 0.7rem;
