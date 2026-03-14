@@ -3,7 +3,7 @@ import type { Snapshot } from '../../types/snapshot'
 
 // ========== Character Helpers ================================================================================================
 
-export function getCharacter(charactersMap: Record<string, Character>, characterName: string): Character | undefined {
+export function getCharacter<T extends Character>(charactersMap: Record<string, T>, characterName: string): T | undefined {
   return charactersMap[characterName]
 }
 

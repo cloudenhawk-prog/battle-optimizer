@@ -5,7 +5,7 @@ import type { Dispatch, SetStateAction } from 'react'
 import type { DamageEvent } from '../../types/events'
 import type { Snapshot } from '../../types/snapshot'
 import type { Action } from '../../types/action'
-import type { Character } from '../../types/character'
+import type { ResolvedCharacter } from '../../types/character'
 import type { Enemy } from '../../types/enemy'
 import type { NegativeStatusInAction } from '../../types/negativeStatus'
 import type { CoordinatedAttackInAction } from '../../types/coordinatedAttack'
@@ -19,7 +19,7 @@ import { updateAllCharactersCooldowns, setActionOnCooldown } from './cooldownHel
 
 // ========== Resolver 0: Build Step Context ==================================================================================
 
-export function buildStepContext(snapshotId: number, current: Snapshot, prev: Snapshot, character: Character, action: Action, enemy: Enemy, negativeStatusesInAction: NegativeStatusInAction[], modifiersInAction: ModifierInAction[], characterMap: Record<string, Character>, coordinatedAttacksInAction: CoordinatedAttackInAction[] = []): StepContext {
+export function buildStepContext(snapshotId: number, current: Snapshot, prev: Snapshot, character: ResolvedCharacter, action: Action, enemy: Enemy, negativeStatusesInAction: NegativeStatusInAction[], modifiersInAction: ModifierInAction[], characterMap: Record<string, ResolvedCharacter>, coordinatedAttacksInAction: CoordinatedAttackInAction[] = []): StepContext {
   const fromTime = prev.toTime
   const toTime = fromTime + action.castTime
   current.action = action.name
@@ -176,7 +176,7 @@ export function resolveDamage(ctx: StepContext, setDamageEvents: Dispatch<SetSta
   const current = ctx.current
   const toTime = ctx.toTime
 
-  const { average, damageEvent } = calculateDamage({ action, name, stats: baseStats as CharacterStats, damageModifiers, modifierCharacterStats, modifierEnemyStats, enemy, snapshotId, timeStamp: ctx.fromTime, ctx })
+  const { average, damageEvent } = calculateDamage({ action, name, stats: baseStats, damageModifiers, modifierCharacterStats, modifierEnemyStats, enemy, snapshotId, timeStamp: ctx.fromTime, ctx })
   setDamageEvents(prevEvents => [...prevEvents, damageEvent])
 
   const cumulativeDamage = prev.damage + average
@@ -363,7 +363,7 @@ export function helpNegativeStatuses(ctx: StepContext, setDamageEvents: Dispatch
   const action = ctx.action
 
   const stacksPrev = getNegativeStatusStacks(prev)
-  const { damageEvents, stacksCurr } = processNegativeStatusStacks(negativeStatusesInAction, fromTime, toTime, stacksPrev, enemy, ctx.character.stats as CharacterStats, ctx.aggregatedCharacterModifiers, ctx.aggregatedEnemyModifiers, ctx.damageModifiers, ctx.snapshotId, ctx)
+  const { damageEvents, stacksCurr } = processNegativeStatusStacks(negativeStatusesInAction, fromTime, toTime, stacksPrev, enemy, ctx.character.stats, ctx.aggregatedCharacterModifiers, ctx.aggregatedEnemyModifiers, ctx.damageModifiers, ctx.snapshotId, ctx)
   updateNegativeStatusStacks(current, stacksCurr, action, negativeStatusesInAction, statusModifications.negativeStatus, ctx)
 
   // Collect all damage events and filter out zero-damage events
@@ -595,10 +595,12 @@ export function resolveCastState(ctx: StepContext): void {
     ...(swapOccurred ? { [prevCharName!]: ctx.fromTime + 1 } : {}),
   }
 
+  const swapCooldownUntil = swapOccurred && prevCharName ? ctx.current.charactersSwapCooldownUntil[prevCharName] : undefined
+
   ctx.logs.push({
     resolver: 'resolveCastState',
     message: `Cast state resolved for ${charName}: position=${newPosition}, persistentUntil=${ctx.current.charactersPersistentUntil[charName]}`,
-    details: { prevPosition, rawEndState, newPosition, persistenceTime, swapOccurred, swapCooldownUntil: ctx.current.charactersSwapCooldownUntil[prevCharName ?? ''] },
+    details: { prevPosition, rawEndState, newPosition, persistenceTime, swapOccurred, swapCooldownUntil },
   })
 }
 

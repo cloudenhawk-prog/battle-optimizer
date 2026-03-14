@@ -256,9 +256,16 @@ export function ActionSelect({ value, actions, character, currentEnergies, previ
     })
   }
 
-  // Group actions by category and sort alphabetically within each category
-  const categoryOrder: ActionCategory[] = ['Basics', 'Skills', 'Other', 'Testing']
-  const groupsByCategory = categoryOrder
+  // Group actions by category and sort alphabetically within each category.
+  // Categories are derived dynamically from present actions so that any ActionCategory value
+  // (e.g. 'Echo Skill') is always included without requiring a code change here.
+  const preferredCategoryOrder = ['Basics', 'Skills', 'Echo Skill', 'Other', 'Testing'] satisfies ActionCategory[] // This is simply a desired order for categories to appear in the UI, if present. Any categories not in this list will be appended at the end.
+  const presentCategories = [...new Set(actionGroups.map(g => g.variants[0].action.category))]
+  const orderedCategories = [
+    ...preferredCategoryOrder.filter(c => presentCategories.includes(c)),
+    ...presentCategories.filter(c => !preferredCategoryOrder.includes(c)),
+  ]
+  const groupsByCategory = orderedCategories
     .map(category => ({
       category,
       groups: actionGroups.filter(g => g.variants[0].action.category === category).sort((a, b) => a.displayName.localeCompare(b.displayName)),

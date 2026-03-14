@@ -19,3 +19,8 @@ export type Character = {
   forms?: Form[]
   sequence: 0 | 1 | 2 | 3 | 4 | 5 | 6
 }
+
+// A Character whose stats have been fully resolved by resolveCharacter().
+// Use this type throughout the runtime calculation pipeline (resolvers, calculators, hooks)
+// so that character.stats is guaranteed to be a complete CharacterStats object.
+export type ResolvedCharacter = Omit<Character, 'stats'> & { stats: CharacterStats }
