@@ -1,4 +1,6 @@
 ### TODO:
+- Split TODO into multiple files depending on target/topic
+
 - Swap out action should not be selectable if you're in a scenario where the two other characters' SWAP CD would be >0 after the cast (having no one to swap to)
 
 - some columns in the table cant be unhidden once it's hidden
