@@ -5,7 +5,7 @@ import { roverAero_liberation, roverAero_midair_1_2, roverAero_midair_1_2_cancel
 
 // ========== Weapon ===========================================================================================================
 const roverAero_weapon: Weapon = {
-  name: 'Static Mist',
+  name: 'Bloodpact\'s Pledge',
   stats: { flatATK: 587.50, energyPercent: 0.3888 },
   injectedModifiers: [ // TODO: How is this handled? These 2 refer to the same buff, but one allows for a higher timer. Reset should never reset above it's own stated timer, and overlapping names should reference the same buff
     {
@@ -40,7 +40,8 @@ const roverAero_weapon: Weapon = {
         }
       ]
     }
-  ]
+  ],
+  rank: 5
 }
 
 // ========== Echoes ===========================================================================================================
@@ -57,7 +58,7 @@ const roverAero_cost_4_echo_1: Echo = {
   echoSkill: {
     name: 'Reminiscence: Fleurdelys (Active)',
     displayName: 'Reminiscence: Fleurdelys (Active)',
-    category: 'Other',
+    category: 'Echo Skill',
     castTime: 0,
     multiplier: (8 * 27.36 + 136.8) / 100,
     scaling: 'ATK',

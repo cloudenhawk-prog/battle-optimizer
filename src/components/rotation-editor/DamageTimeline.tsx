@@ -382,13 +382,11 @@ export function DamageTimeline({ snapshots, damageEvents = [], selectedCharacter
     const permanentSelfBuffs = new Set<string>()
     buffMetadata.forEach((meta, name) => {
       if (meta.targetStrategy === 'self' && meta.durationStrategy === 'permanent') {
-        console.log('Found permanent self buff:', name, meta)
         permanentSelfBuffs.add(name)
         // Also add the normalized version
         permanentSelfBuffs.add(normalizeName(name))
       }
     })
-    console.log('Permanent self buffs:', Array.from(permanentSelfBuffs))
 
     // 2️⃣ Build active character windows for deriving permanent self buff blocks
     const activeWindows: Array<{
@@ -428,34 +426,25 @@ export function DamageTimeline({ snapshots, damageEvents = [], selectedCharacter
       }
     }
 
-    // Diagnostic logging - remove after verification
-    console.log('Active Windows:', activeWindows)
-
     // 3️⃣ Generate permanent self buff blocks directly from active windows
     // These buffs exist whenever their owner is active - no duration tracking needed
     activeWindows.forEach(window => {
-      console.log('Processing window:', window)
-
       // Check all buffs that exist in any snapshot to find permanent self buffs for this character
       const buffNamesInRotation = new Set<string>()
       snapshots.forEach(snap => {
         Object.keys(snap.buffs || {}).forEach(name => buffNamesInRotation.add(name))
       })
-      console.log('All buff names in rotation:', Array.from(buffNamesInRotation))
 
       buffNamesInRotation.forEach(buffName => {
         if (!permanentSelfBuffs.has(buffName)) {
-          console.log(`  ${buffName} - not a permanent self buff`)
           return
         }
 
         // Get metadata using normalized name lookup
         const originalName = normalizedToOriginal.get(normalizeName(buffName)) || buffName
         const meta = buffMetadata.get(originalName)
-        console.log(`  ${buffName} - IS permanent self buff, meta:`, meta, 'window character:', window.character)
 
         if (meta?.ownerCharacter !== window.character) {
-          console.log(`    -> Skipping: owner ${meta?.ownerCharacter} !== window character ${window.character}`)
           return
         }
 
@@ -469,7 +458,6 @@ export function DamageTimeline({ snapshots, damageEvents = [], selectedCharacter
           durationStrategy: meta.durationStrategy,
         }
 
-        console.log('    -> Creating permanent buff block:', block)
         buffDebuffBlocksList.push(block)
       })
     })

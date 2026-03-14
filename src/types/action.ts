@@ -7,7 +7,7 @@ import type { Snapshot } from './snapshot'
 
 // ========== Type: Action =====================================================================================================
 
-export type ActionCategory = 'Basics' | 'Skills' | 'Other' | 'Testing'
+export type ActionCategory = 'Basics' | 'Skills' | 'Echo Skill' | 'Other' | 'Testing'
 
 export type Action = {
   name: string

@@ -1,6 +1,6 @@
 import { useSnapshots } from './useSnapshots'
 import { useCharacterActions } from './useCharacterActions'
-import type { Character } from '../../types/character'
+import type { ResolvedCharacter } from '../../types/character'
 import type { TableConfig } from '../../types/tableDefinitions'
 import type { Enemy } from '../../types/enemy'
 import type { DamageEvent } from '../../types/events'
@@ -10,7 +10,7 @@ import { useState, useEffect } from 'react'
 // ========== Hook: useRotationEditor ==========================================================================================
 
 type UseRotationEditorProps = {
-  charactersInBattle: Character[]
+  charactersInBattle: ResolvedCharacter[]
   tableConfig: TableConfig
   enemy: Enemy
   onSnapshotsChange?: (snapshots: Snapshot[], damageEvents: DamageEvent[]) => void

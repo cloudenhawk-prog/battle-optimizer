@@ -5,7 +5,7 @@ import type { Dispatch, SetStateAction } from 'react'
 import type { DamageEvent } from '../../types/events'
 import type { Snapshot } from '../../types/snapshot'
 import type { Action } from '../../types/action'
-import type { Character } from '../../types/character'
+import type { ResolvedCharacter } from '../../types/character'
 import type { Enemy } from '../../types/enemy'
 import type { NegativeStatusInAction } from '../../types/negativeStatus'
 import type { CoordinatedAttackInAction } from '../../types/coordinatedAttack'
@@ -19,7 +19,7 @@ import { updateAllCharactersCooldowns, setActionOnCooldown } from './cooldownHel
 
 // ========== Resolver 0: Build Step Context ==================================================================================
 
-export function buildStepContext(snapshotId: number, current: Snapshot, prev: Snapshot, character: Character, action: Action, enemy: Enemy, negativeStatusesInAction: NegativeStatusInAction[], modifiersInAction: ModifierInAction[], characterMap: Record<string, Character>, coordinatedAttacksInAction: CoordinatedAttackInAction[] = []): StepContext {
+export function buildStepContext(snapshotId: number, current: Snapshot, prev: Snapshot, character: ResolvedCharacter, action: Action, enemy: Enemy, negativeStatusesInAction: NegativeStatusInAction[], modifiersInAction: ModifierInAction[], characterMap: Record<string, ResolvedCharacter>, coordinatedAttacksInAction: CoordinatedAttackInAction[] = []): StepContext {
   const fromTime = prev.toTime
   const toTime = fromTime + action.castTime
   current.action = action.name
@@ -431,6 +431,63 @@ export function resolveModifierState(ctx: StepContext): void {
   })
 }
 
+// ========== Resolver: Resource Milestones ===================================================================================
+
+/**
+ * After resources are resolved, checks each ResourceMilestoneDef on the active character.
+ * For each definition, counts how many thresholds the resource crossed this step (prev < threshold ≤ curr)
+ * and adds that many stacks to the corresponding modifier in modifiersInAction.
+ *
+ * Rules encoded per-definition on the character:
+ *   - Timer starts on the first stack; resetTimerOnApplication on the modifier controls reset behaviour.
+ *   - All stacks expire together via stacksRemovedEachTime on the modifier.
+ *   - Explicit removal (e.g. on Liberation) is handled by statusModifications on the relevant action.
+ */
+export function resolveResourceMilestones(ctx: StepContext): void {
+  const milestonesDefs = ctx.character.resourceMilestones
+  if (!milestonesDefs || milestonesDefs.length === 0) return
+
+  for (const { resourceType, milestones, modifier } of milestonesDefs) {
+    const charName = ctx.character.name
+    const prevValue = ctx.prev.charactersEnergies?.[charName]?.[resourceType] ?? 0
+    const currValue = ctx.current.charactersEnergies?.[charName]?.[resourceType] ?? 0
+
+    const count = milestones.filter(m => prevValue < m && currValue >= m).length
+    if (count === 0) continue
+
+    const existingIndex = ctx.modifiersInAction.findIndex(mia => mia.modifier.source === modifier.source)
+    if (existingIndex !== -1) {
+      const existing = ctx.modifiersInAction[existingIndex]
+      const updated = [...ctx.modifiersInAction]
+      updated[existingIndex] = {
+        ...existing,
+        currentStacks: Math.min(existing.currentStacks + count, modifier.stackingStrategy.maxStacks),
+      }
+      ctx.modifiersInAction = updated
+    } else {
+      const limited = modifier.durationStrategy.type === 'limited' ? modifier.durationStrategy : null
+      ctx.modifiersInAction = [
+        ...ctx.modifiersInAction,
+        {
+          modifier,
+          applicationTime: ctx.fromTime,
+          timeLeft: limited?.timeDuration ?? Infinity,
+          swapsLeft: limited?.numberOfSwaps ?? Infinity,
+          currentStacks: Math.min(count, modifier.stackingStrategy.maxStacks),
+          targetCharacter: null,
+        },
+      ]
+    }
+
+    const finalStacks = ctx.modifiersInAction.find(mia => mia.modifier.source === modifier.source)?.currentStacks ?? 0
+    ctx.logs.push({
+      resolver: 'resolveResourceMilestones',
+      message: `[${charName}] ${resourceType} milestone(s) crossed: +${count} stack(s) of '${modifier.displayName}', total: ${finalStacks}`,
+      details: { resourceType, prevValue, currValue, count, finalStacks },
+    })
+  }
+}
+
 // ========== Resolver 7: Resources ===========================================================================================
 
 export function resolveResources(ctx: StepContext): void {
@@ -586,10 +643,21 @@ export function resolveCastState(ctx: StepContext): void {
     }
   }
 
+  // Handle swap cooldown: when a different character takes over, the previous character
+  // cannot be swapped back in for 1 second (measured from the start of the current action).
+  const prevCharName = ctx.prev.character
+  const swapOccurred = !!prevCharName && prevCharName !== charName
+  ctx.current.charactersSwapCooldownUntil = {
+    ...(ctx.prev.charactersSwapCooldownUntil ?? {}),
+    ...(swapOccurred ? { [prevCharName!]: ctx.fromTime + 1 } : {}),
+  }
+
+  const swapCooldownUntil = swapOccurred && prevCharName ? ctx.current.charactersSwapCooldownUntil[prevCharName] : undefined
+
   ctx.logs.push({
     resolver: 'resolveCastState',
     message: `Cast state resolved for ${charName}: position=${newPosition}, persistentUntil=${ctx.current.charactersPersistentUntil[charName]}`,
-    details: { prevPosition, rawEndState, newPosition, persistenceTime },
+    details: { prevPosition, rawEndState, newPosition, persistenceTime, swapOccurred, swapCooldownUntil },
   })
 }
 

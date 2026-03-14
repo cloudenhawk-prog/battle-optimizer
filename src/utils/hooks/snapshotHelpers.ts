@@ -55,6 +55,7 @@ export function createSnapshot(previousSnapshot: Snapshot, charactersMap: Record
   const charactersPersistentUntil = { ...(previousSnapshot.charactersPersistentUntil ?? {}) }
   const charactersLastAction = { ...(previousSnapshot.charactersLastAction ?? {}) }
   const charactersForms = { ...(previousSnapshot.charactersForms ?? {}) }
+  const charactersSwapCooldownUntil = { ...(previousSnapshot.charactersSwapCooldownUntil ?? {}) }
 
   const basicValues = Object.fromEntries(globalColumns.basic.map(col => [col, 0]))
   const buffs = Object.fromEntries(globalColumns.buffs.map(col => [col, 0]))
@@ -97,5 +98,6 @@ export function createSnapshot(previousSnapshot: Snapshot, charactersMap: Record
     charactersLastAction,
     charactersRequiresSwapOut: {},
     charactersForms,
+    charactersSwapCooldownUntil,
   }
 }

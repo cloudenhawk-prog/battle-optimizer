@@ -1,4 +1,4 @@
-import type { Character } from '../../types/character'
+import type { Character, ResolvedCharacter } from '../../types/character'
 import { getDefaultCharacterStats } from '../../types/stats'
 import { mergeStats } from '../calculators/damageCalculator'
 import { resolveGear } from './resolveGear'
@@ -22,7 +22,7 @@ import { resolveGear } from './resolveGear'
  *  6. Echo skill from slot 1 — replaces the placeholder ECHO action in character.actions
  *  7. Modifier injection via resolveGear (slot-1 injectedModifiers/injectedSideEffects + set bonus injectedModifiers)
  */
-export function resolveCharacter(character: Character): void {
+export function resolveCharacter(character: Character): ResolvedCharacter {
   const { name, actions, gear, inherentStats, damageModifiers } = character
   const slots = gear.echoSlots
 
@@ -74,4 +74,7 @@ export function resolveCharacter(character: Character): void {
 
   // ---- 8: Inject gear modifiers ----
   resolveGear(actions, damageModifiers, gear)
+
+  // character.stats is now fully populated — safe to narrow to ResolvedCharacter
+  return character as ResolvedCharacter
 }

@@ -1,5 +1,5 @@
 import type { Snapshot } from './snapshot'
-import type { Character } from './character'
+import type { ResolvedCharacter } from './character'
 import type { Action } from './action'
 import type { Enemy } from './enemy'
 import type { CharacterStats, EnemyStats } from './stats'
@@ -15,8 +15,8 @@ export type StepContext = {
   current: Snapshot
   prev: Snapshot
 
-  character: Character
-  allies: Character[]
+  character: ResolvedCharacter
+  allies: ResolvedCharacter[]
   enemy: Enemy
 
   action: Action

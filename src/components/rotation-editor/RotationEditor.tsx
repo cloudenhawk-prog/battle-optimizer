@@ -3,7 +3,7 @@ import { useState } from 'react'
 import { useRotationEditor } from '../../hooks/rotation-editor/useRotationEditor'
 import { RotationTable } from './RotationTable'
 import DataOverlay from './DataOverlay'
-import type { Character } from '../../types/character'
+import type { ResolvedCharacter } from '../../types/character'
 import type { Enemy } from '../../types/enemy'
 import type { TableConfig, ColumnVisibility } from '../../types/tableDefinitions'
 import type { DamageEvent } from '../../types/events'
@@ -12,7 +12,7 @@ import type { Snapshot } from '../../types/snapshot'
 // ========== Component: Rotation Editor =======================================================================================
 
 type RotationEditorProps = {
-  charactersInBattle: Character[]
+  charactersInBattle: ResolvedCharacter[]
   enemy: Enemy
   tableConfig: TableConfig
   columnVisibility: ColumnVisibility

@@ -1,13 +1,24 @@
 ### TODO:
+- Offtune system!
 
-- Add sequence to characters and weapons (might be called smth else for weapons). Later we can do smth with it
+- Split TODO into multiple files depending on target/topic
 
-- Add action "wait until swap available" (closest swap; requires at least one swap to be on cooldown)
-  . Add action "wait 0.05 seconds"
+- Swap out action should not be selectable if you're in a scenario where the two other characters' SWAP CD would be >0 after the cast (having no one to swap to)
+
+- some columns in the table cant be unhidden once it's hidden
+
 - Add action "wait until cooldown" (current character's closest cooldown)
 
+- When an action or a character is not selectable, hovering it should display a tooltip telling you why it's not selectable based on whatever condition is not fufilled (sometimes multiple can be fufilled, but it's fine to just use the first one if that's easier). If it's equally easy to show all the reasons that's preferable, but not if it's a lot of extra work.
+If we end up only showing the first reason we encounter, we might want to check reasons in the order that makes most sense.
+
 - Clean/fix Action data
-- nightmareKelpieOutroTrigger: you should be able to choose a damageCalculationStrategy: it could function like a stats scaling like character Action or a Negative Status damage calculation. Might need to define certain properties like an Action or negative status damage event (see what Aero Erosion Explosion does)
+- nightmareKelpieOutroTrigger: you should be able to choose a damageCalculationStrategy: it could function like a stats scaling like character Action or a Negative Status damage calculation. Might need to define certain propertiPes like an Action or negative status damage event (see what Aero Erosion Explosion does).
+
+- Create action helpers - no need to define the same actions multiple times.
+- - Eneries actions
+- - Wait actions
+
 
 - - Form System (WIP)
 - Character has a state tracking Form
@@ -48,6 +59,9 @@
   - Allows us to define modifiers that dynamically are added to characters
     - How do we handle this if a modifier is connected to an action? For example Static Mist Outro Buff (dynamically inject into data? Or some resolver logic?)
 
+
+- Ideally we want ALL actions for ALL characters (BA1, BA2, BA3 ...) with swapin/swapout logic and persistence time
+
 Need a way to determine which buffs/debuffs to show
 
 > All limited buffs
@@ -77,6 +91,8 @@ Mandate buff: Does it work or not when swapped away?
 This might affect how we want to show Mandate in timeline
 
 # Timeline:
+
+Add a settings/configuration button. Each existing potential character, global event, buff, debuff, coodinated attack etc should have a toggle where you can choose whether to display it or not in the timeline.
 
 Timeline should not display permanently but be something you open and generate based on snapshots + damage events
 HIDE IT for now - then we will simplify it once we start working on it again

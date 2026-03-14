@@ -19,5 +19,6 @@ export const blueprint: Character = {
     setBonus: null
   },
   defaultForm: null, // Optional
-  forms: [] // Optional
+  forms: [], // Optional
+  sequence: 0
 }

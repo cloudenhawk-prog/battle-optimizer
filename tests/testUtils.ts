@@ -6,7 +6,7 @@
  */
 
 import type { Snapshot } from '../src/types/snapshot'
-import type { Character } from '../src/types/character'
+import type { ResolvedCharacter } from '../src/types/character'
 import type { Action } from '../src/types/action'
 import type { Enemy } from '../src/types/enemy'
 import type { NegativeStatusInAction, NegativeStatus } from '../src/types/negativeStatus'
@@ -171,17 +171,15 @@ export function createMockEnemyStats(overrides: Partial<EnemyStats> = {}): Enemy
 
 // ========== Character Mocks ==================================================================================================
 
-export function createMockCharacter(name: string, overrides: Partial<Character> = {}): Character {
+export function createMockCharacter(name: string, overrides: Partial<ResolvedCharacter> = {}): ResolvedCharacter {
   return {
     name,
     actions: [],
-    buffs: [],
-    debuffs: [],
     maxEnergies: {},
     stats: createMockCharacterStats(),
     damageModifiers: [],
     ...overrides,
-  }
+  } as ResolvedCharacter
 }
 
 // ========== Action Mocks =====================================================================================================

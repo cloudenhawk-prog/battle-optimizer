@@ -2,6 +2,20 @@ import type { Action } from '../../types/action'
 import { always, stacksOfCap } from '../../utils/conditions/damageModifierConditions'
 import { aeroErosionExplosion } from '../sideEffects'
 
+// S2
+// TODO: Casting Resonance Liberation - A Knight's Heartfelt Prayers increases the max stack limit of Aero Erosion on targets within a certain range by 3 stacks.
+// TEST in tower how long it lasts
+// Immediately apply 3 stacks of Aero Erosion and trigger aero explosion once
+
+// TODO: Forte needs to be split into 3 swords (introduce sub energies or some other logic? That way the energy bar itself in characterTrackerWindow can be split into 3 segments)
+// TODO: Casting mid-air atttack (Cartethyia plunge) every 1 forte consumed reduces the cooldown of Resonance Skill Cartethyia by 1 second
+
+// S3
+// Fleurdelys Heavy Attack 2                          - Applies 2 aero ersoion (instead of 1) - but then also removes 1 stack to trigger aeroExplosion
+// Fleurdelys Skill 2 (May Tempest Break the Tides)   - Applies 2 aero ersoion (instead of 1) - but then also removes 1 stack to trigger aeroExplosion
+
+// Fleurdelys Liberation - Blade of Howling Squall    - Multiplier increased by 100 %
+
 // ========== Basic Attack 1-4 =================================================================================================
 const cartethyia_BA_1_4_cancel_with_skill: Action = {
   name: 'Basic Attack 1-4 (skill cancel)',
@@ -311,7 +325,7 @@ const cartethyia_plunge_1: Action = {
   displayName: 'Plunge Attack 1',
   category: 'Basics',
   castTime: 0,
-  multiplier: (3 * 5.65) / 100,
+  multiplier: 3 * (5.65) / 100,
   scaling: 'HP',
   elements: ['AERO'],
   dmgTypes: ['BASIC', 'NEGATIVE_STATUS'],
@@ -479,7 +493,7 @@ const cartethyia_transform: Action = {
       targetStrategy: 'self',
       durationStrategy: { type: 'limited', timeDuration: 12 },
       stackingStrategy: { maxStacks: 1, resetTimerOnApplication: true, stacksRemovedEachTime: 1 },
-    },
+    }
   ],
   sideEffects: [],
   formChange: 'Fleurdelys',
@@ -530,7 +544,20 @@ const cartethyia_outro: Action = {
   energyGenerated: [],
   energyCost: [],
   statusModifications: [],
-  damageModifiers: [],
+  damageModifiers: [
+    {
+      source: 'Cartethyia Outro Buff',
+      displayName: 'Wind\'s Divine Blessing',
+      type: 'buff',
+      ownerCharacter: 'Cartethyia',
+      color: '#1ae070',
+      characterStats: { aeroAmplifyDMG: 0.175 },
+      condition: always(),
+      targetStrategy: 'activeAlly',
+      durationStrategy: { type: 'limited', timeDuration: 20 },
+      stackingStrategy: { maxStacks: 1, resetTimerOnApplication: true, stacksRemovedEachTime: 1 },
+    }
+  ],
   sideEffects: [],
   castConditions: {
     startState: 'ANY',
@@ -1041,7 +1068,7 @@ const fleurdelys_liberation: Action = {
     { energyType: 'concerto', amount: 20, share: 0 },
   ],
   energyCost: [{ energyType: 'conviction', amount: 120 }],
-  statusModifications: [{ type: 'negativeStatus', targetName: 'Aero Erosion', stackChange: -100 }, { type: 'buff', targetName: 'Mandate', stackChange: -1 }],
+  statusModifications: [{ type: 'negativeStatus', targetName: 'Aero Erosion', stackChange: -100 }, { type: 'buff', targetName: 'Mandate', stackChange: -1 }, { type: 'buff', targetName: "Fleurdelys's Conviction", stackChange: -100 }],
   damageModifiers: [
     {
       source: 'Liberation Stacks',
@@ -1090,6 +1117,65 @@ const fleurdelys_intro: Action = { // TODO: Define Fleyrdelys' real intro
     endState: 'GROUND',
   },
   offtune: 3 * 0.12 + 0.35
+}
+
+// ========== Swaps ============================================================================================================
+const cartethyia_wait_005: Action = {
+  name: 'Wait 0.05s',
+  displayName: 'Wait 0.05s',
+  category: 'Other',
+  castTime: 0.05,
+  multiplier: 0,
+  scaling: 'HP',
+  elements: [''],
+  dmgTypes: [''],
+  cooldown: 0,
+  energyGenerated: [],
+  energyCost: [],
+  statusModifications: [],
+  damageModifiers: [],
+  sideEffects: [],
+  castConditions: {
+    startState: 'ANY',
+    endState: 'PRESERVE',
+  },
+  offtune: 0,
+}
+
+const cartethyia_wait_for_swap: Action = {
+  name: 'Wait Until Next Swap Is Available',
+  displayName: 'Wait Until Next Swap Is Available',
+  category: 'Other',
+  castTime: 0, // resolved dynamically via resolveVariant
+  multiplier: 0,
+  scaling: 'HP',
+  elements: [''],
+  dmgTypes: [''],
+  cooldown: 0,
+  energyGenerated: [],
+  energyCost: [],
+  statusModifications: [],
+  damageModifiers: [],
+  sideEffects: [],
+  castConditions: {
+    startState: 'ANY',
+    endState: 'PRESERVE',
+    customCanCast(prevSnapshot) {
+      if (!prevSnapshot) return false
+      const cooldowns = prevSnapshot.charactersSwapCooldownUntil ?? {}
+      return Object.values(cooldowns).some(until => until - prevSnapshot.toTime > 0)
+    },
+  },
+  offtune: 0,
+  resolveVariant(prevSnapshot) {
+    const cooldowns = prevSnapshot?.charactersSwapCooldownUntil ?? {}
+    const toTime = prevSnapshot?.toTime ?? 0
+    const remaining = Object.values(cooldowns)
+      .map(until => until - toTime)
+      .filter(r => r > 0)
+    const castTime = remaining.length > 0 ? Math.min(...remaining) : 0
+    return { ...this, castTime, resolveVariant: undefined }
+  },
 }
 
 // ========== Energies =========================================================================================================
@@ -1217,6 +1303,8 @@ export const fleurdelys_actions = [
 ]
 
 export const universal_actions = [
+  cartethyia_wait_005,
+  cartethyia_wait_for_swap,
   cartethyia_energy,
   cartethyia_concerto,
   cartethyia_forte,

@@ -2,7 +2,7 @@ import type { Dispatch, SetStateAction } from 'react'
 import type { CoordinatedAttack } from '../../types/coordinatedAttack'
 import type { DamageEvent } from '../../types/events'
 import type { StepContext } from '../../types/stepContext'
-import type { Character } from '../../types/character'
+import type { ResolvedCharacter } from '../../types/character'
 import type { Action } from '../../types/action'
 import type { CharacterStats } from '../../types/stats'
 import type { ModifierInAction } from '../../types/modifiers'
@@ -81,7 +81,7 @@ function removeLinkedModifiers(ca: CoordinatedAttack, ctx: StepContext): void {
 
 // ========== Per-hit Energy  ==================================================================================================
 
-function applyEnergyPerHit(ctx: StepContext, ownerCharacter: string, ownerCharObj: Character, energyGenerated: CoordinatedAttack['energyGenerated']): void {
+function applyEnergyPerHit(ctx: StepContext, ownerCharacter: string, ownerCharObj: ResolvedCharacter, energyGenerated: CoordinatedAttack['energyGenerated']): void {
   const current = ctx.current
   const allCharacters = [ctx.character, ...ctx.allies]
 

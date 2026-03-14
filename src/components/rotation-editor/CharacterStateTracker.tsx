@@ -54,6 +54,10 @@ export function CharacterStateTracker({ snapshot, charactersInBattle, tableConfi
 
           const energies = snapshot?.charactersEnergies[character.name] ?? {}
 
+          // Compute remaining swap cooldown for display
+          const swapCooldownUntil = snapshot?.charactersSwapCooldownUntil?.[character.name] ?? 0
+          const swapCooldownRemaining = Math.max(0, swapCooldownUntil - (snapshot?.toTime ?? 0))
+
           // Compute effective position for display:
           // - Active character → use their stored position
           // - Inactive within persistence → use their own stored position
@@ -100,9 +104,13 @@ export function CharacterStateTracker({ snapshot, charactersInBattle, tableConfi
               <div className="stateTrackerStates">
                 <div className="stateTrackerStateItem">
                   <span className="stateTrackerStateLabel">Position</span>
-                  <span className={`stateTrackerPositionBadge stateTrackerPositionBadge--${displayPosition.toLowerCase()}${!isActiveChar && !isWithinPersistence ? ' stateTrackerPositionBadge--synced' : ''}`}>
-                    {displayPosition === 'AIR' ? '▲ Air' : '▼ Ground'}
-                  </span>
+                  {!isActiveChar && !isWithinPersistence ? (
+                    <span className="stateTrackerPositionBadge stateTrackerPositionBadge--offfield">Off Field</span>
+                  ) : (
+                    <span className={`stateTrackerPositionBadge stateTrackerPositionBadge--${displayPosition.toLowerCase()}`}>
+                      {displayPosition === 'AIR' ? '▲ Air' : '▼ Ground'}
+                    </span>
+                  )}
                 </div>
                 {displayForm && (
                   <div className="stateTrackerStateItem">
@@ -111,6 +119,18 @@ export function CharacterStateTracker({ snapshot, charactersInBattle, tableConfi
                       {displayForm.icon && <img src={displayForm.icon} alt={displayForm.name} className="stateTrackerFormIcon" />}
                       {displayForm.displayName || displayForm.name}
                     </span>
+                  </div>
+                )}
+                {!isActiveChar && isWithinPersistence && (
+                  <div className="stateTrackerStateItem">
+                    <span className="stateTrackerStateLabel">Lingers</span>
+                    <span className="stateTrackerPersistBadge">{(persistentUntil - (snapshot?.toTime ?? 0)).toFixed(2)}s</span>
+                  </div>
+                )}
+                {swapCooldownRemaining > 0 && (
+                  <div className="stateTrackerStateItem">
+                    <span className="stateTrackerStateLabel">Swap CD</span>
+                    <span className="stateTrackerSwapCooldownBadge">{swapCooldownRemaining.toFixed(2)}s</span>
                   </div>
                 )}
               </div>

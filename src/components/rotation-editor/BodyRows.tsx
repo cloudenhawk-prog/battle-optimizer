@@ -35,6 +35,14 @@ export function BodyRow({ snapshot, previousSnapshot, charactersInBattle, tableC
     if (prevChar && isSwapRequiredLocked(previousSnapshot, prevChar)) {
       lockedCharacters.add(prevChar)
     }
+    // Lock characters that are still within their 1-second swap cooldown
+    const swapCooldowns = previousSnapshot.charactersSwapCooldownUntil ?? {}
+    const prevToTime = previousSnapshot.toTime
+    for (const [charName, cooldownUntil] of Object.entries(swapCooldowns)) {
+      if (cooldownUntil - prevToTime > 0) {
+        lockedCharacters.add(charName)
+      }
+    }
   }
 
   return (
@@ -58,7 +66,6 @@ export function BodyRow({ snapshot, previousSnapshot, charactersInBattle, tableC
               value={character}
               characters={charactersInBattle}
               onChange={characterName => {
-                console.log('📍 BodyRow - CharacterSelect onChange:', { snapshotId, characterName })
                 onSelectCharacter(snapshotId, characterName)
               }}
               lockedCharacters={lockedCharacters}
@@ -78,7 +85,6 @@ export function BodyRow({ snapshot, previousSnapshot, charactersInBattle, tableC
               currentEnergies={snapshot.charactersEnergies[character]}
               previousSnapshot={previousSnapshot}
               onChange={actionName => {
-                console.log('📍 BodyRow - ActionSelect onChange:', { snapshotId, actionName })
                 onSelectAction(snapshotId, actionName)
               }}
               disabled={!character}

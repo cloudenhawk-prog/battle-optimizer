@@ -59,6 +59,7 @@ body,
   height: 288px;
   background: radial-gradient(circle, hsla(270, 60%, 65%, 0.15) 0%, transparent 70%);
   animation: float-medium 5s;
+  animation-direction: reverse;
 }
 
 .orb-3 {
@@ -101,5 +102,4 @@ body,
   50% {
     transform: translateY(-20px) scale(1.05);
   }
-  animation-direction: reverse;
 }
