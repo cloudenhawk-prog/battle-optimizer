@@ -265,16 +265,7 @@ export function ActionSelect({ value, actions, character, currentEnergies, previ
     }))
     .filter(categoryGroup => categoryGroup.groups.length > 0)
 
-  console.log('🔧 ActionSelect render:', {
-    value,
-    actionsCount: actions.length,
-    disabled,
-    groupsCount: actionGroups.length,
-    expandedGroup,
-  })
-
   const handleSelect = (actionName: string) => {
-    console.log('🎯 ActionSelect - handleSelect called:', actionName)
     onChange(actionName)
     setIsOpen(false)
     setExpandedGroup(null)

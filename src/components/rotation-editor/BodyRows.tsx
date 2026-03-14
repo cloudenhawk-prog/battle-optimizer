@@ -66,7 +66,6 @@ export function BodyRow({ snapshot, previousSnapshot, charactersInBattle, tableC
               value={character}
               characters={charactersInBattle}
               onChange={characterName => {
-                console.log('📍 BodyRow - CharacterSelect onChange:', { snapshotId, characterName })
                 onSelectCharacter(snapshotId, characterName)
               }}
               lockedCharacters={lockedCharacters}
@@ -86,7 +85,6 @@ export function BodyRow({ snapshot, previousSnapshot, charactersInBattle, tableC
               currentEnergies={snapshot.charactersEnergies[character]}
               previousSnapshot={previousSnapshot}
               onChange={actionName => {
-                console.log('📍 BodyRow - ActionSelect onChange:', { snapshotId, actionName })
                 onSelectAction(snapshotId, actionName)
               }}
               disabled={!character}
