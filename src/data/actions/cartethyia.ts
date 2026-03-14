@@ -2,6 +2,27 @@ import type { Action } from '../../types/action'
 import { always, stacksOfCap } from '../../utils/conditions/damageModifierConditions'
 import { aeroErosionExplosion } from '../sideEffects'
 
+// S1
+// TODO: Modifier: When Fleurdelys's Conviction hits 30/60/90/120, Fleurdelys's Crit. DMG is increased by 25% for 15s, up to 4 stacks.
+// The duration of this effect does not reset upon gaining new stacks. After casting Resonance Liberation - Blade of Howling Squall, the increased Crit. DMG is removed.
+
+// S2
+// TODO: Casting Resonance Liberation - A Knight's Heartfelt Prayers increases the max stack limit of Aero Erosion on targets within a certain range by 3 stacks.
+// Immediately apply 3 stacks of Aero Erosion and trigger aero explosion once
+
+// TODO: Damage multiplier +50 % for: Cartethyia BA's, Heavy, Intro (Dodge Counter)
+// TODO: Dmage multipler +200 % for: Cartetehyia Mid Air Attack (plunge?)
+
+// TODO: Casting mid-air atttack (Cartethyia plunge) every 1 forte consumed reduces the cooldown of Resonance Skill Cartethyia by 1 second
+
+// S3
+// Fleurdelys Basic Attack Stage 5                    - Applies 2 aero ersoion (instead of 1) - but then also removes 1 stack to trigger aeroExplosion
+// Fleurdelys Mid Air Stage 2                         - Applies 2 aero ersoion (instead of 1) - but then also removes 1 stack to trigger aeroExplosion
+// Fleurdelys Heavy Attack 2                          - Applies 2 aero ersoion (instead of 1) - but then also removes 1 stack to trigger aeroExplosion
+// Fleurdelys Skill 2 (May Tempest Break the Tides)   - Applies 2 aero ersoion (instead of 1) - but then also removes 1 stack to trigger aeroExplosion
+
+// Fleurdelys Liberation - Blade of Howling Squall    - Multiplier increased by 100 %
+
 // ========== Basic Attack 1-4 =================================================================================================
 const cartethyia_BA_1_4_cancel_with_skill: Action = {
   name: 'Basic Attack 1-4 (skill cancel)',
@@ -479,7 +500,7 @@ const cartethyia_transform: Action = {
       targetStrategy: 'self',
       durationStrategy: { type: 'limited', timeDuration: 12 },
       stackingStrategy: { maxStacks: 1, resetTimerOnApplication: true, stacksRemovedEachTime: 1 },
-    },
+    }
   ],
   sideEffects: [],
   formChange: 'Fleurdelys',
@@ -530,7 +551,20 @@ const cartethyia_outro: Action = {
   energyGenerated: [],
   energyCost: [],
   statusModifications: [],
-  damageModifiers: [],
+  damageModifiers: [
+    {
+      source: 'Cartethyia Outro Buff',
+      displayName: 'Wind\'s Divine Blessing',
+      type: 'buff',
+      ownerCharacter: 'Cartethyia',
+      color: '#1ae070',
+      characterStats: { aeroAmplifyDMG: 0.175 },
+      condition: always(),
+      targetStrategy: 'activeAlly',
+      durationStrategy: { type: 'limited', timeDuration: 20 },
+      stackingStrategy: { maxStacks: 1, resetTimerOnApplication: true, stacksRemovedEachTime: 1 },
+    }
+  ],
   sideEffects: [],
   castConditions: {
     startState: 'ANY',
@@ -1041,7 +1075,7 @@ const fleurdelys_liberation: Action = {
     { energyType: 'concerto', amount: 20, share: 0 },
   ],
   energyCost: [{ energyType: 'conviction', amount: 120 }],
-  statusModifications: [{ type: 'negativeStatus', targetName: 'Aero Erosion', stackChange: -100 }, { type: 'buff', targetName: 'Mandate', stackChange: -1 }],
+  statusModifications: [{ type: 'negativeStatus', targetName: 'Aero Erosion', stackChange: -100 }, { type: 'buff', targetName: 'Mandate', stackChange: -1 }, { type: 'buff', targetName: "Fleurdelys's Conviction", stackChange: -100 }],
   damageModifiers: [
     {
       source: 'Liberation Stacks',

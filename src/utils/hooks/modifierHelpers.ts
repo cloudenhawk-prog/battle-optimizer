@@ -210,6 +210,8 @@ function shouldApplyModifier(modifier: DamageModifier, activeCharacter: string, 
       return true
     case 'all':
       return true
+    case 'activeAlly':
+      return ownerCharacter !== activeCharacter
     case 'nextSwap':
       // Only applies if targetCharacter is set and matches active
       return targetCharacter !== null && targetCharacter === activeCharacter

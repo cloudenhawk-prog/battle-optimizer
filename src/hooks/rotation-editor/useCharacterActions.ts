@@ -12,7 +12,7 @@ import { getCharacter, getPrevCharacter } from '../../utils/hooks/characterHelpe
 import { getConcertoValue } from '../../utils/hooks/energyHelpers'
 import { getActionFromCharacter, getActionNameByDmgType } from '../../utils/hooks/actionHelpers'
 import { getSnapshotIndex, getPrevSnapshot, copySnapshots, getSnapshotById, assignCharacterToRow } from '../../utils/hooks/snapshotHelpers'
-import { buildStepContext, resolveTime, resolveDamageModifiers, resolveDamage, resolveSideEffectsAndStatuses, resolveModifierState, resolveResources, resolveCooldowns, resolveCoordinatedAttacks, resolveCastState } from '../../utils/hooks/resolvers'
+import { buildStepContext, resolveTime, resolveDamageModifiers, resolveDamage, resolveSideEffectsAndStatuses, resolveModifierState, resolveResources, resolveCooldowns, resolveCoordinatedAttacks, resolveCastState, resolveResourceMilestones } from '../../utils/hooks/resolvers'
 import { negativeStatuses as negativeStatusesData } from '../../data/negativeStatuses'
 import { createSnapshot } from '../../utils/hooks/snapshotHelpers'
 
@@ -121,9 +121,11 @@ function updateSnapshotsWithAction(params: { snapshots: Snapshot[]; snapshotId: 
 
   resolveCoordinatedAttacks(context, setDamageEvents)
 
-  resolveModifierState(context)
-
   resolveResources(context)
+
+  resolveResourceMilestones(context)
+
+  resolveModifierState(context)
 
   resolveCooldowns(context)
 
