@@ -1,4 +1,8 @@
 ### TODO:
+- Swap out action should not be selectable if you're in a scenario where the two other characters' SWAP CD would be >0 after the cast (having no one to swap to)
+
+- some columns in the table cant be unhidden once it's hidden
+
 - Add action "wait until cooldown" (current character's closest cooldown)
 
 - When an action or a character is not selectable, hovering it should display a tooltip telling you why it's not selectable based on whatever condition is not fufilled (sometimes multiple can be fufilled, but it's fine to just use the first one if that's easier). If it's equally easy to show all the reasons that's preferable, but not if it's a lot of extra work.
@@ -47,6 +51,9 @@ If we end up only showing the first reason we encounter, we might want to check 
   - Allows us to compute stats more safely
   - Allows us to define modifiers that dynamically are added to characters
     - How do we handle this if a modifier is connected to an action? For example Static Mist Outro Buff (dynamically inject into data? Or some resolver logic?)
+
+
+- Ideally we want ALL actions for ALL characters (BA1, BA2, BA3 ...) with swapin/swapout logic and persistence time
 
 Need a way to determine which buffs/debuffs to show
 

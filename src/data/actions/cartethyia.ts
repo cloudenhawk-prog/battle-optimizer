@@ -2,22 +2,15 @@ import type { Action } from '../../types/action'
 import { always, stacksOfCap } from '../../utils/conditions/damageModifierConditions'
 import { aeroErosionExplosion } from '../sideEffects'
 
-// S1
-// TODO: Modifier: When Fleurdelys's Conviction hits 30/60/90/120, Fleurdelys's Crit. DMG is increased by 25% for 15s, up to 4 stacks.
-// The duration of this effect does not reset upon gaining new stacks. After casting Resonance Liberation - Blade of Howling Squall, the increased Crit. DMG is removed.
-
 // S2
 // TODO: Casting Resonance Liberation - A Knight's Heartfelt Prayers increases the max stack limit of Aero Erosion on targets within a certain range by 3 stacks.
+// TEST in tower how long it lasts
 // Immediately apply 3 stacks of Aero Erosion and trigger aero explosion once
 
-// TODO: Damage multiplier +50 % for: Cartethyia BA's, Heavy, Intro (Dodge Counter)
-// TODO: Dmage multipler +200 % for: Cartetehyia Mid Air Attack (plunge?)
-
+// TODO: Forte needs to be split into 3 swords (introduce sub energies or some other logic? That way the energy bar itself in characterTrackerWindow can be split into 3 segments)
 // TODO: Casting mid-air atttack (Cartethyia plunge) every 1 forte consumed reduces the cooldown of Resonance Skill Cartethyia by 1 second
 
 // S3
-// Fleurdelys Basic Attack Stage 5                    - Applies 2 aero ersoion (instead of 1) - but then also removes 1 stack to trigger aeroExplosion
-// Fleurdelys Mid Air Stage 2                         - Applies 2 aero ersoion (instead of 1) - but then also removes 1 stack to trigger aeroExplosion
 // Fleurdelys Heavy Attack 2                          - Applies 2 aero ersoion (instead of 1) - but then also removes 1 stack to trigger aeroExplosion
 // Fleurdelys Skill 2 (May Tempest Break the Tides)   - Applies 2 aero ersoion (instead of 1) - but then also removes 1 stack to trigger aeroExplosion
 
@@ -332,7 +325,7 @@ const cartethyia_plunge_1: Action = {
   displayName: 'Plunge Attack 1',
   category: 'Basics',
   castTime: 0,
-  multiplier: (3 * 5.65) / 100,
+  multiplier: 3 * (5.65) / 100,
   scaling: 'HP',
   elements: ['AERO'],
   dmgTypes: ['BASIC', 'NEGATIVE_STATUS'],
