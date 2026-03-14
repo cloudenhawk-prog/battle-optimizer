@@ -1,4 +1,6 @@
 ### TODO:
+- Offtune system!
+
 - Split TODO into multiple files depending on target/topic
 
 - Swap out action should not be selectable if you're in a scenario where the two other characters' SWAP CD would be >0 after the cast (having no one to swap to)
@@ -13,6 +15,9 @@ If we end up only showing the first reason we encounter, we might want to check 
 - Clean/fix Action data
 - nightmareKelpieOutroTrigger: you should be able to choose a damageCalculationStrategy: it could function like a stats scaling like character Action or a Negative Status damage calculation. Might need to define certain propertiPes like an Action or negative status damage event (see what Aero Erosion Explosion does).
 
+- Create action helpers - no need to define the same actions multiple times.
+- - Eneries actions
+- - Wait actions
 
 
 - - Form System (WIP)
