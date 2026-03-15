@@ -2,7 +2,7 @@ import type { Echo, EchoSetBonus, Weapon } from '../../types/gear'
 import { always } from '../../utils/conditions/damageModifierConditions'
 import { ciaccona_BA_3_4_cancel_with_skill, ciaccona_BA_3_4_cancel_with_swap, ciaccona_midair_2_BA_4_cancel_with_skill, ciaccona_midair_2_BA_4_cancel_with_swap, ciaccona_outro, ciaccona_skill, ciaccona_skill_cancel_with_swap } from '../actions/ciaccona'
 import { ciaccona_singers_triple_cadenza_coordinated } from '../coordinatedAttacks/ciaccona'
-import { nightmareKelpieOutroTrigger } from '../sideEffects'
+import { nightmareKelpieOutroTrigger } from '../sideEffects/sideEffects'
 
 // ========== Weapon ===========================================================================================================
 const ciaccona_weapon: Weapon = {
