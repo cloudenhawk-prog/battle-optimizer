@@ -1,6 +1,6 @@
-import type { SideEffect } from '../types/sideEffect'
-import { calculateAeroErosionSideEffectDamage } from '../utils/calculators/sideEffectCalculators'
-import { removeNegativeStatusStacks } from '../utils/modifications/statusModificationHelpers'
+import type { SideEffect } from '../../types/sideEffect'
+import { calculateAeroErosionSideEffectDamage } from '../../utils/calculators/sideEffectCalculators'
+import { removeNegativeStatusStacks } from '../../utils/modifications/statusModificationHelpers'
 
 // ========== Side Effects =====================================================================================================
 

@@ -1,6 +1,6 @@
 import type { Action } from '../../types/action'
 import { always, stacksOfCap } from '../../utils/conditions/damageModifierConditions'
-import { aeroErosionExplosion } from '../sideEffects'
+import { aeroErosionExplosion } from '../sideEffects/sideEffects'
 
 // S2
 // TODO: Casting Resonance Liberation - A Knight's Heartfelt Prayers increases the max stack limit of Aero Erosion on targets within a certain range by 3 stacks.
