@@ -99,5 +99,7 @@ export function createSnapshot(previousSnapshot: Snapshot, charactersMap: Record
     charactersRequiresSwapOut: {},
     charactersForms,
     charactersSwapCooldownUntil,
+    charactersRequiredFollowUp: {},
+    charactersComboWindows: {},
   }
 }

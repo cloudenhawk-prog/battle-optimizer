@@ -625,6 +625,17 @@ export function resolveCastState(ctx: StepContext): void {
     [charName]: ctx.action.castConditions.requiresSwapOut ?? false,
   }
 
+  // Track required follow-up actions for combo system
+  // If this action has a requiredFollowUp, set it for the same character
+  if (ctx.action.requiredFollowUp) {
+    ctx.current.charactersRequiredFollowUp = {
+      [charName]: ctx.action.requiredFollowUp.actionName,
+    }
+  } else {
+    // Clear any previous required follow-up for this character
+    ctx.current.charactersRequiredFollowUp = {}
+  }
+
   // Handle form changes if this action changes the character's form
   if (ctx.action.formChange) {
     ctx.current.charactersForms = {
@@ -653,6 +664,49 @@ export function resolveCastState(ctx: StepContext): void {
   }
 
   const swapCooldownUntil = swapOccurred && prevCharName ? ctx.current.charactersSwapCooldownUntil[prevCharName] : undefined
+
+  // Handle combo windows: track actions that can start time-based combo chains
+  // First, copy over existing combo windows and update their swap/form change flags
+  ctx.current.charactersComboWindows = { ...(ctx.prev.charactersComboWindows ?? {}) }
+
+  // Update swap flag for all characters that had an active combo window
+  if (swapOccurred) {
+    // When a swap occurs, mark all characters as swapped (they're no longer active)
+    const updatedWindows: typeof ctx.current.charactersComboWindows = {}
+    for (const [char, window] of Object.entries(ctx.current.charactersComboWindows)) {
+      updatedWindows[char] = {
+        ...window,
+        wasSwapped: char === prevCharName ? true : window.wasSwapped,
+      }
+    }
+    ctx.current.charactersComboWindows = updatedWindows
+  }
+
+  // Update form change flag if the current character changed form
+  const prevForm = ctx.prev.charactersForms?.[charName]
+  const newForm = ctx.current.charactersForms?.[charName]
+  const didFormChange = !!ctx.action.formChange || prevForm !== newForm
+  if (didFormChange && ctx.current.charactersComboWindows[charName]) {
+    ctx.current.charactersComboWindows[charName] = {
+      ...ctx.current.charactersComboWindows[charName],
+      formChanged: true,
+    }
+  }
+
+  // Record this action for potential combo window usage
+  // The actual validation (whether this action can start a combo) happens in ActionSelect
+  // by checking if any follow-up action has this action in its comboWindow.previousActions
+  // Note: We always use fromTime (cast start) because ActionSelect will apply the timerStartsAt
+  // logic when validating. This simplifies the tracking.
+  ctx.current.charactersComboWindows = {
+    ...ctx.current.charactersComboWindows,
+    [charName]: {
+      actionName: ctx.action.name,
+      startTime: ctx.fromTime, // Record cast start time
+      wasSwapped: false, // Reset when a new action is cast
+      formChanged: false, // Reset when a new action is cast
+    },
+  }
 
   ctx.logs.push({
     resolver: 'resolveCastState',

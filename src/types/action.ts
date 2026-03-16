@@ -44,6 +44,14 @@ export type Action = {
    *  select the actual variant to run (e.g. picking the right plunge tier based on forte).
    *  The returned Action is used in place of this one for all resolvers. */
   resolveVariant?: (prevSnapshot: Snapshot | undefined, characterName: string) => Action
+
+  /** When specified, this action requires a specific follow-up action to be cast
+   *  by the same character in the immediately following row. The follow-up action
+   *  must be off cooldown by the time this action completes.
+   *  All other actions/characters will be locked. */
+  requiredFollowUp?: {
+    actionName: string // Name of the action that must be cast next
+  }
 }
 
 export type CastConditions = {
@@ -70,4 +78,19 @@ export type CastConditions = {
    *  Used for complex conditions (e.g., checking if a specific buff is active).
    *  Return true if castable, false otherwise. */
   customCanCast?: (prevSnapshot: Snapshot | undefined, characterName: string) => boolean
+  /** Time-based combo window: allows this action to be cast within a time window after
+   *  one of the specified previous actions, even if other actions happen in between.
+   *  Unlike previousActions which requires immediate follow-up, this allows flexibility. */
+  comboWindow?: {
+    /** Actions that start the combo window */
+    previousActions: Action[]
+    /** Maximum time in seconds to cast this action after one of previousActions */
+    maxTimeSincePrevious: number
+    /** When the timer starts counting */
+    timerStartsAt: 'cast' | 'afterCast'
+    /** If true, swapping to a different character breaks the combo */
+    crashesOnSwap: boolean
+    /** If true, changing form breaks the combo */
+    crashesOnFormChange: boolean
+  }
 }
