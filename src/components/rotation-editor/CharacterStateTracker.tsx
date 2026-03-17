@@ -138,7 +138,7 @@ export function CharacterStateTracker({ snapshot, charactersInBattle, tableConfi
               {/* Energy bars */}
               <div className="stateTrackerEnergies">
                 {visibleColumns.map(col => {
-                  const energyType = col.key.split('_')[1]
+                  const energyType = col.key.slice(col.key.indexOf('_') + 1)
                   const current = energies[energyType] || 0
                   const max = character.maxEnergies[energyType as keyof typeof character.maxEnergies] || 100
                   const percentage = Math.min((current / max) * 100, 100)

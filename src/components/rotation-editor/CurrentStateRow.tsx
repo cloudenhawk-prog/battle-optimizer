@@ -144,6 +144,7 @@ function createInitialSnapshot(): Snapshot {
     charactersSwapCooldownUntil: {},
     charactersRequiredFollowUp: {},
     charactersComboWindows: {},
+    charactersForteGrants: {},
   }
 }
 

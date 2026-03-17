@@ -1,5 +1,5 @@
 import type { Action } from '../../types/action'
-import { always, stacksOfCap } from '../../utils/conditions/damageModifierConditions'
+import { always, stacksOfCap, hasForteGrant } from '../../utils/conditions/damageModifierConditions'
 import { aeroErosionExplosion } from '../sideEffects/sideEffects'
 
 // S2
@@ -7,7 +7,6 @@ import { aeroErosionExplosion } from '../sideEffects/sideEffects'
 // TEST in tower how long it lasts
 // Immediately apply 3 stacks of Aero Erosion and trigger aero explosion once
 
-// TODO: Forte needs to be split into 3 swords (introduce sub energies or some other logic? That way the energy bar itself in characterTrackerWindow can be split into 3 segments)
 // TODO: Casting mid-air atttack (Cartethyia plunge) every 1 forte consumed reduces the cooldown of Resonance Skill Cartethyia by 1 second
 
 // S3
@@ -30,7 +29,7 @@ const cartethyia_BA_1_4_cancel_with_skill: Action = {
   energyGenerated: [
     { energyType: 'energy', amount: 0.7 + (2 * 0.58 + 0.77) + 4 * 0.63 + (3 * 0.37 + 1.11), share: 0.5, scalingStat: 'energyPercent' },
     { energyType: 'concerto', amount: 0.98 + (2 * 0.81 + 1.08) + 4 * 0.88 + (3 * 0.52 + 1.55), share: 0 },
-    { energyType: 'forte', amount: 1, share: 0 },
+    { energyType: 'forte_divinity', amount: 1, share: 0 },
   ],
   energyCost: [],
   statusModifications: [{ type: 'negativeStatus', targetName: 'Aero Erosion', stackChange: 1 }],
@@ -58,7 +57,7 @@ const cartethyia_BA_1_4_cancel_with_swap: Action = {
   energyGenerated: [
     { energyType: 'energy', amount: 0.7 + (2 * 0.58 + 0.77) + 4 * 0.63 + (3 * 0.37 + 1.11), share: 0.5, scalingStat: 'energyPercent' },
     { energyType: 'concerto', amount: 0.98 + (2 * 0.81 + 1.08) + 4 * 0.88 + (3 * 0.52 + 1.55), share: 0 },
-    { energyType: 'forte', amount: 1, share: 0 },
+    { energyType: 'forte_divinity', amount: 1, share: 0 },
   ],
   energyCost: [],
   statusModifications: [{ type: 'negativeStatus', targetName: 'Aero Erosion', stackChange: 1 }],
@@ -90,7 +89,7 @@ const cartethyia_BA_2_4: Action = {
   energyGenerated: [
     { energyType: 'energy', amount: 2 * 0.58 + 0.77 + 4 * 0.63 + (3 * 0.37 + 1.11), share: 0.5, scalingStat: 'energyPercent' },
     { energyType: 'concerto', amount: 2 * 0.81 + 1.08 + 4 * 0.88 + (3 * 0.52 + 1.55), share: 0 },
-    { energyType: 'forte', amount: 1, share: 0 },
+    { energyType: 'forte_divinity', amount: 1, share: 0 },
   ],
   energyCost: [],
   statusModifications: [{ type: 'negativeStatus', targetName: 'Aero Erosion', stackChange: 1 }],
@@ -120,7 +119,7 @@ const cartethyia_BA_2_4_cancel_with_jump: Action = {
   energyGenerated: [
     { energyType: 'energy', amount: 2 * 0.58 + 0.77 + 4 * 0.63 + (3 * 0.37 + 1.11), share: 0.5, scalingStat: 'energyPercent' },
     { energyType: 'concerto', amount: 2 * 0.81 + 1.08 + 4 * 0.88 + (3 * 0.52 + 1.55), share: 0 },
-    { energyType: 'forte', amount: 1, share: 0 },
+    { energyType: 'forte_divinity', amount: 1, share: 0 },
   ],
   energyCost: [],
   statusModifications: [{ type: 'negativeStatus', targetName: 'Aero Erosion', stackChange: 1 }],
@@ -150,7 +149,7 @@ const cartethyia_BA_2_4_cancel_with_swap: Action = {
   energyGenerated: [
     { energyType: 'energy', amount: 2 * 0.58 + 0.77 + 4 * 0.63 + (3 * 0.37 + 1.11), share: 0.5, scalingStat: 'energyPercent' },
     { energyType: 'concerto', amount: 2 * 0.81 + 1.08 + 4 * 0.88 + (3 * 0.52 + 1.55), share: 0 },
-    { energyType: 'forte', amount: 1, share: 0 },
+    { energyType: 'forte_divinity', amount: 1, share: 0 },
   ],
   energyCost: [],
   statusModifications: [{ type: 'negativeStatus', targetName: 'Aero Erosion', stackChange: 1 }],
@@ -184,7 +183,7 @@ const cartethyia_heavy: Action = {
   energyGenerated: [
     { energyType: 'energy', amount: 3 * 0.42 + 1.25, share: 0.5, scalingStat: 'energyPercent' },
     { energyType: 'concerto', amount: 3 * 0.59 + 1.75, share: 0 },
-    { energyType: 'forte', amount: 1, share: 0 },
+    { energyType: 'forte_discord', amount: 1, share: 0 },
   ],
   energyCost: [],
   statusModifications: [],
@@ -212,7 +211,7 @@ const cartethyia_heavy_cancel_with_swap: Action = {
   energyGenerated: [
     { energyType: 'energy', amount: 3 * 0.42 + 1.25, share: 0.5, scalingStat: 'energyPercent' },
     { energyType: 'concerto', amount: 3 * 0.59 + 1.75, share: 0 },
-    { energyType: 'forte', amount: 1, share: 0 },
+    { energyType: 'forte_discord', amount: 1, share: 0 },
   ],
   energyCost: [],
   statusModifications: [],
@@ -255,10 +254,19 @@ const cartethyia_plunge: Action = {
   groupName: 'Plunge Attack',
   variantName: 'Default',
   resolveVariant(prevSnapshot, characterName) {
-    const forte: number = prevSnapshot?.charactersEnergies[characterName]?.forte ?? 0
-    const base = forte >= 3 ? cartethyiaPlunge_3 : forte >= 2 ? cartethyia_plunge_2 : forte >= 1 ? cartethyia_plunge_1 : { ...cartethyia_plunge_1, energyCost: [] }
+    const energies = prevSnapshot?.charactersEnergies[characterName]
+    const divinity = (energies?.forte_divinity ?? 0) > 0 ? 1 : 0
+    const discord = (energies?.forte_discord ?? 0) > 0 ? 1 : 0
+    const virtue = (energies?.forte_virtue ?? 0) > 0 ? 1 : 0
+    const total = divinity + discord + virtue
+    const base = total >= 3 ? cartethyiaPlunge_3 : total >= 2 ? cartethyia_plunge_2 : total >= 1 ? cartethyia_plunge_1 : { ...cartethyia_plunge_1, energyCost: [] }
+    const energyCost: Action['energyCost'] = []
+    if (energies?.forte_divinity) energyCost.push({ energyType: 'forte_divinity', amount: 1, grantsOnConsume: ['Mandate of Divinity'] })
+    if (energies?.forte_discord) energyCost.push({ energyType: 'forte_discord', amount: 1, grantsOnConsume: ['Power of Discord'] })
+    if (energies?.forte_virtue) energyCost.push({ energyType: 'forte_virtue', amount: 1, grantsOnConsume: ['Heart of Virtue'] })
     return {
       ...base,
+      energyCost,
       name: this.name,
       groupName: this.groupName,
       variantName: this.variantName,
@@ -296,10 +304,19 @@ const cartethyia_plunge_cancel_with_swap: Action = {
   groupName: 'Plunge Attack',
   variantName: 'Cancel With Swap',
   resolveVariant(prevSnapshot, characterName) {
-    const forte: number = prevSnapshot?.charactersEnergies[characterName]?.forte ?? 0
-    const base = forte >= 3 ? cartethyiaPlunge_3 : forte >= 2 ? cartethyia_plunge_2 : forte >= 1 ? cartethyia_plunge_1 : { ...cartethyia_plunge_1, energyCost: [] }
+    const energies = prevSnapshot?.charactersEnergies[characterName]
+    const divinity = (energies?.forte_divinity ?? 0) > 0 ? 1 : 0
+    const discord = (energies?.forte_discord ?? 0) > 0 ? 1 : 0
+    const virtue = (energies?.forte_virtue ?? 0) > 0 ? 1 : 0
+    const total = divinity + discord + virtue
+    const base = total >= 3 ? cartethyiaPlunge_3 : total >= 2 ? cartethyia_plunge_2 : total >= 1 ? cartethyia_plunge_1 : { ...cartethyia_plunge_1, energyCost: [] }
+    const energyCost: Action['energyCost'] = []
+    if (energies?.forte_divinity) energyCost.push({ energyType: 'forte_divinity', amount: 1, grantsOnConsume: ['Mandate of Divinity'] })
+    if (energies?.forte_discord) energyCost.push({ energyType: 'forte_discord', amount: 1, grantsOnConsume: ['Power of Discord'] })
+    if (energies?.forte_virtue) energyCost.push({ energyType: 'forte_virtue', amount: 1, grantsOnConsume: ['Heart of Virtue'] })
     return {
       ...base,
+      energyCost,
       name: this.name,
       displayName: `${base.displayName} (swap cancel)`,
       groupName: this.groupName,
@@ -407,7 +424,7 @@ const cartethyia_skill: Action = {
   energyGenerated: [
     { energyType: 'energy', amount: 3 * 3.8 + 4.88, share: 0.5, scalingStat: 'energyPercent' },
     { energyType: 'concerto', amount: 10, share: 0 },
-    { energyType: 'forte', amount: 1, share: 0 },
+    { energyType: 'forte_virtue', amount: 1, share: 0 },
   ],
   energyCost: [],
   statusModifications: [{ type: 'negativeStatus', targetName: 'Aero Erosion', stackChange: 2 }],
@@ -435,7 +452,7 @@ const cartethyia_skill_cancel_with_swap: Action = {
   energyGenerated: [
     { energyType: 'energy', amount: 3 * 3.8 + 4.88, share: 0.5, scalingStat: 'energyPercent' },
     { energyType: 'concerto', amount: 10, share: 0 },
-    { energyType: 'forte', amount: 1, share: 0 },
+    { energyType: 'forte_virtue', amount: 1, share: 0 },
   ],
   energyCost: [],
   statusModifications: [{ type: 'negativeStatus', targetName: 'Aero Erosion', stackChange: 2 }],
@@ -472,7 +489,8 @@ const cartethyia_transform: Action = {
   statusModifications: [],
   damageModifiers: [
     {
-      source: 'Cartethyia',
+      // Active when Sword of Divinity was consumed: amplifies Aero Erosion DMG and speeds up tick rate.
+      source: 'Cartethyia: Mandate',
       displayName: 'Mandate',
       type: 'buff',
       ownerCharacter: 'Cartethyia',
@@ -480,9 +498,26 @@ const cartethyia_transform: Action = {
       characterStats: { aeroErosionAmplifyDMG: 0.5 },
       negativeStatusEffects: [
         { targetStatus: 'Aero Erosion', property: 'frequency', value: -0.5 },
+      ],
+      condition: hasForteGrant('Mandate of Divinity'),
+      targetStrategy: 'self',
+      durationStrategy: { type: 'limited', timeDuration: 12 },
+      stackingStrategy: { maxStacks: 1, resetTimerOnApplication: true, stacksRemovedEachTime: 1 },
+      // When Mandate expires (timer or Liberation), all forte grants are cleared so the
+      // next Mandate cast starts from a clean slate.
+      clearsForteGrantsOnExpiry: true,
+    },
+    {
+      // Active when Sword of Discord was consumed: raises the Aero Erosion max stack cap.
+      source: 'Cartethyia: Power of Discord',
+      displayName: 'Power of Discord',
+      type: 'buff',
+      ownerCharacter: 'Cartethyia',
+      color: '#ff8c00',
+      negativeStatusEffects: [
         { targetStatus: 'Aero Erosion', property: 'maxStacks', value: 3 },
       ],
-      condition: always(),
+      condition: hasForteGrant('Power of Discord'),
       targetStrategy: 'self',
       durationStrategy: { type: 'limited', timeDuration: 12 },
       stackingStrategy: { maxStacks: 1, resetTimerOnApplication: true, stacksRemovedEachTime: 1 },
@@ -511,7 +546,7 @@ const cartethyia_intro: Action = {
   energyGenerated: [
     { energyType: 'energy', amount: 3 * 1.67 + 5.0, share: 0.5, scalingStat: 'energyPercent' },
     { energyType: 'concerto', amount: 10, share: 0 },
-    { energyType: 'forte', amount: 1, share: 0 },
+    { energyType: 'forte_discord', amount: 1, share: 0 },
   ],
   energyCost: [],
   statusModifications: [],
@@ -1116,7 +1151,7 @@ const fleurdelys_intro: Action = {
   energyGenerated: [
     { energyType: 'energy', amount: 3 * 1.67 + 5.0, share: 0.5, scalingStat: 'energyPercent' },
     { energyType: 'concerto', amount: 10, share: 0 },
-    { energyType: 'forte', amount: 1, share: 0 },
+    { energyType: 'forte_discord', amount: 1, share: 0 },
   ],
   energyCost: [],
   statusModifications: [],
@@ -1279,7 +1314,11 @@ const cartethyia_forte: Action = {
   elements: [''],
   dmgTypes: [''],
   cooldown: 0,
-  energyGenerated: [{ energyType: 'forte', amount: 1000, share: 0 }],
+  energyGenerated: [
+    { energyType: 'forte_divinity', amount: 1000, share: 0 },
+    { energyType: 'forte_discord', amount: 1000, share: 0 },
+    { energyType: 'forte_virtue', amount: 1000, share: 0 },
+  ],
   energyCost: [],
   statusModifications: [],
   damageModifiers: [],

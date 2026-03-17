@@ -57,6 +57,12 @@ export function createSnapshot(previousSnapshot: Snapshot, charactersMap: Record
   const charactersForms = { ...(previousSnapshot.charactersForms ?? {}) }
   const charactersSwapCooldownUntil = { ...(previousSnapshot.charactersSwapCooldownUntil ?? {}) }
 
+  // Copy forte grants (shallow copy of each character's array)
+  const charactersForteGrants: Record<string, string[]> = {}
+  for (const [k, v] of Object.entries(previousSnapshot.charactersForteGrants ?? {})) {
+    charactersForteGrants[k] = [...v]
+  }
+
   const basicValues = Object.fromEntries(globalColumns.basic.map(col => [col, 0]))
   const buffs = Object.fromEntries(globalColumns.buffs.map(col => [col, 0]))
   const debuffs = Object.fromEntries(globalColumns.debuffs.map(col => [col, 0]))
@@ -101,5 +107,6 @@ export function createSnapshot(previousSnapshot: Snapshot, charactersMap: Record
     charactersSwapCooldownUntil,
     charactersRequiredFollowUp: {},
     charactersComboWindows: {},
+    charactersForteGrants,
   }
 }

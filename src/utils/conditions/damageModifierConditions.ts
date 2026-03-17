@@ -38,3 +38,13 @@ export function atLeastOneStackOf(statusName: string) {
 export function always() {
   return (): number => 1
 }
+
+// ========== Forte Grant Conditions ===============================================================
+
+/** Returns 1 if the active character's charactersForteGrants contains grantName, 0 otherwise. */
+export function hasForteGrant(grantName: string) {
+  return (ctx: StepContext): number => {
+    const grants = ctx.current.charactersForteGrants?.[ctx.character.name] ?? []
+    return grants.includes(grantName) ? 1 : 0
+  }
+}

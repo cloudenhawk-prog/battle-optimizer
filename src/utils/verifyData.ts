@@ -168,9 +168,11 @@ function verifyCharacter(character: Character, negativeStatusNames: Set<string>)
   }
 
   // --- maxEnergies ---
-  check('Max energies (required: energy / concerto / forte; all values non-null and non-negative)', () => {
+  check('Max energies (required: energy / concerto / forte or forte sub-energies; all values non-null and non-negative)', () => {
     const errors: string[] = []
-    for (const key of ['energy', 'concerto', 'forte'] as const) if (!(key in maxEnergies)) errors.push(`missing required key "${key}"`)
+    for (const key of ['energy', 'concerto'] as const) if (!(key in maxEnergies)) errors.push(`missing required key "${key}"`)
+    const hasForteLike = ('forte' in maxEnergies) || (['forte_divinity', 'forte_discord', 'forte_virtue'] as const).some(k => k in maxEnergies)
+    if (!hasForteLike) errors.push('missing forte energy (requires "forte" or at least one of forte_divinity, forte_discord, forte_virtue)')
     for (const [key, value] of Object.entries(maxEnergies)) {
       if (value == null) errors.push(`"${key}" is null/undefined`)
       else if (value < 0) errors.push(`"${key}" is ${value}`)

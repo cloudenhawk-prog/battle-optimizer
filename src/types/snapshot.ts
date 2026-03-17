@@ -61,4 +61,8 @@ export interface Snapshot {
    *  to or differ from the selectable action's own displayName. When present, UIs should
    *  prefer this over the parent action's displayName so the exact resolved variant is visible. */
   resolvedDisplayName?: string
+  /** Active forte-based grants per character (e.g. 'Mandate of Divinity', 'Power of Discord', 'Heart of Virtue').
+   *  Grants accumulate as forte sub-energies are consumed (deduplicated) and are cleared
+   *  when the associated modifier with clearsForteGrantsOnExpiry expires or is removed. */
+  charactersForteGrants: Record<string, string[]>
 }

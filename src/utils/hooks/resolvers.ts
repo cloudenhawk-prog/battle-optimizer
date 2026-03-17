@@ -278,6 +278,8 @@ function helpModifierStatusModifications(ctx: StepContext, statusModifications: 
 
   const applied: { type: string; targetName: string; requestedStackChange: number; effectiveDelta: number; stacksBefore: number; stacksAfter: number }[] = []
 
+  const modifiersBefore = ctx.modifiersInAction
+
   ctx.modifiersInAction = ctx.modifiersInAction
     .map(mia => {
       const bucket = statusModifications[mia.modifier.type as 'buff' | 'debuff']
@@ -315,6 +317,16 @@ function helpModifierStatusModifications(ctx: StepContext, statusModifications: 
       return { ...mia, currentStacks: clampedStacks, timeLeft: newTimeLeft, swapsLeft: newSwapsLeft }
     })
     .filter(mia => mia.currentStacks > 0)
+
+  // Clear forteGrants for any modifier with clearsForteGrantsOnExpiry that was explicitly removed
+  for (const mia of modifiersBefore) {
+    if (!mia.modifier.clearsForteGrantsOnExpiry || !mia.modifier.ownerCharacter) continue
+    const stillExists = ctx.modifiersInAction.some(m => m.modifier.source === mia.modifier.source)
+    if (!stillExists) {
+      if (!ctx.current.charactersForteGrants) ctx.current.charactersForteGrants = {}
+      ctx.current.charactersForteGrants[mia.modifier.ownerCharacter] = []
+    }
+  }
 
   if (applied.length > 0) {
     ctx.logs.push({
@@ -409,8 +421,21 @@ export function resolveCoordinatedAttacks(ctx: StepContext, setDamageEvents: Dis
 // ========== Resolver 5: Update Modifier State ===============================================================================
 
 export function resolveModifierState(ctx: StepContext): void {
+  // Capture active modifiers before time update to detect expiries
+  const modifiersBefore = ctx.modifiersInAction
+
   // Update time-based modifiers
   ctx.modifiersInAction = updateModifiersForTime(ctx.modifiersInAction, ctx.fromTime, ctx.toTime)
+
+  // Clear forteGrants for any modifier with clearsForteGrantsOnExpiry that just expired
+  for (const mia of modifiersBefore) {
+    if (!mia.modifier.clearsForteGrantsOnExpiry || !mia.modifier.ownerCharacter) continue
+    const stillExists = ctx.modifiersInAction.some(m => m.modifier.source === mia.modifier.source)
+    if (!stillExists) {
+      if (!ctx.current.charactersForteGrants) ctx.current.charactersForteGrants = {}
+      ctx.current.charactersForteGrants[mia.modifier.ownerCharacter] = []
+    }
+  }
 
   // Store modifier state in snapshot (includes both limited and permanent modifiers)
   updateModifierStacks(ctx.current, ctx.modifiersInAction, ctx.permanentModifiers, ctx)
@@ -506,6 +531,17 @@ export function resolveResources(ctx: StepContext): void {
     const prevValue = energiesCurr![key] ?? 0
 
     energiesCurr![key] = updateEnergyValue(prevValue, -cost.amount, maxValue)
+
+    // If this cost specifies grants and the energy was non-zero, add them to forteGrants
+    if (cost.grantsOnConsume && cost.grantsOnConsume.length > 0 && prevValue > 0) {
+      const charName = character.name
+      if (!current.charactersForteGrants) current.charactersForteGrants = {}
+      const existing = current.charactersForteGrants[charName] ?? []
+      const newGrants = cost.grantsOnConsume.filter(g => !existing.includes(g))
+      if (newGrants.length > 0) {
+        current.charactersForteGrants[charName] = [...existing, ...newGrants]
+      }
+    }
   }
 
   // Update Character Energy
