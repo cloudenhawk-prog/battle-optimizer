@@ -6,4 +6,4 @@ Possible solutions:
 Add a scope to target strategyS? action, actionSideEffects, otherSideEffects (coordinated attacks etc?), negative statuses?
 Any other ideas?
 
-
+- Canceling an action with a swap, correctly filters out the character, but canceling with skill doesnt force me to use that skill (maybe the issue is within the data of BA4 cartethyia)

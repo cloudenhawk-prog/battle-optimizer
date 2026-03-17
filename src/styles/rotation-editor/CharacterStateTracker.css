@@ -385,6 +385,46 @@
   white-space: nowrap;
 }
 
+/* ===== Forte split-bar ===== */
+
+.stateTrackerForteSegments {
+  position: absolute;
+  left: 0;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  display: flex;
+}
+
+.stateTrackerForteSeg {
+  flex: 1;
+  background: transparent;
+  border-right: 1px solid var(--table-border);
+  transition: background 0.25s ease, box-shadow 0.25s ease;
+}
+
+.stateTrackerForteSeg:last-child {
+  border-right: none;
+}
+
+.stateTrackerForteSeg[data-forte-slot='divinity'].stateTrackerForteSeg--filled {
+  background: linear-gradient(135deg, rgba(255, 210, 60, 0.5), rgba(255, 175, 20, 0.85));
+  border-color: rgba(255, 200, 60, 0.35);
+  box-shadow: 0 0 5px rgba(255, 200, 60, 0.3);
+}
+
+.stateTrackerForteSeg[data-forte-slot='discord'].stateTrackerForteSeg--filled {
+  background: linear-gradient(135deg, rgba(215, 55, 55, 0.5), rgba(175, 25, 25, 0.85));
+  border-color: rgba(215, 55, 55, 0.35);
+  box-shadow: 0 0 5px rgba(215, 55, 55, 0.3);
+}
+
+.stateTrackerForteSeg[data-forte-slot='virtue'].stateTrackerForteSeg--filled {
+  background: linear-gradient(135deg, rgba(145, 80, 255, 0.5), rgba(110, 45, 230, 0.85));
+  border-color: rgba(145, 80, 255, 0.35);
+  box-shadow: 0 0 5px rgba(145, 80, 255, 0.3);
+}
+
 /* ===== Gear Button ===== */
 
 .stateTrackerGearBtn {
