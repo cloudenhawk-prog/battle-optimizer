@@ -14,3 +14,6 @@
 <!-- - Certain skills can only be cast within a certain time limit of a different action (think Fleurdlys skill 1 + skill 2). Sometimes might trigger the second one to go on cooldown on Swap (i.e. a skill combo system) -->
 
 - Possibility to lower cooldowns (example: Cartethyia Skill 1 when consuming forte swords)
+
+- does Action type's property 'requiredForms' OR Form type's property 'availableActions' determine a character's actions? It seems silly to having to write both. From the user's perspective it would be the simplest to define it inside each action since you wouldnt need to rely on the actions being exported correctly to each form. But it's important that the implementation is also simple and elegant.
+  Note: Actions unatached to a form shouldnt just be greyed out (unselectable in ActionSelect); instead they shouldnt appear at all as they are fully irrelevant for the form
