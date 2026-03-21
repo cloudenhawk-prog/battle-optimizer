@@ -1,5 +1,8 @@
 ## Features
 
+# General
+Right now action names and other things may not be unique. Make sure they are so we can reference each other, or find a different approach
+
 # Damage Calculators
 - Make it possible to chose a damageCalculationStrategy, i.e. like default, negativeStatus scaling or others (see what aero erosion explosion does since it should follow the same pattern)
 
