@@ -1352,9 +1352,9 @@ const cartethyia_conviction: Action = {
   offtune: 0,
 }
 
-export const cartethyia_actions = [cartethyia_BA_1_4_cancel_with_skill, cartethyia_BA_1_4_cancel_with_swap, cartethyia_BA_2_4, cartethyia_BA_2_4_cancel_with_jump, cartethyia_BA_2_4_cancel_with_swap, cartethyia_heavy, cartethyia_heavy_cancel_with_swap, cartethyia_plunge, cartethyia_plunge_cancel_with_swap, cartethyia_skill, cartethyia_skill_cancel_with_swap, cartethyia_transform]
+export const cartethyia_actions: Action[] = [cartethyia_BA_1_4_cancel_with_skill, cartethyia_BA_1_4_cancel_with_swap, cartethyia_BA_2_4, cartethyia_BA_2_4_cancel_with_jump, cartethyia_BA_2_4_cancel_with_swap, cartethyia_heavy, cartethyia_heavy_cancel_with_swap, cartethyia_plunge, cartethyia_plunge_cancel_with_swap, cartethyia_skill, cartethyia_skill_cancel_with_swap, cartethyia_transform].map(a => ({ ...a, castConditions: { ...a.castConditions, requiredForms: ['Cartethyia'] } }))
 
-export const fleurdelys_actions = [fleurdelys_BA_1_5, fleurdelys_BA_1_5_cancel_with_swap, fleurdelys_BA_3_5, fleurdelys_BA_3_5_cancel_with_swap, fleurdelys_heavy_1, fleurdelys_heavy_1_cancel_with_swap, fleurdelys_heavy_2, fleurdelys_heavy_2_cancel_with_swap, fleurdelys_midair_1_3, fleurdelys_midair_1_3_cancel_with_swap, fleurdelys_midair_1_2, fleurdelys_midair_1_2_cancel_with_swap, fleurdelys_skill_1, fleurdelys_skill_1_cancel_with_swap, fleurdelys_skill_2, fleurdelys_skill_2_cancel_with_swap, fleurdelys_liberation]
+export const fleurdelys_actions: Action[] = [fleurdelys_BA_1_5, fleurdelys_BA_1_5_cancel_with_swap, fleurdelys_BA_3_5, fleurdelys_BA_3_5_cancel_with_swap, fleurdelys_heavy_1, fleurdelys_heavy_1_cancel_with_swap, fleurdelys_heavy_2, fleurdelys_heavy_2_cancel_with_swap, fleurdelys_midair_1_3, fleurdelys_midair_1_3_cancel_with_swap, fleurdelys_midair_1_2, fleurdelys_midair_1_2_cancel_with_swap, fleurdelys_skill_1, fleurdelys_skill_1_cancel_with_swap, fleurdelys_skill_2, fleurdelys_skill_2_cancel_with_swap, fleurdelys_liberation].map(a => ({ ...a, castConditions: { ...a.castConditions, requiredForms: ['Fleurdelys'] } }))
 
 export const universal_actions = [cartethyia_wait_005, cartethyia_wait_for_swap, cartethyia_wait_for_cooldown, cartethyia_energy, cartethyia_concerto, cartethyia_forte, cartethyia_conviction]
 
