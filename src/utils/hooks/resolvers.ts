@@ -15,7 +15,7 @@ import { getNegativeStatusStacks, processNegativeStatusStacks, updateNegativeSta
 import { getCharacterEnergyState, updateEnergyValue } from './energyHelpers'
 import { updateModifiersForSwap, collectAllModifiers, activateModifiers, filterApplicableModifiers, applyStackMultiplier, updateModifiersForTime } from './modifierHelpers'
 import { updateModifierStacks } from './modifierStateHelpers'
-import { updateAllCharactersCooldowns, setActionOnCooldown } from './cooldownHelpers'
+import { updateAllCharactersCooldowns, setActionOnCooldown, reduceCooldown } from './cooldownHelpers'
 
 // ========== Resolver 0: Build Step Context ==================================================================================
 
@@ -601,6 +601,16 @@ export function resolveCooldowns(ctx: StepContext): void {
 
   // Set the used action on cooldown
   current.charactersCooldowns[character.name] = setActionOnCooldown(current, character.name, action)
+
+  // Apply cooldown reductions granted by this action
+  if (action.cooldownReductions) {
+    for (const reduction of action.cooldownReductions) {
+      const amount = typeof reduction.amount === 'function' ? reduction.amount(ctx) : reduction.amount
+      if (amount > 0) {
+        current.charactersCooldowns[character.name] = reduceCooldown(current, character.name, reduction.targetActionKey, amount)
+      }
+    }
+  }
 
   ctx.logs.push({
     resolver: 'resolveCooldowns',

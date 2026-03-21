@@ -267,6 +267,7 @@ const cartethyia_plunge: Action = {
     return {
       ...base,
       energyCost,
+      cooldownReductions: total > 0 ? [{ targetActionKey: 'Resonance Skill', amount: total }] : undefined,
       name: this.name,
       groupName: this.groupName,
       variantName: this.variantName,
@@ -317,6 +318,7 @@ const cartethyia_plunge_cancel_with_swap: Action = {
     return {
       ...base,
       energyCost,
+      cooldownReductions: total > 0 ? [{ targetActionKey: 'Resonance Skill', amount: total }] : undefined,
       name: this.name,
       displayName: `${base.displayName} (swap cancel)`,
       groupName: this.groupName,

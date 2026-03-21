@@ -1,7 +1,7 @@
 import type { EnergyGeneration, EnergyCost } from './energy'
 import type { ScalingType, ElementType, Position, DamageType } from './baseTypes'
 import type { DamageModifier } from './modifiers'
-import type { SideEffect, StatusModification } from './sideEffect'
+import type { SideEffect, StatusModification, CooldownReduction } from './sideEffect'
 import type { CoordinatedAttack } from './coordinatedAttack'
 import type { Snapshot } from './snapshot'
 
@@ -27,6 +27,7 @@ export type Action = {
   damageModifiers: DamageModifier[]
   sideEffects: SideEffect[]
   coordinatedAttacks?: CoordinatedAttack[]
+  cooldownReductions?: CooldownReduction[]
 
   castConditions: CastConditions
   offtune: number
