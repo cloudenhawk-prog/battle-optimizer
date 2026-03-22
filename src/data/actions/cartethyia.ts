@@ -1118,6 +1118,7 @@ const fleurdelys_liberation: Action = {
   statusModifications: [
     { type: 'negativeStatus', targetName: 'Aero Erosion', stackChange: -100 },
     { type: 'buff', targetName: 'Mandate', stackChange: -1 },
+    { type: 'buff', targetName: 'Power of Discord', stackChange: -1 },
     { type: 'buff', targetName: "Fleurdelys's Conviction", stackChange: -100 },
   ],
   damageModifiers: [
