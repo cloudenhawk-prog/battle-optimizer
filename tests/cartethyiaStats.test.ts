@@ -4,16 +4,19 @@
  * Verifies that Cartethyia's gear and stats resolve to the expected in-game values
  * after resolveCharacter() runs at startup.
  *
- * Expected final stats (excluding conditional modifiers):
+ * Passive self/always/permanent modifiers (e.g. Windward Pilgrimage set bonus injected modifier)
+ * are now flattened into character.stats at resolution time.
+ *
+ * Expected final stats (including flattened passive modifiers):
  *   HP:              52738
  *   ATK:             1131
  *   DEF:             738
  *   Energy Regen:    126.8%
- *   Crit Rate:       76.1%
+ *   Crit Rate:       86.1%  (+10% from Windward Pilgrimage flattened modifier)
  *   Crit DMG:        251.6%
  *   Skill DMG Bonus: 9.4%
  *   Basic ATK Bonus: 18.7%
- *   Aero DMG Bonus:  30%
+ *   Aero DMG Bonus:  60%    (+30% from Windward Pilgrimage flattened modifier)
  */
 
 import { calculateScalingStat } from '../src/utils/calculators/damageCalculator'
@@ -51,8 +54,8 @@ describe('Cartethyia stat resolution', () => {
     expectWithin01Percent(cartethyia!.stats.energyPercent, 1.268)
   })
 
-  it('Crit Rate should resolve to 76.1% (0.761)', () => {
-    expectWithin01Percent(cartethyia!.stats.critRate, 0.761)
+  it('Crit Rate should resolve to 86.1% (0.861) — includes Windward Pilgrimage flattened passive +10%', () => {
+    expectWithin01Percent(cartethyia!.stats.critRate, 0.861)
   })
 
   it('Crit DMG should resolve to 251.6% (2.516)', () => {
@@ -67,7 +70,7 @@ describe('Cartethyia stat resolution', () => {
     expectWithin01Percent(cartethyia!.stats.basicBonusDMG, 0.187)
   })
 
-  it('Aero DMG Bonus should resolve to 30% (0.30)', () => {
-    expectWithin01Percent(cartethyia!.stats.aeroBonusDMG, 0.30)
+  it('Aero DMG Bonus should resolve to 60% (0.60) — includes Windward Pilgrimage flattened passive +30%', () => {
+    expectWithin01Percent(cartethyia!.stats.aeroBonusDMG, 0.60)
   })
 })

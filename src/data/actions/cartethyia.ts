@@ -1,5 +1,5 @@
 import type { Action } from '../../types/action'
-import { always, stacksOfCap, hasForteGrant } from '../../utils/conditions/damageModifierConditions'
+import { always, hasForteGrant } from '../../utils/conditions/damageModifierConditions'
 import { aeroErosionExplosion } from '../sideEffects/sideEffects'
 
 // S2
@@ -39,6 +39,7 @@ const cartethyia_BA_1_4_cancel_with_skill: Action = {
     startState: 'GROUND',
     endState: 'GROUND',
   },
+  requiredFollowUp: { actionName: 'Resonance Skill' },
   offtune: 0.22 + (2 * 0.18 + 0.25) + 4 * 0.2 + (3 * 0.12 + 0.35),
   groupName: 'Basic Attack 1-4',
   variantName: 'Cancel With Skill',
@@ -508,6 +509,7 @@ const cartethyia_transform: Action = {
       // When Mandate expires (timer or Liberation), all forte grants are cleared so the
       // next Mandate cast starts from a clean slate.
       clearsForteGrantsOnExpiry: true,
+      contributionGroup: 'Cartethyia: Mandate',
     },
     {
       // Active when Sword of Discord was consumed: raises the Aero Erosion max stack cap.
@@ -523,6 +525,7 @@ const cartethyia_transform: Action = {
       targetStrategy: 'self',
       durationStrategy: { type: 'limited', timeDuration: 12 },
       stackingStrategy: { maxStacks: 1, resetTimerOnApplication: true, stacksRemovedEachTime: 1 },
+      contributionGroup: 'Cartethyia: Mandate',
     },
   ],
   sideEffects: [],
@@ -1123,11 +1126,15 @@ const fleurdelys_liberation: Action = {
       displayName: 'Liberation Passive',
       type: 'buff',
       ownerCharacter: 'Cartethyia',
-      condition: stacksOfCap('Aero Erosion'),
-      characterStats: { liberationTotalMultiplierDMG: 0.2 },
+      condition: (ctx) => {
+        const status = ctx.negativeStatusesInAction.find(ns => ns.negativeStatus.name === 'Aero Erosion')
+        const stacks = status?.currentStacks ?? 0
+        return 1 + 0.2 * Math.min(stacks, 5)
+      },
+      characterStats: { liberationTotalMultiplierDMG: 1 },
       targetStrategy: 'self',
       durationStrategy: { type: 'permanent' },
-      stackingStrategy: { maxStacks: 1, resetTimerOnApplication: false, stacksRemovedEachTime: 1 },
+      stackingStrategy: { maxStacks: 1, resetTimerOnApplication: false, stacksRemovedEachTime: 0 },
     },
   ],
   sideEffects: [],

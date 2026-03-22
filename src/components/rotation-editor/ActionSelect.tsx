@@ -14,9 +14,6 @@ type ActionSelectProps = {
   actions: Action[]
   character?: Character
   currentEnergies?: Partial<Record<EnergyType, number>>
-  /** The resolved snapshot from the row immediately before this one.  All cast-condition
-   *  checks (position, persistence, cooldowns, last action, form, requiresSwapIn) must be
-   *  evaluated against the state at the END of the previous row, not the current one. */
   previousSnapshot?: Snapshot | null
   onChange: (actionName: string) => void
   disabled?: boolean
@@ -84,6 +81,7 @@ export function ActionSelect({ value, actions, character, currentEnergies, previ
     }
   }, [isOpen])
 
+  // Get the current state of an action
   const getActionState = (action: Action): ActionState => {
     const isSpecial = action.name === 'Intro' || action.name === 'Outro'
     const isCurrent = action.name === value
@@ -143,34 +141,48 @@ export function ActionSelect({ value, actions, character, currentEnergies, previ
     // Goal 3: requiresSwapIn check
     // Allowed if: the last timeline action was cast by a different character (justSwappedIn),
     // OR this character's last personal action was their Intro skill.
+    // At game start (no previousSnapshot), no swap has occurred, so requiresSwapIn is always blocked.
     let isRequiresSwapIn = false
-    if (action.castConditions.requiresSwapIn && character && previousSnapshot) {
-      const charName = character.name
-      const justSwappedIn = previousSnapshot.character !== charName
-      const lastActionName = previousSnapshot.charactersLastAction?.[charName]
-      const lastActionWasIntro = lastActionName !== undefined && character.actions.some(a => a.name === lastActionName && a.dmgTypes.includes('INTRO'))
-      isRequiresSwapIn = !justSwappedIn && !lastActionWasIntro
+    if (action.castConditions.requiresSwapIn) {
+      if (!previousSnapshot) {
+        isRequiresSwapIn = true
+      } else if (character) {
+        const charName = character.name
+        const justSwappedIn = previousSnapshot.character !== charName
+        const lastActionName = previousSnapshot.charactersLastAction?.[charName]
+        const lastActionWasIntro = lastActionName !== undefined && character.actions.some(a => a.name === lastActionName && a.dmgTypes.includes('INTRO'))
+        isRequiresSwapIn = !justSwappedIn && !lastActionWasIntro
+      }
     }
 
     // Goal 4: form check
     // Check if action requires a specific form and if character is in that form
     let isWrongForm = false
-    if (character && previousSnapshot && action.castConditions.requiredForms !== undefined) {
-      const charName = character.name
-      const currentForm = previousSnapshot.charactersForms?.[charName] ?? ''
-
+    if (character && action.castConditions.requiredForms !== undefined) {
       // If requiredForms is empty array, action can't be cast
       if (action.castConditions.requiredForms.length === 0) {
         isWrongForm = true
-      } else if (action.castConditions.requiredForms.length > 0) {
-        // Check if current form is in the required forms list
-        // If current form is empty string, use default form
-        if (!currentForm) {
-          const defaultForm = character.forms?.find(f => f.name === character.defaultForm) ?? character.forms?.[0]
-          isWrongForm = !action.castConditions.requiredForms.includes(defaultForm?.name ?? '')
+      } else {
+        // Resolve the character's current form:
+        // - Use previousSnapshot if available, falling back to the default form when the
+        //   stored form value is absent.
+        // - When previousSnapshot is null (first row), the character is always in their
+        //   default form, so use that directly instead of skipping the check.
+        let currentForm: string
+        if (previousSnapshot) {
+          const storedForm = previousSnapshot.charactersForms?.[character.name] ?? ''
+          if (!storedForm) {
+            const defaultForm = character.forms?.find(f => f.name === character.defaultForm) ?? character.forms?.[0]
+            currentForm = defaultForm?.name ?? ''
+          } else {
+            currentForm = storedForm
+          }
         } else {
-          isWrongForm = !action.castConditions.requiredForms.includes(currentForm)
+          const defaultForm = character.forms?.find(f => f.name === character.defaultForm) ?? character.forms?.[0]
+          currentForm = defaultForm?.name ?? ''
         }
+
+        isWrongForm = !action.castConditions.requiredForms.includes(currentForm)
       }
     }
 
@@ -180,7 +192,6 @@ export function ActionSelect({ value, actions, character, currentEnergies, previ
     if (action.castConditions.customCanCast && character && previousSnapshot) {
       isCustomCanCastFailed = !action.castConditions.customCanCast(previousSnapshot, character.name)
     }
-
     // Goal 6: swap cooldown check
     // The character cannot be swapped in until their 1-second swap cooldown expires.
     let isOnSwapCooldown = false
@@ -217,7 +228,7 @@ export function ActionSelect({ value, actions, character, currentEnergies, previ
     let isNotRequiredFollowUp = false
     if (character && previousSnapshot) {
       const requiredFollowUp = previousSnapshot.charactersRequiredFollowUp?.[character.name]
-      if (requiredFollowUp && requiredFollowUp !== action.name) {
+      if (requiredFollowUp && requiredFollowUp !== action.name && requiredFollowUp !== action.groupName) {
         isNotRequiredFollowUp = true
       }
     }
@@ -315,7 +326,7 @@ export function ActionSelect({ value, actions, character, currentEnergies, previ
     return !isIntroOutro
   })
 
-  const actionStates = selectableActions.map(getActionState)
+  const actionStates = selectableActions.map(getActionState).filter(s => !s.isWrongForm || s.isCurrent)
   const selectedAction = actionStates.find(s => s.isCurrent)
   const displayText = selectedAction ? selectedAction.action.name : '-- Select Action --'
 
@@ -378,7 +389,6 @@ export function ActionSelect({ value, actions, character, currentEnergies, previ
 
   const handleGroupClick = (groupKey: string, group: ActionGroup) => {
     if (group.isGroup) {
-      // Toggle expansion for groups with variants and position the popup
       if (expandedGroup === groupKey) {
         setExpandedGroup(null)
       } else {
@@ -389,12 +399,11 @@ export function ActionSelect({ value, actions, character, currentEnergies, previ
           const dropdownRect = dropdownRef.current.getBoundingClientRect()
           setVariantPopupPosition({
             top: rowRect.top,
-            left: dropdownRect.right + 8, // 8px gap
+            left: dropdownRect.right + 8,
           })
         }
       }
     } else {
-      // Direct selection for non-grouped actions
       handleSelect(group.variants[0].action.name)
     }
   }

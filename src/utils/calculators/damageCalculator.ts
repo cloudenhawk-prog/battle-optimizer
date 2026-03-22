@@ -7,6 +7,7 @@ import type { ScalingType, ElementType, DamageType } from '../../types/baseTypes
 import type { StepContext } from '../../types/stepContext'
 import { negativeStatuses } from '../../data/negativeStatuses'
 import { aggregateStat } from '../hooks/resolvers'
+import { applyStackMultiplier } from '../hooks/modifierHelpers'
 
 /**
  * Damage Calculator
@@ -394,32 +395,47 @@ function convertLevelToDefense(level: number): number {
 export function calculateAllContrubutions(action: Action, name: string, stats: CharacterStats, damageModifiers: DamageModifier[], enemy: Enemy, snapshotId: number, timeStamp: number, normalStrike: number, criticalStrike: number, average: number, ctx?: StepContext): Record<string, Contribution> {
   const results: Record<string, Contribution> = {}
 
-  // For each modifier, recalculate damage without it
+  // Group modifiers by contributionGroup (or own source for ungrouped)
+  const groupIndices = new Map<string, number[]>()
   for (let i = 0; i < damageModifiers.length; i++) {
     const mod = damageModifiers[i]
-    const keyBase = mod.source || `modifier_${i}`
-    const uniqueKey = keyBase in results ? `${keyBase}_${i}` : keyBase
+    const groupKey = mod.contributionGroup ?? mod.source ?? `modifier_${i}`
+    if (!groupIndices.has(groupKey)) groupIndices.set(groupKey, [])
+    groupIndices.get(groupKey)!.push(i)
+  }
 
-    // Rebuild modifiers without this one
+  for (const [groupKey, indices] of groupIndices.entries()) {
+    // Anchor modifier: the one whose source matches the group key (for named groups)
+    const anchor = indices.map(i => damageModifiers[i]).find(m => (m.source ?? '') === groupKey)
+    const representativeMod = anchor ?? damageModifiers[indices[0]]
+    const uniqueKey = groupKey in results ? `${groupKey}_${indices[0]}` : groupKey
+
+    const excludedIndices = new Set(indices)
+
+    // Rebuild modifiers excluding the entire group
     const charModsWithout: Partial<CharacterStats> = {}
     const enemyModsWithout: Partial<EnemyStats> = {}
 
     for (let j = 0; j < damageModifiers.length; j++) {
-      if (i === j) continue // Skip current modifier
+      if (excludedIndices.has(j)) continue
 
       const otherMod = damageModifiers[j]
-      const conditionMultiplier = otherMod.condition && ctx ? otherMod.condition(ctx) : 1
+      // Apply stack multiplier for limited modifiers, matching resolveDamageModifiers logic
+      const stackedOtherMod = otherMod.durationStrategy?.type === 'limited' && ctx
+        ? applyStackMultiplier(otherMod, ctx.modifiersInAction)
+        : otherMod
+      const conditionMultiplier = stackedOtherMod.condition && ctx ? stackedOtherMod.condition(ctx) : 1
 
-      if (otherMod.characterStats) {
-        for (const [key, value] of Object.entries(otherMod.characterStats)) {
+      if (stackedOtherMod.characterStats) {
+        for (const [key, value] of Object.entries(stackedOtherMod.characterStats)) {
           const statKey = key as keyof CharacterStats
           const currentVal = charModsWithout[statKey] as number | undefined
           const modValue = (value as number) * conditionMultiplier
           charModsWithout[statKey] = aggregateStat(currentVal, modValue, key) as any
         }
       }
-      if (otherMod.enemyStats) {
-        for (const [key, value] of Object.entries(otherMod.enemyStats)) {
+      if (stackedOtherMod.enemyStats) {
+        for (const [key, value] of Object.entries(stackedOtherMod.enemyStats)) {
           const statKey = key as keyof EnemyStats
           const currentVal = enemyModsWithout[statKey] as number | undefined
           const modValue = (value as number) * conditionMultiplier
@@ -428,7 +444,7 @@ export function calculateAllContrubutions(action: Action, name: string, stats: C
       }
     }
 
-    // Calculate damage without this modifier
+    // Calculate damage without this group
     const resultWithout = calculateDamage({
       action,
       name,
@@ -461,8 +477,8 @@ export function calculateAllContrubutions(action: Action, name: string, stats: C
     const average_pct = safePercent(average, averageWithout)
 
     results[uniqueKey] = {
-      source: mod.source,
-      displayName: mod.displayName,
+      source: representativeMod.source,
+      displayName: representativeMod.displayName,
       crit_damage_contributed: Math.max(0, crit_contrib),
       crit_percent_damage_contributed: crit_pct,
       normal_damage_contributed: Math.max(0, normal_contrib),
@@ -568,32 +584,46 @@ export function calculateDamageNegativeStatus(currStacks: number, element: Eleme
 function calculateNegativeStatusContributions(baseDMG: number, element: ElementType, enemy: Enemy, baseStats: CharacterStats, damageModifiers: DamageModifier[], fullDamage: number, ctx: StepContext): Record<string, Contribution> {
   const results: Record<string, Contribution> = {}
 
-  // For each modifier, recalculate damage without it
+  // Group modifiers by contributionGroup (or own source for ungrouped)
+  const groupIndices = new Map<string, number[]>()
   for (let i = 0; i < damageModifiers.length; i++) {
     const mod = damageModifiers[i]
-    const keyBase = mod.source || `modifier_${i}`
-    const uniqueKey = keyBase in results ? `${keyBase}_${i}` : keyBase
+    const groupKey = mod.contributionGroup ?? mod.source ?? `modifier_${i}`
+    if (!groupIndices.has(groupKey)) groupIndices.set(groupKey, [])
+    groupIndices.get(groupKey)!.push(i)
+  }
 
-    // Rebuild modifiers without this one
+  for (const [groupKey, indices] of groupIndices.entries()) {
+    const anchor = indices.map(i => damageModifiers[i]).find(m => (m.source ?? '') === groupKey)
+    const representativeMod = anchor ?? damageModifiers[indices[0]]
+    const uniqueKey = groupKey in results ? `${groupKey}_${indices[0]}` : groupKey
+
+    const excludedIndices = new Set(indices)
+
+    // Rebuild modifiers excluding the entire group
     const charModsWithout: Partial<CharacterStats> = {}
     const enemyModsWithout: Partial<EnemyStats> = {}
 
     for (let j = 0; j < damageModifiers.length; j++) {
-      if (i === j) continue // Skip current modifier
+      if (excludedIndices.has(j)) continue
 
       const otherMod = damageModifiers[j]
-      const conditionMultiplier = otherMod.condition && ctx ? otherMod.condition(ctx) : 1
+      // Apply stack multiplier for limited modifiers, matching resolveDamageModifiers logic
+      const stackedOtherMod = otherMod.durationStrategy?.type === 'limited' && ctx
+        ? applyStackMultiplier(otherMod, ctx.modifiersInAction)
+        : otherMod
+      const conditionMultiplier = stackedOtherMod.condition ? stackedOtherMod.condition(ctx) : 1
 
-      if (otherMod.characterStats) {
-        for (const [key, value] of Object.entries(otherMod.characterStats)) {
+      if (stackedOtherMod.characterStats) {
+        for (const [key, value] of Object.entries(stackedOtherMod.characterStats)) {
           const statKey = key as keyof CharacterStats
           const currentVal = charModsWithout[statKey] as number | undefined
           const modValue = (value as number) * conditionMultiplier
           charModsWithout[statKey] = aggregateStat(currentVal, modValue, key) as any
         }
       }
-      if (otherMod.enemyStats) {
-        for (const [key, value] of Object.entries(otherMod.enemyStats)) {
+      if (stackedOtherMod.enemyStats) {
+        for (const [key, value] of Object.entries(stackedOtherMod.enemyStats)) {
           const statKey = key as keyof EnemyStats
           const currentVal = enemyModsWithout[statKey] as number | undefined
           const modValue = (value as number) * conditionMultiplier
@@ -602,7 +632,7 @@ function calculateNegativeStatusContributions(baseDMG: number, element: ElementT
       }
     }
 
-    // Recalculate damage without this modifier
+    // Recalculate damage without this group
     const statsWithout = mergeStats(baseStats, charModsWithout)
     const enemyStatsWithout = mergeEnemyStats(enemy.stats, enemyModsWithout)
 
@@ -638,8 +668,8 @@ function calculateNegativeStatusContributions(baseDMG: number, element: ElementT
     const pct = safePercent(fullDamage, damageWithout)
 
     results[uniqueKey] = {
-      source: mod.source,
-      displayName: mod.displayName,
+      source: representativeMod.source,
+      displayName: representativeMod.displayName,
       crit_damage_contributed: Math.max(0, contrib),
       crit_percent_damage_contributed: pct,
       normal_damage_contributed: Math.max(0, contrib),

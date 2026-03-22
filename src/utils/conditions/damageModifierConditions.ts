@@ -35,8 +35,17 @@ export function atLeastOneStackOf(statusName: string) {
 
 // ========== Always True ===============================================================
 
+const ALWAYS_CONDITION_TAG = Symbol('always')
+
 export function always() {
-  return (): number => 1
+  const fn = (): number => 1;
+  (fn as any)[ALWAYS_CONDITION_TAG] = true
+  return fn
+}
+
+/** Returns true if the condition was created by always() — used to detect passive modifiers at resolution time. */
+export function isAlwaysCondition(condition: (ctx: unknown) => number): boolean {
+  return (condition as any)[ALWAYS_CONDITION_TAG] === true
 }
 
 // ========== Forte Grant Conditions ===============================================================

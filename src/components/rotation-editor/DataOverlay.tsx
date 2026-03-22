@@ -472,6 +472,7 @@ function DamageSourcesSection({ damageEvents, totalDamage, view, onViewChange, e
 
 function ContributionsSection({ damageEvents, mode }: { damageEvents: DamageEvent[]; mode: 'average' | 'normal' | 'crit' }) {
   const [contributionScope, setContributionScope] = useState<'action' | 'all'>('action')
+  const [hoveredPillarIndex, setHoveredPillarIndex] = useState<number | null>(null)
 
   // Filter events based on scope
   const scopedEvents = contributionScope === 'action' ? damageEvents.filter(event => !event.dmgTypes.includes('NEGATIVE_STATUS')) : damageEvents
@@ -548,7 +549,32 @@ function ContributionsSection({ damageEvents, mode }: { damageEvents: DamageEven
                 const heightPercent = Math.max(15, rawHeightPercent)
 
                 return (
-                  <div key={index} className="pillarWrapper">
+                  <div key={index} className="pillarWrapper" onMouseEnter={() => setHoveredPillarIndex(index)} onMouseLeave={() => setHoveredPillarIndex(null)}>
+                    {hoveredPillarIndex === index && (
+                      <div className="pillarTooltip">
+                        <div className="pillarTooltipTitle">{contrib.displayName || contrib.source}</div>
+                        {contrib.displayName && contrib.displayName !== contrib.source && (
+                          <div className="pillarTooltipSource">{contrib.source}</div>
+                        )}
+                        <div className="pillarTooltipDivider" />
+                        <div className="pillarTooltipRow">
+                          <span className="pillarTooltipLabel">Avg Damage</span>
+                          <span className="pillarTooltipValue">{contrib.average.toFixed(0)}</span>
+                        </div>
+                        <div className="pillarTooltipRow">
+                          <span className="pillarTooltipLabel">Normal Hit</span>
+                          <span className="pillarTooltipValue">{contrib.normal.toFixed(0)}</span>
+                        </div>
+                        <div className="pillarTooltipRow">
+                          <span className="pillarTooltipLabel">Critical Hit</span>
+                          <span className="pillarTooltipValue">{contrib.crit.toFixed(0)}</span>
+                        </div>
+                        <div className="pillarTooltipRow">
+                          <span className="pillarTooltipLabel">+% Damage</span>
+                          <span className="pillarTooltipValue pillarTooltipHighlight">{percentValue.toFixed(1)}%</span>
+                        </div>
+                      </div>
+                    )}
                     <div className="pillarBar">
                       <div className="pillarFill magenta" style={{ height: `${heightPercent}%` }}>
                         <div className="pillarGlow" />

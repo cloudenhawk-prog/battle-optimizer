@@ -11,7 +11,7 @@ export const cartethyia: Character = {
   actions: [...all_actions],
   damageModifiers: [{ source: 'Inherent Skill', displayName: 'Wind\'s Indelible Imprint', type: 'buff', ownerCharacter: 'Cartethyia', condition: stacksOf('Aero Erosion'), characterStats: { bonusDMG: 0.1 }, targetStrategy: 'self', durationStrategy: { type: 'permanent' }, stackingStrategy: { maxStacks: 1, resetTimerOnApplication: false, stacksRemovedEachTime: 1 } }],
   // When Cartethyia/Fleurdelys's Conviction hits 30/60/90/120, Cartethyia/Fleurdelys's Crit. DMG is increased by 25% for 15s, up to 4 stacks. The duration of this effect does not reset upon gaining new stacks. After casting Resonance Liberation - Blade of Howling Squall, the increased Crit. DMG is removed.
-  resourceMilestones: [
+  resourceMilestones: [ // Problem: this should technically be part of "Mandate" buff. When we calculate modifier contributions, this might not count towards mandate's contributions (DataOverlay)
     {
       resourceType: 'conviction',
       milestones: [30, 60, 90, 120],
@@ -26,6 +26,7 @@ export const cartethyia: Character = {
         targetStrategy: 'self',
         durationStrategy: { type: 'limited', timeDuration: 15 },
         stackingStrategy: { maxStacks: 4, resetTimerOnApplication: false, stacksRemovedEachTime: 4 },
+        contributionGroup: 'Cartethyia: Mandate',
       },
     },
   ],

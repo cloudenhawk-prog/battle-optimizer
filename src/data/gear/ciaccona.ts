@@ -104,7 +104,7 @@ const ciaccona_set_bonus: EchoSetBonus = {
       modifiers: [
         {
           source: 'Ciaccona',
-          displayName: 'Windward Pilgrimage (Self Buff)',
+          displayName: 'Gusts of Welkin (Self Buff)',
           type: 'buff',
           ownerCharacter: 'Ciaccona',
           characterStats: { aeroBonusDMG: 0.15 },
@@ -115,7 +115,7 @@ const ciaccona_set_bonus: EchoSetBonus = {
         },
         {
           source: 'Ciaccona',
-          displayName: 'Windward Pilgrimage (Team Buff)',
+          displayName: 'Gusts of Welkin (Team Buff)',
           type: 'buff',
           ownerCharacter: 'Ciaccona',
           characterStats: { aeroBonusDMG: 0.15 },
