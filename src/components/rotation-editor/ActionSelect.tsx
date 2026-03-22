@@ -239,7 +239,7 @@ export function ActionSelect({ value, actions, character, currentEnergies, previ
     let isFollowUpNotReady = false
     if (action.requiredFollowUp && character && previousSnapshot) {
       const followUpActionName = action.requiredFollowUp.actionName
-      const followUpAction = actions.find(a => a.name === followUpActionName)
+      const followUpAction = actions.find(a => a.name === followUpActionName || a.groupName === followUpActionName)
 
       if (followUpAction) {
         const actionEndTime = previousSnapshot.toTime + action.castTime
