@@ -1,5 +1,4 @@
 import type { Character } from '../../types/character'
-import type { Action } from '../../types/action'
 
 // ========== Form Helpers =====================================================================================================
 
@@ -19,29 +18,6 @@ export function getCurrentForm(character: Character, formName?: string) {
 
   // Return default form or first form
   return character.forms.find(f => f.name === character.defaultForm) ?? character.forms[0]
-}
-
-/**
- * Filters actions based on the character's current form.
- * If the form has availableActions defined, only those actions are shown.
- * If availableActions is undefined, all actions are available.
- */
-export function getAvailableActionsForForm(character: Character, formName?: string): Action[] {
-  const currentForm = getCurrentForm(character, formName)
-
-  // If character has no forms, return all actions
-  if (!currentForm) {
-    return character.actions
-  }
-
-  // If form doesn't specify availableActions, all actions are available
-  if (currentForm.availableActions === undefined) {
-    return character.actions
-  }
-
-  // Filter actions based on form's availableActions
-  // If availableActions is empty array, no actions are available (locked form)
-  return character.actions.filter(action => currentForm.availableActions!.some(a => a.name === action.name))
 }
 
 /**

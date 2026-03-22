@@ -175,6 +175,7 @@ describe('resolveTime', () => {
           fromTime: 10,
           toTime: 12,
           negativeStatusesInAction: [],
+          coordinatedAttacksInAction: [],
           damageModifiers: [],
           modifiersInAction: [],
           permanentModifiers: [],

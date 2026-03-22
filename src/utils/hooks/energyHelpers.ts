@@ -7,7 +7,7 @@ export function getCharacterEnergyState(snapshot: Snapshot, characterName: strin
 }
 
 export function updateEnergyValue(prev: number | undefined, generated: number, max: number) {
-  return Math.min((prev ?? 0) + generated, max)
+  return Math.max(0, Math.min((prev ?? 0) + generated, max))
 }
 
 export function getConcertoValue(snapshot: Snapshot, character: string): number {

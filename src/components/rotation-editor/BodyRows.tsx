@@ -43,6 +43,17 @@ export function BodyRow({ snapshot, previousSnapshot, charactersInBattle, tableC
         lockedCharacters.add(charName)
       }
     }
+    // Lock all characters except the one with a required follow-up (combo system)
+    const requiredFollowUps = previousSnapshot.charactersRequiredFollowUp ?? {}
+    const charactersWithFollowUp = Object.keys(requiredFollowUps).filter(char => requiredFollowUps[char])
+    if (charactersWithFollowUp.length > 0) {
+      // Lock all characters that don't have a required follow-up
+      for (const char of charactersInBattle) {
+        if (!charactersWithFollowUp.includes(char.name)) {
+          lockedCharacters.add(char.name)
+        }
+      }
+    }
   }
 
   return (
@@ -60,35 +71,37 @@ export function BodyRow({ snapshot, previousSnapshot, charactersInBattle, tableC
       }}>
       {/* Character select */}
       <td className="tableCellBody">
-        {isLocked
-          ? <div className="lockedSelectorText">{character}</div>
-          : <CharacterSelect
-              value={character}
-              characters={charactersInBattle}
-              onChange={characterName => {
-                onSelectCharacter(snapshotId, characterName)
-              }}
-              lockedCharacters={lockedCharacters}
-            />}
+        {isLocked ? (
+          <div className="lockedSelectorText">{character}</div>
+        ) : (
+          <CharacterSelect
+            value={character}
+            characters={charactersInBattle}
+            onChange={characterName => {
+              onSelectCharacter(snapshotId, characterName)
+            }}
+            lockedCharacters={lockedCharacters}
+          />
+        )}
       </td>
 
       {/* Action select */}
       <td className="tableCellBody">
-        {isLocked
-          ? <div className="lockedSelectorText">
-              {snapshot.resolvedDisplayName ?? charactersInBattle.find(c => c.name === character)?.actions.find(a => a.name === action)?.displayName ?? action}
-            </div>
-          : <ActionSelect
-              value={action}
-              actions={charactersInBattle.find(c => c.name === character)?.actions ?? []}
-              character={charactersInBattle.find(c => c.name === character)}
-              currentEnergies={snapshot.charactersEnergies[character]}
-              previousSnapshot={previousSnapshot}
-              onChange={actionName => {
-                onSelectAction(snapshotId, actionName)
-              }}
-              disabled={!character}
-            />}
+        {isLocked ? (
+          <div className="lockedSelectorText">{snapshot.resolvedDisplayName ?? charactersInBattle.find(c => c.name === character)?.actions.find(a => a.name === action)?.displayName ?? action}</div>
+        ) : (
+          <ActionSelect
+            value={action}
+            actions={charactersInBattle.find(c => c.name === character)?.actions ?? []}
+            character={charactersInBattle.find(c => c.name === character)}
+            currentEnergies={snapshot.charactersEnergies[character]}
+            previousSnapshot={previousSnapshot}
+            onChange={actionName => {
+              onSelectAction(snapshotId, actionName)
+            }}
+            disabled={!character}
+          />
+        )}
       </td>
 
       {/* Basic columns */}
@@ -100,8 +113,6 @@ export function BodyRow({ snapshot, previousSnapshot, charactersInBattle, tableC
           </td>
         )
       })}
-
-
 
       {/* Status effects columns (negative statuses, buffs, debuffs) */}
       {tableConfig.statusEffects && renderBodyColumnsWithTags(tableConfig.statusEffects.columns, columnVisibility, snapshot, previousSnapshot, character, action)}

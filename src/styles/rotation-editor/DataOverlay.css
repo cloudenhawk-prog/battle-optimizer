@@ -619,6 +619,9 @@
   left: 50%;
   transform: translateX(-50%);
   bottom: 20px;
+  width: max-content;
+  min-width: 360px;
+  max-width: min(1300px, calc(95vw - 80px));
 }
 
 .sectionCard {
@@ -664,6 +667,7 @@
 .sectionCard.magenta {
   border-top: 2px solid rgba(200, 150, 255, 0.3);
   padding-bottom: 7px;
+  overflow: visible;
 }
 .sectionCard.purple {
   border-top: 2px solid rgba(150, 100, 255, 0.3);
@@ -1062,7 +1066,7 @@
   justify-content: center;
   height: 150px;
   padding: 0 8px;
-  overflow-x: auto;
+  overflow: visible;
 }
 
 .pillarWrapper {
@@ -1071,6 +1075,7 @@
   align-items: center;
   gap: 8px;
   height: 100%;
+  position: relative;
 }
 
 .pillarBar {
@@ -1169,6 +1174,81 @@
   font-family: 'Courier New', monospace;
   font-size: 14px;
   font-weight: 700;
+  color: rgba(200, 150, 255, 0.95);
+  text-shadow: 0 0 8px rgba(200, 150, 255, 0.3);
+}
+
+/* Pillar Tooltip */
+.pillarTooltip {
+  position: absolute;
+  bottom: calc(100% + 10px);
+  left: 50%;
+  transform: translateX(-50%);
+  background: rgba(18, 18, 24, 0.97);
+  border: 1px solid rgba(200, 150, 255, 0.45);
+  border-radius: 6px;
+  padding: 10px 13px;
+  min-width: 170px;
+  z-index: 200;
+  pointer-events: none;
+  box-shadow:
+    0 4px 20px rgba(0, 0, 0, 0.6),
+    0 0 12px rgba(200, 150, 255, 0.12);
+}
+
+.pillarTooltipTitle {
+  font-family:
+    system-ui,
+    -apple-system,
+    sans-serif;
+  font-size: 11px;
+  font-weight: 700;
+  color: rgba(200, 150, 255, 0.95);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  margin-bottom: 4px;
+  white-space: normal;
+  word-break: break-word;
+  max-width: 220px;
+}
+
+.pillarTooltipSource {
+  font-family: 'Courier New', monospace;
+  font-size: 10px;
+  color: var(--table-text-subtle);
+  margin-bottom: 6px;
+  white-space: normal;
+  word-break: break-all;
+}
+
+.pillarTooltipDivider {
+  height: 1px;
+  background: rgba(200, 150, 255, 0.2);
+  margin: 6px 0;
+}
+
+.pillarTooltipRow {
+  display: flex;
+  justify-content: space-between;
+  gap: 18px;
+  font-size: 11px;
+  line-height: 1.65;
+}
+
+.pillarTooltipLabel {
+  font-family:
+    system-ui,
+    -apple-system,
+    sans-serif;
+  color: var(--table-text-subtle);
+}
+
+.pillarTooltipValue {
+  font-family: 'Courier New', monospace;
+  color: var(--table-text-dim);
+}
+
+.pillarTooltipHighlight {
   color: rgba(200, 150, 255, 0.95);
   text-shadow: 0 0 8px rgba(200, 150, 255, 0.3);
 }

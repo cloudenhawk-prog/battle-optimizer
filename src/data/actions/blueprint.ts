@@ -29,13 +29,13 @@ export const blueprint: Action = {
     requiresSwapIn: undefined, // Optional
     requiresSwapOut: undefined, // Optional
     requiredForms: undefined, // Optional
-    customCanCast: undefined // Optional
+    customCanCast: undefined, // Optional
   },
   offtune: 100,
   toolTip: undefined, // Optional
   groupName: undefined, // Optional
   variantName: undefined, // Optional
   formChange: undefined, // Optional
-  resolveVariant: undefined // Optional
+  resolveVariant: undefined, // Optional
+  requiredFollowUp: undefined, // Optional: { actionName: 'XXX' }
 }
-

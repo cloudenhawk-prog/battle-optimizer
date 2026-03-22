@@ -1,6 +1,8 @@
 import type { Character, ResolvedCharacter } from '../../types/character'
+import type { DamageModifier } from '../../types/modifiers'
 import { getDefaultCharacterStats } from '../../types/stats'
 import { mergeStats } from '../calculators/damageCalculator'
+import { isAlwaysCondition } from '../conditions/damageModifierConditions'
 import { resolveGear } from './resolveGear'
 
 // ========== Character Resolution ============================================================================================
@@ -75,6 +77,44 @@ export function resolveCharacter(character: Character): ResolvedCharacter {
   // ---- 8: Inject gear modifiers ----
   resolveGear(actions, damageModifiers, gear)
 
+  // ---- 9: Flatten self/always/permanent modifiers into resolved stats ----
+  // Modifiers that are always active for this character and never change can be folded
+  // directly into character.stats, removing them from the live modifier pipeline.
+  // They are preserved in flattenedPassiveModifiers for breakdown reference.
+  const stillActive: DamageModifier[] = []
+  const flattened: DamageModifier[] = []
+  for (const modifier of character.damageModifiers) {
+    if (isPassiveModifier(modifier)) {
+      if (modifier.characterStats) {
+        character.stats = mergeStats(character.stats as ReturnType<typeof getDefaultCharacterStats>, modifier.characterStats)
+      }
+      flattened.push(modifier)
+    } else {
+      stillActive.push(modifier)
+    }
+  }
+  character.damageModifiers = stillActive
+  if (flattened.length > 0) {
+    character.flattenedPassiveModifiers = flattened
+  }
+
   // character.stats is now fully populated — safe to narrow to ResolvedCharacter
   return character as ResolvedCharacter
+}
+
+/**
+ * Returns true if a modifier qualifies as a passive flat stat contribution:
+ *  - targets only the owner character ('self')
+ *  - is always active (always() condition)
+ *  - is permanent (never expires)
+ *  - carries only characterStats (no enemyStats, no negativeStatusEffects)
+ */
+function isPassiveModifier(modifier: DamageModifier): boolean {
+  return (
+    modifier.targetStrategy === 'self' &&
+    modifier.durationStrategy.type === 'permanent' &&
+    isAlwaysCondition(modifier.condition) &&
+    !modifier.enemyStats &&
+    !modifier.negativeStatusEffects?.length
+  )
 }

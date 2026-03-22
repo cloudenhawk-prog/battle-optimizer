@@ -158,6 +158,7 @@ function createMockContext(overrides: Partial<StepContext> = {}): StepContext {
     toTime: 1,
     modifiersInAction: [],
     negativeStatusesInAction: [],
+    coordinatedAttacksInAction: [],
     permanentModifiers: [],
     damageModifiers: [],
     aggregatedCharacterModifiers: {},
@@ -1112,17 +1113,21 @@ describe('Complex Integration Scenarios', () => {
     // Expected: 0.2 * 2 = 0.4 bonusDMG
   })
 
-  test('scenario: modifier with condition 0 should not be collected', () => {
+  test('scenario: modifier with condition 0 is still in applicable list but does not contribute', () => {
     const modifier = createMockModifier({
       condition: () => 0,
       characterStats: { bonusATK: 100 },
+      durationStrategy: { type: 'permanent' },
     })
 
     const ctx = createMockContext()
 
-    // Condition returns 0, so in practice this modifier should not contribute
-    // (though it may still be in the list, the damage calculator should respect condition)
-    expect(modifier.condition(ctx)).toBe(0)
+    // Permanent modifiers are always returned by filterApplicableModifiers regardless of condition
+    const applicable = filterApplicableModifiers([], [modifier], ctx)
+    expect(applicable).toHaveLength(1)
+
+    // But condition returns 0, so the damage calculator should skip it
+    expect(applicable[0].condition(ctx)).toBe(0)
   })
 })
 
@@ -1543,7 +1548,7 @@ describe('Edge Cases & Robustness', () => {
       expect(updated[0].swapsLeft).toBe(2)
     })
 
-    test('resetTimerOnApplication = false should NOT reset on expiration', () => {
+    test('expiration always resets timer regardless of resetTimerOnApplication flag', () => {
       const modifier = createMockModifier({
         durationStrategy: { type: 'limited', timeDuration: 10 },
         stackingStrategy: {

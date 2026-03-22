@@ -27,6 +27,8 @@ export type Character = {
   maxEnergies: Partial<Record<EnergyType, number>>
   actions: Action[]
   damageModifiers: DamageModifier[]
+  /** Permanent self/always modifiers that were flattened into stats at resolution time. Stored for breakdown reference only — not used in runtime calculations. */
+  flattenedPassiveModifiers?: DamageModifier[]
   stats: Partial<CharacterStats>
   inherentStats: Partial<CharacterStats>
   gear: Gear

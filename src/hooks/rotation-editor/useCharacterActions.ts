@@ -28,7 +28,7 @@ type UseCharacterActionsProps = {
 
 export function useCharacterActions({ setSnapshots, charactersInBattle, enemy, tableConfig, setDamageEvents }: UseCharacterActionsProps) {
   const charactersMap: Record<string, ResolvedCharacter> = Object.fromEntries(charactersInBattle.map(c => [c.name, c]))
-  const characterColumnsMap: Record<string, string[]> = Object.fromEntries(tableConfig.characters.map(c => [c.label, c.columns.map(col => col.key.split('_')[1])]))
+  const characterColumnsMap: Record<string, string[]> = Object.fromEntries(tableConfig.characters.map(c => [c.label, c.columns.map(col => col.key.slice(col.key.indexOf('_') + 1))]))
 
   // Extract columns from statusEffects group
   const statusEffectsColumns = tableConfig.statusEffects?.columns ?? []

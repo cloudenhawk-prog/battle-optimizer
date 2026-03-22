@@ -16,6 +16,15 @@ export type DamageModifier = {
   stackingStrategy: StackingStrategy
   negativeStatusEffects?: NegativeStatusEffect[]
   color?: string
+  /** When true, removing this modifier (timer expiry or explicit stack removal to 0)
+   *  clears the ownerCharacter's charactersForteGrants in the snapshot.
+   *  Use this on the "anchor" modifier of a forte-grant system (e.g. Cartethyia's Mandate). */
+  clearsForteGrantsOnExpiry?: boolean
+  /** Groups this modifier under another modifier's contribution entry in DataOverlay.
+   *  Set to the source string of the anchor modifier. Grouped modifiers are excluded
+   *  together when computing the "damage without" baseline, so their combined effect
+   *  is reported as a single contribution. */
+  contributionGroup?: string
 }
 
 // ========== Type: Negative Status Effect =====================================================================================

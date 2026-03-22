@@ -37,13 +37,32 @@ export interface Snapshot {
    *  Undefined/empty string means the character has no forms or is in their default form. */
   charactersForms: Record<string, string>
   /** Absolute time until which each character's swap cooldown is active.
- *  Missing entries or a value of 0 mean the character currently has no swap cooldown.
- *  Implementations commonly resolve this with `charactersSwapCooldownUntil[char] ?? 0`.
- */
+   *  Missing entries or a value of 0 mean the character currently has no swap cooldown.
+   *  Implementations commonly resolve this with `charactersSwapCooldownUntil[char] ?? 0`.
+   */
   charactersSwapCooldownUntil: Record<string, number>
+  /** Tracks which character must cast which action in the next row (for combo systems).
+   *  Key: character name, Value: required action name.
+   *  When set, all other actions/characters are locked in the next row. */
+  charactersRequiredFollowUp: Record<string, string>
+  /** Tracks active combo windows for time-based combo systems.
+   *  Key: character name. Value: info about the last combo starter action. */
+  charactersComboWindows: Record<
+    string,
+    {
+      actionName: string // Name of the action that started the combo window
+      startTime: number // Time when the combo window started (based on timerStartsAt)
+      wasSwapped: boolean // Whether the character was swapped out after the combo action
+      formChanged: boolean // Whether the character changed form after the combo action
+    }
+  >
   /** Display label of the resolved action variant for this snapshot row (e.g. "Plunge Attack 1 (swap cancel)").
    *  This is the resolved action's display name as shown to the user, and may be identical
    *  to or differ from the selectable action's own displayName. When present, UIs should
    *  prefer this over the parent action's displayName so the exact resolved variant is visible. */
   resolvedDisplayName?: string
+  /** Active forte-based grants per character (e.g. 'Mandate of Divinity', 'Power of Discord', 'Heart of Virtue').
+   *  Grants accumulate as forte sub-energies are consumed (deduplicated) and are cleared
+   *  when the associated modifier with clearsForteGrantsOnExpiry expires or is removed. */
+  charactersForteGrants: Record<string, string[]>
 }

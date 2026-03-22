@@ -138,7 +138,36 @@ export function CharacterStateTracker({ snapshot, charactersInBattle, tableConfi
               {/* Energy bars */}
               <div className="stateTrackerEnergies">
                 {visibleColumns.map(col => {
-                  const energyType = col.key.split('_')[1]
+                  // Combined forte: render a segmented split-bar
+                  if (col.energyMetadata && col.energyMetadata.length > 1) {
+                    const slots = col.energyMetadata.map(meta => ({
+                      meta,
+                      filled: (energies[meta.key] ?? 0) >= 1,
+                    }))
+                    const filledCount = slots.filter(s => s.filled).length
+                    return (
+                      <div key={col.key} className="stateTrackerBarRow">
+                        <img src={col.icon} alt={col.label} className="stateTrackerEnergyIcon" onClick={() => toggleColumn(col.key)} />
+                        <span className="stateTrackerEnergyLabel">{col.label}</span>
+                        <div className="stateTrackerBarWrapper">
+                          <div className="stateTrackerForteSegments">
+                            {slots.map(slot => (
+                              <div
+                                key={slot.meta.key}
+                                className={`stateTrackerForteSeg${slot.filled ? ' stateTrackerForteSeg--filled' : ''}`}
+                                data-forte-slot={slot.meta.key.slice('forte_'.length)}
+                                title={slot.meta.label}
+                              />
+                            ))}
+                          </div>
+                          <span className="stateTrackerBarText">{filledCount}/{slots.length}</span>
+                        </div>
+                      </div>
+                    )
+                  }
+
+                  // Regular energy bar
+                  const energyType = col.key.slice(col.key.indexOf('_') + 1)
                   const current = energies[energyType] || 0
                   const max = character.maxEnergies[energyType as keyof typeof character.maxEnergies] || 100
                   const percentage = Math.min((current / max) * 100, 100)

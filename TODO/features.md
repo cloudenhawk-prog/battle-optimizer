@@ -1,5 +1,8 @@
 ## Features
 
+# General
+Right now action names and other things may not be unique. Make sure they are so we can reference each other, or find a different approach
+
 # Damage Calculators
 - Make it possible to chose a damageCalculationStrategy, i.e. like default, negativeStatus scaling or others (see what aero erosion explosion does since it should follow the same pattern)
 
@@ -28,22 +31,23 @@ HIDE IT for now - then we will simplify it once we start working on it again
 - Toggle Hide Certain contributions: There should be a button to hide: 'permanent' damageModifiers with condition 'always' in the timeline and in the dataoverlay
 
 # Data Overlay
-Toggle Hide Certain contributions: There should be a button to hide: 'permanent' damageModifiers with condition 'always' in the timeline and in the dataoverlay
+- Toggle Hide Certain contributions: There should be a button to hide: 'permanent' damageModifiers with condition 'always' in the timeline and in the dataoverlay
 
-Dynamic width for contributions : Data Overlay contributions sections should grow wider as more are added with a minimum width and a maximum width (at which point it becomes scrollable)
+- Dynamic width for contributions : Data Overlay contributions sections should grow wider as more are added with a minimum width and a maximum width (at which point it becomes scrollable)
 
-Top Left Corner: The 3 buttons should have a title or helpful label -> we are swapping between scenarios like; too long but theoretically 'see scenario where everything crits'
+- Top Left Corner: The 3 buttons should have a title or helpful label -> we are swapping between scenarios like; too long but theoretically 'see scenario where everything crits'
 
-Contributions: could also have hover - 'show more details'
+- Contributions: could also have hover - 'show more details'
 
-All Sections: could have a small button in the right corner for explanations
+- All Sections: could have a small button in the right corner for explanations
 
-Tether labels: Swap the bottom two labels: TETHER//V3.2.17 and LINK: ESTABLISHED PHASE DRIFT: 0.02' so tether is the in the left bottom corner
+- Tether labels: Swap the bottom two labels: TETHER//V3.2.17 and LINK: ESTABLISHED PHASE DRIFT: 0.02' so tether is the in the left bottom corner
 
-General: Arrows up/down to swap between data overlays quickly. Also if you click outside the data overlay it should close
+- General: Arrows up/down to swap between data overlays quickly. Also if you click outside the data overlay it should close
 
-MODIFIER CONTRIBUTIONS: Remove empty shell for the pillars - It makes it seem like the biggest pillar is some sort of "max possible value" which is not the case: it's just used for scaling heights so it looks good.
+- MODIFIER CONTRIBUTIONS: Remove empty shell for the pillars - It makes it seem like the biggest pillar is some sort of "max possible value" which is not the case: it's just used for scaling heights so it looks good.
 
+- Add toggler to the middle pie wheel: DPS / DMG
 
 
 

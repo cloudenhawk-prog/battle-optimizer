@@ -5,7 +5,6 @@ import type { Action } from './action'
 export type Form = {
   name: string
   displayName?: string
-  availableActions?: Action[]
   introAction?: Action
   outroAction?: Action
   icon: string

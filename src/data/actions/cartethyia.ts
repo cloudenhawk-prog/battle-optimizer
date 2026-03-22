@@ -1,5 +1,5 @@
 import type { Action } from '../../types/action'
-import { always, stacksOfCap } from '../../utils/conditions/damageModifierConditions'
+import { always, hasForteGrant } from '../../utils/conditions/damageModifierConditions'
 import { aeroErosionExplosion } from '../sideEffects/sideEffects'
 
 // S2
@@ -7,7 +7,6 @@ import { aeroErosionExplosion } from '../sideEffects/sideEffects'
 // TEST in tower how long it lasts
 // Immediately apply 3 stacks of Aero Erosion and trigger aero explosion once
 
-// TODO: Forte needs to be split into 3 swords (introduce sub energies or some other logic? That way the energy bar itself in characterTrackerWindow can be split into 3 segments)
 // TODO: Casting mid-air atttack (Cartethyia plunge) every 1 forte consumed reduces the cooldown of Resonance Skill Cartethyia by 1 second
 
 // S3
@@ -30,7 +29,7 @@ const cartethyia_BA_1_4_cancel_with_skill: Action = {
   energyGenerated: [
     { energyType: 'energy', amount: 0.7 + (2 * 0.58 + 0.77) + 4 * 0.63 + (3 * 0.37 + 1.11), share: 0.5, scalingStat: 'energyPercent' },
     { energyType: 'concerto', amount: 0.98 + (2 * 0.81 + 1.08) + 4 * 0.88 + (3 * 0.52 + 1.55), share: 0 },
-    { energyType: 'forte', amount: 1, share: 0 },
+    { energyType: 'forte_divinity', amount: 1, share: 0 },
   ],
   energyCost: [],
   statusModifications: [{ type: 'negativeStatus', targetName: 'Aero Erosion', stackChange: 1 }],
@@ -40,9 +39,10 @@ const cartethyia_BA_1_4_cancel_with_skill: Action = {
     startState: 'GROUND',
     endState: 'GROUND',
   },
+  requiredFollowUp: { actionName: 'Resonance Skill' },
   offtune: 0.22 + (2 * 0.18 + 0.25) + 4 * 0.2 + (3 * 0.12 + 0.35),
   groupName: 'Basic Attack 1-4',
-  variantName: 'Cancel With Skill'
+  variantName: 'Cancel With Skill',
 }
 
 const cartethyia_BA_1_4_cancel_with_swap: Action = {
@@ -58,7 +58,7 @@ const cartethyia_BA_1_4_cancel_with_swap: Action = {
   energyGenerated: [
     { energyType: 'energy', amount: 0.7 + (2 * 0.58 + 0.77) + 4 * 0.63 + (3 * 0.37 + 1.11), share: 0.5, scalingStat: 'energyPercent' },
     { energyType: 'concerto', amount: 0.98 + (2 * 0.81 + 1.08) + 4 * 0.88 + (3 * 0.52 + 1.55), share: 0 },
-    { energyType: 'forte', amount: 1, share: 0 },
+    { energyType: 'forte_divinity', amount: 1, share: 0 },
   ],
   energyCost: [],
   statusModifications: [{ type: 'negativeStatus', targetName: 'Aero Erosion', stackChange: 1 }],
@@ -69,11 +69,11 @@ const cartethyia_BA_1_4_cancel_with_swap: Action = {
     swapOutState: 'GROUND', // TODO : Double Check
     endState: 'GROUND',
     requiresSwapOut: true,
-    persistenceTime: 100 // TODO : Persistence Time
+    persistenceTime: 100, // TODO : Persistence Time
   },
   offtune: 0.22 + (2 * 0.18 + 0.25) + 4 * 0.2 + (3 * 0.12 + 0.35),
   groupName: 'Basic Attack 1-4',
-  variantName: 'Cancel With Swap'
+  variantName: 'Cancel With Swap',
 }
 
 // ========== Basic Attack 2-4 =================================================================================================
@@ -90,7 +90,7 @@ const cartethyia_BA_2_4: Action = {
   energyGenerated: [
     { energyType: 'energy', amount: 2 * 0.58 + 0.77 + 4 * 0.63 + (3 * 0.37 + 1.11), share: 0.5, scalingStat: 'energyPercent' },
     { energyType: 'concerto', amount: 2 * 0.81 + 1.08 + 4 * 0.88 + (3 * 0.52 + 1.55), share: 0 },
-    { energyType: 'forte', amount: 1, share: 0 },
+    { energyType: 'forte_divinity', amount: 1, share: 0 },
   ],
   energyCost: [],
   statusModifications: [{ type: 'negativeStatus', targetName: 'Aero Erosion', stackChange: 1 }],
@@ -104,7 +104,7 @@ const cartethyia_BA_2_4: Action = {
   offtune: 2 * 0.18 + 0.25 + 4 * 0.2 + (3 * 0.12 + 0.35),
   toolTip: 'Can be cast after intro',
   groupName: 'Basic Attack 2-4',
-  variantName: 'Default'
+  variantName: 'Default',
 }
 
 const cartethyia_BA_2_4_cancel_with_jump: Action = {
@@ -120,7 +120,7 @@ const cartethyia_BA_2_4_cancel_with_jump: Action = {
   energyGenerated: [
     { energyType: 'energy', amount: 2 * 0.58 + 0.77 + 4 * 0.63 + (3 * 0.37 + 1.11), share: 0.5, scalingStat: 'energyPercent' },
     { energyType: 'concerto', amount: 2 * 0.81 + 1.08 + 4 * 0.88 + (3 * 0.52 + 1.55), share: 0 },
-    { energyType: 'forte', amount: 1, share: 0 },
+    { energyType: 'forte_divinity', amount: 1, share: 0 },
   ],
   energyCost: [],
   statusModifications: [{ type: 'negativeStatus', targetName: 'Aero Erosion', stackChange: 1 }],
@@ -134,7 +134,7 @@ const cartethyia_BA_2_4_cancel_with_jump: Action = {
   offtune: 2 * 0.18 + 0.25 + 4 * 0.2 + (3 * 0.12 + 0.35),
   toolTip: 'Can be cast after intro',
   groupName: 'Basic Attack 2-4',
-  variantName: 'Cancel With Jump'
+  variantName: 'Cancel With Jump',
 }
 
 const cartethyia_BA_2_4_cancel_with_swap: Action = {
@@ -150,7 +150,7 @@ const cartethyia_BA_2_4_cancel_with_swap: Action = {
   energyGenerated: [
     { energyType: 'energy', amount: 2 * 0.58 + 0.77 + 4 * 0.63 + (3 * 0.37 + 1.11), share: 0.5, scalingStat: 'energyPercent' },
     { energyType: 'concerto', amount: 2 * 0.81 + 1.08 + 4 * 0.88 + (3 * 0.52 + 1.55), share: 0 },
-    { energyType: 'forte', amount: 1, share: 0 },
+    { energyType: 'forte_divinity', amount: 1, share: 0 },
   ],
   energyCost: [],
   statusModifications: [{ type: 'negativeStatus', targetName: 'Aero Erosion', stackChange: 1 }],
@@ -162,12 +162,12 @@ const cartethyia_BA_2_4_cancel_with_swap: Action = {
     endState: 'GROUND',
     requiresSwapIn: true,
     requiresSwapOut: true,
-    persistenceTime: 100 // TODO : Persistence Time
+    persistenceTime: 100, // TODO : Persistence Time
   },
   offtune: 2 * 0.18 + 0.25 + 4 * 0.2 + (3 * 0.12 + 0.35),
   toolTip: 'Can be cast after intro',
   groupName: 'Basic Attack 2-4',
-  variantName: 'Cancel With Swap'
+  variantName: 'Cancel With Swap',
 }
 
 // ========== Heavy Attack =====================================================================================================
@@ -184,7 +184,7 @@ const cartethyia_heavy: Action = {
   energyGenerated: [
     { energyType: 'energy', amount: 3 * 0.42 + 1.25, share: 0.5, scalingStat: 'energyPercent' },
     { energyType: 'concerto', amount: 3 * 0.59 + 1.75, share: 0 },
-    { energyType: 'forte', amount: 1, share: 0 },
+    { energyType: 'forte_discord', amount: 1, share: 0 },
   ],
   energyCost: [],
   statusModifications: [],
@@ -196,7 +196,7 @@ const cartethyia_heavy: Action = {
   },
   offtune: 3 * 0.13 + 0.4,
   groupName: 'Heavy Attack',
-  variantName: 'Default'
+  variantName: 'Default',
 }
 
 const cartethyia_heavy_cancel_with_swap: Action = {
@@ -212,7 +212,7 @@ const cartethyia_heavy_cancel_with_swap: Action = {
   energyGenerated: [
     { energyType: 'energy', amount: 3 * 0.42 + 1.25, share: 0.5, scalingStat: 'energyPercent' },
     { energyType: 'concerto', amount: 3 * 0.59 + 1.75, share: 0 },
-    { energyType: 'forte', amount: 1, share: 0 },
+    { energyType: 'forte_discord', amount: 1, share: 0 },
   ],
   energyCost: [],
   statusModifications: [],
@@ -223,19 +223,20 @@ const cartethyia_heavy_cancel_with_swap: Action = {
     swapOutState: 'PRESERVE', // TODO : Double Check
     endState: 'PRESERVE',
     requiresSwapOut: true,
-    persistenceTime: 100 // TODO : Persistence Time
+    persistenceTime: 100, // TODO : Persistence Time
   },
   offtune: 3 * 0.13 + 0.4,
   groupName: 'Heavy Attack',
-  variantName: 'Cancel With Swap'
+  variantName: 'Cancel With Swap',
 }
 
 // ========== Plunge Attack ====================================================================================================
-const cartethyia_plunge: Action = { // TODO: If the sub actions aren't necessary in full, could simply define the rows we need to update (multipliers & offtune & substring to append to name...?)
+const cartethyia_plunge: Action = {
+  // TODO: If the sub actions aren't necessary in full, could simply define the rows we need to update (multipliers & offtune & substring to append to name...?)
   name: 'Plunge Attack',
   displayName: 'Plunge Attack',
   category: 'Basics',
-  castTime: 1.00, // TODO : Cast Time
+  castTime: 1.0, // TODO : Cast Time
   multiplier: 0,
   scaling: 'HP',
   elements: ['AERO'],
@@ -248,20 +249,26 @@ const cartethyia_plunge: Action = { // TODO: If the sub actions aren't necessary
   sideEffects: [],
   castConditions: {
     startState: 'AIR',
-    endState: 'GROUND'
+    endState: 'GROUND',
   },
   offtune: 0,
   groupName: 'Plunge Attack',
   variantName: 'Default',
   resolveVariant(prevSnapshot, characterName) {
-    const forte: number = prevSnapshot?.charactersEnergies[characterName]?.forte ?? 0
-    const base =
-      forte >= 3 ? cartethyiaPlunge_3 :
-      forte >= 2 ? cartethyia_plunge_2 :
-      forte >= 1 ? cartethyia_plunge_1 :
-      { ...cartethyia_plunge_1, energyCost: [] }
+    const energies = prevSnapshot?.charactersEnergies[characterName]
+    const divinity = (energies?.forte_divinity ?? 0) > 0 ? 1 : 0
+    const discord = (energies?.forte_discord ?? 0) > 0 ? 1 : 0
+    const virtue = (energies?.forte_virtue ?? 0) > 0 ? 1 : 0
+    const total = divinity + discord + virtue
+    const base = total >= 3 ? cartethyiaPlunge_3 : total >= 2 ? cartethyia_plunge_2 : total >= 1 ? cartethyia_plunge_1 : { ...cartethyia_plunge_1, energyCost: [] }
+    const energyCost: Action['energyCost'] = []
+    if (energies?.forte_divinity) energyCost.push({ energyType: 'forte_divinity', amount: 1, grantsOnConsume: ['Mandate of Divinity'] })
+    if (energies?.forte_discord) energyCost.push({ energyType: 'forte_discord', amount: 1, grantsOnConsume: ['Power of Discord'] })
+    if (energies?.forte_virtue) energyCost.push({ energyType: 'forte_virtue', amount: 1, grantsOnConsume: ['Heart of Virtue'] })
     return {
       ...base,
+      energyCost,
+      cooldownReductions: total > 0 ? [{ targetActionKey: 'Resonance Skill', amount: total }] : undefined,
       name: this.name,
       groupName: this.groupName,
       variantName: this.variantName,
@@ -270,7 +277,7 @@ const cartethyia_plunge: Action = { // TODO: If the sub actions aren't necessary
       cooldown: this.cooldown,
       offtune: this.offtune,
     }
-  }
+  },
 }
 
 const cartethyia_plunge_cancel_with_swap: Action = {
@@ -293,20 +300,26 @@ const cartethyia_plunge_cancel_with_swap: Action = {
     swapOutState: 'AIR', // TODO : Double Check
     endState: 'GROUND',
     requiresSwapOut: true,
-    persistenceTime: 100 // TODO : Persistence Time
+    persistenceTime: 100, // TODO : Persistence Time
   },
   offtune: 0,
   groupName: 'Plunge Attack',
   variantName: 'Cancel With Swap',
   resolveVariant(prevSnapshot, characterName) {
-    const forte: number = prevSnapshot?.charactersEnergies[characterName]?.forte ?? 0
-    const base =
-      forte >= 3 ? cartethyiaPlunge_3 :
-      forte >= 2 ? cartethyia_plunge_2 :
-      forte >= 1 ? cartethyia_plunge_1 :
-      { ...cartethyia_plunge_1, energyCost: [] }
+    const energies = prevSnapshot?.charactersEnergies[characterName]
+    const divinity = (energies?.forte_divinity ?? 0) > 0 ? 1 : 0
+    const discord = (energies?.forte_discord ?? 0) > 0 ? 1 : 0
+    const virtue = (energies?.forte_virtue ?? 0) > 0 ? 1 : 0
+    const total = divinity + discord + virtue
+    const base = total >= 3 ? cartethyiaPlunge_3 : total >= 2 ? cartethyia_plunge_2 : total >= 1 ? cartethyia_plunge_1 : { ...cartethyia_plunge_1, energyCost: [] }
+    const energyCost: Action['energyCost'] = []
+    if (energies?.forte_divinity) energyCost.push({ energyType: 'forte_divinity', amount: 1, grantsOnConsume: ['Mandate of Divinity'] })
+    if (energies?.forte_discord) energyCost.push({ energyType: 'forte_discord', amount: 1, grantsOnConsume: ['Power of Discord'] })
+    if (energies?.forte_virtue) energyCost.push({ energyType: 'forte_virtue', amount: 1, grantsOnConsume: ['Heart of Virtue'] })
     return {
       ...base,
+      energyCost,
+      cooldownReductions: total > 0 ? [{ targetActionKey: 'Resonance Skill', amount: total }] : undefined,
       name: this.name,
       displayName: `${base.displayName} (swap cancel)`,
       groupName: this.groupName,
@@ -316,7 +329,7 @@ const cartethyia_plunge_cancel_with_swap: Action = {
       cooldown: this.cooldown,
       offtune: this.offtune,
     }
-  }
+  },
 }
 
 // Internal Action used as a variant for the main plunge actions
@@ -325,7 +338,7 @@ const cartethyia_plunge_1: Action = {
   displayName: 'Plunge Attack 1',
   category: 'Basics',
   castTime: 0,
-  multiplier: 3 * (5.65) / 100,
+  multiplier: (3 * 5.65) / 100,
   scaling: 'HP',
   elements: ['AERO'],
   dmgTypes: ['BASIC', 'NEGATIVE_STATUS'],
@@ -414,7 +427,7 @@ const cartethyia_skill: Action = {
   energyGenerated: [
     { energyType: 'energy', amount: 3 * 3.8 + 4.88, share: 0.5, scalingStat: 'energyPercent' },
     { energyType: 'concerto', amount: 10, share: 0 },
-    { energyType: 'forte', amount: 1, share: 0 },
+    { energyType: 'forte_virtue', amount: 1, share: 0 },
   ],
   energyCost: [],
   statusModifications: [{ type: 'negativeStatus', targetName: 'Aero Erosion', stackChange: 2 }],
@@ -426,7 +439,7 @@ const cartethyia_skill: Action = {
   },
   offtune: 3 * 0.17 + 0.22,
   groupName: 'Resonance Skill',
-  variantName: 'Default'
+  variantName: 'Default',
 }
 
 const cartethyia_skill_cancel_with_swap: Action = {
@@ -442,7 +455,7 @@ const cartethyia_skill_cancel_with_swap: Action = {
   energyGenerated: [
     { energyType: 'energy', amount: 3 * 3.8 + 4.88, share: 0.5, scalingStat: 'energyPercent' },
     { energyType: 'concerto', amount: 10, share: 0 },
-    { energyType: 'forte', amount: 1, share: 0 },
+    { energyType: 'forte_virtue', amount: 1, share: 0 },
   ],
   energyCost: [],
   statusModifications: [{ type: 'negativeStatus', targetName: 'Aero Erosion', stackChange: 2 }],
@@ -453,11 +466,11 @@ const cartethyia_skill_cancel_with_swap: Action = {
     swapOutState: 'PRESERVE', // TODO : Double Check
     endState: 'AIR',
     requiresSwapOut: true,
-    persistenceTime: 1.05
+    persistenceTime: 1.05,
   },
   offtune: 3 * 0.17 + 0.22,
   groupName: 'Resonance Skill',
-  variantName: 'Cancel With Swap'
+  variantName: 'Cancel With Swap',
 }
 
 // ========== Transform ========================================================================================================
@@ -479,7 +492,8 @@ const cartethyia_transform: Action = {
   statusModifications: [],
   damageModifiers: [
     {
-      source: 'Cartethyia',
+      // Active when Sword of Divinity was consumed: amplifies Aero Erosion DMG and speeds up tick rate.
+      source: 'Cartethyia: Mandate',
       displayName: 'Mandate',
       type: 'buff',
       ownerCharacter: 'Cartethyia',
@@ -487,13 +501,32 @@ const cartethyia_transform: Action = {
       characterStats: { aeroErosionAmplifyDMG: 0.5 },
       negativeStatusEffects: [
         { targetStatus: 'Aero Erosion', property: 'frequency', value: -0.5 },
-        { targetStatus: 'Aero Erosion', property: 'maxStacks', value: 3 },
       ],
-      condition: always(),
+      condition: hasForteGrant('Mandate of Divinity'),
       targetStrategy: 'self',
       durationStrategy: { type: 'limited', timeDuration: 12 },
       stackingStrategy: { maxStacks: 1, resetTimerOnApplication: true, stacksRemovedEachTime: 1 },
-    }
+      // When Mandate expires (timer or Liberation), all forte grants are cleared so the
+      // next Mandate cast starts from a clean slate.
+      clearsForteGrantsOnExpiry: true,
+      contributionGroup: 'Cartethyia: Mandate',
+    },
+    {
+      // Active when Sword of Discord was consumed: raises the Aero Erosion max stack cap.
+      source: 'Cartethyia: Power of Discord',
+      displayName: 'Power of Discord',
+      type: 'buff',
+      ownerCharacter: 'Cartethyia',
+      color: '#ff8c00',
+      negativeStatusEffects: [
+        { targetStatus: 'Aero Erosion', property: 'maxStacks', value: 3 },
+      ],
+      condition: hasForteGrant('Power of Discord'),
+      targetStrategy: 'self',
+      durationStrategy: { type: 'limited', timeDuration: 12 },
+      stackingStrategy: { maxStacks: 1, resetTimerOnApplication: true, stacksRemovedEachTime: 1 },
+      contributionGroup: 'Cartethyia: Mandate',
+    },
   ],
   sideEffects: [],
   formChange: 'Fleurdelys',
@@ -501,7 +534,7 @@ const cartethyia_transform: Action = {
     startState: 'ANY',
     endState: 'PRESERVE',
   },
-  offtune: 0.0
+  offtune: 0.0,
 }
 
 // ========== Intro & Outro ====================================================================================================
@@ -518,7 +551,7 @@ const cartethyia_intro: Action = {
   energyGenerated: [
     { energyType: 'energy', amount: 3 * 1.67 + 5.0, share: 0.5, scalingStat: 'energyPercent' },
     { energyType: 'concerto', amount: 10, share: 0 },
-    { energyType: 'forte', amount: 1, share: 0 },
+    { energyType: 'forte_discord', amount: 1, share: 0 },
   ],
   energyCost: [],
   statusModifications: [],
@@ -528,7 +561,7 @@ const cartethyia_intro: Action = {
     startState: 'ANY',
     endState: 'GROUND',
   },
-  offtune: 3 * 0.12 + 0.35
+  offtune: 3 * 0.12 + 0.35,
 }
 
 const cartethyia_outro: Action = {
@@ -547,7 +580,7 @@ const cartethyia_outro: Action = {
   damageModifiers: [
     {
       source: 'Cartethyia Outro Buff',
-      displayName: 'Wind\'s Divine Blessing',
+      displayName: "Wind's Divine Blessing",
       type: 'buff',
       ownerCharacter: 'Cartethyia',
       color: '#1ae070',
@@ -556,7 +589,7 @@ const cartethyia_outro: Action = {
       targetStrategy: 'activeAlly',
       durationStrategy: { type: 'limited', timeDuration: 20 },
       stackingStrategy: { maxStacks: 1, resetTimerOnApplication: true, stacksRemovedEachTime: 1 },
-    }
+    },
   ],
   sideEffects: [],
   castConditions: {
@@ -592,7 +625,7 @@ const fleurdelys_BA_1_5: Action = {
   },
   offtune: 0.24 + (0.24 + 3 * 0.12) + (3 * 0.14 + 1.26) + 5 * 0.14 + (0.13 + 0.51),
   groupName: 'Basic 1-5',
-  variantName: 'Default'
+  variantName: 'Default',
 }
 
 const fleurdelys_BA_1_5_cancel_with_swap: Action = {
@@ -619,11 +652,11 @@ const fleurdelys_BA_1_5_cancel_with_swap: Action = {
     swapOutState: 'GROUND', // TODO : Double Check
     endState: 'GROUND',
     requiresSwapOut: true,
-    persistenceTime: 100 // TODO : Persistence Time
+    persistenceTime: 100, // TODO : Persistence Time
   },
   offtune: 0.24 + (0.24 + 3 * 0.12) + (3 * 0.14 + 1.26) + 5 * 0.14 + (0.13 + 0.51),
   groupName: 'Basic 1-5',
-  variantName: 'Cancel With Swap'
+  variantName: 'Cancel With Swap',
 }
 
 // ========== Basic 3-5 ========================================================================================================
@@ -654,7 +687,7 @@ const fleurdelys_BA_3_5: Action = {
   offtune: 3 * 0.14 + 1.26 + 5 * 0.14 + (0.13 + 0.51),
   toolTip: 'Can be cast when quick swapped in without intro',
   groupName: 'Basic 3-5',
-  variantName: 'Default'
+  variantName: 'Default',
 }
 
 const fleurdelys_BA_3_5_cancel_with_swap: Action = {
@@ -682,12 +715,12 @@ const fleurdelys_BA_3_5_cancel_with_swap: Action = {
     endState: 'GROUND',
     requiresSwapIn: true,
     requiresSwapOut: true,
-    persistenceTime: 100 // TODO : Persistence Time
+    persistenceTime: 100, // TODO : Persistence Time
   },
   offtune: 3 * 0.14 + 1.26 + 5 * 0.14 + (0.13 + 0.51),
   toolTip: 'Can be cast when quick swapped in without intro',
   groupName: 'Basic 3-5',
-  variantName: 'Cancel With Swap'
+  variantName: 'Cancel With Swap',
 }
 
 // ========== Heavy Attack 1 ===================================================================================================
@@ -716,7 +749,7 @@ const fleurdelys_heavy_1: Action = {
   },
   offtune: 0.17 + 0.39,
   groupName: 'Heavy Attack 1',
-  variantName: 'Default'
+  variantName: 'Default',
 }
 
 const fleurdelys_heavy_1_cancel_with_swap: Action = {
@@ -743,11 +776,11 @@ const fleurdelys_heavy_1_cancel_with_swap: Action = {
     swapOutState: 'GROUND', // TODO : Double Check
     endState: 'GROUND',
     requiresSwapOut: true,
-    persistenceTime: 100 // TODO : Persistence Time
+    persistenceTime: 100, // TODO : Persistence Time
   },
   offtune: 0.17 + 0.39,
   groupName: 'Heavy Attack 1',
-  variantName: 'Cancel With Swap'
+  variantName: 'Cancel With Swap',
 }
 
 // ========== Heavy Attack 2 ===================================================================================================
@@ -777,7 +810,7 @@ const fleurdelys_heavy_2: Action = {
   },
   offtune: 3 * 0.31 + 0.15,
   groupName: 'Heavy Attack 2',
-  variantName: 'Default'
+  variantName: 'Default',
 }
 
 const fleurdelys_heavy_2_cancel_with_swap: Action = {
@@ -805,11 +838,11 @@ const fleurdelys_heavy_2_cancel_with_swap: Action = {
     swapOutState: 'GROUND', // TODO : Double Check
     endState: 'GROUND',
     requiresSwapOut: true,
-    persistenceTime: 100 // TODO : Persistence Time
+    persistenceTime: 100, // TODO : Persistence Time
   },
   offtune: 3 * 0.31 + 0.15,
   groupName: 'Heavy Attack 2',
-  variantName: 'Cancel With Swap'
+  variantName: 'Cancel With Swap',
 }
 
 // ========== Mid-air Attack 1-3 ===============================================================================================
@@ -838,7 +871,7 @@ const fleurdelys_midair_1_3: Action = {
   },
   offtune: 2 * 0.21 + 0.22 + (2 * 0.16 + 0.33) + 0.15,
   groupName: 'Mid-air Attack 1-3',
-  variantName: 'Default'
+  variantName: 'Default',
 }
 
 const fleurdelys_midair_1_3_cancel_with_swap: Action = {
@@ -865,11 +898,11 @@ const fleurdelys_midair_1_3_cancel_with_swap: Action = {
     swapOutState: 'AIR', // TODO : Double Check
     endState: 'GROUND',
     requiresSwapOut: true,
-    persistenceTime: 100 // TODO : Persistence Time
+    persistenceTime: 100, // TODO : Persistence Time
   },
   offtune: 2 * 0.21 + 0.22 + (2 * 0.16 + 0.33) + 0.15,
   groupName: 'Mid-air Attack 1-3',
-  variantName: 'Cancel With Swap'
+  variantName: 'Cancel With Swap',
 }
 
 // ========== Mid-air Attack 1-2 ===============================================================================================
@@ -898,7 +931,7 @@ const fleurdelys_midair_1_2: Action = {
   },
   offtune: 2 * 0.21 + 0.22 + (2 * 0.16 + 0.33),
   groupName: 'Mid-air Attack 1-2',
-  variantName: 'Default'
+  variantName: 'Default',
 }
 
 const fleurdelys_midair_1_2_cancel_with_swap: Action = {
@@ -925,11 +958,11 @@ const fleurdelys_midair_1_2_cancel_with_swap: Action = {
     swapOutState: 'AIR', // TODO : Double Check
     endState: 'AIR',
     requiresSwapOut: true,
-    persistenceTime: 100 // TODO : Persistence Time
+    persistenceTime: 100, // TODO : Persistence Time
   },
   offtune: 2 * 0.21 + 0.22 + (2 * 0.16 + 0.33),
   groupName: 'Mid-air Attack 1-2',
-  variantName: 'Cancel With Swap'
+  variantName: 'Cancel With Swap',
 }
 
 // ========== Resonance Skill 1 ================================================================================================
@@ -958,7 +991,7 @@ const fleurdelys_skill_1: Action = {
   },
   offtune: 4 * 0.06 + 0.51,
   groupName: 'Resonance Skill 1',
-  variantName: 'Default'
+  variantName: 'Default',
 }
 
 const fleurdelys_skill_1_cancel_with_swap: Action = {
@@ -985,11 +1018,11 @@ const fleurdelys_skill_1_cancel_with_swap: Action = {
     swapOutState: 'GROUND', // TODO : Double Check
     endState: 'AIR',
     requiresSwapOut: true,
-    persistenceTime: 100 // TODO : Persistence Time
+    persistenceTime: 100, // TODO : Persistence Time
   },
   offtune: 4 * 0.06 + 0.51,
   groupName: 'Resonance Skill 1',
-  variantName: 'Cancel With Swap'
+  variantName: 'Cancel With Swap',
 }
 
 // ========== Resonance Skill 2 ================================================================================================
@@ -1015,10 +1048,17 @@ const fleurdelys_skill_2: Action = {
   castConditions: {
     startState: 'ANY',
     endState: 'GROUND',
+    comboWindow: {
+      previousActions: [fleurdelys_skill_1, fleurdelys_skill_1_cancel_with_swap],
+      maxTimeSincePrevious: 10,
+      timerStartsAt: 'cast',
+      crashesOnSwap: true,
+      crashesOnFormChange: true,
+    },
   },
   offtune: 2 * 0.06 + 3 * 0.21,
   groupName: 'Resonance Skill 2',
-  variantName: 'Default'
+  variantName: 'Default',
 }
 
 const fleurdelys_skill_2_cancel_with_swap: Action = {
@@ -1045,11 +1085,18 @@ const fleurdelys_skill_2_cancel_with_swap: Action = {
     swapOutState: 'AIR', // TODO : Double Check
     endState: 'GROUND',
     requiresSwapOut: true,
-    persistenceTime: 100 // TODO : Persistence Time
+    persistenceTime: 100, // TODO : Persistence Time
+    comboWindow: {
+      previousActions: [fleurdelys_skill_1, fleurdelys_skill_1_cancel_with_swap],
+      maxTimeSincePrevious: 10,
+      timerStartsAt: 'cast',
+      crashesOnSwap: true,
+      crashesOnFormChange: true,
+    },
   },
   offtune: 2 * 0.06 + 3 * 0.21,
   groupName: 'Resonance Skill 2',
-  variantName: 'Cancel With Swap'
+  variantName: 'Cancel With Swap',
 }
 
 // ========== Liberation =======================================================================================================
@@ -1068,18 +1115,27 @@ const fleurdelys_liberation: Action = {
     { energyType: 'concerto', amount: 20, share: 0 },
   ],
   energyCost: [{ energyType: 'conviction', amount: 120 }],
-  statusModifications: [{ type: 'negativeStatus', targetName: 'Aero Erosion', stackChange: -100 }, { type: 'buff', targetName: 'Mandate', stackChange: -1 }, { type: 'buff', targetName: "Fleurdelys's Conviction", stackChange: -100 }],
+  statusModifications: [
+    { type: 'negativeStatus', targetName: 'Aero Erosion', stackChange: -100 },
+    { type: 'buff', targetName: 'Mandate', stackChange: -1 },
+    { type: 'buff', targetName: 'Power of Discord', stackChange: -1 },
+    { type: 'buff', targetName: "Fleurdelys's Conviction", stackChange: -100 },
+  ],
   damageModifiers: [
     {
       source: 'Liberation Stacks',
       displayName: 'Liberation Passive',
       type: 'buff',
       ownerCharacter: 'Cartethyia',
-      condition: stacksOfCap('Aero Erosion'),
-      characterStats: { liberationTotalMultiplierDMG: 0.2 },
+      condition: (ctx) => {
+        const status = ctx.negativeStatusesInAction.find(ns => ns.negativeStatus.name === 'Aero Erosion')
+        const stacks = status?.currentStacks ?? 0
+        return 1 + 0.2 * Math.min(stacks, 5)
+      },
+      characterStats: { liberationTotalMultiplierDMG: 1 },
       targetStrategy: 'self',
       durationStrategy: { type: 'permanent' },
-      stackingStrategy: { maxStacks: 1, resetTimerOnApplication: false, stacksRemovedEachTime: 1 },
+      stackingStrategy: { maxStacks: 1, resetTimerOnApplication: false, stacksRemovedEachTime: 0 },
     },
   ],
   sideEffects: [],
@@ -1088,12 +1144,11 @@ const fleurdelys_liberation: Action = {
     startState: 'ANY',
     endState: 'GROUND',
   },
-  offtune: 7 * 2.4
+  offtune: 7 * 2.4,
 }
 
-
-
-const fleurdelys_intro: Action = { // TODO: Define Fleyrdelys' real intro
+const fleurdelys_intro: Action = {
+  // TODO: Define Fleyrdelys' real intro
   name: 'Fleurdelys Intro',
   displayName: 'Sword to Mark Tides Trace',
   category: 'Other',
@@ -1106,7 +1161,7 @@ const fleurdelys_intro: Action = { // TODO: Define Fleyrdelys' real intro
   energyGenerated: [
     { energyType: 'energy', amount: 3 * 1.67 + 5.0, share: 0.5, scalingStat: 'energyPercent' },
     { energyType: 'concerto', amount: 10, share: 0 },
-    { energyType: 'forte', amount: 1, share: 0 },
+    { energyType: 'forte_discord', amount: 1, share: 0 },
   ],
   energyCost: [],
   statusModifications: [],
@@ -1116,7 +1171,7 @@ const fleurdelys_intro: Action = { // TODO: Define Fleyrdelys' real intro
     startState: 'ANY',
     endState: 'GROUND',
   },
-  offtune: 3 * 0.12 + 0.35
+  offtune: 3 * 0.12 + 0.35,
 }
 
 // ========== Swaps ============================================================================================================
@@ -1178,6 +1233,39 @@ const cartethyia_wait_for_swap: Action = {
   },
 }
 
+const cartethyia_wait_for_cooldown: Action = {
+  name: 'Wait Until Next Cooldown',
+  displayName: 'Wait Until Next Cooldown',
+  category: 'Other',
+  castTime: 0, // resolved dynamically via resolveVariant
+  multiplier: 0,
+  scaling: 'HP',
+  elements: [''],
+  dmgTypes: [''],
+  cooldown: 0,
+  energyGenerated: [],
+  energyCost: [],
+  statusModifications: [],
+  damageModifiers: [],
+  sideEffects: [],
+  castConditions: {
+    startState: 'ANY',
+    endState: 'PRESERVE',
+    customCanCast(prevSnapshot, characterName) {
+      if (!prevSnapshot || !characterName) return false
+      const cooldowns = prevSnapshot.charactersCooldowns?.[characterName] ?? {}
+      return Object.values(cooldowns).some(remaining => remaining > 0)
+    },
+  },
+  offtune: 0,
+  resolveVariant(prevSnapshot, characterName) {
+    const cooldowns = prevSnapshot?.charactersCooldowns?.[characterName] ?? {}
+    const remaining = Object.values(cooldowns).filter(r => r > 0)
+    const castTime = remaining.length > 0 ? Math.min(...remaining) : 0
+    return { ...this, castTime, resolveVariant: undefined }
+  },
+}
+
 // ========== Energies =========================================================================================================
 const cartethyia_energy: Action = {
   name: 'Energy Up',
@@ -1233,7 +1321,11 @@ const cartethyia_forte: Action = {
   elements: [''],
   dmgTypes: [''],
   cooldown: 0,
-  energyGenerated: [{ energyType: 'forte', amount: 1000, share: 0 }],
+  energyGenerated: [
+    { energyType: 'forte_divinity', amount: 1000, share: 0 },
+    { energyType: 'forte_discord', amount: 1000, share: 0 },
+    { energyType: 'forte_virtue', amount: 1000, share: 0 },
+  ],
   energyCost: [],
   statusModifications: [],
   damageModifiers: [],
@@ -1267,63 +1359,14 @@ const cartethyia_conviction: Action = {
   offtune: 0,
 }
 
-export const cartethyia_actions = [
-  cartethyia_BA_1_4_cancel_with_skill,
-  cartethyia_BA_1_4_cancel_with_swap,
-  cartethyia_BA_2_4,
-  cartethyia_BA_2_4_cancel_with_jump,
-  cartethyia_BA_2_4_cancel_with_swap,
-  cartethyia_heavy,
-  cartethyia_heavy_cancel_with_swap,
-  cartethyia_plunge,
-  cartethyia_plunge_cancel_with_swap,
-  cartethyia_skill,
-  cartethyia_skill_cancel_with_swap,
-  cartethyia_transform,
-]
+export const cartethyia_actions: Action[] = [cartethyia_BA_1_4_cancel_with_skill, cartethyia_BA_1_4_cancel_with_swap, cartethyia_BA_2_4, cartethyia_BA_2_4_cancel_with_jump, cartethyia_BA_2_4_cancel_with_swap, cartethyia_heavy, cartethyia_heavy_cancel_with_swap, cartethyia_plunge, cartethyia_plunge_cancel_with_swap, cartethyia_skill, cartethyia_skill_cancel_with_swap, cartethyia_transform].map(a => ({ ...a, castConditions: { ...a.castConditions, requiredForms: ['Cartethyia'] } }))
 
-export const fleurdelys_actions = [
-  fleurdelys_BA_1_5,
-  fleurdelys_BA_1_5_cancel_with_swap,
-  fleurdelys_BA_3_5,
-  fleurdelys_BA_3_5_cancel_with_swap,
-  fleurdelys_heavy_1,
-  fleurdelys_heavy_1_cancel_with_swap,
-  fleurdelys_heavy_2,
-  fleurdelys_heavy_2_cancel_with_swap,
-  fleurdelys_midair_1_3,
-  fleurdelys_midair_1_3_cancel_with_swap,
-  fleurdelys_midair_1_2,
-  fleurdelys_midair_1_2_cancel_with_swap,
-  fleurdelys_skill_1,
-  fleurdelys_skill_1_cancel_with_swap,
-  fleurdelys_skill_2,
-  fleurdelys_skill_2_cancel_with_swap,
-  fleurdelys_liberation,
-]
+export const fleurdelys_actions: Action[] = [fleurdelys_BA_1_5, fleurdelys_BA_1_5_cancel_with_swap, fleurdelys_BA_3_5, fleurdelys_BA_3_5_cancel_with_swap, fleurdelys_heavy_1, fleurdelys_heavy_1_cancel_with_swap, fleurdelys_heavy_2, fleurdelys_heavy_2_cancel_with_swap, fleurdelys_midair_1_3, fleurdelys_midair_1_3_cancel_with_swap, fleurdelys_midair_1_2, fleurdelys_midair_1_2_cancel_with_swap, fleurdelys_skill_1, fleurdelys_skill_1_cancel_with_swap, fleurdelys_skill_2, fleurdelys_skill_2_cancel_with_swap, fleurdelys_liberation].map(a => ({ ...a, castConditions: { ...a.castConditions, requiredForms: ['Fleurdelys'] } }))
 
-export const universal_actions = [
-  cartethyia_wait_005,
-  cartethyia_wait_for_swap,
-  cartethyia_energy,
-  cartethyia_concerto,
-  cartethyia_forte,
-  cartethyia_conviction,
-]
+export const universal_actions = [cartethyia_wait_005, cartethyia_wait_for_swap, cartethyia_wait_for_cooldown, cartethyia_energy, cartethyia_concerto, cartethyia_forte, cartethyia_conviction]
 
-export const cartethyia_intro_outro_actions = [
-  cartethyia_intro,
-  cartethyia_outro,
-]
+export const cartethyia_intro_outro_actions = [cartethyia_intro, cartethyia_outro]
 
-export const fleurdelys_intro_outro_actions = [
-  fleurdelys_intro
-]
+export const fleurdelys_intro_outro_actions = [fleurdelys_intro]
 
-export const all_actions = [
-  ...cartethyia_actions,
-  ...fleurdelys_actions,
-  ...universal_actions,
-  ...cartethyia_intro_outro_actions,
-  ...fleurdelys_intro_outro_actions
-]
+export const all_actions = [...cartethyia_actions, ...fleurdelys_actions, ...universal_actions, ...cartethyia_intro_outro_actions, ...fleurdelys_intro_outro_actions]

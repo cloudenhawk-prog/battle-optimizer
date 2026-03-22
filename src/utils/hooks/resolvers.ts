@@ -15,7 +15,7 @@ import { getNegativeStatusStacks, processNegativeStatusStacks, updateNegativeSta
 import { getCharacterEnergyState, updateEnergyValue } from './energyHelpers'
 import { updateModifiersForSwap, collectAllModifiers, activateModifiers, filterApplicableModifiers, applyStackMultiplier, updateModifiersForTime } from './modifierHelpers'
 import { updateModifierStacks } from './modifierStateHelpers'
-import { updateAllCharactersCooldowns, setActionOnCooldown } from './cooldownHelpers'
+import { updateAllCharactersCooldowns, setActionOnCooldown, reduceCooldown } from './cooldownHelpers'
 
 // ========== Resolver 0: Build Step Context ==================================================================================
 
@@ -278,6 +278,8 @@ function helpModifierStatusModifications(ctx: StepContext, statusModifications: 
 
   const applied: { type: string; targetName: string; requestedStackChange: number; effectiveDelta: number; stacksBefore: number; stacksAfter: number }[] = []
 
+  const modifiersBefore = ctx.modifiersInAction
+
   ctx.modifiersInAction = ctx.modifiersInAction
     .map(mia => {
       const bucket = statusModifications[mia.modifier.type as 'buff' | 'debuff']
@@ -315,6 +317,16 @@ function helpModifierStatusModifications(ctx: StepContext, statusModifications: 
       return { ...mia, currentStacks: clampedStacks, timeLeft: newTimeLeft, swapsLeft: newSwapsLeft }
     })
     .filter(mia => mia.currentStacks > 0)
+
+  // Clear forteGrants for any modifier with clearsForteGrantsOnExpiry that was explicitly removed
+  for (const mia of modifiersBefore) {
+    if (!mia.modifier.clearsForteGrantsOnExpiry || !mia.modifier.ownerCharacter) continue
+    const stillExists = ctx.modifiersInAction.some(m => m.modifier.source === mia.modifier.source)
+    if (!stillExists) {
+      if (!ctx.current.charactersForteGrants) ctx.current.charactersForteGrants = {}
+      ctx.current.charactersForteGrants[mia.modifier.ownerCharacter] = []
+    }
+  }
 
   if (applied.length > 0) {
     ctx.logs.push({
@@ -409,8 +421,21 @@ export function resolveCoordinatedAttacks(ctx: StepContext, setDamageEvents: Dis
 // ========== Resolver 5: Update Modifier State ===============================================================================
 
 export function resolveModifierState(ctx: StepContext): void {
+  // Capture active modifiers before time update to detect expiries
+  const modifiersBefore = ctx.modifiersInAction
+
   // Update time-based modifiers
   ctx.modifiersInAction = updateModifiersForTime(ctx.modifiersInAction, ctx.fromTime, ctx.toTime)
+
+  // Clear forteGrants for any modifier with clearsForteGrantsOnExpiry that just expired
+  for (const mia of modifiersBefore) {
+    if (!mia.modifier.clearsForteGrantsOnExpiry || !mia.modifier.ownerCharacter) continue
+    const stillExists = ctx.modifiersInAction.some(m => m.modifier.source === mia.modifier.source)
+    if (!stillExists) {
+      if (!ctx.current.charactersForteGrants) ctx.current.charactersForteGrants = {}
+      ctx.current.charactersForteGrants[mia.modifier.ownerCharacter] = []
+    }
+  }
 
   // Store modifier state in snapshot (includes both limited and permanent modifiers)
   updateModifierStacks(ctx.current, ctx.modifiersInAction, ctx.permanentModifiers, ctx)
@@ -506,6 +531,17 @@ export function resolveResources(ctx: StepContext): void {
     const prevValue = energiesCurr![key] ?? 0
 
     energiesCurr![key] = updateEnergyValue(prevValue, -cost.amount, maxValue)
+
+    // If this cost specifies grants and the energy was non-zero, add them to forteGrants
+    if (cost.grantsOnConsume && cost.grantsOnConsume.length > 0 && prevValue > 0) {
+      const charName = character.name
+      if (!current.charactersForteGrants) current.charactersForteGrants = {}
+      const existing = current.charactersForteGrants[charName] ?? []
+      const newGrants = cost.grantsOnConsume.filter(g => !existing.includes(g))
+      if (newGrants.length > 0) {
+        current.charactersForteGrants[charName] = [...existing, ...newGrants]
+      }
+    }
   }
 
   // Update Character Energy
@@ -566,6 +602,16 @@ export function resolveCooldowns(ctx: StepContext): void {
   // Set the used action on cooldown
   current.charactersCooldowns[character.name] = setActionOnCooldown(current, character.name, action)
 
+  // Apply cooldown reductions granted by this action
+  if (action.cooldownReductions) {
+    for (const reduction of action.cooldownReductions) {
+      const amount = typeof reduction.amount === 'function' ? reduction.amount(ctx) : reduction.amount
+      if (amount > 0) {
+        current.charactersCooldowns[character.name] = reduceCooldown(current, character.name, reduction.targetActionKey, amount)
+      }
+    }
+  }
+
   ctx.logs.push({
     resolver: 'resolveCooldowns',
     message: `Cooldowns updated: ${action.name} set on ${action.cooldown}s cooldown`,
@@ -625,6 +671,17 @@ export function resolveCastState(ctx: StepContext): void {
     [charName]: ctx.action.castConditions.requiresSwapOut ?? false,
   }
 
+  // Track required follow-up actions for combo system
+  // If this action has a requiredFollowUp, set it for the same character
+  if (ctx.action.requiredFollowUp) {
+    ctx.current.charactersRequiredFollowUp = {
+      [charName]: ctx.action.requiredFollowUp.actionName,
+    }
+  } else {
+    // Clear any previous required follow-up for this character
+    ctx.current.charactersRequiredFollowUp = {}
+  }
+
   // Handle form changes if this action changes the character's form
   if (ctx.action.formChange) {
     ctx.current.charactersForms = {
@@ -653,6 +710,50 @@ export function resolveCastState(ctx: StepContext): void {
   }
 
   const swapCooldownUntil = swapOccurred && prevCharName ? ctx.current.charactersSwapCooldownUntil[prevCharName] : undefined
+
+  // Handle combo windows: track actions that can start time-based combo chains
+  // First, copy over existing combo windows and update their swap/form change flags
+  ctx.current.charactersComboWindows = { ...(ctx.prev.charactersComboWindows ?? {}) }
+
+  // Update swap flag for all characters that had an active combo window
+  // Mark the outgoing character's combo window as interrupted by a swap
+  if (swapOccurred) {
+    // When a swap occurs, mark the previous character's combo window as swapped (it's no longer active)
+    const updatedWindows: typeof ctx.current.charactersComboWindows = {}
+    for (const [char, window] of Object.entries(ctx.current.charactersComboWindows)) {
+      updatedWindows[char] = {
+        ...window,
+        wasSwapped: char === prevCharName ? true : window.wasSwapped,
+      }
+    }
+    ctx.current.charactersComboWindows = updatedWindows
+  }
+
+  // Update form change flag if the current character changed form
+  const prevForm = ctx.prev.charactersForms?.[charName]
+  const newForm = ctx.current.charactersForms?.[charName]
+  const didFormChange = !!ctx.action.formChange || prevForm !== newForm
+  if (didFormChange && ctx.current.charactersComboWindows[charName]) {
+    ctx.current.charactersComboWindows[charName] = {
+      ...ctx.current.charactersComboWindows[charName],
+      formChanged: true,
+    }
+  }
+
+  // Record this action for potential combo window usage
+  // The actual validation (whether this action can start a combo) happens in ActionSelect
+  // by checking if any follow-up action has this action in its comboWindow.previousActions
+  // Note: We always use fromTime (cast start) because ActionSelect will apply the timerStartsAt
+  // logic when validating. This simplifies the tracking.
+  ctx.current.charactersComboWindows = {
+    ...ctx.current.charactersComboWindows,
+    [charName]: {
+      actionName: ctx.action.name,
+      startTime: ctx.fromTime, // Record cast start time
+      wasSwapped: false, // Reset when a new action is cast
+      formChanged: false, // Reset when a new action is cast
+    },
+  }
 
   ctx.logs.push({
     resolver: 'resolveCastState',

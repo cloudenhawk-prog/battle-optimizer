@@ -14,9 +14,6 @@ type ActionSelectProps = {
   actions: Action[]
   character?: Character
   currentEnergies?: Partial<Record<EnergyType, number>>
-  /** The resolved snapshot from the row immediately before this one.  All cast-condition
-   *  checks (position, persistence, cooldowns, last action, form, requiresSwapIn) must be
-   *  evaluated against the state at the END of the previous row, not the current one. */
   previousSnapshot?: Snapshot | null
   onChange: (actionName: string) => void
   disabled?: boolean
@@ -37,6 +34,10 @@ type ActionState = {
   isCustomCanCastFailed: boolean
   isOnSwapCooldown: boolean
   swapCooldownRemaining: number
+  isNoSwapTarget: boolean
+  isNotRequiredFollowUp: boolean
+  isFollowUpNotReady: boolean
+  isComboWindowExpired: boolean
 }
 
 export function ActionSelect({ value, actions, character, currentEnergies, previousSnapshot, onChange, disabled = false }: ActionSelectProps) {
@@ -80,6 +81,7 @@ export function ActionSelect({ value, actions, character, currentEnergies, previ
     }
   }, [isOpen])
 
+  // Get the current state of an action
   const getActionState = (action: Action): ActionState => {
     const isSpecial = action.name === 'Intro' || action.name === 'Outro'
     const isCurrent = action.name === value
@@ -139,34 +141,48 @@ export function ActionSelect({ value, actions, character, currentEnergies, previ
     // Goal 3: requiresSwapIn check
     // Allowed if: the last timeline action was cast by a different character (justSwappedIn),
     // OR this character's last personal action was their Intro skill.
+    // At game start (no previousSnapshot), no swap has occurred, so requiresSwapIn is always blocked.
     let isRequiresSwapIn = false
-    if (action.castConditions.requiresSwapIn && character && previousSnapshot) {
-      const charName = character.name
-      const justSwappedIn = previousSnapshot.character !== charName
-      const lastActionName = previousSnapshot.charactersLastAction?.[charName]
-      const lastActionWasIntro = lastActionName !== undefined && character.actions.some(a => a.name === lastActionName && a.dmgTypes.includes('INTRO'))
-      isRequiresSwapIn = !justSwappedIn && !lastActionWasIntro
+    if (action.castConditions.requiresSwapIn) {
+      if (!previousSnapshot) {
+        isRequiresSwapIn = true
+      } else if (character) {
+        const charName = character.name
+        const justSwappedIn = previousSnapshot.character !== charName
+        const lastActionName = previousSnapshot.charactersLastAction?.[charName]
+        const lastActionWasIntro = lastActionName !== undefined && character.actions.some(a => a.name === lastActionName && a.dmgTypes.includes('INTRO'))
+        isRequiresSwapIn = !justSwappedIn && !lastActionWasIntro
+      }
     }
 
     // Goal 4: form check
     // Check if action requires a specific form and if character is in that form
     let isWrongForm = false
-    if (character && previousSnapshot && action.castConditions.requiredForms !== undefined) {
-      const charName = character.name
-      const currentForm = previousSnapshot.charactersForms?.[charName] ?? ''
-
+    if (character && action.castConditions.requiredForms !== undefined) {
       // If requiredForms is empty array, action can't be cast
       if (action.castConditions.requiredForms.length === 0) {
         isWrongForm = true
-      } else if (action.castConditions.requiredForms.length > 0) {
-        // Check if current form is in the required forms list
-        // If current form is empty string, use default form
-        if (!currentForm) {
-          const defaultForm = character.forms?.find(f => f.name === character.defaultForm) ?? character.forms?.[0]
-          isWrongForm = !action.castConditions.requiredForms.includes(defaultForm?.name ?? '')
+      } else {
+        // Resolve the character's current form:
+        // - Use previousSnapshot if available, falling back to the default form when the
+        //   stored form value is absent.
+        // - When previousSnapshot is null (first row), the character is always in their
+        //   default form, so use that directly instead of skipping the check.
+        let currentForm: string
+        if (previousSnapshot) {
+          const storedForm = previousSnapshot.charactersForms?.[character.name] ?? ''
+          if (!storedForm) {
+            const defaultForm = character.forms?.find(f => f.name === character.defaultForm) ?? character.forms?.[0]
+            currentForm = defaultForm?.name ?? ''
+          } else {
+            currentForm = storedForm
+          }
         } else {
-          isWrongForm = !action.castConditions.requiredForms.includes(currentForm)
+          const defaultForm = character.forms?.find(f => f.name === character.defaultForm) ?? character.forms?.[0]
+          currentForm = defaultForm?.name ?? ''
         }
+
+        isWrongForm = !action.castConditions.requiredForms.includes(currentForm)
       }
     }
 
@@ -176,7 +192,6 @@ export function ActionSelect({ value, actions, character, currentEnergies, previ
     if (action.castConditions.customCanCast && character && previousSnapshot) {
       isCustomCanCastFailed = !action.castConditions.customCanCast(previousSnapshot, character.name)
     }
-
     // Goal 6: swap cooldown check
     // The character cannot be swapped in until their 1-second swap cooldown expires.
     let isOnSwapCooldown = false
@@ -187,6 +202,99 @@ export function ActionSelect({ value, actions, character, currentEnergies, previ
       if (remaining > 0) {
         isOnSwapCooldown = true
         swapCooldownRemaining = remaining
+      }
+    }
+
+    // Goal 7: requiresSwapOut check
+    // If this action forces a swap out, ensure at least one other character will be
+    // available (swap cooldown <= 0) by the time the action completes.
+    let isNoSwapTarget = false
+    if (action.castConditions.requiresSwapOut && character && previousSnapshot) {
+      const actionEndTime = previousSnapshot.toTime + action.castTime
+      const allCharacterNames = Object.keys(previousSnapshot.charactersEnergies || {})
+      const otherCharacters = allCharacterNames.filter(name => name !== character.name)
+
+      // Check if at least one other character will be available after this action
+      const hasAvailableSwapTarget = otherCharacters.some(otherCharName => {
+        const swapCooldownUntil = previousSnapshot.charactersSwapCooldownUntil?.[otherCharName] ?? 0
+        return swapCooldownUntil <= actionEndTime
+      })
+
+      isNoSwapTarget = !hasAvailableSwapTarget
+    }
+
+    // Goal 8: required follow-up check (combo system)
+    // If the previous action set a required follow-up, only allow that specific action.
+    let isNotRequiredFollowUp = false
+    if (character && previousSnapshot) {
+      const requiredFollowUp = previousSnapshot.charactersRequiredFollowUp?.[character.name]
+      if (requiredFollowUp && requiredFollowUp !== action.name && requiredFollowUp !== action.groupName) {
+        isNotRequiredFollowUp = true
+      }
+    }
+
+    // Goal 9: combo starter validation
+    // If this action requires a follow-up, ensure the follow-up will be off cooldown
+    // by the time this action completes.
+    let isFollowUpNotReady = false
+    if (action.requiredFollowUp && character && previousSnapshot) {
+      const followUpActionName = action.requiredFollowUp.actionName
+      const followUpAction = actions.find(a => a.name === followUpActionName || a.groupName === followUpActionName)
+
+      if (followUpAction) {
+        const actionEndTime = previousSnapshot.toTime + action.castTime
+        const characterCooldowns = previousSnapshot.charactersCooldowns?.[character.name] ?? {}
+        const cooldownKey = getActionCooldownKey(followUpAction)
+        const followUpCooldownRemaining = characterCooldowns[cooldownKey] ?? 0
+
+        // Check if follow-up will be ready when this action completes
+        if (followUpCooldownRemaining > actionEndTime - previousSnapshot.toTime) {
+          isFollowUpNotReady = true
+        }
+      } else {
+        // Follow-up action doesn't exist - always block
+        isFollowUpNotReady = true
+      }
+    }
+
+    // Goal 10: comboWindow check
+    // Check if this action can only be cast within a time window after specific previous actions
+    let isComboWindowExpired = false
+    if (action.castConditions.comboWindow && character && previousSnapshot) {
+      const comboWindow = action.castConditions.comboWindow
+      const charName = character.name
+      const currentTime = previousSnapshot.toTime
+
+      // Get the combo window tracking for this character
+      const comboTracking = previousSnapshot.charactersComboWindows?.[charName]
+
+      if (!comboTracking) {
+        // No combo action was ever cast
+        isComboWindowExpired = true
+      } else {
+        // Check if the tracked action is one of the required previous actions
+        const matchingAction = comboWindow.previousActions.find(a => a.name === comboTracking.actionName)
+
+        if (!matchingAction) {
+          // The last action cast was not one of the combo starters
+          isComboWindowExpired = true
+        } else {
+          // Calculate the actual combo window start time based on timerStartsAt
+          // comboTracking.startTime is when the action started casting
+          // We need to add castTime if timerStartsAt is 'afterCast'
+          let windowStartTime = comboTracking.startTime
+          if (comboWindow.timerStartsAt === 'afterCast') {
+            // Find the action to get its cast time
+            windowStartTime += matchingAction.castTime
+          }
+
+          const timeSinceCombo = currentTime - windowStartTime
+          const windowExpired = timeSinceCombo > comboWindow.maxTimeSincePrevious
+          const swapBroke = comboWindow.crashesOnSwap && comboTracking.wasSwapped
+          const formChangeBroke = comboWindow.crashesOnFormChange && comboTracking.formChanged
+
+          isComboWindowExpired = windowExpired || swapBroke || formChangeBroke
+        }
       }
     }
 
@@ -205,6 +313,10 @@ export function ActionSelect({ value, actions, character, currentEnergies, previ
       isCustomCanCastFailed,
       isOnSwapCooldown,
       swapCooldownRemaining,
+      isNoSwapTarget,
+      isNotRequiredFollowUp,
+      isFollowUpNotReady,
+      isComboWindowExpired,
     }
   }
 
@@ -214,7 +326,7 @@ export function ActionSelect({ value, actions, character, currentEnergies, previ
     return !isIntroOutro
   })
 
-  const actionStates = selectableActions.map(getActionState)
+  const actionStates = selectableActions.map(getActionState).filter(s => !s.isWrongForm || s.isCurrent)
   const selectedAction = actionStates.find(s => s.isCurrent)
   const displayText = selectedAction ? selectedAction.action.name : '-- Select Action --'
 
@@ -243,7 +355,7 @@ export function ActionSelect({ value, actions, character, currentEnergies, previ
   // Then create ActionGroup objects
   for (const [groupKey, variants] of groupMap.entries()) {
     const isGroup = variants.length > 1 || variants[0].action.groupName !== undefined
-    const isSelectable = variants.some(v => !v.isOnCooldown && !v.isUnaffordable && !v.isWrongPosition && !v.isPreviousActionMismatch && !v.isRequiresSwapIn && !v.isWrongForm && !v.isCustomCanCastFailed && !v.isOnSwapCooldown)
+    const isSelectable = variants.some(v => !v.isOnCooldown && !v.isUnaffordable && !v.isWrongPosition && !v.isPreviousActionMismatch && !v.isRequiresSwapIn && !v.isWrongForm && !v.isCustomCanCastFailed && !v.isOnSwapCooldown && !v.isNoSwapTarget && !v.isNotRequiredFollowUp && !v.isFollowUpNotReady && !v.isComboWindowExpired)
     const isCurrent = variants.some(v => v.isCurrent)
 
     actionGroups.push({
@@ -261,10 +373,7 @@ export function ActionSelect({ value, actions, character, currentEnergies, previ
   // (e.g. 'Echo Skill') is always included without requiring a code change here.
   const preferredCategoryOrder = ['Basics', 'Skills', 'Echo Skill', 'Other', 'Testing'] satisfies ActionCategory[] // This is simply a desired order for categories to appear in the UI, if present. Any categories not in this list will be appended at the end.
   const presentCategories = [...new Set(actionGroups.map(g => g.variants[0].action.category))]
-  const orderedCategories = [
-    ...preferredCategoryOrder.filter(c => presentCategories.includes(c)),
-    ...presentCategories.filter(c => !preferredCategoryOrder.includes(c)),
-  ]
+  const orderedCategories = [...preferredCategoryOrder.filter(c => presentCategories.includes(c)), ...presentCategories.filter(c => !preferredCategoryOrder.includes(c))]
   const groupsByCategory = orderedCategories
     .map(category => ({
       category,
@@ -280,7 +389,6 @@ export function ActionSelect({ value, actions, character, currentEnergies, previ
 
   const handleGroupClick = (groupKey: string, group: ActionGroup) => {
     if (group.isGroup) {
-      // Toggle expansion for groups with variants and position the popup
       if (expandedGroup === groupKey) {
         setExpandedGroup(null)
       } else {
@@ -291,12 +399,11 @@ export function ActionSelect({ value, actions, character, currentEnergies, previ
           const dropdownRect = dropdownRef.current.getBoundingClientRect()
           setVariantPopupPosition({
             top: rowRect.top,
-            left: dropdownRect.right + 8, // 8px gap
+            left: dropdownRect.right + 8,
           })
         }
       }
     } else {
-      // Direct selection for non-grouped actions
       handleSelect(group.variants[0].action.name)
     }
   }
@@ -425,9 +532,9 @@ export function ActionSelect({ value, actions, character, currentEnergies, previ
 
                     {/* Variant Rows */}
                     {group.variants.map(variant => {
-                      const { action, isCurrent, isUnaffordable, isOnCooldown, cooldownRemaining, missingEnergy, isWrongPosition, isPreviousActionMismatch, isRequiresSwapIn, isWrongForm, isCustomCanCastFailed, isOnSwapCooldown, swapCooldownRemaining } = variant
+                      const { action, isCurrent, isUnaffordable, isOnCooldown, cooldownRemaining, missingEnergy, isWrongPosition, isPreviousActionMismatch, isRequiresSwapIn, isWrongForm, isCustomCanCastFailed, isOnSwapCooldown, swapCooldownRemaining, isNoSwapTarget, isNotRequiredFollowUp, isFollowUpNotReady, isComboWindowExpired } = variant
 
-                      const isDisabled = (isUnaffordable || isOnCooldown || isWrongPosition || isPreviousActionMismatch || isRequiresSwapIn || isWrongForm || isCustomCanCastFailed || isOnSwapCooldown) && !isCurrent
+                      const isDisabled = (isUnaffordable || isOnCooldown || isWrongPosition || isPreviousActionMismatch || isRequiresSwapIn || isWrongForm || isCustomCanCastFailed || isOnSwapCooldown || isNoSwapTarget || isNotRequiredFollowUp || isFollowUpNotReady || isComboWindowExpired) && !isCurrent
                       const canSelect = !isDisabled
 
                       return (
@@ -445,6 +552,7 @@ export function ActionSelect({ value, actions, character, currentEnergies, previ
                             <div className="variantDetails">
                               {isOnCooldown && <span className="variantCooldown">CD: {cooldownRemaining.toFixed(2)}s</span>}
                               {isOnSwapCooldown && <span className="variantCooldown">Swap CD: {swapCooldownRemaining.toFixed(2)}s</span>}
+                              {isComboWindowExpired && <span className="variantBlockedReason">Combo window expired</span>}
                               {missingEnergy.length > 0 ? <span className="energyMissing">{missingEnergy.map(e => `${e.current.toFixed(2)}/${e.needed} ${e.type}`).join(', ')}</span> : action.energyCost.length > 0 ? <span className="energyOk">✓</span> : null}
                             </div>
                           </div>

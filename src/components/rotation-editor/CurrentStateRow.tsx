@@ -102,8 +102,6 @@ export function CurrentStateRow({ snapshot, firstFromTime, tableConfig, columnVi
           return <td key={col.key} className="currentStateCell"></td>
         })}
 
-
-
         {/* Status Effects columns (Negative Statuses, Buffs, Debuffs) */}
         {tableConfig.statusEffects && renderStatusColumns(tableConfig.statusEffects.columns, columnVisibility, displaySnapshot)}
 
@@ -143,7 +141,10 @@ function createInitialSnapshot(): Snapshot {
     charactersLastAction: {},
     charactersRequiresSwapOut: {},
     charactersForms: {},
-    charactersSwapCooldownUntil: {}
+    charactersSwapCooldownUntil: {},
+    charactersRequiredFollowUp: {},
+    charactersComboWindows: {},
+    charactersForteGrants: {},
   }
 }
 

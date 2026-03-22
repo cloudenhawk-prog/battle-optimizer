@@ -17,22 +17,14 @@ export function verifyData(): void {
   const allErrors = results.flatMap(r => r.checks.filter(c => !c.ok))
   const totalChecks = results.reduce((sum, r) => sum + r.checks.length, 0)
 
-  const summary = allErrors.length > 0
-    ? `%c[Data Check] ✓ ${totalChecks - allErrors.length} passed  %c✗ ${allErrors.length} failed`
-    : `%c[Data Check] ✓ ${totalChecks} / ${totalChecks} passed`
+  const summary = allErrors.length > 0 ? `%c[Data Check] ✓ ${totalChecks - allErrors.length} passed  %c✗ ${allErrors.length} failed` : `%c[Data Check] ✓ ${totalChecks} / ${totalChecks} passed`
 
-  console.groupCollapsed(
-    summary,
-    'color: #4caf50',
-    ...(allErrors.length > 0 ? ['color: #f44336'] : []),
-  )
+  console.groupCollapsed(summary, 'color: #4caf50', ...(allErrors.length > 0 ? ['color: #f44336'] : []))
 
   for (const result of results) {
     const charErrors = result.checks.filter(c => !c.ok)
     const charColor = charErrors.length > 0 ? '#f44336' : '#4caf50'
-    const charSummary = charErrors.length > 0
-      ? `%c✗ ${result.name} (${charErrors.length} error${charErrors.length > 1 ? 's' : ''})`
-      : `%c✓ ${result.name} (${result.checks.length} checks)`
+    const charSummary = charErrors.length > 0 ? `%c✗ ${result.name} (${charErrors.length} error${charErrors.length > 1 ? 's' : ''})` : `%c✓ ${result.name} (${result.checks.length} checks)`
 
     console.groupCollapsed(charSummary, `color: ${charColor}`)
     for (const check of result.checks) {
@@ -76,8 +68,7 @@ function verifyCharacter(character: Character, negativeStatusNames: Set<string>)
 
   // --- Required action types ---
   check('Required actions (Echo Skill)', () => {
-    if (!actions.some(a => (a.dmgTypes as string[]).includes('ECHO')))
-      throw new Error('missing: Echo Skill')
+    if (!actions.some(a => (a.dmgTypes as string[]).includes('ECHO'))) throw new Error('missing: Echo Skill')
   })
 
   // Intro/Outro: base form must have exactly one each; non-base forms may have 0 or 1.
@@ -96,23 +87,18 @@ function verifyCharacter(character: Character, negativeStatusNames: Set<string>)
         if (!intro) {
           errors.push('missing introAction')
         } else {
-          if (!intro.dmgTypes.includes('INTRO'))
-            errors.push(`introAction "${intro.name}" missing dmgType INTRO (got [${intro.dmgTypes.join(', ')}])`)
-          if (!actionNames.has(intro.name))
-            errors.push(`introAction "${intro.name}" not found in character.actions`)
+          if (!intro.dmgTypes.includes('INTRO')) errors.push(`introAction "${intro.name}" missing dmgType INTRO (got [${intro.dmgTypes.join(', ')}])`)
+          if (!actionNames.has(intro.name)) errors.push(`introAction "${intro.name}" not found in character.actions`)
         }
 
         if (!outro) {
           errors.push('missing outroAction')
         } else {
-          if (!outro.dmgTypes.includes('OUTRO'))
-            errors.push(`outroAction "${outro.name}" missing dmgType OUTRO (got [${outro.dmgTypes.join(', ')}])`)
-          if (!actionNames.has(outro.name))
-            errors.push(`outroAction "${outro.name}" not found in character.actions`)
+          if (!outro.dmgTypes.includes('OUTRO')) errors.push(`outroAction "${outro.name}" missing dmgType OUTRO (got [${outro.dmgTypes.join(', ')}])`)
+          if (!actionNames.has(outro.name)) errors.push(`outroAction "${outro.name}" not found in character.actions`)
         }
 
-        if (intro && outro && intro.name === outro.name)
-          errors.push(`introAction and outroAction must be distinct (both are "${intro.name}")`)
+        if (intro && outro && intro.name === outro.name) errors.push(`introAction and outroAction must be distinct (both are "${intro.name}")`)
       }
       if (errors.length) throw new Error(errors.join('; '))
     })
@@ -136,22 +122,15 @@ function verifyCharacter(character: Character, negativeStatusNames: Set<string>)
       if (action.multiplier < 0) errors.push(`multiplier ${action.multiplier}`)
       if (action.cooldown < 0) errors.push(`cooldown ${action.cooldown}`)
       if (action.offtune < 0) errors.push(`offtune ${action.offtune}`)
-      for (const eg of action.energyGenerated)
-        if (eg.amount < 0) errors.push(`energyGenerated "${eg.energyType}" ${eg.amount}`)
-      for (const ec of action.energyCost)
-        if (ec.amount < 0) errors.push(`energyCost "${ec.energyType}" ${ec.amount}`)
-      for (const mod of action.statusModifications)
-        if (mod.type === 'negativeStatus' && !negativeStatusNames.has(mod.targetName))
-          errors.push(`unknown negative status "${mod.targetName}"`)
+      for (const eg of action.energyGenerated) if (eg.amount < 0) errors.push(`energyGenerated "${eg.energyType}" ${eg.amount}`)
+      for (const ec of action.energyCost) if (ec.amount < 0) errors.push(`energyCost "${ec.energyType}" ${ec.amount}`)
+      for (const mod of action.statusModifications) if (mod.type === 'negativeStatus' && !negativeStatusNames.has(mod.targetName)) errors.push(`unknown negative status "${mod.targetName}"`)
       for (const ca of action.coordinatedAttacks ?? []) {
         if (ca.multiplier < 0) errors.push(`[CA "${ca.name}"] multiplier ${ca.multiplier}`)
         if (ca.frequency <= 0) errors.push(`[CA "${ca.name}"] frequency ${ca.frequency}`)
         if (ca.duration <= 0) errors.push(`[CA "${ca.name}"] duration ${ca.duration}`)
-        for (const eg of ca.energyGenerated)
-          if (eg.amount < 0) errors.push(`[CA "${ca.name}"] energyGenerated "${eg.energyType}" ${eg.amount}`)
-        for (const mod of ca.statusModifications)
-          if (mod.type === 'negativeStatus' && !negativeStatusNames.has(mod.targetName))
-            errors.push(`[CA "${ca.name}"] unknown negative status "${mod.targetName}"`)
+        for (const eg of ca.energyGenerated) if (eg.amount < 0) errors.push(`[CA "${ca.name}"] energyGenerated "${eg.energyType}" ${eg.amount}`)
+        for (const mod of ca.statusModifications) if (mod.type === 'negativeStatus' && !negativeStatusNames.has(mod.targetName)) errors.push(`[CA "${ca.name}"] unknown negative status "${mod.targetName}"`)
       }
       // variantName drives the intent; requiresSwapOut is the runtime flag.
       // Cross-validating both catches: (a) forgetting requiresSwapOut on a swap variant,
@@ -159,8 +138,7 @@ function verifyCharacter(character: Character, negativeStatusNames: Set<string>)
       const isSwapCancelByName = action.variantName?.startsWith('Cancel With Swap') ?? false
       const isSwapCancelByFlag = action.castConditions.requiresSwapOut === true
       // variantName declares swap-cancel intent → requiresSwapOut must be set
-      if (isSwapCancelByName && !isSwapCancelByFlag)
-        errors.push('Cancel With Swap variant missing castConditions.requiresSwapOut: true')
+      if (isSwapCancelByName && !isSwapCancelByFlag) errors.push('Cancel With Swap variant missing castConditions.requiresSwapOut: true')
       // requiresSwapOut set → must also declare swapOutState and persistenceTime
       if (isSwapCancelByFlag) {
         const cc = action.castConditions
@@ -178,19 +156,23 @@ function verifyCharacter(character: Character, negativeStatusNames: Set<string>)
       if (cc.startState === 'PRESERVE') errors.push('castConditions.startState must not be "PRESERVE"')
       if (cc.endState === 'ANY') errors.push('castConditions.endState must not be "ANY"')
       if (cc.swapOutState === 'ANY') errors.push('castConditions.swapOutState must not be "ANY"')
-      if (cc.persistenceTime != null && cc.persistenceTime < action.castTime)
-        errors.push(`castConditions.persistenceTime (${cc.persistenceTime}) must be >= castTime (${action.castTime})`)
-      if (cc.previousActions != null && cc.previousActions.length === 0)
-        errors.push('castConditions.previousActions must not be an empty array')
+      if (cc.persistenceTime != null && cc.persistenceTime < action.castTime) errors.push(`castConditions.persistenceTime (${cc.persistenceTime}) must be >= castTime (${action.castTime})`)
+      if (cc.previousActions != null && cc.previousActions.length === 0) errors.push('castConditions.previousActions must not be an empty array')
+      if (cc.comboWindow != null) {
+        if (cc.comboWindow.previousActions.length === 0) errors.push('castConditions.comboWindow.previousActions must not be an empty array')
+        if (cc.comboWindow.maxTimeSincePrevious <= 0) errors.push(`castConditions.comboWindow.maxTimeSincePrevious must be > 0 (got ${cc.comboWindow.maxTimeSincePrevious})`)
+        if (cc.comboWindow.timerStartsAt !== 'cast' && cc.comboWindow.timerStartsAt !== 'afterCast') errors.push(`castConditions.comboWindow.timerStartsAt must be 'cast' or 'afterCast' (got ${cc.comboWindow.timerStartsAt})`)
+      }
       if (errors.length) throw new Error(errors.join('; '))
     })
   }
 
   // --- maxEnergies ---
-  check('Max energies (required: energy / concerto / forte; all values non-null and non-negative)', () => {
+  check('Max energies (required: energy / concerto / forte or forte sub-energies; all values non-null and non-negative)', () => {
     const errors: string[] = []
-    for (const key of ['energy', 'concerto', 'forte'] as const)
-      if (!(key in maxEnergies)) errors.push(`missing required key "${key}"`)
+    for (const key of ['energy', 'concerto'] as const) if (!(key in maxEnergies)) errors.push(`missing required key "${key}"`)
+    const hasForteLike = ('forte' in maxEnergies) || (['forte_divinity', 'forte_discord', 'forte_virtue'] as const).some(k => k in maxEnergies)
+    if (!hasForteLike) errors.push('missing forte energy (requires "forte" or at least one of forte_divinity, forte_discord, forte_virtue)')
     for (const [key, value] of Object.entries(maxEnergies)) {
       if (value == null) errors.push(`"${key}" is null/undefined`)
       else if (value < 0) errors.push(`"${key}" is ${value}`)
@@ -202,10 +184,8 @@ function verifyCharacter(character: Character, negativeStatusNames: Set<string>)
   check('Stats (non-null, baseATK/HP/DEF > 0, no negatives)', () => {
     if (!stats) throw new Error('null or undefined')
     const errors: string[] = []
-    for (const key of ['baseATK', 'baseHP', 'baseDEF'] as const)
-      if (stats[key] <= 0) errors.push(`${key} must be > 0 (got ${stats[key]})`)
-    for (const [key, value] of Object.entries(stats))
-      if (typeof value === 'number' && value < 0) errors.push(`${key} is ${value}`)
+    for (const key of ['baseATK', 'baseHP', 'baseDEF'] as const) if (stats[key] <= 0) errors.push(`${key} must be > 0 (got ${stats[key]})`)
+    for (const [key, value] of Object.entries(stats)) if (typeof value === 'number' && value < 0) errors.push(`${key} is ${value}`)
     if (errors.length) throw new Error(errors.join('; '))
   })
 
@@ -263,11 +243,11 @@ function collectAssetPaths(): string[] {
     'assets/negativeStatuses.png',
     'assets/buffs.png',
     'assets/debuffs.png',
-    'assets/statuses.png',        // buildStatusEffectsColumns — Status Effects group icon
+    'assets/statuses.png', // buildStatusEffectsColumns — Status Effects group icon
     'assets/coordinated_attack.png',
-    'assets/action.png',          // HeaderRow
-    'assets/character.png',       // HeaderRow
-    'assets/selector.png',        // HeaderRow
+    'assets/action.png', // HeaderRow
+    'assets/character.png', // HeaderRow
+    'assets/selector.png', // HeaderRow
   ]
   for (const p of fixedAssets) paths.add(p)
 
