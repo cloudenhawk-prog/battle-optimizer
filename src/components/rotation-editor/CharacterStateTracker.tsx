@@ -65,11 +65,17 @@ export function CharacterStateTracker({
 
   // Goal 2: compute effective position for display
   // Rules:
-  // - Active character → use own position
-  // - Inactive but within persistence → use own position
-  // - Otherwise → mirror active character position
+  // - Active → own position
+  // - Inactive within persistence → own position
+  // - Otherwise → mirror active character
   function getDisplayPosition(characterName: string) {
-    if (!snapshot) return { position: 'GROUND' as const, isOffField: false, isWithinPersistence: false }
+    if (!snapshot) {
+      return {
+        position: 'GROUND' as const,
+        isWithinPersistence: false,
+        persistentUntil: 0,
+      }
+    }
 
     const stored = snapshot.charactersPositions?.[characterName] ?? 'GROUND'
     const persistentUntil = snapshot.charactersPersistentUntil?.[characterName] ?? 0
@@ -82,18 +88,17 @@ export function CharacterStateTracker({
         : 'GROUND'
 
     const position = isActive || isWithinPersistence ? stored : activeCharPosition
-    const isOffField = !isActive && !isWithinPersistence
 
-    return { position, isOffField, isWithinPersistence, persistentUntil }
+    return { position, isWithinPersistence, persistentUntil }
   }
 
-  // Goal 3: resolve current form (fallback to default if missing)
+  // Goal 3: resolve form (fallback to default)
   function getDisplayForm(character: Character) {
     if (!snapshot) {
-      const defaultForm =
+      return (
         character.forms?.find(f => f.name === character.defaultForm) ??
         character.forms?.[0]
-      return defaultForm
+      )
     }
 
     const currentFormName = snapshot.charactersForms?.[character.name] ?? ''
@@ -122,10 +127,12 @@ export function CharacterStateTracker({
 
           const {
             position: displayPosition,
-            isOffField,
             isWithinPersistence,
             persistentUntil,
           } = getDisplayPosition(character.name)
+
+          const isActiveChar = snapshot?.character === character.name
+          const isOffField = !isActiveChar && !isWithinPersistence
 
           const displayForm = getDisplayForm(character)
           const isActive = activeCharacterName === group.label
@@ -134,7 +141,7 @@ export function CharacterStateTracker({
 
           return (
             <div key={group.label} className={`stateTrackerCard${isActive ? ' stateTrackerCard--active' : ''}`}>
-              
+
               {/* Profile Button */}
               <button
                 type="button"
@@ -167,7 +174,7 @@ export function CharacterStateTracker({
 
               {/* State Section */}
               <div className="stateTrackerStates">
-                
+
                 {/* Position */}
                 <div className="stateTrackerStateItem">
                   <span className="stateTrackerStateLabel">Position</span>
@@ -195,12 +202,12 @@ export function CharacterStateTracker({
                   </div>
                 )}
 
-                {/* Persistence */}
-                {isWithinPersistence && !isOffField && (
+                {/* Lingers (ONLY inactive + within persistence) */}
+                {isWithinPersistence && !isActiveChar && (
                   <div className="stateTrackerStateItem">
                     <span className="stateTrackerStateLabel">Lingers</span>
                     <span className="stateTrackerPersistBadge">
-                      {(persistentUntil! - (snapshot?.toTime ?? 0)).toFixed(2)}s
+                      {(persistentUntil - (snapshot?.toTime ?? 0)).toFixed(2)}s
                     </span>
                   </div>
                 )}
@@ -220,7 +227,7 @@ export function CharacterStateTracker({
               <div className="stateTrackerEnergies">
                 {visibleColumns.map(col => {
 
-                  // Goal 4: forte (segmented energy)
+                  // Goal 4: forte segmented bar
                   if (col.energyMetadata && col.energyMetadata.length > 1) {
                     const slots = col.energyMetadata.map(meta => ({
                       meta,
@@ -239,6 +246,7 @@ export function CharacterStateTracker({
                               <div
                                 key={slot.meta.key}
                                 className={`stateTrackerForteSeg${slot.filled ? ' stateTrackerForteSeg--filled' : ''}`}
+                                data-forte-slot={slot.meta.key.slice('forte_'.length)} // ✅ RESTORED
                                 title={slot.meta.label}
                               />
                             ))}
