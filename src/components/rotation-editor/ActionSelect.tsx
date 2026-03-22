@@ -200,7 +200,7 @@ export function ActionSelect({ value, actions, character, currentEnergies, previ
     let isNoSwapTarget = false
     if (action.castConditions.requiresSwapOut && character && previousSnapshot) {
       const actionEndTime = previousSnapshot.toTime + action.castTime
-      const allCharacterNames = Object.keys(previousSnapshot.charactersSwapCooldownUntil || {})
+      const allCharacterNames = Object.keys(previousSnapshot.charactersEnergies || {})
       const otherCharacters = allCharacterNames.filter(name => name !== character.name)
 
       // Check if at least one other character will be available after this action
@@ -523,9 +523,9 @@ export function ActionSelect({ value, actions, character, currentEnergies, previ
 
                     {/* Variant Rows */}
                     {group.variants.map(variant => {
-                      const { action, isCurrent, isUnaffordable, isOnCooldown, cooldownRemaining, missingEnergy, isWrongPosition, isPreviousActionMismatch, isRequiresSwapIn, isWrongForm, isCustomCanCastFailed, isOnSwapCooldown, swapCooldownRemaining, isNoSwapTarget, isNotRequiredFollowUp, isFollowUpNotReady } = variant
+                      const { action, isCurrent, isUnaffordable, isOnCooldown, cooldownRemaining, missingEnergy, isWrongPosition, isPreviousActionMismatch, isRequiresSwapIn, isWrongForm, isCustomCanCastFailed, isOnSwapCooldown, swapCooldownRemaining, isNoSwapTarget, isNotRequiredFollowUp, isFollowUpNotReady, isComboWindowExpired } = variant
 
-                      const isDisabled = (isUnaffordable || isOnCooldown || isWrongPosition || isPreviousActionMismatch || isRequiresSwapIn || isWrongForm || isCustomCanCastFailed || isOnSwapCooldown || isNoSwapTarget || isNotRequiredFollowUp || isFollowUpNotReady) && !isCurrent
+                      const isDisabled = (isUnaffordable || isOnCooldown || isWrongPosition || isPreviousActionMismatch || isRequiresSwapIn || isWrongForm || isCustomCanCastFailed || isOnSwapCooldown || isNoSwapTarget || isNotRequiredFollowUp || isFollowUpNotReady || isComboWindowExpired) && !isCurrent
                       const canSelect = !isDisabled
 
                       return (
@@ -543,6 +543,7 @@ export function ActionSelect({ value, actions, character, currentEnergies, previ
                             <div className="variantDetails">
                               {isOnCooldown && <span className="variantCooldown">CD: {cooldownRemaining.toFixed(2)}s</span>}
                               {isOnSwapCooldown && <span className="variantCooldown">Swap CD: {swapCooldownRemaining.toFixed(2)}s</span>}
+                              {isComboWindowExpired && <span className="variantBlockedReason">Combo window expired</span>}
                               {missingEnergy.length > 0 ? <span className="energyMissing">{missingEnergy.map(e => `${e.current.toFixed(2)}/${e.needed} ${e.type}`).join(', ')}</span> : action.energyCost.length > 0 ? <span className="energyOk">✓</span> : null}
                             </div>
                           </div>

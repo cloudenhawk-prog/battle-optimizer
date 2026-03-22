@@ -1246,16 +1246,13 @@ const cartethyia_wait_for_cooldown: Action = {
     customCanCast(prevSnapshot, characterName) {
       if (!prevSnapshot || !characterName) return false
       const cooldowns = prevSnapshot.charactersCooldowns?.[characterName] ?? {}
-      return Object.values(cooldowns).some(until => until - prevSnapshot.toTime > 0)
+      return Object.values(cooldowns).some(remaining => remaining > 0)
     },
   },
   offtune: 0,
   resolveVariant(prevSnapshot, characterName) {
     const cooldowns = prevSnapshot?.charactersCooldowns?.[characterName] ?? {}
-    const toTime = prevSnapshot?.toTime ?? 0
-    const remaining = Object.values(cooldowns)
-      .map(until => until - toTime)
-      .filter(r => r > 0)
+    const remaining = Object.values(cooldowns).filter(r => r > 0)
     const castTime = remaining.length > 0 ? Math.min(...remaining) : 0
     return { ...this, castTime, resolveVariant: undefined }
   },

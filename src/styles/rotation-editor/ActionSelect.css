@@ -276,6 +276,11 @@
   font-weight: 500;
 }
 
+.variantBlockedReason {
+  color: rgba(255, 100, 100, 0.9);
+  font-weight: 500;
+}
+
 /* Highlight expanded group row */
 .actionSelectRow.expanded {
   border-left-color: rgba(255, 120, 120, 0.7);

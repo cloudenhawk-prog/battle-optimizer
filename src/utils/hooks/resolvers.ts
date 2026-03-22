@@ -716,8 +716,9 @@ export function resolveCastState(ctx: StepContext): void {
   ctx.current.charactersComboWindows = { ...(ctx.prev.charactersComboWindows ?? {}) }
 
   // Update swap flag for all characters that had an active combo window
+  // Mark the outgoing character's combo window as interrupted by a swap
   if (swapOccurred) {
-    // When a swap occurs, mark all characters as swapped (they're no longer active)
+    // When a swap occurs, mark the previous character's combo window as swapped (it's no longer active)
     const updatedWindows: typeof ctx.current.charactersComboWindows = {}
     for (const [char, window] of Object.entries(ctx.current.charactersComboWindows)) {
       updatedWindows[char] = {
