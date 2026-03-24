@@ -16,12 +16,22 @@ type CharacterStateTrackerProps = {
   activeCharacterName?: string | null
 }
 
-export function CharacterStateTracker({ snapshot, charactersInBattle, tableConfig, columnVisibility, setColumnVisibility, activeCharacterName }: CharacterStateTrackerProps) {
+export function CharacterStateTracker({
+  snapshot,
+  charactersInBattle,
+  tableConfig,
+  columnVisibility,
+  setColumnVisibility,
+  activeCharacterName,
+}: CharacterStateTrackerProps) {
   const [profileOpen, setProfileOpen] = useState<string | null>(null)
+
+  // ========== Column Visibility Helpers ======================================================================================
 
   function handleGroupClick(groupColumns: { key: string }[]) {
     const visibleKeys = groupColumns.filter(col => columnVisibility[col.key]).map(col => col.key)
     if (visibleKeys.length === 0) return
+
     setColumnVisibility(prev => {
       const updated = { ...prev }
       visibleKeys.forEach(key => {
@@ -35,12 +45,70 @@ export function CharacterStateTracker({ snapshot, charactersInBattle, tableConfi
     setColumnVisibility(prev => ({ ...prev, [key]: !prev[key] }))
   }
 
-  // If no character groups exist, don't render
+  // ========== Early Exit Guards ==============================================================================================
+
   if (tableConfig.characters.length === 0) return null
 
-  // Check if any character column is visible
-  const anyVisible = tableConfig.characters.some(group => group.columns.some(col => columnVisibility[col.key]))
+  const anyVisible = tableConfig.characters.some(group =>
+    group.columns.some(col => columnVisibility[col.key]),
+  )
   if (!anyVisible) return null
+
+  // ========== Derived State Helpers ==========================================================================================
+
+  // Goal 1: compute swap cooldown remaining
+  function getSwapCooldownRemaining(characterName: string) {
+    if (!snapshot) return 0
+    const cooldownUntil = snapshot.charactersSwapCooldownUntil?.[characterName] ?? 0
+    return Math.max(0, cooldownUntil - snapshot.toTime)
+  }
+
+  // Goal 2: compute effective position for display
+  // Rules:
+  // - Active → own position
+  // - Inactive within persistence → own position
+  // - Otherwise → mirror active character
+  function getDisplayPosition(characterName: string) {
+    if (!snapshot) {
+      return {
+        position: 'GROUND' as const,
+        isWithinPersistence: false,
+        persistentUntil: 0,
+      }
+    }
+
+    const stored = snapshot.charactersPositions?.[characterName] ?? 'GROUND'
+    const persistentUntil = snapshot.charactersPersistentUntil?.[characterName] ?? 0
+    const isActive = snapshot.character === characterName
+    const isWithinPersistence = persistentUntil > 0 && snapshot.toTime <= persistentUntil
+
+    const activeCharPosition =
+      snapshot.character
+        ? snapshot.charactersPositions?.[snapshot.character] ?? 'GROUND'
+        : 'GROUND'
+
+    const position = isActive || isWithinPersistence ? stored : activeCharPosition
+
+    return { position, isWithinPersistence, persistentUntil }
+  }
+
+  // Goal 3: resolve form (fallback to default)
+  function getDisplayForm(character: Character) {
+    if (!snapshot) {
+      return (
+        character.forms?.find(f => f.name === character.defaultForm) ??
+        character.forms?.[0]
+      )
+    }
+
+    const currentFormName = snapshot.charactersForms?.[character.name] ?? ''
+    const currentForm = character.forms?.find(f => f.name === currentFormName)
+
+    if (currentForm) return currentForm
+
+    const defaultFormName = character.defaultForm ?? character.forms?.[0]?.name
+    return character.forms?.find(f => f.name === defaultFormName)
+  }
 
   return (
     <>
@@ -52,44 +120,48 @@ export function CharacterStateTracker({ snapshot, charactersInBattle, tableConfi
           const visibleColumns = group.columns.filter(col => columnVisibility[col.key])
           if (visibleColumns.length === 0) return null
 
+          // ========== Derived Data ===========================================================================================
+
           const energies = snapshot?.charactersEnergies[character.name] ?? {}
+          const swapCooldownRemaining = getSwapCooldownRemaining(character.name)
 
-          // Compute remaining swap cooldown for display
-          const swapCooldownUntil = snapshot?.charactersSwapCooldownUntil?.[character.name] ?? 0
-          const swapCooldownRemaining = Math.max(0, swapCooldownUntil - (snapshot?.toTime ?? 0))
+          const {
+            position: displayPosition,
+            isWithinPersistence,
+            persistentUntil,
+          } = getDisplayPosition(character.name)
 
-          // Compute effective position for display:
-          // - Active character → use their stored position
-          // - Inactive within persistence → use their own stored position
-          // - Inactive outside persistence → sync to active character's position
-          const storedPosition: 'GROUND' | 'AIR' = snapshot?.charactersPositions?.[character.name] ?? 'GROUND'
-          const persistentUntil = snapshot?.charactersPersistentUntil?.[character.name] ?? 0
           const isActiveChar = snapshot?.character === character.name
-          const isWithinPersistence = persistentUntil > 0 && (snapshot?.toTime ?? 0) <= persistentUntil
-          const activeCharPosition: 'GROUND' | 'AIR' = snapshot?.character ? (snapshot.charactersPositions?.[snapshot.character] ?? 'GROUND') : 'GROUND'
-          const displayPosition: 'GROUND' | 'AIR' = isActiveChar || isWithinPersistence ? storedPosition : activeCharPosition
+          const isOffField = !isActiveChar && !isWithinPersistence
 
-          // Get current form for this character
-          const currentFormName = snapshot?.charactersForms?.[character.name] ?? ''
-          const currentForm = character.forms?.find(f => f.name === currentFormName)
-          const defaultFormName = character.defaultForm ?? character.forms?.[0]?.name
-          const defaultForm = character.forms?.find(f => f.name === defaultFormName)
-          const displayForm = currentForm || defaultForm
-
+          const displayForm = getDisplayForm(character)
           const isActive = activeCharacterName === group.label
+
+          // ========== Render ================================================================================================
 
           return (
             <div key={group.label} className={`stateTrackerCard${isActive ? ' stateTrackerCard--active' : ''}`}>
-              {/* Gear icon - top right corner */}
-              <button type="button" className="stateTrackerGearBtn" onClick={() => setProfileOpen(group.label)} title="Character Profile">
+
+              {/* Profile Button */}
+              <button
+                type="button"
+                className="stateTrackerGearBtn"
+                onClick={() => setProfileOpen(group.label)}
+                title="Character Profile"
+              >
                 <img src="/assets/gear.png" alt="Profile" />
               </button>
 
-              {/* Character header */}
+              {/* Header */}
               <div className="stateTrackerHeader">
                 {group.nametag ? (
                   <div className="stateTrackerNametag">
-                    <img src={group.nametag} alt={group.label} className="stateTrackerNametagImg" onClick={() => handleGroupClick(group.columns)} />
+                    <img
+                      src={group.nametag}
+                      alt={group.label}
+                      className="stateTrackerNametagImg"
+                      onClick={() => handleGroupClick(group.columns)}
+                    />
                     <span className="stateTrackerNametagLabel">{group.label}</span>
                   </div>
                 ) : (
@@ -100,51 +172,70 @@ export function CharacterStateTracker({ snapshot, charactersInBattle, tableConfi
                 )}
               </div>
 
-              {/* State section: position + form as labeled chips */}
+              {/* State Section */}
               <div className="stateTrackerStates">
+
+                {/* Position */}
                 <div className="stateTrackerStateItem">
                   <span className="stateTrackerStateLabel">Position</span>
-                  {!isActiveChar && !isWithinPersistence ? (
-                    <span className="stateTrackerPositionBadge stateTrackerPositionBadge--offfield">Off Field</span>
+                  {isOffField ? (
+                    <span className="stateTrackerPositionBadge stateTrackerPositionBadge--offfield">
+                      Off Field
+                    </span>
                   ) : (
                     <span className={`stateTrackerPositionBadge stateTrackerPositionBadge--${displayPosition.toLowerCase()}`}>
                       {displayPosition === 'AIR' ? '▲ Air' : '▼ Ground'}
                     </span>
                   )}
                 </div>
+
+                {/* Form */}
                 {displayForm && (
                   <div className="stateTrackerStateItem">
                     <span className="stateTrackerStateLabel">Form</span>
                     <span className="stateTrackerFormBadge">
-                      {displayForm.icon && <img src={displayForm.icon} alt={displayForm.name} className="stateTrackerFormIcon" />}
+                      {displayForm.icon && (
+                        <img src={displayForm.icon} alt={displayForm.name} className="stateTrackerFormIcon" />
+                      )}
                       {displayForm.displayName || displayForm.name}
                     </span>
                   </div>
                 )}
-                {!isActiveChar && isWithinPersistence && (
+
+                {/* Lingers (ONLY inactive + within persistence) */}
+                {isWithinPersistence && !isActiveChar && (
                   <div className="stateTrackerStateItem">
                     <span className="stateTrackerStateLabel">Lingers</span>
-                    <span className="stateTrackerPersistBadge">{(persistentUntil - (snapshot?.toTime ?? 0)).toFixed(2)}s</span>
+                    <span className="stateTrackerPersistBadge">
+                      {(persistentUntil - (snapshot?.toTime ?? 0)).toFixed(2)}s
+                    </span>
                   </div>
                 )}
+
+                {/* Swap Cooldown */}
                 {swapCooldownRemaining > 0 && (
                   <div className="stateTrackerStateItem">
                     <span className="stateTrackerStateLabel">Swap CD</span>
-                    <span className="stateTrackerSwapCooldownBadge">{swapCooldownRemaining.toFixed(2)}s</span>
+                    <span className="stateTrackerSwapCooldownBadge">
+                      {swapCooldownRemaining.toFixed(2)}s
+                    </span>
                   </div>
                 )}
               </div>
 
-              {/* Energy bars */}
+              {/* Energy Section */}
               <div className="stateTrackerEnergies">
                 {visibleColumns.map(col => {
-                  // Combined forte: render a segmented split-bar
+
+                  // Goal 4: forte segmented bar
                   if (col.energyMetadata && col.energyMetadata.length > 1) {
                     const slots = col.energyMetadata.map(meta => ({
                       meta,
                       filled: (energies[meta.key] ?? 0) >= 1,
                     }))
+
                     const filledCount = slots.filter(s => s.filled).length
+
                     return (
                       <div key={col.key} className="stateTrackerBarRow">
                         <img src={col.icon} alt={col.label} className="stateTrackerEnergyIcon" onClick={() => toggleColumn(col.key)} />
@@ -166,7 +257,7 @@ export function CharacterStateTracker({ snapshot, charactersInBattle, tableConfi
                     )
                   }
 
-                  // Regular energy bar
+                  // Goal 5: regular energy bar
                   const energyType = col.key.slice(col.key.indexOf('_') + 1)
                   const current = energies[energyType] || 0
                   const max = character.maxEnergies[energyType as keyof typeof character.maxEnergies] || 100
@@ -191,7 +282,12 @@ export function CharacterStateTracker({ snapshot, charactersInBattle, tableConfi
         })}
       </div>
 
-      {profileOpen !== null && <CharacterProfileOverlay characterName={profileOpen} onClose={() => setProfileOpen(null)} />}
+      {profileOpen !== null && (
+        <CharacterProfileOverlay
+          characterName={profileOpen}
+          onClose={() => setProfileOpen(null)}
+        />
+      )}
     </>
   )
 }
