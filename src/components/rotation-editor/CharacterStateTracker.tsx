@@ -246,7 +246,7 @@ export function CharacterStateTracker({
                               <div
                                 key={slot.meta.key}
                                 className={`stateTrackerForteSeg${slot.filled ? ' stateTrackerForteSeg--filled' : ''}`}
-                                data-forte-slot={slot.meta.key.slice('forte_'.length)} // ✅ RESTORED
+                                data-forte-slot={slot.meta.key.slice('forte_'.length)}
                                 title={slot.meta.label}
                               />
                             ))}
