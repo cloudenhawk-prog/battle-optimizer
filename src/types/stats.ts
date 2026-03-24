@@ -96,6 +96,8 @@ export type CharacterStats = {
   havocTotalMultiplierDMG: number
 
   energyPercent: number
+  healingBonus: number
+  tuneBreakBoost: number
 }
 
 /**
@@ -199,6 +201,8 @@ export function getDefaultCharacterStats(): CharacterStats {
     havocTotalMultiplierDMG: 1,
 
     energyPercent: 0,
+    healingBonus: 0,
+    tuneBreakBoost: 0,
   }
 }
 

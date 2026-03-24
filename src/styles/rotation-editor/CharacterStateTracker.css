@@ -494,7 +494,7 @@
   border: 1px solid var(--table-border);
   border-radius: var(--table-corner-radius);
   width: 90%;
-  max-width: 900px;
+  max-width: 560px;
   height: 80vh;
   max-height: 80vh;
   overflow: hidden;
@@ -542,5 +542,186 @@
 
 .charProfileBody {
   flex: 1;
-  overflow: auto;
+  overflow: hidden auto;
+  position: relative;
+}
+
+/* ===== Stat List ===== */
+
+.charStatList {
+  display: flex;
+  flex-direction: column;
+  padding: 8px 0;
+}
+
+.charStatRow {
+  display: grid;
+  grid-template-columns: 28px 1fr auto;
+  align-items: center;
+  gap: 12px;
+  padding: 9px 24px;
+  box-sizing: border-box;
+  background: transparent;
+  border: none;
+  color: var(--table-text);
+  font-family: inherit;
+  text-align: left;
+  width: 100%;
+}
+
+.charStatRow:nth-child(even) {
+  background: rgba(255, 255, 255, 0.025);
+}
+
+.charStatRow--active .charStatValue {
+  color: rgba(160, 210, 255, 0.95);
+}
+
+.charStatIcon {
+  width: 22px;
+  height: 22px;
+  object-fit: contain;
+  flex-shrink: 0;
+  border-radius: 50%;
+  background: var(--table-icon-bg);
+  padding: 2px;
+  border: 1px solid var(--table-border);
+}
+
+.charStatLabel {
+  font-size: 0.85rem;
+  font-weight: 500;
+  color: var(--table-text-dim);
+  letter-spacing: 0.02em;
+}
+
+.charStatValue {
+  /* button reset */
+  background: transparent;
+  border: none;
+  font-family: inherit;
+  cursor: pointer;
+  padding: 3px 0;
+  /* value styling */
+  font-size: 0.9rem;
+  font-weight: 700;
+  color: var(--table-text);
+  font-variant-numeric: tabular-nums;
+  letter-spacing: 0.02em;
+  text-align: right;
+}
+
+.charStatRow--active .charStatValue {
+  color: rgba(160, 210, 255, 0.95);
+}
+
+/* ===== Breakdown Nested Modal ===== */
+
+.charStatBreakdown {
+  position: absolute;
+  inset: 0;
+  /* Solid opaque background so the stat list never bleeds through */
+  background: #13151c;
+  display: flex;
+  flex-direction: column;
+  z-index: 10;
+  overflow: hidden;
+}
+
+.charStatBreakdownHeader {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 16px 24px;
+  background: var(--table-header-bg);
+  border-bottom: 1px solid var(--table-border);
+  flex-shrink: 0;
+}
+
+.charStatBreakdownTitle {
+  font-size: 0.95rem;
+  font-weight: 700;
+  color: var(--table-text);
+  text-transform: uppercase;
+  letter-spacing: 0.12em;
+}
+
+.charStatBreakdownBody {
+  flex: 1;
+  overflow-y: auto;
+  padding: 16px 24px 24px;
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.charStatBreakdownTotal {
+  font-size: 1rem;
+  font-weight: 700;
+  color: var(--table-text);
+  padding: 10px 16px;
+  background: rgba(255, 255, 255, 0.04);
+  border: 1px solid var(--table-border);
+  border-radius: 6px;
+  font-variant-numeric: tabular-nums;
+}
+
+.charStatBreakdownSection {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.charStatBreakdownSectionTitle {
+  font-size: 0.7rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.12em;
+  color: var(--table-text-dim);
+  opacity: 0.6;
+  padding-left: 2px;
+}
+
+.charStatBreakdownTable {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.charStatBreakdownRow td {
+  padding: 7px 14px;
+  font-size: 0.85rem;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.04);
+}
+
+/* Alternate shading inside the breakdown table rows */
+.charStatBreakdownRow:nth-child(even) td {
+  background: rgba(255, 255, 255, 0.025);
+}
+
+.charStatBreakdownSource {
+  color: var(--table-text-dim);
+  font-weight: 500;
+}
+
+.charStatBreakdownValue {
+  text-align: right;
+  color: var(--table-text);
+  font-weight: 600;
+  font-variant-numeric: tabular-nums;
+}
+
+.charStatBreakdownRow--total td {
+  font-weight: 700;
+  color: rgba(160, 220, 255, 0.95);
+  border-top: 1px solid var(--table-border);
+  border-bottom: none;
+  padding-top: 10px;
+}
+
+.charStatBreakdownEquiv {
+  font-size: 0.75rem;
+  font-weight: 500;
+  color: var(--table-text-dim);
+  opacity: 0.6;
+  margin-right: 6px;
 }

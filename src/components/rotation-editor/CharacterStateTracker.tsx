@@ -282,12 +282,19 @@ export function CharacterStateTracker({
         })}
       </div>
 
-      {profileOpen !== null && (
-        <CharacterProfileOverlay
-          characterName={profileOpen}
-          onClose={() => setProfileOpen(null)}
-        />
-      )}
+      {profileOpen !== null && (() => {
+        const profileCharacter = charactersInBattle.find(c => c.name === profileOpen) ?? null
+        if (!profileCharacter) return null
+        return (
+          <CharacterProfileOverlay
+            characterName={profileOpen}
+            character={profileCharacter}
+            snapshot={snapshot}
+            allCharacters={charactersInBattle}
+            onClose={() => setProfileOpen(null)}
+          />
+        )
+      })()}
     </>
   )
 }

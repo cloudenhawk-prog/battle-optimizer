@@ -1,14 +1,331 @@
 import { createPortal } from 'react-dom'
+import { useState } from 'react'
+import type { Character } from '../../types/character'
+import type { CharacterStats } from '../../types/stats'
+import type { Snapshot } from '../../types/snapshot'
+import { calculateScalingStat } from '../../utils/calculators/damageCalculator'
+import { computeGearStatBreakdown, computeActiveModifierBreakdown, computeFinalStats } from '../../utils/gear/computeStatBreakdown'
 import '../../styles/rotation-editor/CharacterStateTracker.css'
+
+// ========== Stat Display Config ==============================================================================================
+
+type StatDisplay = {
+  key: string
+  label: string
+  format: 'flat' | 'percent' | 'integer'
+  iconPath?: string
+}
+
+const STAT_DISPLAY: StatDisplay[] = [
+  { key: 'ATK', label: 'ATK', format: 'flat' },
+  { key: 'HP', label: 'HP', format: 'flat' },
+  { key: 'DEF', label: 'DEF', format: 'flat' },
+  { key: 'critRate', label: 'Crit Rate', format: 'percent' },
+  { key: 'critDamage', label: 'Crit DMG', format: 'percent' },
+  { key: 'energyPercent', label: 'Energy Regen', format: 'percent' },
+  { key: 'basicBonusDMG', label: 'Basic Attack DMG Bonus', format: 'percent' },
+  { key: 'heavyBonusDMG', label: 'Heavy Attack DMG Bonus', format: 'percent' },
+  { key: 'skillBonusDMG', label: 'Resonance Skill DMG Bonus', format: 'percent' },
+  { key: 'liberationBonusDMG', label: 'Resonance Liberation DMG Bonus', format: 'percent' },
+  { key: 'glacioBonusDMG', label: 'Glacio DMG Bonus', format: 'percent' },
+  { key: 'fusionBonusDMG', label: 'Fusion DMG Bonus', format: 'percent' },
+  { key: 'electroBonusDMG', label: 'Electro DMG Bonus', format: 'percent' },
+  { key: 'aeroBonusDMG', label: 'Aero DMG Bonus', format: 'percent' },
+  { key: 'spectroBonusDMG', label: 'Spectro DMG Bonus', format: 'percent' },
+  { key: 'havocBonusDMG', label: 'Havoc DMG Bonus', format: 'percent' },
+  { key: 'healingBonus', label: 'Healing Bonus', format: 'percent' },
+  { key: 'tuneBreakBoost', label: 'Tune Break Boost', format: 'integer' },
+]
+
+// The three scaling stats need special handling via calculateScalingStat
+const SCALING_STAT_KEYS = new Set(['ATK', 'HP', 'DEF'])
+
+// ========== Formatting =======================================================================================================
+
+// Flat numbers use . as thousands separator (European style)
+function formatFlat(value: number): string {
+  return Math.round(value).toString().replace(/\B(?=(\d{3})+(?!\d))/g, '.')
+}
+
+function formatStatValue(key: string, value: number, format: StatDisplay['format']): string {
+  if (format === 'flat') return formatFlat(value)
+  if (format === 'integer') return String(Math.round(value))
+  // critDamage is stored as a multiplier (1.5 = 150% base, 2.75 = 275% total)
+  // display it as value * 100 so 2.75 → 275.0%
+  return (value * 100).toFixed(1) + '%'
+}
+
+function formatBreakdownValue(key: string, value: number | undefined, format: StatDisplay['format']): string {
+  if (value === undefined || value === 0) return format === 'flat' ? '0' : format === 'percent' ? '0.0%' : '0'
+  return formatStatValue(key, value, format)
+}
+
+// ========== Breakdown Source Extraction ======================================================================================
+
+type BreakdownSources = {
+  base: number
+  weapon: number
+  echoes: number
+  setBonus: number
+  passiveMods: number
+  selfBuffs: number
+  teamBuffs: number
+}
+
+type StatBreakdownData =
+  | { variant: 'scaling'; stat: 'ATK' | 'HP' | 'DEF'; baseStat: CharacterStats; finalValue: number; baseValue: number; percent: BreakdownSources; flat: BreakdownSources }
+  | { variant: 'additive'; key: string; label: string; format: StatDisplay['format']; finalValue: number; sources: BreakdownSources }
+
+function getBreakdownData(
+  statKey: string,
+  label: string,
+  format: StatDisplay['format'],
+  finalStats: CharacterStats,
+  gearBreakdown: ReturnType<typeof computeGearStatBreakdown>,
+  activeBreakdown: ReturnType<typeof computeActiveModifierBreakdown>,
+  baseStat: CharacterStats,
+): StatBreakdownData {
+  if (SCALING_STAT_KEYS.has(statKey)) {
+    const s = statKey as 'ATK' | 'HP' | 'DEF'
+    const baseKey = `base${s}` as keyof CharacterStats
+    const flatKey = `flat${s}` as keyof CharacterStats
+    const bonusKey = `bonus${s}` as keyof CharacterStats
+
+    const getVal = (obj: Partial<CharacterStats>, k: keyof CharacterStats): number =>
+      (obj[k] as number | undefined) ?? 0
+
+    return {
+      variant: 'scaling',
+      stat: s,
+      baseStat: finalStats,
+      finalValue: calculateScalingStat(finalStats, s),
+      // baseValue is the raw base stat (e.g. 14800 for HP) shown separately above the % table
+      baseValue: (baseStat[baseKey] as number) ?? 0,
+      percent: {
+        // base is 0 — the raw base stat is a flat value shown via baseValue, not a %
+        base: 0,
+        weapon: getVal(gearBreakdown.weapon, bonusKey),
+        echoes: getVal(gearBreakdown.echoes, bonusKey),
+        setBonus: getVal(gearBreakdown.setBonus, bonusKey),
+        passiveMods: getVal(gearBreakdown.passiveMods, bonusKey),
+        selfBuffs: getVal(activeBreakdown.selfBuffs, bonusKey),
+        teamBuffs: getVal(activeBreakdown.teamBuffs, bonusKey),
+      },
+      flat: {
+        base: 0,
+        weapon: getVal(gearBreakdown.weapon, flatKey),
+        echoes: getVal(gearBreakdown.echoes, flatKey),
+        setBonus: getVal(gearBreakdown.setBonus, flatKey),
+        passiveMods: getVal(gearBreakdown.passiveMods, flatKey),
+        selfBuffs: getVal(activeBreakdown.selfBuffs, flatKey),
+        teamBuffs: getVal(activeBreakdown.teamBuffs, flatKey),
+      },
+    }
+  }
+
+  const k = statKey as keyof CharacterStats
+  const getVal = (obj: Partial<CharacterStats>): number => (obj[k] as number | undefined) ?? 0
+
+  // Base = the residual after subtracting all gear/buff contributions from character.stats.
+  // This captures the character's own definition + game defaults without double-counting gear.
+  // e.g. critRate: 0.05 default + any char-level stat; energyPercent: 1.0 for Cartethyia.
+  const resolvedBase = (baseStat[k] as number) ?? 0
+  const charBase = resolvedBase
+    - getVal(gearBreakdown.weapon)
+    - getVal(gearBreakdown.echoes)
+    - getVal(gearBreakdown.setBonus)
+    - getVal(gearBreakdown.passiveMods)
+
+  return {
+    variant: 'additive',
+    key: statKey,
+    label,
+    format,
+    finalValue: (finalStats[k] as number) ?? 0,
+    sources: {
+      base: charBase,
+      weapon: getVal(gearBreakdown.weapon),
+      echoes: getVal(gearBreakdown.echoes),
+      setBonus: getVal(gearBreakdown.setBonus),
+      passiveMods: getVal(gearBreakdown.passiveMods),
+      selfBuffs: getVal(activeBreakdown.selfBuffs),
+      teamBuffs: getVal(activeBreakdown.teamBuffs),
+    },
+  }
+}
+
+// ========== Sub-component: Breakdown Modal ===================================================================================
+
+type BreakdownModalProps = {
+  statDisplay: StatDisplay
+  finalStats: CharacterStats
+  gearBreakdown: ReturnType<typeof computeGearStatBreakdown>
+  activeBreakdown: ReturnType<typeof computeActiveModifierBreakdown>
+  baseStat: CharacterStats
+  onClose: () => void
+}
+
+function BreakdownModal({ statDisplay, finalStats, gearBreakdown, activeBreakdown, baseStat, onClose }: BreakdownModalProps) {
+  const data = getBreakdownData(
+    statDisplay.key,
+    statDisplay.label,
+    statDisplay.format,
+    finalStats,
+    gearBreakdown,
+    activeBreakdown,
+    baseStat,
+  )
+
+  const sourceLabels: Array<{ key: keyof BreakdownSources; label: string }> = [
+    { key: 'weapon', label: 'Weapon' },
+    { key: 'echoes', label: 'Echoes' },
+    { key: 'setBonus', label: 'Set Bonus' },
+    { key: 'passiveMods', label: 'Passive Mods' },
+    { key: 'selfBuffs', label: 'Self Buffs' },
+    { key: 'teamBuffs', label: 'Team Buffs' },
+  ]
+
+  return (
+    <div className="charStatBreakdown" role="dialog" aria-modal="true">
+      <div className="charStatBreakdownHeader">
+        <span className="charStatBreakdownTitle">{statDisplay.label}</span>
+        <button className="overlayCloseButton" onClick={onClose} aria-label="Close breakdown">✕</button>
+      </div>
+
+      <div className="charStatBreakdownBody">
+        {data.variant === 'scaling' && (() => {
+          // Only sum from sourceLabels — percent.base is always 0 (base is a flat value, not %)
+          const percentTotal = sourceLabels.reduce((a, { key }) => a + data.percent[key], 0)
+          const flatTotal = sourceLabels.reduce((a, { key }) => a + data.flat[key], 0)
+
+          return (
+            <>
+              <div className="charStatBreakdownTotal">
+                Total {statDisplay.label}: {formatFlat(data.finalValue)}
+              </div>
+              <div className="charStatBreakdownTotal">
+                Base {statDisplay.label}: {formatFlat(data.baseValue)}
+              </div>
+
+              <div className="charStatBreakdownSection">
+                <div className="charStatBreakdownSectionTitle">{statDisplay.label}%</div>
+                <table className="charStatBreakdownTable">
+                  <tbody>
+                    {sourceLabels.map(({ key, label }) => {
+                      const pct = data.percent[key]
+                      const flatEquiv = data.baseValue * pct
+                      return (
+                        <tr key={key} className="charStatBreakdownRow">
+                          <td className="charStatBreakdownSource">{label}</td>
+                          <td className="charStatBreakdownValue">
+                            {pct !== 0 && (
+                              <span className="charStatBreakdownEquiv">({formatFlat(flatEquiv)})</span>
+                            )}
+                            {(pct * 100).toFixed(1)}%
+                          </td>
+                        </tr>
+                      )
+                    })}
+                    <tr className="charStatBreakdownRow charStatBreakdownRow--total">
+                      <td className="charStatBreakdownSource">Total</td>
+                      <td className="charStatBreakdownValue">
+                        {percentTotal !== 0 && (
+                          <span className="charStatBreakdownEquiv">({formatFlat(data.baseValue * percentTotal)})</span>
+                        )}
+                        {(percentTotal * 100).toFixed(1)}%
+                      </td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+
+              <div className="charStatBreakdownSection">
+                <div className="charStatBreakdownSectionTitle">{statDisplay.label} Flat</div>
+                <table className="charStatBreakdownTable">
+                  <tbody>
+                    {sourceLabels.map(({ key, label }) => (
+                      <tr key={key} className="charStatBreakdownRow">
+                        <td className="charStatBreakdownSource">{label}</td>
+                        <td className="charStatBreakdownValue">{formatFlat(data.flat[key])}</td>
+                      </tr>
+                    ))}
+                    <tr className="charStatBreakdownRow charStatBreakdownRow--total">
+                      <td className="charStatBreakdownSource">Total</td>
+                      <td className="charStatBreakdownValue">{formatFlat(flatTotal)}</td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+            </>
+          )
+        })()}
+
+        {data.variant === 'additive' && (() => {
+          const total = Object.values(data.sources).reduce((a, b) => a + b, 0)
+          const rows: Array<{ key: keyof BreakdownSources; label: string }> = [
+            { key: 'base', label: 'Base' },
+            ...sourceLabels,
+          ]
+          return (
+            <>
+              <div className="charStatBreakdownTotal">
+                Total {statDisplay.label}: {formatStatValue(data.key, data.finalValue, data.format)}
+              </div>
+              <div className="charStatBreakdownSection">
+                <table className="charStatBreakdownTable">
+                  <tbody>
+                    {rows.map(({ key, label }) => (
+                      <tr key={key} className="charStatBreakdownRow">
+                        <td className="charStatBreakdownSource">{label}</td>
+                        <td className="charStatBreakdownValue">
+                          {formatBreakdownValue(data.key, data.sources[key], data.format)}
+                        </td>
+                      </tr>
+                    ))}
+                    <tr className="charStatBreakdownRow charStatBreakdownRow--total">
+                      <td className="charStatBreakdownSource">Total</td>
+                      <td className="charStatBreakdownValue">
+                        {formatBreakdownValue(data.key, total, data.format)}
+                      </td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+            </>
+          )
+        })()}
+      </div>
+    </div>
+  )
+}
 
 // ========== Component: Character Profile Overlay =============================================================================
 
 type CharacterProfileOverlayProps = {
   characterName: string
+  character: Character
+  snapshot: Snapshot | null
+  allCharacters: Character[]
   onClose: () => void
 }
 
-export function CharacterProfileOverlay({ characterName, onClose }: CharacterProfileOverlayProps) {
+export function CharacterProfileOverlay({ characterName, character, snapshot, allCharacters, onClose }: CharacterProfileOverlayProps) {
+  const [selectedStat, setSelectedStat] = useState<string | null>(null)
+
+  const finalStats = computeFinalStats(character, snapshot, allCharacters)
+  const gearBreakdown = computeGearStatBreakdown(character)
+  const activeBreakdown = computeActiveModifierBreakdown(character, snapshot, allCharacters)
+  const baseStat = character.stats as CharacterStats
+
+  function getDisplayValue(stat: StatDisplay): number {
+    if (SCALING_STAT_KEYS.has(stat.key)) {
+      return calculateScalingStat(finalStats, stat.key as 'ATK' | 'HP' | 'DEF')
+    }
+    return (finalStats[stat.key as keyof CharacterStats] as number) ?? 0
+  }
+
+  const selectedStatDisplay = selectedStat !== null ? STAT_DISPLAY.find(s => s.key === selectedStat) ?? null : null
+
   return createPortal(
     <div className="charProfileOverlay" onClick={onClose} role="dialog" aria-modal="true" aria-labelledby="charProfileTitle">
       <div className="charProfileContent" onClick={e => e.stopPropagation()}>
@@ -16,7 +333,43 @@ export function CharacterProfileOverlay({ characterName, onClose }: CharacterPro
           <h2 id="charProfileTitle" className="charProfileTitle">{characterName}</h2>
           <button className="overlayCloseButton" onClick={onClose} aria-label="Close">✕</button>
         </div>
-        <div className="charProfileBody" />
+
+        <div className="charProfileBody">
+          <div className="charStatList">
+            {STAT_DISPLAY.map(stat => (
+              <div
+                key={stat.key}
+                className={`charStatRow${selectedStat === stat.key ? ' charStatRow--active' : ''}`}
+              >
+                <img
+                  src={stat.iconPath ?? `/${stat.key}_icon.png`}
+                  alt={stat.label}
+                  className="charStatIcon"
+                  onError={e => { (e.target as HTMLImageElement).style.visibility = 'hidden' }}
+                />
+                <span className="charStatLabel">{stat.label}</span>
+                <button
+                  type="button"
+                  className="charStatValue"
+                  onClick={() => setSelectedStat(prev => prev === stat.key ? null : stat.key)}
+                >
+                  {formatStatValue(stat.key, getDisplayValue(stat), stat.format)}
+                </button>
+              </div>
+            ))}
+          </div>
+
+          {selectedStatDisplay !== null && (
+            <BreakdownModal
+              statDisplay={selectedStatDisplay}
+              finalStats={finalStats}
+              gearBreakdown={gearBreakdown}
+              activeBreakdown={activeBreakdown}
+              baseStat={baseStat}
+              onClose={() => setSelectedStat(null)}
+            />
+          )}
+        </div>
       </div>
     </div>,
     document.body,
