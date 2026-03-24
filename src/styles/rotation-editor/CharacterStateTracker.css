@@ -551,15 +551,15 @@
 .charStatList {
   display: flex;
   flex-direction: column;
-  padding: 8px 0;
+  padding: 9px 0px;
 }
 
 .charStatRow {
   display: grid;
   grid-template-columns: 28px 1fr auto;
   align-items: center;
-  gap: 12px;
-  padding: 9px 24px;
+  gap: 16px;
+  padding: 9px 36px 9px 20px;
   box-sizing: border-box;
   background: transparent;
   border: none;
@@ -582,11 +582,16 @@
   height: 22px;
   object-fit: contain;
   flex-shrink: 0;
-  border-radius: 50%;
-  background: var(--table-icon-bg);
-  padding: 2px;
-  border: 1px solid var(--table-border);
 }
+
+/* ===== Element Colors ===== */
+
+.charStatRow--glacio  .charStatIcon { filter: brightness(0) saturate(100%) invert(74%) sepia(46%) saturate(536%) hue-rotate(171deg) brightness(106%); }
+.charStatRow--fusion  .charStatIcon { filter: brightness(0) saturate(100%) invert(67%) sepia(39%) saturate(752%) hue-rotate(321deg) brightness(102%); }
+.charStatRow--electro .charStatIcon { filter: brightness(0) saturate(100%) invert(51%) sepia(30%) saturate(842%) hue-rotate(237deg) brightness(95%); }
+.charStatRow--aero    .charStatIcon { filter: brightness(0) saturate(100%) invert(72%) sepia(41%) saturate(426%) hue-rotate(83deg) brightness(95%); }
+.charStatRow--spectro .charStatIcon { filter: brightness(0) saturate(100%) invert(83%) sepia(31%) saturate(817%) hue-rotate(13deg) brightness(103%); }
+.charStatRow--havoc   .charStatIcon { filter: brightness(0) saturate(100%) invert(38%) sepia(43%) saturate(590%) hue-rotate(295deg) brightness(92%); }
 
 .charStatLabel {
   font-size: 0.85rem;

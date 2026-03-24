@@ -14,27 +14,28 @@ type StatDisplay = {
   label: string
   format: 'flat' | 'percent' | 'integer'
   iconPath?: string
+  elementClass?: string
 }
 
 const STAT_DISPLAY: StatDisplay[] = [
-  { key: 'ATK', label: 'ATK', format: 'flat' },
-  { key: 'HP', label: 'HP', format: 'flat' },
-  { key: 'DEF', label: 'DEF', format: 'flat' },
-  { key: 'critRate', label: 'Crit Rate', format: 'percent' },
-  { key: 'critDamage', label: 'Crit DMG', format: 'percent' },
-  { key: 'energyPercent', label: 'Energy Regen', format: 'percent' },
-  { key: 'basicBonusDMG', label: 'Basic Attack DMG Bonus', format: 'percent' },
-  { key: 'heavyBonusDMG', label: 'Heavy Attack DMG Bonus', format: 'percent' },
-  { key: 'skillBonusDMG', label: 'Resonance Skill DMG Bonus', format: 'percent' },
-  { key: 'liberationBonusDMG', label: 'Resonance Liberation DMG Bonus', format: 'percent' },
-  { key: 'glacioBonusDMG', label: 'Glacio DMG Bonus', format: 'percent' },
-  { key: 'fusionBonusDMG', label: 'Fusion DMG Bonus', format: 'percent' },
-  { key: 'electroBonusDMG', label: 'Electro DMG Bonus', format: 'percent' },
-  { key: 'aeroBonusDMG', label: 'Aero DMG Bonus', format: 'percent' },
-  { key: 'spectroBonusDMG', label: 'Spectro DMG Bonus', format: 'percent' },
-  { key: 'havocBonusDMG', label: 'Havoc DMG Bonus', format: 'percent' },
-  { key: 'healingBonus', label: 'Healing Bonus', format: 'percent' },
-  { key: 'tuneBreakBoost', label: 'Tune Break Boost', format: 'integer' },
+  { key: 'ATK', label: 'ATK', format: 'flat', iconPath: '/assets/statLabel_ATK.png' },
+  { key: 'HP', label: 'HP', format: 'flat', iconPath: '/assets/statLabel_HP.png' },
+  { key: 'DEF', label: 'DEF', format: 'flat', iconPath: '/assets/statLabel_DEF.png' },
+  { key: 'critRate', label: 'Crit Rate', format: 'percent', iconPath: '/assets/statLabel_critRate.png' },
+  { key: 'critDamage', label: 'Crit DMG', format: 'percent', iconPath: '/assets/statLabel_critDamage.png' },
+  { key: 'energyPercent', label: 'Energy Regen', format: 'percent', iconPath: '/assets/statLabel_energyPercent.png' },
+  { key: 'basicBonusDMG', label: 'Basic Attack DMG Bonus', format: 'percent', iconPath: '/assets/statLabel_basicBonusDMG.png' },
+  { key: 'heavyBonusDMG', label: 'Heavy Attack DMG Bonus', format: 'percent', iconPath: '/assets/statLabel_heavyBonusDMG.png' },
+  { key: 'skillBonusDMG', label: 'Resonance Skill DMG Bonus', format: 'percent', iconPath: '/assets/statLabel_skillBonusDMG.png' },
+  { key: 'liberationBonusDMG', label: 'Resonance Liberation DMG Bonus', format: 'percent', iconPath: '/assets/statLabel_liberationBonusDMG.png' },
+  { key: 'glacioBonusDMG', label: 'Glacio DMG Bonus', format: 'percent', iconPath: '/assets/statLabel_glacioBonusDMG.png', elementClass: 'charStatRow--glacio' },
+  { key: 'fusionBonusDMG', label: 'Fusion DMG Bonus', format: 'percent', iconPath: '/assets/statLabel_fusionBonusDMG.png', elementClass: 'charStatRow--fusion' },
+  { key: 'electroBonusDMG', label: 'Electro DMG Bonus', format: 'percent', iconPath: '/assets/statLabel_electroBonusDMG.png', elementClass: 'charStatRow--electro' },
+  { key: 'aeroBonusDMG', label: 'Aero DMG Bonus', format: 'percent', iconPath: '/assets/statLabel_aeroBonusDMG.png', elementClass: 'charStatRow--aero' },
+  { key: 'spectroBonusDMG', label: 'Spectro DMG Bonus', format: 'percent', iconPath: '/assets/statLabel_spectroBonusDMG.png', elementClass: 'charStatRow--spectro' },
+  { key: 'havocBonusDMG', label: 'Havoc DMG Bonus', format: 'percent', iconPath: '/assets/statLabel_havocBonusDMG.png', elementClass: 'charStatRow--havoc' },
+  { key: 'healingBonus', label: 'Healing Bonus', format: 'percent', iconPath: '/assets/statLabel_healingBonus.png' },
+  { key: 'tuneBreakBoost', label: 'Tune Break Boost', format: 'integer', iconPath: '/assets/statLabel_tuneBreakBoost.png' },
 ]
 
 // The three scaling stats need special handling via calculateScalingStat
@@ -339,13 +340,12 @@ export function CharacterProfileOverlay({ characterName, character, snapshot, al
             {STAT_DISPLAY.map(stat => (
               <div
                 key={stat.key}
-                className={`charStatRow${selectedStat === stat.key ? ' charStatRow--active' : ''}`}
+                className={`charStatRow${stat.elementClass ? ` ${stat.elementClass}` : ''}${selectedStat === stat.key ? ' charStatRow--active' : ''}`}
               >
                 <img
-                  src={stat.iconPath ?? `/${stat.key}_icon.png`}
+                  src={stat.iconPath}
                   alt={stat.label}
                   className="charStatIcon"
-                  onError={e => { (e.target as HTMLImageElement).style.visibility = 'hidden' }}
                 />
                 <span className="charStatLabel">{stat.label}</span>
                 <button
