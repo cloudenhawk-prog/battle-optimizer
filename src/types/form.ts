@@ -7,5 +7,4 @@ export type Form = {
   displayName?: string
   introAction?: Action
   outroAction?: Action
-  icon: string
 }

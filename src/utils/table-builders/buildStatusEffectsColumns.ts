@@ -19,7 +19,7 @@ export function buildStatusEffectsColumns(selectedCharacters: Character[]): Colu
       return {
         key: status,
         label: status,
-        icon: `/assets/${status.toLowerCase().replace(/\s+/g, '_')}.png`,
+        icon: `/assets/effects/${status.toLowerCase().replace(/\s+/g, '_')}.png`,
         color: negativeStatusData?.color,
       }
     })
@@ -27,7 +27,7 @@ export function buildStatusEffectsColumns(selectedCharacters: Character[]): Colu
     columns.push({
       key: 'negativeStatuses',
       label: 'Negative Statuses',
-      icon: 'assets/negativeStatuses.png',
+      icon: 'assets/table/negativeStatuses.png',
       statusMetadata: negativeStatusMetadata,
       render: () => null,
     })
@@ -77,7 +77,7 @@ export function buildStatusEffectsColumns(selectedCharacters: Character[]): Colu
     columns.push({
       key: 'buffs',
       label: 'Buffs',
-      icon: 'assets/buffs.png',
+      icon: 'assets/table/buffs.png',
       statusMetadata: buffMetadata,
       render: () => null,
     })
@@ -127,7 +127,7 @@ export function buildStatusEffectsColumns(selectedCharacters: Character[]): Colu
     columns.push({
       key: 'debuffs',
       label: 'Debuffs',
-      icon: 'assets/debuffs.png',
+      icon: 'assets/table/debuffs.png',
       statusMetadata: debuffMetadata,
       render: () => null,
     })
@@ -136,7 +136,7 @@ export function buildStatusEffectsColumns(selectedCharacters: Character[]): Colu
   return createOptionalGroup(
     {
       label: 'Status Effects',
-      icon: 'assets/statuses.png'
+      icon: 'assets/table/statuses.png'
     },
     columns
   )
