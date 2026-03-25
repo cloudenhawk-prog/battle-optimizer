@@ -6,7 +6,7 @@ import { roverAero_liberation, roverAero_midair_1_2, roverAero_midair_1_2_cancel
 // ========== Weapon ===========================================================================================================
 const roverAero_weapon: Weapon = {
   name: 'Bloodpact\'s Pledge',
-  stats: { flatATK: 587.50, energyPercent: 0.3888 },
+  stats: { baseATK: 587.50, energyPercent: 0.3888 },
   injectedModifiers: [ // TODO: How is this handled? These 2 refer to the same buff, but one allows for a higher timer. Reset should never reset above it's own stated timer, and overlapping names should reference the same buff
     {
       targets: [roverAero_liberation, roverAero_midair_1_2, roverAero_midair_1_2_cancel_with_swap],

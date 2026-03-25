@@ -1,5 +1,5 @@
 import { createPortal } from 'react-dom'
-import { useState } from 'react'
+import { useState, Fragment } from 'react'
 import type { Character } from '../../types/character'
 import type { CharacterStats } from '../../types/stats'
 import type { Snapshot } from '../../types/snapshot'
@@ -18,24 +18,24 @@ type StatDisplay = {
 }
 
 const STAT_DISPLAY: StatDisplay[] = [
-  { key: 'ATK', label: 'ATK', format: 'flat', iconPath: '/assets/statLabel_ATK.png' },
-  { key: 'HP', label: 'HP', format: 'flat', iconPath: '/assets/statLabel_HP.png' },
-  { key: 'DEF', label: 'DEF', format: 'flat', iconPath: '/assets/statLabel_DEF.png' },
-  { key: 'critRate', label: 'Crit Rate', format: 'percent', iconPath: '/assets/statLabel_critRate.png' },
-  { key: 'critDamage', label: 'Crit DMG', format: 'percent', iconPath: '/assets/statLabel_critDamage.png' },
-  { key: 'energyPercent', label: 'Energy Regen', format: 'percent', iconPath: '/assets/statLabel_energyPercent.png' },
-  { key: 'basicBonusDMG', label: 'Basic Attack DMG Bonus', format: 'percent', iconPath: '/assets/statLabel_basicBonusDMG.png' },
-  { key: 'heavyBonusDMG', label: 'Heavy Attack DMG Bonus', format: 'percent', iconPath: '/assets/statLabel_heavyBonusDMG.png' },
-  { key: 'skillBonusDMG', label: 'Resonance Skill DMG Bonus', format: 'percent', iconPath: '/assets/statLabel_skillBonusDMG.png' },
-  { key: 'liberationBonusDMG', label: 'Resonance Liberation DMG Bonus', format: 'percent', iconPath: '/assets/statLabel_liberationBonusDMG.png' },
-  { key: 'glacioBonusDMG', label: 'Glacio DMG Bonus', format: 'percent', iconPath: '/assets/statLabel_glacioBonusDMG.png', elementClass: 'charStatRow--glacio' },
-  { key: 'fusionBonusDMG', label: 'Fusion DMG Bonus', format: 'percent', iconPath: '/assets/statLabel_fusionBonusDMG.png', elementClass: 'charStatRow--fusion' },
-  { key: 'electroBonusDMG', label: 'Electro DMG Bonus', format: 'percent', iconPath: '/assets/statLabel_electroBonusDMG.png', elementClass: 'charStatRow--electro' },
-  { key: 'aeroBonusDMG', label: 'Aero DMG Bonus', format: 'percent', iconPath: '/assets/statLabel_aeroBonusDMG.png', elementClass: 'charStatRow--aero' },
-  { key: 'spectroBonusDMG', label: 'Spectro DMG Bonus', format: 'percent', iconPath: '/assets/statLabel_spectroBonusDMG.png', elementClass: 'charStatRow--spectro' },
-  { key: 'havocBonusDMG', label: 'Havoc DMG Bonus', format: 'percent', iconPath: '/assets/statLabel_havocBonusDMG.png', elementClass: 'charStatRow--havoc' },
-  { key: 'healingBonus', label: 'Healing Bonus', format: 'percent', iconPath: '/assets/statLabel_healingBonus.png' },
-  { key: 'tuneBreakBoost', label: 'Tune Break Boost', format: 'integer', iconPath: '/assets/statLabel_tuneBreakBoost.png' },
+  { key: 'ATK', label: 'ATK', format: 'flat', iconPath: '/assets/stat-labels/statLabel_ATK.png' },
+  { key: 'HP', label: 'HP', format: 'flat', iconPath: '/assets/stat-labels/statLabel_HP.png' },
+  { key: 'DEF', label: 'DEF', format: 'flat', iconPath: '/assets/stat-labels/statLabel_DEF.png' },
+  { key: 'critRate', label: 'Crit Rate', format: 'percent', iconPath: '/assets/stat-labels/statLabel_critRate.png' },
+  { key: 'critDamage', label: 'Crit DMG', format: 'percent', iconPath: '/assets/stat-labels/statLabel_critDamage.png' },
+  { key: 'energyPercent', label: 'Energy Regen', format: 'percent', iconPath: '/assets/stat-labels/statLabel_energyPercent.png' },
+  { key: 'basicBonusDMG', label: 'Basic Attack DMG Bonus', format: 'percent', iconPath: '/assets/stat-labels/statLabel_basicBonusDMG.png' },
+  { key: 'heavyBonusDMG', label: 'Heavy Attack DMG Bonus', format: 'percent', iconPath: '/assets/stat-labels/statLabel_heavyBonusDMG.png' },
+  { key: 'skillBonusDMG', label: 'Resonance Skill DMG Bonus', format: 'percent', iconPath: '/assets/stat-labels/statLabel_skillBonusDMG.png' },
+  { key: 'liberationBonusDMG', label: 'Resonance Liberation DMG Bonus', format: 'percent', iconPath: '/assets/stat-labels/statLabel_liberationBonusDMG.png' },
+  { key: 'glacioBonusDMG', label: 'Glacio DMG Bonus', format: 'percent', iconPath: '/assets/stat-labels/statLabel_glacioBonusDMG.png', elementClass: 'charStatRow--glacio' },
+  { key: 'fusionBonusDMG', label: 'Fusion DMG Bonus', format: 'percent', iconPath: '/assets/stat-labels/statLabel_fusionBonusDMG.png', elementClass: 'charStatRow--fusion' },
+  { key: 'electroBonusDMG', label: 'Electro DMG Bonus', format: 'percent', iconPath: '/assets/stat-labels/statLabel_electroBonusDMG.png', elementClass: 'charStatRow--electro' },
+  { key: 'aeroBonusDMG', label: 'Aero DMG Bonus', format: 'percent', iconPath: '/assets/stat-labels/statLabel_aeroBonusDMG.png', elementClass: 'charStatRow--aero' },
+  { key: 'spectroBonusDMG', label: 'Spectro DMG Bonus', format: 'percent', iconPath: '/assets/stat-labels/statLabel_spectroBonusDMG.png', elementClass: 'charStatRow--spectro' },
+  { key: 'havocBonusDMG', label: 'Havoc DMG Bonus', format: 'percent', iconPath: '/assets/stat-labels/statLabel_havocBonusDMG.png', elementClass: 'charStatRow--havoc' },
+  { key: 'healingBonus', label: 'Healing Bonus', format: 'percent', iconPath: '/assets/stat-labels/statLabel_healingBonus.png' },
+  { key: 'tuneBreakBoost', label: 'Tune Break Boost', format: 'integer', iconPath: '/assets/stat-labels/statLabel_tuneBreakBoost.png' },
 ]
 
 // The three scaling stats need special handling via calculateScalingStat
@@ -56,26 +56,45 @@ function formatStatValue(key: string, value: number, format: StatDisplay['format
   return (value * 100).toFixed(1) + '%'
 }
 
-function formatBreakdownValue(key: string, value: number | undefined, format: StatDisplay['format']): string {
-  if (value === undefined || value === 0) return format === 'flat' ? '0' : format === 'percent' ? '0.0%' : '0'
-  return formatStatValue(key, value, format)
-}
+// ========== Breakdown Data Types =============================================================================================
 
-// ========== Breakdown Source Extraction ======================================================================================
-
-type BreakdownSources = {
-  base: number
-  weapon: number
-  echoes: number
-  setBonus: number
-  passiveMods: number
-  selfBuffs: number
-  teamBuffs: number
+type BreakdownGroup = {
+  key: string
+  groupName: string
+  total: number
+  items: Array<{ name: string; value: number }>
 }
 
 type StatBreakdownData =
-  | { variant: 'scaling'; stat: 'ATK' | 'HP' | 'DEF'; baseStat: CharacterStats; finalValue: number; baseValue: number; percent: BreakdownSources; flat: BreakdownSources }
-  | { variant: 'additive'; key: string; label: string; format: StatDisplay['format']; finalValue: number; sources: BreakdownSources }
+  | { variant: 'scaling'; stat: 'ATK' | 'HP' | 'DEF'; finalValue: number; baseValue: number; percentGroups: BreakdownGroup[]; flatGroups: BreakdownGroup[] }
+  | { variant: 'additive'; key: string; label: string; format: StatDisplay['format']; finalValue: number; groups: BreakdownGroup[] }
+
+function buildGroups(
+  extractValue: (stats: Partial<CharacterStats>) => number,
+  gearBreakdown: ReturnType<typeof computeGearStatBreakdown>,
+  activeBreakdown: ReturnType<typeof computeActiveModifierBreakdown>,
+): BreakdownGroup[] {
+  const weaponVal = extractValue(gearBreakdown.weapon.total)
+  const echoesTotal = extractValue(gearBreakdown.echoes.total)
+  const echoItems = gearBreakdown.echoes.items.map(e => ({ name: e.name, value: extractValue(e.stats) })).filter(i => i.value !== 0)
+  const setBonusVal = gearBreakdown.setBonus ? extractValue(gearBreakdown.setBonus.total) : 0
+  const setBonusItems = gearBreakdown.setBonus && setBonusVal !== 0 ? [{ name: gearBreakdown.setBonus.name, value: setBonusVal }] : []
+  const passiveTotal = extractValue(gearBreakdown.passiveMods.total)
+  const passiveItems = gearBreakdown.passiveMods.items.map(m => ({ name: m.name, value: extractValue(m.stats) })).filter(i => i.value !== 0)
+  const selfTotal = extractValue(activeBreakdown.selfBuffs.total)
+  const selfItems = activeBreakdown.selfBuffs.items.map(m => ({ name: m.name, value: extractValue(m.stats) })).filter(i => i.value !== 0)
+  const teamTotal = extractValue(activeBreakdown.teamBuffs.total)
+  const teamItems = activeBreakdown.teamBuffs.items.map(m => ({ name: m.name, value: extractValue(m.stats) })).filter(i => i.value !== 0)
+
+  return [
+    { key: 'weapon', groupName: 'Weapon', total: weaponVal, items: weaponVal !== 0 ? [{ name: gearBreakdown.weapon.name, value: weaponVal }] : [] },
+    { key: 'echoes', groupName: 'Echoes', total: echoesTotal, items: echoItems },
+    { key: 'setBonus', groupName: 'Set Bonus', total: setBonusVal, items: setBonusItems },
+    { key: 'passiveMods', groupName: 'Passives', total: passiveTotal, items: passiveItems },
+    { key: 'selfBuffs', groupName: 'Self Buffs', total: selfTotal, items: selfItems },
+    { key: 'teamBuffs', groupName: 'Team Buffs', total: teamTotal, items: teamItems },
+  ]
+}
 
 function getBreakdownData(
   statKey: string,
@@ -89,53 +108,39 @@ function getBreakdownData(
   if (SCALING_STAT_KEYS.has(statKey)) {
     const s = statKey as 'ATK' | 'HP' | 'DEF'
     const baseKey = `base${s}` as keyof CharacterStats
-    const flatKey = `flat${s}` as keyof CharacterStats
     const bonusKey = `bonus${s}` as keyof CharacterStats
-
-    const getVal = (obj: Partial<CharacterStats>, k: keyof CharacterStats): number =>
-      (obj[k] as number | undefined) ?? 0
+    const flatKey = `flat${s}` as keyof CharacterStats
 
     return {
       variant: 'scaling',
       stat: s,
-      baseStat: finalStats,
       finalValue: calculateScalingStat(finalStats, s),
-      // baseValue is the raw base stat (e.g. 14800 for HP) shown separately above the % table
       baseValue: (baseStat[baseKey] as number) ?? 0,
-      percent: {
-        // base is 0 — the raw base stat is a flat value shown via baseValue, not a %
-        base: 0,
-        weapon: getVal(gearBreakdown.weapon, bonusKey),
-        echoes: getVal(gearBreakdown.echoes, bonusKey),
-        setBonus: getVal(gearBreakdown.setBonus, bonusKey),
-        passiveMods: getVal(gearBreakdown.passiveMods, bonusKey),
-        selfBuffs: getVal(activeBreakdown.selfBuffs, bonusKey),
-        teamBuffs: getVal(activeBreakdown.teamBuffs, bonusKey),
-      },
-      flat: {
-        base: 0,
-        weapon: getVal(gearBreakdown.weapon, flatKey),
-        echoes: getVal(gearBreakdown.echoes, flatKey),
-        setBonus: getVal(gearBreakdown.setBonus, flatKey),
-        passiveMods: getVal(gearBreakdown.passiveMods, flatKey),
-        selfBuffs: getVal(activeBreakdown.selfBuffs, flatKey),
-        teamBuffs: getVal(activeBreakdown.teamBuffs, flatKey),
-      },
+      percentGroups: buildGroups(
+        stats => (stats[bonusKey] as number | undefined) ?? 0,
+        gearBreakdown,
+        activeBreakdown,
+      ),
+      flatGroups: buildGroups(
+        stats => (stats[flatKey] as number | undefined) ?? 0,
+        gearBreakdown,
+        activeBreakdown,
+      ),
     }
   }
 
   const k = statKey as keyof CharacterStats
-  const getVal = (obj: Partial<CharacterStats>): number => (obj[k] as number | undefined) ?? 0
+  const getVal = (stats: Partial<CharacterStats>): number => (stats[k] as number | undefined) ?? 0
 
   // Base = the residual after subtracting all gear/buff contributions from character.stats.
   // This captures the character's own definition + game defaults without double-counting gear.
   // e.g. critRate: 0.05 default + any char-level stat; energyPercent: 1.0 for Cartethyia.
   const resolvedBase = (baseStat[k] as number) ?? 0
   const charBase = resolvedBase
-    - getVal(gearBreakdown.weapon)
-    - getVal(gearBreakdown.echoes)
-    - getVal(gearBreakdown.setBonus)
-    - getVal(gearBreakdown.passiveMods)
+    - getVal(gearBreakdown.weapon.total)
+    - getVal(gearBreakdown.echoes.total)
+    - (gearBreakdown.setBonus ? getVal(gearBreakdown.setBonus.total) : 0)
+    - getVal(gearBreakdown.passiveMods.total)
 
   return {
     variant: 'additive',
@@ -143,15 +148,7 @@ function getBreakdownData(
     label,
     format,
     finalValue: (finalStats[k] as number) ?? 0,
-    sources: {
-      base: charBase,
-      weapon: getVal(gearBreakdown.weapon),
-      echoes: getVal(gearBreakdown.echoes),
-      setBonus: getVal(gearBreakdown.setBonus),
-      passiveMods: getVal(gearBreakdown.passiveMods),
-      selfBuffs: getVal(activeBreakdown.selfBuffs),
-      teamBuffs: getVal(activeBreakdown.teamBuffs),
-    },
+    groups: [{ key: 'base', groupName: 'Base', total: charBase, items: [] }, ...buildGroups(getVal, gearBreakdown, activeBreakdown)],
   }
 }
 
@@ -177,14 +174,50 @@ function BreakdownModal({ statDisplay, finalStats, gearBreakdown, activeBreakdow
     baseStat,
   )
 
-  const sourceLabels: Array<{ key: keyof BreakdownSources; label: string }> = [
-    { key: 'weapon', label: 'Weapon' },
-    { key: 'echoes', label: 'Echoes' },
-    { key: 'setBonus', label: 'Set Bonus' },
-    { key: 'passiveMods', label: 'Passive Mods' },
-    { key: 'selfBuffs', label: 'Self Buffs' },
-    { key: 'teamBuffs', label: 'Team Buffs' },
-  ]
+  function renderGroupsTable(
+    groups: BreakdownGroup[],
+    formatValue: (v: number) => string,
+    formatEquiv?: (v: number) => string,
+  ) {
+    const overallTotal = groups.reduce((sum, g) => sum + g.total, 0)
+
+    return (
+      <table className="charStatBreakdownTable">
+        <tbody>
+          {groups.map((group, groupIndex) => {
+            const visibleItems = group.items.filter(i => i.value !== 0)
+            return (
+              <Fragment key={group.key}>
+                <tr className={`charStatBreakdownGroupRow${groupIndex > 0 ? ' charStatBreakdownGroupRow--separator' : ''}`}>
+                  <td className="charStatBreakdownSource">{group.groupName}</td>
+                  <td className="charStatBreakdownValue">
+                    {formatEquiv && <span className="charStatBreakdownEquiv">({formatEquiv(group.total)})</span>}
+                    {formatValue(group.total)}
+                  </td>
+                </tr>
+                {visibleItems.map(item => (
+                  <tr key={item.name} className="charStatBreakdownItemRow">
+                    <td className="charStatBreakdownSource">{item.name}</td>
+                    <td className="charStatBreakdownValue">
+                      {formatEquiv && <span className="charStatBreakdownEquiv">({formatEquiv(item.value)})</span>}
+                      {formatValue(item.value)}
+                    </td>
+                  </tr>
+                ))}
+              </Fragment>
+            )
+          })}
+          <tr className="charStatBreakdownRow charStatBreakdownRow--total">
+            <td className="charStatBreakdownSource">Total</td>
+            <td className="charStatBreakdownValue">
+              {formatEquiv && <span className="charStatBreakdownEquiv">({formatEquiv(overallTotal)})</span>}
+              {formatValue(overallTotal)}
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    )
+  }
 
   return (
     <div className="charStatBreakdown" role="dialog" aria-modal="true">
@@ -194,107 +227,47 @@ function BreakdownModal({ statDisplay, finalStats, gearBreakdown, activeBreakdow
       </div>
 
       <div className="charStatBreakdownBody">
-        {data.variant === 'scaling' && (() => {
-          // Only sum from sourceLabels — percent.base is always 0 (base is a flat value, not %)
-          const percentTotal = sourceLabels.reduce((a, { key }) => a + data.percent[key], 0)
-          const flatTotal = sourceLabels.reduce((a, { key }) => a + data.flat[key], 0)
+        {data.variant === 'scaling' && (
+          <>
+            <div className="charStatBreakdownTotal">
+              Total {statDisplay.label}: {formatFlat(data.finalValue)}
+            </div>
+            <div className="charStatBreakdownTotal">
+              Base {statDisplay.label}: {formatFlat(data.baseValue)}
+            </div>
 
-          return (
-            <>
-              <div className="charStatBreakdownTotal">
-                Total {statDisplay.label}: {formatFlat(data.finalValue)}
-              </div>
-              <div className="charStatBreakdownTotal">
-                Base {statDisplay.label}: {formatFlat(data.baseValue)}
-              </div>
-
-              <div className="charStatBreakdownSection">
+            <div className="charStatBreakdownSection">
                 <div className="charStatBreakdownSectionTitle">{statDisplay.label}%</div>
-                <table className="charStatBreakdownTable">
-                  <tbody>
-                    {sourceLabels.map(({ key, label }) => {
-                      const pct = data.percent[key]
-                      const flatEquiv = data.baseValue * pct
-                      return (
-                        <tr key={key} className="charStatBreakdownRow">
-                          <td className="charStatBreakdownSource">{label}</td>
-                          <td className="charStatBreakdownValue">
-                            {pct !== 0 && (
-                              <span className="charStatBreakdownEquiv">({formatFlat(flatEquiv)})</span>
-                            )}
-                            {(pct * 100).toFixed(1)}%
-                          </td>
-                        </tr>
-                      )
-                    })}
-                    <tr className="charStatBreakdownRow charStatBreakdownRow--total">
-                      <td className="charStatBreakdownSource">Total</td>
-                      <td className="charStatBreakdownValue">
-                        {percentTotal !== 0 && (
-                          <span className="charStatBreakdownEquiv">({formatFlat(data.baseValue * percentTotal)})</span>
-                        )}
-                        {(percentTotal * 100).toFixed(1)}%
-                      </td>
-                    </tr>
-                  </tbody>
-                </table>
+                {renderGroupsTable(
+                  data.percentGroups,
+                  v => `${(v * 100).toFixed(1)}%`,
+                  v => formatFlat(data.baseValue * v),
+                )}
               </div>
 
-              <div className="charStatBreakdownSection">
+            <div className="charStatBreakdownSection">
                 <div className="charStatBreakdownSectionTitle">{statDisplay.label} Flat</div>
-                <table className="charStatBreakdownTable">
-                  <tbody>
-                    {sourceLabels.map(({ key, label }) => (
-                      <tr key={key} className="charStatBreakdownRow">
-                        <td className="charStatBreakdownSource">{label}</td>
-                        <td className="charStatBreakdownValue">{formatFlat(data.flat[key])}</td>
-                      </tr>
-                    ))}
-                    <tr className="charStatBreakdownRow charStatBreakdownRow--total">
-                      <td className="charStatBreakdownSource">Total</td>
-                      <td className="charStatBreakdownValue">{formatFlat(flatTotal)}</td>
-                    </tr>
-                  </tbody>
-                </table>
+                {renderGroupsTable(
+                  data.flatGroups,
+                  v => formatFlat(v),
+                )}
               </div>
-            </>
-          )
-        })()}
+          </>
+        )}
 
-        {data.variant === 'additive' && (() => {
-          const total = Object.values(data.sources).reduce((a, b) => a + b, 0)
-          const rows: Array<{ key: keyof BreakdownSources; label: string }> = [
-            { key: 'base', label: 'Base' },
-            ...sourceLabels,
-          ]
-          return (
-            <>
-              <div className="charStatBreakdownTotal">
-                Total {statDisplay.label}: {formatStatValue(data.key, data.finalValue, data.format)}
-              </div>
-              <div className="charStatBreakdownSection">
-                <table className="charStatBreakdownTable">
-                  <tbody>
-                    {rows.map(({ key, label }) => (
-                      <tr key={key} className="charStatBreakdownRow">
-                        <td className="charStatBreakdownSource">{label}</td>
-                        <td className="charStatBreakdownValue">
-                          {formatBreakdownValue(data.key, data.sources[key], data.format)}
-                        </td>
-                      </tr>
-                    ))}
-                    <tr className="charStatBreakdownRow charStatBreakdownRow--total">
-                      <td className="charStatBreakdownSource">Total</td>
-                      <td className="charStatBreakdownValue">
-                        {formatBreakdownValue(data.key, total, data.format)}
-                      </td>
-                    </tr>
-                  </tbody>
-                </table>
-              </div>
-            </>
-          )
-        })()}
+        {data.variant === 'additive' && (
+          <>
+            <div className="charStatBreakdownTotal">
+              Total {statDisplay.label}: {formatStatValue(data.key, data.finalValue, data.format)}
+            </div>
+            <div className="charStatBreakdownSection">
+              {renderGroupsTable(
+                data.groups,
+                v => formatStatValue(data.key, v, data.format),
+              )}
+            </div>
+          </>
+        )}
       </div>
     </div>
   )

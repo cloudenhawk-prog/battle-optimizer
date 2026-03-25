@@ -7,3 +7,9 @@ Add a scope to target strategyS? action, actionSideEffects, otherSideEffects (co
 Any other ideas?
 
 - Canceling an action with a swap, correctly filters out the character, but canceling with skill doesnt force me to use that skill (maybe the issue is within the data of BA4 cartethyia)
+
+- Stats breakdown may not collect all modifiers
+
+- Cartethyia GoW Team Buff doesn't seem to trigger at all.
+
+- Static Mist Outro Buff seems to disappear instantly after the incoming character uses Intro
