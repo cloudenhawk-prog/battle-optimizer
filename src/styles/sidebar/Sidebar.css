@@ -74,7 +74,7 @@
     inset 0 0 60px rgba(100, 150, 255, 0.08),
     8px 0 40px rgba(0, 0, 0, 0.6),
     0 0 30px rgba(100, 150, 255, 0.15);
-  background-image: url('/assets/phrolova.png');
+  background-image: url('/assets/ui/phrolova.png');
   background-repeat: no-repeat;
   background-size: var(--img-width) var(--img-height);
   background-position: var(--img-x) var(--img-y);
@@ -112,7 +112,7 @@
 .sidebar.collapsed {
   transform: translateX(-110%);
   background: var(--sidebar-bg);
-background-image: url('/assets/phrolova.png');
+  background-image: url('/assets/ui/phrolova.png');
   background-repeat: no-repeat;
   background-size: var(--img-width) var(--img-height);
   background-position: var(--img-x) var(--img-y);

@@ -149,7 +149,7 @@ export function CharacterStateTracker({
                 onClick={() => setProfileOpen(group.label)}
                 title="Character Profile"
               >
-                <img src="/assets/gear.png" alt="Profile" />
+                <img src="/assets/ui/gear.png" alt="Profile" />
               </button>
 
               {/* Header */}

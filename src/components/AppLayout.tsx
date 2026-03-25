@@ -31,7 +31,7 @@ export default function AppLayout({ children }: AppLayoutProps) {
       <Sidebar collapsed={collapsed} />
 
       {/* Ghost toggle button outside sidebar */}
-      <SidebarButton collapsed={collapsed} onClick={toggleSidebar} icon="/assets/circle-icon.svg" />
+      <SidebarButton collapsed={collapsed} onClick={toggleSidebar} icon="/assets/ui/circle-icon.svg" />
 
       {/* Main content */}
       <div className="content-column">

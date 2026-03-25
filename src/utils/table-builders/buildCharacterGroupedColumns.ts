@@ -63,8 +63,8 @@ export function buildCharacterGroupsColumns(selectedCharacters: Character[]): Co
 
     return {
       label: c.name,
-      icon: `/assets/character_${c.name.toLowerCase()}.png`,
-      nametag: `/assets/nametag_${c.name.toLowerCase()}.png`,
+      icon: `/assets/characters/character_${c.name.toLowerCase()}.png`,
+      nametag: `/assets/characters/nametag_${c.name.toLowerCase()}.png`,
       columns,
     }
   })
