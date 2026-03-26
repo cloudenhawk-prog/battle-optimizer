@@ -149,7 +149,7 @@ export function CharacterStateTracker({
                 onClick={() => setProfileOpen(group.label)}
                 title="Character Profile"
               >
-                <img src="/assets/gear.png" alt="Profile" />
+                <img src="/assets/ui/gear.png" alt="Profile" />
               </button>
 
               {/* Header */}
@@ -194,7 +194,7 @@ export function CharacterStateTracker({
                   <div className="stateTrackerStateItem">
                     <span className="stateTrackerStateLabel">Form</span>
                     <span className="stateTrackerFormBadge">
-                      {displayForm.icon && (
+                      {displayForm.icon && ( // No longer have icons, remove
                         <img src={displayForm.icon} alt={displayForm.name} className="stateTrackerFormIcon" />
                       )}
                       {displayForm.displayName || displayForm.name}
@@ -282,12 +282,19 @@ export function CharacterStateTracker({
         })}
       </div>
 
-      {profileOpen !== null && (
-        <CharacterProfileOverlay
-          characterName={profileOpen}
-          onClose={() => setProfileOpen(null)}
-        />
-      )}
+      {profileOpen !== null && (() => {
+        const profileCharacter = charactersInBattle.find(c => c.name === profileOpen) ?? null
+        if (!profileCharacter) return null
+        return (
+          <CharacterProfileOverlay
+            characterName={profileOpen}
+            character={profileCharacter}
+            snapshot={snapshot}
+            allCharacters={charactersInBattle}
+            onClose={() => setProfileOpen(null)}
+          />
+        )
+      })()}
     </>
   )
 }

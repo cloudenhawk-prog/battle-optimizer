@@ -33,7 +33,7 @@ export function buildCoordinatedAttackColumns(selectedCharacters: Character[]): 
         {
           key: 'coordinatedAttacks',
           label: 'Coordinated Attacks',
-          icon: 'assets/coordinated_attack.png',
+          icon: 'assets/table/coordinated_attack.png',
           statusMetadata: uniqueCoordAttacksMeta,
           render: () => null,
         },
@@ -41,7 +41,7 @@ export function buildCoordinatedAttackColumns(selectedCharacters: Character[]): 
     : []
 
   return createOptionalGroup(
-    { label: 'Coordinated Attacks', icon: 'assets/coordinated_attack.png' },
+    { label: 'Coordinated Attacks', icon: 'assets/table/coordinated_attack.png' },
     columns,
   )
 }

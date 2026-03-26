@@ -234,63 +234,62 @@ function collectAssetPaths(): string[] {
   // Fixed icons used directly by table builder files (buildBasicColumns, buildOtherColumns, etc.)
   // and rotation-editor components (HeaderRow).
   const fixedAssets = [
-    'assets/basic.png',
-    'assets/fromTime.png',
-    'assets/toTime.png',
-    'assets/damage.png',
-    'assets/dps.png',
-    'assets/other.png',
-    'assets/negativeStatuses.png',
-    'assets/buffs.png',
-    'assets/debuffs.png',
-    'assets/statuses.png', // buildStatusEffectsColumns — Status Effects group icon
-    'assets/coordinated_attack.png',
-    'assets/action.png', // HeaderRow
-    'assets/character.png', // HeaderRow
-    'assets/selector.png', // HeaderRow
+    'assets/table/basic.png',
+    'assets/table/fromTime.png',
+    'assets/table/toTime.png',
+    'assets/table/damage.png',
+    'assets/table/dps.png',
+    'assets/table/other.png',
+    'assets/table/negativeStatuses.png',
+    'assets/table/buffs.png',
+    'assets/table/debuffs.png',
+    'assets/table/statuses.png', // buildStatusEffectsColumns — Status Effects group icon
+    'assets/table/coordinated_attack.png',
+    'assets/table/action.png', // HeaderRow
+    'assets/table/character.png', // HeaderRow
+    'assets/table/selector.png', // HeaderRow
   ]
   for (const p of fixedAssets) paths.add(p)
 
   for (const character of characters) {
     // Character portrait and nametag (buildCharacterGroupedColumns)
-    paths.add(`/assets/character_${character.name.toLowerCase()}.png`)
-    paths.add(`/assets/nametag_${character.name.toLowerCase()}.png`)
+    paths.add(`/assets/characters/nametag_${character.name.toLowerCase()}.png`)
 
     // Energy type icons (buildCharacterGroupedColumns)
     for (const key of Object.keys(character.maxEnergies)) {
-      paths.add(`/assets/${key}.png`)
+      paths.add(`/assets/energy/${key}.png`)
     }
 
     // Character-level damage modifier icons (buildStatusEffectsColumns / buildBuffColumns)
     for (const mod of character.damageModifiers) {
-      paths.add(`/assets/${mod.displayName.toLowerCase().replace(/\s+/g, '_')}.png`)
+      paths.add(`/assets/modifiers/${mod.displayName.toLowerCase().replace(/\s+/g, '_')}.png`)
     }
 
     for (const action of character.actions) {
       // Action-level damage modifier icons
       for (const mod of action.damageModifiers) {
-        paths.add(`/assets/${mod.displayName.toLowerCase().replace(/\s+/g, '_')}.png`)
+        paths.add(`/assets/modifiers/${mod.displayName.toLowerCase().replace(/\s+/g, '_')}.png`)
       }
 
       // Buff/debuff statusModification target icons (buildStatusEffectsColumns)
       for (const mod of action.statusModifications) {
         if (mod.type === 'buff' || mod.type === 'debuff') {
-          paths.add(`/assets/${mod.targetName.toLowerCase().replace(/\s+/g, '_')}.png`)
+          paths.add(`/assets/modifiers/${mod.targetName.toLowerCase().replace(/\s+/g, '_')}.png`)
         }
       }
 
       // Coordinated attack icons (buildCoordinatedAttackColumns)
       for (const ca of action.coordinatedAttacks ?? []) {
-        paths.add(ca.icon ?? `/assets/${ca.name.toLowerCase().replace(/\s+/g, '_')}.png`)
+        paths.add(ca.icon ?? `/assets/coordinated_attacks/${ca.name.toLowerCase().replace(/\s+/g, '_')}.png`)
       }
     }
   }
 
   // Negative status icons and their modifier icons (buildStatusEffectsColumns)
   for (const ns of Object.values(negativeStatuses)) {
-    paths.add(`/assets/${ns.name.toLowerCase().replace(/\s+/g, '_')}.png`)
+    paths.add(`/assets/negative-statuses/${ns.name.toLowerCase().replace(/\s+/g, '_')}.png`)
     for (const mod of ns.damageModifiers ?? []) {
-      paths.add(`/assets/${mod.displayName.toLowerCase().replace(/\s+/g, '_')}.png`)
+      paths.add(`/assets/modifiers/${mod.displayName.toLowerCase().replace(/\s+/g, '_')}.png`)
     }
   }
 

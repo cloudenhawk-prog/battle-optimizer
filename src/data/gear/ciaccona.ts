@@ -7,7 +7,7 @@ import { nightmareKelpieOutroTrigger } from '../sideEffects/sideEffects'
 // ========== Weapon ===========================================================================================================
 const ciaccona_weapon: Weapon = {
   name: 'Static Mist',
-  stats: { flatATK: 587.50, critRate: 0.2430, energyPercent: 0.192 },
+  stats: { baseATK: 587.50, critRate: 0.2430, energyPercent: 0.192 },
   injectedModifiers: [
     {
       targets: [ciaccona_outro], // TODO: Would this correctly inject it into ciaccona's outro action?

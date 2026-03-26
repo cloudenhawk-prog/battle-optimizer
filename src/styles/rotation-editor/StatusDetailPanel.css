@@ -1,0 +1,132 @@
+/* ========== Status Detail Overlay ========================================================================================= */
+
+.statusDetailOverlay {
+  position: fixed;
+  inset: 0;
+  z-index: 2000;
+  background-color: rgba(0, 0, 0, 0.5);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* ========== Status Detail Panel =========================================================================================== */
+
+.statusDetailPanel {
+  background-color: rgba(18, 18, 28, 0.98);
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  border-radius: 10px;
+  min-width: 280px;
+  max-width: 400px;
+  width: 100%;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.6);
+  overflow: hidden;
+}
+
+/* ── Header ── */
+
+.statusDetailHeader {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 14px 16px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.statusDetailIcon {
+  width: 36px;
+  height: 36px;
+  object-fit: contain;
+  flex-shrink: 0;
+}
+
+.statusDetailTitle {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  flex: 1;
+  min-width: 0;
+}
+
+.statusDetailName {
+  font-size: 15px;
+  font-weight: 600;
+  color: #fff;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.statusDetailType {
+  font-size: 11px;
+  font-weight: 500;
+  padding: 1px 6px;
+  border-radius: 3px;
+  align-self: flex-start;
+}
+
+.statusDetailType-buff {
+  background-color: rgba(76, 175, 80, 0.2);
+  color: rgba(76, 175, 80, 0.9);
+  border: 1px solid rgba(76, 175, 80, 0.3);
+}
+
+.statusDetailType-debuff {
+  background-color: rgba(244, 67, 54, 0.2);
+  color: rgba(244, 67, 54, 0.9);
+  border: 1px solid rgba(244, 67, 54, 0.3);
+}
+
+.statusDetailType-negativeStatus {
+  background-color: rgba(156, 39, 176, 0.2);
+  color: rgba(156, 39, 176, 0.9);
+  border: 1px solid rgba(156, 39, 176, 0.3);
+}
+
+.statusDetailClose {
+  background: none;
+  border: none;
+  color: rgba(255, 255, 255, 0.4);
+  font-size: 16px;
+  cursor: pointer;
+  padding: 4px;
+  line-height: 1;
+  flex-shrink: 0;
+  transition: color 0.15s ease;
+}
+
+.statusDetailClose:hover {
+  color: rgba(255, 255, 255, 0.85);
+}
+
+/* ── Body ── */
+
+.statusDetailBody {
+  padding: 12px 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.statusDetailRow {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 6px 0;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+}
+
+.statusDetailRow:last-child {
+  border-bottom: none;
+}
+
+.statusDetailRowLabel {
+  font-size: 13px;
+  color: rgba(255, 255, 255, 0.5);
+}
+
+.statusDetailRowValue {
+  font-size: 13px;
+  font-weight: 600;
+  color: rgba(255, 255, 255, 0.9);
+}

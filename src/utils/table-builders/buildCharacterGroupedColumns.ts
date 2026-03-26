@@ -23,7 +23,7 @@ export function buildCharacterGroupsColumns(selectedCharacters: Character[]): Co
           columns.push({
             key: `${c.name}_forte`,
             label: 'Forte',
-            icon: '/assets/forte.png',
+            icon: '/assets/energy/forte.png',
             render: (snapshot: Snapshot) => {
               const energies = snapshot.charactersEnergies[c.name] ?? {}
               const filled = forteSubKeys.filter(k => (energies[k] ?? 0) >= 1).length
@@ -32,7 +32,7 @@ export function buildCharacterGroupsColumns(selectedCharacters: Character[]): Co
             energyMetadata: forteSubKeys.map(k => ({
               key: k,
               label: k.slice('forte_'.length).charAt(0).toUpperCase() + k.slice('forte_'.length + 1),
-              icon: `/assets/${k}.png`,
+              icon: `/assets/energy/${k}.png`,
             })),
           })
           forteGroupAdded = true
@@ -40,7 +40,7 @@ export function buildCharacterGroupsColumns(selectedCharacters: Character[]): Co
           columns.push({
             key: `${c.name}_${key}`,
             label: key.charAt(0).toUpperCase() + key.slice(1),
-            icon: `/assets/${key}.png`,
+            icon: `/assets/energy/${key}.png`,
             render: (snapshot: Snapshot) => {
               const energy = snapshot.charactersEnergies[c.name]?.[key]
               return energy != null ? Math.floor(energy) : energy
@@ -53,7 +53,7 @@ export function buildCharacterGroupsColumns(selectedCharacters: Character[]): Co
       columns.push({
         key: `${c.name}_${key}`,
         label: key.charAt(0).toUpperCase() + key.slice(1),
-        icon: `/assets/${key}.png`,
+        icon: `/assets/energy/${key}.png`,
         render: (snapshot: Snapshot) => {
           const energy = snapshot.charactersEnergies[c.name]?.[key]
           return energy != null ? Math.floor(energy) : energy
@@ -63,8 +63,8 @@ export function buildCharacterGroupsColumns(selectedCharacters: Character[]): Co
 
     return {
       label: c.name,
-      icon: `/assets/character_${c.name.toLowerCase()}.png`,
-      nametag: `/assets/nametag_${c.name.toLowerCase()}.png`,
+      icon: `/assets/characters/character_${c.name.toLowerCase()}.png`,
+      nametag: `/assets/characters/nametag_${c.name.toLowerCase()}.png`,
       columns,
     }
   })

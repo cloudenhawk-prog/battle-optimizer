@@ -103,7 +103,7 @@ export function HeaderRow({ tableConfig, columnVisibility, setColumnVisibility }
         {/* Action */}
         <th className="tableCellHeader">
           <div className="header-cell-content">
-            <IconRenderer icon={'assets/action.png'} alt={'Action'} />
+            <IconRenderer icon={'assets/table/action.png'} alt={'Action'} />
             <span>Action</span>
           </div>
         </th>

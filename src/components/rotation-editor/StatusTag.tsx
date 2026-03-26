@@ -1,5 +1,8 @@
+import { useState } from 'react'
 import type { CSSProperties } from 'react'
 import '../../styles/rotation-editor/StatusTag.css'
+import { StatusDetailPanel } from './StatusDetailPanel'
+import type { StatusDetailInfo } from './StatusDetailPanel'
 
 // ========== Component: Status Tag ============================================================================================
 
@@ -10,11 +13,26 @@ type StatusTagProps = {
   maxStacks?: number
   type?: 'buff' | 'debuff' | 'negativeStatus'
   color?: string
+  statusKey?: string
+  timeLeft?: number
 }
 
-export function StatusTag({ icon, label, value, maxStacks, type, color }: StatusTagProps) {
+export function StatusTag({ icon, label, value, maxStacks, type, color, statusKey, timeLeft }: StatusTagProps) {
+  const [panelOpen, setPanelOpen] = useState(false)
+
   // Don't render if value is 0 or undefined
   if (!value || value === 0) return null
+
+  const detail: StatusDetailInfo = {
+    key: statusKey ?? label,
+    label,
+    icon,
+    value,
+    maxStacks,
+    type,
+    color,
+    timeLeft,
+  }
 
   const displayValue = maxStacks && maxStacks > 1 ? value : undefined
   const typeClass = type ? `statusTag-${type}` : ''
@@ -35,7 +53,12 @@ export function StatusTag({ icon, label, value, maxStacks, type, color }: Status
     : undefined
 
   return (
-    <div className={`statusTag ${typeClass} ${color ? 'statusTag-custom' : ''}`} style={{ ...customStyle, ...customHoverStyle } as CSSProperties}>
+    <>
+    <div
+      className={`statusTag ${typeClass} ${color ? 'statusTag-custom' : ''}`}
+      style={{ ...customStyle, ...customHoverStyle } as CSSProperties}
+      onClick={() => setPanelOpen(true)}
+    >
       <div className="statusTagContent">
         <img src={icon} alt={label} className="statusTagIcon" />
         {displayValue !== undefined && <span className="statusTagValue">{displayValue}</span>}
@@ -51,5 +74,7 @@ export function StatusTag({ icon, label, value, maxStacks, type, color }: Status
         </div>
       </div>
     </div>
+    <StatusDetailPanel status={panelOpen ? detail : null} onClose={() => setPanelOpen(false)} />
+    </>
   )
 }

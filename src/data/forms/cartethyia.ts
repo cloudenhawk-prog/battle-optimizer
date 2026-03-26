@@ -6,12 +6,10 @@ export const form_cartethyia: Form = {
   displayName: 'Cartethyia',
   introAction: cartethyia_intro_outro_actions.find(a => a.dmgTypes.includes('INTRO')),
   outroAction: cartethyia_intro_outro_actions.find(a => a.dmgTypes.includes('OUTRO')),
-  icon: '/assets/temp-path.png'
 }
 
 export const form_fleurdelys: Form = {
   name: 'Fleurdelys',
   displayName: 'Fleurdelys',
   introAction: fleurdelys_intro_outro_actions.find(a => a.dmgTypes.includes('INTRO')),
-  icon: '/assets/temp-path.png'
 }

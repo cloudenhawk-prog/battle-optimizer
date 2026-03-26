@@ -492,16 +492,12 @@ const cartethyia_transform: Action = {
   statusModifications: [],
   damageModifiers: [
     {
-      // Active when Sword of Divinity was consumed: amplifies Aero Erosion DMG and speeds up tick rate.
+      // Coordinator buff: exists for resourceMilestones and clears forte grants on expiry.
       source: 'Cartethyia: Mandate',
       displayName: 'Mandate',
       type: 'buff',
       ownerCharacter: 'Cartethyia',
       color: '#1e90ff',
-      characterStats: { aeroErosionAmplifyDMG: 0.5 },
-      negativeStatusEffects: [
-        { targetStatus: 'Aero Erosion', property: 'frequency', value: -0.5 },
-      ],
       condition: hasForteGrant('Mandate of Divinity'),
       targetStrategy: 'self',
       durationStrategy: { type: 'limited', timeDuration: 12 },
@@ -512,18 +508,48 @@ const cartethyia_transform: Action = {
       contributionGroup: 'Cartethyia: Mandate',
     },
     {
-      // Active when Sword of Discord was consumed: raises the Aero Erosion max stack cap.
+      // Active when Sword of Divinity was consumed: amplifies Aero Erosion DMG and speeds up tick rate.
+      source: 'Cartethyia: Mandate of Divinity',
+      displayName: 'Mandate of Divinity',
+      type: 'buff',
+      ownerCharacter: 'Cartethyia',
+      color: '#ff8c00',
+      characterStats: { aeroErosionAmplifyDMG: 0.5 },
+      negativeStatusEffects: [
+        { targetStatus: 'Aero Erosion', property: 'frequency', value: -0.5 },
+      ],
+      condition: hasForteGrant('Mandate of Divinity'),
+      targetStrategy: 'self',
+      durationStrategy: { type: 'limited', timeDuration: 12 },
+      stackingStrategy: { maxStacks: 1, resetTimerOnApplication: true, stacksRemovedEachTime: 1 },
+      contributionGroup: 'Cartethyia: Mandate',
+    },
+    {
+      // Active when Sword of Discord was consumed: presence marker (no stat effects, used as a condition).
       source: 'Cartethyia: Power of Discord',
       displayName: 'Power of Discord',
       type: 'buff',
       ownerCharacter: 'Cartethyia',
-      color: '#ff8c00',
+      color: '#5a00a8',
+      condition: hasForteGrant('Power of Discord'),
+      targetStrategy: 'self',
+      durationStrategy: { type: 'limited', timeDuration: 12 },
+      stackingStrategy: { maxStacks: 1, resetTimerOnApplication: true, stacksRemovedEachTime: 1 },
+      contributionGroup: 'Cartethyia: Mandate',
+    },
+    {
+      // S2: Once Sword of Discord is consumed, permanently raises the Aero Erosion max stack cap by 3.
+      source: 'Cartethyia S2',
+      displayName: 'Blade Broken by Tempest',
+      type: 'buff',
+      ownerCharacter: 'Cartethyia',
+      color: '#b6f0ff',
       negativeStatusEffects: [
         { targetStatus: 'Aero Erosion', property: 'maxStacks', value: 3 },
       ],
       condition: hasForteGrant('Power of Discord'),
       targetStrategy: 'self',
-      durationStrategy: { type: 'limited', timeDuration: 12 },
+      durationStrategy: { type: 'limited', timeDuration: 100000 },
       stackingStrategy: { maxStacks: 1, resetTimerOnApplication: true, stacksRemovedEachTime: 1 },
       contributionGroup: 'Cartethyia: Mandate',
     },

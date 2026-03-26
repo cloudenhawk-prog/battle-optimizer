@@ -11,6 +11,7 @@ type StatusInfo = {
   maxStacks?: number
   type?: 'buff' | 'debuff' | 'negativeStatus'
   color?: string
+  timeLeft?: number
 }
 
 type StatusTagGroupProps = {
@@ -28,7 +29,7 @@ export function StatusTagGroup({ statuses }: StatusTagGroupProps) {
   return (
     <div className="statusTagGroup">
       {activeStatuses.map(status => (
-        <StatusTag key={status.key} icon={status.icon} label={status.label} value={status.value} maxStacks={status.maxStacks} type={status.type} color={status.color} />
+        <StatusTag key={status.key} statusKey={status.key} icon={status.icon} label={status.label} value={status.value} maxStacks={status.maxStacks} type={status.type} color={status.color} timeLeft={status.timeLeft} />
       ))}
     </div>
   )

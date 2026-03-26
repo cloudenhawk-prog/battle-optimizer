@@ -14,7 +14,7 @@ export function buildOtherColumns(selectedCharacters: Character[]): ColumnGroup 
   return createOptionalGroup(
     {
       label: 'Other',
-      icon: 'assets/other.png',
+      icon: 'assets/table/other.png',
     },
     columns,
   )

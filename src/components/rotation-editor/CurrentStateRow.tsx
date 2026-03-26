@@ -160,19 +160,24 @@ function renderStatusColumns(columns: any[], columnVisibility: ColumnVisibility,
       if (col.statusMetadata) {
         // Access snapshot data directly based on column key
         let statusData: Record<string, number> | undefined
+        let timeLeftData: Record<string, number> | undefined
         let statusType: 'buff' | 'debuff' | 'negativeStatus' = 'buff'
 
         if (col.key === 'negativeStatuses') {
           statusData = snapshot.negativeStatuses as Record<string, number> | undefined
+          timeLeftData = snapshot.negativeStatusesTimeLeft as Record<string, number> | undefined
           statusType = 'negativeStatus'
         } else if (col.key === 'buffs') {
           statusData = snapshot.buffs as Record<string, number> | undefined
+          timeLeftData = snapshot.buffsTimeLeft as Record<string, number> | undefined
           statusType = 'buff'
         } else if (col.key === 'debuffs') {
           statusData = snapshot.debuffs as Record<string, number> | undefined
+          timeLeftData = snapshot.debuffsTimeLeft as Record<string, number> | undefined
           statusType = 'debuff'
         } else if (col.key === 'coordinatedAttacks') {
           statusData = snapshot.coordinatedAttacks as Record<string, number> | undefined
+          timeLeftData = snapshot.coordinatedAttacksTimeLeft as Record<string, number> | undefined
           statusType = 'buff'
         }
 
@@ -185,6 +190,7 @@ function renderStatusColumns(columns: any[], columnVisibility: ColumnVisibility,
             maxStacks: meta.maxStacks,
             type: statusType,
             color: meta.color,
+            timeLeft: timeLeftData?.[meta.key],
           })) ?? []
 
         return (
