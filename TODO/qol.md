@@ -35,3 +35,6 @@
 # Enemy
 - Allow multi-instance battle timeline -> Track boss HP - when dead, automatically proceed to next boss in the list.
 - Allow picking enemies if no actions have been chosen, or alternatively allow picks always (make a visual showcase of when which enemy was present)
+
+# Background
+- Make the background move slower as to not stress a new user
