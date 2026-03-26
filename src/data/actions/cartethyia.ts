@@ -1150,7 +1150,7 @@ const fleurdelys_liberation: Action = {
   damageModifiers: [
     {
       source: 'Liberation Stacks',
-      displayName: 'Liberation Passive',
+      displayName: 'Cartethyia Liberation Passive',
       type: 'buff',
       ownerCharacter: 'Cartethyia',
       condition: (ctx) => {

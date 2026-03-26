@@ -5,6 +5,14 @@ On-click works for Negative Statuses, Modifiers, and Coordinated Attacks labels
 BUT only the ones in 'CurrentStateRow' should be clickable
 AND finish the implementation (see TODO inside StatusDetailPanel.tsx)
 
+# Modifiers
+Right now we aren't distinguishing well between "buffs/debuffs" and a conditional amplifier on certain actions.
+Example: Cartethyia's final liberation (Fleurdelys Form) has a modifier that increases its damage by 20 % per Aero Erosion stack on the target (up to 100 %).
+This should technically have nothing to do with buffs/debuffs.
+Buff/debuff = A multi-target stats changer or amplifier. These can sit inside actions and wait for the action to give birth to it on cast
+Action-specific amplifier = a damage modifier that sits inside actions. When an action is cast, these conditions can affect the damage it deals
+Note: What about Cartethyia's Forte/swords/plunge logic. It conditionally increases the damage of plunge, but it also consumes forte swords that later are turned into buffs (check up on the logic and flow).
+
 # General
 Right now action names and other things may not be unique. Make sure they are so we can reference each other, or find a different approach
 

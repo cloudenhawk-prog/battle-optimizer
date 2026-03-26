@@ -1,5 +1,8 @@
 ### Quality of Life
 
+# Verify Data
+- Verify data should also look for assets in the project that is not used anywhere (if possible and not too complicated)
+
 # Table
 - Some columns, once you hide them, cant be returned to the table
 - Need a way to determine which buffs/debuffs to show

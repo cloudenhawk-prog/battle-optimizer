@@ -13,6 +13,8 @@ export type StatusDetailInfo = {
   color?: string
   timeLeft?: number
   //
+  // Should have a short description (Maybe by adding it to the data somewhere and using it here)
+  //
   // TODO: Only the ones in the 'CurrentStateRow.tsx' should be clickable! Not in every row (otherwise they would need logs of every entry)
   // TODO: Future fields to pull into this panel once the data is wired through:
   //

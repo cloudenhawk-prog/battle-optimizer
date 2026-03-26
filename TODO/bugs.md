@@ -19,3 +19,8 @@ Any other ideas?
 - Resource Milestones don't seem to use their custom defined color for the icon labels (see: 'Fleurdelys's Conviction')
 
 - The name-tags clickable area is too large, partly shadowing for the gear icon (not actually, but close enough to be annoying)
+
+- Ensemple Sylph (24 % aero boost from ciaccona) doesn't seem to show up in the table or as a contributing modifier when characters deal damage or even in the stats profile tab. This suggest our flows are wrong for certain things since there is no reason to believe this is and will always be a single incident.
+
+- Gusts of Welking is bugged: In the stats profile breakdown, it's displayed under Team Buffs (both the Self Buff and Team Buff part). The names are shown as GustsofWelkin(SelfBuff) and GustsofWelkin(TeamBuff), while every other entry has correct spaces between words and parentheses.
+Gusts of welking (both self buff and team buff) seem to use wrong names between "what is displayed in the table" and "what is used to access the asset for the icon". It seems to use different logic than other assets. This might be a systematic issue in certain places. Once again there is no reason to believe this is an isolated issue.
