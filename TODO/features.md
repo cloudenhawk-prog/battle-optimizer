@@ -36,6 +36,8 @@ HIDE IT for now - then we will simplify it once we start working on it again
 - Toggle Hide Certain contributions: There should be a button to hide: 'permanent' damageModifiers with condition 'always' in the timeline and in the dataoverlay
 
 # Data Overlay
+- Add option to modifiers to show up in the data overlay or not (visually, in the contributions graph)
+
 - Toggle Hide Certain contributions: There should be a button to hide: 'permanent' damageModifiers with condition 'always' in the timeline and in the dataoverlay
 
 - Dynamic width for contributions : Data Overlay contributions sections should grow wider as more are added with a minimum width and a maximum width (at which point it becomes scrollable)
