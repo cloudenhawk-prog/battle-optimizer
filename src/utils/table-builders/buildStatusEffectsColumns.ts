@@ -19,7 +19,7 @@ export function buildStatusEffectsColumns(selectedCharacters: Character[]): Colu
       return {
         key: status,
         label: status,
-        icon: `/assets/effects/${status.toLowerCase().replace(/\s+/g, '_')}.png`,
+        icon: `/assets/negative-statuses/${status.toLowerCase().replace(/\s+/g, '_')}.png`,
         color: negativeStatusData?.color,
       }
     })
@@ -67,7 +67,7 @@ export function buildStatusEffectsColumns(selectedCharacters: Character[]): Colu
       return {
         key,
         label: buff,
-        icon: `/assets/${buff.toLowerCase().replace(/\s+/g, '_')}.png`,
+        icon: `/assets/modifiers/${buff.toLowerCase().replace(/\s+/g, '_')}.png`,
         maxStacks,
         color,
       }
@@ -117,7 +117,7 @@ export function buildStatusEffectsColumns(selectedCharacters: Character[]): Colu
       return {
         key,
         label: debuff,
-        icon: `/assets/${debuff.toLowerCase().replace(/\s+/g, '_')}.png`,
+        icon: `/assets/modifiers/${debuff.toLowerCase().replace(/\s+/g, '_')}.png`,
         maxStacks,
         color,
       }

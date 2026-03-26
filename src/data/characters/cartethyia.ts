@@ -20,7 +20,7 @@ export const cartethyia: Character = {
         displayName: "Fleurdelys's Conviction",
         type: 'buff',
         ownerCharacter: 'Cartethyia',
-        color: '#87ceeb',
+        color: '#17191a',
         characterStats: { critDamage: 0.25 },
         condition: always(),
         targetStrategy: 'self',

@@ -1,5 +1,10 @@
 ## Features
 
+# Table
+On-click works for Negative Statuses, Modifiers, and Coordinated Attacks labels
+BUT only the ones in 'CurrentStateRow' should be clickable
+AND finish the implementation (see TODO inside StatusDetailPanel.tsx)
+
 # General
 Right now action names and other things may not be unique. Make sure they are so we can reference each other, or find a different approach
 
