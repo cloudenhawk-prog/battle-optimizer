@@ -17,3 +17,5 @@ Any other ideas?
 - CharacterStateTracker.tsx still references Form 'icons' although we have removed icons for forms entirely
 
 - Resource Milestones don't seem to use their custom defined color for the icon labels (see: 'Fleurdelys's Conviction')
+
+- The name-tags clickable area is too large, partly shadowing for the gear icon (not actually, but close enough to be annoying)
