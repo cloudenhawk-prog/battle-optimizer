@@ -26,7 +26,9 @@ const ciaccona_weapon: Weapon = {
       ]
     }
   ],
-  rank: 3
+  rank: 3,
+  info: 'Increases Energy Regen by 12.8%/16%/19.2%/22.4%/25.6%. Incoming Resonator\'s ATK is increased by 10%/12.5%/15%/17.5%/20% for 14/14/14/14/14s, stackable for up to 1/1/1/1/1 times after the wielder casts Outro Skill.',
+  icon: 'assets/gear/weapons/static_mist.png'
 }
 
 // ========== Echoes ===========================================================================================================
@@ -63,35 +65,47 @@ const ciaccona_cost_4_echo_1: Echo = {
       targets: [ciaccona_outro],
       sideEffects: [nightmareKelpieOutroTrigger]
     }
-  ]
+  ],
+  info: 'The Resonator with this Echo equipped in the main slot gains 12.00% Glacio DMG Bonus and 12.00% Aero DMG Bonus. Switching out the Resonator with Outro Skill summons Nightmare: Kelpie to deal 405.00% Aero DMG.',
+  icon: 'assets/gear/echoes/nightmare_kelpie.png',
+  info_icon: 'assets/gear/echoes/info/info_nightmare_kelpie.png'
 }
 
 const ciaccona_cost_3_echo_1: Echo = {
   name: 'Capitaneus',
   cost: 3,
   baseStats: { flatATK: 100, aeroBonusDMG: 0.30 },
-  subStats: { critRate: 0.075, critDamage: 0.150, bonusATK: 0.079 }
+  subStats: { critRate: 0.075, critDamage: 0.150, bonusATK: 0.079 },
+  icon: 'assets/gear/echoes/capitaneus.png',
+  info: 'The Resonator with this Echo equipped in their main slot gains 12.00% Spectro DMG Bonus and 12.00% Heavy Attack DMG Bonus.',
+  info_icon: 'assets/gear/echoes/info_capitaneus.png'
 }
 
 const ciaccona_cost_3_echo_2: Echo = {
-  name: 'Capitaneus',
+  name: 'Hurriclaw',
   cost: 3,
   baseStats: { flatATK: 100, aeroBonusDMG: 0.30 },
-  subStats: { critRate: 0.075, critDamage: 0.150, bonusATK: 0.079 }
+  subStats: { critRate: 0.075, critDamage: 0.150, bonusATK: 0.079 },
+  icon: 'assets/gear/echoes/hurriclaw.png',
+  info_icon: 'assets/gear/echoes/info_hurriclaw.png'
 }
 
 const ciaccona_cost_1_echo_1: Echo = {
-  name: 'Sagittario',
+  name: 'Sacerdos',
   cost: 1,
   baseStats: { flatHP: 2280, bonusATK: 0.18 },
-  subStats: { critRate: 0.075, critDamage: 0.150, bonusATK: 0.079 }
+  subStats: { critRate: 0.075, critDamage: 0.150, bonusATK: 0.079 },
+  icon: 'assets/gear/echoes/sagittario.png',
+  info_icon: 'assets/gear/echoes/info_sagittario.png'
 }
 
 const ciaccona_cost_1_echo_2: Echo = {
   name: 'Sacerdos',
   cost: 1,
   baseStats: { flatHP: 2280, bonusATK: 0.18 },
-  subStats: { critRate: 0.075, critDamage: 0.150, bonusATK: 0.079 }
+  subStats: { critRate: 0.075, critDamage: 0.150, bonusATK: 0.079 },
+  icon: 'assets/gear/echoes/sacerdos.png',
+  info_icon: 'assets/gear/echoes/info_sacerdos.png'
 }
 
 // ========== Set Bonus ========================================================================================================
@@ -126,7 +140,11 @@ const ciaccona_set_bonus: EchoSetBonus = {
         }
       ]
     }
-  ]
+  ],
+  info: {
+    '2-piece': 'Aero DMG + 10%',
+    '5-piece': 'Inflicting Aero Erosion upon enemies increases Aero DMG for all Resonators in the team by 15%, and for the Resonator triggering this effect by an additional 15%, lasting for 20s.'
+  }
 }
 
 export {

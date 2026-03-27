@@ -17,6 +17,8 @@ export type Weapon = {
   stats: Partial<CharacterStats>
   injectedModifiers?: InjectedModifier[]
   rank: 1 | 2 | 3 | 4 | 5
+  info: string
+  icon: string
 }
 
 // ========== Type: Echo =======================================================================================================
@@ -30,6 +32,9 @@ export type Echo = {
   echoSkill?: Action
   injectedModifiers?: InjectedModifier[]
   injectedSideEffects?: InjectedSideEffect[]
+  icon: string
+  info?: string
+  info_icon?: string
 }
 
 export type EchoSlots = {
@@ -49,6 +54,7 @@ export type EchoSetBonus = {
   name: string
   stats: Partial<CharacterStats>
   injectedModifiers?: InjectedModifier[]
+  info: { [key: string]: string }
 }
 
 // ========== Type: Shared =====================================================================================================

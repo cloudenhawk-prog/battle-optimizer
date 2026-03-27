@@ -41,7 +41,9 @@ const roverAero_weapon: Weapon = {
       ]
     }
   ],
-  rank: 5
+  rank: 5,
+  info: 'Providing Healing increases Resonance Skill DMG by 10%/14%/18%/22%/26% for 6/6/6/6/6s. When Rover: Aero casts Resonance Skill Unbound Flow, Aero DMG dealt by nearby Resonators on the field is Amplified by 10%/14%/18%/22%/26% for 30/30/30/30/30s.',
+  icon: 'assets/gear/weapons/bloodpact\'s_pledge.png'
 }
 
 // ========== Echoes ===========================================================================================================
@@ -75,35 +77,48 @@ const roverAero_cost_4_echo_1: Echo = {
       endState: 'PRESERVE',
     },
     offtune: 0
-  }
+  },
+  icon: 'assets/gear/echoes/reminiscence_fleurdelys.png',
+  info: 'The Resonator with this Echo equipped in the main slot gains 10.00% Aero DMG Bonus. When Resonator: Aero Rover or Cartethyia equips this Echo, they gain 10.00% more Aero DMG Bonus.',
+  info_icon: 'assets/gear/echoes/info_reminiscence_fleurdelys.png'
 }
 
 const roverAero_cost_3_echo_1: Echo = {
   name: 'Capitaneus',
   cost: 3,
   baseStats: { flatATK: 100, aeroBonusDMG: 0.30 },
-  subStats: { critRate: 0.075, critDamage: 0.150, bonusATK: 0.079 }
+  subStats: { critRate: 0.075, critDamage: 0.150, bonusATK: 0.079 },
+  icon: 'assets/gear/echoes/capitaneus.png',
+  info: 'The Resonator with this Echo equipped in their main slot gains 12.00% Spectro DMG Bonus and 12.00% Heavy Attack DMG Bonus.',
+  info_icon: 'assets/gear/echoes/info_capitaneus.png'
 }
 
 const roverAero_cost_3_echo_2: Echo = {
-  name: 'Capitaneus',
+  name: 'Kerasaur',
   cost: 3,
   baseStats: { flatATK: 100, aeroBonusDMG: 0.30 },
-  subStats: { critRate: 0.075, critDamage: 0.150, bonusATK: 0.079 }
+  subStats: { critRate: 0.075, critDamage: 0.150, bonusATK: 0.079 },
+  icon: 'assets/gear/echoes/kerasaur.png',
+  info: 'The Resonator with this Echo equipped in the main slot gains 12.00% Aero DMG Bonus and 12.00% Resonance Liberation DMG Bonus.',
+  info_icon: 'assets/gear/echoes/info_kerasaur.png'
 }
 
 const roverAero_cost_1_echo_1: Echo = {
   name: 'Sagittario',
   cost: 1,
   baseStats: { flatHP: 2280, bonusATK: 0.18 },
-  subStats: { critRate: 0.075, critDamage: 0.150, bonusATK: 0.079 }
+  subStats: { critRate: 0.075, critDamage: 0.150, bonusATK: 0.079 },
+  icon: 'assets/gear/echoes/sacerdos.png',
+  info_icon: 'assets/gear/echoes/info_sacerdos.png'
 }
 
 const roverAero_cost_1_echo_2: Echo = {
-  name: 'Sacerdos',
+  name: 'Spectro Drake',
   cost: 1,
   baseStats: { flatHP: 2280, bonusATK: 0.18 },
-  subStats: { critRate: 0.075, critDamage: 0.150, bonusATK: 0.079 }
+  subStats: { critRate: 0.075, critDamage: 0.150, bonusATK: 0.079 },
+  icon: 'assets/gear/echoes/spectro_drake.png',
+  info_icon: 'assets/gear/echoes/info_spectro_drake.png'
 }
 
 // ========== Set Bonus ========================================================================================================
@@ -127,7 +142,11 @@ const roverAero_set_bonus: EchoSetBonus = {
         }
       ]
     }
-  ]
+  ],
+  info: {
+    '2-piece': 'Aero DMG + 10%',
+    '5-piece': 'Hitting a target with Aero Erosion increases Crit. Rate by 10% and grants 30% Aero DMG Bonus, lasting for 10s.'
+  }
 }
 
 export {
