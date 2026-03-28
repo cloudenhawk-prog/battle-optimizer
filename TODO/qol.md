@@ -1,5 +1,11 @@
 ### Quality of Life
 
+# Modifiers
+- Certain modifiers only gives stats when conditions are met. They may not show up in the stats profile overlay, even though it could be an obvious almost 100 % uptime stat.
+  Each stat should, for example at the bottom, show Conditional multipliers currently present
+    > Example: Mornye S2 Crit Dmg Boost
+    > Example: Mornye Weapon Crit Dmg Boost
+
 # Verify Data
 - Verify data should also look for assets in the project that is not used anywhere (if possible and not too complicated)
 
