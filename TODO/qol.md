@@ -12,6 +12,7 @@
 - When a new row is added - play an animation similarly to the light that moves through the sections in data overlay - instead of using a green color?
 
 # Selectors
+- When an aciton have a required follow up action, it should automatically cast it afterwards
 - When action/character is not selectable, hovering should display a tooltip telling why. Sometimes multiple conditions may make it unselectable, just showcase the first encountered. Therefore conditions should be checked in order of importance. If it's easy, could show a list of failed conditions (if it's not too much work)
 - Implement toggler to active/deactive the Selector Check on character/actions
 

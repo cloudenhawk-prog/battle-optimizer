@@ -113,5 +113,6 @@ export const blueprint: CharacterStats = {
   havocTotalMultiplierDMG: 1.0,
 
   energyPercent: 1.0,
+  healingBonus: 0,
+  tuneBreakBoost: 0
 }
-
