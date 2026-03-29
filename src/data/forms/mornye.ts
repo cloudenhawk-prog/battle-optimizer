@@ -11,4 +11,4 @@ export const form_baseline_mode: Form = {
 export const form_wide_field_observation_mode: Form = {
   name: 'Wide Field Observation Mode',
   displayName: 'Wide Field Observation Mode',
-} 
+}

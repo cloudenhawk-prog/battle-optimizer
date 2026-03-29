@@ -1,5 +1,4 @@
 import type { Echo, EchoSetBonus, Weapon } from '../../types/gear'
-import { always } from '../../utils/conditions/damageModifierConditions'
 
 // ========== Weapon ===========================================================================================================
 const mornye_weapon: Weapon = {
