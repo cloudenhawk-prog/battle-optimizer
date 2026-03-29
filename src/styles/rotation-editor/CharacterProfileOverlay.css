@@ -112,14 +112,14 @@
 
   /* ══ PORTRAIT ════════════════════════════════════════════════ */
   --cpo-portrait-size:  250px;   /* Circle diameter */
-  --cpo-portrait-gap:    35px;   /* Space below portrait before the stats list */
+  --cpo-portrait-gap:    75px;   /* Space below portrait before the stats list */
 
   /* ══ RESONANCE CHAIN STRIP ═══════════════════════════════════ */
   --cpo-chain-height:   68px;   /* Height of the bottom strip inside the center column */
 
   /* ══ COLUMN PADDING ══════════════════════════════════════════ */
   --cpo-col-padding-x: 18px;   /* Horizontal padding inside left & right columns */
-  --cpo-col-padding-y: 35px;   /* Vertical padding inside left & right columns   */
+  --cpo-col-padding-y: 75px;   /* Vertical padding inside left & right columns   */
 }
 
 /* ── Close Button ── */
@@ -180,6 +180,7 @@
 /* Portrait */
 
 .cpo-portrait-wrap {
+  position: relative;
   display: flex;
   justify-content: center;
   margin-bottom: var(--cpo-portrait-gap);

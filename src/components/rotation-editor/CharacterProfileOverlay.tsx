@@ -703,9 +703,26 @@ function GearSlot({ icon, primaryLabel, secondaryLabel, elColor, size, delay, to
   )
 }
 
-// ========== Sub-component: Horizontal Sequence Chain =========================================================================
+// ========== Sub-component: Portrait Sequence Display ========================================================================
 
-function HorizontalSequenceChain({ sequence, sequenceNodes, sequenceNodeIcons, elColor, onTooltip }: {
+function seqArcPath(r: number, startDeg: number, endDeg: number): string {
+  const toRad = (d: number) => d * Math.PI / 180
+  const x1 = r * Math.cos(toRad(startDeg)), y1 = r * Math.sin(toRad(startDeg))
+  const x2 = r * Math.cos(toRad(endDeg)),   y2 = r * Math.sin(toRad(endDeg))
+  const large = (endDeg - startDeg) > 180 ? 1 : 0
+  return `M ${x1.toFixed(2)} ${y1.toFixed(2)} A ${r} ${r} 0 ${large} 1 ${x2.toFixed(2)} ${y2.toFixed(2)}`
+}
+
+function arcLenPx(r: number, startDeg: number, endDeg: number): number {
+  return r * Math.abs(endDeg - startDeg) * Math.PI / 180
+}
+
+// Nodes arc along the right side of the portrait. 0° = rightward, negative = up, positive = down.
+// Radius is larger than the portrait radius (125px) to leave a clear gap between portrait edge and nodes.
+const PORTRAIT_ARC_ANGLES = [-75, -45, -15, 15, 45, 75]
+const PORTRAIT_ARC_RADIUS = 160
+
+function PortraitSequenceDisplay({ sequence, sequenceNodes, sequenceNodeIcons, elColor, onTooltip }: {
   sequence: number
   sequenceNodes: string[]
   sequenceNodeIcons: string[]
@@ -713,6 +730,20 @@ function HorizontalSequenceChain({ sequence, sequenceNodes, sequenceNodeIcons, e
   onTooltip: (t: TooltipData | null) => void
 }) {
   const nodes = sequenceNodes.slice(0, 6)
+  const [hoveredIndex, setHoveredIndex] = useState<number | null>(null)
+  const NODE_SIZE = 34
+  const R = PORTRAIT_ARC_RADIUS
+  // Arc geometry
+  const trackPath  = seqArcPath(R, -75, 75)
+  const hasActiveArc  = sequence >= 2
+  const clampedSeq    = Math.min(sequence, nodes.length)
+  const activeEndDeg  = clampedSeq > 0 ? PORTRAIT_ARC_ANGLES[clampedSeq - 1] : -75
+  const activePath    = hasActiveArc ? seqArcPath(R, -75, activeEndDeg) : ''
+  const activeLen     = hasActiveArc ? arcLenPx(R, -75, activeEndDeg) : 0
+
+  // SVG: 190 × 360 with viewBox "0 -180 190 360" so (0,0) = portrait center.
+  // placed at left:50% top:50% translateY(-50%) → left edge at portrait center x, vertically centered.
+  // Paths drawn with x going rightward match the node calc(50% + offsetX) coordinate system.
 
   function makeTooltip(i: number, desc: string, active: boolean) {
     const iconPath = sequenceNodeIcons[i] ? assetPath(sequenceNodeIcons[i]) : null
@@ -744,30 +775,93 @@ function HorizontalSequenceChain({ sequence, sequenceNodes, sequenceNodeIcons, e
   }
 
   return (
-    <div style={{ display: 'flex', alignItems: 'center', gap: 0, flexShrink: 0 }}>
+    <div style={{ position: 'absolute', inset: 0, overflow: 'visible', pointerEvents: 'none' }}>
+
+      {/* SVG arc layer — actual dimensions so paths are measurable and drop-shadows render correctly */}
+      <svg
+        width="190"
+        height="360"
+        viewBox="0 -180 190 360"
+        style={{
+          position: 'absolute',
+          left: '50%',
+          top: '50%',
+          transform: 'translateY(-50%)',
+          overflow: 'visible',
+          pointerEvents: 'none',
+        }}
+      >
+        {/* Track — clean solid grey rail, full span */}
+        <path
+          d={trackPath}
+          fill="none"
+          stroke="rgba(120, 128, 145, 0.22)"
+          strokeWidth="1"
+          strokeLinecap="round"
+        />
+
+        {/* Active arc — thin elemental line, draws in on mount, slight glow */}
+        {hasActiveArc && (
+          <motion.path
+            d={activePath}
+            fill="none"
+            stroke={`hsl(${elColor})`}
+            strokeWidth="1.5"
+            strokeLinecap="round"
+            strokeDasharray={activeLen}
+            style={{ filter: `drop-shadow(0 0 2.5px hsl(${elColor} / 0.7))` }}
+            initial={{ strokeDashoffset: activeLen, opacity: 0 }}
+            animate={{ strokeDashoffset: 0, opacity: 0.75 }}
+            transition={{ duration: 0.8, ease: 'easeOut', delay: 0.35 }}
+          />
+        )}
+
+      </svg>
+
+      {/* Nodes */}
       {nodes.map((desc, i) => {
         const active = i < sequence
+        const hovered = hoveredIndex === i
+        const rad = (PORTRAIT_ARC_ANGLES[i] * Math.PI) / 180
+        const offsetX = R * Math.cos(rad)
+        const offsetY = R * Math.sin(rad)
+
         return (
-          <div key={i} style={{ display: 'flex', alignItems: 'center' }}>
+          <div
+            key={i}
+            style={{
+              position: 'absolute',
+              left: `calc(50% + ${offsetX}px)`,
+              top: `calc(50% + ${offsetY}px)`,
+              transform: 'translate(-50%, -50%)',
+              pointerEvents: 'auto',
+              cursor: 'pointer',
+            }}
+            onMouseEnter={e => { setHoveredIndex(i); onTooltip({ x: e.clientX, y: e.clientY, content: makeTooltip(i, desc, active) }) }}
+            onMouseMove={e => onTooltip({ x: e.clientX, y: e.clientY, content: makeTooltip(i, desc, active) })}
+            onMouseLeave={() => { setHoveredIndex(null); onTooltip(null) }}
+          >
             <motion.div
-              initial={{ scale: 0, opacity: 0 }}
-              animate={{ scale: 1, opacity: 1 }}
-              transition={{ delay: 0.4 + i * 0.06, duration: 0.3, type: 'spring', stiffness: 300 }}
-              style={{ position: 'relative', display: 'flex', alignItems: 'center', justifyContent: 'center', cursor: 'pointer' }}
-              onMouseEnter={e => onTooltip({ x: e.clientX, y: e.clientY, content: makeTooltip(i, desc, active) })}
-              onMouseMove={e => onTooltip({ x: e.clientX, y: e.clientY, content: makeTooltip(i, desc, i < sequence) })}
-              onMouseLeave={() => onTooltip(null)}
+              style={{ position: 'relative', width: NODE_SIZE, height: NODE_SIZE }}
+              animate={{ scale: hovered ? 1.22 : 1 }}
+              transition={{ duration: 0.13, ease: 'easeOut' }}
             >
-              {/* Circle node */}
+
+
+              {/* Circle */}
               <div style={{
-                width: 32, height: 32, borderRadius: '50%',
+                width: '100%', height: '100%', borderRadius: '50%',
                 display: 'flex', alignItems: 'center', justifyContent: 'center',
-                border: `1.5px solid ${active ? `hsl(${elColor})` : 'rgba(120, 130, 150, 0.4)'}`,
+                border: `1.5px solid ${
+                  hovered ? `hsl(${elColor})` : active ? `hsl(${elColor} / 0.72)` : 'rgba(120, 130, 150, 0.28)'
+                }`,
                 background: active
-                  ? `radial-gradient(circle, hsl(${elColor} / 0.25), hsl(${elColor} / 0.05))`
-                  : 'rgba(30, 35, 45, 0.5)',
-                boxShadow: active ? `0 0 10px hsl(${elColor} / 0.45), inset 0 0 5px hsl(${elColor} / 0.15)` : 'none',
-                transition: 'all 0.3s',
+                  ? `radial-gradient(circle, hsl(${elColor} / ${hovered ? 0.4 : 0.2}), hsl(${elColor} / 0.04)), rgb(12, 15, 22)`
+                  : hovered ? 'rgb(42, 47, 65)' : 'rgb(18, 21, 30)',
+                boxShadow: hovered
+                  ? `0 0 14px hsl(${elColor} / ${active ? 0.6 : 0.28}), inset 0 0 8px hsl(${elColor} / 0.14)`
+                  : active ? `0 0 5px hsl(${elColor} / 0.3)` : 'none',
+                transition: 'border-color 0.15s ease, background 0.15s ease, box-shadow 0.15s ease',
                 overflow: 'hidden',
               }}>
                 {sequenceNodeIcons[i] ? (
@@ -776,7 +870,8 @@ function HorizontalSequenceChain({ sequence, sequenceNodes, sequenceNodeIcons, e
                     alt={`S${i + 1}`}
                     style={{
                       width: '90%', height: '90%', objectFit: 'contain',
-                      filter: active ? undefined : 'grayscale(1) opacity(0.35)',
+                      filter: active ? undefined : `grayscale(1) opacity(${hovered ? 0.55 : 0.28})`,
+                      transition: 'filter 0.15s ease',
                     }}
                     onError={e => { (e.target as HTMLImageElement).style.display = 'none' }}
                   />
@@ -784,46 +879,13 @@ function HorizontalSequenceChain({ sequence, sequenceNodes, sequenceNodeIcons, e
                   <span style={{
                     fontFamily: FONT_DISPLAY,
                     fontSize: '0.6rem', fontWeight: 900,
-                    color: active ? `hsl(${elColor})` : 'rgba(120, 130, 150, 0.5)',
+                    color: active ? `hsl(${elColor})` : `rgba(100, 110, 130, ${hovered ? 0.75 : 0.45})`,
                   }}>
                     {i + 1}
                   </span>
                 )}
               </div>
-
-              {/* Ping ring for active nodes */}
-              {active && (
-                <motion.div
-                  style={{
-                    position: 'absolute', width: 32, height: 32, borderRadius: '50%',
-                    border: `1px solid hsl(${elColor} / 0.3)`,
-                    pointerEvents: 'none',
-                  }}
-                  animate={{ scale: [1, 1.8], opacity: [0.5, 0] }}
-                  transition={{ duration: 2, repeat: Infinity, ease: 'easeOut', delay: i * 0.3 }}
-                />
-              )}
             </motion.div>
-
-            {/* Connector line */}
-            {i < nodes.length - 1 && (
-              <motion.div
-                initial={{ scaleX: 0 }}
-                animate={{ scaleX: 1 }}
-                transition={{ delay: 0.5 + i * 0.06, duration: 0.3 }}
-                style={{
-                  width: 24, height: 2,
-                  transformOrigin: 'left',
-                  borderRadius: 99,
-                  background: i < sequence - 1
-                    ? `hsl(${elColor} / 0.6)`
-                    : i < sequence
-                      ? `linear-gradient(90deg, hsl(${elColor} / 0.4), rgba(80, 90, 100, 0.25))`
-                      : 'rgba(80, 90, 100, 0.15)',
-                  boxShadow: i < sequence - 1 ? `0 0 4px hsl(${elColor} / 0.3)` : 'none',
-                }}
-              />
-            )}
           </div>
         )
       })}
@@ -974,6 +1036,13 @@ export function CharacterProfileOverlay({ characterName: _characterName, charact
                     style={{ borderColor: `hsl(${elTheme.primary} / 0.35)`, boxShadow: `0 0 20px hsl(${elTheme.primary} / 0.2)` }}
                     onError={e => { (e.target as HTMLImageElement).style.display = 'none' }}
                   />
+                  <PortraitSequenceDisplay
+                    sequence={character.sequence}
+                    sequenceNodes={character.sequence_nodes}
+                    sequenceNodeIcons={character.sequence_nodes_icons}
+                    elColor={elTheme.primary}
+                    onTooltip={setTooltip}
+                  />
                 </div>
               )}
 
@@ -1025,16 +1094,7 @@ export function CharacterProfileOverlay({ characterName: _characterName, charact
                 />
               </div>
 
-              {/* Resonance chain strip */}
-              <div className="cpo-chain-strip" style={{ borderTop: `1px solid hsl(${elTheme.primary} / 0.1)` }}>
-                <HorizontalSequenceChain
-                  sequence={character.sequence}
-                  sequenceNodes={character.sequence_nodes}
-                  sequenceNodeIcons={character.sequence_nodes_icons}
-                  elColor={elTheme.primary}
-                  onTooltip={setTooltip}
-                />
-              </div>
+
             </div>
 
             {/* ── RIGHT COL: Set Bonus ── */}
