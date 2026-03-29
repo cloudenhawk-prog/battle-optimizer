@@ -1,5 +1,5 @@
 import RotationEditor from '../components/rotation-editor/RotationEditor'
-import { DamageTimeline } from '../components/rotation-editor/DamageTimeline'
+// import { DamageTimeline } from '../components/rotation-editor/DamageTimeline'
 import { characters, baseCharacters } from '../data/characters'
 import { enemies } from '../data/enemies.ts'
 import { buildTableConfig } from '../utils/table-builders/buildTableConfig'
@@ -61,7 +61,7 @@ export default function RotationEditorPage() {
         onGearChange={handleGearChange}
       />
 
-      <DamageTimeline snapshots={snapshots} damageEvents={damageEvents} selectedCharacters={resolvedCharacters} />
+      {/* <DamageTimeline snapshots={snapshots} damageEvents={damageEvents} selectedCharacters={resolvedCharacters} /> */}
     </div>
   )
 }
