@@ -170,6 +170,168 @@ In `EquipmentOrbit`, each slot now has a click handler:
 
 ---
 
+## Future Work: Action Tags for Gear Effect Targeting
+
+### Motivation
+
+Currently, `InjectedModifier` and `InjectedSideEffect` targets are either `'character'` (applied to the character's global modifier list) or a **direct object reference** to a specific `Action` or `CoordinatedAttack`. This works for hand-authored gear data where the exact action objects are imported and referenced directly. It breaks down for:
+
+- **Generic set/weapon effects** — e.g. "boost all healing skills", "apply to all skills that inflict Aero Erosion", "apply to the Outro skill" — these need to target actions by category, not by hardcoded reference.
+- **Dynamically registered effects** — e.g. "every 3s heal for X" passed through a `SideEffect`, which itself may need to interact with HEAL-tagged actions or buff-tagged effects on other characters.
+- **Gear swapping correctness** — when gear is swapped, injected effects from the old gear must be cleanly removed. Today this works because `resolveCharacter` always re-builds from the unmodified `baseCharacters` entry. But as effects grow more complex (multi-step chains, tag-conditional stacking), a robust tag system makes the "what does this piece of gear affect" fully declarative and auditable. Since a weapon can be added to any character, it shouldn't statically inject into specific character actions but instead be able to target them dynamically based on some logic.
+
+---
+
+### Proposed: Action Tags
+
+Add a `tags?: string[]` (or `tags?: Set<string>`) field to the `Action` type (and potentially `CoordinatedAttack`).
+
+Tags are plain string keywords. Examples:
+
+| Tag | Meaning |
+|---|---|
+| `'HEAL'` | This action heals one or more targets |
+| `'OUTRO'` | This action is the character's Outro skill |
+| `'INTRO'` | This action is the character's Intro skill |
+| `'ECHO'` | This action is the slot-1 echo skill (already used as a dmgType; could unify) |
+| `'AERO_EROSION'` | This action applies Aero Erosion |
+| `'SPECTRO_FRAZZLE'` | This action applies Spectro Frazzle |
+| `'COORDINATED'` | This action is a coordinated attack |
+| `'BASIC'`, `'HEAVY'`, `'SKILL'`, `'LIBERATION'` | Action category (parallel to existing dmgTypes) |
+
+Tags are set in character action definitions (`src/data/characters/*.ts`), not derived at runtime.
+
+---
+
+### Proposed: Tag-Based Injection Targets
+
+Extend `InjectedModifier` and `InjectedSideEffect` target types to support tag queries:
+
+```ts
+type InjectedTarget =
+  | 'character'
+  | Action                    // existing: exact reference
+  | CoordinatedAttack         // existing: exact reference
+  | { tag: string }           // new: inject into all actions with this tag
+  | { tags: string[]; match: 'any' | 'all' }  // new: multi-tag query
+```
+
+`resolveGear` would then need a second pass over `workingActions` matching by tag instead of by reference. The clone map remains necessary for the reference-based path; tag-based targeting iterates the full `workingActions` array directly.
+
+---
+
+### Proposed: Helper Functions
+
+A set of helpers in e.g. `src/utils/gear/gearHelpers.ts` to make gear data authoring easier:
+
+```ts
+// Inject a modifier into all actions with a given tag
+injectIntoTag(tag: string, modifiers: DamageModifier[]): InjectedModifier
+
+// Inject a side effect into all HEAL actions
+injectHealSideEffect(sideEffects: SideEffect[]): InjectedSideEffect
+
+// Build a 5-piece set bonus that targets the Outro
+outroSetBonus(modifiers: DamageModifier[]): EchoSetBonus
+```
+
+These make gear data files read like intent ("buff all heals") rather than requiring the author to import and reference specific action objects.
+
+---
+
+### Gear Swap & Effect Removal
+
+The current approach already handles removal correctly: **`resolveCharacter` always re-runs from `baseCharacters`** (the unmodified source-of-truth), so every gear swap produces a clean slate with no leftover injections from previous gear.
+
+This invariant **must be preserved** as tag-based injection is added:
+- Never inject into a `ResolvedCharacter` directly.
+- Always call `resolveCharacter(base, newGear)` where `base` comes from `baseCharacters`.
+- `baseCharacters` entries must never be mutated — they are the reset point.
+
+If at some point a "live patch" approach is considered (mutating a resolved character without full re-resolve), a snapshot of the pre-injection state per gear piece would be needed. This is significantly more complex and should be avoided unless re-resolve becomes a performance bottleneck.
+
+---
+
+### Interaction with CoordinatedAttacks and Timed Effects
+
+Some gear effects fire on a schedule (e.g. "heal every 3s") rather than attaching to a specific player action. These are typically modelled as `SideEffect` entries injected into a triggering action (e.g. the action that activates the buff). If such an effect itself needs to interact with HEAL-tagged actions — e.g. "each time this periodic heal fires, also trigger X" — the tag system needs to be queryable at side-effect resolution time, not just at resolve-character time.
+
+This may require `SideEffect` to carry tag-based trigger conditions alongside its existing condition system, and the resolver (`resolver_4_resolveSideEffectsAndStatuses`) would need to evaluate those against active action tags. This is a larger architectural change and should be designed carefully to avoid coupling the side-effect resolver too tightly to the gear layer.
+
+---
+
+## Future Work: Character Selection & Team Composition
+
+### Goal
+
+When a player opens the Rotation Editor page, they should be able to choose which 1–3 characters to bring into battle rather than having a hardcoded full team auto-loaded. The picker must enforce the 1–3 character limit. Any change to team composition must fully reset the rotation table and all derived state, for the same reason gear changes do: past timeline entries were computed with a specific set of characters and are no longer valid.
+
+---
+
+### Current State
+
+`RotationEditorPage` currently hard-wires the full `characters` array (all 4 resolved characters) as `charactersInBattle`. There is no selection UI. The team is fixed at startup.
+
+Key pieces of state and derived data in `RotationEditorPage` that all depend on which characters are in the team:
+
+| State / Value | What it is | Must reset on team change? |
+|---|---|---|
+| `resolvedCharacters` | `ResolvedCharacter[]` — the active team with gear resolved | Yes — replace with newly selected + resolved characters |
+| `snapshots` | `Snapshot[]` — past rotation steps | Yes — clear entirely |
+| `damageEvents` | `DamageEvent[]` — damage events for the timeline | Yes — clear entirely |
+| `timelineKey` | `number` — React key that remounts `RotationEditor` | Yes — increment to remount |
+| `tableConfig` | `TableConfig` — column layout derived from the active team | Yes — recompute via `buildTableConfig(newTeam)` |
+| `columnVisibility` | `Record<string, boolean>` — which columns are shown | Yes — reinitialise from the new `tableConfig` |
+
+`tableConfig` is currently computed at render time from the hardcoded `characters` array. Once team selection is added, it needs to be derived from the selected team (should become a `useMemo` or recomputed alongside character selection, not a plain const).
+
+---
+
+### What a Team Change Needs to Do
+
+When the player confirms a team selection (replacing the current team with a new set of characters):
+
+```ts
+function handleTeamChange(selectedBaseCharacters: Character[]) {
+  const newResolved = selectedBaseCharacters.map(c => resolveCharacter(c))
+  const newTableConfig = buildTableConfig(newResolved)
+  const newColumns = flattenTableColumns(newTableConfig)
+
+  setResolvedCharacters(newResolved)
+  setTableConfig(newTableConfig)
+  setColumnVisibility(Object.fromEntries(newColumns.map(col => [col.key, true])))
+  setSnapshots([])
+  setDamageEvents([])
+  setTimelineKey(k => k + 1)
+}
+```
+
+This is the same pattern as gear change, extended to also rebuild `tableConfig` and `columnVisibility`.
+
+---
+
+### Where to Add the UI
+
+The character selector should live in `RotationEditorPage` (or possibly a sibling component rendered near the top of that page). It does NOT belong inside `RotationEditor` or `RotationTable` — those components receive `charactersInBattle` as a prop and should not be responsible for deciding who is in the team.
+
+Suggested placement: above the `<RotationEditor>` block, or accessible via a button/modal that opens a team picker. A simple design: show all available characters from `baseCharacters`, let the user toggle 1–3, confirm. Selecting fewer than 1 or more than 3 should be disabled/blocked.
+
+---
+
+### Gear Per Character After Team Change
+
+Each character comes with their own default `gear` defined in their data file. When a character is added to the team, they resolve with their default gear. Any gear changes the player made to a character before swapping them out are lost when the team is reset — this is acceptable for now (gear overrides are not persisted). If persistence is added later, the gear override state per character would need to be stored separately (e.g. `Map<characterName, Gear>`) and re-applied when that character is selected.
+
+---
+
+### Relationship to Gear Change
+
+Both team composition changes and gear changes are instances of the same broader pattern: **"the team setup changed, so the timeline is invalid."** They share the same reset logic. In the future it may make sense to unify them under a single `handleTeamSetupChange` or similar abstraction, but for now they can remain as separate handlers since their trigger points and data shapes differ.
+
+The invariant from gear swapping still applies: always resolve characters from `baseCharacters`, never from a previously-resolved copy.
+
+---
+
 ## What Remains
 
 ### Picker UI (next major task)
