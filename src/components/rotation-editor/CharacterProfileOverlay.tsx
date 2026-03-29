@@ -434,8 +434,8 @@ function EquipmentOrbit({ weapon, echoSlots, elColor, onTooltip, characterName }
   const radius = Math.max(60, containerSize / 2 - 120)
   const size = containerSize
   const center = size / 2
-  const largeSlot = Math.max(60, Math.min(92, Math.round(radius * 0.36)))
-  const baseSlot = Math.max(52, Math.min(80, Math.round(radius * 0.32)))
+  const largeSlot = Math.max(72, Math.min(112, Math.round(radius * 0.44)))
+  const baseSlot = Math.max(62, Math.min(98, Math.round(radius * 0.40)))
 
   const items: Array<{ type: 'weapon'; data: Weapon } | { type: 'echo'; data: Echo | null; slot: 1 | 2 | 3 | 4 | 5 }> = [
     { type: 'weapon', data: weapon },
@@ -749,24 +749,35 @@ function arcLenPx(r: number, startDeg: number, endDeg: number): number {
 const PORTRAIT_ARC_ANGLES = [-75, -45, -15, 15, 45, 75]
 const PORTRAIT_ARC_RADIUS = 160
 
-function PortraitSequenceDisplay({ sequence, sequenceNodes, sequenceNodeIcons, elColor, onTooltip }: {
+function PortraitSequenceDisplay({ sequence, prevSequence, sequenceNodes, sequenceNodeIcons, elColor, onTooltip, onSequenceChange }: {
   sequence: number
+  prevSequence: number
   sequenceNodes: string[]
   sequenceNodeIcons: string[]
   elColor: string
   onTooltip: (t: TooltipData | null) => void
+  onSequenceChange: (seq: number) => void
 }) {
   const nodes = sequenceNodes.slice(0, 6)
   const [hoveredIndex, setHoveredIndex] = useState<number | null>(null)
   const NODE_SIZE = 34
   const R = PORTRAIT_ARC_RADIUS
   // Arc geometry
-  const trackPath  = seqArcPath(R, -75, 75)
-  const hasActiveArc  = sequence >= 2
-  const clampedSeq    = Math.min(sequence, nodes.length)
-  const activeEndDeg  = clampedSeq > 0 ? PORTRAIT_ARC_ANGLES[clampedSeq - 1] : -75
-  const activePath    = hasActiveArc ? seqArcPath(R, -75, activeEndDeg) : ''
-  const activeLen     = hasActiveArc ? arcLenPx(R, -75, activeEndDeg) : 0
+  const trackPath    = seqArcPath(R, -75, 75)
+  const clampedSeq   = Math.min(sequence, nodes.length)
+  const activeEndDeg = clampedSeq > 0 ? PORTRAIT_ARC_ANGLES[clampedSeq - 1] : -75
+
+  // Static arc: the already-drawn portion (up to the lower of prev/current), shown instantly
+  const staticSeq    = Math.min(prevSequence, sequence)
+  const staticHasArc = staticSeq >= 2
+  const staticEndDeg = staticSeq > 0 ? PORTRAIT_ARC_ANGLES[Math.min(staticSeq, nodes.length) - 1] : -75
+  const staticPath   = staticHasArc ? seqArcPath(R, -75, staticEndDeg) : ''
+
+  // Animated segment: only the newly added portion, drawn in when sequence increases
+  const shouldAnimate = sequence >= 2 && sequence > prevSequence
+  const animStartDeg  = staticSeq >= 2 ? PORTRAIT_ARC_ANGLES[Math.min(staticSeq, nodes.length) - 1] : -75
+  const animPath      = shouldAnimate ? seqArcPath(R, animStartDeg, activeEndDeg) : ''
+  const animLen       = shouldAnimate ? arcLenPx(R, animStartDeg, activeEndDeg) : 0
 
   // SVG: 190 × 360 with viewBox "0 -180 190 360" so (0,0) = portrait center.
   // placed at left:50% top:50% translateY(-50%) → left edge at portrait center x, vertically centered.
@@ -827,17 +838,31 @@ function PortraitSequenceDisplay({ sequence, sequenceNodes, sequenceNodeIcons, e
           strokeLinecap="round"
         />
 
-        {/* Active arc — thin elemental line, draws in on mount, slight glow */}
-        {hasActiveArc && (
-          <motion.path
-            d={activePath}
+        {/* Static arc: the already-drawn portion, shown instantly with no animation */}
+        {staticHasArc && (
+          <path
+            d={staticPath}
             fill="none"
             stroke={`hsl(${elColor})`}
             strokeWidth="1.5"
             strokeLinecap="round"
-            strokeDasharray={activeLen}
+            opacity="0.75"
             style={{ filter: `drop-shadow(0 0 2.5px hsl(${elColor} / 0.7))` }}
-            initial={{ strokeDashoffset: activeLen, opacity: 0 }}
+          />
+        )}
+
+        {/* Animated arc — draws in only the new segment each time sequence increases */}
+        {shouldAnimate && (
+          <motion.path
+            key={`${prevSequence}-${sequence}`}
+            d={animPath}
+            fill="none"
+            stroke={`hsl(${elColor})`}
+            strokeWidth="1.5"
+            strokeLinecap="round"
+            strokeDasharray={animLen}
+            style={{ filter: `drop-shadow(0 0 2.5px hsl(${elColor} / 0.7))` }}
+            initial={{ strokeDashoffset: animLen, opacity: 0 }}
             animate={{ strokeDashoffset: 0, opacity: 0.75 }}
             transition={{ duration: 0.8, ease: 'easeOut', delay: 0.35 }}
           />
@@ -863,6 +888,12 @@ function PortraitSequenceDisplay({ sequence, sequenceNodes, sequenceNodeIcons, e
               transform: 'translate(-50%, -50%)',
               pointerEvents: 'auto',
               cursor: 'pointer',
+            }}
+            onClick={() => {
+              // todo: this only updates local visual state for the resonance chain.
+              // Later, onSequenceChange should persist to character data so sequence-gated
+              // modifiers (skills, passives, injected effects, etc.) are applied correctly.
+              onSequenceChange(sequence === i + 1 ? i : i + 1)
             }}
             onMouseEnter={e => { setHoveredIndex(i); onTooltip({ x: e.clientX, y: e.clientY, content: makeTooltip(i, desc, active) }) }}
             onMouseMove={e => onTooltip({ x: e.clientX, y: e.clientY, content: makeTooltip(i, desc, active) })}
@@ -928,12 +959,12 @@ function PortraitLeftArc({ level, element, elColor }: {
   elColor: string
 }) {
   const R = PORTRAIT_ARC_RADIUS
-  const trackPath = seqArcPath(R, 106, 265)
+  const trackPath = seqArcPath(R, 100, 265)
 
-  // Tightly grouped near 180° (pure left): Element at upper-left (165°), Level at lower-left (195°)
+  // Tightly grouped near 180° (pure left): Element at upper-left (138°), Level at lower-left (115°)
   const items = [
-    { angle: 145, label: element,                                     isElement: true  },
-    { angle: 120, label: level !== undefined ? `Lv.${level}` : '—',  isElement: false },
+    { angle: 138, label: element,                                     isElement: true  },
+    { angle: 115, label: level !== undefined ? `Lv.${level}` : '—',  isElement: false },
   ]
 
   return (
@@ -1014,6 +1045,16 @@ export function CharacterProfileOverlay({ characterName, character, snapshot, al
   const [selectedStat, setSelectedStat] = useState<string | null>(null)
   const [isClosing, setIsClosing] = useState(false)
   const [tooltip, setTooltip] = useState<TooltipData | null>(null)
+  // todo: localSequence tracks visual-only resonance chain state.
+  // Later this should persist to character data so sequence-gated modifiers are applied.
+  const [localSequence, setLocalSequence] = useState(character.sequence)
+  // prevLocalSequence is initialised to -1 so the full arc animates on first open for any sequence level
+  const [prevLocalSequence, setPrevLocalSequence] = useState(-1)
+
+  function handleSequenceChange(seq: number) {
+    setPrevLocalSequence(localSequence)
+    setLocalSequence(seq)
+  }
 
   const finalStats = computeFinalStats(character, snapshot, allCharacters)
   const gearBreakdown = computeGearStatBreakdown(character)
@@ -1122,11 +1163,13 @@ export function CharacterProfileOverlay({ characterName, character, snapshot, al
                     onError={e => { (e.target as HTMLImageElement).style.display = 'none' }}
                   />
                   <PortraitSequenceDisplay
-                    sequence={character.sequence}
+                    sequence={localSequence}
+                    prevSequence={prevLocalSequence}
                     sequenceNodes={character.sequence_nodes}
                     sequenceNodeIcons={character.sequence_nodes_icons}
                     elColor={elTheme.primary}
                     onTooltip={setTooltip}
+                    onSequenceChange={handleSequenceChange}
                   />
                   <PortraitLeftArc
                     level={(character.stats as Partial<CharacterStats>).level}
