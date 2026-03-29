@@ -225,7 +225,7 @@ const mornye_BA_2_3_cancel_with_swap: Action = {
     { energyType: 'forte', amount: 80, share: 0 },
   ],
   energyCost: [],
-  statusModifications: [], 
+  statusModifications: [],
   damageModifiers: [],
   sideEffects: [],
   coordinatedAttacks: [],

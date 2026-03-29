@@ -842,6 +842,7 @@ type CharacterProfileOverlayProps = {
 }
 
 export function CharacterProfileOverlay({ characterName: _characterName, character, snapshot, allCharacters, onClose }: CharacterProfileOverlayProps) {
+  console.log("Character name not used yet:", _characterName)
   const [selectedStat, setSelectedStat] = useState<string | null>(null)
   const [isClosing, setIsClosing] = useState(false)
   const [tooltip, setTooltip] = useState<TooltipData | null>(null)
