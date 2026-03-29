@@ -4,7 +4,7 @@ import { motion, useAnimationFrame, AnimatePresence, useMotionValue, animate } f
 import type { Character } from '../../types/character'
 import type { CharacterStats } from '../../types/stats'
 import type { Snapshot } from '../../types/snapshot'
-import type { Echo, Weapon, EchoSlots } from '../../types/gear'
+import type { Echo, Gear, Weapon, EchoSlots } from '../../types/gear'
 import { calculateScalingStat } from '../../utils/calculators/damageCalculator'
 import { computeGearStatBreakdown, computeActiveModifierBreakdown, computeFinalStats } from '../../utils/gear/computeStatBreakdown'
 import '../../styles/rotation-editor/CharacterStateTracker.css'
@@ -69,7 +69,8 @@ const STAT_DISPLAY: StatDisplay[] = [
   { key: 'spectroBonusDMG', label: 'Spectro DMG Bonus', format: 'percent', iconPath: '/assets/stat-labels/statLabel_spectroBonusDMG.png', elementClass: 'charStatRow--spectro' },
   { key: 'havocBonusDMG', label: 'Havoc DMG Bonus', format: 'percent', iconPath: '/assets/stat-labels/statLabel_havocBonusDMG.png', elementClass: 'charStatRow--havoc' },
   { key: 'healingBonus', label: 'Healing Bonus', format: 'percent', iconPath: '/assets/stat-labels/statLabel_healingBonus.png' },
-  { key: 'tuneBreakBoost', label: 'Tune Break Boost', format: 'integer', iconPath: '/assets/stat-labels/statLabel_tuneBreakBoost.png' },
+  { key: 'tuneBreakBoost', label: 'Tune Break Boost', format: 'percent', iconPath: '/assets/stat-labels/statLabel_tuneBreakBoost.png' },
+  { key: 'offtuneBuildupRate', label: 'Off-Tune Buildup Rate', format: 'percent', iconPath: '/assets/stat-labels/statLabel_offtuneBuildupRate.png' },
 ]
 
 // The three scaling stats need special handling via calculateScalingStat
@@ -104,7 +105,8 @@ const GEAR_STAT_LABELS: Record<string, { label: string; format: StatDisplay['for
   heavyBonusDMG:      { label: 'Heavy ATK DMG',     format: 'percent' },
   skillBonusDMG:      { label: 'Skill DMG',         format: 'percent' },
   liberationBonusDMG: { label: 'Liberation DMG',    format: 'percent' },
-  tuneBreakBoost:     { label: 'Tune Break Boost',  format: 'integer' },
+  tuneBreakBoost:        { label: 'Tune Break Boost',     format: 'percent' },
+  offtuneBuildupRate:    { label: 'Off-Tune Buildup Rate', format: 'percent' },
 }
 
 function formatGearStats(stats: Partial<CharacterStats>): Array<{ label: string; value: string }> {
@@ -594,7 +596,10 @@ function EquipmentOrbit({ weapon, echoSlots, elColor, onTooltip, characterName, 
                     return (
                       <div>
                         <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 8 }}>
-                          <span style={{ fontWeight: 700, fontSize: '0.85rem' }}>{item.data.name}</span>
+                          <div>
+                            <div style={{ fontWeight: 700, fontSize: '0.85rem' }}>{item.data.name}</div>
+                            <div style={{ fontSize: '0.68rem', color: 'rgba(140, 155, 185, 0.7)', marginTop: 2 }}>{item.data.weaponType}</div>
+                          </div>
                           <span style={{ fontSize: '0.72rem', color: `hsl(${elColor})`, fontWeight: 600 }}>R{item.data.rank}</span>
                         </div>
                         <div style={{ height: 1, background: `linear-gradient(90deg, transparent, hsl(${elColor} / 0.3), transparent)`, marginBottom: 8 }} />
@@ -617,6 +622,7 @@ function EquipmentOrbit({ weapon, echoSlots, elColor, onTooltip, characterName, 
                 typeTag="Weapon"
                 isScanned={i === scannedIndex}
                 onTooltip={onTooltip}
+                onClick={() => { console.log('TODO: open weapon picker for', item.data.name, '(', item.data.weaponType, ')') }} // TODO: open weapon picker UI
               />
             ) : (
               <GearSlot
@@ -675,6 +681,7 @@ function EquipmentOrbit({ weapon, echoSlots, elColor, onTooltip, characterName, 
                 typeTag={item.slot === 1 ? 'Main Echo' : item.data ? 'Echo' : undefined}
                 isScanned={i === scannedIndex}
                 onTooltip={onTooltip}
+                onClick={() => { console.log('TODO: open echo picker for slot', item.slot, ':', item.data?.name ?? 'empty') }} // TODO: open echo picker UI
               />
             )}
           </div>
@@ -688,7 +695,7 @@ function EquipmentOrbit({ weapon, echoSlots, elColor, onTooltip, characterName, 
 
 // ========== Sub-component: Gear Slot (shared for weapon & echo) ==============================================================
 
-function GearSlot({ icon, primaryLabel, secondaryLabel, elColor, size, delay, tooltipContent, onTooltip, typeTag, isScanned }: {
+function GearSlot({ icon, primaryLabel, secondaryLabel, elColor, size, delay, tooltipContent, onTooltip, typeTag, isScanned, onClick }: {
   icon?: string
   primaryLabel?: string
   secondaryLabel?: string
@@ -699,6 +706,7 @@ function GearSlot({ icon, primaryLabel, secondaryLabel, elColor, size, delay, to
   onTooltip: (t: TooltipData | null) => void
   typeTag?: string
   isScanned?: boolean
+  onClick?: () => void
 }) {
   const hasItem = icon !== undefined || primaryLabel !== undefined
 
@@ -711,6 +719,7 @@ function GearSlot({ icon, primaryLabel, secondaryLabel, elColor, size, delay, to
       onMouseEnter={hasItem ? (e) => onTooltip({ x: e.clientX, y: e.clientY, content: tooltipContent }) : undefined}
       onMouseMove={hasItem ? (e) => onTooltip({ x: e.clientX, y: e.clientY, content: tooltipContent }) : undefined}
       onMouseLeave={hasItem ? () => onTooltip(null) : undefined}
+      onClick={hasItem ? onClick : undefined}
     >
       {/* Background — solid occluder so orbiting particle stays hidden underneath */}
       <div style={{ position: 'absolute', inset: 0, borderRadius: 8, background: 'hsl(220 20% 9%)' }} />
@@ -1155,7 +1164,7 @@ function WeaponInfo({ weapon, elColor }: { weapon: Weapon; elColor: string }) {
         />
         <div>
           <div style={{ fontWeight: 700, fontSize: '0.85rem', color: 'var(--table-text)' }}>{weapon.name}</div>
-          <div style={{ fontSize: '0.7rem', color: `hsl(${elColor})`, fontWeight: 600 }}>R{weapon.rank} · Weapon</div>
+          <div style={{ fontSize: '0.7rem', color: `hsl(${elColor})`, fontWeight: 600 }}>R{weapon.rank} · {weapon.weaponType}</div>
         </div>
       </div>
       {stats.length > 0 && (
@@ -1221,12 +1230,10 @@ function EchoInfo({ echo, slot, elColor }: { echo: Echo; slot: number; elColor: 
           ))}
         </>
       )}
-      {echo.info && (
-        <>
+      <>
           <div style={{ height: 1, background: `linear-gradient(90deg, transparent, hsl(${elColor} / 0.25), transparent)` }} />
-          <p style={{ margin: 0, fontSize: '0.74rem', color: 'rgba(175, 185, 210, 0.85)', lineHeight: 1.55 }}>{colorizeText(echo.info, elColor)}</p>
+          <p style={{ margin: 0, fontSize: '0.74rem', color: 'rgba(175, 185, 210, 0.85)', lineHeight: 1.55 }}>{echo.info ? colorizeText(echo.info, elColor) : 'No additional information available.'}</p>
         </>
-      )}
     </>
   )
 }
@@ -1293,9 +1300,10 @@ type CharacterProfileOverlayProps = {
   snapshot: Snapshot | null
   allCharacters: Character[]
   onClose: () => void
+  onGearChange?: (characterName: string, newGear: Gear) => void
 }
 
-export function CharacterProfileOverlay({ characterName, character, snapshot, allCharacters, onClose }: CharacterProfileOverlayProps) {
+export function CharacterProfileOverlay({ characterName, character, snapshot, allCharacters, onClose, onGearChange: _onGearChange }: CharacterProfileOverlayProps) {
   const [selectedStat, setSelectedStat] = useState<string | null>(null)
   const [isClosing, setIsClosing] = useState(false)
   const [tooltip, setTooltip] = useState<TooltipData | null>(null)

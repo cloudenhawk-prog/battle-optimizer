@@ -8,6 +8,7 @@ import { cartethyia_stats, cartethyia_inherentStats } from '../stats/cartethyia'
 export const cartethyia: Character = {
   name: 'Cartethyia',
   element: 'AERO',
+  weaponType: 'Sword',
   maxEnergies: { energy: 125, concerto: 100, forte_divinity: 1, forte_discord: 1, forte_virtue: 1, conviction: 120 },
   actions: [...all_actions],
   damageModifiers: [{ source: 'Inherent Skill', displayName: 'Wind\'s Indelible Imprint', type: 'buff', ownerCharacter: 'Cartethyia', condition: stacksOf('Aero Erosion'), characterStats: { bonusDMG: 0.1 }, targetStrategy: 'self', durationStrategy: { type: 'permanent' }, stackingStrategy: { maxStacks: 1, resetTimerOnApplication: false, stacksRemovedEachTime: 1 } }],

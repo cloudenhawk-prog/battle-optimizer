@@ -4,6 +4,7 @@ import { CharacterProfileOverlay } from './CharacterProfileOverlay'
 import type { Snapshot } from '../../types/snapshot'
 import type { Character } from '../../types/character'
 import type { TableConfig, ColumnVisibility } from '../../types/tableDefinitions'
+import type { Gear } from '../../types/gear'
 
 // ========== Component: Character State Tracker ===============================================================================
 
@@ -14,6 +15,7 @@ type CharacterStateTrackerProps = {
   columnVisibility: ColumnVisibility
   setColumnVisibility: React.Dispatch<React.SetStateAction<ColumnVisibility>>
   activeCharacterName?: string | null
+  onGearChange?: (characterName: string, newGear: Gear) => void
 }
 
 export function CharacterStateTracker({
@@ -23,6 +25,7 @@ export function CharacterStateTracker({
   columnVisibility,
   setColumnVisibility,
   activeCharacterName,
+  onGearChange,
 }: CharacterStateTrackerProps) {
   const [profileOpen, setProfileOpen] = useState<string | null>(null)
 
@@ -292,6 +295,7 @@ export function CharacterStateTracker({
             snapshot={snapshot}
             allCharacters={charactersInBattle}
             onClose={() => setProfileOpen(null)}
+            onGearChange={onGearChange}
           />
         )
       })()}

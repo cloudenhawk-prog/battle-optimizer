@@ -7,6 +7,7 @@ import { nightmareKelpieOutroTrigger } from '../sideEffects/sideEffects'
 // ========== Weapon ===========================================================================================================
 const ciaccona_weapon: Weapon = {
   name: 'Static Mist',
+  weaponType: 'Pistol',
   stats: { baseATK: 587.50, critRate: 0.2430, energyPercent: 0.192 },
   injectedModifiers: [
     {
@@ -34,6 +35,7 @@ const ciaccona_weapon: Weapon = {
 // ========== Echoes ===========================================================================================================
 const ciaccona_cost_4_echo_1: Echo = {
   name: 'Nightmare: Kelpie',
+  setName: 'Gusts of Welkin',
   cost: 4,
   baseStats: { flatATK: 150, critDamage: 0.44 },
   subStats: { critRate: 0.075, critDamage: 0.150, bonusATK: 0.079 },
@@ -73,6 +75,7 @@ const ciaccona_cost_4_echo_1: Echo = {
 
 const ciaccona_cost_3_echo_1: Echo = {
   name: 'Capitaneus',
+  setName: 'Gusts of Welkin',
   cost: 3,
   baseStats: { flatATK: 100, aeroBonusDMG: 0.30 },
   subStats: { critRate: 0.075, critDamage: 0.150, bonusATK: 0.079 },
@@ -83,6 +86,7 @@ const ciaccona_cost_3_echo_1: Echo = {
 
 const ciaccona_cost_3_echo_2: Echo = {
   name: 'Hurriclaw',
+  setName: 'Gusts of Welkin',
   cost: 3,
   baseStats: { flatATK: 100, aeroBonusDMG: 0.30 },
   subStats: { critRate: 0.075, critDamage: 0.150, bonusATK: 0.079 },
@@ -92,6 +96,7 @@ const ciaccona_cost_3_echo_2: Echo = {
 
 const ciaccona_cost_1_echo_1: Echo = {
   name: 'Sacerdos',
+  setName: 'Gusts of Welkin',
   cost: 1,
   baseStats: { flatHP: 2280, bonusATK: 0.18 },
   subStats: { critRate: 0.075, critDamage: 0.150, bonusATK: 0.079 },
@@ -101,6 +106,7 @@ const ciaccona_cost_1_echo_1: Echo = {
 
 const ciaccona_cost_1_echo_2: Echo = {
   name: 'Sacerdos',
+  setName: 'Gusts of Welkin',
   cost: 1,
   baseStats: { flatHP: 2280, bonusATK: 0.18 },
   subStats: { critRate: 0.075, critDamage: 0.150, bonusATK: 0.079 },

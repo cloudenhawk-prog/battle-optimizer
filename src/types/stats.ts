@@ -98,6 +98,7 @@ export type CharacterStats = {
   energyPercent: number
   healingBonus: number
   tuneBreakBoost: number
+  offtuneBuildupRate: number
 }
 
 /**
@@ -203,6 +204,7 @@ export function getDefaultCharacterStats(): CharacterStats {
     energyPercent: 0,
     healingBonus: 0,
     tuneBreakBoost: 0,
+    offtuneBuildupRate: 1
   }
 }
 

@@ -3,6 +3,7 @@ import type { Echo, EchoSetBonus, Weapon } from '../../types/gear'
 // ========== Weapon ===========================================================================================================
 const mornye_weapon: Weapon = {
   name: 'Starfield Calibrator',
+  weaponType: 'Broadblade',
   stats: { baseATK: 412.50, energyPercent: 0.7704, bonusDEF: 0.16 },
   injectedModifiers: [
     {
@@ -20,6 +21,7 @@ const mornye_weapon: Weapon = {
 // ========== Echoes ===========================================================================================================
 const mornye_cost_4_echo_1: Echo = {
   name: 'Reactor Husk',
+  setName: 'Halo of Starry Radiance',
   cost: 4,
   baseStats: { flatATK: 150, bonusDEF: 0.415 },
   subStats: { energyPercent: 0.084, liberationBonusDMG: 0.079, critDamage: 0.15 },
@@ -53,6 +55,7 @@ const mornye_cost_4_echo_1: Echo = {
 
 const mornye_cost_3_echo_1: Echo = {
   name: 'Sabercat Prowler',
+  setName: 'Halo of Starry Radiance',
   cost: 3,
   baseStats: { flatATK: 100, energyPercent: 0.32 },
   subStats: { energyPercent: 0.084, liberationBonusDMG: 0.079, critDamage: 0.15 },
@@ -62,6 +65,7 @@ const mornye_cost_3_echo_1: Echo = {
 
 const mornye_cost_3_echo_2: Echo = {
   name: 'Spacetrek Explorer',
+  setName: 'Halo of Starry Radiance',
   cost: 3,
   baseStats: { flatATK: 100, fusionBonusDMG: 0.30 },
   subStats: { energyPercent: 0.084, liberationBonusDMG: 0.079, critDamage: 0.15 },
@@ -71,6 +75,7 @@ const mornye_cost_3_echo_2: Echo = {
 
 const mornye_cost_1_echo_1: Echo = {
   name: 'Geospider S4',
+  setName: 'Halo of Starry Radiance',
   cost: 1,
   baseStats: { flatHP: 2280, bonusDEF: 0.18 },
   subStats: { energyPercent: 0.084, liberationBonusDMG: 0.079, critDamage: 0.15 },
@@ -80,6 +85,7 @@ const mornye_cost_1_echo_1: Echo = {
 
 const mornye_cost_1_echo_2: Echo = {
   name: 'Mining Drone',
+  setName: 'Halo of Starry Radiance',
   cost: 1,
   baseStats: { flatHP: 2280, bonusDEF: 0.18 },
   subStats: { energyPercent: 0.084, liberationBonusDMG: 0.079, critDamage: 0.15 },

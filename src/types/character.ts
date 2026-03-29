@@ -2,7 +2,7 @@ import type { CharacterStats } from './stats'
 import type { DamageModifier } from './modifiers'
 import type { Action } from './action'
 import type { ElementType, EnergyType } from './baseTypes'
-import type { Gear } from './gear'
+import type { Gear, WeaponType } from './gear'
 import type { Form } from './form'
 
 // ========== Type: Resource Milestone =========================================================================================
@@ -25,6 +25,8 @@ export type ResourceMilestoneDef = {
 export type Character = {
   name: string
   element: ElementType
+  /** The weapon category this character can equip. Must match Weapon.weaponType. */
+  weaponType: WeaponType
   maxEnergies: Partial<Record<EnergyType, number>>
   actions: Action[]
   damageModifiers: DamageModifier[]

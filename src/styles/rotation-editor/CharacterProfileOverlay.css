@@ -106,8 +106,8 @@
 .charProfilePanel {
 
   /* ══ COLUMN WIDTHS ════════════════════════════════════════════ */
-  --cpo-left-width:   350px;   /* Left column  — portrait + stats */
-  --cpo-right-width:  350px;   /* Right column — set bonus        */
+  --cpo-left-width:   375px;   /* Left column  — portrait + stats */
+  --cpo-right-width:  375px;   /* Right column — set bonus        */
   /* Center column takes all remaining space automatically (flex: 1) */
 
   /* ══ PORTRAIT ════════════════════════════════════════════════ */

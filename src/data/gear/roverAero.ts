@@ -6,6 +6,7 @@ import { roverAero_liberation, roverAero_midair_1_2, roverAero_midair_1_2_cancel
 // ========== Weapon ===========================================================================================================
 const roverAero_weapon: Weapon = {
   name: 'Bloodpact\'s Pledge',
+  weaponType: 'Sword',
   stats: { baseATK: 587.50, energyPercent: 0.3888 },
   injectedModifiers: [ // TODO: How is this handled? These 2 refer to the same buff, but one allows for a higher timer. Reset should never reset above it's own stated timer, and overlapping names should reference the same buff
     {
@@ -49,6 +50,7 @@ const roverAero_weapon: Weapon = {
 // ========== Echoes ===========================================================================================================
 const roverAero_cost_4_echo_1: Echo = {
   name: 'Reminiscence: Fleurdelys',
+  setName: 'Windward Pilgrimage',
   cost: 4,
   baseStats: { flatATK: 150, critRate: 0.22 },
   subStats: { critRate: 0.075, critDamage: 0.150, bonusHP: 0.079 },
@@ -85,6 +87,7 @@ const roverAero_cost_4_echo_1: Echo = {
 
 const roverAero_cost_3_echo_1: Echo = {
   name: 'Capitaneus',
+  setName: 'Windward Pilgrimage',
   cost: 3,
   baseStats: { flatATK: 100, aeroBonusDMG: 0.30 },
   subStats: { critRate: 0.075, critDamage: 0.150, bonusATK: 0.079 },
@@ -95,6 +98,7 @@ const roverAero_cost_3_echo_1: Echo = {
 
 const roverAero_cost_3_echo_2: Echo = {
   name: 'Kerasaur',
+  setName: 'Windward Pilgrimage',
   cost: 3,
   baseStats: { flatATK: 100, aeroBonusDMG: 0.30 },
   subStats: { critRate: 0.075, critDamage: 0.150, bonusATK: 0.079 },
@@ -105,6 +109,7 @@ const roverAero_cost_3_echo_2: Echo = {
 
 const roverAero_cost_1_echo_1: Echo = {
   name: 'Sagittario',
+  setName: 'Windward Pilgrimage',
   cost: 1,
   baseStats: { flatHP: 2280, bonusATK: 0.18 },
   subStats: { critRate: 0.075, critDamage: 0.150, bonusATK: 0.079 },
@@ -114,6 +119,7 @@ const roverAero_cost_1_echo_1: Echo = {
 
 const roverAero_cost_1_echo_2: Echo = {
   name: 'Spectro Drake',
+  setName: 'Windward Pilgrimage',
   cost: 1,
   baseStats: { flatHP: 2280, bonusATK: 0.18 },
   subStats: { critRate: 0.075, critDamage: 0.150, bonusATK: 0.079 },

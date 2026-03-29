@@ -4,6 +4,7 @@ import type { Snapshot } from '../../types/snapshot'
 import type { DamageModifier } from '../../types/modifiers'
 import { aggregateStat } from '../hooks/resolvers'
 import { mergeStats } from '../calculators/damageCalculator'
+import { echoSetRegistry, computeEchoSetCounts } from '../../data/gear/echoSets'
 
 // ========== Types ============================================================================================================
 
@@ -60,10 +61,22 @@ export function computeGearStatBreakdown(character: Character): GearStatBreakdow
     echoesTotal = mergePartialStats(echoesTotal, echoStats)
   }
 
-  // Set bonus (only when all 5 slots are filled)
-  const allFilled = slots[1] && slots[2] && slots[3] && slots[4] && slots[5]
-  const setBonus: GearStatBreakdown['setBonus'] = allFilled && gear.setBonus
-    ? { name: gear.setBonus.name, total: { ...gear.setBonus.stats } }
+  // Set bonus stats from global EchoSet registry (supports multiple active sets / partial sets)
+  const setCounts = computeEchoSetCounts(slots)
+  let setBonusTotal: Partial<CharacterStats> = {}
+  const activeSetNames: string[] = []
+  for (const [setName, count] of Object.entries(setCounts)) {
+    const echoSet = echoSetRegistry[setName]
+    if (!echoSet) continue
+    for (const [milestoneStr, milestone] of Object.entries(echoSet.milestones)) {
+      if (count >= Number(milestoneStr) && milestone.stats) {
+        setBonusTotal = mergePartialStats(setBonusTotal, milestone.stats)
+        if (!activeSetNames.includes(setName)) activeSetNames.push(setName)
+      }
+    }
+  }
+  const setBonus: GearStatBreakdown['setBonus'] = activeSetNames.length > 0
+    ? { name: activeSetNames.join(', '), total: setBonusTotal }
     : null
 
   // Passive: inherent stats + flattened passive modifier stats

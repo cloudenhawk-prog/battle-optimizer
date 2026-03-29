@@ -7,6 +7,7 @@ import { mornye_inherentStats, mornye_stats } from '../stats/mornye'
 export const mornye: Character = {
   name: 'Mornye',
   element: 'FUSION',
+  weaponType: 'Broadblade',
   maxEnergies: {energy: 175, concerto: 100, forte: 100, relative_momentum: 100 },
   actions: [...all_actions],
   damageModifiers: [], // TODO

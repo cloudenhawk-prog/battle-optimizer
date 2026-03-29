@@ -114,5 +114,6 @@ export const blueprint: CharacterStats = {
 
   energyPercent: 1.0,
   healingBonus: 0,
-  tuneBreakBoost: 0
+  tuneBreakBoost: 0,
+  offtuneBuildupRate: 1,
 }

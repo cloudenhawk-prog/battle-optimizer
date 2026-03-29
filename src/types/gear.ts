@@ -4,16 +4,22 @@ import type { DamageModifier } from './modifiers'
 import type { SideEffect } from './sideEffect'
 import type { CharacterStats } from './stats'
 
+// ========== Type: WeaponType =================================================================================================
+/** The five weapon categories in Wuthering Waves. A character can only equip weapons matching their weaponType. */
+export type WeaponType = 'Sword' | 'Broadblade' | 'Pistol' | 'Gauntlets' | 'Rectifier'
+
 // ========== Type: Gear =======================================================================================================
 export type Gear = {
   weapon: Weapon
   echoSlots: EchoSlots
+  /** Character-specific injected modifiers for set effects (e.g. 5-piece). Stats come from the global EchoSet registry. */
   setBonus?: EchoSetBonus
 }
 
 // ========== Type: Weapon =====================================================================================================
 export type Weapon = {
   name: string
+  weaponType: WeaponType
   stats: Partial<CharacterStats>
   injectedModifiers?: InjectedModifier[]
   rank: 1 | 2 | 3 | 4 | 5
@@ -24,6 +30,8 @@ export type Weapon = {
 // ========== Type: Echo =======================================================================================================
 export type Echo = {
   name: string
+  /** The echo set this piece belongs to. Used to compute set milestone bonuses. */
+  setName: string
   cost: number
   baseStats: Partial<CharacterStats>
   subStats: Partial<CharacterStats>
@@ -49,10 +57,30 @@ export type EchoConditionalStats = {
   condition: (characterName: string) => boolean
   stats: Partial<CharacterStats>
 }
-// ========== Type: Set Bonus ==================================================================================================
+// ========== Type: Echo Set ==================================================================================================
+/** Stats (and optional modifiers) unlocked when the milestone echo count is reached for a set. */
+export type EchoSetMilestone = {
+  stats?: Partial<CharacterStats>
+}
+
+/** Global echo set definition. Milestone bonuses are resolved automatically based on echo count. */
+export type EchoSet = {
+  name: string
+  icon: string
+  info: Partial<Record<'2' | '5', string>>
+  milestones: Partial<Record<2 | 5, EchoSetMilestone>>
+}
+
+// ========== Type: Set Bonus (character-specific) ===========================================================================
+/**
+ * Character-specific set bonus entry on Gear. Used only for injectedModifiers that
+ * reference character-specific actions (e.g. 5-piece effects). Set bonus stats are
+ * resolved from the global EchoSet registry instead — stats here is kept for reference only.
+ */
 export type EchoSetBonus = {
   name: string
-  stats: Partial<CharacterStats>
+  /** @deprecated Stats are now resolved from the global EchoSet registry. Kept for reference. */
+  stats?: Partial<CharacterStats>
   injectedModifiers?: InjectedModifier[]
   info: { [key: string]: string }
   icon: string
