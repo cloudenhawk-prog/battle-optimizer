@@ -34,7 +34,6 @@ const MUTED = 'hsl(210 15% 50%)'
 const FONT_DISPLAY = '"Orbitron", sans-serif'
 const FONT_MONO = '"Share Tech Mono", monospace'
 const FONT_BODY = '"Rajdhani", "Segoe UI", sans-serif'
-const BORDER_SUBTLE = 'rgba(50, 70, 100, 0.3)'
 
 // ========== Asset Path Helper ================================================================================================
 
@@ -76,15 +75,8 @@ const STAT_DISPLAY: StatDisplay[] = [
 // The three scaling stats need special handling via calculateScalingStat
 const SCALING_STAT_KEYS = new Set(['ATK', 'HP', 'DEF'])
 
-// CSS filters to tint white stat icons to their element color
-const ELEMENT_ICON_FILTER: Record<string, string> = {
-  'charStatRow--glacio':  'brightness(0) invert(1) sepia(1) hue-rotate(164deg) saturate(4) brightness(1.1)',
-  'charStatRow--fusion':  'brightness(0) invert(1) sepia(1) hue-rotate(-21deg) saturate(6) brightness(0.9)',
-  'charStatRow--electro': 'brightness(0) invert(1) sepia(1) hue-rotate(244deg) saturate(6) brightness(1.1)',
-  'charStatRow--aero':    'brightness(0) invert(1) sepia(1) hue-rotate(124deg) saturate(4)',
-  'charStatRow--spectro': 'brightness(0) invert(1) sepia(1) hue-rotate(9deg) saturate(5) brightness(1.1)',
-  'charStatRow--havoc':   'brightness(0) invert(1) sepia(1) hue-rotate(234deg) saturate(4)',
-}
+// Element name extracted from elementClass, e.g. 'charStatRow--glacio' → 'glacio'
+// Used to compose the per-element CSS animation class on the icon img.
 
 // ========== Gear Stat Display ================================================================================================
 
@@ -264,12 +256,10 @@ function tooltipStyle(x: number, y: number): React.CSSProperties {
 
 function SectionHeader({ label, elColor }: { label: string; elColor: string }) {
   return (
-    <div style={{ display: 'flex', alignItems: 'center', gap: 12, marginBottom: 16 }}>
-      <div style={{ flex: 1, height: 1, background: `linear-gradient(90deg, hsl(${elColor} / 0.3), transparent)` }} />
-      <span style={{ fontFamily: FONT_DISPLAY, fontSize: '0.6rem', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.2em', color: MUTED }}>
-        {label}
-      </span>
-      <div style={{ flex: 1, height: 1, background: `linear-gradient(90deg, transparent, hsl(${elColor} / 0.3))` }} />
+    <div className="cpo-section-header">
+      <div className="cpo-section-header-line" style={{ background: `linear-gradient(90deg, hsl(${elColor} / 0.3), transparent)` }} />
+      <span className="cpo-section-header-label">{label}</span>
+      <div className="cpo-section-header-line" style={{ background: `linear-gradient(90deg, transparent, hsl(${elColor} / 0.3))` }} />
     </div>
   )
 }
@@ -440,7 +430,7 @@ function EquipmentOrbit({ weapon, echoSlots, elColor, onTooltip }: {
     return () => ro.disconnect()
   }, [])
 
-  const radius = Math.max(60, containerSize / 2 - 48)
+  const radius = Math.max(60, containerSize / 2 - 120)
   const size = containerSize
   const center = size / 2
   const largeSlot = Math.max(60, Math.min(92, Math.round(radius * 0.36)))
@@ -459,36 +449,13 @@ function EquipmentOrbit({ weapon, echoSlots, elColor, onTooltip }: {
     <div ref={containerRef} className="cpo-orbit-container">
       {size > 0 && (
       <div style={{ position: 'relative', width: size, height: size }}>
-      {/* Slow rotating outer ring */}
-      <motion.div
-        style={{ position: 'absolute', inset: 0, pointerEvents: 'none' }}
-        animate={{ rotate: 360 }}
-        transition={{ duration: 60, repeat: Infinity, ease: 'linear' }}
-      >
-        <svg style={{ width: '100%', height: '100%' }}>
-          <circle cx={center} cy={center} r={radius + 20} fill="none" stroke={`hsl(${elColor} / 0.05)`} strokeWidth="1" strokeDasharray="2 12" />
-        </svg>
-      </motion.div>
-
-      {/* Counter-rotating inner ring */}
-      <motion.div
-        style={{ position: 'absolute', inset: 0, pointerEvents: 'none' }}
-        animate={{ rotate: -360 }}
-        transition={{ duration: 45, repeat: Infinity, ease: 'linear' }}
-      >
-        <svg style={{ width: '100%', height: '100%' }}>
-          <circle cx={center} cy={center} r={radius - 20} fill="none" stroke={`hsl(${elColor} / 0.04)`} strokeWidth="1" strokeDasharray="1 8" />
-        </svg>
-      </motion.div>
-
-      {/* Static dashed orbit ring — particle 1 path */}
+      {/* Orbit ring + concentric ripple circles */}
       <svg style={{ position: 'absolute', inset: 0, width: '100%', height: '100%', pointerEvents: 'none' }}>
         <circle cx={center} cy={center} r={radius} fill="none" stroke={`hsl(${elColor} / 0.1)`} strokeWidth="1" strokeDasharray="4 6" />
-      </svg>
-
-      {/* Static smooth orbit ring — particle 2 path (inner, clean line) */}
-      <svg style={{ position: 'absolute', inset: 0, width: '100%', height: '100%', pointerEvents: 'none' }}>
-        <circle cx={center} cy={center} r={radius - 15} fill="none" stroke={`hsl(${elColor} / 0.09)`} strokeWidth="1" />
+        <circle cx={center} cy={center} r={radius + 22} fill="none" stroke={`hsl(${elColor} / 0.09)`} strokeWidth="0.75" />
+        <circle cx={center} cy={center} r={radius + 52} fill="none" stroke={`hsl(${elColor} / 0.055)`} strokeWidth="0.65" />
+        <circle cx={center} cy={center} r={radius + 94} fill="none" stroke={`hsl(${elColor} / 0.03)`} strokeWidth="0.5" />
+        <circle cx={center} cy={center} r={radius + 152} fill="none" stroke={`hsl(${elColor} / 0.015)`} strokeWidth="0.4" />
       </svg>
 
       {/* Orbiting energy particle */}
@@ -507,69 +474,25 @@ function EquipmentOrbit({ weapon, echoSlots, elColor, onTooltip }: {
         }} />
       </motion.div>
 
-      {/* Second orbiting particle — follows the smooth inner ring, counter-clockwise */}
-      <motion.div
-        style={{ position: 'absolute', width: size, height: size, pointerEvents: 'none' }}
-        animate={{ rotate: -360 }}
-        transition={{ duration: 32, repeat: Infinity, ease: 'linear' }}
-      >
-        <div style={{
-          position: 'absolute',
-          width: 4, height: 4, borderRadius: '50%',
-          left: center + (radius - 15) - 2,
-          top: center - 2,
-          background: `hsl(${elColor} / 0.45)`,
-          boxShadow: `0 0 6px hsl(${elColor} / 0.3)`,
-        }} />
-      </motion.div>
-
-      {/* Central element emblem with pulsing glow */}
-      <motion.div
-        initial={{ scale: 0, opacity: 0 }}
-        animate={{ scale: 1, opacity: 1 }}
-        transition={{ delay: 0.2, duration: 0.5, type: 'spring' }}
-        style={{
-          position: 'absolute',
-          width: 64, height: 64,
-          left: '50%', top: '50%',
-          transform: 'translate(-50%, -50%)',
-          borderRadius: '50%',
-          background: `radial-gradient(circle, hsl(${elColor} / 0.15), transparent)`,
-          border: `1px solid hsl(${elColor} / 0.2)`,
-          display: 'flex', alignItems: 'center', justifyContent: 'center',
-        }}
-      >
-        {/* Breathing glow */}
-        <motion.div
-          style={{
-            position: 'absolute', inset: 0, borderRadius: '50%',
-            background: `radial-gradient(circle, hsl(${elColor} / 0.2), transparent 70%)`,
-          }}
-          animate={{ scale: [1, 1.3, 1], opacity: [0.2, 0.05, 0.2] }}
-          transition={{ duration: 4, repeat: Infinity, ease: 'easeInOut' }}
-        />
-        <div style={{
-          width: 32, height: 32, borderRadius: '50%', position: 'relative', zIndex: 1,
-          background: `radial-gradient(circle, hsl(${elColor} / 0.4), hsl(${elColor} / 0.1))`,
-          boxShadow: `0 0 20px hsl(${elColor} / 0.3)`,
-        }} />
-      </motion.div>
-
-      {/* SVG: connection lines */}
+      {/* SVG: orbit tick marks */}
       <svg style={{ position: 'absolute', inset: 0, width: '100%', height: '100%', pointerEvents: 'none' }}>
-        {ORBIT_POSITIONS.map((pos, i) => {
-          const rad = (pos.angle * Math.PI) / 180
+        {Array.from({ length: 24 }).map((_, i) => {
+          const angleDeg = i * 15 - 90
+          const rad = (angleDeg * Math.PI) / 180
+          // every 4th tick lands on a slot angle (60° spacing)
+          const isSlot = i % 4 === 0
+          const tickLen = isSlot ? 10 : 5
+          const inner = radius - tickLen / 2
+          const outer = radius + tickLen / 2
           return (
-            <motion.line
+            <line
               key={i}
-              x1={center} y1={center}
-              x2={center + Math.cos(rad) * radius}
-              y2={center + Math.sin(rad) * radius}
-              stroke={`hsl(${elColor} / 0.08)`}
-              strokeWidth="1"
-              initial={{ pathLength: 0 }}
-              animate={{ pathLength: 1 }}
-              transition={{ delay: 0.3 + i * 0.05, duration: 0.4 }}
+              x1={center + Math.cos(rad) * inner}
+              y1={center + Math.sin(rad) * inner}
+              x2={center + Math.cos(rad) * outer}
+              y2={center + Math.sin(rad) * outer}
+              stroke={`hsl(${elColor} / ${isSlot ? 0.4 : 0.15})`}
+              strokeWidth={isSlot ? 1.5 : 1}
             />
           )
         })}
@@ -614,11 +537,12 @@ function EquipmentOrbit({ weapon, echoSlots, elColor, onTooltip }: {
                             <div style={{ height: 1, background: `linear-gradient(90deg, transparent, hsl(${elColor} / 0.3), transparent)`, margin: '8px 0' }} />
                           </div>
                         )}
-                        <p style={{ margin: 0, fontSize: '0.76rem', color: 'rgba(180, 190, 214, 0.88)', lineHeight: 1.55 }}>{item.data.info || 'No relevant information available.'}</p>
+                        <p style={{ margin: 0, fontSize: '0.76rem', color: 'rgba(180, 190, 214, 0.88)', lineHeight: 1.55 }}>{item.data.info || 'No additional information available.'}</p>
                       </div>
                     )
                   })()
                 }
+                typeTag="Weapon"
                 onTooltip={onTooltip}
               />
             ) : (
@@ -670,11 +594,12 @@ function EquipmentOrbit({ weapon, echoSlots, elColor, onTooltip }: {
                         {(mainStats.length > 0 || subStats.length > 0) && (
                           <div style={{ height: 1, background: `linear-gradient(90deg, transparent, hsl(${elColor} / 0.3), transparent)`, marginBottom: 8 }} />
                         )}
-                        <p style={{ margin: 0, fontSize: '0.76rem', color: 'rgba(180, 190, 214, 0.88)', lineHeight: 1.55 }}>{item.data.info || 'No relevant information available.'}</p>
+                        <p style={{ margin: 0, fontSize: '0.76rem', color: 'rgba(180, 190, 214, 0.88)', lineHeight: 1.55 }}>{item.data.info || 'No additional information available.'}</p>
                       </div>
                     )
                   })()
                 ) : null}
+                typeTag={item.slot === 1 ? 'Main Echo' : item.data ? 'Echo' : undefined}
                 onTooltip={onTooltip}
               />
             )}
@@ -689,7 +614,7 @@ function EquipmentOrbit({ weapon, echoSlots, elColor, onTooltip }: {
 
 // ========== Sub-component: Gear Slot (shared for weapon & echo) ==============================================================
 
-function GearSlot({ icon, primaryLabel, secondaryLabel, elColor, size, delay, tooltipContent, onTooltip }: {
+function GearSlot({ icon, primaryLabel, secondaryLabel, elColor, size, delay, tooltipContent, onTooltip, typeTag }: {
   icon?: string
   primaryLabel?: string
   secondaryLabel?: string
@@ -698,6 +623,7 @@ function GearSlot({ icon, primaryLabel, secondaryLabel, elColor, size, delay, to
   delay: number
   tooltipContent: React.ReactNode
   onTooltip: (t: TooltipData | null) => void
+  typeTag?: string
 }) {
   const hasItem = icon !== undefined || primaryLabel !== undefined
 
@@ -715,9 +641,9 @@ function GearSlot({ icon, primaryLabel, secondaryLabel, elColor, size, delay, to
       <div style={{
         position: 'absolute', inset: 0, borderRadius: 8,
         background: hasItem
-          ? `linear-gradient(135deg, hsl(${elColor} / 0.08), rgba(30, 33, 55, 0.6))`
+          ? `linear-gradient(135deg, hsl(${elColor} / ${typeTag ? 0.13 : 0.08}), rgba(30, 33, 55, 0.6))`
           : 'rgba(30, 33, 42, 0.3)',
-        border: `1px solid ${hasItem ? `hsl(${elColor} / 0.25)` : 'rgba(80, 85, 100, 0.2)'}`,
+        border: `1px solid ${hasItem ? `hsl(${elColor} / ${typeTag ? 0.4 : 0.25})` : 'rgba(80, 85, 100, 0.2)'}`,
         transition: 'border-color 0.2s',
       }} />
 
@@ -752,6 +678,27 @@ function GearSlot({ icon, primaryLabel, secondaryLabel, elColor, size, delay, to
 
       {/* Corner accents */}
       {hasItem && <CornerAccents elColor={elColor} />}
+
+      {/* Slot type label */}
+      {typeTag && (
+        <div style={{
+          position: 'absolute',
+          top: size + 4,
+          left: '50%',
+          transform: 'translateX(-50%)',
+          fontSize: '0.65rem',
+          fontFamily: FONT_DISPLAY,
+          fontWeight: 700,
+          letterSpacing: '0.08em',
+          textTransform: 'uppercase',
+          color: `hsl(${elColor} / 0.6)`,
+          whiteSpace: 'nowrap',
+          pointerEvents: 'none',
+          textShadow: `0 0 8px hsl(${elColor} / 0.35)`,
+        }}>
+          {typeTag}
+        </div>
+      )}
     </motion.div>
   )
 }
@@ -930,7 +877,7 @@ export function CharacterProfileOverlay({ characterName: _characterName, charact
         role="presentation"
         style={{
           position: 'fixed', inset: 0, zIndex: 200,
-          background: 'hsl(220 40% 4% / 0.82)',
+          background: 'rgba(25, 25, 30, 0.75)',
           backdropFilter: 'blur(12px)',
         }}
       />
@@ -947,7 +894,7 @@ export function CharacterProfileOverlay({ characterName: _characterName, charact
         aria-modal="true"
         aria-labelledby="charProfileTitle"
         style={{
-          boxShadow: `0 0 80px hsl(${elTheme.primary} / 0.08), 0 8px 40px hsl(220 40% 4% / 0.85)`,
+          boxShadow: `var(--table-shadow-inner), var(--table-shadow-main), var(--table-shadow-glow), 0 0 60px hsl(${elTheme.primary} / 0.1)`,
           border: `1px solid hsl(${elTheme.primary} / 0.2)`,
         }}
       >
@@ -958,9 +905,9 @@ export function CharacterProfileOverlay({ characterName: _characterName, charact
         <div style={{
           display: 'flex', alignItems: 'center', justifyContent: 'space-between',
           padding: '10px 20px 10px 20px',
-          borderBottom: `1px solid ${BORDER_SUBTLE}`,
+          borderBottom: '1px solid var(--table-border)',
           flexShrink: 0,
-          background: `linear-gradient(90deg, hsl(${elTheme.primary} / 0.06) 0%, transparent 40%)`,
+          background: `linear-gradient(90deg, hsl(${elTheme.primary} / 0.06) 0%, transparent 40%), var(--table-header-bg)`,
         }}>
           <div style={{ display: 'flex', alignItems: 'center', gap: 14 }}>
             {/* Left color accent bar */}
@@ -972,7 +919,7 @@ export function CharacterProfileOverlay({ characterName: _characterName, charact
               flexShrink: 0,
             }} />
             <div>
-              <h2 id="charProfileTitle" style={{ margin: 0, fontFamily: FONT_DISPLAY, fontSize: '1.05rem', fontWeight: 700, letterSpacing: '0.06em', color: 'hsl(210 30% 94%)' }}>
+              <h2 id="charProfileTitle" style={{ margin: 0, fontFamily: FONT_DISPLAY, fontSize: '1.05rem', fontWeight: 700, letterSpacing: '0.06em', color: 'var(--table-text)' }}>
                 {character.name}
               </h2>
               <div style={{ display: 'flex', alignItems: 'center', gap: 6, marginTop: 5 }}>
@@ -1015,162 +962,139 @@ export function CharacterProfileOverlay({ characterName: _characterName, charact
         <div className="cpo-content">
           <div className="cpo-body">
 
-            {/* ── LEFT PANEL ── */}
-            <div className="cpo-left-panel" style={{ borderRight: `1px solid hsl(${elTheme.primary} / 0.12)` }} />
-
-            {/* ── RIGHT PANEL ── */}
-            <div className="cpo-right-panel">
-              {/* STATS */}
-              <div style={{ marginBottom: 8 }}>
-                <SectionHeader label="Attributes" elColor={elTheme.primary} />
-                <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', columnGap: 24, rowGap: 0 }}>
-                  {STAT_DISPLAY.map((stat, i) => (
-                    <motion.div
-                      key={stat.key}
-                      initial={{ opacity: 0, x: -8 }}
-                      animate={{ opacity: 1, x: 0 }}
-                      transition={{ delay: 0.3 + i * 0.025, duration: 0.25 }}
-                      style={{
-                        display: 'flex', alignItems: 'center', justifyContent: 'space-between',
-                        padding: '8px 0',
-                        borderBottom: '1px solid rgba(50, 70, 100, 0.2)',
-                      }}
-                    >
-                      <div style={{ display: 'flex', alignItems: 'center', gap: 6 }}>
-                        {stat.iconPath && (
-                          <img
-                            src={stat.iconPath}
-                            alt=""
-                            style={{
-                              width: 18, height: 18, objectFit: 'contain', flexShrink: 0,
-                              opacity: stat.elementClass ? 1 : 0.7,
-                              filter: stat.elementClass ? ELEMENT_ICON_FILTER[stat.elementClass] : undefined,
-                            }}
-                            onError={e => { (e.target as HTMLImageElement).style.display = 'none' }}
-                          />
-                        )}
-                        <span style={{
-                          fontFamily: FONT_BODY,
-                          fontSize: '0.8rem', fontWeight: 500,
-                          color: MUTED,
-                          textTransform: 'uppercase', letterSpacing: '0.05em',
-                        }}>
-                          {stat.label}
-                        </span>
-                      </div>
-                      <button
-                        type="button"
-                        className="cpo-stat-value-btn"
-                        onClick={() => setSelectedStat(prev => prev === stat.key ? null : stat.key)}
-                        style={{
-                          color: selectedStat === stat.key
-                            ? `hsl(${elTheme.primary})`
-                            : `hsl(${elTheme.primary} / 0.9)`,
-                        }}
-                      >
-                        {formatStatValue(stat.key, getDisplayValue(stat), stat.format)}
-                      </button>
-                    </motion.div>
-                  ))}
-                </div>
-              </div>
-
-              {/* Resonance Chain as divider */}
-              <div style={{ position: 'relative', padding: '12px 0', margin: '4px 0' }}>
-                <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
-                  <div style={{ flex: 1, height: 1, background: `linear-gradient(90deg, transparent, hsl(${elTheme.primary} / 0.25))` }} />
-                  <HorizontalSequenceChain
-                    sequence={character.sequence}
-                    sequenceNodes={character.sequence_nodes}
-                    sequenceNodeIcons={character.sequence_nodes_icons}
-                    elColor={elTheme.primary}
-                    onTooltip={setTooltip}
-                  />
-                  <div style={{ flex: 1, height: 1, background: `linear-gradient(90deg, hsl(${elTheme.primary} / 0.25), transparent)` }} />
-                </div>
-                {/* Subtle glow behind the chain */}
-                <div style={{
-                  position: 'absolute', inset: 0, pointerEvents: 'none', opacity: 0.3,
-                  filter: 'blur(12px)',
-                  background: `linear-gradient(90deg, transparent 10%, hsl(${elTheme.primary} / 0.15) 50%, transparent 90%)`,
-                }} />
-              </div>
-
-              {/* EQUIPMENT */}
-              <div className="cpo-equipment-section">
-                <SectionHeader label="Equipment" elColor={elTheme.primary} />
-                <div className="cpo-equipment-body">
-                  {/* Left placeholder — reserved for future content */}
-                  <div />
-
-                  {/* Center: Orbit */}
-                  <div className="cpo-orbit-wrap">
-                    <EquipmentOrbit
-                      weapon={character.gear.weapon}
-                      echoSlots={character.gear.echoSlots}
-                      elColor={elTheme.primary}
-                      onTooltip={setTooltip}
-                    />
-                  </div>
-
-                  {/* Set Bonus — flex sibling to the right */}
-                  {character.gear.setBonus && (
-                    <motion.div
-                      initial={{ opacity: 0, x: 10 }}
-                      animate={{ opacity: 1, x: 0 }}
-                      transition={{ delay: 0.7 }}
-                      className="cpo-set-bonus"
-                    >
-                      <p className="cpo-set-bonus-heading">Set Bonuses</p>
-
-                      {/* Set name + icon */}
-                      <div className="cpo-set-bonus-name-row">
-                        <img
-                          src={assetPath(character.gear.setBonus.icon)}
-                          alt={character.gear.setBonus.name}
-                          style={{ width: 26, height: 26, objectFit: 'contain' }}
-                          onError={e => { (e.target as HTMLImageElement).style.opacity = '0' }}
-                        />
-                        <span className="cpo-set-bonus-name-text" style={{ color: `hsl(${elTheme.primary})` }}>
-                          {character.gear.setBonus.name}
-                        </span>
-                      </div>
-
-                      {/* Set bonus entries */}
-                      {Object.entries(character.gear.setBonus.info).map(([key, desc]) => (
-                        <div
-                          key={key}
-                          className="cpo-set-bonus-entry"
-                          style={{
-                            background: `hsl(${elTheme.primary} / 0.04)`,
-                            border: `1px solid hsl(${elTheme.primary} / 0.12)`,
-                          }}
-                        >
-                          <div className="cpo-set-bonus-entry-key" style={{ color: `hsl(${elTheme.primary})` }}>
-                            {key}
-                          </div>
-                          <p className="cpo-set-bonus-entry-desc">{desc}</p>
-                        </div>
-                      ))}
-                    </motion.div>
-                  )}
-                </div>
-              </div>
-
-              {/* BREAKDOWN MODAL — absolute overlay covering the right panel */}
-              {selectedStatDisplay !== null && (
-                <div style={{ position: 'absolute', inset: 0, zIndex: 10 }}>
-                  <BreakdownModal
-                    statDisplay={selectedStatDisplay}
-                    finalStats={finalStats}
-                    gearBreakdown={gearBreakdown}
-                    activeBreakdown={activeBreakdown}
-                    baseStat={baseStat}
-                    onClose={() => setSelectedStat(null)}
+            {/* ── LEFT COL: Portrait + Stats ── */}
+            <div className="cpo-left-col" style={{ borderRight: `1px solid hsl(${elTheme.primary} / 0.1)` }}>
+              {character.image && (
+                <div className="cpo-portrait-wrap">
+                  <img
+                    src={assetPath(character.image)}
+                    alt={character.name}
+                    className="cpo-portrait"
+                    style={{ borderColor: `hsl(${elTheme.primary} / 0.35)`, boxShadow: `0 0 20px hsl(${elTheme.primary} / 0.2)` }}
+                    onError={e => { (e.target as HTMLImageElement).style.display = 'none' }}
                   />
                 </div>
               )}
+
+              <SectionHeader label="Attributes" elColor={elTheme.primary} />
+
+              {STAT_DISPLAY.map((stat, i) => (
+                <motion.div
+                  key={stat.key}
+                  className="cpo-stat-row"
+                  initial={{ opacity: 0, x: -8 }}
+                  animate={{ opacity: 1, x: 0 }}
+                  transition={{ delay: 0.3 + i * 0.025, duration: 0.25 }}
+                >
+                  <div className="cpo-stat-label-group">
+                    {stat.iconPath && (
+                      <img
+                        src={stat.iconPath}
+                        alt=""
+                        className={`cpo-stat-icon${stat.elementClass ? ` cpo-stat-icon--element cpo-stat-icon--${stat.elementClass.replace('charStatRow--', '')}` : ''}`}
+                        onError={e => { (e.target as HTMLImageElement).style.display = 'none' }}
+                      />
+                    )}
+                    <span className="cpo-stat-label">{stat.label}</span>
+                  </div>
+                  <button
+                    type="button"
+                    className="cpo-stat-value-btn"
+                    onClick={() => setSelectedStat(prev => prev === stat.key ? null : stat.key)}
+                    style={{
+                      color: selectedStat === stat.key
+                        ? `hsl(${elTheme.primary})`
+                        : `hsl(${elTheme.primary} / 0.9)`,
+                    }}
+                  >
+                    {formatStatValue(stat.key, getDisplayValue(stat), stat.format)}
+                  </button>
+                </motion.div>
+              ))}
             </div>
+
+            {/* ── CENTER COL: Equipment Orbit + Resonance Chain ── */}
+            <div className="cpo-center-col">
+              <div className="cpo-orbit-wrap">
+                <EquipmentOrbit
+                  weapon={character.gear.weapon}
+                  echoSlots={character.gear.echoSlots}
+                  elColor={elTheme.primary}
+                  onTooltip={setTooltip}
+                />
+              </div>
+
+              {/* Resonance chain strip */}
+              <div className="cpo-chain-strip" style={{ borderTop: `1px solid hsl(${elTheme.primary} / 0.1)` }}>
+                <HorizontalSequenceChain
+                  sequence={character.sequence}
+                  sequenceNodes={character.sequence_nodes}
+                  sequenceNodeIcons={character.sequence_nodes_icons}
+                  elColor={elTheme.primary}
+                  onTooltip={setTooltip}
+                />
+              </div>
+            </div>
+
+            {/* ── RIGHT COL: Set Bonus ── */}
+            <div className="cpo-right-col" style={{ borderLeft: `1px solid hsl(${elTheme.primary} / 0.1)` }}>
+              {character.gear.setBonus ? (
+                <motion.div
+                  initial={{ opacity: 0, x: 10 }}
+                  animate={{ opacity: 1, x: 0 }}
+                  transition={{ delay: 0.7 }}
+                  style={{ display: 'flex', flexDirection: 'column', gap: 8 }}
+                >
+                  <SectionHeader label="Set Bonus" elColor={elTheme.primary} />
+
+                  <div className="cpo-set-bonus-name-row">
+                    <img
+                      src={assetPath(character.gear.setBonus.icon)}
+                      alt={character.gear.setBonus.name}
+                      style={{ width: 26, height: 26, objectFit: 'contain' }}
+                      onError={e => { (e.target as HTMLImageElement).style.opacity = '0' }}
+                    />
+                    <span className="cpo-set-bonus-name-text" style={{ color: `hsl(${elTheme.primary})` }}>
+                      {character.gear.setBonus.name}
+                    </span>
+                  </div>
+
+                  {Object.entries(character.gear.setBonus.info).map(([key, desc]) => (
+                    <div
+                      key={key}
+                      className="cpo-set-bonus-entry"
+                      style={{
+                        background: `hsl(${elTheme.primary} / 0.04)`,
+                        border: `1px solid hsl(${elTheme.primary} / 0.12)`,
+                      }}
+                    >
+                      <div className="cpo-set-bonus-entry-key" style={{ color: `hsl(${elTheme.primary})` }}>
+                        {key}
+                      </div>
+                      <p className="cpo-set-bonus-entry-desc">{desc}</p>
+                    </div>
+                  ))}
+                </motion.div>
+              ) : (
+                <div style={{ flex: 1, display: 'flex', alignItems: 'center', justifyContent: 'center', color: MUTED, fontSize: '0.75rem', opacity: 0.4 }}>
+                  No set bonus
+                </div>
+              )}
+            </div>
+
+            {/* Breakdown modal — covers entire body */}
+            {selectedStatDisplay !== null && (
+              <div className="cpo-breakdown-overlay">
+                <BreakdownModal
+                  statDisplay={selectedStatDisplay}
+                  finalStats={finalStats}
+                  gearBreakdown={gearBreakdown}
+                  activeBreakdown={activeBreakdown}
+                  baseStat={baseStat}
+                  onClose={() => setSelectedStat(null)}
+                />
+              </div>
+            )}
           </div>
         </div>
 

@@ -63,5 +63,5 @@ export const cartethyia: Character = {
     'assets/characters/sequences/cartethyia_5.png',
     'assets/characters/sequences/cartethyia_6.png',
   ],
-  image: '/assets/characters/cartehyia.png',
+  image: '/assets/characters/cartethyia.png',
 }

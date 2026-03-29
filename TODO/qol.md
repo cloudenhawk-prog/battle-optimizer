@@ -1,5 +1,8 @@
 ### Quality of Life
 
+# Overall
+The table is a lighter shade than the character State Tracker windows. Let's change the table to fit them more.
+
 # Modifiers
 - Certain modifiers only gives stats when conditions are met. They may not show up in the stats profile overlay, even though it could be an obvious almost 100 % uptime stat.
   Each stat should, for example at the bottom, show Conditional multipliers currently present
