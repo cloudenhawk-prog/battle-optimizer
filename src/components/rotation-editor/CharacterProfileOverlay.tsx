@@ -410,11 +410,12 @@ const ORBIT_POSITIONS = [
   { angle: 210 },  // Echo slot 5 — top-left
 ]
 
-function EquipmentOrbit({ weapon, echoSlots, elColor, onTooltip }: {
+function EquipmentOrbit({ weapon, echoSlots, elColor, onTooltip, characterName }: {
   weapon: Weapon
   echoSlots: EchoSlots
   elColor: string
   onTooltip: (t: TooltipData | null) => void
+  characterName: string
 }) {
   const containerRef = useRef<HTMLDivElement>(null)
   const [containerSize, setContainerSize] = useState(0)
@@ -473,6 +474,32 @@ function EquipmentOrbit({ weapon, echoSlots, elColor, onTooltip }: {
           boxShadow: `0 0 8px hsl(${elColor} / 0.4), 0 0 16px hsl(${elColor} / 0.2)`,
         }} />
       </motion.div>
+
+      {/* Character shadow — centered inside orbit ring */}
+      <div style={{
+        position: 'absolute',
+        left: center,
+        top: center,
+        width: radius * 1.55,
+        height: radius * 1.55,
+        transform: 'translate(-50%, -50%)',
+        pointerEvents: 'none',
+      }}>
+        <img
+          src={`/assets/characters/${characterName.toLowerCase()}_shadow.png`}
+          alt=""
+          aria-hidden="true"
+          style={{
+            width: '100%',
+            height: '100%',
+            objectFit: 'contain',
+            filter: 'brightness(0) opacity(0.28)',
+            WebkitMaskImage: 'radial-gradient(circle at center, black 50%, rgba(0,0,0,0.55) 70%, transparent 90%)',
+            maskImage: 'radial-gradient(circle at center, black 50%, rgba(0,0,0,0.55) 70%, transparent 90%)',
+          }}
+          onError={e => { (e.target as HTMLImageElement).style.display = 'none' }}
+        />
+      </div>
 
       {/* SVG: orbit tick marks */}
       <svg style={{ position: 'absolute', inset: 0, width: '100%', height: '100%', pointerEvents: 'none' }}>
@@ -893,6 +920,86 @@ function PortraitSequenceDisplay({ sequence, sequenceNodes, sequenceNodeIcons, e
   )
 }
 
+// ========== Sub-component: Portrait Left Arc (level + element) =============================================================
+
+function PortraitLeftArc({ level, element, elColor }: {
+  level: number | undefined
+  element: string
+  elColor: string
+}) {
+  const R = PORTRAIT_ARC_RADIUS
+  const trackPath = seqArcPath(R, 106, 265)
+
+  // Tightly grouped near 180° (pure left): Element at upper-left (165°), Level at lower-left (195°)
+  const items = [
+    { angle: 145, label: element,                                     isElement: true  },
+    { angle: 120, label: level !== undefined ? `Lv.${level}` : '—',  isElement: false },
+  ]
+
+  return (
+    <div style={{ position: 'absolute', inset: 0, overflow: 'visible', pointerEvents: 'none' }}>
+
+      {/* SVG arc track — mirrors the right-side track, anchored to portrait center */}
+      <svg
+        width="190"
+        height="360"
+        viewBox="-190 -180 190 360"
+        style={{
+          position: 'absolute',
+          right: '50%',
+          top: '50%',
+          transform: 'translateY(-50%)',
+          overflow: 'visible',
+          pointerEvents: 'none',
+        }}
+      >
+        <path
+          d={trackPath}
+          fill="none"
+          stroke="rgba(120, 128, 145, 0.22)"
+          strokeWidth="1"
+          strokeLinecap="round"
+        />
+      </svg>
+
+      {/* Badges */}
+      {items.map(({ angle, label, isElement }) => {
+        const rad = (angle * Math.PI) / 180
+        const offsetX = R * Math.cos(rad)
+        const offsetY = R * Math.sin(rad)
+        return (
+          <div
+            key={angle}
+            style={{
+              position: 'absolute',
+              left: `calc(50% + ${offsetX}px)`,
+              top: `calc(50% + ${offsetY}px)`,
+              transform: 'translate(-50%, -50%)',
+            }}
+          >
+            <span style={{
+              display: 'block',
+              fontFamily: isElement ? FONT_DISPLAY : FONT_MONO,
+              fontSize: '0.65rem',
+              fontWeight: isElement ? 700 : undefined,
+              color: isElement ? `hsl(${elColor})` : MUTED,
+              background: isElement ? `hsl(${elColor} / 0.12)` : 'rgba(30, 40, 60, 0.7)',
+              border: `1px solid ${isElement ? `hsl(${elColor} / 0.35)` : 'rgba(80, 90, 110, 0.3)'}`,
+              borderRadius: 99,
+              padding: '1px 8px',
+              textTransform: isElement ? 'uppercase' as const : undefined,
+              letterSpacing: isElement ? '0.1em' : '0.04em',
+              whiteSpace: 'nowrap',
+            }}>
+              {label}
+            </span>
+          </div>
+        )
+      })}
+    </div>
+  )
+}
+
 // ========== Component: Character Profile Overlay =============================================================================
 
 type CharacterProfileOverlayProps = {
@@ -903,8 +1010,7 @@ type CharacterProfileOverlayProps = {
   onClose: () => void
 }
 
-export function CharacterProfileOverlay({ characterName: _characterName, character, snapshot, allCharacters, onClose }: CharacterProfileOverlayProps) {
-  console.log('Character name not used yet:', _characterName)
+export function CharacterProfileOverlay({ characterName, character, snapshot, allCharacters, onClose }: CharacterProfileOverlayProps) {
   const [selectedStat, setSelectedStat] = useState<string | null>(null)
   const [isClosing, setIsClosing] = useState(false)
   const [tooltip, setTooltip] = useState<TooltipData | null>(null)
@@ -964,54 +1070,14 @@ export function CharacterProfileOverlay({ characterName: _characterName, charact
         {/* Top accent line */}
         <div style={{ height: 1, flexShrink: 0, background: `linear-gradient(90deg, transparent, hsl(${elTheme.primary} / 0.6), transparent)` }} />
 
-        {/* Header */}
+        {/* Close strip */}
         <div style={{
-          display: 'flex', alignItems: 'center', justifyContent: 'space-between',
-          padding: '10px 20px 10px 20px',
-          borderBottom: '1px solid var(--table-border)',
+          display: 'flex',
+          justifyContent: 'flex-end',
+          padding: '6px 14px',
           flexShrink: 0,
-          background: `linear-gradient(90deg, hsl(${elTheme.primary} / 0.06) 0%, transparent 40%), var(--table-header-bg)`,
+          background: `linear-gradient(90deg, transparent, hsl(${elTheme.primary} / 0.04))`,
         }}>
-          <div style={{ display: 'flex', alignItems: 'center', gap: 14 }}>
-            {/* Left color accent bar */}
-            <div style={{
-              width: 3, alignSelf: 'stretch',
-              borderRadius: 99,
-              background: `linear-gradient(180deg, hsl(${elTheme.primary}), hsl(${elTheme.primary} / 0.25))`,
-              boxShadow: `0 0 8px hsl(${elTheme.primary} / 0.5)`,
-              flexShrink: 0,
-            }} />
-            <div>
-              <h2 id="charProfileTitle" style={{ margin: 0, fontFamily: FONT_DISPLAY, fontSize: '1.05rem', fontWeight: 700, letterSpacing: '0.06em', color: 'var(--table-text)' }}>
-                {character.name}
-              </h2>
-              <div style={{ display: 'flex', alignItems: 'center', gap: 6, marginTop: 5 }}>
-                {/* Level badge */}
-                <span style={{
-                  fontFamily: FONT_MONO, fontSize: '0.65rem',
-                  color: MUTED,
-                  background: 'rgba(30, 40, 60, 0.7)',
-                  border: '1px solid rgba(80, 90, 110, 0.3)',
-                  borderRadius: 99, padding: '1px 7px',
-                  letterSpacing: '0.04em',
-                }}>
-                  Lv.{(character.stats as Partial<CharacterStats>).level ?? '—'}
-                </span>
-                {/* Element badge */}
-                <span style={{
-                  fontFamily: FONT_DISPLAY, fontSize: '0.58rem', fontWeight: 700,
-                  color: `hsl(${elTheme.primary})`,
-                  background: `hsl(${elTheme.primary} / 0.12)`,
-                  border: `1px solid hsl(${elTheme.primary} / 0.35)`,
-                  borderRadius: 99, padding: '1px 8px',
-                  textTransform: 'uppercase', letterSpacing: '0.1em',
-                }}>
-                  {elTheme.label}
-                </span>
-              </div>
-            </div>
-          </div>
-
           <button
             className="cpo-close-btn"
             onClick={handleClose}
@@ -1027,6 +1093,25 @@ export function CharacterProfileOverlay({ characterName: _characterName, charact
 
             {/* ── LEFT COL: Portrait + Stats ── */}
             <div className="cpo-left-col" style={{ borderRight: `1px solid hsl(${elTheme.primary} / 0.1)` }}>
+
+              {/* Identity */}
+              <div className="cpo-identity-block">
+                <h2
+                  id="charProfileTitle"
+                  style={{
+                    margin: 0,
+                    fontFamily: FONT_DISPLAY,
+                    fontSize: '1.3rem',
+                    fontWeight: 700,
+                    letterSpacing: '0.08em',
+                    color: `hsl(${elTheme.primary})`,
+                    textShadow: `0 0 22px hsl(${elTheme.primary} / 0.35)`,
+                  }}
+                >
+                  {character.name}
+                </h2>
+              </div>
+
               {character.image && (
                 <div className="cpo-portrait-wrap">
                   <img
@@ -1042,6 +1127,11 @@ export function CharacterProfileOverlay({ characterName: _characterName, charact
                     sequenceNodeIcons={character.sequence_nodes_icons}
                     elColor={elTheme.primary}
                     onTooltip={setTooltip}
+                  />
+                  <PortraitLeftArc
+                    level={(character.stats as Partial<CharacterStats>).level}
+                    element={elTheme.label}
+                    elColor={elTheme.primary}
                   />
                 </div>
               )}
@@ -1091,6 +1181,7 @@ export function CharacterProfileOverlay({ characterName: _characterName, charact
                   echoSlots={character.gear.echoSlots}
                   elColor={elTheme.primary}
                   onTooltip={setTooltip}
+                  characterName={characterName}
                 />
               </div>
 

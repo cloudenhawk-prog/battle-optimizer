@@ -368,7 +368,7 @@ const mornye_heavy: Action = {
   ],
   coordinatedAttacks: [],
   castConditions: {
-    previousActions: [], // TODO: Insert 'into heavy' variants of BA's
+    // TODO: Insert 'into heavy' variants of BA's into previousActions
     startState: 'GROUND',
     endState: 'AIR',
     requiredForms: ['Baseline Mode']
@@ -379,7 +379,7 @@ const mornye_heavy: Action = {
 }
 
 const mornye_heavy_swap_in: Action = {
-  name: 'Heavy Attack',
+  name: 'Heavy Attack (Swap In)',
   displayName: 'Heavy Attack',
   category: 'Basics',
   castTime: 1.50,
@@ -775,6 +775,35 @@ const mornye_relative_momentum: Action = {
   },
   offtune: 0,
 }
+
+export const mornye_intro_outro_actions = [mornye_intro, mornye_outro]
+
+export const all_actions = [
+  mornye_BA_1_cancel_with_swap,
+  mornye_BA_1_2_cancel_with_swap,
+  mornye_BA_1_3_into_heavy,
+  mornye_BA_1_3_cancel_with_swap,
+  mornye_BA_2_cancel_with_swap,
+  mornye_BA_2_3_into_heavy,
+  mornye_BA_2_3_cancel_with_swap,
+  mornye_BA_3_into_heavy,
+  mornye_BA_3_cancel_with_swap,
+  mornye_BA_3_cancel_with_skill,
+  mornye_heavy,
+  mornye_heavy_swap_in,
+  mornye_skill,
+  mode_mornye_BA_1_3,
+  mode_mornye_skill,
+  mode_mornye_heavy,
+  mornye_liberation,
+  ...mornye_intro_outro_actions,
+  mornye_wait_005,
+  mornye_wait_for_swap,
+  mornye_energy,
+  mornye_concerto,
+  mornye_forte,
+  mornye_relative_momentum
+]
 
 export {
   // Basic Attacks 1

@@ -172,9 +172,17 @@
   flex-direction: column;
   overflow-y: auto;
   overflow-x: hidden;
-  padding: var(--cpo-col-padding-y) var(--cpo-col-padding-x);
+  padding: 10px var(--cpo-col-padding-x) var(--cpo-col-padding-y);
   scrollbar-width: thin;
   scrollbar-color: rgba(80, 100, 130, 0.3) transparent;
+}
+
+/* Identity block — name, level, element badge above the portrait */
+
+.cpo-identity-block {
+  margin-bottom: 70px;
+  text-align: center;
+  flex-shrink: 0;
 }
 
 /* Portrait */
@@ -381,15 +389,9 @@
   flex-shrink: 0;
 }
 
-/* Non-elemental icons: near-white with a very soft neutral steel-blue ambient pulse.
-   Kept dimmer and calmer than elemental icons to preserve visual hierarchy. */
+/* Non-elemental icons: rendered as near-white (no color, no glow). */
 .cpo-stat-icon:not(.cpo-stat-icon--element) {
-  animation: cpo-glow-neutral 5.5s ease-in-out infinite;
-}
-
-@keyframes cpo-glow-neutral {
-  0%, 100% { filter: brightness(0) invert(1) brightness(0.72) drop-shadow(0 0 3px rgba(130, 160, 205, 0.28)); }
-  50%       { filter: brightness(0) invert(1) brightness(0.82) drop-shadow(0 0 6px rgba(170, 200, 230, 0.38)); }
+  filter: brightness(0) invert(1) brightness(0.77);
 }
 
 /* Elemental icon variant — full brightness; element-specific animation handles everything */
@@ -411,62 +413,43 @@
 }
 
 /* ═════════════════════════════════════════════════════════════
- *  ELEMENT STAT ICONS  —  near-white base + element glow
+ *  ELEMENT STAT ICONS  —  painted in each element's color
  *
- *  Each element renders the icon as near-white (#EAEAEA) and
- *  applies a soft pulsing drop-shadow in the element's color.
- *  The icon shape is never fully recolored — color exists only
- *  as an ambient glow effect.
+ *  Technique: normalize the white PNG to a mid-gray, apply
+ *  sepia(1) to introduce chroma, then hue-rotate + saturate
+ *  to land on the element color. Fine-tune with brightness.
  *
- *  Duration variants keep each element feeling distinct:
- *    Aero     3.5 s  — breezy / quick
- *    Glacio   4.0 s  — steady / icy
- *    Fusion   4.0 s  — steady / warm
- *    Electro  5.0 s  — slow / mystical
- *    Spectro  4.5 s  — medium / ethereal
- *    Havoc    4.5 s  — medium / ominous
+ *  To adjust a color: tweak hue-rotate (hue), saturate (vividness),
+ *  or the final brightness (lightness).
  * ═════════════════════════════════════════════════════════════ */
 
-.cpo-stat-icon--glacio  { animation: cpo-glow-glacio  4.0s ease-in-out infinite; }
-.cpo-stat-icon--fusion  { animation: cpo-glow-fusion   4.0s ease-in-out infinite; }
-.cpo-stat-icon--electro { animation: cpo-glow-electro  5.0s ease-in-out infinite; }
-.cpo-stat-icon--aero    { animation: cpo-glow-aero     3.5s ease-in-out infinite; }
-.cpo-stat-icon--spectro { animation: cpo-glow-spectro  4.5s ease-in-out infinite; }
-.cpo-stat-icon--havoc   { animation: cpo-glow-havoc    4.5s ease-in-out infinite; }
-
-/* —— Glacio: teal / icy cyan —— */
-@keyframes cpo-glow-glacio {
-  0%, 100% { filter: brightness(0) invert(1) brightness(0.92) drop-shadow(0 0 4px #3FD1C2); }
-  50%       { filter: brightness(0) invert(1) brightness(0.97) drop-shadow(0 0 9px #7FE7DC); }
+/* —— Glacio: teal / icy cyan  ~#3FD1C2 —— */
+.cpo-stat-icon--glacio {
+  filter: brightness(0) invert(1) brightness(0.6) sepia(1) hue-rotate(138deg) saturate(300%) brightness(0.85);
 }
 
-/* —— Fusion: orange / red —— */
-@keyframes cpo-glow-fusion {
-  0%, 100% { filter: brightness(0) invert(1) brightness(0.92) drop-shadow(0 0 4px #FF7A3C); }
-  50%       { filter: brightness(0) invert(1) brightness(0.97) drop-shadow(0 0 9px #FFB36B); }
+/* —— Fusion: orange / red  ~#FF7A3C —— */
+.cpo-stat-icon--fusion {
+  filter: brightness(0) invert(1) brightness(0.6) sepia(1) hue-rotate(342deg) saturate(500%) brightness(1.0);
 }
 
-/* —— Electro: purple —— */
-@keyframes cpo-glow-electro {
-  0%, 100% { filter: brightness(0) invert(1) brightness(0.92) drop-shadow(0 0 4px #9B6BFF); }
-  50%       { filter: brightness(0) invert(1) brightness(0.97) drop-shadow(0 0 9px #C6A7FF); }
+/* —— Electro: purple  ~#9B6BFF —— */
+.cpo-stat-icon--electro {
+  filter: brightness(0) invert(1) brightness(0.6) sepia(1) hue-rotate(226deg) saturate(300%) brightness(1.05);
 }
 
-/* —— Aero: light green —— */
-@keyframes cpo-glow-aero {
-  0%, 100% { filter: brightness(0) invert(1) brightness(0.92) drop-shadow(0 0 4px #58D68D); }
-  50%       { filter: brightness(0) invert(1) brightness(0.97) drop-shadow(0 0 9px #9BE7B8); }
+/* —— Aero: light green  ~#58D68D —— */
+.cpo-stat-icon--aero {
+  filter: brightness(0) invert(1) brightness(0.6) sepia(1) hue-rotate(107deg) saturate(300%) brightness(0.95);
 }
 
-/* —— Spectro: yellow / soft gold —— */
-@keyframes cpo-glow-spectro {
-  0%, 100% { filter: brightness(0) invert(1) brightness(0.92) drop-shadow(0 0 4px #FFD84D); }
-  50%       { filter: brightness(0) invert(1) brightness(0.97) drop-shadow(0 0 9px #FFF3A3); }
+/* —— Spectro: yellow / soft gold  ~#FFD84D —— */
+.cpo-stat-icon--spectro {
+  filter: brightness(0) invert(1) brightness(0.6) sepia(1) hue-rotate(9deg) saturate(500%) brightness(1.15);
 }
 
-/* —— Havoc: magenta / red-purple —— */
-@keyframes cpo-glow-havoc {
-  0%, 100% { filter: brightness(0) invert(1) brightness(0.92) drop-shadow(0 0 4px #C14B8A); }
-  50%       { filter: brightness(0) invert(1) brightness(0.97) drop-shadow(0 0 9px #E08FB8); }
+/* —— Havoc: magenta / red-purple  ~#C14B8A —— */
+.cpo-stat-icon--havoc {
+  filter: brightness(0) invert(1) brightness(0.6) sepia(1) hue-rotate(287deg) saturate(400%) brightness(0.9);
 }
 

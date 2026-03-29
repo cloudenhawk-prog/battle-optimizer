@@ -5,7 +5,7 @@ import { roverAero_inherentStats, roverAeroStats } from '../stats/roverAero'
 
 export const roverAero: Character = {
   name: 'Rover',
-  element: 'AERO',
+  element: 'SPECTRO',
   maxEnergies: { energy: 150, concerto: 100, forte: 120 },
   actions: Object.values(roverAeroActions),
   damageModifiers: [],

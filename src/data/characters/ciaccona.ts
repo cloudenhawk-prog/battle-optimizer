@@ -6,7 +6,7 @@ import { ciaccona_stats, ciaccona_inherentStats } from '../stats/ciaccona'
 
 export const ciaccona: Character = {
   name: 'Ciaccona',
-  element: 'AERO',
+  element: 'ELECTRO',
   maxEnergies: { energy: 125, concerto: 100, forte: 3 },
   actions: Object.values(ciacconaActions),
   damageModifiers: [
