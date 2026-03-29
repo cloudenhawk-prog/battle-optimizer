@@ -311,26 +311,24 @@
 /* ===== Energy List ===== */
 
 .stateTrackerEnergies {
-  display: flex;
-  flex-direction: column;
+  display: grid;
+  grid-template-columns: auto auto 1fr;
+  align-items: center;
   padding: 10px 14px;
-  gap: 6px;
+  gap: 6px 8px;
   border-top: none;
 }
 
 /* ===== Individual energy bar row ===== */
 
 .stateTrackerBarRow {
-  display: flex;
-  align-items: center;
-  gap: 8px;
+  display: contents;
 }
 
 .stateTrackerEnergyLabel {
   font-size: 0.75rem;
   font-weight: 600;
   color: var(--table-text-dim);
-  min-width: 58px;
   white-space: nowrap;
 }
 

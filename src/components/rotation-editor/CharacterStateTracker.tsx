@@ -197,9 +197,6 @@ export function CharacterStateTracker({
                   <div className="stateTrackerStateItem">
                     <span className="stateTrackerStateLabel">Form</span>
                     <span className="stateTrackerFormBadge">
-                      {displayForm.icon && ( // No longer have icons, remove
-                        <img src={displayForm.icon} alt={displayForm.name} className="stateTrackerFormIcon" />
-                      )}
                       {displayForm.displayName || displayForm.name}
                     </span>
                   </div>
