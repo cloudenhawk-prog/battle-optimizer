@@ -1,6 +1,6 @@
 import { createPortal } from 'react-dom'
 import { useState, useRef, useEffect, Fragment } from 'react'
-import { motion } from 'framer-motion'
+import { motion, useAnimationFrame, AnimatePresence, useMotionValue, animate } from 'framer-motion'
 import type { Character } from '../../types/character'
 import type { CharacterStats } from '../../types/stats'
 import type { Snapshot } from '../../types/snapshot'
@@ -410,15 +410,36 @@ const ORBIT_POSITIONS = [
   { angle: 210 },  // Echo slot 5 — top-left
 ]
 
-function EquipmentOrbit({ weapon, echoSlots, elColor, onTooltip, characterName }: {
+// Rotation-space angle for each orbit item: 0° = rightmost point of the ring, increasing clockwise.
+// Derived from ORBIT_POSITIONS: mathematical angle → CSS rotate degrees (same axis for clockwise motion).
+const ITEM_ROTATION_ANGLES = ORBIT_POSITIONS.map(p => ((p.angle % 360) + 360) % 360)
+// = [270, 90, 330, 30, 150, 210]
+const ORBIT_SCAN_THRESHOLD = 16 // degrees — half-window; items are 60° apart so no overlap
+
+type OrbitalScanItem =
+  | { type: 'weapon'; data: Weapon }
+  | { type: 'echo'; data: Echo; slot: 1 | 2 | 3 | 4 | 5 }
+
+function EquipmentOrbit({ weapon, echoSlots, elColor, onTooltip, characterName, onItemHighlight }: {
   weapon: Weapon
   echoSlots: EchoSlots
   elColor: string
   onTooltip: (t: TooltipData | null) => void
   characterName: string
+  onItemHighlight?: (item: OrbitalScanItem) => void
 }) {
   const containerRef = useRef<HTMLDivElement>(null)
   const [containerSize, setContainerSize] = useState(0)
+  const lastPassedIndexRef = useRef<number>(-1)
+  // Single MotionValue drives both the visual particle and the detection logic —
+  // the two can never drift apart because they read from identical values.
+  const rotation = useMotionValue(0)
+  const [scannedIndex, setScannedIndex] = useState(-1)
+
+  useEffect(() => {
+    const controls = animate(rotation, [0, 360], { duration: 36, repeat: Infinity, ease: 'linear' })
+    return () => controls.stop()
+  }, [rotation])
 
   useEffect(() => {
     const el = containerRef.current
@@ -434,8 +455,8 @@ function EquipmentOrbit({ weapon, echoSlots, elColor, onTooltip, characterName }
   const radius = Math.max(60, containerSize / 2 - 120)
   const size = containerSize
   const center = size / 2
-  const largeSlot = Math.max(72, Math.min(112, Math.round(radius * 0.44)))
   const baseSlot = Math.max(62, Math.min(98, Math.round(radius * 0.40)))
+  const largeSlot = Math.round(baseSlot * 1.25)
 
   const items: Array<{ type: 'weapon'; data: Weapon } | { type: 'echo'; data: Echo | null; slot: 1 | 2 | 3 | 4 | 5 }> = [
     { type: 'weapon', data: weapon },
@@ -445,6 +466,32 @@ function EquipmentOrbit({ weapon, echoSlots, elColor, onTooltip, characterName }
     { type: 'echo', data: echoSlots[4], slot: 4 },
     { type: 'echo', data: echoSlots[5], slot: 5 },
   ]
+
+  useAnimationFrame(() => {
+    // rotation.get() is the exact same value used to render the particle — perfect sync.
+    const currentAngle = rotation.get() % 360
+    let closestIndex = -1
+    ITEM_ROTATION_ANGLES.forEach((angle, i) => {
+      // Fire when ball is within 8° before to ORBIT_SCAN_THRESHOLD degrees after the slot.
+      const past = (currentAngle - angle + 8 + 360) % 360
+      if (past < ORBIT_SCAN_THRESHOLD) { closestIndex = i }
+    })
+    if (closestIndex !== lastPassedIndexRef.current) {
+      lastPassedIndexRef.current = closestIndex
+      // Only advance when a real slot is hit — never reset to -1 so the frame persists.
+      if (closestIndex >= 0) {
+        setScannedIndex(closestIndex)
+      }
+      if (closestIndex >= 0 && onItemHighlight) {
+        const item = items[closestIndex]
+        if (item.type === 'weapon') {
+          onItemHighlight({ type: 'weapon', data: item.data })
+        } else if (item.type === 'echo' && item.data !== null) {
+          onItemHighlight({ type: 'echo', data: item.data, slot: item.slot })
+        }
+      }
+    }
+  })
 
   return (
     <div ref={containerRef} className="cpo-orbit-container">
@@ -461,9 +508,7 @@ function EquipmentOrbit({ weapon, echoSlots, elColor, onTooltip, characterName }
 
       {/* Orbiting energy particle */}
       <motion.div
-        style={{ position: 'absolute', width: size, height: size, pointerEvents: 'none' }}
-        animate={{ rotate: 360 }}
-        transition={{ duration: 20, repeat: Infinity, ease: 'linear' }}
+        style={{ position: 'absolute', width: size, height: size, pointerEvents: 'none', rotate: rotation }}
       >
         <div style={{
           position: 'absolute',
@@ -530,7 +575,7 @@ function EquipmentOrbit({ weapon, echoSlots, elColor, onTooltip, characterName }
         const rad = (ORBIT_POSITIONS[i].angle * Math.PI) / 180
         const x = center + Math.cos(rad) * radius
         const y = center + Math.sin(rad) * radius
-        const isLarge = item.type === 'weapon' || (item.type === 'echo' && (item.data?.cost ?? 0) >= 4)
+        const isLarge = item.type === 'weapon' || (item.type === 'echo' && item.slot === 1)
         const slotSize = isLarge ? largeSlot : baseSlot
 
         return (
@@ -564,18 +609,19 @@ function EquipmentOrbit({ weapon, echoSlots, elColor, onTooltip, characterName }
                             <div style={{ height: 1, background: `linear-gradient(90deg, transparent, hsl(${elColor} / 0.3), transparent)`, margin: '8px 0' }} />
                           </div>
                         )}
-                        <p style={{ margin: 0, fontSize: '0.76rem', color: 'rgba(180, 190, 214, 0.88)', lineHeight: 1.55 }}>{item.data.info || 'No additional information available.'}</p>
+                        <p style={{ margin: 0, fontSize: '0.76rem', color: 'rgba(180, 190, 214, 0.88)', lineHeight: 1.55 }}>{item.data.info ? colorizeText(item.data.info, elColor) : 'No additional information available.'}</p>
                       </div>
                     )
                   })()
                 }
                 typeTag="Weapon"
+                isScanned={i === scannedIndex}
                 onTooltip={onTooltip}
               />
             ) : (
               <GearSlot
                 icon={item.data ? assetPath(item.data.icon) : undefined}
-                primaryLabel={item.data ? `${item.data.cost}C` : undefined}
+                primaryLabel={item.data ? `${item.data.cost} Cost` : undefined}
                 secondaryLabel={item.data ? item.data.name : undefined}
                 elColor={elColor}
                 size={slotSize}
@@ -621,12 +667,13 @@ function EquipmentOrbit({ weapon, echoSlots, elColor, onTooltip, characterName }
                         {(mainStats.length > 0 || subStats.length > 0) && (
                           <div style={{ height: 1, background: `linear-gradient(90deg, transparent, hsl(${elColor} / 0.3), transparent)`, marginBottom: 8 }} />
                         )}
-                        <p style={{ margin: 0, fontSize: '0.76rem', color: 'rgba(180, 190, 214, 0.88)', lineHeight: 1.55 }}>{item.data.info || 'No additional information available.'}</p>
+                        <p style={{ margin: 0, fontSize: '0.76rem', color: 'rgba(180, 190, 214, 0.88)', lineHeight: 1.55 }}>{item.data.info ? colorizeText(item.data.info, elColor) : 'No additional information available.'}</p>
                       </div>
                     )
                   })()
                 ) : null}
                 typeTag={item.slot === 1 ? 'Main Echo' : item.data ? 'Echo' : undefined}
+                isScanned={i === scannedIndex}
                 onTooltip={onTooltip}
               />
             )}
@@ -641,7 +688,7 @@ function EquipmentOrbit({ weapon, echoSlots, elColor, onTooltip, characterName }
 
 // ========== Sub-component: Gear Slot (shared for weapon & echo) ==============================================================
 
-function GearSlot({ icon, primaryLabel, secondaryLabel, elColor, size, delay, tooltipContent, onTooltip, typeTag }: {
+function GearSlot({ icon, primaryLabel, secondaryLabel, elColor, size, delay, tooltipContent, onTooltip, typeTag, isScanned }: {
   icon?: string
   primaryLabel?: string
   secondaryLabel?: string
@@ -651,6 +698,7 @@ function GearSlot({ icon, primaryLabel, secondaryLabel, elColor, size, delay, to
   tooltipContent: React.ReactNode
   onTooltip: (t: TooltipData | null) => void
   typeTag?: string
+  isScanned?: boolean
 }) {
   const hasItem = icon !== undefined || primaryLabel !== undefined
 
@@ -664,7 +712,9 @@ function GearSlot({ icon, primaryLabel, secondaryLabel, elColor, size, delay, to
       onMouseMove={hasItem ? (e) => onTooltip({ x: e.clientX, y: e.clientY, content: tooltipContent }) : undefined}
       onMouseLeave={hasItem ? () => onTooltip(null) : undefined}
     >
-      {/* Background */}
+      {/* Background — solid occluder so orbiting particle stays hidden underneath */}
+      <div style={{ position: 'absolute', inset: 0, borderRadius: 8, background: 'hsl(220 20% 9%)' }} />
+      {/* Background — semi-transparent gradient overlay on top of occluder */}
       <div style={{
         position: 'absolute', inset: 0, borderRadius: 8,
         background: hasItem
@@ -705,6 +755,47 @@ function GearSlot({ icon, primaryLabel, secondaryLabel, elColor, size, delay, to
 
       {/* Corner accents */}
       {hasItem && <CornerAccents elColor={elColor} />}
+
+      {/* Scan frame — targeting brackets animate in when the orbital particle passes this slot */}
+      <AnimatePresence>
+        {isScanned && (
+          <motion.div
+            key="scan-frame"
+            style={{ position: 'absolute', inset: 0, pointerEvents: 'none', zIndex: 3 }}
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            transition={{ duration: 0.2 }}
+          >
+            {/* TL */}
+            <motion.div style={{ position: 'absolute', top: -8, left: -8, width: 12, height: 12 }} initial={{ x: -14, y: -14 }} animate={{ x: 0, y: 0 }} transition={{ duration: 0.22, ease: 'easeOut' }}>
+              <div style={{ position: 'absolute', top: 0, left: 0, width: 12, height: 1.5, background: `hsl(${elColor})`, borderRadius: 1 }} />
+              <div style={{ position: 'absolute', top: 0, left: 0, width: 1.5, height: 12, background: `hsl(${elColor})`, borderRadius: 1 }} />
+            </motion.div>
+            {/* TR */}
+            <motion.div style={{ position: 'absolute', top: -8, right: -8, width: 12, height: 12 }} initial={{ x: 14, y: -14 }} animate={{ x: 0, y: 0 }} transition={{ duration: 0.22, ease: 'easeOut' }}>
+              <div style={{ position: 'absolute', top: 0, right: 0, width: 12, height: 1.5, background: `hsl(${elColor})`, borderRadius: 1 }} />
+              <div style={{ position: 'absolute', top: 0, right: 0, width: 1.5, height: 12, background: `hsl(${elColor})`, borderRadius: 1 }} />
+            </motion.div>
+            {/* BR */}
+            <motion.div style={{ position: 'absolute', bottom: -8, right: -8, width: 12, height: 12 }} initial={{ x: 14, y: 14 }} animate={{ x: 0, y: 0 }} transition={{ duration: 0.22, ease: 'easeOut' }}>
+              <div style={{ position: 'absolute', bottom: 0, right: 0, width: 12, height: 1.5, background: `hsl(${elColor})`, borderRadius: 1 }} />
+              <div style={{ position: 'absolute', bottom: 0, right: 0, width: 1.5, height: 12, background: `hsl(${elColor})`, borderRadius: 1 }} />
+            </motion.div>
+            {/* BL */}
+            <motion.div style={{ position: 'absolute', bottom: -8, left: -8, width: 12, height: 12 }} initial={{ x: -14, y: 14 }} animate={{ x: 0, y: 0 }} transition={{ duration: 0.22, ease: 'easeOut' }}>
+              <div style={{ position: 'absolute', bottom: 0, left: 0, width: 12, height: 1.5, background: `hsl(${elColor})`, borderRadius: 1 }} />
+              <div style={{ position: 'absolute', bottom: 0, left: 0, width: 1.5, height: 12, background: `hsl(${elColor})`, borderRadius: 1 }} />
+            </motion.div>
+            {/* Border glow pulse */}
+            <motion.div
+              style={{ position: 'absolute', inset: 0, borderRadius: 8, border: `1px solid hsl(${elColor})` }}
+              initial={{ opacity: 0 }}
+              animate={{ opacity: [0, 0.85, 0.35] }}
+              transition={{ duration: 0.5, ease: 'easeOut' }}
+            />
+          </motion.div>
+        )}
+      </AnimatePresence>
 
       {/* Slot type label */}
       {typeTag && (
@@ -1031,6 +1122,169 @@ function PortraitLeftArc({ level, element, elColor }: {
   )
 }
 
+// ========== Sub-components: Gear Info Display (Orbital Scan) ===============================================================
+
+/**
+ * Wraps numbers, %, and / in colored spans for inline description text.
+ * Decimal separators (. or ,) are only colored when part of a number (e.g. 12.00 → whole thing colored).
+ */
+function colorizeText(text: string, elColor: string) {
+  const pattern = /(\d+(?:[.,]\d+)*|[%/])/g
+  const parts: Array<string | ReturnType<typeof Fragment>> = []
+  let lastIndex = 0
+  let match: RegExpExecArray | null
+  while ((match = pattern.exec(text)) !== null) {
+    if (match.index > lastIndex) parts.push(text.slice(lastIndex, match.index))
+    parts.push(<span key={match.index} style={{ color: `hsl(${elColor})`, fontWeight: 600 }}>{match[0]}</span>)
+    lastIndex = pattern.lastIndex
+  }
+  if (lastIndex < text.length) parts.push(text.slice(lastIndex))
+  return <>{parts}</>
+}
+
+function WeaponInfo({ weapon, elColor }: { weapon: Weapon; elColor: string }) {
+  const stats = formatGearStats(weapon.stats)
+  return (
+    <>
+      <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
+        <img
+          src={assetPath(weapon.icon)}
+          alt={weapon.name}
+          style={{ width: 44, height: 44, objectFit: 'contain', flexShrink: 0 }}
+          onError={e => { (e.target as HTMLImageElement).style.display = 'none' }}
+        />
+        <div>
+          <div style={{ fontWeight: 700, fontSize: '0.85rem', color: 'var(--table-text)' }}>{weapon.name}</div>
+          <div style={{ fontSize: '0.7rem', color: `hsl(${elColor})`, fontWeight: 600 }}>R{weapon.rank} · Weapon</div>
+        </div>
+      </div>
+      {stats.length > 0 && (
+        <>
+          <div style={{ height: 1, background: `linear-gradient(90deg, transparent, hsl(${elColor} / 0.25), transparent)` }} />
+          {stats.map(({ label, value }) => (
+            <div key={label} style={{ display: 'flex', justifyContent: 'space-between', gap: 8, fontSize: '0.73rem' }}>
+              <span style={{ color: 'rgba(150, 165, 195, 0.8)' }}>{label}</span>
+              <span style={{ color: `hsl(${elColor} / 0.9)`, fontWeight: 600, fontVariantNumeric: 'tabular-nums' }}>{value}</span>
+            </div>
+          ))}
+        </>
+      )}
+      {weapon.info && (
+        <>
+          <div style={{ height: 1, background: `linear-gradient(90deg, transparent, hsl(${elColor} / 0.25), transparent)` }} />
+          <p style={{ margin: 0, fontSize: '0.74rem', color: 'rgba(175, 185, 210, 0.85)', lineHeight: 1.55 }}>{colorizeText(weapon.info, elColor)}</p>
+        </>
+      )}
+    </>
+  )
+}
+
+function EchoInfo({ echo, slot, elColor }: { echo: Echo; slot: number; elColor: string }) {
+  const mainStats = formatGearStats(echo.baseStats)
+  const subStats = formatGearStats(echo.subStats)
+  return (
+    <>
+      <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
+        {echo.info_icon && (
+          <img
+            src={assetPath(echo.info_icon)}
+            alt={echo.name}
+            style={{ width: 44, height: 44, objectFit: 'contain', flexShrink: 0 }}
+            onError={e => { (e.target as HTMLImageElement).style.display = 'none' }}
+          />
+        )}
+        <div>
+          <div style={{ fontWeight: 700, fontSize: '0.85rem', color: 'var(--table-text)' }}>{echo.name}</div>
+          <div style={{ fontSize: '0.7rem', color: `hsl(${elColor})`, fontWeight: 600 }}>{echo.cost} Cost{slot === 1 ? ' · Main Echo' : ''}</div>
+        </div>
+      </div>
+      {mainStats.length > 0 && (
+        <>
+          <div style={{ height: 1, background: `linear-gradient(90deg, transparent, hsl(${elColor} / 0.25), transparent)` }} />
+          <div style={{ fontSize: '0.62rem', textTransform: 'uppercase', letterSpacing: '0.08em', color: 'rgba(130, 145, 175, 0.6)', marginBottom: 2 }}>Main</div>
+          {mainStats.map(({ label, value }) => (
+            <div key={label} style={{ display: 'flex', justifyContent: 'space-between', gap: 8, fontSize: '0.73rem' }}>
+              <span style={{ color: 'rgba(150, 165, 195, 0.8)' }}>{label}</span>
+              <span style={{ color: `hsl(${elColor} / 0.9)`, fontWeight: 600, fontVariantNumeric: 'tabular-nums' }}>{value}</span>
+            </div>
+          ))}
+        </>
+      )}
+      {subStats.length > 0 && (
+        <>
+          <div style={{ fontSize: '0.62rem', textTransform: 'uppercase', letterSpacing: '0.08em', color: 'rgba(130, 145, 175, 0.6)', marginTop: 4, marginBottom: 2 }}>Sub</div>
+          {subStats.map(({ label, value }) => (
+            <div key={label} style={{ display: 'flex', justifyContent: 'space-between', gap: 8, fontSize: '0.73rem' }}>
+              <span style={{ color: 'rgba(150, 165, 195, 0.8)' }}>{label}</span>
+              <span style={{ color: 'rgba(165, 178, 205, 0.85)', fontVariantNumeric: 'tabular-nums' }}>{value}</span>
+            </div>
+          ))}
+        </>
+      )}
+      {echo.info && (
+        <>
+          <div style={{ height: 1, background: `linear-gradient(90deg, transparent, hsl(${elColor} / 0.25), transparent)` }} />
+          <p style={{ margin: 0, fontSize: '0.74rem', color: 'rgba(175, 185, 210, 0.85)', lineHeight: 1.55 }}>{colorizeText(echo.info, elColor)}</p>
+        </>
+      )}
+    </>
+  )
+}
+
+function OrbitalScanPanel({ item, elColor }: { item: OrbitalScanItem | null; elColor: string }) {
+  return (
+    <div>
+      <SectionHeader label="Orbital Scan" elColor={elColor} />
+      <AnimatePresence mode="wait">
+        {item === null ? (
+          <motion.div
+            key="empty"
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            transition={{ duration: 0.2 }}
+            style={{
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+              padding: '20px 8px',
+              color: MUTED,
+              fontSize: '0.72rem',
+              fontFamily: FONT_MONO,
+              letterSpacing: '0.1em',
+            }}
+          >
+            SCANNING...
+          </motion.div>
+        ) : (
+          <motion.div
+            key={item.type === 'weapon' ? 'weapon' : `echo-${item.slot}`}
+            initial={{ opacity: 0, y: 6 }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0, y: -6 }}
+            transition={{ duration: 0.22 }}
+            style={{
+              background: `hsl(${elColor} / 0.04)`,
+              border: `1px solid hsl(${elColor} / 0.12)`,
+              borderRadius: 8,
+              padding: '10px 12px',
+              display: 'flex',
+              flexDirection: 'column',
+              gap: 6,
+            }}
+          >
+            {item.type === 'weapon' ? (
+              <WeaponInfo weapon={item.data} elColor={elColor} />
+            ) : (
+              <EchoInfo echo={item.data} slot={item.slot} elColor={elColor} />
+            )}
+          </motion.div>
+        )}
+      </AnimatePresence>
+    </div>
+  )
+}
+
 // ========== Component: Character Profile Overlay =============================================================================
 
 type CharacterProfileOverlayProps = {
@@ -1050,6 +1304,7 @@ export function CharacterProfileOverlay({ characterName, character, snapshot, al
   const [localSequence, setLocalSequence] = useState(character.sequence)
   // prevLocalSequence is initialised to -1 so the full arc animates on first open for any sequence level
   const [prevLocalSequence, setPrevLocalSequence] = useState(-1)
+  const [orbitalItem, setOrbitalItem] = useState<OrbitalScanItem | null>(null)
 
   function handleSequenceChange(seq: number) {
     setPrevLocalSequence(localSequence)
@@ -1179,7 +1434,7 @@ export function CharacterProfileOverlay({ characterName, character, snapshot, al
                 </div>
               )}
 
-              <SectionHeader label="Attributes" elColor={elTheme.primary} />
+              <SectionHeader label="Total Stats" elColor={elTheme.primary} />
 
               {STAT_DISPLAY.map((stat, i) => (
                 <motion.div
@@ -1225,56 +1480,74 @@ export function CharacterProfileOverlay({ characterName, character, snapshot, al
                   elColor={elTheme.primary}
                   onTooltip={setTooltip}
                   characterName={characterName}
+                  onItemHighlight={setOrbitalItem}
                 />
               </div>
 
 
             </div>
 
-            {/* ── RIGHT COL: Set Bonus ── */}
+            {/* ── RIGHT COL: Set Bonus (top half) + Orbital Scan (bottom half) ── */}
             <div className="cpo-right-col" style={{ borderLeft: `1px solid hsl(${elTheme.primary} / 0.1)` }}>
-              {character.gear.setBonus ? (
+              {/* Top half — Set Bonus */}
+              <div style={{ flex: 1, minHeight: 0, overflow: 'hidden auto', display: 'flex', flexDirection: 'column', paddingBottom: 0 }}>
+                {character.gear.setBonus ? (
+                  <motion.div
+                    initial={{ opacity: 0, x: 10 }}
+                    animate={{ opacity: 1, x: 0 }}
+                    transition={{ delay: 0.7 }}
+                    style={{ display: 'flex', flexDirection: 'column', gap: 8 }}
+                  >
+                    <SectionHeader label="Set Bonus" elColor={elTheme.primary} />
+
+                    <div className="cpo-set-bonus-name-row">
+                      <img
+                        src={assetPath(character.gear.setBonus.icon)}
+                        alt={character.gear.setBonus.name}
+                        style={{ width: 26, height: 26, objectFit: 'contain' }}
+                        onError={e => { (e.target as HTMLImageElement).style.opacity = '0' }}
+                      />
+                      <span className="cpo-set-bonus-name-text" style={{ color: `hsl(${elTheme.primary})` }}>
+                        {character.gear.setBonus.name}
+                      </span>
+                    </div>
+
+                    {Object.entries(character.gear.setBonus.info).map(([key, desc]) => (
+                      <div
+                        key={key}
+                        className="cpo-set-bonus-entry"
+                        style={{
+                          background: `hsl(${elTheme.primary} / 0.04)`,
+                          border: `1px solid hsl(${elTheme.primary} / 0.12)`,
+                        }}
+                      >
+                        <div className="cpo-set-bonus-entry-key" style={{ color: `hsl(${elTheme.primary})` }}>
+                          {key}
+                        </div>
+                        <p className="cpo-set-bonus-entry-desc">{colorizeText(desc, elTheme.primary)}</p>
+                      </div>
+                    ))}
+                  </motion.div>
+                ) : (
+                  <div style={{ flex: 1, display: 'flex', alignItems: 'center', justifyContent: 'center', color: MUTED, fontSize: '0.75rem', opacity: 0.4 }}>
+                    No set bonus
+                  </div>
+                )}
+              </div>
+
+              {/* Divider */}
+              <div style={{ height: 1, flexShrink: 0, background: `linear-gradient(90deg, transparent, hsl(${elTheme.primary} / 0.15), transparent)` }} />
+
+              {/* Bottom half — Orbital Scan */}
+              <div style={{ flex: 1, minHeight: 0, overflow: 'hidden auto', display: 'flex', flexDirection: 'column', paddingTop: 12 }}>
                 <motion.div
                   initial={{ opacity: 0, x: 10 }}
                   animate={{ opacity: 1, x: 0 }}
-                  transition={{ delay: 0.7 }}
-                  style={{ display: 'flex', flexDirection: 'column', gap: 8 }}
+                  transition={{ delay: 0.9 }}
                 >
-                  <SectionHeader label="Set Bonus" elColor={elTheme.primary} />
-
-                  <div className="cpo-set-bonus-name-row">
-                    <img
-                      src={assetPath(character.gear.setBonus.icon)}
-                      alt={character.gear.setBonus.name}
-                      style={{ width: 26, height: 26, objectFit: 'contain' }}
-                      onError={e => { (e.target as HTMLImageElement).style.opacity = '0' }}
-                    />
-                    <span className="cpo-set-bonus-name-text" style={{ color: `hsl(${elTheme.primary})` }}>
-                      {character.gear.setBonus.name}
-                    </span>
-                  </div>
-
-                  {Object.entries(character.gear.setBonus.info).map(([key, desc]) => (
-                    <div
-                      key={key}
-                      className="cpo-set-bonus-entry"
-                      style={{
-                        background: `hsl(${elTheme.primary} / 0.04)`,
-                        border: `1px solid hsl(${elTheme.primary} / 0.12)`,
-                      }}
-                    >
-                      <div className="cpo-set-bonus-entry-key" style={{ color: `hsl(${elTheme.primary})` }}>
-                        {key}
-                      </div>
-                      <p className="cpo-set-bonus-entry-desc">{desc}</p>
-                    </div>
-                  ))}
+                  <OrbitalScanPanel item={orbitalItem} elColor={elTheme.primary} />
                 </motion.div>
-              ) : (
-                <div style={{ flex: 1, display: 'flex', alignItems: 'center', justifyContent: 'center', color: MUTED, fontSize: '0.75rem', opacity: 0.4 }}>
-                  No set bonus
-                </div>
-              )}
+              </div>
             </div>
 
             {/* Breakdown modal — covers entire body */}
