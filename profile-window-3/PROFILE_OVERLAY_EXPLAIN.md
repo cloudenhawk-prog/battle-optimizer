@@ -11,8 +11,8 @@ This folder contains a self-contained character profile overlay UI. Only the ove
 - SequenceChain.tsx — Resonance/sequence progression
 - EquipmentOrbit.tsx — Equipment/echoes/weapon layout
 - WeaponSlot.tsx, EchoSlot.tsx, SequenceNode.tsx — Subcomponents for equipment/sequence
-- types.ts — Overlay data types
-- mockData.ts — Example/mock data
+- types.ts — We should use our own types, or add new types to the project based on the demo if needed
+- mockData.ts — We should use our own data from the project, not the example data used for demoing.
 
 **components/ui/**
 - Only migrate UI primitives (e.g., dialog.tsx, button.tsx) if your target app lacks equivalents and they are directly imported by overlay files.
@@ -133,3 +133,44 @@ Use Tailwind classes and CSS variables from profile-overlay.css for consistent s
 Use example data for placeholder rendering; real data can be passed via props.
 Keep all animations and tooltip logic intact.
 All colors dynamically use elementColor where needed for sequences, echoes, weapons, and stat highlights.
+
+# Data in the real project
+The following types support properties that can be used for info, icons, tooltips etc. on the new profile overlay instead of "mock data"
+
+Echoes:
+icon: string
+info?: string
+info_icon: string
+
+EchoSlots:
+1: Echo | null (main slot echo, treated specially)
+2: Echo | null
+3: Echo | null
+4: Echo | null
+5: Echo | null
+
+EchoSetBonus:
+name: string
+info: { [key: string]: string } (contains entries equivalent to each set bonus, like 2-set bonus, 5-set bonus or whatever is present)
+icon: the echo set bonus icon
+
+CharacterStats:
+level
+stats used for the stat display (we already have implemented a stat displayed so we need to use it combined with the new layout)
+sequence (used for resonance chain display)
+sequence_nodes (used for tooltips of the 6 nodes)
+sequence_nodes_icons (corresponding icons)
+(important: Currently the structure is bad because it assumes exactly 6 entries in the right order, this could cause a mess if someone inputs the data wrong)
+
+Character:
+name
+element (used for color theme)
+
+type Weapon
+name
+stats
+rank
+info
+icon
+
+And possibly some others depending on what the profile overlay expects

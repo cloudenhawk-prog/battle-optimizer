@@ -114,7 +114,7 @@ type DamageType =
 type EnergyType =
   | 'energy' | 'forte'
   | 'forte_divinity' | 'forte_discord' | 'forte_virtue'
-  | 'concerto' | 'conviction'
+  | 'concerto' | 'conviction' | 'relative_momentum'
 
 type Position = 'GROUND' | 'AIR' | 'PRESERVE' | 'ANY'
 // PRESERVE/ANY are only valid in CastConditions; resolved positions are always GROUND or AIR
@@ -614,6 +614,8 @@ type Weapon = {
   stats: Partial<CharacterStats>
   injectedModifiers?: InjectedModifier[]
   rank: 1 | 2 | 3 | 4 | 5
+  info: string       // display info string
+  icon: string       // asset path for weapon icon
 }
 
 type Echo = {
@@ -626,6 +628,9 @@ type Echo = {
   echoSkill?: Action                         // replaces the ECHO placeholder action
   injectedModifiers?: InjectedModifier[]
   injectedSideEffects?: InjectedSideEffect[]
+  icon: string       // asset path for echo icon
+  info?: string      // display description
+  info_icon?: string // optional secondary icon path
 }
 
 // InjectedModifier: attaches modifiers to one or more specific targets
@@ -651,7 +656,6 @@ type Form = {
   displayName?: string
   introAction?: Action     // custom intro when entering this form
   outroAction?: Action     // custom outro when leaving this form
-  icon: string
 }
 ```
 

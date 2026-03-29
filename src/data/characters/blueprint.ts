@@ -2,6 +2,7 @@ import type { Character } from '../../types/character'
 
 export const blueprint: Character = {
   name: 'XXX',
+  element: '',
   maxEnergies: { energy: 100, concerto: 100, forte: 100 },
   actions: [],
   damageModifiers: [],
@@ -20,5 +21,7 @@ export const blueprint: Character = {
   },
   defaultForm: null, // Optional
   forms: [], // Optional
-  sequence: 0
+  sequence: 0,
+  sequence_nodes: [],
+  resourceMilestones: [] // Optional
 }

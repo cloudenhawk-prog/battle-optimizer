@@ -146,7 +146,8 @@ const roverAero_set_bonus: EchoSetBonus = {
   info: {
     '2-piece': 'Aero DMG + 10%',
     '5-piece': 'Hitting a target with Aero Erosion increases Crit. Rate by 10% and grants 30% Aero DMG Bonus, lasting for 10s.'
-  }
+  },
+  icon: 'assets/gear/set-bonuses/windward_pilgrimage.png'
 }
 
 export {

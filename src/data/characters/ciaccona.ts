@@ -6,6 +6,7 @@ import { ciaccona_stats, ciaccona_inherentStats } from '../stats/ciaccona'
 
 export const ciaccona: Character = {
   name: 'Ciaccona',
+  element: 'AERO',
   maxEnergies: { energy: 125, concerto: 100, forte: 3 },
   actions: Object.values(ciacconaActions),
   damageModifiers: [
@@ -26,5 +27,22 @@ export const ciaccona: Character = {
     },
     setBonus: ciaccona_set_bonus,
   },
-  sequence: 0
+  sequence: 0,
+  sequence_nodes: [
+    'Casting Resonance Skill Harmonic Allegro grants Ciaccona immunity to interruption for 3s. Casting Basic Attack increases Ciaccona\'s ATK by 35% for 10s.',
+    'During Resonance Liberation Singer\'s Triple Cadenza, Resonators in the team gain 40% Aero DMG Bonus.',
+    'Casting Basic Attack Stage 4 additionally grants 1 segments of Musical Essence. Resonance Skill Harmonic Allegro gains 1 more charge.',
+    'Ciaccona ignores 45% of the targets\' DEF when dealing damage with Heavy Attack Quadruple Downbeat; Ciaccona ignores 45% of the targets\' DEF when dealing Resonance Liberation DMG.',
+    'Gain 40% Resonance Liberation DMG Bonus; DMG taken by Resonators within and around the range of Resonance Liberation Singer\'s Triple Cadenza is reduced by 30%.',
+    'When in Solo Concert, Ciaccona or Ensemble Sylph deals Aero DMG equal to 220% of Ciaccona\'s ATK to nearby targets, considered Resonance Liberation DMG'
+  ],
+  sequence_nodes_icons: [
+    'assets/characters/sequences/ciaccona_1.png',
+    'assets/characters/sequences/ciaccona_2.png',
+    'assets/characters/sequences/ciaccona_3.png',
+    'assets/characters/sequences/ciaccona_4.png',
+    'assets/characters/sequences/ciaccona_5.png',
+    'assets/characters/sequences/ciaccona_6.png',
+  ],
+  image: '/assets/characters/ciaccona.png',
 }

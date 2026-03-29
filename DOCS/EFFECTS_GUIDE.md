@@ -785,7 +785,6 @@ export const form_fleurdelys: Form = {
   displayName: 'Fleurdelys',
   introAction: fleurdelys_intro_outro_actions.find(a => a.dmgTypes.includes('INTRO')),
   // outroAction is optional — defaults to character's global OUTRO if absent
-  icon: '/assets/form-fleurdelys.png',
 }
 ```
 

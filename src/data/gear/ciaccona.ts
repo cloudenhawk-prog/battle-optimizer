@@ -144,7 +144,8 @@ const ciaccona_set_bonus: EchoSetBonus = {
   info: {
     '2-piece': 'Aero DMG + 10%',
     '5-piece': 'Inflicting Aero Erosion upon enemies increases Aero DMG for all Resonators in the team by 15%, and for the Resonator triggering this effect by an additional 15%, lasting for 20s.'
-  }
+  },
+  icon: 'assets/gear/set-bonuses/gusts_of_welkin.png'
 }
 
 export {

@@ -1,7 +1,7 @@
 import type { CharacterStats } from './stats'
 import type { DamageModifier } from './modifiers'
 import type { Action } from './action'
-import type { EnergyType } from './baseTypes'
+import type { ElementType, EnergyType } from './baseTypes'
 import type { Gear } from './gear'
 import type { Form } from './form'
 
@@ -24,6 +24,7 @@ export type ResourceMilestoneDef = {
 
 export type Character = {
   name: string
+  element: ElementType
   maxEnergies: Partial<Record<EnergyType, number>>
   actions: Action[]
   damageModifiers: DamageModifier[]
@@ -35,6 +36,10 @@ export type Character = {
   defaultForm?: string
   forms?: Form[]
   sequence: 0 | 1 | 2 | 3 | 4 | 5 | 6
+  sequence_nodes: string[]
+  sequence_nodes_icons: string[]
+  /** Path to the character's portrait image (e.g. '/assets/characters/ciaccona.png'). */
+  image?: string
   /** Passive milestone effects: gain modifier stacks each time the watched resource crosses a threshold. */
   resourceMilestones?: ResourceMilestoneDef[]
 }

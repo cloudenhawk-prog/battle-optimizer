@@ -34,7 +34,7 @@ export type Echo = {
   injectedSideEffects?: InjectedSideEffect[]
   icon: string
   info?: string
-  info_icon?: string
+  info_icon: string
 }
 
 export type EchoSlots = {
@@ -55,6 +55,7 @@ export type EchoSetBonus = {
   stats: Partial<CharacterStats>
   injectedModifiers?: InjectedModifier[]
   info: { [key: string]: string }
+  icon: string
 }
 
 // ========== Type: Shared =====================================================================================================

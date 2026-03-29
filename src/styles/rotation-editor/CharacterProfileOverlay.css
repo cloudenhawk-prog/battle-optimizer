@@ -1,0 +1,306 @@
+/* ===== Character Profile Overlay ===== */
+
+/* ── Header ── */
+
+.cpo-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 12px 24px;
+  border-bottom: 1px solid rgba(50, 70, 100, 0.3);
+  flex-shrink: 0;
+}
+
+.cpo-header-info {
+  display: flex;
+  align-items: center;
+}
+
+.cpo-header-title {
+  margin: 0;
+  font-family: 'Orbitron', sans-serif;
+  font-size: 1rem;
+  font-weight: 700;
+  letter-spacing: 0.07em;
+  color: hsl(195 100% 90%);
+}
+
+.cpo-header-subtitle {
+  margin: 0;
+  font-family: 'Share Tech Mono', monospace;
+  font-size: 0.68rem;
+  color: hsl(210 15% 50%);
+}
+
+.cpo-close-btn {
+  width: 32px;
+  height: 32px;
+  border-radius: 8px;
+  border: none;
+  cursor: pointer;
+  background: rgba(32, 42, 60, 0.5);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: hsl(210 15% 50%);
+  font-size: 14px;
+  transition: background 0.2s, color 0.2s;
+}
+
+.cpo-close-btn:hover {
+  background: rgba(32, 42, 60, 0.9);
+  color: hsl(195 100% 90%);
+}
+
+/* ── Content / Body ── */
+
+.cpo-content {
+  flex: 1;
+  min-height: 0;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+}
+
+.cpo-body {
+  flex: 1;
+  display: flex;
+  flex-direction: row;
+  overflow: hidden;
+}
+
+/* ── Left Panel ── */
+
+.cpo-left-panel {
+  position: relative;
+  width: 280px;
+  flex-shrink: 0;
+  background: rgba(16, 18, 24, 1);
+  border-right: 1px solid rgba(50, 70, 100, 0.15);
+}
+
+/* ── Right Panel ── */
+
+.cpo-right-panel {
+  flex: 1;
+  min-width: 0;
+  overflow-y: auto;
+  overflow-x: hidden;
+  display: flex;
+  flex-direction: column;
+  padding: 20px 24px;
+  position: relative;
+}
+
+/* ── Section Header ── */
+
+.cpo-section-header {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 12px;
+  flex-shrink: 0;
+}
+
+.cpo-section-header-line {
+  flex: 1;
+  height: 1px;
+}
+
+.cpo-section-header-label {
+  font-family: 'Orbitron', sans-serif;
+  font-size: 0.58rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.2em;
+  color: hsl(210 15% 50%);
+}
+
+/* ── Attributes Grid ── */
+
+.cpo-attributes-section {
+  flex-shrink: 0;
+  margin-bottom: 6px;
+}
+
+.cpo-attributes-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  column-gap: 20px;
+}
+
+.cpo-stat-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 6px 0;
+  border-bottom: 1px solid rgba(50, 70, 100, 0.2);
+}
+
+.cpo-stat-label-wrap {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  min-width: 0;
+}
+
+.cpo-stat-icon {
+  width: 22px;
+  height: 22px;
+  object-fit: contain;
+  flex-shrink: 0;
+  opacity: 0.65;
+}
+
+.cpo-stat-icon--element {
+  opacity: 1;
+}
+
+.cpo-stat-label {
+  font-family: 'Rajdhani', 'Segoe UI', sans-serif;
+  font-size: 0.82rem;
+  font-weight: 500;
+  color: hsl(210 15% 48%);
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.cpo-stat-value-btn {
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  padding: 1px 0;
+  flex-shrink: 0;
+  /* Readable font for numbers */
+  font-family: system-ui, -apple-system, 'Segoe UI', sans-serif;
+  font-size: 1rem;
+  font-weight: 600;
+  font-variant-numeric: tabular-nums;
+  letter-spacing: 0.01em;
+  transition: color 0.15s;
+}
+
+/* ── Sequence Divider ── */
+
+.cpo-sequence-divider {
+  position: relative;
+  padding: 10px 0;
+  margin: 2px 0;
+  flex-shrink: 0;
+}
+
+.cpo-sequence-divider-row {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.cpo-sequence-glow {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  opacity: 0.3;
+  filter: blur(12px);
+}
+
+/* ── Equipment Section ── */
+
+.cpo-equipment-section {
+  /* no flex:1 — height is determined by cpo-equipment-body */
+  display: flex;
+  flex-direction: column;
+  margin-bottom: 8px;
+}
+
+.cpo-equipment-body {
+  /* 3-column: [empty placeholder] [orbit center] [set bonus] */
+  display: grid;
+  grid-template-columns: 1fr 2fr 1fr;
+  height: 480px;
+  gap: 0 12px;
+}
+
+/* Center column — orbit fills this cell */
+.cpo-orbit-wrap {
+  position: relative;
+}
+
+/* ResizeObserver target that fills the grid cell */
+.cpo-orbit-container {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* ── Set Bonus Panel ── */
+
+.cpo-set-bonus {
+  /* right column of the grid — no explicit width needed */
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  overflow-y: auto;
+  padding-top: 2px;
+  scrollbar-width: thin;
+  scrollbar-color: rgba(80, 100, 130, 0.3) transparent;
+}
+
+.cpo-set-bonus-heading {
+  margin: 0 0 4px;
+  font-family: 'Orbitron', sans-serif;
+  font-size: 0.58rem;
+  text-transform: uppercase;
+  letter-spacing: 0.15em;
+  color: hsl(210 15% 50%);
+  opacity: 0.7;
+}
+
+.cpo-set-bonus-name-row {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 2px;
+}
+
+.cpo-set-bonus-name-text {
+  font-family: 'Rajdhani', 'Segoe UI', sans-serif;
+  font-size: 0.82rem;
+  font-weight: 700;
+  letter-spacing: 0.03em;
+}
+
+.cpo-set-bonus-entry {
+  padding: 8px 10px;
+  border-radius: 8px;
+  flex-shrink: 0;
+}
+
+.cpo-set-bonus-entry-key {
+  font-family: 'Orbitron', sans-serif;
+  font-size: 0.58rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  margin-bottom: 4px;
+}
+
+.cpo-set-bonus-entry-desc {
+  margin: 0;
+  font-family: 'Rajdhani', 'Segoe UI', sans-serif;
+  font-size: 0.76rem;
+  color: hsl(210 15% 50%);
+  line-height: 1.5;
+}
+
+/* ── Breakdown Modal (already in CharacterStateTracker.css but keep compatible) ── */
+
+.cpo-breakdown-overlay {
+  position: absolute;
+  inset: 0;
+  z-index: 10;
+}
