@@ -3,6 +3,7 @@ import type { EnergyGeneration } from './energy'
 import type { StatusModification } from './sideEffect'
 import type { StepContext } from './stepContext'
 import type { DamageModifier } from './modifiers'
+import type { ActionTag } from './action'
 
 // ========== Type: CoordinatedAttack ==========================================================================================
 
@@ -81,6 +82,9 @@ export type CoordinatedAttack = {
 
   /** Toughness damage per tick, for display / tracking purposes only */
   offtune?: number
+
+  /** Semantic tags describing what role this coordinated attack plays. Used for tag-based gear injection. */
+  tags?: ActionTag[]
 
   /** Explicit icon asset path. When omitted, the icon is derived from `name`. */
   icon?: string

@@ -3,6 +3,7 @@ import type { CoordinatedAttack } from './coordinatedAttack'
 import type { DamageModifier } from './modifiers'
 import type { SideEffect } from './sideEffect'
 import type { CharacterStats } from './stats'
+import type { ActionTag } from './action'
 
 // ========== Type: WeaponType =================================================================================================
 /** The five weapon categories in Wuthering Waves. A character can only equip weapons matching their weaponType. */
@@ -87,12 +88,28 @@ export type EchoSetBonus = {
 }
 
 // ========== Type: Shared =====================================================================================================
+
+/**
+ * A target for injected gear modifiers or side effects.
+ *
+ *  - `'character'`                        — injected into the character's global modifier list
+ *  - `Action` / `CoordinatedAttack`       — direct object-reference injection (requires original reference)
+ *  - `{ tag: ActionTag }`                 — inject into all actions/CAs that carry the given tag
+ *  - `{ tags: ActionTag[]; match }`       — inject into all actions/CAs matching any/all of the given tags
+ */
+export type InjectedTarget =
+  | 'character'
+  | Action
+  | CoordinatedAttack
+  | { tag: ActionTag }
+  | { tags: ActionTag[]; match: 'any' | 'all' }
+
 export type InjectedModifier = {
-  targets: Array<'character' | Action | CoordinatedAttack>
+  targets: Array<InjectedTarget>
   modifiers: DamageModifier[]
 }
 
 export type InjectedSideEffect = {
-  targets: Action[]
+  targets: Array<Action | { tag: ActionTag } | { tags: ActionTag[]; match: 'any' | 'all' }>
   sideEffects: SideEffect[]
 }

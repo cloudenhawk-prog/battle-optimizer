@@ -9,7 +9,9 @@ The tool simulates skill rotations for a set of characters, computing damage out
 
 ## Task Summary
 
-Implement a gear-swapping framework that allows characters' weapons and echoes to be changed at runtime, with the timeline resetting on every change (as it does not support re-calculating the timeline). Some of this may be done, but we need: the types, resolver logic, data, and TODO-stubs for click handlers are in scope, and the UI picker.
+Implement a gear-swapping framework that allows characters' weapons and echoes to be changed at runtime, with the timeline resetting on every change. Includes types, resolver logic, data, click handler stubs, and picker UI.
+
+**Current status**: Core resolver and type system complete (Iterations 1 & 2). Echo catalog being defined. Picker UI is next.
 
 ---
 
@@ -175,104 +177,100 @@ In `EquipmentOrbit`, each slot now has a click handler:
 
 ---
 
-## Future Work: Action Tags for Gear Effect Targeting
+## What Was Done (Iteration 2) — Action Tag System
 
-### Motivation
+### 11. ActionTag Type
 
-Currently, `InjectedModifier` and `InjectedSideEffect` targets are either `'character'` (applied to the character's global modifier list) or a **direct object reference** to a specific `Action` or `CoordinatedAttack`. This works for hand-authored gear data where the exact action objects are imported and referenced directly. It breaks down for:
+**`src/types/action.ts`**
 
-- **Generic set/weapon effects** — e.g. "boost all healing skills", "apply to all skills that inflict Aero Erosion", "apply to the Outro skill" — these need to target actions by category, not by hardcoded reference.
-- **Dynamically registered effects** — e.g. "every 3s heal for X" passed through a `SideEffect`, which itself may need to interact with HEAL-tagged actions or buff-tagged effects on other characters.
-- **Gear swapping correctness** — when gear is swapped, injected effects from the old gear must be cleanly removed. Today this works because `resolveCharacter` always re-builds from the unmodified `baseCharacters` entry. But as effects grow more complex (multi-step chains, tag-conditional stacking), a robust tag system makes the "what does this piece of gear affect" fully declarative and auditable. Since a weapon can be added to any character, it shouldn't statically inject into specific character actions but instead be able to target them dynamically based on some logic.
+- Added `ActionTag` union type with the following tags:
+  - `'BASIC_ATTACK'` — action belongs to the basic attack combo chain
+  - `'HEAVY_ATTACK'` — heavy/charged attack
+  - `'SKILL'` — Resonance Skill cast
+  - `'LIBERATION'` — Resonance Liberation cast
+  - `'INTRO_ACTION'` — Intro skill
+  - `'OUTRO_ACTION'` — Outro skill
+  - `'HEAL_PROC'` — action provides HP restoration (direct or periodic-tick trigger)
+  - `'AERO_EROSION_APPLIER'` — action applies Aero Erosion stacks
+  - `'SPECTRO_FRAZZLE_APPLIER'` — action applies Spectro Frazzle stacks (for future use)
+- Added `tags?: ActionTag[]` optional field to `Action`
 
-The first part of this task may be to update the injection system. For example by having action define some kind of tags that tells us that "this trigers a heal", "this applies a certain negative status" "this counts as an outro skill", "this counts as a resonance skill", and so on. Also timed things like "something that heals every 3s for 25s" (not sure if this can be described as a modifier or something else) might want to have certain things injected into them so "TRIGGER ON HEAL" also work for these kinds of things rather than only an action itself.
+**`src/types/coordinatedAttack.ts`**
 
----
-
-### Proposed: Action Tags
-
-Add a `tags?: string[]` (or `tags?: Set<string>`) field to the `Action` type (and potentially `CoordinatedAttack`).
-
-Tags are plain string keywords. Examples (consider more and consider good names; names purposely don't overlap with dmgTypes and other names to avoid confusion):
-
-| Tag                         | Meaning                                                                                                                               |
-| --------------------------- | ------------------------------------------------------------------------------------------------------------------------------------- |
-| `'HEAL_PROC'`               | This action heals one or more targets                                                                                                 |
-| `'OUTRO_ACTION'`            | This action is the character's Outro skill                                                                                            |
-| `'INTRO_ACTION'`            | This action is the character's Intro skill                                                                                            |
-| `'ECHO SKILL'`              | This action is the slot-1 echo skill, perhaps we need one for triggering ECHO DMG versus casting ECHO SkILL - could wait until needed |
-| `'AERO_EROSION_APPLIER'`    | This action applies Aero Erosion                                                                                                      |
-| `'SPECTRO_FRAZZLE_APPLIER'` | This action applies Spectro Frazzle                                                                                                   |
-| `'COORDINATED_ATTACK'`      | This action is a coordinated attack                                                                                                   |
-| `'BASIC_ATTACK'`            | This action is a basic attack                                                                                                         |
-| `'SKILL'`                   | This action is a skill cast                                                                                                           |
-| `'LIBERATION'`              | This action is a liberation cast                                                                                                      |
-
-...
-
-(!) Could use "PROC" related to actions and let PROCS related to dmgTypes simply be found in action.dmgTypes list. That way we don't get overlap and cause use both
-(!!) Important: BASIC_ATTACK descripes an action (this action is related to the basic attack combo system targeting effects like "When using a basic attack, active buff X") while dmgType BASIC descripes the type of damage being done (When dealing basic attack damage, actives buff X). These are distinct!
-
-Tags are set in character action definitions (`src/data/characters/*.ts`), not derived at runtime.
+- Added `tags?: ActionTag[]` optional field to `CoordinatedAttack`
 
 ---
 
-### Proposed: Tag-Based Injection Targets
+### 12. InjectedTarget Type
 
-Extend `InjectedModifier` and `InjectedSideEffect` target types to support tag queries:
-We might want to be able to target both tags and damage types (maybe even action names in very rare cases)
+**`src/types/gear.ts`**
 
-```ts
-type InjectedTarget =
-  | 'character'
-  | Action // existing: exact reference
-  | CoordinatedAttack // existing: exact reference
-  | { tag: string } // new: inject into all actions with this tag
-  | { tags: string[]; match: 'any' | 'all' } // new: multi-tag query
-```
-
-`resolveGear` would then need a second pass over `workingActions` matching by tag instead of by reference. The clone map remains necessary for the reference-based path; tag-based targeting iterates the full `workingActions` array directly.
-
----
-
-### Proposed: Helper Functions
-
-A set of helpers in e.g. `src/utils/gear/gearHelpers.ts` to make gear data authoring easier:
-
-```ts
-// Inject a modifier into all actions with a given tag
-injectIntoTag(tag: string, modifiers: DamageModifier[]): InjectedModifier
-
-// Inject a side effect into all HEAL actions
-injectHealSideEffect(sideEffects: SideEffect[]): InjectedSideEffect
-
-// Build a 5-piece set bonus that targets the Outro
-outroSetBonus(modifiers: DamageModifier[]): EchoSetBonus
-```
-
-These make gear data files read like intent ("buff all heals") rather than requiring the author to import and reference specific action objects.
+- Added `InjectedTarget` union type:
+  ```ts
+  export type InjectedTarget =
+    | 'character'
+    | Action
+    | CoordinatedAttack
+    | { tag: ActionTag }
+    | { tags: ActionTag[]; match: 'any' | 'all' }
+  ```
+- Updated `InjectedModifier.targets` to `Array<InjectedTarget>`
+- Updated `InjectedSideEffect.targets` to `Array<Action | { tag: ActionTag } | { tags: ActionTag[]; match: 'any' | 'all' }>`
 
 ---
 
-### Gear Swap & Effect Removal
+### 13. resolveGear — Tag-Based Injection
 
-The current approach already handles removal correctly: **`resolveCharacter` always re-runs from `baseCharacters`** (the unmodified source-of-truth), so every gear swap produces a clean slate with no leftover injections from previous gear.
+**`src/utils/gear/resolveGear.ts`**
 
-This invariant **must be preserved** as tag-based injection is added:
-
-- Never inject into a `ResolvedCharacter` directly.
-- Always call `resolveCharacter(base, newGear)` where `base` comes from `baseCharacters`.
-- `baseCharacters` entries must never be mutated — they are the reset point.
-
-If at some point a "live patch" approach is considered (mutating a resolved character without full re-resolve), a snapshot of the pre-injection state per gear piece would be needed. This is significantly more complex and should be avoided unless re-resolve becomes a performance bottleneck.
+- `applyInjectedModifiers` now handles tag targets:
+  - For `{ tag }` or `{ tags, match }` targets: iterates `workingActions` (and their `coordinatedAttacks`) directly, matching by tags — no clone map needed since these are already working copies
+  - For direct object references: unchanged (uses `originalToClone` map)
+- `applyInjectedSideEffects` similarly handles tag targets
+- Added `isTagTarget` helper: detects tag descriptors by absence of a `name` property (which both `Action` and `CoordinatedAttack` always have)
+- Added `hasMatchingTags` helper: evaluates single-tag and multi-tag (`any`/`all`) matching
 
 ---
 
-### Interaction with CoordinatedAttacks and Timed Effects
+### 14. Character Actions Tagged
 
-Some gear effects fire on a schedule (e.g. "heal every 3s") rather than attaching to a specific player action. These are typically modelled as `SideEffect` entries injected into a triggering action (e.g. the action that activates the buff). If such an effect itself needs to interact with HEAL-tagged actions — e.g. "each time this periodic heal fires, also trigger X" — the tag system needs to be queryable at side-effect resolution time, not just at resolve-character time.
+All four characters' actions have been tagged appropriately:
 
-This may require `SideEffect` to carry tag-based trigger conditions alongside its existing condition system, and the resolver (`resolver_4_resolveSideEffectsAndStatuses`) would need to evaluate those against active action tags. This is a larger architectural change and should be designed carefully to avoid coupling the side-effect resolver too tightly to the gear layer.
+| Character | Actions Tagged |
+|-----------|---------------|
+| Cartethyia | `BASIC_ATTACK` on all BA/plunge variants; `HEAVY_ATTACK` on heavies; `SKILL` on Resonance Skills; `LIBERATION` on liberation; `INTRO_ACTION`/`OUTRO_ACTION` on intro/outro. Same for all Fleurdelys form actions. |
+| Ciaccona | `BASIC_ATTACK` + `AERO_EROSION_APPLIER` on BA-3-4 and midair-2-BA-4 variants; `SKILL` + `AERO_EROSION_APPLIER` on skill variants; `LIBERATION`; `HEAVY_ATTACK`; `INTRO_ACTION`/`OUTRO_ACTION` |
+| Rover (Aero) | `SKILL` on skill_1/skill_2; `SKILL` + `HEAL_PROC` on skill_3 variants (Unbound Flow provides healing); `LIBERATION` + `HEAL_PROC` on liberation; `HEAL_PROC` on midair actions; `BASIC_ATTACK` on plunge/BA_4; `INTRO_ACTION`/`OUTRO_ACTION` |
+| Mornye | `BASIC_ATTACK` on all BA variants; `HEAVY_ATTACK` + `HEAL_PROC` on heavy attacks (trigger healing every 3s); `SKILL` on resonance skill; `BASIC_ATTACK` on Mode BA; `SKILL` + `HEAL_PROC` on Mode Skill (triggers healing); `HEAVY_ATTACK` on Mode Heavy; `LIBERATION` + `HEAL_PROC` on liberation; `INTRO_ACTION`/`OUTRO_ACTION` |
+
+The `ciaccona_singers_triple_cadenza_coordinated` CoordinatedAttack was tagged `AERO_EROSION_APPLIER`.
+
+---
+
+### 15. Hardcoded Weapon Modifiers Removed from Rover Actions
+
+**`src/data/actions/roverAero.ts`**
+
+The following previously hardcoded weapon modifiers were removed from action `damageModifiers` arrays (they are now injected by the gear resolution system instead):
+
+- `skill_3`, `skill_3_cancel_with_swap_1`, `skill_3_cancel_with_swap_2`: removed `'Bloodpacts Pledge Unbound'` modifier (was `{ aeroAmplifyDMG: 0.26 }`)
+- `liberation`: removed `'Bloodpacts Pledge Heal'` modifier (was `{ skillBonusDMG: 0.26 }`)
+- `midair_1_2`, `midair_1_2_cancel_with_swap`: removed `'Bloodpacts Pledge Heal'` modifier; kept `'Rover S4'` modifier (sequence node effect, not gear-injected)
+
+---
+
+### 16. Gear Files Updated to Use Tag-Based Targets
+
+All gear files that previously used direct action object references now use tag-based targets:
+
+| File | Change |
+|------|--------|
+| `src/data/gear/ciaccona.ts` | Weapon `targets: [ciaccona_outro]` → `[{ tag: 'OUTRO_ACTION' }]`; Echo injected side effects target → `[{ tag: 'OUTRO_ACTION' }]`; Set bonus targets → `[{ tag: 'AERO_EROSION_APPLIER' }]`; removed all action/CA imports |
+| `src/data/gear/roverAero.ts` | Weapon group 1 targets → `[{ tag: 'HEAL_PROC' }]`; Weapon group 2 targets → `[{ tags: ['SKILL', 'HEAL_PROC'], match: 'all' }]` (uniquely identifies Unbound Flow = skill + heal); removed all action imports |
+| `src/data/gear/mornye.ts` | Weapon target `['character']` → `[{ tag: 'LIBERATION' }]` (correct semantic intent) |
+
+**Bloodpact's Pledge weapon group 2 targeting rationale:**  
+`{ tags: ['SKILL', 'HEAL_PROC'], match: 'all' }` targets only actions tagged both SKILL and HEAL_PROC — which in Rover's kit is exclusively the Unbound Flow variants (skill_3). skill_1/skill_2 have `SKILL` only; liberation/midair have `HEAL_PROC` only. SKILL+HEAL_PROC together is the precise intersection.
 
 ---
 
@@ -348,26 +346,69 @@ The invariant from gear swapping still applies: always resolve characters from `
 
 ---
 
+## Future Work: Gear Picker
+
+### Design: Two-Mode Echo Picker
+
+Echoes have individually rolled substats, so the picker cannot simply display a static list — the user needs to either select a pre-existing fully-defined echo or build a custom one with their own rolled stats.
+
+**Mode 1 – Pre-defined echo**: Selects from `Echo` objects already defined in character gear files (`src/data/gear/*.ts`). These have all stats, icons, and skill data fully specified. The picker shows name, icon, main stat, and substats.
+
+**Mode 2 – Custom echo**: The user provides:
+1. An echo name from `echoCatalog.ts` (filtered by set to maintain correct set bonus)
+2. Echo cost — looked up from the catalog (1, 3, or 4), determines available base stats and main stat options via `ECHO_COST_BASE_DATA`
+3. Main stat (one of `ECHO_COST_BASE_DATA[cost].mainStatOptions`)
+4. Up to 5 substats from `ECHO_SUBSTAT_VALUES`
+
+For slot 1, custom echoes will have no `echoSkill` — the `ECHO` placeholder action stays in the rotation with no skill. Acceptable for initial implementation.
+
+---
+
+### Echo Catalog
+
+**`src/data/gear/echoCatalog.ts`** (implemented):
+- Maps every set name to an array of `EchoCatalogEntry` objects: `{ name, cost: 1|3|4, icon? }`
+- Covers all 28 echo sets
+- `icon` is `undefined` until assets are added to `public/assets/gear/echoes/`
+- Utility functions:
+  - `getEchoSets(echoName)` — returns all set names an echo belongs to
+  - `getEchoCost(echoName)` — returns the echo's slot cost from the catalog
+
+---
+
+### Weapon Catalog
+
+Weapons are static (no substat rolling). The picker shows all weapons matching `character.weaponType`. **`src/data/gear/weapons.ts`** is currently empty and needs to be populated with weapon definitions, grouped by `WeaponType`.
+
+The confirmed call path on selection:
+```ts
+_onGearChange(characterName, { ...character.gear, weapon: selectedWeapon })
+```
+
+---
+
+### Validation Rules
+
+- **Weapon type**: Only show weapons where `weapon.weaponType === character.weaponType`
+- **Echo cost budget**: Total echo cost across all 5 slots must not exceed 12
+- **Slot 1 only**: `firstSlotStats` and `echoSkill` only apply to slot 1 — other slots ignore them
+
+---
+
+### UI Placement
+
+`_onGearChange` is already threaded down to `CharacterProfileOverlay`. Click handlers for weapon and echo slots are stubbed with `console.log` TODOs. Picker modals or panels should be triggered from those handlers.
+
+---
+
 ## What Remains
 
-### Picker UI (next major task)
-
-The gear slot click handlers currently just `console.log` TODO messages. The next step is building actual weapon/echo picker modals or panels.
-
-When a picker confirms a selection, it should call `onGearChange(characterName, newGear)` — where `newGear` is the character's full `Gear` object with the new weapon or echo swapped in.
-
-**`_onGearChange` in `CharacterProfileOverlay`** is already threaded down from the page. It just needs:
-
-1. The picker UI (modal, dropdown, or inline panel)
-2. The call: `_onGearChange(characterName, { ...character.gear, weapon: selectedWeapon })` or equivalent for echoes
-3. Weapon type validation: only show weapons where `weapon.weaponType === character.weaponType`
-4. Echo cost validation: total echo cost must not exceed 12 across all 5 slots
-
-### Known Pre-existing Issue (unrelated to this task)
-
-`setLocalSequence(seq)` in `CharacterProfileOverlay.tsx` line ~1316 has a TypeScript error:  
-`Argument of type 'number' is not assignable to parameter of type 'SetStateAction<0 | 1 | 2 | 3 | 4 | 5 | 6>'`.  
-This was present before this task and is out of scope.
+1. **Gear picker UI** — weapon picker and two-mode echo picker (modal/panel), wired through `_onGearChange`
+2. **`src/data/gear/weapons.ts`** — populate with all weapon definitions grouped by `WeaponType`
+3. **Mornye weapon modifiers** — `Starfield Calibrator` weapon effect data; tag target `{ tag: 'LIBERATION' }` already correct, `modifiers` array is empty
+4. **Echo assets** — add `icon` paths to `echoCatalog` entries as images land in `public/assets/gear/echoes/`
+5. **Character Selection UI** — team picker (1–3 characters) with full state reset on change
+6. **Pre-existing type error** — `setLocalSequence(seq)` in `CharacterProfileOverlay.tsx` (known, out of scope)
 
 ---
 
@@ -376,4 +417,8 @@ This was present before this task and is out of scope.
 - **Never re-resolve from a `ResolvedCharacter`** — always re-resolve from `baseCharacters`. A `ResolvedCharacter` has already had gear modifiers injected; resolving it again would double-inject.
 - **Echo set stats come from `echoSetRegistry`, not `gear.setBonus.stats`** — `setBonus.stats` is deprecated and ignored by the resolver. It remains in data files for human reference only.
 - **5-piece injected modifiers stay in `gear.setBonus.injectedModifiers`** — these reference character-specific action objects and cannot be in the global registry.
-- **Clone map must cover all actions and their coordinatedAttacks** — any action or CA not in the map will silently miss gear injection if it's a target.
+- **Clone map must cover all actions and their coordinatedAttacks** — any action or CA not in the map will silently miss gear injection if it's a direct-reference target.
+- **Tags are set at definition time** in character action data files, not derived at runtime. The `tags` field is plain data on the action/CA object.
+- **Tag-based injection iterates `workingActions` directly** — no clone lookup required. Tags in gear files do NOT import or reference specific action objects.
+- **Direct-reference injection (`originalToClone` path) is preserved** — both tag-based and direct-reference injection paths coexist.
+- **`ActionTag` and `dmgType` are distinct** — `BASIC_ATTACK` tag targets an action's role in the combo system; `'BASIC'` damage type targets the damage calculation. They serve different purposes and are independent.

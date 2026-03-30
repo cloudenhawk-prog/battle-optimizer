@@ -7,10 +7,10 @@ const mornye_weapon: Weapon = {
   stats: { baseATK: 412.50, energyPercent: 0.7704, bonusDEF: 0.16 },
   injectedModifiers: [
     {
-      targets: ['character'], // Lieration
-      modifiers: [] // TODO: Inject into Liberation action: Casting Resonance Liberation restores 8 points of Concerto Energy (20 second CD) (if liberation has more than 20s cd we dont need to track it)
+      targets: [{ tag: 'LIBERATION' }], // Casting Liberation restores Concerto Energy
+      modifiers: [] // TODO: Inject modifier into Liberation action: Casting Resonance Liberation restores 8 points of Concerto Energy (20 second CD) (if liberation has more than 20s cd we dont need to track it)
                       // OBS: It works for Resonance Skill (since she has 2, either should be able to trigger it, but shared cooldown)
-      // When Mornye heals resonators (liberation, skill(s), perhaps other things) Crit DMG of all resontors increaes by 20 % for 4s (max 1 stack, refresh duration on application)
+      // When Mornye heals resonators (liberation, skill(s), perhaps other things) Crit DMG of all resonators increases by 20% for 4s (max 1 stack, refresh duration on application)
     }
   ],
   rank: 1,

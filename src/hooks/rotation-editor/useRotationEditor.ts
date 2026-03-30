@@ -14,11 +14,18 @@ type UseRotationEditorProps = {
   tableConfig: TableConfig
   enemy: Enemy
   onSnapshotsChange?: (snapshots: Snapshot[], damageEvents: DamageEvent[]) => void
+  gearResetKey?: number
 }
 
-export function useRotationEditor({ charactersInBattle, tableConfig, enemy, onSnapshotsChange }: UseRotationEditorProps) {
+export function useRotationEditor({ charactersInBattle, tableConfig, enemy, onSnapshotsChange, gearResetKey = 0 }: UseRotationEditorProps) {
   const [damageEvents, setDamageEvents] = useState<DamageEvent[]>([])
-  const { snapshots, setSnapshots } = useSnapshots({ charactersInBattle, tableConfig })
+  const { snapshots, setSnapshots, resetTimeline } = useSnapshots({ charactersInBattle, tableConfig })
+
+  useEffect(() => {
+    if (gearResetKey === 0) return
+    resetTimeline()
+    setDamageEvents([])
+  }, [gearResetKey])
   const { handleCharacterSelect, handleActionSelect } = useCharacterActions({ setSnapshots, charactersInBattle, enemy, tableConfig, setDamageEvents })
 
   useEffect(() => {

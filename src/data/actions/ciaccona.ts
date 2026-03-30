@@ -4,6 +4,7 @@ import { ciaccona_singers_triple_cadenza_coordinated } from '../coordinatedAttac
 
 // ========== Basic Attack 3-4 =================================================================================================
 const ciaccona_BA_3_4_cancel_with_skill: Action = {
+  tags: ['BASIC_ATTACK', 'AERO_EROSION_APPLIER'],
   name: 'Basic Attack 3-4 (skill cancel)',
   displayName: 'Basic Attack 3-4 (skill cancel)',
   category: 'Basics',
@@ -46,6 +47,7 @@ const ciaccona_BA_3_4_cancel_with_skill: Action = {
 }
 
 const ciaccona_BA_3_4_cancel_with_swap: Action = {
+  tags: ['BASIC_ATTACK', 'AERO_EROSION_APPLIER'],
   name: 'Basic Attack 3-4 (swap cancel)',
   displayName: 'Basic Attack 3-4 (swap cancel)',
   category: 'Basics',
@@ -92,6 +94,7 @@ const ciaccona_BA_3_4_cancel_with_swap: Action = {
 
 // ========== MA2 -> BA4 =======================================================================================================
 const ciaccona_midair_2_BA_4_cancel_with_skill: Action = {
+  tags: ['BASIC_ATTACK', 'AERO_EROSION_APPLIER'],
   name: 'Mid Air 2 -> Basic Attack 4 (skill cancel)',
   displayName: 'Mid Air 2 -> Basic Attack 4 (skill cancel)',
   category: 'Basics',
@@ -134,6 +137,7 @@ const ciaccona_midair_2_BA_4_cancel_with_skill: Action = {
 }
 
 const ciaccona_midair_2_BA_4_cancel_with_swap: Action = {
+  tags: ['BASIC_ATTACK', 'AERO_EROSION_APPLIER'],
   name: 'Mid Air 2 -> Basic Attack 4 (swap cancel)',
   displayName: 'Mid Air 2 -> Basic Attack 4 (swap cancel)',
   category: 'Basics',
@@ -180,6 +184,7 @@ const ciaccona_midair_2_BA_4_cancel_with_swap: Action = {
 
 // ========== Resonance Skill ==================================================================================================
 const ciaccona_skill: Action = {
+  tags: ['SKILL', 'AERO_EROSION_APPLIER'],
   name: 'Resonance Skill',
   displayName: 'Harmonic Allegro',
   category: 'Skills',
@@ -207,6 +212,7 @@ const ciaccona_skill: Action = {
 }
 
 const ciaccona_skill_cancel_with_swap: Action = {
+  tags: ['SKILL', 'AERO_EROSION_APPLIER'],
   name: 'Resonance Skill (swap cancel)',
   displayName: 'Harmonic Allegro (swap cancel)',
   category: 'Skills',
@@ -238,6 +244,7 @@ const ciaccona_skill_cancel_with_swap: Action = {
 
 // ========== Liberation =======================================================================================================
 const ciaccona_liberation: Action = {
+  tags: ['LIBERATION'],
   name: 'Liberation',
   displayName: 'Singers Triple Cadenza',
   category: 'Skills',
@@ -265,6 +272,7 @@ const ciaccona_liberation: Action = {
 
 // ========== Heavy Attack =====================================================================================================
 const ciaccona_heavy: Action = {
+  tags: ['HEAVY_ATTACK'],
   name: 'Heavy Attack',
   displayName: 'Quadruple Downbeat',
   category: 'Basics',
@@ -292,6 +300,7 @@ const ciaccona_heavy: Action = {
 }
 
 const ciaccona_heavy_cancel_with_swap: Action = {
+  tags: ['HEAVY_ATTACK'],
   name: 'Heavy Attack (swap cancel)',
   displayName: 'Quadruple Downbeat (swap cancel)',
   category: 'Basics',
@@ -323,6 +332,7 @@ const ciaccona_heavy_cancel_with_swap: Action = {
 
 // ========== Intro & Outro ====================================================================================================
 const ciaccona_intro: Action = {
+  tags: ['INTRO_ACTION'],
   name: 'Intro Skill',
   displayName: 'Roaming with the Wind',
   category: 'Other',
@@ -349,6 +359,7 @@ const ciaccona_intro: Action = {
 }
 
 const ciaccona_outro: Action = {
+  tags: ['OUTRO_ACTION'],
   name: 'Outro Skill',
   displayName: 'Windcalling Tune',
   category: 'Other',
@@ -541,3 +552,5 @@ export {
   ciaccona_concerto,
   ciaccona_forte
 }
+
+

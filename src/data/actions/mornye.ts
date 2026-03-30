@@ -8,6 +8,7 @@ import type { Action } from '../../types/action'
 
 // ========== Basic Attack 1 ===================================================================================================
 const mornye_BA_1_cancel_with_swap: Action = {
+  tags: ['BASIC_ATTACK'],
   name: 'Basic Attack 1 (swap cancel)',
   displayName: 'Basic Attack 1 (swap cancel)',
   category: 'Basics',
@@ -43,6 +44,7 @@ const mornye_BA_1_cancel_with_swap: Action = {
 
 // ========== Basic Attack 1-2 =================================================================================================
 const mornye_BA_1_2_cancel_with_swap: Action = {
+  tags: ['BASIC_ATTACK'],
   name: 'Basic Attack 1-2 (swap cancel)',
   displayName: 'Basic Attack 1-2 (swap cancel)',
   category: 'Basics',
@@ -78,6 +80,7 @@ const mornye_BA_1_2_cancel_with_swap: Action = {
 
 // ========== Basic Attack 1-3 =================================================================================================
 const mornye_BA_1_3_into_heavy: Action = {
+  tags: ['BASIC_ATTACK'],
   name: 'Basic Attack 1-3 (into heavy)',
   displayName: 'Basic Attack 1-3 (into heavy)',
   category: 'Basics',
@@ -109,6 +112,7 @@ const mornye_BA_1_3_into_heavy: Action = {
 }
 
 const mornye_BA_1_3_cancel_with_swap: Action = {
+  tags: ['BASIC_ATTACK'],
   name: 'Basic Attack 1-3 (swap cancel)',
   displayName: 'Basic Attack 1-3 (swap cancel)',
   category: 'Basics',
@@ -144,6 +148,7 @@ const mornye_BA_1_3_cancel_with_swap: Action = {
 
 // ========== Basic Attack 2 ===================================================================================================
 const mornye_BA_2_cancel_with_swap: Action = {
+  tags: ['BASIC_ATTACK'],
   name: 'Basic Attack 2 (swap cancel)',
   displayName: 'Basic Attack 2 (swap cancel)',
   category: 'Basics',
@@ -179,6 +184,7 @@ const mornye_BA_2_cancel_with_swap: Action = {
 
 // ========== Basic Attack 2-3 =================================================================================================
 const mornye_BA_2_3_into_heavy: Action = {
+  tags: ['BASIC_ATTACK'],
   name: 'Basic Attack 2-3 (into heavy)',
   displayName: 'Basic Attack 2-3 (into heavy)',
   category: 'Basics',
@@ -210,6 +216,7 @@ const mornye_BA_2_3_into_heavy: Action = {
 }
 
 const mornye_BA_2_3_cancel_with_swap: Action = {
+  tags: ['BASIC_ATTACK'],
   name: 'Basic Attack 2-3 (swap cancel)',
   displayName: 'Basic Attack 2-3 (swap cancel)',
   category: 'Basics',
@@ -245,6 +252,7 @@ const mornye_BA_2_3_cancel_with_swap: Action = {
 
 // ========== Basic Attack 3 ===================================================================================================
 const mornye_BA_3_into_heavy: Action = {
+  tags: ['BASIC_ATTACK'],
   name: 'Basic Attack 3 (into heavy)',
   displayName: 'Basic Attack 3 (into heavy)',
   category: 'Basics',
@@ -276,6 +284,7 @@ const mornye_BA_3_into_heavy: Action = {
 }
 
 const mornye_BA_3_cancel_with_swap: Action = {
+  tags: ['BASIC_ATTACK'],
   name: 'Basic Attack 3 (swap cancel)',
   displayName: 'Basic Attack 3 (swap cancel)',
   category: 'Basics',
@@ -310,6 +319,7 @@ const mornye_BA_3_cancel_with_swap: Action = {
 }
 
 const mornye_BA_3_cancel_with_skill: Action = {
+  tags: ['BASIC_ATTACK'],
   name: 'Basic Attack 3 (skill cancel)',
   displayName: 'Basic Attack 3 (skill cancel)',
   category: 'Basics',
@@ -342,6 +352,7 @@ const mornye_BA_3_cancel_with_skill: Action = {
 
 // ========== Heavy Attack =====================================================================================================
 const mornye_heavy: Action = {
+  tags: ['HEAVY_ATTACK', 'HEAL_PROC'],
   name: 'Heavy Attack',
   displayName: 'Heavy Attack',
   category: 'Basics',
@@ -379,6 +390,7 @@ const mornye_heavy: Action = {
 }
 
 const mornye_heavy_swap_in: Action = {
+  tags: ['HEAVY_ATTACK', 'HEAL_PROC'],
   name: 'Heavy Attack (Swap In)',
   displayName: 'Heavy Attack',
   category: 'Basics',
@@ -417,6 +429,7 @@ const mornye_heavy_swap_in: Action = {
 
 // ========== Resonance Skill ==================================================================================================
 const mornye_skill: Action = {
+  tags: ['SKILL'],
   name: 'Resonance Skill',
   displayName: 'Expectation Error',
   category: 'Skills',
@@ -450,6 +463,7 @@ const mornye_skill: Action = {
 
 // ========== Mode: Basic Attack 1-3 ===========================================================================================
 const mode_mornye_BA_1_3: Action = {
+  tags: ['BASIC_ATTACK'],
   name: 'Mode: Basic Attack 1-3',
   displayName: 'Mode: Basic Attack 1-3',
   category: 'Basics',
@@ -480,6 +494,7 @@ const mode_mornye_BA_1_3: Action = {
 
 // ========== Mode: Resonance Skill ============================================================================================
 const mode_mornye_skill: Action = { // TODO: Also triggers healing
+  tags: ['SKILL', 'HEAL_PROC'],
   name: 'Mode: Resonance Skill',
   displayName: 'Distributed Array',
   category: 'Skills',
@@ -510,6 +525,7 @@ const mode_mornye_skill: Action = { // TODO: Also triggers healing
 
 // ========== Mode: Heavy Attack ===============================================================================================
 const mode_mornye_heavy: Action = {
+  tags: ['HEAVY_ATTACK'],
   name: 'Mode: Heavy Attack',
   displayName: 'Mode: Heavy Attack',
   category: 'Basics',
@@ -544,6 +560,7 @@ const mode_mornye_heavy: Action = {
 
 // ========== Mode: Liberation =======================================================================================================
 const mornye_liberation: Action = {
+  tags: ['LIBERATION', 'HEAL_PROC'],
   name: 'Liberation',
   displayName: 'Critical Protocol',
   category: 'Skills',
@@ -579,6 +596,7 @@ const mornye_liberation: Action = {
 
 // ========== Intro & Outro ====================================================================================================
 const mornye_intro: Action = {
+  tags: ['INTRO_ACTION'],
   name: 'Mornye Intro',
   displayName: 'Convergence',
   category: 'Other',
@@ -605,6 +623,7 @@ const mornye_intro: Action = {
 }
 
 const mornye_outro: Action = {
+  tags: ['OUTRO_ACTION'],
   name: 'Outro',
   displayName: 'Recursion',
   category: 'Other',
@@ -855,3 +874,4 @@ export {
   mornye_forte,
   mornye_relative_momentum
 }
+

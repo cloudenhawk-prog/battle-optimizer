@@ -29,7 +29,11 @@ export function useSnapshots({ charactersInBattle, tableConfig }: UseSnapshotsPr
 
   const [snapshots, setSnapshots] = useState<Snapshot[]>([createEmptySnapshot(charactersMap, characterColumnsMap, globalColumns, tableConfig)])
 
-  return { snapshots, setSnapshots, createEmptySnapshot }
+  function resetTimeline() {
+    setSnapshots([createEmptySnapshot(charactersMap, characterColumnsMap, globalColumns, tableConfig)])
+  }
+
+  return { snapshots, setSnapshots, resetTimeline, createEmptySnapshot }
 }
 
 // ========== Internal Helpers =================================================================================================

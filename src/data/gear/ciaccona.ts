@@ -1,7 +1,5 @@
 import type { Echo, EchoSetBonus, Weapon } from '../../types/gear'
 import { always } from '../../utils/conditions/damageModifierConditions'
-import { ciaccona_BA_3_4_cancel_with_skill, ciaccona_BA_3_4_cancel_with_swap, ciaccona_midair_2_BA_4_cancel_with_skill, ciaccona_midair_2_BA_4_cancel_with_swap, ciaccona_outro, ciaccona_skill, ciaccona_skill_cancel_with_swap } from '../actions/ciaccona'
-import { ciaccona_singers_triple_cadenza_coordinated } from '../coordinatedAttacks/ciaccona'
 import { nightmareKelpieOutroTrigger } from '../sideEffects/sideEffects'
 
 // ========== Weapon ===========================================================================================================
@@ -11,7 +9,7 @@ const ciaccona_weapon: Weapon = {
   stats: { baseATK: 587.50, critRate: 0.2430, energyPercent: 0.192 },
   injectedModifiers: [
     {
-      targets: [ciaccona_outro], // TODO: Would this correctly inject it into ciaccona's outro action?
+      targets: [{ tag: 'OUTRO_ACTION' }],
       modifiers: [
         {
           source: 'Static Mist',
@@ -64,7 +62,7 @@ const ciaccona_cost_4_echo_1: Echo = {
   },
   injectedSideEffects: [
     {
-      targets: [ciaccona_outro],
+      targets: [{ tag: 'OUTRO_ACTION' }],
       sideEffects: [nightmareKelpieOutroTrigger]
     }
   ],
@@ -120,7 +118,7 @@ const ciaccona_set_bonus: EchoSetBonus = {
   stats: { aeroBonusDMG: 0.10 },
   injectedModifiers: [
     {
-      targets: [ciaccona_BA_3_4_cancel_with_skill, ciaccona_BA_3_4_cancel_with_swap, ciaccona_midair_2_BA_4_cancel_with_skill, ciaccona_midair_2_BA_4_cancel_with_swap, ciaccona_skill, ciaccona_skill_cancel_with_swap, ciaccona_singers_triple_cadenza_coordinated],
+      targets: [{ tag: 'AERO_EROSION_APPLIER' }],
       modifiers: [
         {
           source: 'Ciaccona',

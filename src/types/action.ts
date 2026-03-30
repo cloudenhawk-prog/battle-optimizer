@@ -5,6 +5,27 @@ import type { SideEffect, StatusModification, CooldownReduction } from './sideEf
 import type { CoordinatedAttack } from './coordinatedAttack'
 import type { Snapshot } from './snapshot'
 
+// ========== Type: ActionTag ===================================================================================================
+
+/**
+ * Semantic keyword attached to an action to describe what it represents.
+ * Used for tag-based gear injection so weapon/echo/set effects can target actions
+ * by category (e.g. "buff all heals") without importing specific action objects.
+ *
+ * BASIC_ATTACK and SKILL refer to the action role (triggers effects that say
+ * "when using a basic attack/skill"), not the damage type — use `dmgTypes` for that.
+ */
+export type ActionTag =
+  | 'BASIC_ATTACK'        // Action belongs to the basic attack combo chain
+  | 'HEAVY_ATTACK'        // Action is a heavy/charged attack
+  | 'SKILL'               // Action is a Resonance Skill cast
+  | 'LIBERATION'          // Action is a Resonance Liberation cast
+  | 'INTRO_ACTION'        // Action is the character's Intro skill
+  | 'OUTRO_ACTION'        // Action is the character's Outro skill
+  | 'HEAL_PROC'           // Action provides HP restoration (direct or periodic-tick trigger)
+  | 'AERO_EROSION_APPLIER'     // Action applies Aero Erosion stacks
+  | 'SPECTRO_FRAZZLE_APPLIER'  // Action applies Spectro Frazzle stacks
+
 // ========== Type: Action =====================================================================================================
 
 export type ActionCategory = 'Basics' | 'Skills' | 'Echo Skill' | 'Other' | 'Testing'
@@ -31,6 +52,8 @@ export type Action = {
 
   castConditions: CastConditions
   offtune: number
+  /** Semantic tags describing what role this action plays. Used for tag-based gear injection. */
+  tags?: ActionTag[]
 
   toolTip?: string
 

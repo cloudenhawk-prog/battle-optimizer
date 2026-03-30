@@ -1,7 +1,9 @@
 import type { Action } from '../../types/action'
+import type { ActionTag } from '../../types/action'
 import type { CoordinatedAttack } from '../../types/coordinatedAttack'
 import type { DamageModifier } from '../../types/modifiers'
-import type { InjectedModifier, InjectedSideEffect, Gear } from '../../types/gear'
+import type { InjectedModifier, InjectedSideEffect, InjectedTarget, Gear } from '../../types/gear'
+import { computeEchoSetCounts } from '../../data/gear/echoSets'
 
 // ========== Gear Modifier Injection ==========================================================================================
 
@@ -36,17 +38,21 @@ export function resolveGear(characterActions: Action[], characterDamageModifiers
     applyInjectedSideEffects(slot1Echo.injectedSideEffects, characterActions, originalToClone)
   }
 
-  // Set bonus modifier injection (requires all 5 slots filled)
+  // Set bonus modifier injection: requires 5 echoes from the matching set.
+  // Using set counts rather than "all slots filled" ensures the 5-piece bonus
+  // is correctly withdrawn when echoes are swapped to a different set.
   const slots = gear.echoSlots
-  const allFilled = slots[1] && slots[2] && slots[3] && slots[4] && slots[5]
-  if (allFilled && gear.setBonus?.injectedModifiers?.length) {
-    applyInjectedModifiers(gear.setBonus.injectedModifiers, characterActions, characterDamageModifiers, originalToClone)
+  if (gear.setBonus?.name && gear.setBonus.injectedModifiers?.length) {
+    const setCounts = computeEchoSetCounts(slots)
+    if ((setCounts[gear.setBonus.name] ?? 0) >= 5) {
+      applyInjectedModifiers(gear.setBonus.injectedModifiers, characterActions, characterDamageModifiers, originalToClone)
+    }
   }
 }
 
 function applyInjectedModifiers(
   injectedModifiers: InjectedModifier[],
-  characterActions: Action[], // This is suspicious. Do we not inject modifiers into actions yet?
+  characterActions: Action[],
   characterDamageModifiers: DamageModifier[],
   originalToClone: Map<Action | CoordinatedAttack, Action | CoordinatedAttack>,
 ): void {
@@ -54,6 +60,19 @@ function applyInjectedModifiers(
     for (const target of targets) {
       if (target === 'character') {
         characterDamageModifiers.push(...modifiers)
+      } else if (isTagTarget(target)) {
+        // Tag-based: iterate working actions (and their CAs) directly — no clone map needed
+        for (const action of characterActions) {
+          if (hasMatchingTags(action, target)) {
+            action.damageModifiers.push(...modifiers)
+          }
+          for (const ca of action.coordinatedAttacks ?? []) {
+            if (hasMatchingTags(ca, target)) {
+              ca.damageModifiers ??= []
+              ca.damageModifiers.push(...modifiers)
+            }
+          }
+        }
       } else if (isCoordinatedAttack(target)) {
         const clone = originalToClone.get(target) as CoordinatedAttack | undefined
         if (clone) {
@@ -72,17 +91,46 @@ function applyInjectedModifiers(
 
 function applyInjectedSideEffects(
   injectedSideEffects: InjectedSideEffect[],
-  characterActions: Action[], // This is suspicious. Do we not inject side effects into actions yet?
+  characterActions: Action[],
   originalToClone: Map<Action | CoordinatedAttack, Action | CoordinatedAttack>,
 ): void {
   for (const { targets, sideEffects } of injectedSideEffects) {
     for (const target of targets) {
-      const clone = originalToClone.get(target) as Action | undefined
-      if (clone) {
-        clone.sideEffects = [...clone.sideEffects, ...sideEffects]
+      if (isTagTarget(target)) {
+        for (const action of characterActions) {
+          if (hasMatchingTags(action, target)) {
+            action.sideEffects = [...action.sideEffects, ...sideEffects]
+          }
+        }
+      } else {
+        const clone = originalToClone.get(target) as Action | undefined
+        if (clone) {
+          clone.sideEffects = [...clone.sideEffects, ...sideEffects]
+        }
       }
     }
   }
+}
+
+/** Returns true when a target is a tag-based descriptor (not 'character', Action, or CoordinatedAttack). */
+function isTagTarget(target: InjectedTarget | Action): target is { tag: ActionTag } | { tags: ActionTag[]; match: 'any' | 'all' } {
+  // Action and CoordinatedAttack always have a 'name' string property; tag descriptors do not.
+  if (typeof target !== 'object' || target === null) return false
+  return !('name' in target)
+}
+
+/** Returns true when an action or coordinated attack carries all/any of the requested tags. */
+function hasMatchingTags(
+  subject: { tags?: ActionTag[] },
+  target: { tag: ActionTag } | { tags: ActionTag[]; match: 'any' | 'all' },
+): boolean {
+  const subjectTags = subject.tags ?? []
+  if ('tag' in target) {
+    return subjectTags.includes(target.tag)
+  }
+  return target.match === 'any'
+    ? target.tags.some(t => subjectTags.includes(t))
+    : target.tags.every(t => subjectTags.includes(t))
 }
 
 /** Type guard distinguishing a CoordinatedAttack from an Action (by presence of `frequency`). */

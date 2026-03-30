@@ -5,6 +5,8 @@ import type { Character } from '../../types/character'
 import type { CharacterStats } from '../../types/stats'
 import type { Snapshot } from '../../types/snapshot'
 import type { Echo, Gear, Weapon, EchoSlots } from '../../types/gear'
+import { computeEchoSetCounts, echoSetRegistry } from '../../data/gear/echoSets'
+import { EchoPickerModal } from './EchoPickerModal'
 import { calculateScalingStat } from '../../utils/calculators/damageCalculator'
 import { computeGearStatBreakdown, computeActiveModifierBreakdown, computeFinalStats } from '../../utils/gear/computeStatBreakdown'
 import '../../styles/rotation-editor/CharacterStateTracker.css'
@@ -378,7 +380,7 @@ const ORBIT_SCAN_THRESHOLD = 16 // degrees — half-window; items are 60° apart
 
 type OrbitalScanItem = { type: 'weapon'; data: Weapon } | { type: 'echo'; data: Echo; slot: 1 | 2 | 3 | 4 | 5 }
 
-function EquipmentOrbit({ weapon, echoSlots, elColor, onTooltip, characterName, onItemHighlight }: { weapon: Weapon; echoSlots: EchoSlots; elColor: string; onTooltip: (t: TooltipData | null) => void; characterName: string; onItemHighlight?: (item: OrbitalScanItem) => void }) {
+function EquipmentOrbit({ weapon, echoSlots, elColor, characterName, onItemHighlight, onEchoSlotClick }: { weapon: Weapon; echoSlots: EchoSlots; elColor: string; characterName: string; onItemHighlight?: (item: OrbitalScanItem | null) => void; onEchoSlotClick?: (slot: 1 | 2 | 3 | 4 | 5) => void }) {
   const containerRef = useRef<HTMLDivElement>(null)
   const [containerSize, setContainerSize] = useState(0)
   const lastPassedIndexRef = useRef<number>(-1)
@@ -386,6 +388,8 @@ function EquipmentOrbit({ weapon, echoSlots, elColor, onTooltip, characterName, 
   // the two can never drift apart because they read from identical values.
   const rotation = useMotionValue(0)
   const [scannedIndex, setScannedIndex] = useState(-1)
+  const [hoveredIndex, setHoveredIndex] = useState<number>(-1)
+  const hoveredIndexRef = useRef<number>(-1)
 
   useEffect(() => {
     const controls = animate(rotation, [0, 360], { duration: 36, repeat: Infinity, ease: 'linear' })
@@ -418,7 +422,31 @@ function EquipmentOrbit({ weapon, echoSlots, elColor, onTooltip, characterName, 
     { type: 'echo', data: echoSlots[5], slot: 5 },
   ]
 
+  function handleSlotHover(index: number) {
+    hoveredIndexRef.current = index
+    setHoveredIndex(index)
+    setScannedIndex(index)
+    if (onItemHighlight) {
+      const item = items[index]
+      if (item.type === 'weapon') {
+        onItemHighlight({ type: 'weapon', data: item.data })
+      } else if (item.type === 'echo' && item.data !== null) {
+        onItemHighlight({ type: 'echo', data: item.data, slot: item.slot })
+      } else {
+        // Empty echo slot — reset the scan panel to its idle state.
+        onItemHighlight(null)
+      }
+    }
+  }
+
+  function handleSlotLeave() {
+    hoveredIndexRef.current = -1
+    setHoveredIndex(-1)
+  }
+
   useAnimationFrame(() => {
+    // Suppress orbital scan updates while a slot is being hovered.
+    if (hoveredIndexRef.current >= 0) return
     // rotation.get() is the exact same value used to render the particle — perfect sync.
     const currentAngle = rotation.get() % 360
     let closestIndex = -1
@@ -441,6 +469,9 @@ function EquipmentOrbit({ weapon, echoSlots, elColor, onTooltip, characterName, 
           onItemHighlight({ type: 'weapon', data: item.data })
         } else if (item.type === 'echo' && item.data !== null) {
           onItemHighlight({ type: 'echo', data: item.data, slot: item.slot })
+        } else {
+          // Empty echo slot — reset the scan panel to its idle state.
+          onItemHighlight(null)
         }
       }
     }
@@ -452,11 +483,11 @@ function EquipmentOrbit({ weapon, echoSlots, elColor, onTooltip, characterName, 
         <div style={{ position: 'relative', width: size, height: size }}>
           {/* Orbit ring + concentric ripple circles */}
           <svg style={{ position: 'absolute', inset: 0, width: '100%', height: '100%', pointerEvents: 'none' }}>
-            <circle cx={center} cy={center} r={radius} fill="none" stroke={`hsl(${elColor} / 0.1)`} strokeWidth="1" strokeDasharray="4 6" />
-            <circle cx={center} cy={center} r={radius + 22} fill="none" stroke={`hsl(${elColor} / 0.09)`} strokeWidth="0.75" />
-            <circle cx={center} cy={center} r={radius + 52} fill="none" stroke={`hsl(${elColor} / 0.055)`} strokeWidth="0.65" />
-            <circle cx={center} cy={center} r={radius + 94} fill="none" stroke={`hsl(${elColor} / 0.03)`} strokeWidth="0.5" />
-            <circle cx={center} cy={center} r={radius + 152} fill="none" stroke={`hsl(${elColor} / 0.015)`} strokeWidth="0.4" />
+            <circle cx={center} cy={center} r={radius} fill="none" stroke={`hsl(${elColor} / 0.22)`} strokeWidth="1" strokeDasharray="4 6" />
+            <circle cx={center} cy={center} r={radius + 22} fill="none" stroke={`hsl(${elColor} / 0.18)`} strokeWidth="0.75" />
+            <circle cx={center} cy={center} r={radius + 52} fill="none" stroke={`hsl(${elColor} / 0.11)`} strokeWidth="0.65" />
+            <circle cx={center} cy={center} r={radius + 94} fill="none" stroke={`hsl(${elColor} / 0.06)`} strokeWidth="0.5" />
+            <circle cx={center} cy={center} r={radius + 152} fill="none" stroke={`hsl(${elColor} / 0.03)`} strokeWidth="0.4" />
           </svg>
 
           {/* Orbiting energy particle */}
@@ -536,39 +567,13 @@ function EquipmentOrbit({ weapon, echoSlots, elColor, onTooltip, characterName, 
                     elColor={elColor}
                     size={slotSize}
                     delay={0.35 + i * 0.08}
-                    tooltipContent={(() => {
-                      const weaponStats = formatGearStats(item.data.stats)
-                      return (
-                        <div>
-                          <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 8 }}>
-                            <div>
-                              <div style={{ fontWeight: 700, fontSize: '0.85rem' }}>{item.data.name}</div>
-                              <div style={{ fontSize: '0.68rem', color: 'rgba(140, 155, 185, 0.7)', marginTop: 2 }}>{item.data.weaponType}</div>
-                            </div>
-                            <span style={{ fontSize: '0.72rem', color: `hsl(${elColor})`, fontWeight: 600 }}>R{item.data.rank}</span>
-                          </div>
-                          <div style={{ height: 1, background: `linear-gradient(90deg, transparent, hsl(${elColor} / 0.3), transparent)`, marginBottom: 8 }} />
-                          {weaponStats.length > 0 && (
-                            <div style={{ marginBottom: 8 }}>
-                              {weaponStats.map(({ label, value }) => (
-                                <div key={label} style={{ display: 'flex', justifyContent: 'space-between', gap: 16, fontSize: '0.75rem', padding: '2px 0' }}>
-                                  <span style={{ color: 'rgba(150, 165, 195, 0.8)' }}>{label}</span>
-                                  <span style={{ color: `hsl(${elColor} / 0.9)`, fontWeight: 600, fontVariantNumeric: 'tabular-nums' }}>{value}</span>
-                                </div>
-                              ))}
-                              <div style={{ height: 1, background: `linear-gradient(90deg, transparent, hsl(${elColor} / 0.3), transparent)`, margin: '8px 0' }} />
-                            </div>
-                          )}
-                          <p style={{ margin: 0, fontSize: '0.76rem', color: 'rgba(180, 190, 214, 0.88)', lineHeight: 1.55 }}>{item.data.info ? colorizeText(item.data.info, elColor) : 'No additional information available.'}</p>
-                        </div>
-                      )
-                    })()}
                     typeTag="Weapon"
-                    isScanned={i === scannedIndex}
-                    onTooltip={onTooltip}
+                    isScanned={i === (hoveredIndex >= 0 ? hoveredIndex : scannedIndex)}
+                    onHoverEnter={() => handleSlotHover(i)}
+                    onHoverLeave={handleSlotLeave}
                     onClick={() => {
                       console.log('TODO: open weapon picker for', item.data.name, '(', item.data.weaponType, ')')
-                    }} // TODO: open weapon picker UI
+                    }}
                   />
                 ) : (
                   <GearSlot
@@ -578,65 +583,12 @@ function EquipmentOrbit({ weapon, echoSlots, elColor, onTooltip, characterName, 
                     elColor={elColor}
                     size={slotSize}
                     delay={0.35 + i * 0.08}
-                    tooltipContent={
-                      item.data
-                        ? (() => {
-                            const mainStats = formatGearStats(item.data.baseStats)
-                            const subStats = formatGearStats(item.data.subStats)
-                            return (
-                              <div>
-                                <div style={{ display: 'flex', alignItems: 'center', gap: 8, marginBottom: 8 }}>
-                                  {item.data.info_icon && (
-                                    <img
-                                      src={assetPath(item.data.info_icon)}
-                                      alt={item.data.name}
-                                      style={{ width: 44, height: 44, objectFit: 'contain', flexShrink: 0 }}
-                                      onError={e => {
-                                        ;(e.target as HTMLImageElement).style.display = 'none'
-                                      }}
-                                    />
-                                  )}
-                                  <div>
-                                    <div style={{ fontWeight: 700, fontSize: '0.85rem' }}>{item.data.name}</div>
-                                    <div style={{ fontSize: '0.72rem', color: `hsl(${elColor})`, fontWeight: 600 }}>{item.data.cost} Cost</div>
-                                  </div>
-                                </div>
-                                <div style={{ height: 1, background: `linear-gradient(90deg, transparent, hsl(${elColor} / 0.3), transparent)`, marginBottom: 8 }} />
-                                {mainStats.length > 0 && (
-                                  <div style={{ marginBottom: 6 }}>
-                                    <div style={{ fontSize: '0.62rem', fontFamily: FONT_DISPLAY, textTransform: 'uppercase', letterSpacing: '0.1em', color: 'rgba(140, 155, 185, 0.7)', marginBottom: 4 }}>Main Stat</div>
-                                    {mainStats.map(({ label, value }) => (
-                                      <div key={label} style={{ display: 'flex', justifyContent: 'space-between', gap: 16, fontSize: '0.75rem', padding: '2px 0' }}>
-                                        <span style={{ color: 'rgba(150, 165, 195, 0.8)' }}>{label}</span>
-                                        <span style={{ color: `hsl(${elColor} / 0.9)`, fontWeight: 600, fontVariantNumeric: 'tabular-nums' }}>{value}</span>
-                                      </div>
-                                    ))}
-                                  </div>
-                                )}
-                                {subStats.length > 0 && (
-                                  <div style={{ marginBottom: 8 }}>
-                                    <div style={{ fontSize: '0.62rem', fontFamily: FONT_DISPLAY, textTransform: 'uppercase', letterSpacing: '0.1em', color: 'rgba(140, 155, 185, 0.7)', marginBottom: 4 }}>Sub Stats</div>
-                                    {subStats.map(({ label, value }) => (
-                                      <div key={label} style={{ display: 'flex', justifyContent: 'space-between', gap: 16, fontSize: '0.75rem', padding: '2px 0' }}>
-                                        <span style={{ color: 'rgba(150, 165, 195, 0.8)' }}>{label}</span>
-                                        <span style={{ color: 'rgba(170, 185, 215, 0.85)', fontVariantNumeric: 'tabular-nums' }}>{value}</span>
-                                      </div>
-                                    ))}
-                                  </div>
-                                )}
-                                {(mainStats.length > 0 || subStats.length > 0) && <div style={{ height: 1, background: `linear-gradient(90deg, transparent, hsl(${elColor} / 0.3), transparent)`, marginBottom: 8 }} />}
-                                <p style={{ margin: 0, fontSize: '0.76rem', color: 'rgba(180, 190, 214, 0.88)', lineHeight: 1.55 }}>{item.data.info ? colorizeText(item.data.info, elColor) : 'No additional information available.'}</p>
-                              </div>
-                            )
-                          })()
-                        : null
-                    }
                     typeTag={item.slot === 1 ? 'Main Echo' : item.data ? 'Echo' : undefined}
-                    isScanned={i === scannedIndex}
-                    onTooltip={onTooltip}
-                    onClick={() => {
-                      console.log('TODO: open echo picker for slot', item.slot, ':', item.data?.name ?? 'empty')
-                    }} // TODO: open echo picker UI
+                    isScanned={i === (hoveredIndex >= 0 ? hoveredIndex : scannedIndex)}
+                    onHoverEnter={() => handleSlotHover(i)}
+                    onHoverLeave={handleSlotLeave}
+                    onClick={() => onEchoSlotClick?.(item.slot)}
+                    alwaysClickable
                   />
                 )}
               </div>
@@ -650,11 +602,12 @@ function EquipmentOrbit({ weapon, echoSlots, elColor, onTooltip, characterName, 
 
 // ========== Sub-component: Gear Slot (shared for weapon & echo) ==============================================================
 
-function GearSlot({ icon, primaryLabel, secondaryLabel, elColor, size, delay, tooltipContent, onTooltip, typeTag, isScanned, onClick }: { icon?: string; primaryLabel?: string; secondaryLabel?: string; elColor: string; size: number; delay: number; tooltipContent: React.ReactNode; onTooltip: (t: TooltipData | null) => void; typeTag?: string; isScanned?: boolean; onClick?: () => void }) {
+function GearSlot({ icon, primaryLabel, secondaryLabel, elColor, size, delay, typeTag, isScanned, onClick, alwaysClickable, onHoverEnter, onHoverLeave }: { icon?: string; primaryLabel?: string; secondaryLabel?: string; elColor: string; size: number; delay: number; typeTag?: string; isScanned?: boolean; onClick?: () => void; alwaysClickable?: boolean; onHoverEnter?: () => void; onHoverLeave?: () => void }) {
   const hasItem = icon !== undefined || primaryLabel !== undefined
+  const isClickable = hasItem || alwaysClickable
 
   return (
-    <motion.div initial={{ scale: 0.7, opacity: 0 }} animate={{ scale: 1, opacity: 1 }} transition={{ delay, duration: 0.35, type: 'spring', stiffness: 200 }} style={{ position: 'relative', width: size, height: size, cursor: hasItem ? 'pointer' : 'default' }} onMouseEnter={hasItem ? e => onTooltip({ x: e.clientX, y: e.clientY, content: tooltipContent }) : undefined} onMouseMove={hasItem ? e => onTooltip({ x: e.clientX, y: e.clientY, content: tooltipContent }) : undefined} onMouseLeave={hasItem ? () => onTooltip(null) : undefined} onClick={hasItem ? onClick : undefined}>
+    <motion.div initial={{ scale: 0.7, opacity: 0 }} animate={{ scale: 1, opacity: 1 }} transition={{ delay, duration: 0.35, type: 'spring', stiffness: 200 }} style={{ position: 'relative', width: size, height: size, cursor: isClickable ? 'pointer' : 'default' }} onMouseEnter={isClickable ? () => onHoverEnter?.() : undefined} onMouseLeave={isClickable ? () => onHoverLeave?.() : undefined} onClick={isClickable ? onClick : undefined}>
       {/* Background — solid occluder so orbiting particle stays hidden underneath */}
       <div style={{ position: 'absolute', inset: 0, borderRadius: 8, background: 'hsl(220 20% 9%)' }} />
       {/* Background — semi-transparent gradient overlay on top of occluder */}
@@ -670,7 +623,7 @@ function GearSlot({ icon, primaryLabel, secondaryLabel, elColor, size, delay, to
       />
 
       {/* Hover glow */}
-      {hasItem && (
+      {isClickable && (
         <div
           style={{
             position: 'absolute',
@@ -705,7 +658,7 @@ function GearSlot({ icon, primaryLabel, secondaryLabel, elColor, size, delay, to
       </div>
 
       {/* Corner accents */}
-      {hasItem && <CornerAccents elColor={elColor} />}
+      {isClickable && <CornerAccents elColor={elColor} />}
 
       {/* Scan frame — targeting brackets animate in when the orbital particle passes this slot */}
       <AnimatePresence>
@@ -1104,7 +1057,7 @@ function EchoInfo({ echo, slot, elColor }: { echo: Echo; slot: number; elColor: 
         <div>
           <div style={{ fontWeight: 700, fontSize: '0.85rem', color: 'var(--table-text)' }}>{echo.name}</div>
           <div style={{ fontSize: '0.7rem', color: `hsl(${elColor})`, fontWeight: 600 }}>
-            {echo.cost} Cost{slot === 1 ? ' · Main Echo' : ''}
+            {echo.cost} Cost{slot === 1 ? ' · Main Echo' : ''} · {echo.setName}
           </div>
         </div>
       </div>
@@ -1198,11 +1151,11 @@ type CharacterProfileOverlayProps = {
   onGearChange?: (characterName: string, newGear: Gear) => void
 }
 
-export function CharacterProfileOverlay({ characterName, character, snapshot, allCharacters, onClose, onGearChange: _onGearChange }: CharacterProfileOverlayProps) {
-  console.log('On Gear Change will be used for the soon-to-be-implemented feature described in /DOCS/gear-swapping-context.md', _onGearChange)
+export function CharacterProfileOverlay({ characterName, character, snapshot, allCharacters, onClose, onGearChange }: CharacterProfileOverlayProps) {
   const [selectedStat, setSelectedStat] = useState<string | null>(null)
   const [isClosing, setIsClosing] = useState(false)
   const [tooltip, setTooltip] = useState<TooltipData | null>(null)
+  const [pickerSlot, setPickerSlot] = useState<1 | 2 | 3 | 4 | 5 | null>(null)
   // todo: localSequence tracks visual-only resonance chain state.
   // Later this should persist to character data so sequence-gated modifiers are applied.
   const [localSequence, setLocalSequence] = useState<0 | 1 | 2 | 3 | 4 | 5 | 6>(character.sequence)
@@ -1220,6 +1173,12 @@ export function CharacterProfileOverlay({ characterName, character, snapshot, al
   const activeBreakdown = computeActiveModifierBreakdown(character, snapshot, allCharacters)
   const baseStat = character.stats as CharacterStats
   const elTheme = getTheme(character.element)
+  const activeSets = Object.entries(computeEchoSetCounts(character.gear.echoSlots))
+    .flatMap(([setName, count]) => {
+      const registry = echoSetRegistry[setName]
+      return registry ? [{ setName, count, registry }] : []
+    })
+    .sort((a, b) => b.count - a.count)
 
   function handleClose() {
     setTooltip(null)
@@ -1358,49 +1317,62 @@ export function CharacterProfileOverlay({ characterName, character, snapshot, al
             {/* ── CENTER COL: Equipment Orbit + Resonance Chain ── */}
             <div className="cpo-center-col">
               <div className="cpo-orbit-wrap">
-                <EquipmentOrbit weapon={character.gear.weapon} echoSlots={character.gear.echoSlots} elColor={elTheme.primary} onTooltip={setTooltip} characterName={characterName} onItemHighlight={setOrbitalItem} />
+                <EquipmentOrbit weapon={character.gear.weapon} echoSlots={character.gear.echoSlots} elColor={elTheme.primary} characterName={characterName} onItemHighlight={setOrbitalItem} onEchoSlotClick={setPickerSlot} />
               </div>
+
             </div>
 
             {/* ── RIGHT COL: Set Bonus (top half) + Orbital Scan (bottom half) ── */}
             <div className="cpo-right-col" style={{ borderLeft: `1px solid hsl(${elTheme.primary} / 0.1)` }}>
               {/* Top half — Set Bonus */}
               <div style={{ flex: 1, minHeight: 0, overflow: 'hidden auto', display: 'flex', flexDirection: 'column', paddingBottom: 0 }}>
-                {character.gear.setBonus ? (
-                  <motion.div initial={{ opacity: 0, x: 10 }} animate={{ opacity: 1, x: 0 }} transition={{ delay: 0.7 }} style={{ display: 'flex', flexDirection: 'column', gap: 8 }}>
+                {activeSets.length > 0 ? (
+                  <motion.div initial={{ opacity: 0, x: 10 }} animate={{ opacity: 1, x: 0 }} transition={{ delay: 0.7 }} style={{ display: 'flex', flexDirection: 'column', gap: 16 }}>
                     <SectionHeader label="Set Bonus" elColor={elTheme.primary} />
 
-                    <div className="cpo-set-bonus-name-row">
-                      <img
-                        src={assetPath(character.gear.setBonus.icon)}
-                        alt={character.gear.setBonus.name}
-                        style={{ width: 26, height: 26, objectFit: 'contain' }}
-                        onError={e => {
-                          ;(e.target as HTMLImageElement).style.opacity = '0'
-                        }}
-                      />
-                      <span className="cpo-set-bonus-name-text" style={{ color: `hsl(${elTheme.primary})` }}>
-                        {character.gear.setBonus.name}
-                      </span>
-                    </div>
-
-                    {Object.entries(character.gear.setBonus.info).map(([key, desc]) => (
-                      <div
-                        key={key}
-                        className="cpo-set-bonus-entry"
-                        style={{
-                          background: `hsl(${elTheme.primary} / 0.04)`,
-                          border: `1px solid hsl(${elTheme.primary} / 0.12)`,
-                        }}>
-                        <div className="cpo-set-bonus-entry-key" style={{ color: `hsl(${elTheme.primary})` }}>
-                          {key}
+                    {activeSets.map(({ setName, count, registry }) => (
+                      <div key={setName} style={{ display: 'flex', flexDirection: 'column', gap: 6 }}>
+                        <div className="cpo-set-bonus-name-row">
+                          <img
+                            src={assetPath(registry.icon)}
+                            alt={setName}
+                            style={{ width: 26, height: 26, objectFit: 'contain' }}
+                            onError={e => {
+                              ;(e.target as HTMLImageElement).style.opacity = '0'
+                            }}
+                          />
+                          <span className="cpo-set-bonus-name-text" style={{ color: `hsl(${elTheme.primary})` }}>
+                            {setName}
+                          </span>
+                          <span style={{ marginLeft: 'auto', fontSize: '0.62rem', fontFamily: FONT_MONO, color: `hsl(${elTheme.primary} / 0.55)` }}>
+                            {count}/5
+                          </span>
                         </div>
-                        <p className="cpo-set-bonus-entry-desc">{colorizeText(desc, elTheme.primary)}</p>
+
+                        {Object.entries(registry.info).map(([milestoneKey, desc]) => {
+                          const required = Number(milestoneKey)
+                          const isActive = count >= required
+                          return (
+                            <div
+                              key={milestoneKey}
+                              className="cpo-set-bonus-entry"
+                              style={{
+                                background: isActive ? `hsl(${elTheme.primary} / 0.07)` : 'rgba(20, 24, 36, 0.4)',
+                                border: `1px solid ${isActive ? `hsl(${elTheme.primary} / 0.18)` : 'rgba(60, 70, 90, 0.3)'}`,
+                                opacity: isActive ? 1 : 0.45,
+                              }}>
+                              <div className="cpo-set-bonus-entry-key" style={{ color: isActive ? `hsl(${elTheme.primary})` : MUTED }}>
+                                {required}-pc
+                              </div>
+                              <p className="cpo-set-bonus-entry-desc">{isActive ? colorizeText(desc, elTheme.primary) : desc}</p>
+                            </div>
+                          )
+                        })}
                       </div>
                     ))}
                   </motion.div>
                 ) : (
-                  <div style={{ flex: 1, display: 'flex', alignItems: 'center', justifyContent: 'center', color: MUTED, fontSize: '0.75rem', opacity: 0.4 }}>No set bonus</div>
+                  <div style={{ flex: 1, display: 'flex', alignItems: 'center', justifyContent: 'center', color: MUTED, fontSize: '0.75rem', opacity: 0.4 }}>No echoes equipped</div>
                 )}
               </div>
 
@@ -1430,6 +1402,23 @@ export function CharacterProfileOverlay({ characterName, character, snapshot, al
 
       {/* Floating tooltip */}
       {tooltip && <div style={tooltipStyle(tooltip.x, tooltip.y)}>{tooltip.content}</div>}
+
+      {/* Echo picker */}
+      {pickerSlot !== null && (
+        <EchoPickerModal
+          slot={pickerSlot}
+          currentGear={character.gear}
+          characterName={characterName}
+          elColor={elTheme.primary}
+          onConfirm={newEcho => {
+            const newEchoSlots = { ...character.gear.echoSlots, [pickerSlot]: newEcho }
+            const newGear: Gear = { ...character.gear, echoSlots: newEchoSlots }
+            onGearChange?.(characterName, newGear)
+            setPickerSlot(null)
+          }}
+          onCancel={() => setPickerSlot(null)}
+        />
+      )}
     </>,
     document.body,
   )

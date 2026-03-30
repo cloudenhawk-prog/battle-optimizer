@@ -1,6 +1,7 @@
 import type { CoordinatedAttack } from '../../types/coordinatedAttack'
 
 export const ciaccona_singers_triple_cadenza_coordinated: CoordinatedAttack = {
+  tags: ['AERO_EROSION_APPLIER'],
   name: 'Singers Triple Cadenza (Coordinated)',
   displayName: 'Singers Triple Cadenza (Coordinated)',
   multiplier: 6.12 / 100,

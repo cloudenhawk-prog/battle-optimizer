@@ -25,6 +25,7 @@ export default function RotationEditorPage() {
   const [resolvedCharacters, setResolvedCharacters] = useState<ResolvedCharacter[]>(characters)
   // Incrementing this key forces RotationEditor to remount, resetting all timeline state.
   const [timelineKey, setTimelineKey] = useState(0)
+  const [gearResetKey, setGearResetKey] = useState(0)
 
   const handleSnapshotsChange = useCallback((newSnapshots: Snapshot[], newDamageEvents: DamageEvent[]) => {
     setSnapshots(newSnapshots)
@@ -41,17 +42,17 @@ export default function RotationEditorPage() {
     if (!base) return
     const reResolved = resolveCharacter(base, newGear)
     setResolvedCharacters(prev => prev.map(c => (c.name === characterName ? reResolved : c)))
-    // Reset timeline — past actions are no longer valid with new character stats
+    // Soft-reset the timeline without remounting RotationEditor (remounting would close the profile overlay)
     setSnapshots([])
     setDamageEvents([])
-    setTimelineKey(k => k + 1)
+    setGearResetKey(k => k + 1)
   }, [])
 
   return (
     <div>
       <Topbar tableConfig={tableConfig} allColumns={allColumns} columnVisibility={columnVisibility} setColumnVisibility={setColumnVisibility} />
 
-      <RotationEditor key={timelineKey} charactersInBattle={resolvedCharacters} enemy={enemies[0]} tableConfig={tableConfig} columnVisibility={columnVisibility} setColumnVisibility={setColumnVisibility} onSnapshotsChange={handleSnapshotsChange} onGearChange={handleGearChange} />
+      <RotationEditor key={timelineKey} gearResetKey={gearResetKey} charactersInBattle={resolvedCharacters} enemy={enemies[0]} tableConfig={tableConfig} columnVisibility={columnVisibility} setColumnVisibility={setColumnVisibility} onSnapshotsChange={handleSnapshotsChange} onGearChange={handleGearChange} />
 
       <DamageTimeline snapshots={snapshots} damageEvents={damageEvents} selectedCharacters={resolvedCharacters} />
     </div>

@@ -1,6 +1,5 @@
 import type { Echo, EchoSetBonus, Weapon } from '../../types/gear'
 import { always } from '../../utils/conditions/damageModifierConditions'
-import { roverAero_liberation, roverAero_midair_1_2, roverAero_midair_1_2_cancel_with_swap, roverAero_skill_3, roverAero_skill_3_cancel_with_swap_1, roverAero_skill_3_cancel_with_swap_2 } from '../actions/roverAero'
 
 
 // ========== Weapon ===========================================================================================================
@@ -10,7 +9,7 @@ const roverAero_weapon: Weapon = {
   stats: { baseATK: 587.50, energyPercent: 0.3888 },
   injectedModifiers: [ // TODO: How is this handled? These 2 refer to the same buff, but one allows for a higher timer. Reset should never reset above it's own stated timer, and overlapping names should reference the same buff
     {
-      targets: [roverAero_liberation, roverAero_midair_1_2, roverAero_midair_1_2_cancel_with_swap],
+      targets: [{ tag: 'HEAL_PROC' }],
       modifiers: [
         {
           source: 'Bloodpact\'s Pledge',
@@ -26,7 +25,7 @@ const roverAero_weapon: Weapon = {
       ]
     },
     {
-      targets: [roverAero_skill_3, roverAero_skill_3_cancel_with_swap_1, roverAero_skill_3_cancel_with_swap_2],
+      targets: [{ tags: ['SKILL', 'HEAL_PROC'], match: 'all' }],
       modifiers: [
         {
           source: 'Bloodpact\'s Pledge',
