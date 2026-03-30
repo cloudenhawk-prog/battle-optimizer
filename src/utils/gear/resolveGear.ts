@@ -21,12 +21,7 @@ import type { InjectedModifier, InjectedSideEffect, Gear } from '../../types/gea
  * Each InjectedModifier target can be `'character'` or an Action/CoordinatedAttack reference.
  * Each InjectedSideEffect target is an Action reference (actions only).
  */
-export function resolveGear(
-  characterActions: Action[],
-  characterDamageModifiers: DamageModifier[],
-  gear: Gear,
-  originalToClone: Map<Action | CoordinatedAttack, Action | CoordinatedAttack>,
-): void {
+export function resolveGear(characterActions: Action[], characterDamageModifiers: DamageModifier[], gear: Gear, originalToClone: Map<Action | CoordinatedAttack, Action | CoordinatedAttack>): void {
   // Weapon modifier injection
   if (gear.weapon.injectedModifiers?.length) {
     applyInjectedModifiers(gear.weapon.injectedModifiers, characterActions, characterDamageModifiers, originalToClone)
@@ -51,7 +46,7 @@ export function resolveGear(
 
 function applyInjectedModifiers(
   injectedModifiers: InjectedModifier[],
-  characterActions: Action[],
+  characterActions: Action[], // This is suspicious. Do we not inject modifiers into actions yet?
   characterDamageModifiers: DamageModifier[],
   originalToClone: Map<Action | CoordinatedAttack, Action | CoordinatedAttack>,
 ): void {
@@ -77,7 +72,7 @@ function applyInjectedModifiers(
 
 function applyInjectedSideEffects(
   injectedSideEffects: InjectedSideEffect[],
-  characterActions: Action[],
+  characterActions: Action[], // This is suspicious. Do we not inject side effects into actions yet?
   originalToClone: Map<Action | CoordinatedAttack, Action | CoordinatedAttack>,
 ): void {
   for (const { targets, sideEffects } of injectedSideEffects) {
