@@ -3,7 +3,7 @@ import type { ActionTag } from '../../types/action'
 import type { CoordinatedAttack } from '../../types/coordinatedAttack'
 import type { DamageModifier } from '../../types/modifiers'
 import type { InjectedModifier, InjectedSideEffect, InjectedTarget, Gear } from '../../types/gear'
-import { computeEchoSetCounts } from '../../data/gear/echoSets'
+import { computeEchoSetCounts, echoSetRegistry } from '../../data/gear/echoSets'
 
 // ========== Gear Modifier Injection ==========================================================================================
 
@@ -19,6 +19,7 @@ import { computeEchoSetCounts } from '../../data/gear/echoSets'
  *  - Weapon `injectedModifiers`
  *  - Slot-1 echo `injectedModifiers` and `injectedSideEffects`
  *  - Set bonus `injectedModifiers` (only when all 5 slots are filled)
+ *  - Global echo set milestone `injectedModifiers` from the echo set registry (per milestone threshold)
  *
  * Each InjectedModifier target can be `'character'` or an Action/CoordinatedAttack reference.
  * Each InjectedSideEffect target is an Action reference (actions only).
@@ -46,6 +47,19 @@ export function resolveGear(characterActions: Action[], characterDamageModifiers
     const setCounts = computeEchoSetCounts(slots)
     if ((setCounts[gear.setBonus.name] ?? 0) >= 5) {
       applyInjectedModifiers(gear.setBonus.injectedModifiers, characterActions, characterDamageModifiers, originalToClone)
+    }
+  }
+
+  // Global echo set milestone modifier injection from the registry.
+  // Applies injectedModifiers defined on each milestone when the set count reaches the threshold.
+  const setCounts = computeEchoSetCounts(gear.echoSlots)
+  for (const [setName, count] of Object.entries(setCounts)) {
+    const echoSet = echoSetRegistry[setName]
+    if (!echoSet) continue
+    for (const [milestoneStr, milestone] of Object.entries(echoSet.milestones)) {
+      if (count >= Number(milestoneStr) && milestone.injectedModifiers?.length) {
+        applyInjectedModifiers(milestone.injectedModifiers, characterActions, characterDamageModifiers, originalToClone)
+      }
     }
   }
 }

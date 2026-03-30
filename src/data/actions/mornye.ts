@@ -1,4 +1,5 @@
 import type { Action } from '../../types/action'
+import { always } from '../../utils/conditions/damageModifierConditions'
 
 // TODO - any swap-away from Mornye should formChange into default form (how to ensure this as not every swap will trigger intro/outros)
 
@@ -369,10 +370,42 @@ const mornye_heavy: Action = {
   energyCost: [{ energyType: 'forte', amount: 100 }],
   statusModifications: [],
   damageModifiers: [
-    // TODO: Syntony Field: 25 seconds:
-    // Trigger heal every 3 seconds (If implemented correctly should trigger echo 5-set effect of Halo of Starry Radiance and also weapon buff since both trigger on heal)
-    // Off-tune Buildup Rate for all resonators: +70 % (20 % comes from S2, could simply check if character.sequnce >= 2)
-    // 1 max stack, resets on cast, all allies.
+    {
+      // Syntony Field: 25 seconds.
+      // Triggers heal every 3 seconds (including on cast), activating echo 5-set effects and weapon buffs.
+      // Off-tune Buildup Rate for all resonators: +50% base (+20% additionally at S2)
+      source: 'Mornye: Syntony Field',
+      displayName: 'Syntony Field',
+      type: 'buff',
+      ownerCharacter: 'Mornye',
+      characterStats: { offtuneBuildupRate: 0.5 },
+      condition: always(),
+      targetStrategy: 'all',
+      durationStrategy: { type: 'limited', timeDuration: 25 },
+      stackingStrategy: { maxStacks: 1, resetTimerOnApplication: true, stacksRemovedEachTime: 1 },
+      healProc: {
+        frequency: 3,
+        procTag: 'HEAL_PROC',
+        procModifiers: [],
+      },
+    },
+    {
+      // S2 bonus: +20% Off-tune Buildup Rate, active only when Mornye's sequence >= 2.
+      // Shares source with the base so Liberation's removesModifierSourceOnActivation clears both.
+      source: 'Mornye: Syntony Field',
+      displayName: 'Syntony Field (S2)',
+      type: 'buff',
+      ownerCharacter: 'Mornye',
+      characterStats: { offtuneBuildupRate: 0.2 },
+      condition: (ctx) => {
+        const mornye = ctx.character.name === 'Mornye' ? ctx.character : ctx.allies.find(c => c.name === 'Mornye')
+        return (mornye?.sequence ?? 0) >= 2 ? 1 : 0
+      },
+      targetStrategy: 'all',
+      durationStrategy: { type: 'limited', timeDuration: 25 },
+      stackingStrategy: { maxStacks: 1, resetTimerOnApplication: true, stacksRemovedEachTime: 1 },
+      contributionGroup: 'Mornye: Syntony Field',
+    },
   ],
   sideEffects: [
     // TODO: 39.77%*5 FUSION DMG considered LIBERATION DMG (upon entering Wide Field Observation Mode)
@@ -407,10 +440,42 @@ const mornye_heavy_swap_in: Action = {
   energyCost: [{ energyType: 'forte', amount: 100 }],
   statusModifications: [],
   damageModifiers: [
-    // TODO: Syntony Field: 25 seconds:
-    // Trigger heal every 3 seconds (should trigger echo 5-set effect) (also triggers heal on cast)
-    // Off-tune Buildup Rate for all resonators: +70 % (20 % comes from S2)
-    // 1 max stack, resets on cast, all allies.
+    {
+      // Syntony Field: 25 seconds.
+      // Triggers heal every 3 seconds (including on cast), activating echo 5-set effects.
+      // Off-tune Buildup Rate for all resonators: +50% base (+20% additionally at S2)
+      source: 'Mornye: Syntony Field',
+      displayName: 'Syntony Field',
+      type: 'buff',
+      ownerCharacter: 'Mornye',
+      characterStats: { offtuneBuildupRate: 0.5 },
+      condition: always(),
+      targetStrategy: 'all',
+      durationStrategy: { type: 'limited', timeDuration: 25 },
+      stackingStrategy: { maxStacks: 1, resetTimerOnApplication: true, stacksRemovedEachTime: 1 },
+      healProc: {
+        frequency: 3,
+        procTag: 'HEAL_PROC',
+        procModifiers: [],
+      },
+    },
+    {
+      // S2 bonus: +20% Off-tune Buildup Rate, active only when Mornye's sequence >= 2.
+      // Shares source with the base so Liberation's removesModifierSourceOnActivation clears both.
+      source: 'Mornye: Syntony Field',
+      displayName: 'Syntony Field (S2)',
+      type: 'buff',
+      ownerCharacter: 'Mornye',
+      characterStats: { offtuneBuildupRate: 0.2 },
+      condition: (ctx) => {
+        const mornye = ctx.character.name === 'Mornye' ? ctx.character : ctx.allies.find(c => c.name === 'Mornye')
+        return (mornye?.sequence ?? 0) >= 2 ? 1 : 0
+      },
+      targetStrategy: 'all',
+      durationStrategy: { type: 'limited', timeDuration: 25 },
+      stackingStrategy: { maxStacks: 1, resetTimerOnApplication: true, stacksRemovedEachTime: 1 },
+      contributionGroup: 'Mornye: Syntony Field',
+    },
   ],
   sideEffects: [
     // TODO: 39.77%*5 FUSION DMG considered LIBERATION DMG (upon entering Wide Field Observation Mode)
@@ -576,10 +641,47 @@ const mornye_liberation: Action = {
   energyCost: [{ energyType: 'energy', amount: 175 }],
   statusModifications: [],
   damageModifiers: [
-    // Removes Syntony Field and creates High Syntony Field (if Syntony Field is present)
-    // For 25 seconds: Increase DEF of all resonators in the team by 20 %
-    // Off-tune Buildup Rate for all resonators: +70 % (20 % comes from S2)
-    // Triggers heal every 3 second (including on cast) (should trigger echo 5-set effect)
+    {
+      // High Syntony Field: only spawned when Syntony Field is currently active.
+      // Removes Syntony Field and replaces it with High Syntony Field for 25 seconds.
+      // DEF of all resonators in the team: +20%
+      // Off-tune Buildup Rate for all resonators: +70% (20% comes from S2)
+      // Triggers heal every 3 seconds (including on cast), activating echo 5-set effects.
+      source: 'Mornye: High Syntony Field',
+      displayName: 'High Syntony Field',
+      type: 'buff',
+      ownerCharacter: 'Mornye',
+      characterStats: { bonusDEF: 0.2, offtuneBuildupRate: 0.5 },
+      condition: always(),
+      targetStrategy: 'all',
+      durationStrategy: { type: 'limited', timeDuration: 25 },
+      stackingStrategy: { maxStacks: 1, resetTimerOnApplication: true, stacksRemovedEachTime: 1 },
+      healProc: {
+        frequency: 3,
+        procTag: 'HEAL_PROC',
+        procModifiers: [],
+      },
+      activationCondition: (ctx) => ctx.modifiersInAction.some(mia => mia.modifier.source === 'Mornye: Syntony Field'),
+      removesModifierSourceOnActivation: 'Mornye: Syntony Field',
+    },
+    {
+      // S2 bonus: +20% Off-tune Buildup Rate, active only when Mornye's sequence >= 2.
+      // Shares source with the base so future removals target both together.
+      source: 'Mornye: High Syntony Field',
+      displayName: 'High Syntony Field (S2)',
+      type: 'buff',
+      ownerCharacter: 'Mornye',
+      characterStats: { offtuneBuildupRate: 0.2 },
+      condition: (ctx) => {
+        const mornye = ctx.character.name === 'Mornye' ? ctx.character : ctx.allies.find(c => c.name === 'Mornye')
+        return (mornye?.sequence ?? 0) >= 2 ? 1 : 0
+      },
+      targetStrategy: 'all',
+      durationStrategy: { type: 'limited', timeDuration: 25 },
+      stackingStrategy: { maxStacks: 1, resetTimerOnApplication: true, stacksRemovedEachTime: 1 },
+      activationCondition: (ctx) => ctx.modifiersInAction.some(mia => mia.modifier.source === 'Mornye: Syntony Field'),
+      contributionGroup: 'Mornye: High Syntony Field',
+    },
   ],
   inherentModifiers: [
     {

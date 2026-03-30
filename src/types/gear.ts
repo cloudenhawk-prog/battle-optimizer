@@ -63,6 +63,8 @@ export type EchoConditionalStats = {
 /** Stats (and optional modifiers) unlocked when the milestone echo count is reached for a set. */
 export type EchoSetMilestone = {
   stats?: Partial<CharacterStats>
+  /** Injected modifiers applied to the character when this milestone is reached. Supports tag-based targeting. */
+  injectedModifiers?: InjectedModifier[]
 }
 
 /** Global echo set definition. Milestone bonuses are resolved automatically based on echo count. */

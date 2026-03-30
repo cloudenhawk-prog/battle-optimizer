@@ -68,6 +68,7 @@ function createEmptySnapshot(charactersMap: Record<string, Character>, character
     buffsTimeLeft: Object.fromEntries(globalColumns.buffs.map(col => [col, 0])),
     buffsSwapsLeft: Object.fromEntries(globalColumns.buffs.map(col => [col, 0])),
     buffsMaxStacks,
+    buffsActivationStats: {},
     debuffs,
     debuffsTimeLeft: Object.fromEntries(globalColumns.debuffs.map(col => [col, 0])),
     debuffsSwapsLeft: Object.fromEntries(globalColumns.debuffs.map(col => [col, 0])),

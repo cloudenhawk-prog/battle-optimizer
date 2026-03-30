@@ -155,7 +155,11 @@ export function computeActiveModifierBreakdown(
     const mod = allModifiers.find(m => m.displayName.replace(/\s+/g, '') === entry.displayName && m.type === entry.type)
     if (!mod?.characterStats) continue
 
-    const scaled = scaleStats(mod.characterStats, entry.stacks)
+    // Use the frozen activation-time stats when present (e.g. Halo 5-piece bonusATK computed at cast time).
+    // Fall back to the blueprint's static characterStats for modifiers without statsOnActivation.
+    const statsSource = (entry.type === 'buff' && snapshot.buffsActivationStats?.[entry.displayName]) || mod.characterStats
+
+    const scaled = scaleStats(statsSource, entry.stacks)
 
     if (mod.ownerCharacter === character.name) {
       selfItems.push({ name: entry.displayName, stats: scaled })

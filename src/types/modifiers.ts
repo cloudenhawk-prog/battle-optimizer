@@ -83,6 +83,23 @@ export type DamageModifier = {
    * Use case: High Syntony Field — only activates when Syntony Field was active at cast time.
    */
   activationCondition?: (ctx: StepContext) => boolean
+  /**
+   * When present, any active modifier(s) whose `source` matches this string are removed
+   * from modifiersInAction at the moment this modifier is activated.
+   *
+   * Use case: High Syntony Field removes Syntony Field when it takes over.
+   */
+  removesModifierSourceOnActivation?: string
+  /**
+   * When present, this function is called at activation time (and on each refresh when
+   * `resetTimerOnApplication` is true) to compute `characterStats` from the current context.
+   * The result is stored as `activationStats` on the `ModifierInAction` and used in place of
+   * the static `characterStats` for the duration of this application.
+   *
+   * Use for buffs whose stat contribution depends on the caster's current stats at the moment
+   * of application (e.g. a bonus that scales with Off-Tune Buildup Rate at cast time).
+   */
+  statsOnActivation?: (ctx: StepContext) => Partial<CharacterStats>
 }
 
 // ========== Type: Negative Status Effect =====================================================================================
@@ -136,4 +153,10 @@ export type ModifierInAction = {
    * immediately at applicationTime (on-cast heal). Absent for modifiers without healProc.
    */
   lastHealProcTime?: number
+  /**
+   * Frozen `characterStats` computed by `modifier.statsOnActivation` at the time this
+   * `ModifierInAction` was created or last refreshed. When present, replaces the modifier's
+   * static `characterStats` in damage calculations, locking in the value from application time.
+   */
+  activationStats?: Partial<CharacterStats>
 }

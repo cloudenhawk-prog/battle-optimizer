@@ -73,6 +73,10 @@ export function activateModifiers(modifiers: DamageModifier[], existingModifiers
         currentStacks: newStacks,
         timeLeft: newTimeLeft,
         swapsLeft: newSwapsLeft,
+        // Re-compute frozen activation stats when the modifier duration is reset
+        ...(modifier.statsOnActivation && stacking.resetTimerOnApplication
+          ? { activationStats: modifier.statsOnActivation(ctx) }
+          : {}),
         // Re-trigger on-cast heal proc when the modifier duration is reset
         ...(modifier.healProc && stacking.resetTimerOnApplication
           ? { lastHealProcTime: ctx.fromTime - modifier.healProc.frequency }
@@ -80,6 +84,17 @@ export function activateModifiers(modifiers: DamageModifier[], existingModifiers
       }
     } else {
       // New modifier - create ModifierInAction
+
+      // Remove any existing modifiers whose source matches the removal target
+      if (modifier.removesModifierSourceOnActivation) {
+        const removeSource = modifier.removesModifierSourceOnActivation
+        for (let i = result.length - 1; i >= 0; i--) {
+          if (result[i].modifier.source === removeSource) {
+            result.splice(i, 1)
+          }
+        }
+      }
+
       const limited = modifier.durationStrategy.type === 'limited' ? modifier.durationStrategy : null
 
       result.push({
@@ -89,6 +104,8 @@ export function activateModifiers(modifiers: DamageModifier[], existingModifiers
         swapsLeft: limited?.numberOfSwaps ?? Infinity,
         currentStacks: 1,
         targetCharacter: ctx.lastSwappedToCharacter ?? null,
+        // Freeze stat contribution at activation time when statsOnActivation is defined
+        ...(modifier.statsOnActivation ? { activationStats: modifier.statsOnActivation(ctx) } : {}),
         // Place lastHealProcTime one frequency behind so the first tick fires immediately at applicationTime
         ...(modifier.healProc ? { lastHealProcTime: ctx.fromTime - modifier.healProc.frequency } : {}),
       })
@@ -200,8 +217,8 @@ export function filterApplicableModifiers(modifiersInAction: ModifierInAction[],
   // Add active limited modifiers that match target strategy
   for (const mia of modifiersInAction) {
     if (mia.currentStacks > 0 && shouldApplyModifier(mia.modifier, activeCharacter, mia.targetCharacter)) {
-      // Create a modified version with stacks multiplied
-      result.push(mia.modifier)
+      // Use frozen activation-time stats if present, otherwise fall back to static characterStats
+      result.push(mia.activationStats ? { ...mia.modifier, characterStats: mia.activationStats } : mia.modifier)
     }
   }
 

@@ -1,4 +1,6 @@
 import type { EchoSet } from '../../types/gear'
+import type { DamageModifier } from '../../types/modifiers'
+import { always } from '../../utils/conditions/damageModifierConditions'
 
 // ========== Echo Set Registry ================================================================================================
 //
@@ -46,7 +48,49 @@ export const echoSetRegistry: Readonly<Record<string, EchoSet>> = {
     },
     milestones: {
       2: { stats: { healingBonus: 0.10 } },
-      // 5-piece effects are injected via Mornye's gear file
+      5: {
+        injectedModifiers: [
+          {
+            // Injected into all HEAL_PROC-tagged actions and into heal-proc modifier procModifiers,
+            // so the buff fires on every timed heal tick (e.g. Syntony Field's 3s proc).
+            targets: [{ tag: 'HEAL_PROC' }],
+            modifiers: [
+              {
+                source: 'Halo of Starry Radiance: 5pc',
+                displayName: 'Radiant ATK',
+                type: 'buff',
+                ownerCharacter: null,
+                // characterStats is unused; statsOnActivation provides the frozen value at cast time.
+                characterStats: { bonusATK: 0 },
+                /**
+                 * Computed once at application (and on each refresh). Reads the effective
+                 * Off-Tune Buildup Rate at that moment — base stat plus any active modifiers
+                 * (e.g. Syntony Field's +50%) — and converts it to a capped bonusATK value.
+                 * Formula: clamp(offtuneBuildupRate × 0.2, 0, 0.25)
+                 * (every 1% of offtune = +0.2% ATK; cap at 25%)
+                 */
+                statsOnActivation: (ctx) => {
+                  let offtune = ctx.character.stats.offtuneBuildupRate
+                  for (const mia of ctx.modifiersInAction) {
+                    const contrib = mia.modifier.characterStats?.offtuneBuildupRate
+                    if (!contrib || mia.currentStacks === 0) continue
+                    const strategy = mia.modifier.targetStrategy
+                    if (strategy === 'self' && mia.modifier.ownerCharacter !== ctx.character.name) continue
+                    if (strategy === 'activeAlly') continue
+                    if (strategy === 'nextSwap' && mia.targetCharacter !== ctx.character.name) continue
+                    offtune += contrib * mia.currentStacks * mia.modifier.condition(ctx)
+                  }
+                  return { bonusATK: Math.min(offtune * 0.2, 0.25) }
+                },
+                condition: always(),
+                targetStrategy: 'all',
+                durationStrategy: { type: 'limited', timeDuration: 4 },
+                stackingStrategy: { maxStacks: 1, resetTimerOnApplication: true, stacksRemovedEachTime: 1 },
+              } satisfies DamageModifier,
+            ],
+          },
+        ],
+      },
     },
   },
 }

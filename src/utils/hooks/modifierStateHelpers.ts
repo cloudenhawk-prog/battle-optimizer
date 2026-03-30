@@ -1,5 +1,6 @@
 import type { Snapshot } from '../../types/snapshot'
 import type { ModifierInAction, DamageModifier } from '../../types/modifiers'
+import type { CharacterStats } from '../../types/stats'
 import type { StepContext } from '../../types/stepContext'
 
 // ========== Modifier State Helpers ===========================================================================================
@@ -29,6 +30,7 @@ export function updateModifierStacks(snapshot: Snapshot, modifiersInAction: Modi
   const buffsTimeLeft: Record<string, number> = {}
   const buffsSwapsLeft: Record<string, number> = {}
   const buffsMaxStacks: Record<string, number> = {}
+  const buffsActivationStats: Record<string, Partial<CharacterStats>> = {}
 
   const debuffs: Record<string, number> = {}
   const debuffsTimeLeft: Record<string, number> = {}
@@ -50,6 +52,7 @@ export function updateModifierStacks(snapshot: Snapshot, modifiersInAction: Modi
       buffsTimeLeft[key] = timeLeft
       buffsSwapsLeft[key] = swapsLeft
       buffsMaxStacks[key] = maxStacks
+      if (mia.activationStats) buffsActivationStats[key] = mia.activationStats
     } else if (type === 'debuff') {
       debuffs[key] = stacks
       debuffsTimeLeft[key] = timeLeft
@@ -89,6 +92,7 @@ export function updateModifierStacks(snapshot: Snapshot, modifiersInAction: Modi
   snapshot.buffsTimeLeft = buffsTimeLeft
   snapshot.buffsSwapsLeft = buffsSwapsLeft
   snapshot.buffsMaxStacks = buffsMaxStacks
+  snapshot.buffsActivationStats = buffsActivationStats
 
   snapshot.debuffs = debuffs
   snapshot.debuffsTimeLeft = debuffsTimeLeft

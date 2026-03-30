@@ -1,4 +1,5 @@
 import type { EnergyType } from './baseTypes'
+import type { CharacterStats } from './stats'
 
 // ========== Type: Snapshot ===================================================================================================
 
@@ -15,6 +16,13 @@ export interface Snapshot {
   buffsTimeLeft: Record<string, number>
   buffsSwapsLeft: Record<string, number>
   buffsMaxStacks: Record<string, number>
+  /**
+   * Frozen stat contributions for limited buff modifiers that use `statsOnActivation`.
+   * Keyed by the same space-stripped displayName used in `buffs`.
+   * `computeActiveModifierBreakdown` reads this instead of the blueprint's `characterStats`
+   * when present, so the stat breakdown reflects what was locked in at application time.
+   */
+  buffsActivationStats: Record<string, Partial<CharacterStats>>
   debuffs: Record<string, number>
   debuffsTimeLeft: Record<string, number>
   debuffsSwapsLeft: Record<string, number>

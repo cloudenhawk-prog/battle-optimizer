@@ -83,12 +83,6 @@ const mornye_cost_1_echo_2: Echo = {
 const mornye_set_bonus: EchoSetBonus = {
   name: 'Halo of Starry Radiance',
   stats: { healingBonus: 0.10 },
-  injectedModifiers: [
-    {
-      targets: ['character'],
-      modifiers: [] // TODO: Insert 5 piece set effect into character mornye
-    }
-  ],
   info: {
     '2-piece': 'Healing Bonus + 10%.',
     '5-piece': 'When healing a Resonator in the team, every 1% of Off-Tune Buildup Rate grants a 0.2% ATK increase to all Resonators in the team for 4s, up to 25%. Effects of the same name cannot be stacked.'
