@@ -1,28 +1,9 @@
-import type { Echo, EchoSetBonus, Weapon } from '../../types/gear'
-import { always, atLeastOneStackOf } from '../../utils/conditions/damageModifierConditions'
+import type { Echo, EchoSetBonus } from '../../types/gear'
+import { always } from '../../utils/conditions/damageModifierConditions'
+import { weaponCatalog, buildWeapon } from './weaponCatalog'
 
 // ========== Weapon ===========================================================================================================
-const cartethyia_weapon: Weapon = {
-  name: 'Defier\'s Thorn',
-  weaponType: 'Sword',
-  stats: { baseATK: 412.50, bonusHP: 0.7223 + 0.12 },
-  injectedModifiers: [
-    {
-      targets: ['character'],
-      modifiers: [
-        {
-          source: "Defier's Thorn", displayName: 'A Free Knight\'s Tarantella (1)', type: 'buff', ownerCharacter: 'Cartethyia', condition: always(), characterStats: { defIgnore: 0.08 }, targetStrategy: 'self', durationStrategy: { type: 'permanent' }, stackingStrategy: { maxStacks: 1, resetTimerOnApplication: false, stacksRemovedEachTime: 0 }
-        },
-        {
-          source: "Defier's Thorn", displayName: 'A Free Knight\'s Tarantella (2)', type: 'buff', ownerCharacter: 'Cartethyia', condition: atLeastOneStackOf('Aero Erosion'), characterStats: { amplifyDMG: 0.2 }, targetStrategy: 'self', durationStrategy: { type: 'permanent' }, stackingStrategy: { maxStacks: 1, resetTimerOnApplication: false, stacksRemovedEachTime: 0 }
-        }
-      ]
-    }
-  ],
-  rank: 1,
-  info: 'Max HP is increased by 12%/15%/18%/21%/24%. 15/15/15/15/15s after casting Intro Skill or Basic Attacks, ignore 8%/10%/12%/14%/16% of the target\'s DEF when dealing damage. If the target has at least 1 stack of Aero Erosion, the DMG taken by the target is Amplified by 20%/25%/30%/35%/40%.',
-  icon: 'assets/gear/weapons/defier\'s_thorn.png'
-}
+const cartethyia_weapon = buildWeapon(weaponCatalog.find(w => w.name === "Defier's Thorn")!, 1, 'Cartethyia')!
 
 // ========== Echoes ===========================================================================================================
 const cartethyia_cost_4_echo_1: Echo = {

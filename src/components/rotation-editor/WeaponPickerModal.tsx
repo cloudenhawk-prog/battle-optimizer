@@ -159,8 +159,6 @@ function RankConfigurePanel({
 }) {
   const rankData = selectedRank !== null ? entry.ranks[selectedRank] : undefined
   const canConfirm = selectedRank !== null && rankData !== undefined
-  // Stats are identical across ranks — read from the first defined rank for display
-  const statsData = ([1, 2, 3, 4, 5] as const).map(r => entry.ranks[r]).find(Boolean)
 
   return (
     <div style={{ display: 'flex', flexDirection: 'column', height: '100%', overflow: 'hidden' }}>
@@ -293,8 +291,7 @@ function RankConfigurePanel({
         <div style={{ height: 1, background: `linear-gradient(90deg, transparent, hsl(${elColor} / 0.14), transparent)` }} />
 
         {/* Stats */}
-        {statsData && (
-          <div>
+        <div>
             <div
               style={{
                 fontSize: '0.68rem',
@@ -307,7 +304,7 @@ function RankConfigurePanel({
               Stats
             </div>
             <div style={{ display: 'flex', flexDirection: 'column', gap: 5 }}>
-              {Object.entries(statsData.stats)
+              {Object.entries(entry.stats)
                 .filter(([, v]) => typeof v === 'number' && v !== 0)
                 .map(([k, v]) => {
                   const label = STAT_LABELS[k] ?? k
@@ -321,7 +318,6 @@ function RankConfigurePanel({
                 })}
             </div>
           </div>
-        )}
 
         <div style={{ height: 1, background: `linear-gradient(90deg, transparent, hsl(${elColor} / 0.14), transparent)` }} />
 

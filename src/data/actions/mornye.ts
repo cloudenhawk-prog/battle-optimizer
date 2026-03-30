@@ -370,8 +370,8 @@ const mornye_heavy: Action = {
   statusModifications: [],
   damageModifiers: [
     // TODO: Syntony Field: 25 seconds:
-    // Trigger heal every 3 seconds (should trigger echo 5-set effect) (also triggers heal on cast)
-    // Off-tune Buildup Rate for all resonators: +70 % (20 % comes from S2)
+    // Trigger heal every 3 seconds (If implemented correctly should trigger echo 5-set effect of Halo of Starry Radiance and also weapon buff since both trigger on heal)
+    // Off-tune Buildup Rate for all resonators: +70 % (20 % comes from S2, could simply check if character.sequnce >= 2)
     // 1 max stack, resets on cast, all allies.
   ],
   sideEffects: [
@@ -576,13 +576,20 @@ const mornye_liberation: Action = {
   energyCost: [{ energyType: 'energy', amount: 175 }],
   statusModifications: [],
   damageModifiers: [
-    // Needs Inherent Modifiers (or other name) that only affect the dmg of THIS action RIGHT NOW - not buffs but conditions that amplify damage. Then refactor Fleurdelys Liberation to use it too.
-      // - For every 1% of Mornye's Energy Regen exceeding 100%, this skill gains an additional 0.5% Crit. Rate (up to 80%) and 1% Crit. DMG (up to 160%).
-    
     // Removes Syntony Field and creates High Syntony Field (if Syntony Field is present)
     // For 25 seconds: Increase DEF of all resonators in the team by 20 %
     // Off-tune Buildup Rate for all resonators: +70 % (20 % comes from S2)
     // Triggers heal every 3 second (including on cast) (should trigger echo 5-set effect)
+  ],
+  inherentModifiers: [
+    {
+      // For every 1% of Mornye's Energy Regen exceeding 100%:
+      // +0.5% Crit. Rate (up to 80%) and +1% Crit. DMG (up to 160%)
+      // Both caps are reached at 160% excess Energy Regen (i.e. 260% total)
+      displayName: 'Liberation Crit Scaling',
+      characterStats: { critRate: 0.005, critDamage: 0.01 },
+      condition: (ctx) => Math.min(Math.max(0, (ctx.character.stats.energyPercent - 1) * 100), 160),
+    },
   ],
   sideEffects: [],
   coordinatedAttacks: [],

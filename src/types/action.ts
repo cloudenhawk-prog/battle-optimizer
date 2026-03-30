@@ -1,6 +1,6 @@
 import type { EnergyGeneration, EnergyCost } from './energy'
 import type { ScalingType, ElementType, Position, DamageType } from './baseTypes'
-import type { DamageModifier } from './modifiers'
+import type { DamageModifier, InherentModifier } from './modifiers'
 import type { SideEffect, StatusModification, CooldownReduction } from './sideEffect'
 import type { CoordinatedAttack } from './coordinatedAttack'
 import type { Snapshot } from './snapshot'
@@ -22,7 +22,10 @@ export type ActionTag =
   | 'LIBERATION'          // Action is a Resonance Liberation cast
   | 'INTRO_ACTION'        // Action is the character's Intro skill
   | 'OUTRO_ACTION'        // Action is the character's Outro skill
-  | 'HEAL_PROC'           // Action provides HP restoration (direct or periodic-tick trigger)
+  | 'HEAL_PROC'           // Action/CoordinatedAttack provides HP restoration (direct, on-cast, or periodic-tick).
+                          // Tag both actions that heal on cast AND CoordinatedAttacks used as periodic heal fields
+                          // (e.g. a Syntony Field CA with frequency:3, multiplier:0). Gear targeting { tag:'HEAL_PROC' }
+                          // will inject modifiers that are activated whenever a tagged action is cast or a tagged CA ticks.
   | 'AERO_EROSION_APPLIER'     // Action applies Aero Erosion stacks
   | 'SPECTRO_FRAZZLE_APPLIER'  // Action applies Spectro Frazzle stacks
 
@@ -46,6 +49,9 @@ export type Action = {
 
   statusModifications: StatusModification[]
   damageModifiers: DamageModifier[]
+  /** Conditional stat amplifiers that only affect this action's own damage calculation.
+   *  Never dispatched as buffs/debuffs — evaluated once at calculation time and discarded. */
+  inherentModifiers?: InherentModifier[]
   sideEffects: SideEffect[]
   coordinatedAttacks?: CoordinatedAttack[]
   cooldownReductions?: CooldownReduction[]

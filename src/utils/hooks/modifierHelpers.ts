@@ -47,6 +47,11 @@ export function activateModifiers(modifiers: DamageModifier[], existingModifiers
       continue
     }
 
+    // Respect activation condition — skip if condition is present and returns false
+    if (modifier.activationCondition && !modifier.activationCondition(ctx)) {
+      continue
+    }
+
     // Check if this modifier already exists
     const existingIndex = result.findIndex(mia => mia.modifier.source === modifier.source && mia.modifier.displayName === modifier.displayName)
 
@@ -68,6 +73,10 @@ export function activateModifiers(modifiers: DamageModifier[], existingModifiers
         currentStacks: newStacks,
         timeLeft: newTimeLeft,
         swapsLeft: newSwapsLeft,
+        // Re-trigger on-cast heal proc when the modifier duration is reset
+        ...(modifier.healProc && stacking.resetTimerOnApplication
+          ? { lastHealProcTime: ctx.fromTime - modifier.healProc.frequency }
+          : {}),
       }
     } else {
       // New modifier - create ModifierInAction
@@ -80,6 +89,8 @@ export function activateModifiers(modifiers: DamageModifier[], existingModifiers
         swapsLeft: limited?.numberOfSwaps ?? Infinity,
         currentStacks: 1,
         targetCharacter: ctx.lastSwappedToCharacter ?? null,
+        // Place lastHealProcTime one frequency behind so the first tick fires immediately at applicationTime
+        ...(modifier.healProc ? { lastHealProcTime: ctx.fromTime - modifier.healProc.frequency } : {}),
       })
     }
   }

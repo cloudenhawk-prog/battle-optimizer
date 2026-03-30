@@ -9,6 +9,7 @@ import type { ModifierInAction } from '../../types/modifiers'
 import { calculateDamage } from '../calculators/damageCalculator'
 import { makeCoordinatedAttackKey } from '../coordinatedAttackKey'
 import { updateEnergyValue } from './energyHelpers'
+import { activateModifiers } from './modifierHelpers'
 import { getNegativeStatusStacks, updateNegativeStatusStacks } from './negativeStatusHelpers'
 
 // ========== Coordinated Attack Helpers =======================================================================================
@@ -212,6 +213,13 @@ export function processCoordinatedAttacks(ctx: StepContext, setDamageEvents: Dis
       if (conditionMultiplier === 0) continue
 
       hitCount++
+
+      // Activate per-tick damageModifiers (e.g. a weapon buff triggered by every heal tick).
+      // These are limited-duration modifiers injected into the CA via gear — they need to be
+      // activated (or refreshed) on every tick so effects like "4s team crit DMG on heal" work.
+      if (ca.damageModifiers?.length) {
+        ctx.modifiersInAction = activateModifiers(ca.damageModifiers, ctx.modifiersInAction, ctx)
+      }
 
       const { average, damageEvent } = calculateDamage({
         action: fakeAction,

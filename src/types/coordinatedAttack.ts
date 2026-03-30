@@ -63,9 +63,15 @@ export type CoordinatedAttack = {
   condition?: (ctx: StepContext) => number
 
   /**
-   * Modifiers applied on each damage tick of this coordinated attack.
-   * Behaves like Action.damageModifiers — each tick triggers these modifiers,
-   * allowing time-limited buffs to be refreshed on every hit.
+   * Modifiers activated on each damage tick of this coordinated attack.
+   * Behaves like Action.damageModifiers — each tick runs activateModifiers on these entries,
+   * so time-limited buffs are created or refreshed on every hit.
+   *
+   * Primary use: gear injects weapon/set-bonus modifiers here via { tag: 'HEAL_PROC' } (or other tags)
+   * so effects like "on heal, grant 4s team crit DMG buff" fire on every periodic heal tick.
+   *
+   * For a "heal-only" periodic field (no damage), set multiplier:0 and elements/dmgTypes to
+   * empty/neutral values — the ticks still fire and activate these modifiers.
    */
   damageModifiers?: DamageModifier[]
 

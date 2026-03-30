@@ -1180,21 +1180,17 @@ const fleurdelys_liberation: Action = {
     { type: 'buff', targetName: 'Power of Discord', stackChange: -1 },
     { type: 'buff', targetName: "Fleurdelys's Conviction", stackChange: -100 },
   ],
-  damageModifiers: [
+  damageModifiers: [],
+  inherentModifiers: [
     {
-      source: 'Liberation Stacks',
-      displayName: 'Cartethyia Liberation Passive',
-      type: 'buff',
-      ownerCharacter: 'Cartethyia',
+      // +100% Liberation Total Multiplier DMG base, +20% per Aero Erosion stack (max 5 stacks)
+      displayName: 'Liberation Aero Erosion Stacks',
+      characterStats: { liberationTotalMultiplierDMG: 1 },
       condition: (ctx) => {
         const status = ctx.negativeStatusesInAction.find(ns => ns.negativeStatus.name === 'Aero Erosion')
         const stacks = status?.currentStacks ?? 0
         return 1 + 0.2 * Math.min(stacks, 5)
       },
-      characterStats: { liberationTotalMultiplierDMG: 1 },
-      targetStrategy: 'self',
-      durationStrategy: { type: 'permanent' },
-      stackingStrategy: { maxStacks: 1, resetTimerOnApplication: false, stacksRemovedEachTime: 0 },
     },
   ],
   sideEffects: [],

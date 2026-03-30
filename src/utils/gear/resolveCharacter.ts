@@ -37,16 +37,22 @@ export function resolveCharacter(character: Character, overrideGear?: Gear): Res
   // ---- Create working copies of all mutable parts so the original stays pristine ----
   // Actions: shallow-spread each action but give it a fresh damageModifiers array so
   // resolveGear can push into it without touching the original action objects.
+  // Modifiers with healProc also get a fresh procModifiers array so gear injection
+  // into healProc.procModifiers doesn't mutate the shared original modifier object.
   const workingActions: Action[] = character.actions.map(a => ({
     ...a,
-    damageModifiers: [...a.damageModifiers],
+    damageModifiers: a.damageModifiers.map(m =>
+      m.healProc ? { ...m, healProc: { ...m.healProc, procModifiers: [...m.healProc.procModifiers] } } : m
+    ),
     coordinatedAttacks: a.coordinatedAttacks?.map(ca => ({
       ...ca,
       damageModifiers: [...(ca.damageModifiers ?? [])],
     })),
   }))
 
-  const workingDamageModifiers: DamageModifier[] = [...character.damageModifiers]
+  const workingDamageModifiers: DamageModifier[] = character.damageModifiers.map(m =>
+    m.healProc ? { ...m, healProc: { ...m.healProc, procModifiers: [...m.healProc.procModifiers] } } : m
+  )
 
   // Build original → clone maps so resolveGear can find the right working copy when
   // gear injection targets are stored as original object references.

@@ -56,21 +56,37 @@ function applyInjectedModifiers(
   characterDamageModifiers: DamageModifier[],
   originalToClone: Map<Action | CoordinatedAttack, Action | CoordinatedAttack>,
 ): void {
-  for (const { targets, modifiers } of injectedModifiers) {
+  for (const { targets, modifiers, energyGeneration } of injectedModifiers) {
     for (const target of targets) {
       if (target === 'character') {
         characterDamageModifiers.push(...modifiers)
+        // energyGeneration is not applicable to 'character' targets
       } else if (isTagTarget(target)) {
         // Tag-based: iterate working actions (and their CAs) directly — no clone map needed
         for (const action of characterActions) {
           if (hasMatchingTags(action, target)) {
             action.damageModifiers.push(...modifiers)
+            if (energyGeneration?.length) action.energyGenerated.push(...energyGeneration)
           }
           for (const ca of action.coordinatedAttacks ?? []) {
             if (hasMatchingTags(ca, target)) {
               ca.damageModifiers ??= []
               ca.damageModifiers.push(...modifiers)
             }
+          }
+          // Inject into procModifiers of any heal-proc modifier whose procTag matches the target tag.
+          // This allows gear targeting { tag: 'HEAL_PROC' } to fire its buffs on every heal tick
+          // from a modifier-based periodic heal field (e.g. Syntony Field).
+          for (const mod of action.damageModifiers) {
+            if (mod.healProc && matchesProcTag(mod.healProc.procTag, target)) {
+              mod.healProc.procModifiers.push(...modifiers)
+            }
+          }
+        }
+        // Character-level heal-proc modifiers (rare, but handled for completeness)
+        for (const mod of characterDamageModifiers) {
+          if (mod.healProc && matchesProcTag(mod.healProc.procTag, target)) {
+            mod.healProc.procModifiers.push(...modifiers)
           }
         }
       } else if (isCoordinatedAttack(target)) {
@@ -83,6 +99,7 @@ function applyInjectedModifiers(
         const clone = originalToClone.get(target) as Action | undefined
         if (clone) {
           clone.damageModifiers.push(...modifiers)
+          if (energyGeneration?.length) clone.energyGenerated.push(...energyGeneration)
         }
       }
     }
@@ -110,6 +127,14 @@ function applyInjectedSideEffects(
       }
     }
   }
+}
+
+/** Returns true if procTag matches a tag-based injection target. */
+function matchesProcTag(procTag: string, target: { tag: ActionTag } | { tags: ActionTag[]; match: 'any' | 'all' }): boolean {
+  if ('tag' in target) return procTag === target.tag
+  return target.match === 'any'
+    ? target.tags.some(t => t === procTag)
+    : target.tags.every(t => t === procTag)
 }
 
 /** Returns true when a target is a tag-based descriptor (not 'character', Action, or CoordinatedAttack). */

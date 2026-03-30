@@ -484,7 +484,7 @@ function ContributionsSection({ damageEvents, mode }: { damageEvents: DamageEven
   }, 0)
 
   // Aggregate flat damage contributions from scoped events
-  const allContributions: Record<string, { source: string; displayName?: string; average: number; normal: number; crit: number }> = {}
+  const allContributions: Record<string, { source: string; displayName?: string; isInherent?: boolean; average: number; normal: number; crit: number }> = {}
 
   scopedEvents.forEach(event => {
     Object.entries(event.contributions).forEach(([source, contrib]) => {
@@ -492,6 +492,7 @@ function ContributionsSection({ damageEvents, mode }: { damageEvents: DamageEven
         allContributions[source] = {
           source: contrib.source,
           displayName: contrib.displayName,
+          isInherent: contrib.isInherent,
           average: contrib.average_damage_contributed,
           normal: contrib.normal_damage_contributed,
           crit: contrib.crit_damage_contributed,
@@ -576,9 +577,15 @@ function ContributionsSection({ damageEvents, mode }: { damageEvents: DamageEven
                       </div>
                     )}
                     <div className="pillarBar">
-                      <div className="pillarFill magenta" style={{ height: `${heightPercent}%` }}>
-                        <div className="pillarGlow" />
-                      </div>
+                      {contrib.isInherent ? (
+                        <div className="pillarFill" style={{ height: `${heightPercent}%`, background: 'rgba(255, 200, 80, 0.75)', boxShadow: '0 0 8px rgba(255, 200, 80, 0.4)' }}>
+                          <div className="pillarGlow" />
+                        </div>
+                      ) : (
+                        <div className="pillarFill magenta" style={{ height: `${heightPercent}%` }}>
+                          <div className="pillarGlow" />
+                        </div>
+                      )}
                     </div>
                     <div className="pillarLabel">
                       <div className="pillarSource">{contrib.displayName || contrib.source}</div>

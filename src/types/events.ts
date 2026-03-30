@@ -22,6 +22,8 @@ export type DamageEvent = {
 export type Contribution = {
   source: string
   displayName?: string
+  /** True for inherent modifiers — conditional amplifiers on the action itself, not dispatched buffs. */
+  isInherent?: boolean
   crit_damage_contributed: number
   crit_percent_damage_contributed: number
   normal_damage_contributed: number

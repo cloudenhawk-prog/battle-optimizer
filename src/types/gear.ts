@@ -4,6 +4,7 @@ import type { DamageModifier } from './modifiers'
 import type { SideEffect } from './sideEffect'
 import type { CharacterStats } from './stats'
 import type { ActionTag } from './action'
+import type { EnergyGeneration } from './energy'
 
 // ========== Type: WeaponType =================================================================================================
 /** The five weapon categories in Wuthering Waves. A character can only equip weapons matching their weaponType. */
@@ -107,6 +108,8 @@ export type InjectedTarget =
 export type InjectedModifier = {
   targets: Array<InjectedTarget>
   modifiers: DamageModifier[]
+  /** Energy generation entries to inject into targeted actions' energyGenerated arrays. Not applicable for 'character' targets. */
+  energyGeneration?: EnergyGeneration[]
 }
 
 export type InjectedSideEffect = {

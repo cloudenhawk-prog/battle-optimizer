@@ -1,34 +1,10 @@
-import type { Echo, EchoSetBonus, Weapon } from '../../types/gear'
+import type { Echo, EchoSetBonus } from '../../types/gear'
 import { always } from '../../utils/conditions/damageModifierConditions'
 import { nightmareKelpieOutroTrigger } from '../sideEffects/sideEffects'
+import { weaponCatalog, buildWeapon } from './weaponCatalog'
 
 // ========== Weapon ===========================================================================================================
-const ciaccona_weapon: Weapon = {
-  name: 'Static Mist',
-  weaponType: 'Pistol',
-  stats: { baseATK: 587.50, critRate: 0.2430, energyPercent: 0.192 },
-  injectedModifiers: [
-    {
-      targets: [{ tag: 'OUTRO_ACTION' }],
-      modifiers: [
-        {
-          source: 'Static Mist',
-          displayName: 'Static Mist Outro Buff',
-          type: 'buff',
-          ownerCharacter: 'Ciaccona',
-          condition: always(),
-          characterStats: { bonusATK: 0.15 },
-          targetStrategy: 'nextSwap',
-          durationStrategy: { type: 'limited', timeDuration: 14, numberOfSwaps: 1 }, // TODO: would this correctly give only the next character after the outro 15 % ATK for 14 seconds (NOT herself, and not 2 future characters, just the next one until swapped out again)?
-          stackingStrategy: { maxStacks: 1, resetTimerOnApplication: true, stacksRemovedEachTime: 1 },
-        }
-      ]
-    }
-  ],
-  rank: 3,
-  info: 'Increases Energy Regen by 12.8%/16%/19.2%/22.4%/25.6%. Incoming Resonator\'s ATK is increased by 10%/12.5%/15%/17.5%/20% for 14/14/14/14/14s, stackable for up to 1/1/1/1/1 times after the wielder casts Outro Skill.',
-  icon: 'assets/gear/weapons/static_mist.png'
-}
+const ciaccona_weapon = buildWeapon(weaponCatalog.find(w => w.name === 'Static Mist')!, 3, 'Ciaccona')!
 
 // ========== Echoes ===========================================================================================================
 const ciaccona_cost_4_echo_1: Echo = {

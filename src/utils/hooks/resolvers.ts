@@ -168,7 +168,6 @@ export function resolveDamage(ctx: StepContext, setDamageEvents: Dispatch<SetSta
   const name = ctx.character.name
   const baseStats = ctx.character.stats
   const damageModifiers = ctx.damageModifiers
-  const modifierCharacterStats = ctx.aggregatedCharacterModifiers
   const modifierEnemyStats = ctx.aggregatedEnemyModifiers
   const enemy = ctx.enemy
   const snapshotId = ctx.snapshotId
@@ -176,7 +175,79 @@ export function resolveDamage(ctx: StepContext, setDamageEvents: Dispatch<SetSta
   const current = ctx.current
   const toTime = ctx.toTime
 
+  // Apply inherent modifiers — ephemeral conditional amplifiers on this action only.
+  // Never dispatched into modifiersInAction; evaluated once here and discarded.
+  let modifierCharacterStats = ctx.aggregatedCharacterModifiers
+  if (action.inherentModifiers?.length) {
+    const merged = { ...modifierCharacterStats }
+    for (const im of action.inherentModifiers) {
+      const scale = im.condition(ctx)
+      if (scale !== 0 && im.characterStats) {
+        for (const key in im.characterStats) {
+          const statKey = key as keyof CharacterStats
+          const value = (im.characterStats[statKey] as number) * scale
+          merged[statKey] = aggregateStat(merged[statKey] as number | undefined, value, statKey) as any
+        }
+      }
+    }
+    modifierCharacterStats = merged
+  }
+
   const { average, damageEvent } = calculateDamage({ action, name, stats: baseStats, damageModifiers, modifierCharacterStats, modifierEnemyStats, enemy, snapshotId, timeStamp: ctx.fromTime, ctx })
+
+  // Compute inherent modifier contributions: "damage without modifier i" using pre-inherent baseline
+  if (action.inherentModifiers?.length) {
+    for (const im of action.inherentModifiers) {
+      const scale = im.condition(ctx)
+      if (scale === 0) continue
+
+      // Rebuild charStats = aggregatedCharacterModifiers + all OTHER inherent mods
+      const charWithout: Partial<CharacterStats> = { ...ctx.aggregatedCharacterModifiers }
+      for (const other of action.inherentModifiers) {
+        if (other === im) continue
+        const otherScale = other.condition(ctx)
+        if (otherScale !== 0 && other.characterStats) {
+          for (const key in other.characterStats) {
+            const statKey = key as keyof CharacterStats
+            const value = (other.characterStats[statKey] as number) * otherScale
+            charWithout[statKey] = aggregateStat(charWithout[statKey] as number | undefined, value, statKey) as any
+          }
+        }
+      }
+
+      // Rebuild enemyStats = aggregatedEnemyModifiers + all OTHER inherent mods
+      const enemyWithout: Partial<EnemyStats> = { ...ctx.aggregatedEnemyModifiers }
+      for (const other of action.inherentModifiers) {
+        if (other === im) continue
+        const otherScale = other.condition(ctx)
+        if (otherScale !== 0 && other.enemyStats) {
+          for (const key in other.enemyStats) {
+            const statKey = key as keyof EnemyStats
+            const value = (other.enemyStats[statKey] as number) * otherScale
+            enemyWithout[statKey] = aggregateStat(enemyWithout[statKey] as number | undefined, value, statKey) as any
+          }
+        }
+      }
+
+      const { damageEvent: withoutEvent } = calculateDamage({ action, name, stats: baseStats, damageModifiers, modifierCharacterStats: charWithout, modifierEnemyStats: enemyWithout, enemy, snapshotId, timeStamp: ctx.fromTime, skipContributions: true })
+
+      const safePercent = (withVal: number, withoutVal: number) => (!withoutVal ? 0 : (withVal / withoutVal - 1) * 100)
+
+      const contribKey = `inherent_${im.displayName}`
+      damageEvent.contributions[contribKey] = {
+        source: contribKey,
+        displayName: im.displayName,
+        isInherent: true,
+        normal_damage_contributed: Math.max(0, damageEvent.normalStrike - withoutEvent.normalStrike),
+        normal_percent_damage_contributed: safePercent(damageEvent.normalStrike, withoutEvent.normalStrike),
+        crit_damage_contributed: Math.max(0, damageEvent.criticalStrike - withoutEvent.criticalStrike),
+        crit_percent_damage_contributed: safePercent(damageEvent.criticalStrike, withoutEvent.criticalStrike),
+        average_damage_contributed: Math.max(0, damageEvent.average - withoutEvent.average),
+        average_percent_damage_contributed: safePercent(damageEvent.average, withoutEvent.average),
+      }
+    }
+  }
+
   setDamageEvents(prevEvents => [...prevEvents, damageEvent])
 
   const cumulativeDamage = prev.damage + average
@@ -206,6 +277,9 @@ export function resolveSideEffectsAndStatuses(ctx: StepContext, setDamageEvents:
 
   // Buff/Debuff modifier stack modifications (e.g. an action forcefully ending a buff)
   helpModifierStatusModifications(ctx, statusModifications)
+
+  // Tick periodic heal procs from active heal-proc modifiers (e.g. Syntony Field)
+  helpHealProcModifiers(ctx)
 }
 
 function aggregateStatusModifications(ctx: StepContext) {
@@ -396,6 +470,44 @@ export function helpNegativeStatuses(ctx: StepContext, setDamageEvents: Dispatch
 }
 
 // ========== Resolver 4.5: Coordinated Attacks ===============================================================================
+
+/**
+ * Ticks periodic heal procs from active heal-proc modifiers (e.g. Syntony Field).
+ *
+ * For each ModifierInAction that carries `healProc`:
+ *  - Computes how many ticks fall in [lastHealProcTime + frequency, toTime].
+ *  - For each tick: calls activateModifiers on healProc.procModifiers so gear-injected
+ *    buffs (e.g. Starfield Calibrator crit DMG) are activated or refreshed.
+ *  - Updates lastHealProcTime on the live MIA entry.
+ *
+ * Runs after helpModifierStatusModifications so that any modifier removed this step
+ * (e.g. Liberation destroying Syntony Field) does not fire a final proc.
+ */
+function helpHealProcModifiers(ctx: StepContext): void {
+  // Snapshot to avoid processing procs activated within this same step
+  const snapshot = [...ctx.modifiersInAction]
+  for (const mia of snapshot) {
+    const { healProc } = mia.modifier
+    if (!healProc || healProc.procModifiers.length === 0) continue
+
+    const lastProcTimeBase = mia.lastHealProcTime ?? (mia.applicationTime - healProc.frequency)
+    if (lastProcTimeBase + healProc.frequency > ctx.toTime) continue
+
+    let lastProcTime = lastProcTimeBase
+    while (lastProcTime + healProc.frequency <= ctx.toTime) {
+      lastProcTime += healProc.frequency
+      ctx.modifiersInAction = activateModifiers(healProc.procModifiers, ctx.modifiersInAction, ctx)
+    }
+
+    // Update lastHealProcTime on the live entry (activateModifiers may have replaced the object)
+    const liveIndex = ctx.modifiersInAction.findIndex(
+      m => m.modifier.source === mia.modifier.source && m.modifier.displayName === mia.modifier.displayName,
+    )
+    if (liveIndex !== -1) {
+      ctx.modifiersInAction[liveIndex] = { ...ctx.modifiersInAction[liveIndex], lastHealProcTime: lastProcTime }
+    }
+  }
+}
 
 /**
  * Ticks all active coordinated attacks for the current step window [fromTime, toTime].

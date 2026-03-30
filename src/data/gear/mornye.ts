@@ -1,22 +1,8 @@
-import type { Echo, EchoSetBonus, Weapon } from '../../types/gear'
+import type { Echo, EchoSetBonus } from '../../types/gear'
+import { weaponCatalog, buildWeapon } from './weaponCatalog'
 
 // ========== Weapon ===========================================================================================================
-const mornye_weapon: Weapon = {
-  name: 'Starfield Calibrator',
-  weaponType: 'Broadblade',
-  stats: { baseATK: 412.50, energyPercent: 0.7704, bonusDEF: 0.16 },
-  injectedModifiers: [
-    {
-      targets: [{ tag: 'LIBERATION' }], // Casting Liberation restores Concerto Energy
-      modifiers: [] // TODO: Inject modifier into Liberation action: Casting Resonance Liberation restores 8 points of Concerto Energy (20 second CD) (if liberation has more than 20s cd we dont need to track it)
-                      // OBS: It works for Resonance Skill (since she has 2, either should be able to trigger it, but shared cooldown)
-      // When Mornye heals resonators (liberation, skill(s), perhaps other things) Crit DMG of all resonators increases by 20% for 4s (max 1 stack, refresh duration on application)
-    }
-  ],
-  rank: 1,
-  info: 'Increases DEF by 16%/20%/24%/28%/32%. Casting Resonance Liberation restores 8/10/12/14/16 points of Concerto Energy. This effect can be triggered 1/1/1/1/1 every 20/20/20/20/20s. When the wielder heals Resonators, increases Crit. DMG of all nearby Resonators in the team by 20%/25%/30%/35%/40% for 4/4/4/4/4s. Effects of the same name cannot be stacked.',
-  icon: 'assets/gear/weapons/starfield_calibrator.png'
-}
+const mornye_weapon = buildWeapon(weaponCatalog.find(w => w.name === 'Starfield Calibrator')!, 1, 'Mornye')!
 
 // ========== Echoes ===========================================================================================================
 const mornye_cost_4_echo_1: Echo = {

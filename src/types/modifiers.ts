@@ -1,6 +1,50 @@
 import type { CharacterStats, EnemyStats } from './stats'
 import type { StepContext } from './stepContext'
 
+// ========== Type: Inherent Modifier ==========================================================================================
+
+/**
+ * A conditional stat amplifier that belongs to a specific action and only affects that
+ * action's own damage calculation. Unlike DamageModifier, it is never dispatched into
+ * modifiersInAction, never appears in the buffs/debuffs table, and leaves no persisted
+ * state — it is evaluated once at calculation time and discarded.
+ *
+ * Use for effects that say "this skill deals X% more damage when condition Y is met",
+ * e.g. scaling with the caster's Energy Regen, enemy stacks, etc.
+ */
+export type InherentModifier = {
+  displayName: string
+  characterStats?: Partial<CharacterStats>
+  enemyStats?: Partial<EnemyStats>
+  /** Returns a multiplier applied to each stat value. 0 disables, 1 = full contribution. */
+  condition: (ctx: StepContext) => number
+}
+
+// ========== Type: Heal Proc ==================================================================================================
+
+/**
+ * Periodic heal proc configuration for a DamageModifier.
+ * When a modifier carries this, it both grants stats AND emits HEAL_PROC events at `frequency`
+ * seconds (with an immediate on-cast proc at applicationTime).
+ *
+ * Gear injection: set `procTag: 'HEAL_PROC'`. Gear targeting `{ tag: 'HEAL_PROC' }` will push
+ * its modifiers into `procModifiers` at startup via resolveGear. Those modifiers are then
+ * activated by helpHealProcModifiers on every tick.
+ *
+ * Example use: Syntony Field modifier on Heavy Attack — heals every 3s, weapon buff fires each tick.
+ */
+export type HealProc = {
+  /** Seconds between heal proc ticks. The first tick fires immediately at applicationTime. */
+  frequency: number
+  /**
+   * Identifies this modifier as a source of heal events for gear tag-based injection.
+   * Always set to 'HEAL_PROC'. Gear with target `{ tag: 'HEAL_PROC' }` will inject into procModifiers.
+   */
+  procTag: string
+  /** Modifiers activated on each proc tick. Populated by resolveGear at startup; define [] in data. */
+  procModifiers: DamageModifier[]
+}
+
 // ========== Type: Damage Modifier ============================================================================================
 
 export type DamageModifier = {
@@ -25,6 +69,20 @@ export type DamageModifier = {
    *  together when computing the "damage without" baseline, so their combined effect
    *  is reported as a single contribution. */
   contributionGroup?: string
+  /**
+   * When present, this modifier emits periodic heal procs and accepts gear injection
+   * targeting `{ tag: 'HEAL_PROC' }`. The procs fire on cast and then every `frequency` seconds.
+   * See HealProc type for details.
+   */
+  healProc?: HealProc
+  /**
+   * When present, a limited modifier is only activated (added to modifiersInAction) if this
+   * returns truthy at activation time. Unlike `condition` (which scales stat contribution),
+   * this gates activation entirely.
+   *
+   * Use case: High Syntony Field — only activates when Syntony Field was active at cast time.
+   */
+  activationCondition?: (ctx: StepContext) => boolean
 }
 
 // ========== Type: Negative Status Effect =====================================================================================
@@ -72,4 +130,10 @@ export type ModifierInAction = {
   swapsLeft: number
   currentStacks: number
   targetCharacter: string | null
+  /**
+   * For modifiers with `healProc`: the rotation time of the last proc tick.
+   * Initialised to `applicationTime - healProc.frequency` so that the first tick fires
+   * immediately at applicationTime (on-cast heal). Absent for modifiers without healProc.
+   */
+  lastHealProcTime?: number
 }
