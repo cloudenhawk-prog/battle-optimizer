@@ -7,6 +7,7 @@ import type { Snapshot } from '../../types/snapshot'
 import type { Echo, Gear, Weapon, EchoSlots } from '../../types/gear'
 import { computeEchoSetCounts, echoSetRegistry } from '../../data/gear/echoSets'
 import { EchoPickerModal } from './EchoPickerModal'
+import { WeaponPickerModal } from './WeaponPickerModal'
 import { calculateScalingStat } from '../../utils/calculators/damageCalculator'
 import { computeGearStatBreakdown, computeActiveModifierBreakdown, computeFinalStats } from '../../utils/gear/computeStatBreakdown'
 import '../../styles/rotation-editor/CharacterStateTracker.css'
@@ -380,7 +381,7 @@ const ORBIT_SCAN_THRESHOLD = 16 // degrees — half-window; items are 60° apart
 
 type OrbitalScanItem = { type: 'weapon'; data: Weapon } | { type: 'echo'; data: Echo; slot: 1 | 2 | 3 | 4 | 5 }
 
-function EquipmentOrbit({ weapon, echoSlots, elColor, characterName, onItemHighlight, onEchoSlotClick }: { weapon: Weapon; echoSlots: EchoSlots; elColor: string; characterName: string; onItemHighlight?: (item: OrbitalScanItem | null) => void; onEchoSlotClick?: (slot: 1 | 2 | 3 | 4 | 5) => void }) {
+function EquipmentOrbit({ weapon, echoSlots, elColor, characterName, onItemHighlight, onEchoSlotClick, onWeaponSlotClick }: { weapon: Weapon; echoSlots: EchoSlots; elColor: string; characterName: string; onItemHighlight?: (item: OrbitalScanItem | null) => void; onEchoSlotClick?: (slot: 1 | 2 | 3 | 4 | 5) => void; onWeaponSlotClick?: () => void }) {
   const containerRef = useRef<HTMLDivElement>(null)
   const [containerSize, setContainerSize] = useState(0)
   const lastPassedIndexRef = useRef<number>(-1)
@@ -571,9 +572,7 @@ function EquipmentOrbit({ weapon, echoSlots, elColor, characterName, onItemHighl
                     isScanned={i === (hoveredIndex >= 0 ? hoveredIndex : scannedIndex)}
                     onHoverEnter={() => handleSlotHover(i)}
                     onHoverLeave={handleSlotLeave}
-                    onClick={() => {
-                      console.log('TODO: open weapon picker for', item.data.name, '(', item.data.weaponType, ')')
-                    }}
+                    onClick={() => onWeaponSlotClick?.()}
                   />
                 ) : (
                   <GearSlot
@@ -1156,6 +1155,7 @@ export function CharacterProfileOverlay({ characterName, character, snapshot, al
   const [isClosing, setIsClosing] = useState(false)
   const [tooltip, setTooltip] = useState<TooltipData | null>(null)
   const [pickerSlot, setPickerSlot] = useState<1 | 2 | 3 | 4 | 5 | null>(null)
+  const [weaponPickerOpen, setWeaponPickerOpen] = useState(false)
   // todo: localSequence tracks visual-only resonance chain state.
   // Later this should persist to character data so sequence-gated modifiers are applied.
   const [localSequence, setLocalSequence] = useState<0 | 1 | 2 | 3 | 4 | 5 | 6>(character.sequence)
@@ -1317,7 +1317,7 @@ export function CharacterProfileOverlay({ characterName, character, snapshot, al
             {/* ── CENTER COL: Equipment Orbit + Resonance Chain ── */}
             <div className="cpo-center-col">
               <div className="cpo-orbit-wrap">
-                <EquipmentOrbit weapon={character.gear.weapon} echoSlots={character.gear.echoSlots} elColor={elTheme.primary} characterName={characterName} onItemHighlight={setOrbitalItem} onEchoSlotClick={setPickerSlot} />
+                <EquipmentOrbit weapon={character.gear.weapon} echoSlots={character.gear.echoSlots} elColor={elTheme.primary} characterName={characterName} onItemHighlight={setOrbitalItem} onEchoSlotClick={setPickerSlot} onWeaponSlotClick={() => setWeaponPickerOpen(true)} />
               </div>
 
             </div>
@@ -1402,6 +1402,21 @@ export function CharacterProfileOverlay({ characterName, character, snapshot, al
 
       {/* Floating tooltip */}
       {tooltip && <div style={tooltipStyle(tooltip.x, tooltip.y)}>{tooltip.content}</div>}
+
+      {/* Weapon picker */}
+      {weaponPickerOpen && (
+        <WeaponPickerModal
+          weaponType={character.weaponType}
+          characterName={characterName}
+          elColor={elTheme.primary}
+          onConfirm={newWeapon => {
+            const newGear = { ...character.gear, weapon: newWeapon }
+            onGearChange?.(characterName, newGear)
+            setWeaponPickerOpen(false)
+          }}
+          onCancel={() => setWeaponPickerOpen(false)}
+        />
+      )}
 
       {/* Echo picker */}
       {pickerSlot !== null && (
