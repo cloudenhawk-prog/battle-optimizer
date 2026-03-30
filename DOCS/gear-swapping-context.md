@@ -9,7 +9,7 @@ The tool simulates skill rotations for a set of characters, computing damage out
 
 ## Task Summary
 
-Implement a gear-swapping framework that allows characters' weapons and echoes to be changed at runtime, with the timeline resetting on every change. The picker UI itself is out of scope for now — only the types, resolver logic, data, and TODO-stubs for click handlers are in scope.
+Implement a gear-swapping framework that allows characters' weapons and echoes to be changed at runtime, with the timeline resetting on every change (as it does not support re-calculating the timeline). Some of this may be done, but we need: the types, resolver logic, data, and TODO-stubs for click handlers are in scope, and the UI picker.
 
 ---
 
@@ -18,14 +18,16 @@ Implement a gear-swapping framework that allows characters' weapons and echoes t
 ### 1. Type Changes
 
 **`src/types/gear.ts`**
+
 - Added `WeaponType = 'Sword' | 'Broadblade' | 'Pistols' | 'Gauntlets' | 'Rectifier'`
 - Added `weaponType: WeaponType` to `Weapon`
 - Added `setName: string` to `Echo` — identifies which echo set the piece belongs to
-- Added `EchoSetMilestone = { stats?: Partial<CharacterStats> }` 
+- Added `EchoSetMilestone = { stats?: Partial<CharacterStats> }`
 - Added `EchoSet = { name, icon, info, milestones: Partial<Record<2|5, EchoSetMilestone>> }` — global set definition
 - `EchoSetBonus.stats` marked `@deprecated` — stats now come from the global registry, not per-character gear files
 
 **`src/types/character.ts`**
+
 - Added `weaponType: WeaponType` to the `Character` type
 
 ---
@@ -35,6 +37,7 @@ Implement a gear-swapping framework that allows characters' weapons and echoes t
 **`src/data/gear/echoSets.ts`** (new file)
 
 A global `Readonly<Record<string, EchoSet>>` called `echoSetRegistry` that defines milestone stat bonuses indexed by set name. Current sets:
+
 - `'Windward Pilgrimage'` → 2-piece: `aeroBonusDMG +10%`
 - `'Gusts of Welkin'` → 2-piece: `aeroBonusDMG +10%`
 - `'Halo of Starry Radiance'` → 2-piece: `healingBonus +10%`
@@ -55,6 +58,7 @@ Previously mutated character objects in place, which broke re-resolution (gear m
 `resolveGear` uses `=== target` reference matching to inject gear modifiers into the right action. After cloning, those original references no longer point to the working copies. Fix: build a `Map<Action | CoordinatedAttack, Action | CoordinatedAttack>` from originals to their clones, passed into `resolveGear`.
 
 **Resolution order (doc comment in the file):**
+
 1. `getDefaultCharacterStats()` (critRate=0.05, critDamage=1.5, all multipliers=1, rest=0)
 2. `character.stats` (base stats)
 3. `character.inherentStats`
@@ -93,16 +97,16 @@ Updated to use `computeEchoSetCounts` + `echoSetRegistry` for set bonus stat dis
 
 All gear and character data files updated with new required fields:
 
-| File | Changes |
-|---|---|
-| `src/data/gear/cartethyia.ts` | `weaponType: 'Broadblade'` on weapon; `setName: 'Windward Pilgrimage'` on all 5 echoes |
-| `src/data/gear/ciaccona.ts` | `weaponType: 'Rectifier'`; `setName: 'Gusts of Welkin'` |
-| `src/data/gear/mornye.ts` | `weaponType: 'Rectifier'`; `setName: 'Halo of Starry Radiance'` |
-| `src/data/gear/roverAero.ts` | `weaponType: 'Sword'`; `setName: 'Windward Pilgrimage'` |
-| `src/data/characters/cartethyia.ts` | `weaponType: 'Broadblade'` |
-| `src/data/characters/ciaccona.ts` | `weaponType: 'Rectifier'` |
-| `src/data/characters/mornye.ts` | `weaponType: 'Rectifier'` |
-| `src/data/characters/roverAero.ts` | `weaponType: 'Sword'` |
+| File                                | Changes                                                                                |
+| ----------------------------------- | -------------------------------------------------------------------------------------- |
+| `src/data/gear/cartethyia.ts`       | `weaponType: 'Broadblade'` on weapon; `setName: 'Windward Pilgrimage'` on all 5 echoes |
+| `src/data/gear/ciaccona.ts`         | `weaponType: 'Rectifier'`; `setName: 'Gusts of Welkin'`                                |
+| `src/data/gear/mornye.ts`           | `weaponType: 'Rectifier'`; `setName: 'Halo of Starry Radiance'`                        |
+| `src/data/gear/roverAero.ts`        | `weaponType: 'Sword'`; `setName: 'Windward Pilgrimage'`                                |
+| `src/data/characters/cartethyia.ts` | `weaponType: 'Broadblade'`                                                             |
+| `src/data/characters/ciaccona.ts`   | `weaponType: 'Rectifier'`                                                              |
+| `src/data/characters/mornye.ts`     | `weaponType: 'Rectifier'`                                                              |
+| `src/data/characters/roverAero.ts`  | `weaponType: 'Sword'`                                                                  |
 
 ---
 
@@ -131,7 +135,7 @@ const handleGearChange = useCallback((characterName: string, newGear: Gear) => {
   const base = baseCharacters.find(c => c.name === characterName)
   if (!base) return
   const reResolved = resolveCharacter(base, newGear)
-  setResolvedCharacters(prev => prev.map(c => c.name === characterName ? reResolved : c))
+  setResolvedCharacters(prev => prev.map(c => (c.name === characterName ? reResolved : c)))
   setSnapshots([])
   setDamageEvents([])
   setTimelineKey(k => k + 1)
@@ -156,6 +160,7 @@ Each component has `onGearChange?: (characterName: string, newGear: Gear) => voi
 `GearSlot` component received `onClick?: () => void`, wired to the `motion.div`.
 
 In `EquipmentOrbit`, each slot now has a click handler:
+
 - Weapon: `onClick={() => { console.log('TODO: open weapon picker for', item.data.name, '(', item.data.weaponType, ')') }}`
 - Echo: `onClick={() => { console.log('TODO: open echo picker for slot', item.slot, ':', item.data?.name ?? 'empty') }}`
 
@@ -180,24 +185,33 @@ Currently, `InjectedModifier` and `InjectedSideEffect` targets are either `'char
 - **Dynamically registered effects** — e.g. "every 3s heal for X" passed through a `SideEffect`, which itself may need to interact with HEAL-tagged actions or buff-tagged effects on other characters.
 - **Gear swapping correctness** — when gear is swapped, injected effects from the old gear must be cleanly removed. Today this works because `resolveCharacter` always re-builds from the unmodified `baseCharacters` entry. But as effects grow more complex (multi-step chains, tag-conditional stacking), a robust tag system makes the "what does this piece of gear affect" fully declarative and auditable. Since a weapon can be added to any character, it shouldn't statically inject into specific character actions but instead be able to target them dynamically based on some logic.
 
+The first part of this task may be to update the injection system. For example by having action define some kind of tags that tells us that "this trigers a heal", "this applies a certain negative status" "this counts as an outro skill", "this counts as a resonance skill", and so on. Also timed things like "something that heals every 3s for 25s" (not sure if this can be described as a modifier or something else) might want to have certain things injected into them so "TRIGGER ON HEAL" also work for these kinds of things rather than only an action itself.
+
 ---
 
 ### Proposed: Action Tags
 
 Add a `tags?: string[]` (or `tags?: Set<string>`) field to the `Action` type (and potentially `CoordinatedAttack`).
 
-Tags are plain string keywords. Examples:
+Tags are plain string keywords. Examples (consider more and consider good names; names purposely don't overlap with dmgTypes and other names to avoid confusion):
 
-| Tag | Meaning |
-|---|---|
-| `'HEAL'` | This action heals one or more targets |
-| `'OUTRO'` | This action is the character's Outro skill |
-| `'INTRO'` | This action is the character's Intro skill |
-| `'ECHO'` | This action is the slot-1 echo skill (already used as a dmgType; could unify) |
-| `'AERO_EROSION'` | This action applies Aero Erosion |
-| `'SPECTRO_FRAZZLE'` | This action applies Spectro Frazzle |
-| `'COORDINATED'` | This action is a coordinated attack |
-| `'BASIC'`, `'HEAVY'`, `'SKILL'`, `'LIBERATION'` | Action category (parallel to existing dmgTypes) |
+| Tag                         | Meaning                                                                                                                               |
+| --------------------------- | ------------------------------------------------------------------------------------------------------------------------------------- |
+| `'HEAL_PROC'`               | This action heals one or more targets                                                                                                 |
+| `'OUTRO_ACTION'`            | This action is the character's Outro skill                                                                                            |
+| `'INTRO_ACTION'`            | This action is the character's Intro skill                                                                                            |
+| `'ECHO SKILL'`              | This action is the slot-1 echo skill, perhaps we need one for triggering ECHO DMG versus casting ECHO SkILL - could wait until needed |
+| `'AERO_EROSION_APPLIER'`    | This action applies Aero Erosion                                                                                                      |
+| `'SPECTRO_FRAZZLE_APPLIER'` | This action applies Spectro Frazzle                                                                                                   |
+| `'COORDINATED_ATTACK'`      | This action is a coordinated attack                                                                                                   |
+| `'BASIC_ATTACK'`            | This action is a basic attack                                                                                                         |
+| `'SKILL'`                   | This action is a skill cast                                                                                                           |
+| `'LIBERATION'`              | This action is a liberation cast                                                                                                      |
+
+...
+
+(!) Could use "PROC" related to actions and let PROCS related to dmgTypes simply be found in action.dmgTypes list. That way we don't get overlap and cause use both
+(!!) Important: BASIC_ATTACK descripes an action (this action is related to the basic attack combo system targeting effects like "When using a basic attack, active buff X") while dmgType BASIC descripes the type of damage being done (When dealing basic attack damage, actives buff X). These are distinct!
 
 Tags are set in character action definitions (`src/data/characters/*.ts`), not derived at runtime.
 
@@ -206,14 +220,15 @@ Tags are set in character action definitions (`src/data/characters/*.ts`), not d
 ### Proposed: Tag-Based Injection Targets
 
 Extend `InjectedModifier` and `InjectedSideEffect` target types to support tag queries:
+We might want to be able to target both tags and damage types (maybe even action names in very rare cases)
 
 ```ts
 type InjectedTarget =
   | 'character'
-  | Action                    // existing: exact reference
-  | CoordinatedAttack         // existing: exact reference
-  | { tag: string }           // new: inject into all actions with this tag
-  | { tags: string[]; match: 'any' | 'all' }  // new: multi-tag query
+  | Action // existing: exact reference
+  | CoordinatedAttack // existing: exact reference
+  | { tag: string } // new: inject into all actions with this tag
+  | { tags: string[]; match: 'any' | 'all' } // new: multi-tag query
 ```
 
 `resolveGear` would then need a second pass over `workingActions` matching by tag instead of by reference. The clone map remains necessary for the reference-based path; tag-based targeting iterates the full `workingActions` array directly.
@@ -244,6 +259,7 @@ These make gear data files read like intent ("buff all heals") rather than requi
 The current approach already handles removal correctly: **`resolveCharacter` always re-runs from `baseCharacters`** (the unmodified source-of-truth), so every gear swap produces a clean slate with no leftover injections from previous gear.
 
 This invariant **must be preserved** as tag-based injection is added:
+
 - Never inject into a `ResolvedCharacter` directly.
 - Always call `resolveCharacter(base, newGear)` where `base` comes from `baseCharacters`.
 - `baseCharacters` entries must never be mutated — they are the reset point.
@@ -274,14 +290,14 @@ When a player opens the Rotation Editor page, they should be able to choose whic
 
 Key pieces of state and derived data in `RotationEditorPage` that all depend on which characters are in the team:
 
-| State / Value | What it is | Must reset on team change? |
-|---|---|---|
+| State / Value        | What it is                                                 | Must reset on team change?                              |
+| -------------------- | ---------------------------------------------------------- | ------------------------------------------------------- |
 | `resolvedCharacters` | `ResolvedCharacter[]` — the active team with gear resolved | Yes — replace with newly selected + resolved characters |
-| `snapshots` | `Snapshot[]` — past rotation steps | Yes — clear entirely |
-| `damageEvents` | `DamageEvent[]` — damage events for the timeline | Yes — clear entirely |
-| `timelineKey` | `number` — React key that remounts `RotationEditor` | Yes — increment to remount |
-| `tableConfig` | `TableConfig` — column layout derived from the active team | Yes — recompute via `buildTableConfig(newTeam)` |
-| `columnVisibility` | `Record<string, boolean>` — which columns are shown | Yes — reinitialise from the new `tableConfig` |
+| `snapshots`          | `Snapshot[]` — past rotation steps                         | Yes — clear entirely                                    |
+| `damageEvents`       | `DamageEvent[]` — damage events for the timeline           | Yes — clear entirely                                    |
+| `timelineKey`        | `number` — React key that remounts `RotationEditor`        | Yes — increment to remount                              |
+| `tableConfig`        | `TableConfig` — column layout derived from the active team | Yes — recompute via `buildTableConfig(newTeam)`         |
+| `columnVisibility`   | `Record<string, boolean>` — which columns are shown        | Yes — reinitialise from the new `tableConfig`           |
 
 `tableConfig` is currently computed at render time from the hardcoded `characters` array. Once team selection is added, it needs to be derived from the selected team (should become a `useMemo` or recomputed alongside character selection, not a plain const).
 
@@ -341,6 +357,7 @@ The gear slot click handlers currently just `console.log` TODO messages. The nex
 When a picker confirms a selection, it should call `onGearChange(characterName, newGear)` — where `newGear` is the character's full `Gear` object with the new weapon or echo swapped in.
 
 **`_onGearChange` in `CharacterProfileOverlay`** is already threaded down from the page. It just needs:
+
 1. The picker UI (modal, dropdown, or inline panel)
 2. The call: `_onGearChange(characterName, { ...character.gear, weapon: selectedWeapon })` or equivalent for echoes
 3. Weapon type validation: only show weapons where `weapon.weaponType === character.weaponType`
