@@ -788,7 +788,7 @@ function PortraitSequenceDisplay({ sequence, prevSequence, sequenceNodes, sequen
             <span style={{ fontSize: '0.68rem', color: MUTED }}>{active ? 'Unlocked' : 'Locked'}</span>
           </div>
         </div>
-        <p style={{ margin: 0, fontSize: '0.76rem', color: 'rgba(175, 185, 210, 0.9)', lineHeight: 1.55 }}>{desc}</p>
+        <p style={{ margin: 0, fontSize: '0.76rem', color: 'rgba(175, 185, 210, 0.9)', lineHeight: 1.55 }}>{colorizeText(desc, elColor)}</p>
       </div>
     )
   }
@@ -1344,7 +1344,7 @@ export function CharacterProfileOverlay({ characterName, character, snapshot, al
                           <span className="cpo-set-bonus-name-text" style={{ color: `hsl(${elTheme.primary})` }}>
                             {setName}
                           </span>
-                          <span style={{ marginLeft: 'auto', fontSize: '0.62rem', fontFamily: FONT_MONO, color: `hsl(${elTheme.primary} / 0.55)` }}>
+                          <span style={{ marginLeft: 'auto', fontSize: '0.75rem', fontFamily: FONT_MONO, color: `hsl(${elTheme.primary} / 0.7)` }}>
                             {count}/5
                           </span>
                         </div>
