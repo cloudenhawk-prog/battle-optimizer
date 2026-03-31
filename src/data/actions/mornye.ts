@@ -1,11 +1,8 @@
 import type { Action } from '../../types/action'
 import { always } from '../../utils/conditions/damageModifierConditions'
 
-// TODO - any swap-away from Mornye should formChange into default form (how to ensure this as not every swap will trigger intro/outros)
-
 // TODO - all versions should equal in the same cast time for BA1, BA2, BA3. Swapping should penalize by 0.4, skill cancel no penalty
-// Tests which ways Heavy Attack can be used as follow up to basic combos
-// Might need none-swap versions of BA1, BA2, BA3 (used to chain into heavy)
+// TODO - some actions should not allow you to swap out after cast (i.e. the next selection, by locking all other character choices)
 
 // ========== Basic Attack 1 ===================================================================================================
 const mornye_BA_1_cancel_with_swap: Action = {
@@ -75,7 +72,6 @@ const mornye_BA_1_2_cancel_with_swap: Action = {
     requiresSwapOut: true,
     requiredForms: ['Baseline Mode'],
     blockedComboTags: ['BA1', 'BA2', 'BA3'],
-    // TODO Can combo into anything starting with BA3 within persistence time
   },
   offtune: (0.11 + 2 * 0.08) + (0.12 + 0.12 + 2 * 0.09),
   comboChainTags: ['BA2'],
@@ -149,7 +145,6 @@ const mornye_BA_1_3_cancel_with_swap: Action = {
     requiresSwapOut: true,
     requiredForms: ['Baseline Mode'],
     blockedComboTags: ['BA1', 'BA2', 'BA3'],
-    // TODO Should not allow BA4; within this time only actions available withine persistenceTime should be: skill, heavy, liberation
   },
   offtune: (0.11 + 2 * 0.08) + (0.12 + 0.12 + 2 * 0.09) + (0.21 + 6 * 0.05),
   comboChainTags: ['BA3'],
@@ -264,7 +259,6 @@ const mornye_BA_2_3_cancel_with_swap: Action = {
     requiredForms: ['Baseline Mode'],
     requiredComboTags: ['BA1'],
     blockedComboTags: ['BA2', 'BA3']
-    // TODO Should not allow BA4; within this time only actions available withine persistenceTime should be: skill, heavy, liberation
   },
   offtune: (0.12 + 0.12 + 2 * 0.09) + (0.21 + 6 * 0.05),
   comboChainTags: ['BA3'],
@@ -340,7 +334,6 @@ const mornye_BA_3_cancel_with_swap: Action = {
     requiredForms: ['Baseline Mode'],
     requiredComboTags: ['BA2'],
     blockedComboTags: ['BA1', 'BA3']
-    // TODO Should not allow BA4; within this time only actions available withine persistenceTime should be: skill, heavy, liberation
   },
   offtune: (0.21 + 6 * 0.05),
   comboChainTags: ['BA3'],
@@ -382,7 +375,7 @@ const mornye_BA_3_cancel_with_skill: Action = {
   hideWhenNotCastable: true,
   groupName: 'Basic Attack 3',
   variantName: 'Cancel With Skill',
-  attemptFollowUp: { actionName: 'Resonance Skill' } // TODO Add liberation as an option as well
+  attemptFollowUp: { actionName: 'Resonance Skill' }
 }
 
 // ========== Heavy Attack =====================================================================================================
@@ -405,9 +398,6 @@ const mornye_heavy: Action = {
   statusModifications: [],
   damageModifiers: [
     {
-      // Syntony Field: 25 seconds.
-      // Triggers heal every 3 seconds (including on cast), activating echo 5-set effects and weapon buffs.
-      // Off-tune Buildup Rate for all resonators: +50% base (+20% additionally at S2)
       source: 'Mornye: Syntony Field',
       displayName: 'Syntony Field',
       type: 'buff',
@@ -427,8 +417,6 @@ const mornye_heavy: Action = {
       showStats: true
     },
     {
-      // S2 bonus: +20% Off-tune Buildup Rate, active only when Mornye's sequence >= 2.
-      // Shares source with the base so Liberation's removesModifierSourceOnActivation clears both.
       source: 'Mornye: Syntony Field',
       displayName: 'Syntony Field (S2)',
       type: 'buff',
@@ -452,7 +440,6 @@ const mornye_heavy: Action = {
   ],
   coordinatedAttacks: [],
   castConditions: {
-    // TODO: Insert 'into heavy' variants of BA's into previousActions
     startState: 'GROUND',
     endState: 'AIR',
     requiredForms: ['Baseline Mode']
@@ -531,7 +518,6 @@ const mornye_heavy_swap_in: Action = {
     startState: 'GROUND',
     endState: 'AIR',
     requiredForms: ['Baseline Mode'],
-    // TODO Custom Cast: Persistence time needs to exist AND last action cast by mornye has to be any BA that includes BA3
   },
   offtune: 0.30 + 0.66,
   formChange: 'Wide Field Observation Mode',
@@ -562,9 +548,9 @@ const mornye_skill: Action = {
     requiredForms: ['Baseline Mode']
   },
   offtune: 0,
+  comboChainTags: ['BA1'],
   groupName: 'Resonance Skill',
-  variantName: 'Default',
-  attemptFollowUp: { actionName: 'XXX' } // TODO Counts as BA1, requires BA2 or BA2->... as follow up. Was this cast time teste with BA2 follow up in mind?
+  variantName: 'Default'
 }
 
 // Add swap out variant with 0.09 cast time (might want to trigger heal)
@@ -600,12 +586,25 @@ const mode_mornye_BA_1_3: Action = {
     requiredForms: ['Wide Field Observation Mode']
   },
   offtune: (4 * 0.07) + (4 * 0.13) + (4 * 0.05 + 2 * 0.17),
-  attemptFollowUp: { actionName: 'Mode: Resonance Skill' }
-  // TODO - we also want actions that, while not having a required follow up, does require you to not skip character (i.e. for the next row/action select, we are locking the other characters in the character selector)
+  attemptFollowUp: { actionName: 'Mode: Resonance Skill' },
+  // Restores an additional 20 Concerto on cast, at most once every 20 seconds
+  resolveVariant(prevSnapshot, characterName) {
+    const bonusOnCooldown = (prevSnapshot?.charactersCooldowns?.[characterName]?.['Mode: Basic Attack 1-3'] ?? 0) > 0
+    if (bonusOnCooldown) return { ...this, resolveVariant: undefined }
+    return {
+      ...this,
+      cooldown: 20,
+      energyGenerated: [
+        ...this.energyGenerated,
+        { energyType: 'concerto', amount: 20, share: 0 },
+      ],
+      resolveVariant: undefined,
+    }
+  },
 }
 
 // ========== Mode: Resonance Skill ============================================================================================
-const mode_mornye_skill: Action = { // TODO: Also triggers healing
+const mode_mornye_skill: Action = {
   tags: ['SKILL', 'HEAL_PROC'],
   name: 'Mode: Resonance Skill',
   displayName: 'Distributed Array',
@@ -654,10 +653,51 @@ const mode_mornye_heavy: Action = {
   energyCost: [{ energyType: 'relative_momentum', amount: 100 }],
   statusModifications: [],
   damageModifiers: [
-    // Interfered Marker
-    // Lasts 20 seconds (let them be 2 seperate buffs - Interfered Marker S1 and Interfered Marker S2)
-    // S1: All resonators in the team get DMG BONUS equal to 0.25 % per 1 % of Mornye's Energy Regen (stat) exceeding 100 % (up to 40 % DMG BONUS at 260 % Energy Regen)
-    // S2: All resonators in the team get Crit DMG equal to 0.2 % per 1 % of Morney's Energy Regen (stat) exceeding 100 % (up to 32 % CRIT DMG at 260 % Energy regen)
+    {
+      source: 'Mornye: Interfered Marker',
+      displayName: 'Interfered Marker',
+      type: 'buff',
+      color: '#B87EFF',
+      ownerCharacter: 'Mornye',
+      characterStats: { bonusDMG: 0 },
+      statsOnActivation: (ctx) => {
+        const mornye = ctx.character.name === 'Mornye' ? ctx.character : ctx.allies.find(c => c.name === 'Mornye')
+        const excess = Math.min(Math.max(0, ((mornye?.stats.energyPercent ?? 1) - 1) * 100), 160)
+        return { bonusDMG: excess * 0.0025 }
+      },
+      condition: (ctx) => {
+        const mornye = ctx.character.name === 'Mornye' ? ctx.character : ctx.allies.find(c => c.name === 'Mornye')
+        return (mornye?.sequence ?? 0) >= 1 ? 1 : 0
+      },
+      targetStrategy: 'all',
+      durationStrategy: { type: 'limited', timeDuration: 20 },
+      stackingStrategy: { maxStacks: 1, resetTimerOnApplication: true, stacksRemovedEachTime: 1 },
+      description: 'For 20 seconds: Every 1 % of Mornye\'s Energy Regen over 100 % grants 0.25% Damage Bonus to all Resonators, up to 40%.',
+      showStats: true
+    },
+    {
+      source: 'Mornye: Interfered Marker',
+      displayName: 'Interfered Marker (S2)',
+      type: 'buff',
+      color: '#B87EFF',
+      ownerCharacter: 'Mornye',
+      characterStats: { critDamage: 0 },
+      statsOnActivation: (ctx) => {
+        const mornye = ctx.character.name === 'Mornye' ? ctx.character : ctx.allies.find(c => c.name === 'Mornye')
+        const excess = Math.min(Math.max(0, ((mornye?.stats.energyPercent ?? 1) - 1) * 100), 160)
+        return { critDamage: excess * 0.002 }
+      },
+      condition: (ctx) => {
+        const mornye = ctx.character.name === 'Mornye' ? ctx.character : ctx.allies.find(c => c.name === 'Mornye')
+        return (mornye?.sequence ?? 0) >= 2 ? 1 : 0
+      },
+      targetStrategy: 'all',
+      durationStrategy: { type: 'limited', timeDuration: 20 },
+      stackingStrategy: { maxStacks: 1, resetTimerOnApplication: true, stacksRemovedEachTime: 1 },
+      contributionGroup: 'Mornye: Interfered Marker',
+      description: 'For 20 seconds: Every 1 % of Mornye\'s Energy Regen over 100 % grants 0.2% Crit DMG to all Resonators, up to 32%.',
+      showStats: true
+    },
   ],
   sideEffects: [],
   coordinatedAttacks: [],
@@ -689,11 +729,6 @@ const mornye_liberation: Action = {
   statusModifications: [],
   damageModifiers: [
     {
-      // High Syntony Field: only spawned when Syntony Field is currently active.
-      // Removes Syntony Field and replaces it with High Syntony Field for 25 seconds.
-      // DEF of all resonators in the team: +20%
-      // Off-tune Buildup Rate for all resonators: +70% (20% comes from S2)
-      // Triggers heal every 3 seconds (including on cast), activating echo 5-set effects.
       source: 'Mornye: High Syntony Field',
       displayName: 'High Syntony Field',
       type: 'buff',
@@ -715,8 +750,6 @@ const mornye_liberation: Action = {
       showStats: true
     },
     {
-      // S2 bonus: +20% Off-tune Buildup Rate, active only when Mornye's sequence >= 2.
-      // Shares source with the base so future removals target both together.
       source: 'Mornye: High Syntony Field',
       displayName: 'High Syntony Field (S2)',
       type: 'buff',
@@ -738,9 +771,6 @@ const mornye_liberation: Action = {
   ],
   inherentModifiers: [
     {
-      // For every 1% of Mornye's Energy Regen exceeding 100%:
-      // +0.5% Crit. Rate (up to 80%) and +1% Crit. DMG (up to 160%)
-      // Both caps are reached at 160% excess Energy Regen (i.e. 260% total)
       displayName: 'Liberation Crit Scaling',
       characterStats: { critRate: 0.005, critDamage: 0.01 },
       condition: (ctx) => Math.min(Math.max(0, (ctx.character.stats.energyPercent - 1) * 100), 160),
@@ -782,7 +812,21 @@ const mornye_intro: Action = {
     endState: 'AIR',
   },
   offtune: 1.36,
-  formChange: 'Wide Field Observation Mode'
+  formChange: 'Wide Field Observation Mode',
+  // Restores an additional 20 Concerto on cast, at most once every 20 seconds
+  resolveVariant(prevSnapshot, characterName) {
+    const bonusOnCooldown = (prevSnapshot?.charactersCooldowns?.[characterName]?.['Mornye Intro'] ?? 0) > 0
+    if (bonusOnCooldown) return { ...this, resolveVariant: undefined }
+    return {
+      ...this,
+      cooldown: 20,
+      energyGenerated: [
+        ...this.energyGenerated,
+        { energyType: 'concerto', amount: 20, share: 0 },
+      ],
+      resolveVariant: undefined,
+    }
+  },
 }
 
 const mornye_outro: Action = {
@@ -800,7 +844,7 @@ const mornye_outro: Action = {
   energyCost: [],
   statusModifications: [],
   damageModifiers: [
-    // TODO: Resonators in the team gain 25% All DMG Amplification for 30s.
+    // TODO: For 30 seconds: all Resonators gain 25% All DMG Amplification.
   ],
   sideEffects: [],
   castConditions: {
@@ -837,7 +881,7 @@ const mornye_wait_for_swap: Action = {
   name: 'Wait Until Next Swap Is Available',
   displayName: 'Wait Until Next Swap Is Available',
   category: 'Other',
-  castTime: 0, // resolved dynamically via resolveVariant
+  castTime: 0,
   multiplier: 0,
   scaling: 'HP',
   elements: [''],

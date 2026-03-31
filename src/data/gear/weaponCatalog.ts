@@ -216,7 +216,7 @@ export const weaponCatalog: WeaponCatalogEntry[] = [
           {
             targets: [{ tag: 'LIBERATION' }],
             modifiers: [],
-            energyGeneration: [{ energyType: 'concerto', amount: 8, share: 0 }],
+            energyGeneration: [{ energyType: 'concerto', amount: 8, share: 0, cooldownKey: 'Starfield Calibrator: Liberation Energy', cooldownDuration: 20 }],
           },
           {
             targets: [{ tag: 'HEAL_PROC' }],
@@ -258,7 +258,7 @@ export const weaponCatalog: WeaponCatalogEntry[] = [
           {
             targets: [{ tag: 'LIBERATION' }],
             modifiers: [],
-            energyGeneration: [{ energyType: 'concerto', amount: 10, share: 0 }],
+            energyGeneration: [{ energyType: 'concerto', amount: 10, share: 0, cooldownKey: 'Starfield Calibrator: Liberation Energy', cooldownDuration: 20 }],
           },
           {
             targets: [{ tag: 'HEAL_PROC' }],
@@ -300,7 +300,7 @@ export const weaponCatalog: WeaponCatalogEntry[] = [
           {
             targets: [{ tag: 'LIBERATION' }],
             modifiers: [],
-            energyGeneration: [{ energyType: 'concerto', amount: 12, share: 0 }],
+            energyGeneration: [{ energyType: 'concerto', amount: 12, share: 0, cooldownKey: 'Starfield Calibrator: Liberation Energy', cooldownDuration: 20 }],
           },
           {
             targets: [{ tag: 'HEAL_PROC' }],
@@ -342,7 +342,7 @@ export const weaponCatalog: WeaponCatalogEntry[] = [
           {
             targets: [{ tag: 'LIBERATION' }],
             modifiers: [],
-            energyGeneration: [{ energyType: 'concerto', amount: 14, share: 0 }],
+            energyGeneration: [{ energyType: 'concerto', amount: 14, share: 0, cooldownKey: 'Starfield Calibrator: Liberation Energy', cooldownDuration: 20 }],
           },
           {
             targets: [{ tag: 'HEAL_PROC' }],
@@ -384,7 +384,7 @@ export const weaponCatalog: WeaponCatalogEntry[] = [
           {
             targets: [{ tag: 'LIBERATION' }],
             modifiers: [],
-            energyGeneration: [{ energyType: 'concerto', amount: 16, share: 0 }],
+            energyGeneration: [{ energyType: 'concerto', amount: 16, share: 0, cooldownKey: 'Starfield Calibrator: Liberation Energy', cooldownDuration: 20 }],
           },
           {
             targets: [{ tag: 'HEAL_PROC' }],

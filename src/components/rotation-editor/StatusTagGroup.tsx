@@ -20,9 +20,10 @@ type StatusInfo = {
 
 type StatusTagGroupProps = {
   statuses: StatusInfo[]
+  clickable?: boolean
 }
 
-export function StatusTagGroup({ statuses }: StatusTagGroupProps) {
+export function StatusTagGroup({ statuses, clickable = true }: StatusTagGroupProps) {
   // Filter out statuses with 0 or undefined values
   const activeStatuses = statuses.filter(s => s.value && s.value > 0)
 
@@ -33,7 +34,7 @@ export function StatusTagGroup({ statuses }: StatusTagGroupProps) {
   return (
     <div className="statusTagGroup">
       {activeStatuses.map(status => (
-        <StatusTag key={status.key} statusKey={status.key} icon={status.icon} label={status.label} value={status.value} maxStacks={status.maxStacks} type={status.type} color={status.color} timeLeft={status.timeLeft} description={status.description} showStats={status.showStats} stats={status.stats} />
+        <StatusTag key={status.key} statusKey={status.key} icon={status.icon} label={status.label} value={status.value} maxStacks={status.maxStacks} type={status.type} color={status.color} timeLeft={status.timeLeft} description={status.description} showStats={status.showStats} stats={status.stats} clickable={clickable} />
       ))}
     </div>
   )

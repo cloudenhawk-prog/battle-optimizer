@@ -13,6 +13,7 @@ import { calculateDamage } from '../../utils/calculators/damageCalculator'
 import { activateCoordinatedAttacks, processCoordinatedAttacks, updateCoordinatedAttackSnapshot } from './coordinatedAttackHelpers'
 import { getNegativeStatusStacks, processNegativeStatusStacks, updateNegativeStatusStacks } from './negativeStatusHelpers'
 import { getCharacterEnergyState, updateEnergyValue } from './energyHelpers'
+import { getDefaultFormName } from './formHelpers'
 import { updateModifiersForSwap, collectAllModifiers, activateModifiers, filterApplicableModifiers, applyStackMultiplier, updateModifiersForTime } from './modifierHelpers'
 import { updateModifierStacks } from './modifierStateHelpers'
 import { updateAllCharactersCooldowns, setActionOnCooldown, reduceCooldown } from './cooldownHelpers'
@@ -68,6 +69,8 @@ export function buildStepContext(snapshotId: number, current: Snapshot, prev: Sn
     aggregatedEnemyModifiers: {},
 
     lastSwappedToCharacter,
+
+    pendingEnergyCooldowns: [],
 
     logs: [],
   }
@@ -678,6 +681,14 @@ export function resolveResources(ctx: StepContext): void {
 
   // Update Character Energy
   for (const generated of action.energyGenerated) {
+    // Skip entries that are gated behind a cooldown that hasn't expired yet
+    if (generated.cooldownKey) {
+      const charName = character.name
+      const cooldownRemaining = ctx.prev.charactersCooldowns?.[charName]?.[generated.cooldownKey] ?? 0
+      if (cooldownRemaining > 0) continue
+      ctx.pendingEnergyCooldowns.push({ charName, cooldownKey: generated.cooldownKey, cooldownDuration: generated.cooldownDuration! })
+    }
+
     const key = generated.energyType
     const maxValue = maxEnergies?.[key] ?? Infinity
     let amount = generated.amount
@@ -742,6 +753,13 @@ export function resolveCooldowns(ctx: StepContext): void {
         current.charactersCooldowns[character.name] = reduceCooldown(current, character.name, reduction.targetActionKey, amount)
       }
     }
+  }
+
+  // Apply energy cooldowns queued by resolveResources (must run after updateAllCharactersCooldowns
+  // so these entries are not overwritten by the rebuild from prev)
+  for (const pending of ctx.pendingEnergyCooldowns) {
+    current.charactersCooldowns[pending.charName] ??= {}
+    current.charactersCooldowns[pending.charName][pending.cooldownKey] = pending.cooldownDuration
   }
 
   ctx.logs.push({
@@ -852,6 +870,41 @@ export function resolveCastState(ctx: StepContext): void {
   }
 
   const swapCooldownUntil = swapOccurred && prevCharName ? ctx.current.charactersSwapCooldownUntil[prevCharName] : undefined
+
+  // On swap-out: reset the leaving character's form to default and clear any form-specific energies
+  if (swapOccurred && prevCharName) {
+    const prevChar = ctx.allies.find(a => a.name === prevCharName)
+    if (prevChar?.forms && prevChar.forms.length > 0) {
+      const prevCurrentFormName = ctx.current.charactersForms?.[prevCharName] ?? ''
+      const defaultFormName = getDefaultFormName(prevChar)
+
+      // Reset energies specified by the form that was active at swap-out time
+      const prevForm = prevChar.forms.find(f => f.name === prevCurrentFormName)
+      if (prevForm?.resetEnergiesOnSwapOut && prevForm.resetEnergiesOnSwapOut.length > 0) {
+        const prevEnergies = { ...(ctx.current.charactersEnergies?.[prevCharName] ?? {}) }
+        for (const energyType of prevForm.resetEnergiesOnSwapOut) {
+          prevEnergies[energyType] = 0
+        }
+        ctx.current.charactersEnergies = {
+          ...(ctx.current.charactersEnergies ?? {}),
+          [prevCharName]: prevEnergies,
+        }
+      }
+
+      // Reset to default form if the form opts in
+      if (prevForm?.resetFormOnSwapOut && prevCurrentFormName !== defaultFormName) {
+        ctx.current.charactersForms = {
+          ...ctx.current.charactersForms,
+          [prevCharName]: defaultFormName,
+        }
+        ctx.logs.push({
+          resolver: 'resolveCastState',
+          message: `Form reset for ${prevCharName} on swap-out: ${prevCurrentFormName || 'default'} → ${defaultFormName}`,
+          details: { prevForm: prevCurrentFormName, defaultForm: defaultFormName },
+        })
+      }
+    }
+  }
 
   // Handle combo windows: track actions that can start time-based combo chains
   // First, copy over existing combo windows and update their swap/form change flags

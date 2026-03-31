@@ -4,6 +4,7 @@ export const mornye_stats: Partial<CharacterStats> = {
   baseATK: 287,
   baseHP: 15375,
   baseDEF: 1356,
+  energyPercent: 0.10,
   tuneBreakBoost: 0.10,
 }
 

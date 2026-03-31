@@ -10,7 +10,7 @@ export const mornye: Character = {
   weaponType: 'Broadblade',
   maxEnergies: {energy: 175, concerto: 100, forte: 100, relative_momentum: 100 },
   actions: [...all_actions],
-  damageModifiers: [], // TODO
+  damageModifiers: [],
   stats: mornye_stats,
   inherentStats: mornye_inherentStats,
   gear: {

@@ -197,7 +197,7 @@ function renderBodyColumnsWithTags(columns: ColumnDef[], columnVisibility: Colum
 
         return (
           <td key={col.key} className={className}>
-            {character && action ? <StatusTagGroup statuses={statuses} /> : ''}
+            {character && action ? <StatusTagGroup statuses={statuses} clickable={false} /> : ''}
           </td>
         )
       }

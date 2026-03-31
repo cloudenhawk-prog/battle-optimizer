@@ -51,8 +51,6 @@ export const echoSetRegistry: Readonly<Record<string, EchoSet>> = {
       5: {
         injectedModifiers: [
           {
-            // Injected into all HEAL_PROC-tagged actions and into heal-proc modifier procModifiers,
-            // so the buff fires on every timed heal tick (e.g. Syntony Field's 3s proc).
             targets: [{ tag: 'HEAL_PROC' }],
             modifiers: [
               {
