@@ -6,6 +6,7 @@ import type { Character } from '../../types/character'
 import type { Snapshot } from '../../types/snapshot'
 import type { EnergyType } from '../../types/baseTypes'
 import { getActionCooldownKey } from '../../utils/hooks/cooldownHelpers'
+import { isFollowUpCastableNow, validateMustChain } from '../../utils/conditions/mustChainValidator'
 
 // ========== Component: Action Select =========================================================================================
 
@@ -37,6 +38,7 @@ type ActionState = {
   isNoSwapTarget: boolean
   isNotRequiredFollowUp: boolean
   isFollowUpNotReady: boolean
+  isMustChainUnsatisfiable: boolean
   isComboWindowExpired: boolean
 }
 
@@ -225,35 +227,60 @@ export function ActionSelect({ value, actions, character, currentEnergies, previ
 
     // Goal 8: required follow-up check (combo system)
     // If the previous action set a required follow-up, only allow that specific action.
+    // For "must" entries the lock is unconditional.
+    // For "if possible" entries the lock only applies when the follow-up is currently castable;
+    // if it is not castable the user is free to choose any other action.
     let isNotRequiredFollowUp = false
     if (character && previousSnapshot) {
-      const requiredFollowUp = previousSnapshot.charactersRequiredFollowUp?.[character.name]
-      if (requiredFollowUp && requiredFollowUp !== action.name && requiredFollowUp !== action.groupName) {
-        isNotRequiredFollowUp = true
+      const followUpEntry = previousSnapshot.charactersRequiredFollowUp?.[character.name]
+      if (followUpEntry) {
+        const isThisTheFollowUp = action.name === followUpEntry.actionName || action.groupName === followUpEntry.actionName
+        if (!isThisTheFollowUp) {
+          if (followUpEntry.must) {
+            // MUST: always lock to the required follow-up
+            isNotRequiredFollowUp = true
+          } else {
+            // "if possible": lock only when the follow-up is castable right now AND its own MUST chain can be satisfied
+            const followUpAction = actions.find(a => a.name === followUpEntry.actionName || a.groupName === followUpEntry.actionName)
+            if (followUpAction && isFollowUpCastableNow(followUpAction, previousSnapshot, character) && validateMustChain(followUpAction, previousSnapshot, character, actions)) {
+              isNotRequiredFollowUp = true
+            }
+          }
+        }
       }
     }
 
     // Goal 9: combo starter validation
-    // If this action requires a follow-up, ensure the follow-up will be off cooldown
-    // by the time this action completes.
+    // For MUST follow-ups: ensure the follow-up will be off cooldown when the parent
+    // completes, and validate the entire MUST chain for position/form/energy.
+    // For "if possible" follow-ups: no restriction on the parent action itself;
+    // whether the follow-up is locked is handled by Goal 8.
     let isFollowUpNotReady = false
+    let isMustChainUnsatisfiable = false
     if (action.requiredFollowUp && character && previousSnapshot) {
-      const followUpActionName = action.requiredFollowUp.actionName
-      const followUpAction = actions.find(a => a.name === followUpActionName || a.groupName === followUpActionName)
+      const must = action.requiredFollowUp.must ?? true
+      if (must) {
+        const followUpActionName = action.requiredFollowUp.actionName
+        const followUpAction = actions.find(a => a.name === followUpActionName || a.groupName === followUpActionName)
 
-      if (followUpAction) {
-        const actionEndTime = previousSnapshot.toTime + action.castTime
-        const characterCooldowns = previousSnapshot.charactersCooldowns?.[character.name] ?? {}
-        const cooldownKey = getActionCooldownKey(followUpAction)
-        const followUpCooldownRemaining = characterCooldowns[cooldownKey] ?? 0
-
-        // Check if follow-up will be ready when this action completes
-        if (followUpCooldownRemaining > actionEndTime - previousSnapshot.toTime) {
+        if (!followUpAction) {
           isFollowUpNotReady = true
+        } else {
+          const actionEndTime = previousSnapshot.toTime + action.castTime
+          const characterCooldowns = previousSnapshot.charactersCooldowns?.[character.name] ?? {}
+          const cooldownKey = getActionCooldownKey(followUpAction)
+          const followUpCooldownRemaining = characterCooldowns[cooldownKey] ?? 0
+
+          // Check if follow-up will be ready when this action completes
+          if (followUpCooldownRemaining > actionEndTime - previousSnapshot.toTime) {
+            isFollowUpNotReady = true
+          }
         }
-      } else {
-        // Follow-up action doesn't exist - always block
-        isFollowUpNotReady = true
+
+        // Chain validation: simulate position/form/energy through the entire MUST chain
+        if (!isFollowUpNotReady) {
+          isMustChainUnsatisfiable = !validateMustChain(action, previousSnapshot, character, actions)
+        }
       }
     }
 
@@ -316,6 +343,7 @@ export function ActionSelect({ value, actions, character, currentEnergies, previ
       isNoSwapTarget,
       isNotRequiredFollowUp,
       isFollowUpNotReady,
+      isMustChainUnsatisfiable,
       isComboWindowExpired,
     }
   }
@@ -355,7 +383,7 @@ export function ActionSelect({ value, actions, character, currentEnergies, previ
   // Then create ActionGroup objects
   for (const [groupKey, variants] of groupMap.entries()) {
     const isGroup = variants.length > 1 || variants[0].action.groupName !== undefined
-    const isSelectable = variants.some(v => !v.isOnCooldown && !v.isUnaffordable && !v.isWrongPosition && !v.isPreviousActionMismatch && !v.isRequiresSwapIn && !v.isWrongForm && !v.isCustomCanCastFailed && !v.isOnSwapCooldown && !v.isNoSwapTarget && !v.isNotRequiredFollowUp && !v.isFollowUpNotReady && !v.isComboWindowExpired)
+    const isSelectable = variants.some(v => !v.isOnCooldown && !v.isUnaffordable && !v.isWrongPosition && !v.isPreviousActionMismatch && !v.isRequiresSwapIn && !v.isWrongForm && !v.isCustomCanCastFailed && !v.isOnSwapCooldown && !v.isNoSwapTarget && !v.isNotRequiredFollowUp && !v.isFollowUpNotReady && !v.isMustChainUnsatisfiable && !v.isComboWindowExpired)
     const isCurrent = variants.some(v => v.isCurrent)
 
     actionGroups.push({
@@ -532,9 +560,9 @@ export function ActionSelect({ value, actions, character, currentEnergies, previ
 
                     {/* Variant Rows */}
                     {group.variants.map(variant => {
-                      const { action, isCurrent, isUnaffordable, isOnCooldown, cooldownRemaining, missingEnergy, isWrongPosition, isPreviousActionMismatch, isRequiresSwapIn, isWrongForm, isCustomCanCastFailed, isOnSwapCooldown, swapCooldownRemaining, isNoSwapTarget, isNotRequiredFollowUp, isFollowUpNotReady, isComboWindowExpired } = variant
+                      const { action, isCurrent, isUnaffordable, isOnCooldown, cooldownRemaining, missingEnergy, isWrongPosition, isPreviousActionMismatch, isRequiresSwapIn, isWrongForm, isCustomCanCastFailed, isOnSwapCooldown, swapCooldownRemaining, isNoSwapTarget, isNotRequiredFollowUp, isFollowUpNotReady, isMustChainUnsatisfiable, isComboWindowExpired } = variant
 
-                      const isDisabled = (isUnaffordable || isOnCooldown || isWrongPosition || isPreviousActionMismatch || isRequiresSwapIn || isWrongForm || isCustomCanCastFailed || isOnSwapCooldown || isNoSwapTarget || isNotRequiredFollowUp || isFollowUpNotReady || isComboWindowExpired) && !isCurrent
+                      const isDisabled = (isUnaffordable || isOnCooldown || isWrongPosition || isPreviousActionMismatch || isRequiresSwapIn || isWrongForm || isCustomCanCastFailed || isOnSwapCooldown || isNoSwapTarget || isNotRequiredFollowUp || isFollowUpNotReady || isMustChainUnsatisfiable || isComboWindowExpired) && !isCurrent
                       const canSelect = !isDisabled
 
                       return (

@@ -50,9 +50,10 @@ export interface Snapshot {
    */
   charactersSwapCooldownUntil: Record<string, number>
   /** Tracks which character must cast which action in the next row (for combo systems).
-   *  Key: character name, Value: required action name.
-   *  When set, all other actions/characters are locked in the next row. */
-  charactersRequiredFollowUp: Record<string, string>
+   *  Key: character name. Value: required action info.
+   *  When set, all other actions/characters are locked in the next row (subject to
+   *  the `must` flag — see Action.requiredFollowUp for semantics). */
+  charactersRequiredFollowUp: Record<string, { actionName: string; must: boolean }>
   /** Tracks active combo windows for time-based combo systems.
    *  Key: character name. Value: info about the last combo starter action. */
   charactersComboWindows: Record<

@@ -4,7 +4,6 @@ export const cartethyia_stats: Partial<CharacterStats> = {
   baseATK: 312,
   baseHP: 14800,
   baseDEF: 611,
-  energyPercent: 1.0,
 }
 
 export const cartethyia_inherentStats: Partial<CharacterStats> = {

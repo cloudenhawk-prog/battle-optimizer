@@ -12,11 +12,13 @@ import type { ResolvedCharacter } from '../types/character'
 import type { Gear } from '../types/gear'
 import { resolveCharacter } from '../utils/gear/resolveCharacter'
 import { DamageTimeline } from '../components/rotation-editor/DamageTimeline.tsx'
+import { useSettings } from '../hooks/useSettings'
 
 // ========== Main Rotation Editor Page ========================================================================================
 
 export default function RotationEditorPage() {
   const tableConfig = buildTableConfig(characters)
+  const { settings } = useSettings()
 
   const allColumns = flattenTableColumns(tableConfig)
   const [columnVisibility, setColumnVisibility] = useState(() => Object.fromEntries(allColumns.map(col => [col.key, true])))
@@ -52,7 +54,7 @@ export default function RotationEditorPage() {
     <div>
       <Topbar tableConfig={tableConfig} allColumns={allColumns} columnVisibility={columnVisibility} setColumnVisibility={setColumnVisibility} />
 
-      <RotationEditor key={timelineKey} gearResetKey={gearResetKey} charactersInBattle={resolvedCharacters} enemy={enemies[0]} tableConfig={tableConfig} columnVisibility={columnVisibility} setColumnVisibility={setColumnVisibility} onSnapshotsChange={handleSnapshotsChange} onGearChange={handleGearChange} />
+      <RotationEditor key={timelineKey} gearResetKey={gearResetKey} charactersInBattle={resolvedCharacters} enemy={enemies[0]} tableConfig={tableConfig} columnVisibility={columnVisibility} setColumnVisibility={setColumnVisibility} onSnapshotsChange={handleSnapshotsChange} onGearChange={handleGearChange} settings={settings} />
 
       <DamageTimeline snapshots={snapshots} damageEvents={damageEvents} selectedCharacters={resolvedCharacters} />
     </div>

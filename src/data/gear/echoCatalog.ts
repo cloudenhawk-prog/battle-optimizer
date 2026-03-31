@@ -12,9 +12,10 @@
  */
 
 import type { Action } from '../../types/action'
-import type { EchoConditionalStats, InjectedModifier, InjectedSideEffect } from '../../types/gear'
+import type { Echo, EchoConditionalStats, InjectedModifier, InjectedSideEffect } from '../../types/gear'
 import type { CharacterStats } from '../../types/stats'
 import { nightmareKelpieOutroTrigger } from '../sideEffects/sideEffects'
+import { buildBaseStats } from './echoStats'
 
 export type EchoCatalogEntry = {
   name: string
@@ -58,7 +59,7 @@ const echoSkill_reminiscenceFleurdelys: Action = {
 }
 
 const echoSkill_nightmareKelpie: Action = {
-  name: 'Nightmare: Kelpie (Active)',
+  name: 'Echo Skill',
   displayName: 'Nightmare: Kelpie (Active)',
   category: 'Echo Skill',
   castTime: 0,
@@ -80,10 +81,10 @@ const echoSkill_nightmareKelpie: Action = {
 }
 
 const echoSkill_reactorHusk: Action = {
-  name: 'Reactor Husk (Active)',
+  name: 'Echo Skill',
   displayName: 'Reactor Husk (Active)',
   category: 'Echo Skill',
-  castTime: 0,
+  castTime: 0.09,
   multiplier: 351 / 100,
   scaling: 'ATK',
   elements: ['FUSION'],
@@ -95,9 +96,11 @@ const echoSkill_reactorHusk: Action = {
   damageModifiers: [],
   sideEffects: [],
   castConditions: {
-    startState: 'ANY',    // TODO: verify
-    endState: 'PRESERVE', // TODO: verify
-    // TODO: Needs to force swapout — we aren't interested in normal cast
+    startState: 'ANY',
+    endState: 'GROUND',
+    swapOutState: 'PRESERVE',
+    persistenceTime: 0.09,
+    requiresSwapOut: true,
   },
   offtune: 0,
 }
@@ -743,4 +746,41 @@ export function getEchoCost(echoName: string): 1 | 3 | 4 | undefined {
 /** Returns all defined echo entries for a given set. */
 export function getEchoesForSet(setName: string): EchoCatalogEntry[] {
   return echoCatalog[setName] ?? []
+}
+
+/**
+ * Builds a fully-resolved Echo object from a catalog entry.
+ * Mirrors the pattern used by EchoPickerModal when confirming a custom echo.
+ *
+ * @param setName      - The echo set the echo belongs to.
+ * @param echoName     - The echo's name as it appears in the catalog.
+ * @param mainStatKey  - The rolled main stat key (e.g. 'bonusDEF', 'energyPercent').
+ * @param mainStatValue - The rolled main stat value at max tune.
+ * @param subStats     - The echo's rolled sub-stats.
+ */
+export function buildEcho(
+  setName: string,
+  echoName: string,
+  mainStatKey: keyof CharacterStats,
+  mainStatValue: number,
+  subStats: Partial<CharacterStats>,
+): Echo {
+  const entry = echoCatalog[setName]?.find(e => e.name === echoName)
+  if (!entry) throw new Error(`Echo "${echoName}" not found in set "${setName}"`)
+
+  return {
+    name: entry.name,
+    setName: entry.setName,
+    cost: entry.cost,
+    icon: entry.icon,
+    info_icon: entry.info_icon,
+    info: entry.info,
+    baseStats: buildBaseStats(entry.cost, mainStatKey, mainStatValue),
+    subStats,
+    ...(entry.firstSlotStats ? { firstSlotStats: entry.firstSlotStats } : {}),
+    ...(entry.echoSkill ? { echoSkill: entry.echoSkill } : {}),
+    ...(entry.injectedModifiers ? { injectedModifiers: entry.injectedModifiers } : {}),
+    ...(entry.injectedSideEffects ? { injectedSideEffects: entry.injectedSideEffects } : {}),
+    ...(entry.conditionalStats ? { conditionalStats: entry.conditionalStats } : {}),
+  }
 }

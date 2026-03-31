@@ -5,6 +5,7 @@ import type { TableConfig } from '../../types/tableDefinitions'
 import type { Enemy } from '../../types/enemy'
 import type { DamageEvent } from '../../types/events'
 import type { Snapshot } from '../../types/snapshot'
+import type { Settings } from '../useSettings'
 import { useState, useEffect } from 'react'
 
 // ========== Hook: useRotationEditor ==========================================================================================
@@ -15,9 +16,10 @@ type UseRotationEditorProps = {
   enemy: Enemy
   onSnapshotsChange?: (snapshots: Snapshot[], damageEvents: DamageEvent[]) => void
   gearResetKey?: number
+  settings: Settings
 }
 
-export function useRotationEditor({ charactersInBattle, tableConfig, enemy, onSnapshotsChange, gearResetKey = 0 }: UseRotationEditorProps) {
+export function useRotationEditor({ charactersInBattle, tableConfig, enemy, onSnapshotsChange, gearResetKey = 0, settings }: UseRotationEditorProps) {
   const [damageEvents, setDamageEvents] = useState<DamageEvent[]>([])
   const { snapshots, setSnapshots, resetTimeline } = useSnapshots({ charactersInBattle, tableConfig })
 
@@ -26,7 +28,7 @@ export function useRotationEditor({ charactersInBattle, tableConfig, enemy, onSn
     resetTimeline()
     setDamageEvents([])
   }, [gearResetKey])
-  const { handleCharacterSelect, handleActionSelect } = useCharacterActions({ setSnapshots, charactersInBattle, enemy, tableConfig, setDamageEvents })
+  const { handleCharacterSelect, handleActionSelect } = useCharacterActions({ setSnapshots, charactersInBattle, enemy, tableConfig, setDamageEvents, settings })
 
   useEffect(() => {
     if (onSnapshotsChange) {

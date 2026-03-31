@@ -9,6 +9,7 @@ import type { TableConfig, ColumnVisibility } from '../../types/tableDefinitions
 import type { DamageEvent } from '../../types/events'
 import type { Snapshot } from '../../types/snapshot'
 import type { Gear } from '../../types/gear'
+import type { Settings } from '../../hooks/useSettings'
 
 // ========== Component: Rotation Editor =======================================================================================
 
@@ -21,10 +22,11 @@ type RotationEditorProps = {
   onSnapshotsChange?: (snapshots: Snapshot[], damageEvents: DamageEvent[]) => void
   onGearChange?: (characterName: string, newGear: Gear) => void
   gearResetKey?: number
+  settings: Settings
 }
 
-export default function RotationEditor({ charactersInBattle, enemy, tableConfig, columnVisibility, setColumnVisibility, onSnapshotsChange, onGearChange, gearResetKey }: RotationEditorProps) {
-  const { snapshots, damageEvents, handleCharacterSelect, handleActionSelect } = useRotationEditor({ charactersInBattle, tableConfig, enemy, onSnapshotsChange, gearResetKey })
+export default function RotationEditor({ charactersInBattle, enemy, tableConfig, columnVisibility, setColumnVisibility, onSnapshotsChange, onGearChange, gearResetKey, settings }: RotationEditorProps) {
+  const { snapshots, damageEvents, handleCharacterSelect, handleActionSelect } = useRotationEditor({ charactersInBattle, tableConfig, enemy, onSnapshotsChange, gearResetKey, settings })
   const [overlayOpen, setOverlayOpen] = useState(false)
   const [overlayData, setOverlayData] = useState<null | { snapshot: Snapshot; damageEvents: DamageEvent[] }>(null)
 

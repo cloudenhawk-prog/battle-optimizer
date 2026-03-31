@@ -201,7 +201,7 @@ export function getDefaultCharacterStats(): CharacterStats {
     havocAmplifyDMG: 0,
     havocTotalMultiplierDMG: 1,
 
-    energyPercent: 0,
+    energyPercent: 1.0,
     healingBonus: 0,
     tuneBreakBoost: 0,
     offtuneBuildupRate: 1

@@ -76,11 +76,19 @@ export type Action = {
   resolveVariant?: (prevSnapshot: Snapshot | undefined, characterName: string) => Action
 
   /** When specified, this action requires a specific follow-up action to be cast
-   *  by the same character in the immediately following row. The follow-up action
-   *  must be off cooldown by the time this action completes.
-   *  All other actions/characters will be locked. */
+   *  by the same character in the immediately following row.
+   *  All other actions/characters will be locked while the follow-up is pending.
+   *
+   *  `must` (default true): the follow-up MUST happen. The parent action is only
+   *  castable when the entire MUST chain (which may be several follow-ups deep) can
+   *  be satisfied — position, form, and energy are validated through the chain.
+   *
+   *  `must: false` ("if possible"): the follow-up is locked only when it is actually
+   *  castable in the current state; if its cast conditions are not met the lock is
+   *  released and the user may choose freely. The parent action can always be cast. */
   requiredFollowUp?: {
     actionName: string // Name of the action that must be cast next
+    must?: boolean     // true (default) = MUST follow up; false = only if castable
   }
 }
 

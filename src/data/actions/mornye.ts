@@ -555,6 +555,7 @@ const mode_mornye_BA_1_3: Action = {
   },
   offtune: (4 * 0.07) + (4 * 0.13) + (4 * 0.05 + 2 * 0.17),
   requiredFollowUp: { actionName: 'Mode: Resonance Skill' }
+  // TODO - we also want actions that, while not having a required follow up, does require you to not skip character (i.e. for the next row/action select, we are locking the other characters in the character selector)
 }
 
 // ========== Mode: Resonance Skill ============================================================================================
@@ -700,7 +701,8 @@ const mornye_liberation: Action = {
     endState: 'PRESERVE',
     requiredForms: ['Wide Field Observation Mode'] // Technically not true, but practically required
   },
-  offtune: 7.20
+  offtune: 7.20,
+  requiredFollowUp: { actionName: 'Echo Skill' }
 }
 
 // ========== Intro & Outro ====================================================================================================

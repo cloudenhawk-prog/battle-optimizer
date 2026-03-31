@@ -787,7 +787,11 @@ export function resolveCastState(ctx: StepContext): void {
   // If this action has a requiredFollowUp, set it for the same character
   if (ctx.action.requiredFollowUp) {
     ctx.current.charactersRequiredFollowUp = {
-      [charName]: ctx.action.requiredFollowUp.actionName,
+      [charName]: {
+        actionName: ctx.action.requiredFollowUp.actionName,
+        // Default is false ("if possible") — must: true must be explicitly declared
+        must: ctx.action.requiredFollowUp.must ?? false,
+      },
     }
   } else {
     // Clear any previous required follow-up for this character

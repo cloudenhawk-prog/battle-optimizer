@@ -7,6 +7,7 @@ import { ActionSelect } from './ActionSelect'
 import { StatusTagGroup } from './StatusTagGroup'
 import { parseCoordinatedAttackKey } from '../../utils/hooks/coordinatedAttackHelpers'
 import { isSwapRequiredLocked } from '../../utils/hooks/snapshotHelpers'
+import { isFollowUpCastableNow, validateMustChain } from '../../utils/conditions/mustChainValidator'
 
 // ========== Component: Body Row ==============================================================================================
 
@@ -45,7 +46,16 @@ export function BodyRow({ snapshot, previousSnapshot, charactersInBattle, tableC
     }
     // Lock all characters except the one with a required follow-up (combo system)
     const requiredFollowUps = previousSnapshot.charactersRequiredFollowUp ?? {}
-    const charactersWithFollowUp = Object.keys(requiredFollowUps).filter(char => requiredFollowUps[char])
+    const charactersWithFollowUp = Object.keys(requiredFollowUps).filter(char => {
+      const entry = requiredFollowUps[char]
+      if (!entry) return false
+      if (entry.must) return true
+      // "if possible": only lock the character when the follow-up is castable AND its own MUST chain can be satisfied
+      const charObj = charactersInBattle.find(c => c.name === char)
+      if (!charObj) return false
+      const followUpAction = charObj.actions.find(a => a.name === entry.actionName || a.groupName === entry.actionName)
+      return !!followUpAction && isFollowUpCastableNow(followUpAction, previousSnapshot, charObj) && validateMustChain(followUpAction, previousSnapshot, charObj, charObj.actions)
+    })
     if (charactersWithFollowUp.length > 0) {
       // Lock all characters that don't have a required follow-up
       for (const char of charactersInBattle) {

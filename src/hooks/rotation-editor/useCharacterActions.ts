@@ -12,6 +12,8 @@ import { getCharacter, getPrevCharacter } from '../../utils/hooks/characterHelpe
 import { getConcertoValue } from '../../utils/hooks/energyHelpers'
 import { getActionFromCharacter, getActionNameByDmgType } from '../../utils/hooks/actionHelpers'
 import { getSnapshotIndex, getPrevSnapshot, copySnapshots, getSnapshotById, assignCharacterToRow } from '../../utils/hooks/snapshotHelpers'
+import type { Settings } from '../useSettings'
+import { isFollowUpCastableNow, validateMustChain } from '../../utils/conditions/mustChainValidator'
 import { buildStepContext, resolveTime, resolveDamageModifiers, resolveDamage, resolveSideEffectsAndStatuses, resolveModifierState, resolveResources, resolveCooldowns, resolveCoordinatedAttacks, resolveCastState, resolveResourceMilestones } from '../../utils/hooks/resolvers'
 import { negativeStatuses as negativeStatusesData } from '../../data/negativeStatuses'
 import { createSnapshot } from '../../utils/hooks/snapshotHelpers'
@@ -24,9 +26,10 @@ type UseCharacterActionsProps = {
   enemy: Enemy
   tableConfig: TableConfig
   setDamageEvents: Dispatch<SetStateAction<DamageEvent[]>>
+  settings: Settings
 }
 
-export function useCharacterActions({ setSnapshots, charactersInBattle, enemy, tableConfig, setDamageEvents }: UseCharacterActionsProps) {
+export function useCharacterActions({ setSnapshots, charactersInBattle, enemy, tableConfig, setDamageEvents, settings }: UseCharacterActionsProps) {
   const charactersMap: Record<string, ResolvedCharacter> = Object.fromEntries(charactersInBattle.map(c => [c.name, c]))
   const characterColumnsMap: Record<string, string[]> = Object.fromEntries(tableConfig.characters.map(c => [c.label, c.columns.map(col => col.key.slice(col.key.indexOf('_') + 1))]))
 
@@ -85,6 +88,10 @@ export function useCharacterActions({ setSnapshots, charactersInBattle, enemy, t
       }
 
       updated = updateSnapshotsWithAction({ snapshots: updated, snapshotId, actionName, charactersMap, characterColumnsMap, globalColumns, enemy, setDamageEvents, negativeStatusesInAction, modifiersInAction, coordinatedAttacksInAction })
+
+      if (settings.autocastFollowUps) {
+        updated = autocastFollowUpChain({ snapshots: updated, resolvedSnapshotId: snapshotId, charactersMap, characterColumnsMap, globalColumns, enemy, setDamageEvents, negativeStatusesInAction, modifiersInAction, coordinatedAttacksInAction })
+      }
 
       return updated
     })
@@ -232,4 +239,87 @@ function validateActionInputs(params: { snapshots: Snapshot[]; snapshotId: numbe
   }
 
   return { index, character, action, snapshots, current, prev, enemy, negativeStatusesInAction, modifiersInAction, coordinatedAttacksInAction, charactersMap, characterColumnsMap, globalColumns, setDamageEvents }
+}
+
+// =============================================================================================================================
+
+type AutocastParams = {
+  snapshots: Snapshot[]
+  resolvedSnapshotId: number
+  charactersMap: Record<string, ResolvedCharacter>
+  characterColumnsMap: Record<string, string[]>
+  globalColumns: GlobalColumns
+  enemy: Enemy
+  setDamageEvents: Dispatch<SetStateAction<DamageEvent[]>>
+  negativeStatusesInAction: React.MutableRefObject<NegativeStatusInAction[]>
+  modifiersInAction: React.MutableRefObject<ModifierInAction[]>
+  coordinatedAttacksInAction: React.MutableRefObject<CoordinatedAttackInAction[]>
+}
+
+/**
+ * Walks the requiredFollowUp chain from the resolved snapshot and automatically
+ * casts each follow-up action in sequence, stopping when there is no further
+ * required follow-up or when a follow-up cannot be resolved.
+ *
+ * MUST follow-ups are always auto-cast.
+ * "If possible" follow-ups (must === false) are auto-cast only when the follow-up
+ * is actually castable in the current state; otherwise the chain stops.
+ */
+function autocastFollowUpChain(params: AutocastParams): Snapshot[] {
+  let { snapshots, resolvedSnapshotId, ...rest } = params
+
+  while (true) {
+    const resolvedIndex = getSnapshotIndex(snapshots, resolvedSnapshotId)
+    if (resolvedIndex === -1) break
+
+    const resolvedSnapshot = snapshots[resolvedIndex]
+    const characterName = resolvedSnapshot.character
+    if (!characterName) break
+
+    const followUpEntry = resolvedSnapshot.charactersRequiredFollowUp?.[characterName]
+    if (!followUpEntry) break
+
+    const { actionName: followUpActionName, must } = followUpEntry
+
+    // Always check immediate castability (position, form, energy, cooldown)
+    const character = rest.charactersMap[characterName]
+    const followUpAction = character?.actions.find(
+      a => a.name === followUpActionName || a.groupName === followUpActionName,
+    )
+    if (!character || !followUpAction || !isFollowUpCastableNow(followUpAction, resolvedSnapshot, character)) {
+      break
+    }
+
+    // For "if possible" follow-ups, also validate that the follow-up's own MUST chain
+    // is satisfiable before committing to autocasting it — prevents autocasting into
+    // an action whose forced chain (e.g. Liberation) can't complete
+    if (!must) {
+      if (!validateMustChain(followUpAction, resolvedSnapshot, character, character.actions)) {
+        break
+      }
+    }
+
+    // The next blank row must exist (created by updateSnapshotsWithAction)
+    const nextBlankIndex = resolvedIndex + 1
+    if (nextBlankIndex >= snapshots.length) break
+
+    // Ensure the character is assigned to the next row (createSnapshot usually carries it
+    // forward, but guard against edge cases such as requiresSwapOut actions)
+    if (!snapshots[nextBlankIndex].character) {
+      snapshots = snapshots.map((s, i) => (i === nextBlankIndex ? assignCharacterToRow(s, characterName) : s))
+    }
+
+    const nextSnapshotId = Number(snapshots[nextBlankIndex].id)
+
+    snapshots = updateSnapshotsWithAction({
+      ...rest,
+      snapshots,
+      snapshotId: nextSnapshotId,
+      actionName: followUpActionName,
+    })
+
+    resolvedSnapshotId = nextSnapshotId
+  }
+
+  return snapshots
 }
