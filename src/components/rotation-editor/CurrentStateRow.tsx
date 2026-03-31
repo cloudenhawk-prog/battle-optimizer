@@ -162,6 +162,7 @@ function renderStatusColumns(columns: any[], columnVisibility: ColumnVisibility,
         // Access snapshot data directly based on column key
         let statusData: Record<string, number> | undefined
         let timeLeftData: Record<string, number> | undefined
+        let activationStatsData: Record<string, object> | undefined
         let statusType: 'buff' | 'debuff' | 'negativeStatus' = 'buff'
 
         if (col.key === 'negativeStatuses') {
@@ -171,6 +172,7 @@ function renderStatusColumns(columns: any[], columnVisibility: ColumnVisibility,
         } else if (col.key === 'buffs') {
           statusData = snapshot.buffs as Record<string, number> | undefined
           timeLeftData = snapshot.buffsTimeLeft as Record<string, number> | undefined
+          activationStatsData = snapshot.buffsActivationStats as Record<string, object> | undefined
           statusType = 'buff'
         } else if (col.key === 'debuffs') {
           statusData = snapshot.debuffs as Record<string, number> | undefined
@@ -192,6 +194,9 @@ function renderStatusColumns(columns: any[], columnVisibility: ColumnVisibility,
             type: statusType,
             color: meta.color,
             timeLeft: timeLeftData?.[meta.key],
+            description: meta.description,
+            showStats: meta.showStats,
+            stats: activationStatsData?.[meta.key] as object | undefined,
           })) ?? []
 
         return (

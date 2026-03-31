@@ -4,7 +4,7 @@
   position: fixed;
   inset: 0;
   z-index: 2000;
-  background-color: rgba(0, 0, 0, 0.5);
+  background-color: rgba(0, 0, 0, 0.55);
   display: flex;
   align-items: center;
   justify-content: center;
@@ -13,13 +13,16 @@
 /* ========== Status Detail Panel =========================================================================================== */
 
 .statusDetailPanel {
-  background-color: rgba(18, 18, 28, 0.98);
-  border: 1px solid rgba(255, 255, 255, 0.15);
-  border-radius: 10px;
-  min-width: 280px;
-  max-width: 400px;
+  --sdp-accent: #4CAF50; /* overridden per-instance via inline style */
+  background-color: rgba(16, 18, 28, 0.98);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 12px;
+  min-width: 300px;
+  max-width: 420px;
   width: 100%;
-  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.6);
+  box-shadow:
+    0 8px 32px rgba(0, 0, 0, 0.7),
+    0 0 40px color-mix(in srgb, var(--sdp-accent) 10%, transparent);
   overflow: hidden;
 }
 
@@ -27,71 +30,68 @@
 
 .statusDetailHeader {
   display: flex;
-  align-items: center;
-  gap: 10px;
-  padding: 14px 16px;
-  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+  align-items: flex-start;
+  gap: 14px;
+  padding: 16px;
+  background: linear-gradient(
+    150deg,
+    color-mix(in srgb, var(--sdp-accent) 12%, transparent) 0%,
+    transparent 65%
+  );
+  border-bottom: 1px solid color-mix(in srgb, var(--sdp-accent) 22%, rgba(255, 255, 255, 0.06));
 }
 
 .statusDetailIcon {
-  width: 36px;
-  height: 36px;
+  width: 64px;
+  height: 64px;
   object-fit: contain;
   flex-shrink: 0;
+  border-radius: 10px;
+  border: 1.5px solid color-mix(in srgb, var(--sdp-accent) 40%, rgba(255, 255, 255, 0.1));
+  box-shadow: 0 0 18px color-mix(in srgb, var(--sdp-accent) 22%, transparent);
+  background: rgba(0, 0, 0, 0.2);
+  padding: 4px;
 }
 
-.statusDetailTitle {
-  display: flex;
-  flex-direction: column;
-  gap: 2px;
+.statusDetailTitleGroup {
   flex: 1;
   min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 7px;
+  padding-top: 4px;
 }
 
 .statusDetailName {
   font-size: 15px;
-  font-weight: 600;
-  color: #fff;
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
+  font-weight: 700;
+  color: rgba(255, 255, 255, 0.95);
+  line-height: 1.2;
 }
 
 .statusDetailType {
-  font-size: 11px;
-  font-weight: 500;
-  padding: 1px 6px;
-  border-radius: 3px;
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  padding: 3px 8px;
+  border-radius: 4px;
   align-self: flex-start;
-}
-
-.statusDetailType-buff {
-  background-color: rgba(76, 175, 80, 0.2);
-  color: rgba(76, 175, 80, 0.9);
-  border: 1px solid rgba(76, 175, 80, 0.3);
-}
-
-.statusDetailType-debuff {
-  background-color: rgba(244, 67, 54, 0.2);
-  color: rgba(244, 67, 54, 0.9);
-  border: 1px solid rgba(244, 67, 54, 0.3);
-}
-
-.statusDetailType-negativeStatus {
-  background-color: rgba(156, 39, 176, 0.2);
-  color: rgba(156, 39, 176, 0.9);
-  border: 1px solid rgba(156, 39, 176, 0.3);
+  background: color-mix(in srgb, var(--sdp-accent) 18%, transparent);
+  color: var(--sdp-accent);
+  border: 1px solid color-mix(in srgb, var(--sdp-accent) 38%, transparent);
 }
 
 .statusDetailClose {
   background: none;
   border: none;
-  color: rgba(255, 255, 255, 0.4);
+  color: rgba(255, 255, 255, 0.3);
   font-size: 16px;
   cursor: pointer;
-  padding: 4px;
+  padding: 2px 4px;
   line-height: 1;
   flex-shrink: 0;
+  align-self: flex-start;
   transition: color 0.15s ease;
 }
 
@@ -102,18 +102,37 @@
 /* ── Body ── */
 
 .statusDetailBody {
-  padding: 12px 16px;
+  padding: 14px 16px 16px;
   display: flex;
   flex-direction: column;
-  gap: 8px;
+  gap: 12px;
 }
+
+/* ── Section ── */
+
+.statusDetailSection {
+  display: flex;
+  flex-direction: column;
+}
+
+.statusDetailSectionLabel {
+  font-size: 9px;
+  font-weight: 700;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--sdp-accent);
+  opacity: 0.7;
+  margin-bottom: 6px;
+}
+
+/* ── Row ── */
 
 .statusDetailRow {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  padding: 6px 0;
-  border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+  padding: 5px 0;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.05);
 }
 
 .statusDetailRow:last-child {
@@ -121,8 +140,8 @@
 }
 
 .statusDetailRowLabel {
-  font-size: 13px;
-  color: rgba(255, 255, 255, 0.5);
+  font-size: 12px;
+  color: rgba(255, 255, 255, 0.45);
 }
 
 .statusDetailRowValue {
@@ -130,3 +149,26 @@
   font-weight: 600;
   color: rgba(255, 255, 255, 0.9);
 }
+
+.statusDetailRowValue--active {
+  color: var(--sdp-accent);
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.statusDetailRowValue--stat {
+  color: var(--sdp-accent);
+}
+
+/* ── Description ── */
+
+.statusDetailDescription {
+  margin: 0;
+  font-size: 12px;
+  color: rgba(175, 185, 210, 0.85);
+  line-height: 1.55;
+  padding: 2px 0;
+}
+

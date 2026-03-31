@@ -1,5 +1,7 @@
 import { createPortal } from 'react-dom'
+import type { CSSProperties, ReactNode, ReactElement } from 'react'
 import '../../styles/rotation-editor/StatusDetailPanel.css'
+import type { CharacterStats } from '../../types/stats'
 
 // ========== Types ============================================================================================================
 
@@ -12,36 +14,9 @@ export type StatusDetailInfo = {
   type?: 'buff' | 'debuff' | 'negativeStatus'
   color?: string
   timeLeft?: number
-  //
-  // Should have a short description (Maybe by adding it to the data somewhere and using it here)
-  //
-  // TODO: Only the ones in the 'CurrentStateRow.tsx' should be clickable! Not in every row (otherwise they would need logs of every entry)
-  // TODO: Future fields to pull into this panel once the data is wired through:
-  //
-  // source: string
-  //   Which character's action applied this effect.
-  //   Example: "Carlotta – Glacial Coda (Enhanced)"
-  //
-  // appliedAt: number
-  //   The rotation timestamp (fromTime / toTime of the row where it was applied).
-  //   Example: 3.40 → displayed as "3.40s"
-  //
-  // expiresAt: number
-  //   Absolute rotation time when this effect runs out.
-  //   Can be derived as (appliedAt + baseDuration) or (currentToTime + timeLeft).
-  //   Example: 15.60 → displayed as "15.60s"
-  //
-  // swapsLeft?: number
-  //   For swap-count-based effects (buffsSwapsLeft / debuffsSwapsLeft).
-  //   Example: 2 → displayed as "2 swaps"
-  //
-  // description?: string
-  //   Mechanic flavour text pulled from the effect's data definition.
-  //   Example: "Increases ATK by 15% for 10s or 3 swaps."
-  //
-  // history?: Array<{ time: number; event: 'applied' | 'refreshed' | 'stacked' }>
-  //   All times during the rotation this effect was applied, refreshed, or gained stacks.
-  //   Useful for seeing exactly how a DoT or buff was maintained.
+  description?: string
+  showStats?: boolean
+  stats?: Partial<CharacterStats>
 }
 
 type StatusDetailPanelProps = {
@@ -49,7 +24,7 @@ type StatusDetailPanelProps = {
   onClose: () => void
 }
 
-// ========== Component: Status Detail Panel ===================================================================================
+// ========== Constants ========================================================================================================
 
 const TYPE_LABELS: Record<string, string> = {
   buff: 'Buff',
@@ -57,21 +32,85 @@ const TYPE_LABELS: Record<string, string> = {
   negativeStatus: 'Negative Status',
 }
 
+const TYPE_ACCENT_DEFAULTS: Record<string, string> = {
+  buff: '#4CAF50',
+  debuff: '#F44336',
+  negativeStatus: '#9C27B0',
+}
+
+const FLAT_STAT_KEYS = new Set(['level', 'flatATK', 'flatHP', 'flatDEF'])
+
+// ========== Helpers ==========================================================================================================
+
+/**
+ * Splits camelCase keys into readable label text, preserving acronyms (ATK, DEF, DMG, HP).
+ */
+function formatStatKey(key: string): string {
+  return key
+    .replace(/([a-z])([A-Z])/g, '$1 $2')
+    .replace(/([A-Z]+)([A-Z][a-z])/g, '$1 $2')
+    .replace(/^./, s => s.toUpperCase())
+    .trim()
+}
+
+function formatStatValue(key: string, value: number): string {
+  if (FLAT_STAT_KEYS.has(key)) return `+${value.toFixed(0)}`
+  return `+${(value * 100).toFixed(1)}%`
+}
+
+/**
+ * Wraps numbers, %, and / in colored spans — mirrors the character profile overlay behaviour.
+ */
+function colorizeText(text: string, accentColor: string): ReactNode {
+  const pattern = /(\d+(?:[.,]\d+)*|[%/])/g
+  const parts: (string | ReactElement)[] = []
+  let lastIndex = 0
+  let match: RegExpExecArray | null
+  while ((match = pattern.exec(text)) !== null) {
+    if (match.index > lastIndex) parts.push(text.slice(lastIndex, match.index))
+    parts.push(
+      <span key={match.index} style={{ color: accentColor, fontWeight: 600 }}>
+        {match[0]}
+      </span>,
+    )
+    lastIndex = pattern.lastIndex
+  }
+  if (lastIndex < text.length) parts.push(text.slice(lastIndex))
+  return <>{parts}</>
+}
+
+// ========== Component: Status Detail Panel ===================================================================================
+
 export function StatusDetailPanel({ status, onClose }: StatusDetailPanelProps) {
   if (!status) return null
 
   const typeLabel = TYPE_LABELS[status.type ?? ''] ?? 'Effect'
+  const accent = status.color ?? TYPE_ACCENT_DEFAULTS[status.type ?? ''] ?? '#88AACC'
+  const isActive = status.value === 1 && (!status.maxStacks || status.maxStacks === 1)
+  const stacksDisplay = isActive ? 'Active' : `${status.value} / ${status.maxStacks}`
+
+  const statsEntries = status.showStats && status.stats
+    ? (Object.entries(status.stats) as [string, number][]).filter(([, v]) => v !== 0)
+    : []
 
   return createPortal(
     <div className="statusDetailOverlay" onClick={onClose}>
-      <div className="statusDetailPanel" onClick={e => e.stopPropagation()}>
-
+      <div
+        className="statusDetailPanel"
+        style={{ '--sdp-accent': accent } as CSSProperties}
+        onClick={e => e.stopPropagation()}
+      >
         {/* ── Header ── */}
         <div className="statusDetailHeader">
-          <img src={status.icon} alt={status.label} className="statusDetailIcon" />
-          <div className="statusDetailTitle">
+          <img
+            src={status.icon}
+            alt={status.label}
+            className="statusDetailIcon"
+            onError={e => { ;(e.target as HTMLImageElement).style.opacity = '0.25' }}
+          />
+          <div className="statusDetailTitleGroup">
             <span className="statusDetailName">{status.label}</span>
-            <span className={`statusDetailType statusDetailType-${status.type ?? 'buff'}`}>{typeLabel}</span>
+            <span className="statusDetailType">{typeLabel}</span>
           </div>
           <button className="statusDetailClose" onClick={onClose} aria-label="Close">✕</button>
         </div>
@@ -79,33 +118,39 @@ export function StatusDetailPanel({ status, onClose }: StatusDetailPanelProps) {
         {/* ── Body ── */}
         <div className="statusDetailBody">
 
-          {/* Stacks */}
-          <div className="statusDetailRow">
-            <span className="statusDetailRowLabel">Stacks</span>
-            <span className="statusDetailRowValue">
-              {status.value}
-              {status.maxStacks && status.maxStacks > 1 ? ` / ${status.maxStacks}` : ''}
-            </span>
+          {/* Status */}
+          <div className="statusDetailSection">
+            <span className="statusDetailSectionLabel">Status</span>
+            <div className="statusDetailRow">
+              <span className="statusDetailRowLabel">Stacks</span>
+              <span className={`statusDetailRowValue${isActive ? ' statusDetailRowValue--active' : ''}`}>
+                {stacksDisplay}
+              </span>
+            </div>
           </div>
 
-          {/* Time Remaining */}
-          <div className="statusDetailRow">
-            <span className="statusDetailRowLabel">Time Remaining</span>
-            <span className="statusDetailRowValue">
-              {status.timeLeft != null && status.timeLeft > 0 ? `${status.timeLeft.toFixed(2)}s` : '—'}
-            </span>
-          </div>
+          {/* Description */}
+          {status.description && (
+            <div className="statusDetailSection">
+              <span className="statusDetailSectionLabel">Description</span>
+              <p className="statusDetailDescription">
+                {colorizeText(status.description, accent)}
+              </p>
+            </div>
+          )}
 
-          {/*
-           * TODO: Rows to add once the matching fields are available in StatusDetailInfo:
-           *
-           *   Source       — "Carlotta – Glacial Coda (Enhanced)"
-           *   Applied At   — "3.40s"
-           *   Expires At   — "15.60s"   (derived from appliedAt + duration, or currentTime + timeLeft)
-           *   Swaps Left   — "2 swaps"  (only when relevant)
-           *   Description  — mechanic text from the data definition
-           *   History      — timeline of apply / refresh / stack events during the rotation
-           */}
+          {/* Active Stats */}
+          {statsEntries.length > 0 && (
+            <div className="statusDetailSection">
+              <span className="statusDetailSectionLabel">Active Stats</span>
+              {statsEntries.map(([key, value]) => (
+                <div key={key} className="statusDetailRow">
+                  <span className="statusDetailRowLabel">{formatStatKey(key)}</span>
+                  <span className="statusDetailRowValue statusDetailRowValue--stat">{formatStatValue(key, value)}</span>
+                </div>
+              ))}
+            </div>
+          )}
 
         </div>
       </div>

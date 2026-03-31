@@ -499,6 +499,26 @@ function helpHealProcModifiers(ctx: StepContext): void {
       ctx.modifiersInAction = activateModifiers(healProc.procModifiers, ctx.modifiersInAction, ctx)
     }
 
+    // activateModifiers sets each proc-modifier's timeLeft = timeDuration measured from ctx.fromTime,
+    // but the tick actually fires at lastProcTime (which may be > ctx.fromTime for long steps).
+    // resolveModifierState will later subtract (toTime - fromTime) from timeLeft, so we pre-compensate
+    // by adding (lastProcTime - fromTime) here, making the effective duration start from lastProcTime.
+    const tickOffset = lastProcTime - ctx.fromTime
+    if (tickOffset > 0) {
+      for (const procMod of healProc.procModifiers) {
+        if (!procMod.durationStrategy || procMod.durationStrategy.type === 'permanent') continue
+        const procIdx = ctx.modifiersInAction.findIndex(
+          m => m.modifier.source === procMod.source && m.modifier.displayName === procMod.displayName,
+        )
+        if (procIdx !== -1 && ctx.modifiersInAction[procIdx].timeLeft !== Infinity) {
+          ctx.modifiersInAction[procIdx] = {
+            ...ctx.modifiersInAction[procIdx],
+            timeLeft: ctx.modifiersInAction[procIdx].timeLeft + tickOffset,
+          }
+        }
+      }
+    }
+
     // Update lastHealProcTime on the live entry (activateModifiers may have replaced the object)
     const liveIndex = ctx.modifiersInAction.findIndex(
       m => m.modifier.source === mia.modifier.source && m.modifier.displayName === mia.modifier.displayName,

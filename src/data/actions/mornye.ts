@@ -411,6 +411,7 @@ const mornye_heavy: Action = {
       source: 'Mornye: Syntony Field',
       displayName: 'Syntony Field',
       type: 'buff',
+      color: '#FFC247',
       ownerCharacter: 'Mornye',
       characterStats: { offtuneBuildupRate: 0.5 },
       condition: always(),
@@ -422,6 +423,8 @@ const mornye_heavy: Action = {
         procTag: 'HEAL_PROC',
         procModifiers: [],
       },
+      description: 'For 25 seconds: increases the Offtune Buildup Rate of all Resonators by 50%. Every 3 seconds, heals the active resonator.',
+      showStats: true
     },
     {
       // S2 bonus: +20% Off-tune Buildup Rate, active only when Mornye's sequence >= 2.
@@ -429,6 +432,7 @@ const mornye_heavy: Action = {
       source: 'Mornye: Syntony Field',
       displayName: 'Syntony Field (S2)',
       type: 'buff',
+      color: '#FFC247',
       ownerCharacter: 'Mornye',
       characterStats: { offtuneBuildupRate: 0.2 },
       condition: (ctx) => {
@@ -439,6 +443,8 @@ const mornye_heavy: Action = {
       durationStrategy: { type: 'limited', timeDuration: 25 },
       stackingStrategy: { maxStacks: 1, resetTimerOnApplication: true, stacksRemovedEachTime: 1 },
       contributionGroup: 'Mornye: Syntony Field',
+      description: 'Syntony Field grants an additional 20% Offtune Buildup Rate to all Resonators',
+      showStats: true
     },
   ],
   sideEffects: [
@@ -481,6 +487,7 @@ const mornye_heavy_swap_in: Action = {
       source: 'Mornye: Syntony Field',
       displayName: 'Syntony Field',
       type: 'buff',
+      color: '#FFC247',
       ownerCharacter: 'Mornye',
       characterStats: { offtuneBuildupRate: 0.5 },
       condition: always(),
@@ -492,6 +499,8 @@ const mornye_heavy_swap_in: Action = {
         procTag: 'HEAL_PROC',
         procModifiers: [],
       },
+      description: 'For 25 seconds: increases the Offtune Buildup Rate of all Resonators by 50%. Every 3 seconds, heals the active resonator.',
+      showStats: true
     },
     {
       // S2 bonus: +20% Off-tune Buildup Rate, active only when Mornye's sequence >= 2.
@@ -499,6 +508,7 @@ const mornye_heavy_swap_in: Action = {
       source: 'Mornye: Syntony Field',
       displayName: 'Syntony Field (S2)',
       type: 'buff',
+      color: '#FFC247',
       ownerCharacter: 'Mornye',
       characterStats: { offtuneBuildupRate: 0.2 },
       condition: (ctx) => {
@@ -509,6 +519,8 @@ const mornye_heavy_swap_in: Action = {
       durationStrategy: { type: 'limited', timeDuration: 25 },
       stackingStrategy: { maxStacks: 1, resetTimerOnApplication: true, stacksRemovedEachTime: 1 },
       contributionGroup: 'Mornye: Syntony Field',
+      description: 'Syntony Field grants an additional 20% Offtune Buildup Rate to all Resonators',
+      showStats: true
     },
   ],
   sideEffects: [
@@ -669,7 +681,7 @@ const mornye_liberation: Action = {
   scaling: 'DEF',
   elements: ['FUSION'],
   dmgTypes: ['LIBERATION'],
-  cooldown: 100,
+  cooldown: 100, // TODO
   energyGenerated: [
     { energyType: 'concerto', amount: 20, share: 0 },
   ],
@@ -685,6 +697,7 @@ const mornye_liberation: Action = {
       source: 'Mornye: High Syntony Field',
       displayName: 'High Syntony Field',
       type: 'buff',
+      color: '#FF2E3A',
       ownerCharacter: 'Mornye',
       characterStats: { bonusDEF: 0.2, offtuneBuildupRate: 0.5 },
       condition: always(),
@@ -698,6 +711,8 @@ const mornye_liberation: Action = {
       },
       activationCondition: (ctx) => ctx.modifiersInAction.some(mia => mia.modifier.source === 'Mornye: Syntony Field'),
       removesModifierSourceOnActivation: 'Mornye: Syntony Field',
+      description: 'For 25 seconds: increases the DEF of all Resonators by 20% and Offtune Buildup Rate by 50%. Every 3 seconds, heals the active resonator.',
+      showStats: true
     },
     {
       // S2 bonus: +20% Off-tune Buildup Rate, active only when Mornye's sequence >= 2.
@@ -705,6 +720,7 @@ const mornye_liberation: Action = {
       source: 'Mornye: High Syntony Field',
       displayName: 'High Syntony Field (S2)',
       type: 'buff',
+      color: '#FF2E3A',
       ownerCharacter: 'Mornye',
       characterStats: { offtuneBuildupRate: 0.2 },
       condition: (ctx) => {
@@ -716,6 +732,8 @@ const mornye_liberation: Action = {
       stackingStrategy: { maxStacks: 1, resetTimerOnApplication: true, stacksRemovedEachTime: 1 },
       activationCondition: (ctx) => ctx.modifiersInAction.some(mia => mia.modifier.source === 'Mornye: Syntony Field'),
       contributionGroup: 'Mornye: High Syntony Field',
+      description: 'High Syntony Field grants an additional 20% Offtune Buildup Rate to all Resonators',
+      showStats: true
     },
   ],
   inherentModifiers: [

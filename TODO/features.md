@@ -1,9 +1,5 @@
 ## Features
 
-# Actions
-- Give type with option to hide from selector if not selectable
-- Hide actions unrelated to your current form in selector
-
 # Table
 On-click works for Negative Statuses, Modifiers, and Coordinated Attacks labels
 BUT only the ones in 'CurrentStateRow' should be clickable

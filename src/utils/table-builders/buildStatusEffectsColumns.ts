@@ -21,6 +21,7 @@ export function buildStatusEffectsColumns(selectedCharacters: Character[]): Colu
         label: status,
         icon: `/assets/negative-statuses/${status.toLowerCase().replace(/\s+/g, '_')}.png`,
         color: negativeStatusData?.color,
+        maxStacks: negativeStatusData?.maxStacksDefault,
       }
     })
 
@@ -44,6 +45,8 @@ export function buildStatusEffectsColumns(selectedCharacters: Character[]): Colu
 
   const modifierMaxStacksMap = new Map<string, number>()
   const modifierColorMap = new Map<string, string | undefined>()
+  const modifierDescriptionMap = new Map<string, string>()
+  const modifierShowStatsMap = new Map<string, boolean>()
   const permanentModifiersSet = new Set<string>()
   for (const mod of allBuffModifiers) {
     const key = mod.displayName.replace(/\s+/g, '')
@@ -52,6 +55,8 @@ export function buildStatusEffectsColumns(selectedCharacters: Character[]): Colu
     if (mod.durationStrategy.type === 'permanent') {
       permanentModifiersSet.add(key)
     }
+    if (mod.description) modifierDescriptionMap.set(key, mod.description)
+    if (mod.showStats) modifierShowStatsMap.set(key, true)
   }
 
   const activeBuffs = Array.from(new Set([...actionBuffs, ...buffModifierNames]))
@@ -67,9 +72,11 @@ export function buildStatusEffectsColumns(selectedCharacters: Character[]): Colu
       return {
         key,
         label: buff,
-        icon: `/assets/modifiers/${buff.toLowerCase().replace(/\s+/g, '_')}.png`,
+        icon: `/assets/modifiers/${buff.toLowerCase().replace(/:/g, '').replace(/\s+/g, '_')}.png`,
         maxStacks,
         color,
+        description: modifierDescriptionMap.get(key),
+        showStats: modifierShowStatsMap.get(key),
       }
     })
 
@@ -94,6 +101,8 @@ export function buildStatusEffectsColumns(selectedCharacters: Character[]): Colu
 
   const debuffMaxStacksMap = new Map<string, number>()
   const debuffColorMap = new Map<string, string | undefined>()
+  const debuffDescriptionMap = new Map<string, string>()
+  const debuffShowStatsMap = new Map<string, boolean>()
   const permanentDebuffsSet = new Set<string>()
   for (const mod of allDebuffModifiers) {
     const key = mod.displayName.replace(/\s+/g, '')
@@ -102,6 +111,8 @@ export function buildStatusEffectsColumns(selectedCharacters: Character[]): Colu
     if (mod.durationStrategy.type === 'permanent') {
       permanentDebuffsSet.add(key)
     }
+    if (mod.description) debuffDescriptionMap.set(key, mod.description)
+    if (mod.showStats) debuffShowStatsMap.set(key, true)
   }
 
   const activeDebuffs = Array.from(new Set([...actionDebuffs, ...debuffModifierNames]))
@@ -117,9 +128,11 @@ export function buildStatusEffectsColumns(selectedCharacters: Character[]): Colu
       return {
         key,
         label: debuff,
-        icon: `/assets/modifiers/${debuff.toLowerCase().replace(/\s+/g, '_')}.png`,
+        icon: `/assets/modifiers/${debuff.toLowerCase().replace(/:/g, '').replace(/\s+/g, '_')}.png`,
         maxStacks,
         color,
+        description: debuffDescriptionMap.get(key),
+        showStats: debuffShowStatsMap.get(key),
       }
     })
 

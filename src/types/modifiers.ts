@@ -60,6 +60,10 @@ export type DamageModifier = {
   stackingStrategy: StackingStrategy
   negativeStatusEffects?: NegativeStatusEffect[]
   color?: string
+  /** Short mechanic/flavour description shown in the hover tooltip and detail panel. */
+  description?: string
+  /** When true, the active stat contribution from this modifier is shown in the detail panel. */
+  showStats?: boolean
   /** When true, removing this modifier (timer expiry or explicit stack removal to 0)
    *  clears the ownerCharacter's charactersForteGrants in the snapshot.
    *  Use this on the "anchor" modifier of a forte-grant system (e.g. Cartethyia's Mandate). */

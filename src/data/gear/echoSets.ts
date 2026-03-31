@@ -57,11 +57,14 @@ export const echoSetRegistry: Readonly<Record<string, EchoSet>> = {
             modifiers: [
               {
                 source: 'Halo of Starry Radiance: 5pc',
-                displayName: 'Radiant ATK',
+                displayName: 'Halo of Starry Radiance (Active)',
                 type: 'buff',
+                color: '#82DC8C',
                 ownerCharacter: null,
                 // characterStats is unused; statsOnActivation provides the frozen value at cast time.
                 characterStats: { bonusATK: 0 },
+                description: 'When healing a Resonator in the team, every 1% of Off-Tune Buildup Rate grants a 0.2% ATK increase to all Resonators in the team for 4s, up to 25%.',
+                showStats: true,
                 /**
                  * Computed once at application (and on each refresh). Reads the effective
                  * Off-Tune Buildup Rate at that moment — base stat plus any active modifiers

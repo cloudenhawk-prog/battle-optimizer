@@ -149,6 +149,7 @@ function renderBodyColumnsWithTags(columns: ColumnDef[], columnVisibility: Colum
         // completes, not during. If no previous snapshot exists, show empty (0 stacks).
         const sourceSnapshot = previousSnapshot
         let statusData: Record<string, number> | undefined
+        let activationStatsData: Record<string, object> | undefined
         let statusType: 'buff' | 'debuff' | 'negativeStatus' = 'buff'
 
         if (col.key === 'negativeStatuses') {
@@ -156,6 +157,7 @@ function renderBodyColumnsWithTags(columns: ColumnDef[], columnVisibility: Colum
           statusType = 'negativeStatus'
         } else if (col.key === 'buffs') {
           statusData = sourceSnapshot?.buffs as Record<string, number> | undefined
+          activationStatsData = sourceSnapshot?.buffsActivationStats as Record<string, object> | undefined
           statusType = 'buff'
         } else if (col.key === 'debuffs') {
           statusData = sourceSnapshot?.debuffs as Record<string, number> | undefined
@@ -188,6 +190,9 @@ function renderBodyColumnsWithTags(columns: ColumnDef[], columnVisibility: Colum
             maxStacks: meta.maxStacks,
             type: statusType,
             color: meta.color,
+            description: meta.description,
+            showStats: meta.showStats,
+            stats: activationStatsData?.[meta.key] as object | undefined,
           })) ?? []
 
         return (

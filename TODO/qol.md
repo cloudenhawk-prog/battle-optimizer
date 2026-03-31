@@ -3,15 +3,6 @@
 # Overall
 The table is a lighter shade than the character State Tracker windows. Let's change the table to fit them more.
 
-# Actions
-- Should have a property that states if an action should be hidden from the actionSelector if it's uncastable
-
-# Modifiers
-- Certain modifiers only gives stats when conditions are met. They may not show up in the stats profile overlay, even though it could be an obvious almost 100 % uptime stat.
-  Each stat should, for example at the bottom, show Conditional multipliers currently present
-    > Example: Mornye S2 Crit Dmg Boost (false: belongs to Interfered Marker which is simply an always() buff)
-    > Example: Mornye Weapon Crit Dmg Boost (false: will become an always() buff triggered by heals)
-
 # Verify Data
 - Verify data should also look for assets in the project that is not used anywhere (if possible and not too complicated)
 

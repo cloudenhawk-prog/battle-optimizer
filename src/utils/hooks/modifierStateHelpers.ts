@@ -53,6 +53,7 @@ export function updateModifierStacks(snapshot: Snapshot, modifiersInAction: Modi
       buffsSwapsLeft[key] = swapsLeft
       buffsMaxStacks[key] = maxStacks
       if (mia.activationStats) buffsActivationStats[key] = mia.activationStats
+      else if (mia.modifier.characterStats) buffsActivationStats[key] = mia.modifier.characterStats
     } else if (type === 'debuff') {
       debuffs[key] = stacks
       debuffsTimeLeft[key] = timeLeft
