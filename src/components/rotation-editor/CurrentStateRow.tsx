@@ -142,9 +142,10 @@ function createInitialSnapshot(): Snapshot {
     charactersRequiresSwapOut: {},
     charactersForms: {},
     charactersSwapCooldownUntil: {},
-    charactersRequiredFollowUp: {},
+    charactersAttemptFollowUp: {},
     charactersComboWindows: {},
     charactersForteGrants: {},
+    charactersComboChainTags: {},
   }
 }
 

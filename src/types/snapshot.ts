@@ -50,10 +50,10 @@ export interface Snapshot {
    */
   charactersSwapCooldownUntil: Record<string, number>
   /** Tracks which character must cast which action in the next row (for combo systems).
-   *  Key: character name. Value: required action info.
+   *  Key: character name. Value: follow-up action info.
    *  When set, all other actions/characters are locked in the next row (subject to
-   *  the `must` flag — see Action.requiredFollowUp for semantics). */
-  charactersRequiredFollowUp: Record<string, { actionName: string; must: boolean }>
+   *  the `must` flag — see Action.attemptFollowUp for semantics). */
+  charactersAttemptFollowUp: Record<string, { actionName: string; must: boolean }>
   /** Tracks active combo windows for time-based combo systems.
    *  Key: character name. Value: info about the last combo starter action. */
   charactersComboWindows: Record<
@@ -74,4 +74,8 @@ export interface Snapshot {
    *  Grants accumulate as forte sub-energies are consumed (deduplicated) and are cleared
    *  when the associated modifier with clearsForteGrantsOnExpiry expires or is removed. */
   charactersForteGrants: Record<string, string[]>
+  /** Combo chain tags left by the most recently cast action for each character.
+   *  Set from `Action.comboChainTags` at cast time. Read by `castConditions.requiredComboTags`
+   *  checks (honoring the persistence window) to enforce sequential combo ordering. */
+  charactersComboChainTags: Record<string, string[]>
 }

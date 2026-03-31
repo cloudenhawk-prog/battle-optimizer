@@ -1,8 +1,6 @@
 ### Bugs
 
 # Modifiers
-
-- Investigate whether injected modifiers/side effects are correctly applied to character actions.
   If not, fix injection logic to ensure "character" targets modify each action as intended.
   Functions to inspect: applyInjectedModifiers and applyInjectedSideEffects — currently have unused characterActions parameter, suspicious.
   SUSPICIOUS

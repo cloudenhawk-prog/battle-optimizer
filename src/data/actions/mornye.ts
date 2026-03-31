@@ -36,9 +36,11 @@ const mornye_BA_1_cancel_with_swap: Action = {
     persistenceTime: 1.4,
     requiresSwapOut: true,
     requiredForms: ['Baseline Mode'],
-    // TODO Can combo into anything starting with BA2 within persistence time
+    blockedComboTags: ['BA1', 'BA2', 'BA3']
   },
   offtune: (0.11 + 2 * 0.08),
+  comboChainTags: ['BA1'],
+  hideWhenNotCastable: true,
   groupName: 'Basic Attack 1',
   variantName: 'Cancel With Swap'
 }
@@ -71,10 +73,13 @@ const mornye_BA_1_2_cancel_with_swap: Action = {
     endState: 'GROUND',
     persistenceTime: 2.551,
     requiresSwapOut: true,
-    requiredForms: ['Baseline Mode']
+    requiredForms: ['Baseline Mode'],
+    blockedComboTags: ['BA1', 'BA2', 'BA3'],
     // TODO Can combo into anything starting with BA3 within persistence time
   },
   offtune: (0.11 + 2 * 0.08) + (0.12 + 0.12 + 2 * 0.09),
+  comboChainTags: ['BA2'],
+  hideWhenNotCastable: true,
   groupName: 'Basic Attack 1-2',
   variantName: 'Cancel With Swap'
 }
@@ -104,12 +109,15 @@ const mornye_BA_1_3_into_heavy: Action = {
   castConditions: {
     startState: 'GROUND',
     endState: 'GROUND',
-    requiredForms: ['Baseline Mode']
+    requiredForms: ['Baseline Mode'],
+    blockedComboTags: ['BA1', 'BA2', 'BA3'],
   },
   offtune: (0.11 + 2 * 0.08) + (0.12 + 0.12 + 2 * 0.09) + (0.21 + 6 * 0.05),
+  comboChainTags: ['BA3'],
+  hideWhenNotCastable: true,
   groupName: 'Basic Attack 1-3',
   variantName: 'Into Heavy Attack',
-  requiredFollowUp: { actionName: 'Heavy Attack' }
+  attemptFollowUp: { actionName: 'Heavy Attack' }
 }
 
 const mornye_BA_1_3_cancel_with_swap: Action = {
@@ -139,10 +147,13 @@ const mornye_BA_1_3_cancel_with_swap: Action = {
     endState: 'GROUND',
     persistenceTime: 2.92,
     requiresSwapOut: true,
-    requiredForms: ['Baseline Mode']
+    requiredForms: ['Baseline Mode'],
+    blockedComboTags: ['BA1', 'BA2', 'BA3'],
     // TODO Should not allow BA4; within this time only actions available withine persistenceTime should be: skill, heavy, liberation
   },
   offtune: (0.11 + 2 * 0.08) + (0.12 + 0.12 + 2 * 0.09) + (0.21 + 6 * 0.05),
+  comboChainTags: ['BA3'],
+  hideWhenNotCastable: true,
   groupName: 'Basic Attack 1-3',
   variantName: 'Cancel With Swap'
 }
@@ -175,10 +186,13 @@ const mornye_BA_2_cancel_with_swap: Action = {
     endState: 'GROUND',
     persistenceTime: 2.551,
     requiresSwapOut: true,
-    requiredForms: ['Baseline Mode']
-    // TODO Can combo into anything starting with BA3 within persistence time
+    requiredForms: ['Baseline Mode'],
+    requiredComboTags: ['BA1'],
+    blockedComboTags: ['BA2', 'BA3']
   },
   offtune: (0.12 + 0.12 + 2 * 0.09),
+  comboChainTags: ['BA2'],
+  hideWhenNotCastable: true,
   groupName: 'Basic Attack 2',
   variantName: 'Cancel With Swap'
 }
@@ -208,12 +222,16 @@ const mornye_BA_2_3_into_heavy: Action = {
   castConditions: {
     startState: 'GROUND',
     endState: 'GROUND',
-    requiredForms: ['Baseline Mode']
+    requiredForms: ['Baseline Mode'],
+    requiredComboTags: ['BA1'],
+    blockedComboTags: ['BA2', 'BA3']
   },
   offtune: (0.12 + 0.12 + 2 * 0.09) + (0.21 + 6 * 0.05),
+  comboChainTags: ['BA3'],
+  hideWhenNotCastable: true,
   groupName: 'Basic Attack 2-3',
   variantName: 'Into Heavy',
-  requiredFollowUp: { actionName: 'Heavy Attack' }
+  attemptFollowUp: { actionName: 'Heavy Attack' }
 }
 
 const mornye_BA_2_3_cancel_with_swap: Action = {
@@ -243,10 +261,14 @@ const mornye_BA_2_3_cancel_with_swap: Action = {
     endState: 'GROUND',
     persistenceTime: 2.92,
     requiresSwapOut: true,
-    requiredForms: ['Baseline Mode']
+    requiredForms: ['Baseline Mode'],
+    requiredComboTags: ['BA1'],
+    blockedComboTags: ['BA2', 'BA3']
     // TODO Should not allow BA4; within this time only actions available withine persistenceTime should be: skill, heavy, liberation
   },
   offtune: (0.12 + 0.12 + 2 * 0.09) + (0.21 + 6 * 0.05),
+  comboChainTags: ['BA3'],
+  hideWhenNotCastable: true,
   groupName: 'Basic Attack 2-3',
   variantName: 'Cancel With Swap'
 }
@@ -276,12 +298,16 @@ const mornye_BA_3_into_heavy: Action = {
   castConditions: {
     startState: 'GROUND',
     endState: 'GROUND',
-    requiredForms: ['Baseline Mode']
+    requiredForms: ['Baseline Mode'],
+    requiredComboTags: ['BA2'],
+    blockedComboTags: ['BA1', 'BA3']
   },
   offtune: (0.21 + 6 * 0.05),
+  comboChainTags: ['BA3'],
+  hideWhenNotCastable: true,
   groupName: 'Basic Attack 3',
   variantName: 'Into Heavy',
-  requiredFollowUp: { actionName: 'Heavy Attack' }
+  attemptFollowUp: { actionName: 'Heavy Attack' }
 }
 
 const mornye_BA_3_cancel_with_swap: Action = {
@@ -311,10 +337,14 @@ const mornye_BA_3_cancel_with_swap: Action = {
     endState: 'GROUND',
     persistenceTime: 2.92,
     requiresSwapOut: true,
-    requiredForms: ['Baseline Mode']
+    requiredForms: ['Baseline Mode'],
+    requiredComboTags: ['BA2'],
+    blockedComboTags: ['BA1', 'BA3']
     // TODO Should not allow BA4; within this time only actions available withine persistenceTime should be: skill, heavy, liberation
   },
   offtune: (0.21 + 6 * 0.05),
+  comboChainTags: ['BA3'],
+  hideWhenNotCastable: true,
   groupName: 'Basic Attack 3',
   variantName: 'Cancel With Swap'
 }
@@ -343,12 +373,16 @@ const mornye_BA_3_cancel_with_skill: Action = {
   castConditions: {
     startState: 'GROUND',
     endState: 'GROUND',
-    requiredForms: ['Baseline Mode']
+    requiredForms: ['Baseline Mode'],
+    requiredComboTags: ['BA2'],
+    blockedComboTags: ['BA1', 'BA3']
   },
   offtune: (0),
+  comboChainTags: ['BA3'],
+  hideWhenNotCastable: true,
   groupName: 'Basic Attack 3',
   variantName: 'Cancel With Skill',
-  requiredFollowUp: { actionName: 'Resonance Skill' } // TODO Add liberation as an option as well
+  attemptFollowUp: { actionName: 'Resonance Skill' } // TODO Add liberation as an option as well
 }
 
 // ========== Heavy Attack =====================================================================================================
@@ -419,7 +453,7 @@ const mornye_heavy: Action = {
   },
   offtune: 0.30 + 0.66,
   formChange: 'Wide Field Observation Mode',
-  requiredFollowUp: { actionName: 'Mode: Basic Attack 1-3' }
+  attemptFollowUp: { actionName: 'Mode: Basic Attack 1-3' }
 }
 
 const mornye_heavy_swap_in: Action = {
@@ -489,7 +523,7 @@ const mornye_heavy_swap_in: Action = {
   },
   offtune: 0.30 + 0.66,
   formChange: 'Wide Field Observation Mode',
-  requiredFollowUp: { actionName: 'Mode: Basic Attack 1-3' }
+  attemptFollowUp: { actionName: 'Mode: Basic Attack 1-3' }
 }
 
 // ========== Resonance Skill ==================================================================================================
@@ -518,7 +552,7 @@ const mornye_skill: Action = {
   offtune: 0,
   groupName: 'Resonance Skill',
   variantName: 'Default',
-  requiredFollowUp: { actionName: 'XXX' } // TODO Counts as BA1, requires BA2 or BA2->... as follow up. Was this cast time teste with BA2 follow up in mind?
+  attemptFollowUp: { actionName: 'XXX' } // TODO Counts as BA1, requires BA2 or BA2->... as follow up. Was this cast time teste with BA2 follow up in mind?
 }
 
 // Add swap out variant with 0.09 cast time (might want to trigger heal)
@@ -554,7 +588,7 @@ const mode_mornye_BA_1_3: Action = {
     requiredForms: ['Wide Field Observation Mode']
   },
   offtune: (4 * 0.07) + (4 * 0.13) + (4 * 0.05 + 2 * 0.17),
-  requiredFollowUp: { actionName: 'Mode: Resonance Skill' }
+  attemptFollowUp: { actionName: 'Mode: Resonance Skill' }
   // TODO - we also want actions that, while not having a required follow up, does require you to not skip character (i.e. for the next row/action select, we are locking the other characters in the character selector)
 }
 
@@ -586,7 +620,7 @@ const mode_mornye_skill: Action = { // TODO: Also triggers healing
     requiredForms: ['Wide Field Observation Mode']
   },
   offtune: 4 * 0.20,
-  requiredFollowUp: { actionName: 'Mode: Heavy Attack' }
+  attemptFollowUp: { actionName: 'Mode: Heavy Attack' }
 }
 
 // ========== Mode: Heavy Attack ===============================================================================================
@@ -621,7 +655,7 @@ const mode_mornye_heavy: Action = {
     requiredForms: ['Wide Field Observation Mode']
   },
   offtune: 1.04,
-  requiredFollowUp: { actionName: 'Liberation' }
+  attemptFollowUp: { actionName: 'Liberation' }
 }
 
 // ========== Mode: Liberation =======================================================================================================
@@ -702,7 +736,7 @@ const mornye_liberation: Action = {
     requiredForms: ['Wide Field Observation Mode'] // Technically not true, but practically required
   },
   offtune: 7.20,
-  requiredFollowUp: { actionName: 'Echo Skill' }
+  attemptFollowUp: { actionName: 'Echo Skill' }
 }
 
 // ========== Intro & Outro ====================================================================================================

@@ -113,7 +113,7 @@ export function isFollowUpCastableNow(
  * satisfied given the state BEFORE `startingAction` is cast (`previousSnapshot`).
  *
  * Simulates position, form, and energy through each MUST step in the chain.
- * A step is part of the MUST chain when its `requiredFollowUp.must` is true (or undefined,
+ * A step is part of the MUST chain when its `attemptFollowUp.must` is true (or undefined,
  * which defaults to true).
  *
  * Returns true if every MUST step would be castable; false otherwise.
@@ -153,7 +153,7 @@ export function validateMustChain(
   let action = startingAction
 
   while (true) {
-    const followUp = action.requiredFollowUp
+    const followUp = action.attemptFollowUp
     // Stop walking when there is no follow-up, or when the follow-up is not explicitly MUST.
     // Only explicit must: true links are part of the MUST chain.
     if (!followUp || !followUp.must) break

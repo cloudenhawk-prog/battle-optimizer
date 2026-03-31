@@ -778,24 +778,30 @@ export function resolveCastState(ctx: StepContext): void {
     [charName]: ctx.action.name,
   }
 
+  // Record the combo chain tags produced by this action
+  ctx.current.charactersComboChainTags = {
+    ...(ctx.prev.charactersComboChainTags ?? {}),
+    [charName]: ctx.action.comboChainTags ?? [],
+  }
+
   // Track whether this character must swap out after this action
   ctx.current.charactersRequiresSwapOut = {
     [charName]: ctx.action.castConditions.requiresSwapOut ?? false,
   }
 
-  // Track required follow-up actions for combo system
-  // If this action has a requiredFollowUp, set it for the same character
-  if (ctx.action.requiredFollowUp) {
-    ctx.current.charactersRequiredFollowUp = {
+  // Track follow-up actions for combo system
+  // If this action has an attemptFollowUp, set it for the same character
+  if (ctx.action.attemptFollowUp) {
+    ctx.current.charactersAttemptFollowUp = {
       [charName]: {
-        actionName: ctx.action.requiredFollowUp.actionName,
+        actionName: ctx.action.attemptFollowUp.actionName,
         // Default is false ("if possible") — must: true must be explicitly declared
-        must: ctx.action.requiredFollowUp.must ?? false,
+        must: ctx.action.attemptFollowUp.must ?? false,
       },
     }
   } else {
-    // Clear any previous required follow-up for this character
-    ctx.current.charactersRequiredFollowUp = {}
+    // Clear any previous follow-up for this character
+    ctx.current.charactersAttemptFollowUp = {}
   }
 
   // Handle form changes if this action changes the character's form

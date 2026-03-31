@@ -257,9 +257,9 @@ type AutocastParams = {
 }
 
 /**
- * Walks the requiredFollowUp chain from the resolved snapshot and automatically
+ * Walks the attemptFollowUp chain from the resolved snapshot and automatically
  * casts each follow-up action in sequence, stopping when there is no further
- * required follow-up or when a follow-up cannot be resolved.
+ * follow-up or when a follow-up cannot be resolved.
  *
  * MUST follow-ups are always auto-cast.
  * "If possible" follow-ups (must === false) are auto-cast only when the follow-up
@@ -276,7 +276,7 @@ function autocastFollowUpChain(params: AutocastParams): Snapshot[] {
     const characterName = resolvedSnapshot.character
     if (!characterName) break
 
-    const followUpEntry = resolvedSnapshot.charactersRequiredFollowUp?.[characterName]
+    const followUpEntry = resolvedSnapshot.charactersAttemptFollowUp?.[characterName]
     if (!followUpEntry) break
 
     const { actionName: followUpActionName, must } = followUpEntry

@@ -6,7 +6,7 @@ import type { Character } from '../../types/character'
 import type { Snapshot } from '../../types/snapshot'
 import type { EnergyType } from '../../types/baseTypes'
 import { getActionCooldownKey } from '../../utils/hooks/cooldownHelpers'
-import { isFollowUpCastableNow, validateMustChain } from '../../utils/conditions/mustChainValidator'
+import { validateMustChain } from '../../utils/conditions/mustChainValidator'
 
 // ========== Component: Action Select =========================================================================================
 
@@ -40,6 +40,7 @@ type ActionState = {
   isFollowUpNotReady: boolean
   isMustChainUnsatisfiable: boolean
   isComboWindowExpired: boolean
+  isComboTagMismatch: boolean
 }
 
 export function ActionSelect({ value, actions, character, currentEnergies, previousSnapshot, onChange, disabled = false }: ActionSelectProps) {
@@ -119,6 +120,7 @@ export function ActionSelect({ value, actions, character, currentEnergies, previ
     // - Otherwise (outside persistence or no persistence): position resets to GROUND, combo breaks
     let charPosition: 'GROUND' | 'AIR' = 'GROUND'
     let charLastAction: string | undefined = undefined
+    let charComboChainTags: string[] = []
 
     if (character && previousSnapshot) {
       const charName = character.name
@@ -130,6 +132,7 @@ export function ActionSelect({ value, actions, character, currentEnergies, previ
       if (isPrevCharacter || isWithinPersistence) {
         charPosition = storedPosition
         charLastAction = previousSnapshot.charactersLastAction?.[charName]
+        charComboChainTags = previousSnapshot.charactersComboChainTags?.[charName] ?? []
       }
     }
 
@@ -225,27 +228,18 @@ export function ActionSelect({ value, actions, character, currentEnergies, previ
       isNoSwapTarget = !hasAvailableSwapTarget
     }
 
-    // Goal 8: required follow-up check (combo system)
-    // If the previous action set a required follow-up, only allow that specific action.
-    // For "must" entries the lock is unconditional.
-    // For "if possible" entries the lock only applies when the follow-up is currently castable;
-    // if it is not castable the user is free to choose any other action.
+    // Goal 8: attempt follow-up check (combo system)
+    // If the previous action set a follow-up, only allow that specific action when must: true.
+    // must: true  → always lock; parent was only castable if the chain could be satisfied.
+    // must: false → never lock; the follow-up is attempted automatically if castable, but
+    //               the user is free to choose any action regardless.
     let isNotRequiredFollowUp = false
     if (character && previousSnapshot) {
-      const followUpEntry = previousSnapshot.charactersRequiredFollowUp?.[character.name]
-      if (followUpEntry) {
+      const followUpEntry = previousSnapshot.charactersAttemptFollowUp?.[character.name]
+      if (followUpEntry && followUpEntry.must) {
         const isThisTheFollowUp = action.name === followUpEntry.actionName || action.groupName === followUpEntry.actionName
         if (!isThisTheFollowUp) {
-          if (followUpEntry.must) {
-            // MUST: always lock to the required follow-up
-            isNotRequiredFollowUp = true
-          } else {
-            // "if possible": lock only when the follow-up is castable right now AND its own MUST chain can be satisfied
-            const followUpAction = actions.find(a => a.name === followUpEntry.actionName || a.groupName === followUpEntry.actionName)
-            if (followUpAction && isFollowUpCastableNow(followUpAction, previousSnapshot, character) && validateMustChain(followUpAction, previousSnapshot, character, actions)) {
-              isNotRequiredFollowUp = true
-            }
-          }
+          isNotRequiredFollowUp = true
         }
       }
     }
@@ -257,10 +251,10 @@ export function ActionSelect({ value, actions, character, currentEnergies, previ
     // whether the follow-up is locked is handled by Goal 8.
     let isFollowUpNotReady = false
     let isMustChainUnsatisfiable = false
-    if (action.requiredFollowUp && character && previousSnapshot) {
-      const must = action.requiredFollowUp.must ?? true
+    if (action.attemptFollowUp && character && previousSnapshot) {
+      const must = action.attemptFollowUp.must ?? false
       if (must) {
-        const followUpActionName = action.requiredFollowUp.actionName
+        const followUpActionName = action.attemptFollowUp.actionName
         const followUpAction = actions.find(a => a.name === followUpActionName || a.groupName === followUpActionName)
 
         if (!followUpAction) {
@@ -283,6 +277,16 @@ export function ActionSelect({ value, actions, character, currentEnergies, previ
         }
       }
     }
+
+    // Goal 11: requiredComboTags / blockedComboTags check
+    // requiredComboTags: ALL listed tags must be present on the character's last personal action.
+    // blockedComboTags: NONE of the listed tags may be present on the character's last personal action.
+    // Both honour the same persistence window used for charLastAction above.
+    const requiredComboTagsConstraint = action.castConditions.requiredComboTags
+    const blockedComboTagsConstraint = action.castConditions.blockedComboTags
+    const isRequiredTagsMissing = !!requiredComboTagsConstraint?.length && !requiredComboTagsConstraint.every(tag => charComboChainTags.includes(tag))
+    const isBlockedTagPresent = !!blockedComboTagsConstraint?.length && blockedComboTagsConstraint.some(tag => charComboChainTags.includes(tag))
+    const isComboTagMismatch = isRequiredTagsMissing || isBlockedTagPresent
 
     // Goal 10: comboWindow check
     // Check if this action can only be cast within a time window after specific previous actions
@@ -345,6 +349,7 @@ export function ActionSelect({ value, actions, character, currentEnergies, previ
       isFollowUpNotReady,
       isMustChainUnsatisfiable,
       isComboWindowExpired,
+      isComboTagMismatch,
     }
   }
 
@@ -354,7 +359,13 @@ export function ActionSelect({ value, actions, character, currentEnergies, previ
     return !isIntroOutro
   })
 
-  const actionStates = selectableActions.map(getActionState).filter(s => !s.isWrongForm || s.isCurrent)
+  const actionStates = selectableActions.map(getActionState)
+    .filter(s => !s.isWrongForm || s.isCurrent)
+    .filter(s => {
+      if (!s.action.hideWhenNotCastable || s.isCurrent) return true
+      const isNotCastable = s.isUnaffordable || s.isOnCooldown || s.isWrongPosition || s.isPreviousActionMismatch || s.isRequiresSwapIn || s.isWrongForm || s.isCustomCanCastFailed || s.isOnSwapCooldown || s.isNoSwapTarget || s.isNotRequiredFollowUp || s.isFollowUpNotReady || s.isMustChainUnsatisfiable || s.isComboWindowExpired || s.isComboTagMismatch
+      return !isNotCastable
+    })
   const selectedAction = actionStates.find(s => s.isCurrent)
   const displayText = selectedAction ? selectedAction.action.name : '-- Select Action --'
 
@@ -383,7 +394,7 @@ export function ActionSelect({ value, actions, character, currentEnergies, previ
   // Then create ActionGroup objects
   for (const [groupKey, variants] of groupMap.entries()) {
     const isGroup = variants.length > 1 || variants[0].action.groupName !== undefined
-    const isSelectable = variants.some(v => !v.isOnCooldown && !v.isUnaffordable && !v.isWrongPosition && !v.isPreviousActionMismatch && !v.isRequiresSwapIn && !v.isWrongForm && !v.isCustomCanCastFailed && !v.isOnSwapCooldown && !v.isNoSwapTarget && !v.isNotRequiredFollowUp && !v.isFollowUpNotReady && !v.isMustChainUnsatisfiable && !v.isComboWindowExpired)
+    const isSelectable = variants.some(v => !v.isOnCooldown && !v.isUnaffordable && !v.isWrongPosition && !v.isPreviousActionMismatch && !v.isRequiresSwapIn && !v.isWrongForm && !v.isCustomCanCastFailed && !v.isOnSwapCooldown && !v.isNoSwapTarget && !v.isNotRequiredFollowUp && !v.isFollowUpNotReady && !v.isMustChainUnsatisfiable && !v.isComboWindowExpired && !v.isComboTagMismatch)
     const isCurrent = variants.some(v => v.isCurrent)
 
     actionGroups.push({
@@ -560,9 +571,9 @@ export function ActionSelect({ value, actions, character, currentEnergies, previ
 
                     {/* Variant Rows */}
                     {group.variants.map(variant => {
-                      const { action, isCurrent, isUnaffordable, isOnCooldown, cooldownRemaining, missingEnergy, isWrongPosition, isPreviousActionMismatch, isRequiresSwapIn, isWrongForm, isCustomCanCastFailed, isOnSwapCooldown, swapCooldownRemaining, isNoSwapTarget, isNotRequiredFollowUp, isFollowUpNotReady, isMustChainUnsatisfiable, isComboWindowExpired } = variant
+                      const { action, isCurrent, isUnaffordable, isOnCooldown, cooldownRemaining, missingEnergy, isWrongPosition, isPreviousActionMismatch, isRequiresSwapIn, isWrongForm, isCustomCanCastFailed, isOnSwapCooldown, swapCooldownRemaining, isNoSwapTarget, isNotRequiredFollowUp, isFollowUpNotReady, isMustChainUnsatisfiable, isComboWindowExpired, isComboTagMismatch } = variant
 
-                      const isDisabled = (isUnaffordable || isOnCooldown || isWrongPosition || isPreviousActionMismatch || isRequiresSwapIn || isWrongForm || isCustomCanCastFailed || isOnSwapCooldown || isNoSwapTarget || isNotRequiredFollowUp || isFollowUpNotReady || isMustChainUnsatisfiable || isComboWindowExpired) && !isCurrent
+                      const isDisabled = (isUnaffordable || isOnCooldown || isWrongPosition || isPreviousActionMismatch || isRequiresSwapIn || isWrongForm || isCustomCanCastFailed || isOnSwapCooldown || isNoSwapTarget || isNotRequiredFollowUp || isFollowUpNotReady || isMustChainUnsatisfiable || isComboWindowExpired || isComboTagMismatch) && !isCurrent
                       const canSelect = !isDisabled
 
                       return (
@@ -581,6 +592,7 @@ export function ActionSelect({ value, actions, character, currentEnergies, previ
                               {isOnCooldown && <span className="variantCooldown">CD: {cooldownRemaining.toFixed(2)}s</span>}
                               {isOnSwapCooldown && <span className="variantCooldown">Swap CD: {swapCooldownRemaining.toFixed(2)}s</span>}
                               {isComboWindowExpired && <span className="variantBlockedReason">Combo window expired</span>}
+                              {isComboTagMismatch && <span className="variantBlockedReason">Wrong combo position</span>}
                               {missingEnergy.length > 0 ? <span className="energyMissing">{missingEnergy.map(e => `${e.current.toFixed(2)}/${e.needed} ${e.type}`).join(', ')}</span> : action.energyCost.length > 0 ? <span className="energyOk">✓</span> : null}
                             </div>
                           </div>

@@ -44,10 +44,10 @@ export function BodyRow({ snapshot, previousSnapshot, charactersInBattle, tableC
         lockedCharacters.add(charName)
       }
     }
-    // Lock all characters except the one with a required follow-up (combo system)
-    const requiredFollowUps = previousSnapshot.charactersRequiredFollowUp ?? {}
-    const charactersWithFollowUp = Object.keys(requiredFollowUps).filter(char => {
-      const entry = requiredFollowUps[char]
+    // Lock all characters except the one with a follow-up (combo system)
+    const attemptFollowUps = previousSnapshot.charactersAttemptFollowUp ?? {}
+    const charactersWithFollowUp = Object.keys(attemptFollowUps).filter(char => {
+      const entry = attemptFollowUps[char]
       if (!entry) return false
       if (entry.must) return true
       // "if possible": only lock the character when the follow-up is castable AND its own MUST chain can be satisfied

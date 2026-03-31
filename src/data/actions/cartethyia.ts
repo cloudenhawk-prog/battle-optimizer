@@ -40,7 +40,7 @@ const cartethyia_BA_1_4_cancel_with_skill: Action = {
     startState: 'GROUND',
     endState: 'GROUND',
   },
-  requiredFollowUp: { actionName: 'Resonance Skill' },
+  attemptFollowUp: { actionName: 'Resonance Skill' },
   offtune: 0.22 + (2 * 0.18 + 0.25) + 4 * 0.2 + (3 * 0.12 + 0.35),
   groupName: 'Basic Attack 1-4',
   variantName: 'Cancel With Skill',

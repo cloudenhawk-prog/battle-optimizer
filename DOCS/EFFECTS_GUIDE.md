@@ -52,7 +52,7 @@ All example code references real data from the codebase. Types are defined in `s
 11. [Dynamic Variants (resolveVariant)](#11-dynamic-variants-resolvevariant)
 12. [Combo & Sequencing Mechanics](#12-combo--sequencing-mechanics)
     - [previousActions — must immediately follow another action](#121-previousactions--must-immediately-follow-another-action)
-    - [requiredFollowUp — forces the next action](#122-requiredfollowup--forces-the-next-action)
+    - [attemptFollowUp — forces the next action](#122-attemptFollowUp--forces-the-next-action)
     - [comboWindow — must be cast within a time window](#123-combowindow--must-be-cast-within-a-time-window)
 13. [Gear: Injecting Modifiers and Side Effects](#13-gear-injecting-modifiers-and-side-effects)
     - [Weapon injecting a modifier onto the character](#131-weapon-injecting-a-modifier-onto-the-character)
@@ -886,17 +886,17 @@ Only the character's **own** last action matters. Other characters acting in bet
 
 ---
 
-### 12.2 `requiredFollowUp` — forces the next action
+### 12.2 `attemptFollowUp` — forces the next action
 
 ```ts
 // Action A forces the next cast to be Action B (all others are locked)
 const actionA: Action = {
   ...
-  requiredFollowUp: { actionName: 'Action B' },
+  attemptFollowUp: { actionName: 'Action B' },
 }
 ```
 
-When Action A is cast, `Snapshot.charactersRequiredFollowUp[char] = 'Action B'`. In the next row, only Action B is selectable for that character. Action B must also be off cooldown before Action A completes (validated as `isFollowUpNotReady`).
+When Action A is cast, `Snapshot.charactersattemptFollowUp[char] = 'Action B'`. In the next row, only Action B is selectable for that character. Action B must also be off cooldown before Action A completes (validated as `isFollowUpNotReady`).
 
 ---
 

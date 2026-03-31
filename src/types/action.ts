@@ -60,6 +60,9 @@ export type Action = {
   offtune: number
   /** Semantic tags describing what role this action plays. Used for tag-based gear injection. */
   tags?: ActionTag[]
+  /** Tags describing this action's position/state in a combo chain. Stored in the snapshot after cast.
+   *  Other actions can require these tags via `castConditions.requiredComboTags` to enforce ordering. */
+  comboChainTags?: string[]
 
   toolTip?: string
 
@@ -75,20 +78,22 @@ export type Action = {
    *  The returned Action is used in place of this one for all resolvers. */
   resolveVariant?: (prevSnapshot: Snapshot | undefined, characterName: string) => Action
 
-  /** When specified, this action requires a specific follow-up action to be cast
-   *  by the same character in the immediately following row.
-   *  All other actions/characters will be locked while the follow-up is pending.
+  /** When true, this action is hidden from the action selector when it is not castable.
+   *  Does not affect form-based hiding — actions outside the current form are always hidden. */
+  hideWhenNotCastable?: boolean
+
+  /** When specified, the system will attempt to auto-cast a specific follow-up action
+   *  in the immediately following row.
    *
-   *  `must` (default true): the follow-up MUST happen. The parent action is only
-   *  castable when the entire MUST chain (which may be several follow-ups deep) can
-   *  be satisfied — position, form, and energy are validated through the chain.
+   *  Without `must` (default): the follow-up is attempted automatically if castable,
+   *  but the user remains free to choose any action. No locking occurs.
    *
-   *  `must: false` ("if possible"): the follow-up is locked only when it is actually
-   *  castable in the current state; if its cast conditions are not met the lock is
-   *  released and the user may choose freely. The parent action can always be cast. */
-  requiredFollowUp?: {
-    actionName: string // Name of the action that must be cast next
-    must?: boolean     // true (default) = MUST follow up; false = only if castable
+   *  `must: true`: the follow-up MUST happen. All other actions are locked until the
+   *  follow-up is cast. The parent action is only castable when the entire MUST chain
+   *  can be satisfied — position, form, and energy are validated through the chain. */
+  attemptFollowUp?: {
+    actionName: string // Name of the action to follow up with
+    must?: boolean     // When true: MUST follow up or the chain is blocked; omitted/false: attempt only, no locking
   }
 }
 
@@ -131,4 +136,10 @@ export type CastConditions = {
     /** If true, changing form breaks the combo */
     crashesOnFormChange: boolean
   }
-}
+  /** Requires that the character's most recent personal action (within the persistence window)
+   *  had ALL of these combo chain tags set via `Action.comboChainTags`.
+   *  Use this to enforce sequential combo ordering (e.g. BA3 after BA2 after BA1). */
+  requiredComboTags?: string[]  /** Blocks this action if the character's most recent personal action (within the persistence window)
+   *  had ANY of these combo chain tags. Combined with `requiredComboTags` this enforces strict
+   *  ordering in both directions (e.g. BA1 is blocked after BA1 or BA2 are already active). */
+  blockedComboTags?: string[]}

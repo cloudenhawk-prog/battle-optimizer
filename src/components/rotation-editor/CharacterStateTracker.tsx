@@ -137,6 +137,10 @@ export function CharacterStateTracker({
           const isActiveChar = snapshot?.character === character.name
           const isOffField = !isActiveChar && !isWithinPersistence
 
+          const comboTags = !isOffField
+            ? (snapshot?.charactersComboChainTags?.[character.name] ?? [])
+            : []
+
           const displayForm = getDisplayForm(character)
           const isActive = activeCharacterName === group.label
 
@@ -208,6 +212,16 @@ export function CharacterStateTracker({
                     <span className="stateTrackerStateLabel">Lingers</span>
                     <span className="stateTrackerPersistBadge">
                       {(persistentUntil - (snapshot?.toTime ?? 0)).toFixed(2)}s
+                    </span>
+                  </div>
+                )}
+
+                {/* Combo (relies on persistence window being active) */}
+                {comboTags.length > 0 && (
+                  <div className="stateTrackerStateItem">
+                    <span className="stateTrackerStateLabel">Combo</span>
+                    <span className="stateTrackerComboBadge">
+                      {comboTags.map(t => t.charAt(0).toUpperCase() + t.slice(1)).join(' · ')}
                     </span>
                   </div>
                 )}

@@ -5,7 +5,6 @@ The table is a lighter shade than the character State Tracker windows. Let's cha
 
 # Actions
 - Should have a property that states if an action should be hidden from the actionSelector if it's uncastable
-- Actions that don't belong to the form you're currently in should be hidden as they're obviously not ever castable.
 
 # Modifiers
 - Certain modifiers only gives stats when conditions are met. They may not show up in the stats profile overlay, even though it could be an obvious almost 100 % uptime stat.

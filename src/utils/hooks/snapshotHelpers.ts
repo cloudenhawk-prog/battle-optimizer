@@ -63,6 +63,12 @@ export function createSnapshot(previousSnapshot: Snapshot, charactersMap: Record
     charactersForteGrants[k] = [...v]
   }
 
+  // Copy combo chain tags (shallow copy of each character's array)
+  const charactersComboChainTags: Record<string, string[]> = {}
+  for (const [k, v] of Object.entries(previousSnapshot.charactersComboChainTags ?? {})) {
+    charactersComboChainTags[k] = [...v]
+  }
+
   const basicValues = Object.fromEntries(globalColumns.basic.map(col => [col, 0]))
   const buffs = Object.fromEntries(globalColumns.buffs.map(col => [col, 0]))
   const debuffs = Object.fromEntries(globalColumns.debuffs.map(col => [col, 0]))
@@ -109,8 +115,9 @@ export function createSnapshot(previousSnapshot: Snapshot, charactersMap: Record
     charactersRequiresSwapOut: {},
     charactersForms,
     charactersSwapCooldownUntil,
-    charactersRequiredFollowUp: {},
+    charactersAttemptFollowUp: {},
     charactersComboWindows: {},
     charactersForteGrants,
+    charactersComboChainTags,
   }
 }
