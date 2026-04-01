@@ -1,8 +1,77 @@
 import type { Action } from '../../types/action'
 import { always } from '../../utils/conditions/damageModifierConditions'
 
-// TODO - all versions should equal in the same cast time for BA1, BA2, BA3. Swapping should penalize by 0.4, skill cancel no penalty
-// TODO - some actions should not allow you to swap out after cast (i.e. the next selection, by locking all other character choices)
+// TODO: Make sure all sequence/echo/gear specific things in her kit are defined in one data folder and referenced/rebuilt rather than hardcoding it in every action
+// Path: src/data/modifiers/<single mega file, one file per category/character, or what> and similar if we need for sideEffects and other properties with heavy building
+
+// TODO: Selecting an action on Mornye when the previous character has 100 concerto should show her Mode actions.
+// -> We need functionality (the following should work automatically, but also consider if it's the most elegant):
+//    -> When the active character has 100 concerto
+//    -> A different character is chosen
+//    -> Check if selected character's Intro Skill triggers a form change; if so use that form as basis for the selectable actions
+//       -> If yes: use that form as basis for the selectable actions
+//       -> If no: use their current form (this should be how the selector acts by default though)
+
+// TODO: Test whether BA1-3 -> Heavy Attack is faster than BA1-3 (cancel) -> Skill -> Heavy Attack.
+// TODO: Test whether BA1 -> BA2-X or Skill -> BA2-X is faster
+// TODO: Either way we might want the skill combo to be able to trigger heal
+
+// TODO: All BA versions should equal in the same cast time for BA1, BA2, BA3. Swapping should penalize by 0.4, skill cancel no penalty
+
+
+// ========== Values ===========================================================================================================
+
+// BA1
+const BA1_multiplier = (22.27 + 2 * 16.71) / 100
+const BA1_energy = (0.35 + 2 * 0.27)
+const BA1_concerto = (1.12 + 2 * 0.84)
+const BA1_forte = 20
+const BA1_offtune = (0.11 + 2 * 0.08)
+const BA1_persistenceTime = 1.4
+
+// BA2
+const BA2_multiplier = (23.86 + 23.86 + 4 * 17.90) / 100
+const BA2_energy = (0.38 + 0.38 + 4 * 0.29)
+const BA2_concerto = (1.20 + 1.20 + 4 * 0.90)
+const BA2_forte = 40
+const BA2_offtune = (0.12 + 0.12 + 2 * 0.09)
+const BA2_persistenceTime = 2.551
+
+// BA3
+const BA3_multiplier = (41.36 + 6 * 10.34) / 100
+const BA3_energy = (0.65 + 6 * 0.17)
+const BA3_concerto = (2.08 + 6 * 0.52)
+const BA3_forte = 40
+const BA3_offtune = (0.21 + 6 * 0.05)
+const BA3_persistenceTime = 2.92
+
+// Heavy Attack
+const heavy_multiplier = (44.14 + 99.02) / 100
+const heavy_energy = (0.93 + 2.08)
+const heavy_concerto = (2.96 + 6.65)
+const heavy_forte_cost = 100
+const heavy_offtune = 0.30 + 0.66
+
+// Mode: BA1
+const MODE_BA1_multiplier = (4 * 13.92) / 100
+const MODE_BA1_energy = (4 * 0.22)
+const MODE_BA1_concerto = (4 * 	0.35)
+const MODE_BA1_relative_momentum = 8
+const MODE_BA1_offtune = (4 * 0.07)
+
+// Mode: BA2
+const MODE_BA2_multiplier = (4 * 25.85) / 100
+const MODE_BA2_energy = (4 * 0.41)
+const MODE_BA2_concerto = (4 * 0.64)
+const MODE_BA2_relative_momentum = 14
+const MODE_BA2_offtune = (4 * 0.13)
+
+// Mode: BA3
+const MODE_BA3_multiplier = (4 * 9.31 + 2 * 33.09) / 100
+const MODE_BA3_energy = (4 * 0.15 + 2 * 0.52)
+const MODE_BA3_concerto = (4 * 0.23 + 2 * 0.82)
+const MODE_BA3_relative_momentum = 18
+const MODE_BA3_offtune = (4 * 0.05 + 2 * 0.17)
 
 // ========== Basic Attack 1 ===================================================================================================
 const mornye_BA_1_cancel_with_swap: Action = {
@@ -11,15 +80,15 @@ const mornye_BA_1_cancel_with_swap: Action = {
   displayName: 'Basic Attack 1 (swap cancel)',
   category: 'Basics',
   castTime: 0.09,
-  multiplier: (22.27 + 2 * 16.71) / 100,
+  multiplier: BA1_multiplier,
   scaling: 'ATK',
   elements: ['FUSION'],
   dmgTypes: ['BASIC'],
   cooldown: 0,
   energyGenerated: [
-    { energyType: 'energy', amount: (0.35 + 2 * 0.27), share: 0.5, scalingStat: 'energyPercent' },
-    { energyType: 'concerto', amount: (1.12 + 2 * 0.84), share: 0 },
-    { energyType: 'forte', amount: 20, share: 0 },
+    { energyType: 'energy', amount: BA1_energy, share: 0.5, scalingStat: 'energyPercent' },
+    { energyType: 'concerto', amount: BA1_concerto, share: 0 },
+    { energyType: 'forte', amount: BA1_forte, share: 0 },
   ],
   energyCost: [],
   statusModifications: [],
@@ -30,12 +99,12 @@ const mornye_BA_1_cancel_with_swap: Action = {
     startState: 'GROUND',
     swapOutState: 'GROUND',
     endState: 'GROUND',
-    persistenceTime: 1.4,
+    persistenceTime: BA1_persistenceTime,
     requiresSwapOut: true,
     requiredForms: ['Baseline Mode'],
     blockedComboTags: ['BA1', 'BA2', 'BA3']
   },
-  offtune: (0.11 + 2 * 0.08),
+  offtune: BA1_offtune,
   comboChainTags: ['BA1'],
   hideWhenNotCastable: true,
   groupName: 'Basic Attack 1',
@@ -49,15 +118,15 @@ const mornye_BA_1_2_cancel_with_swap: Action = {
   displayName: 'Basic Attack 1-2 (swap cancel)',
   category: 'Basics',
   castTime: 0.47,
-  multiplier: ((22.27 + 2 * 16.71) + (23.86 + 23.86 + 4 * 17.90)) / 100,
+  multiplier: BA1_multiplier + BA2_multiplier,
   scaling: 'ATK',
   elements: ['FUSION'],
   dmgTypes: ['BASIC'],
   cooldown: 0,
   energyGenerated: [
-    { energyType: 'energy', amount: (0.35 + 2 * 0.27) + (0.38 + 0.38 + 4 * 0.29), share: 0.5, scalingStat: 'energyPercent' },
-    { energyType: 'concerto', amount: (1.12 + 2 * 0.84) + (1.20 + 1.20 + 4 * 0.90), share: 0 },
-    { energyType: 'forte', amount: 60, share: 0 },
+    { energyType: 'energy', amount: BA1_energy + BA2_energy, share: 0.5, scalingStat: 'energyPercent' },
+    { energyType: 'concerto', amount: BA1_concerto + BA2_concerto, share: 0 },
+    { energyType: 'forte', amount: BA1_forte + BA2_forte, share: 0 },
   ],
   energyCost: [],
   statusModifications: [],
@@ -68,12 +137,12 @@ const mornye_BA_1_2_cancel_with_swap: Action = {
     startState: 'GROUND',
     swapOutState: 'GROUND',
     endState: 'GROUND',
-    persistenceTime: 2.551,
+    persistenceTime: BA2_persistenceTime,
     requiresSwapOut: true,
     requiredForms: ['Baseline Mode'],
     blockedComboTags: ['BA1', 'BA2', 'BA3'],
   },
-  offtune: (0.11 + 2 * 0.08) + (0.12 + 0.12 + 2 * 0.09),
+  offtune: BA1_offtune + BA2_offtune,
   comboChainTags: ['BA2'],
   hideWhenNotCastable: true,
   groupName: 'Basic Attack 1-2',
@@ -86,16 +155,16 @@ const mornye_BA_1_3_into_heavy: Action = {
   name: 'Basic Attack 1-3 (into heavy)',
   displayName: 'Basic Attack 1-3 (into heavy)',
   category: 'Basics',
-  castTime: 1.83, // 7.47 -> 9.37 -> 10.46
-  multiplier: ((22.27 + 2 * 16.71) + (23.86 + 23.86 + 4 * 17.90) + (41.36 + 6 * 10.34)) / 100,
+  castTime: 1.83,
+  multiplier: BA1_multiplier + BA2_multiplier + BA3_multiplier,
   scaling: 'ATK',
   elements: ['FUSION'],
   dmgTypes: ['BASIC'],
   cooldown: 0,
   energyGenerated: [
-    { energyType: 'energy', amount: (0.35 + 2 * 0.27) + (0.38 + 0.38 + 4 * 0.29) + (0.65 + 6 * 0.17), share: 0.5, scalingStat: 'energyPercent' },
-    { energyType: 'concerto', amount: (1.12 + 2 * 0.84) + (1.20 + 1.20 + 4 * 0.90) + (2.08 + 6 * 0.52), share: 0 },
-    { energyType: 'forte', amount: 100, share: 0 },
+    { energyType: 'energy', amount: BA1_energy + BA2_energy + BA3_energy, share: 0.5, scalingStat: 'energyPercent' },
+    { energyType: 'concerto', amount: BA1_concerto + BA2_concerto + BA3_concerto, share: 0 },
+    { energyType: 'forte', amount: BA1_forte + BA2_forte + BA3_forte, share: 0 },
   ],
   energyCost: [],
   statusModifications: [],
@@ -108,12 +177,12 @@ const mornye_BA_1_3_into_heavy: Action = {
     requiredForms: ['Baseline Mode'],
     blockedComboTags: ['BA1', 'BA2', 'BA3'],
   },
-  offtune: (0.11 + 2 * 0.08) + (0.12 + 0.12 + 2 * 0.09) + (0.21 + 6 * 0.05),
+  offtune: BA1_offtune + BA2_offtune + BA3_offtune,
   comboChainTags: ['BA3'],
   hideWhenNotCastable: true,
   groupName: 'Basic Attack 1-3',
   variantName: 'Into Heavy Attack',
-  attemptFollowUp: { actionName: 'Heavy Attack' }
+  attemptFollowUp: { actionName: 'Heavy Attack', must: true }
 }
 
 const mornye_BA_1_3_cancel_with_swap: Action = {
@@ -122,15 +191,15 @@ const mornye_BA_1_3_cancel_with_swap: Action = {
   displayName: 'Basic Attack 1-3 (swap cancel)',
   category: 'Basics',
   castTime: 1.34,
-  multiplier: ((22.27 + 2 * 16.71) + (23.86 + 23.86 + 4 * 17.90) + (41.36 + 6 * 10.34)) / 100,
+  multiplier: BA1_multiplier + BA2_multiplier + BA3_multiplier,
   scaling: 'ATK',
   elements: ['FUSION'],
   dmgTypes: ['BASIC'],
   cooldown: 0,
   energyGenerated: [
-    { energyType: 'energy', amount: (0.35 + 2 * 0.27) + (0.38 + 0.38 + 4 * 0.29) + (0.65 + 6 * 0.17), share: 0.5, scalingStat: 'energyPercent' },
-    { energyType: 'concerto', amount: (1.12 + 2 * 0.84) + (1.20 + 1.20 + 4 * 0.90) + (2.08 + 6 * 0.52), share: 0 },
-    { energyType: 'forte', amount: 100, share: 0 },
+    { energyType: 'energy', amount: BA1_energy + BA2_energy + BA3_energy, share: 0.5, scalingStat: 'energyPercent' },
+    { energyType: 'concerto', amount: BA1_concerto + BA2_concerto + BA3_concerto, share: 0 },
+    { energyType: 'forte', amount: BA1_forte + BA2_forte + BA3_forte, share: 0 },
   ],
   energyCost: [],
   statusModifications: [],
@@ -141,12 +210,12 @@ const mornye_BA_1_3_cancel_with_swap: Action = {
     startState: 'GROUND',
     swapOutState: 'GROUND',
     endState: 'GROUND',
-    persistenceTime: 2.92,
+    persistenceTime: BA3_persistenceTime,
     requiresSwapOut: true,
     requiredForms: ['Baseline Mode'],
     blockedComboTags: ['BA1', 'BA2', 'BA3'],
   },
-  offtune: (0.11 + 2 * 0.08) + (0.12 + 0.12 + 2 * 0.09) + (0.21 + 6 * 0.05),
+  offtune: BA1_offtune + BA2_offtune + BA3_offtune,
   comboChainTags: ['BA3'],
   hideWhenNotCastable: true,
   groupName: 'Basic Attack 1-3',
@@ -160,15 +229,15 @@ const mornye_BA_2_cancel_with_swap: Action = {
   displayName: 'Basic Attack 2 (swap cancel)',
   category: 'Basics',
   castTime: 0.09,
-  multiplier: (23.86 + 23.86 + 4 * 17.90) / 100,
+  multiplier: BA2_multiplier,
   scaling: 'ATK',
   elements: ['FUSION'],
   dmgTypes: ['BASIC'],
   cooldown: 0,
   energyGenerated: [
-    { energyType: 'energy', amount: (0.38 + 0.38 + 4 * 0.29), share: 0.5, scalingStat: 'energyPercent' },
-    { energyType: 'concerto', amount: (1.20 + 1.20 + 4 * 0.90), share: 0 },
-    { energyType: 'forte', amount: 40, share: 0 },
+    { energyType: 'energy', amount: BA2_energy, share: 0.5, scalingStat: 'energyPercent' },
+    { energyType: 'concerto', amount: BA2_concerto, share: 0 },
+    { energyType: 'forte', amount: BA2_forte, share: 0 },
   ],
   energyCost: [],
   statusModifications: [],
@@ -179,13 +248,13 @@ const mornye_BA_2_cancel_with_swap: Action = {
     startState: 'GROUND',
     swapOutState: 'GROUND',
     endState: 'GROUND',
-    persistenceTime: 2.551,
+    persistenceTime: BA2_persistenceTime,
     requiresSwapOut: true,
     requiredForms: ['Baseline Mode'],
     requiredComboTags: ['BA1'],
     blockedComboTags: ['BA2', 'BA3']
   },
-  offtune: (0.12 + 0.12 + 2 * 0.09),
+  offtune: BA2_offtune,
   comboChainTags: ['BA2'],
   hideWhenNotCastable: true,
   groupName: 'Basic Attack 2',
@@ -199,15 +268,15 @@ const mornye_BA_2_3_into_heavy: Action = {
   displayName: 'Basic Attack 2-3 (into heavy)',
   category: 'Basics',
   castTime: 1.59,
-  multiplier: ((23.86 + 23.86 + 4 * 17.90) + (41.36 + 6 * 10.34)) / 100,
+  multiplier: BA2_multiplier + BA3_multiplier,
   scaling: 'ATK',
   elements: ['FUSION'],
   dmgTypes: ['BASIC'],
   cooldown: 0,
   energyGenerated: [
-    { energyType: 'energy', amount: (0.38 + 0.38 + 4 * 0.29) + (0.65 + 6 * 0.17), share: 0.5, scalingStat: 'energyPercent' },
-    { energyType: 'concerto', amount: (1.20 + 1.20 + 4 * 0.90) + (2.08 + 6 * 0.52), share: 0 },
-    { energyType: 'forte', amount: 80, share: 0 },
+    { energyType: 'energy', amount: BA2_energy + BA3_energy, share: 0.5, scalingStat: 'energyPercent' },
+    { energyType: 'concerto', amount: BA2_concerto + BA3_concerto, share: 0 },
+    { energyType: 'forte', amount: BA2_forte + BA3_forte, share: 0 },
   ],
   energyCost: [],
   statusModifications: [],
@@ -221,12 +290,12 @@ const mornye_BA_2_3_into_heavy: Action = {
     requiredComboTags: ['BA1'],
     blockedComboTags: ['BA2', 'BA3']
   },
-  offtune: (0.12 + 0.12 + 2 * 0.09) + (0.21 + 6 * 0.05),
+  offtune: BA2_offtune + BA3_offtune,
   comboChainTags: ['BA3'],
   hideWhenNotCastable: true,
   groupName: 'Basic Attack 2-3',
   variantName: 'Into Heavy',
-  attemptFollowUp: { actionName: 'Heavy Attack' }
+  attemptFollowUp: { actionName: 'Heavy Attack', must: true }
 }
 
 const mornye_BA_2_3_cancel_with_swap: Action = {
@@ -235,15 +304,15 @@ const mornye_BA_2_3_cancel_with_swap: Action = {
   displayName: 'Basic Attack 2-3 (swap cancel)',
   category: 'Basics',
   castTime: 1.10,
-  multiplier: ((23.86 + 23.86 + 4 * 17.90) + (41.36 + 6 * 10.34)) / 100,
+  multiplier: BA2_multiplier + BA3_multiplier,
   scaling: 'ATK',
   elements: ['FUSION'],
   dmgTypes: ['BASIC'],
   cooldown: 0,
   energyGenerated: [
-    { energyType: 'energy', amount: (0.38 + 0.38 + 4 * 0.29) + (0.65 + 6 * 0.17), share: 0.5, scalingStat: 'energyPercent' },
-    { energyType: 'concerto', amount: (1.20 + 1.20 + 4 * 0.90) + (2.08 + 6 * 0.52), share: 0 },
-    { energyType: 'forte', amount: 80, share: 0 },
+    { energyType: 'energy', amount: BA2_energy + BA3_energy, share: 0.5, scalingStat: 'energyPercent' },
+    { energyType: 'concerto', amount: BA2_concerto + BA3_concerto, share: 0 },
+    { energyType: 'forte', amount: BA2_forte + BA3_forte, share: 0 },
   ],
   energyCost: [],
   statusModifications: [],
@@ -254,13 +323,13 @@ const mornye_BA_2_3_cancel_with_swap: Action = {
     startState: 'GROUND',
     swapOutState: 'GROUND',
     endState: 'GROUND',
-    persistenceTime: 2.92,
+    persistenceTime: BA3_persistenceTime,
     requiresSwapOut: true,
     requiredForms: ['Baseline Mode'],
     requiredComboTags: ['BA1'],
     blockedComboTags: ['BA2', 'BA3']
   },
-  offtune: (0.12 + 0.12 + 2 * 0.09) + (0.21 + 6 * 0.05),
+  offtune: BA2_offtune + BA3_offtune,
   comboChainTags: ['BA3'],
   hideWhenNotCastable: true,
   groupName: 'Basic Attack 2-3',
@@ -274,15 +343,15 @@ const mornye_BA_3_into_heavy: Action = {
   displayName: 'Basic Attack 3 (into heavy)',
   category: 'Basics',
   castTime: 0.58,
-  multiplier: (41.36 + 6 * 10.34) / 100,
+  multiplier: BA3_multiplier,
   scaling: 'ATK',
   elements: ['FUSION'],
   dmgTypes: ['BASIC'],
   cooldown: 0,
   energyGenerated: [
-    { energyType: 'energy', amount: (0.65 + 6 * 0.17), share: 0.5, scalingStat: 'energyPercent' },
-    { energyType: 'concerto', amount: (2.08 + 6 * 0.52), share: 0 },
-    { energyType: 'forte', amount: 40, share: 0 },
+    { energyType: 'energy', amount: BA3_energy, share: 0.5, scalingStat: 'energyPercent' },
+    { energyType: 'concerto', amount: BA3_concerto, share: 0 },
+    { energyType: 'forte', amount: BA3_forte, share: 0 },
   ],
   energyCost: [],
   statusModifications: [],
@@ -296,12 +365,12 @@ const mornye_BA_3_into_heavy: Action = {
     requiredComboTags: ['BA2'],
     blockedComboTags: ['BA1', 'BA3']
   },
-  offtune: (0.21 + 6 * 0.05),
+  offtune: BA3_offtune,
   comboChainTags: ['BA3'],
   hideWhenNotCastable: true,
   groupName: 'Basic Attack 3',
   variantName: 'Into Heavy',
-  attemptFollowUp: { actionName: 'Heavy Attack' }
+  attemptFollowUp: { actionName: 'Heavy Attack', must: true }
 }
 
 const mornye_BA_3_cancel_with_swap: Action = {
@@ -310,15 +379,15 @@ const mornye_BA_3_cancel_with_swap: Action = {
   displayName: 'Basic Attack 3 (swap cancel)',
   category: 'Basics',
   castTime: 0.09,
-  multiplier: (41.36 + 6 * 10.34) / 100,
+  multiplier: BA3_multiplier,
   scaling: 'ATK',
   elements: ['FUSION'],
   dmgTypes: ['BASIC'],
   cooldown: 0,
   energyGenerated: [
-    { energyType: 'energy', amount: (0.65 + 6 * 0.17), share: 0.5, scalingStat: 'energyPercent' },
-    { energyType: 'concerto', amount: (2.08 + 6 * 0.52), share: 0 },
-    { energyType: 'forte', amount: 40, share: 0 },
+    { energyType: 'energy', amount: BA3_energy, share: 0.5, scalingStat: 'energyPercent' },
+    { energyType: 'concerto', amount: BA3_concerto, share: 0 },
+    { energyType: 'forte', amount: BA3_forte, share: 0 },
   ],
   energyCost: [],
   statusModifications: [],
@@ -329,13 +398,13 @@ const mornye_BA_3_cancel_with_swap: Action = {
     startState: 'GROUND',
     swapOutState: 'GROUND',
     endState: 'GROUND',
-    persistenceTime: 2.92,
+    persistenceTime: BA3_persistenceTime,
     requiresSwapOut: true,
     requiredForms: ['Baseline Mode'],
     requiredComboTags: ['BA2'],
     blockedComboTags: ['BA1', 'BA3']
   },
-  offtune: (0.21 + 6 * 0.05),
+  offtune: BA3_offtune,
   comboChainTags: ['BA3'],
   hideWhenNotCastable: true,
   groupName: 'Basic Attack 3',
@@ -348,7 +417,7 @@ const mornye_BA_3_cancel_with_skill: Action = {
   displayName: 'Basic Attack 3 (skill cancel)',
   category: 'Basics',
   castTime: 0.04,
-  multiplier: (0) / 100,
+  multiplier: 0,
   scaling: 'ATK',
   elements: ['FUSION'],
   dmgTypes: ['BASIC'],
@@ -356,7 +425,7 @@ const mornye_BA_3_cancel_with_skill: Action = {
   energyGenerated: [
     { energyType: 'energy', amount: (0), share: 0.5, scalingStat: 'energyPercent' },
     { energyType: 'concerto', amount: (0), share: 0 },
-    { energyType: 'forte', amount: 40, share: 0 },
+    { energyType: 'forte', amount: BA3_forte, share: 0 },
   ],
   energyCost: [],
   statusModifications: [],
@@ -375,7 +444,7 @@ const mornye_BA_3_cancel_with_skill: Action = {
   hideWhenNotCastable: true,
   groupName: 'Basic Attack 3',
   variantName: 'Cancel With Skill',
-  attemptFollowUp: { actionName: 'Resonance Skill' }
+  attemptFollowUp: { actionName: 'Resonance Skill', must: true }
 }
 
 // ========== Heavy Attack =====================================================================================================
@@ -385,16 +454,16 @@ const mornye_heavy: Action = {
   displayName: 'Heavy Attack',
   category: 'Basics',
   castTime: 1.15,
-  multiplier: (44.14 + 99.02) / 100,
+  multiplier: heavy_multiplier,
   scaling: 'ATK',
   elements: ['FUSION'],
   dmgTypes: ['HEAVY'],
   cooldown: 0,
   energyGenerated: [
-    { energyType: 'energy', amount: 0.93 + 2.08, share: 0.5, scalingStat: 'energyPercent' },
-    { energyType: 'concerto', amount: 2.96 + 6.65, share: 0 }
+    { energyType: 'energy', amount: heavy_energy, share: 0.5, scalingStat: 'energyPercent' },
+    { energyType: 'concerto', amount: heavy_concerto, share: 0 }
   ],
-  energyCost: [{ energyType: 'forte', amount: 100 }],
+  energyCost: [{ energyType: 'forte', amount: heavy_forte_cost }],
   statusModifications: [],
   damageModifiers: [
     {
@@ -444,7 +513,7 @@ const mornye_heavy: Action = {
     endState: 'AIR',
     requiredForms: ['Baseline Mode']
   },
-  offtune: 0.30 + 0.66,
+  offtune: heavy_offtune,
   formChange: 'Wide Field Observation Mode',
   attemptFollowUp: { actionName: 'Mode: Basic Attack 1-3' }
 }
@@ -455,16 +524,16 @@ const mornye_heavy_swap_in: Action = {
   displayName: 'Heavy Attack',
   category: 'Basics',
   castTime: 1.50,
-  multiplier: (44.14 + 99.02) / 100,
+  multiplier: heavy_multiplier,
   scaling: 'ATK',
   elements: ['FUSION'],
   dmgTypes: ['HEAVY'],
   cooldown: 0,
   energyGenerated: [
-    { energyType: 'energy', amount: 0.93 + 2.08, share: 0.5, scalingStat: 'energyPercent' },
-    { energyType: 'concerto', amount: 2.96 + 6.65, share: 0 }
+    { energyType: 'energy', amount: heavy_energy, share: 0.5, scalingStat: 'energyPercent' },
+    { energyType: 'concerto', amount: heavy_concerto, share: 0 }
   ],
-  energyCost: [{ energyType: 'forte', amount: 100 }],
+  energyCost: [{ energyType: 'forte', amount: heavy_forte_cost }],
   statusModifications: [],
   damageModifiers: [
     {
@@ -519,7 +588,7 @@ const mornye_heavy_swap_in: Action = {
     endState: 'AIR',
     requiredForms: ['Baseline Mode'],
   },
-  offtune: 0.30 + 0.66,
+  offtune: heavy_offtune,
   formChange: 'Wide Field Observation Mode',
   attemptFollowUp: { actionName: 'Mode: Basic Attack 1-3' }
 }
@@ -531,7 +600,7 @@ const mornye_skill: Action = {
   displayName: 'Expectation Error',
   category: 'Skills',
   castTime: 0.36,
-  multiplier: (0) / 100,
+  multiplier: 0,
   scaling: 'ATK',
   elements: ['FUSION'],
   dmgTypes: ['SKILL'],
@@ -553,11 +622,6 @@ const mornye_skill: Action = {
   variantName: 'Default'
 }
 
-// Add swap out variant with 0.09 cast time (might want to trigger heal)
-// TODO - add variant that has Heavy Attack as follow up
-  // Is it faster to do BA1-3 -> Heavy Attack OR BA1-3 -> Skill -> Heavy Attack
-  // If Skill is slower, then it has no use at all, hence don't add variant
-
 // ========== Mode: Basic Attack 1-3 ===========================================================================================
 const mode_mornye_BA_1_3: Action = {
   tags: ['BASIC_ATTACK'],
@@ -565,15 +629,15 @@ const mode_mornye_BA_1_3: Action = {
   displayName: 'Mode: Basic Attack 1-3',
   category: 'Basics',
   castTime: 1.51,
-  multiplier: ((4 * 13.92) + (4 * 25.85) + (4 * 9.31 + 2 * 33.09)) / 100,
+  multiplier: MODE_BA1_multiplier + MODE_BA2_multiplier + MODE_BA3_multiplier,
   scaling: 'ATK',
   elements: ['FUSION'],
   dmgTypes: ['BASIC'],
   cooldown: 0,
   energyGenerated: [
-    { energyType: 'energy', amount: (4 * 0.22) + (4 * 0.41) + (4 * 0.15 + 2 * 0.52), share: 0.5, scalingStat: 'energyPercent' },
-    { energyType: 'concerto', amount: (4 * 	0.35) + (4 * 0.64) + (4 * 0.23 + 2 * 0.82), share: 0 },
-    { energyType: 'relative_momentum', amount: 40, share: 0 }
+    { energyType: 'energy', amount: MODE_BA1_energy + MODE_BA2_energy + MODE_BA3_energy, share: 0.5, scalingStat: 'energyPercent' },
+    { energyType: 'concerto', amount: MODE_BA1_concerto + MODE_BA2_concerto + MODE_BA3_concerto, share: 0 },
+    { energyType: 'relative_momentum', amount: MODE_BA1_relative_momentum + MODE_BA2_relative_momentum + MODE_BA3_relative_momentum, share: 0 }
   ],
   energyCost: [],
   statusModifications: [],
@@ -585,9 +649,7 @@ const mode_mornye_BA_1_3: Action = {
     endState: 'AIR',
     requiredForms: ['Wide Field Observation Mode']
   },
-  offtune: (4 * 0.07) + (4 * 0.13) + (4 * 0.05 + 2 * 0.17),
-  attemptFollowUp: { actionName: 'Mode: Resonance Skill' },
-  // Restores an additional 20 Concerto on cast, at most once every 20 seconds
+  offtune: MODE_BA1_offtune + MODE_BA2_offtune + MODE_BA3_offtune,
   resolveVariant(prevSnapshot, characterName) {
     const bonusOnCooldown = (prevSnapshot?.charactersCooldowns?.[characterName]?.['Mode: Basic Attack 1-3'] ?? 0) > 0
     if (bonusOnCooldown) return { ...this, resolveVariant: undefined }
@@ -631,7 +693,6 @@ const mode_mornye_skill: Action = {
     requiredForms: ['Wide Field Observation Mode']
   },
   offtune: 4 * 0.20,
-  attemptFollowUp: { actionName: 'Mode: Heavy Attack' }
 }
 
 // ========== Mode: Heavy Attack ===============================================================================================
@@ -706,8 +767,7 @@ const mode_mornye_heavy: Action = {
     endState: 'AIR',
     requiredForms: ['Wide Field Observation Mode']
   },
-  offtune: 1.04,
-  attemptFollowUp: { actionName: 'Liberation' }
+  offtune: 1.04
 }
 
 // ========== Mode: Liberation =======================================================================================================
@@ -783,8 +843,7 @@ const mornye_liberation: Action = {
     endState: 'PRESERVE',
     requiredForms: ['Wide Field Observation Mode'] // Technically not true, but practically required
   },
-  offtune: 7.20,
-  attemptFollowUp: { actionName: 'Echo Skill' }
+  offtune: 7.20
 }
 
 // ========== Intro & Outro ====================================================================================================
@@ -813,7 +872,6 @@ const mornye_intro: Action = {
   },
   offtune: 1.36,
   formChange: 'Wide Field Observation Mode',
-  // Restores an additional 20 Concerto on cast, at most once every 20 seconds
   resolveVariant(prevSnapshot, characterName) {
     const bonusOnCooldown = (prevSnapshot?.charactersCooldowns?.[characterName]?.['Mornye Intro'] ?? 0) > 0
     if (bonusOnCooldown) return { ...this, resolveVariant: undefined }
@@ -860,6 +918,28 @@ const mornye_wait_005: Action = {
   displayName: 'Wait 0.05s',
   category: 'Other',
   castTime: 0.05,
+  multiplier: 0,
+  scaling: 'HP',
+  elements: [''],
+  dmgTypes: [''],
+  cooldown: 0,
+  energyGenerated: [],
+  energyCost: [],
+  statusModifications: [],
+  damageModifiers: [],
+  sideEffects: [],
+  castConditions: {
+    startState: 'ANY',
+    endState: 'PRESERVE',
+  },
+  offtune: 0,
+}
+
+const mornye_wait_1: Action = {
+  name: 'Wait 1s',
+  displayName: 'Wait 1s',
+  category: 'Other',
+  castTime: 1,
   multiplier: 0,
   scaling: 'HP',
   elements: [''],
@@ -1073,6 +1153,7 @@ export {
 
   // Swaps
   mornye_wait_005,
+  mornye_wait_1,
   mornye_wait_for_swap,
 
   // Testing

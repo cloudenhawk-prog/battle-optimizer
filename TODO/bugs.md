@@ -1,9 +1,6 @@
 ### Bugs
 
 # Modifiers
-  If not, fix injection logic to ensure "character" targets modify each action as intended.
-  Functions to inspect: applyInjectedModifiers and applyInjectedSideEffects — currently have unused characterActions parameter, suspicious.
-  SUSPICIOUS
 
 - Modifiers with type 'self' also affect side effects and negative statuses (like Mandate). There is no real logic to determine which other things aside from the main action which should be affected by a modifier. Right now it assumes that if the filter resolves to true, it affects everything in this snapshot.
   Possible solutions:
