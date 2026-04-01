@@ -21,9 +21,15 @@ export type DamageEvent = {
 
 export type Contribution = {
   source: string
+  /** The character who owns the modifier that produced this contribution.
+   *  Null for global/environment modifiers with no specific owner.
+   *  Used by the contribution attribution pie in SummaryOverlay. */
+  ownerCharacter?: string | null
   displayName?: string
   /** True for inherent modifiers — conditional amplifiers on the action itself, not dispatched buffs. */
   isInherent?: boolean
+  /** True when the source modifier has targetStrategy 'self' — treated as base damage in contribution attribution. */
+  isSelf?: boolean
   crit_damage_contributed: number
   crit_percent_damage_contributed: number
   normal_damage_contributed: number

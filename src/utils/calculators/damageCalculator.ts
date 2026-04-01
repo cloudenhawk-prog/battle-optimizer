@@ -504,6 +504,7 @@ export function calculateAllContrubutions(action: Action, name: string, stats: C
 
     results[uniqueKey] = {
       source: representativeMod.source,
+      ownerCharacter: representativeMod.ownerCharacter ?? null,
       displayName: representativeMod.displayName,
       crit_damage_contributed: Math.max(0, crit_contrib),
       crit_percent_damage_contributed: crit_pct,
@@ -695,7 +696,9 @@ function calculateNegativeStatusContributions(baseDMG: number, element: ElementT
 
     results[uniqueKey] = {
       source: representativeMod.source,
+      ownerCharacter: representativeMod.ownerCharacter ?? null,
       displayName: representativeMod.displayName,
+      isSelf: representativeMod.targetStrategy === 'self',
       crit_damage_contributed: Math.max(0, contrib),
       crit_percent_damage_contributed: pct,
       normal_damage_contributed: Math.max(0, contrib),

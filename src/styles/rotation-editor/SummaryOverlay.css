@@ -1,0 +1,1654 @@
+/* =====================================================================================
+   TACTICAL FIELD REPORT — SUMMARY OVERLAY
+   Layout:  3-column flex (left | center | right), full-panel like CharacterProfileOverlay
+   Left:    Character damage-share donut + field-time bars
+   Center:  Per-character damage-type breakdown cards (scrollable)
+   Right:   Team-wide damage type composition + field effects
+   ===================================================================================== */
+
+/* ── Outer backdrop ──────────────────────────────────────── */
+.summaryOverlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(10, 10, 18, 0.82);
+  backdrop-filter: blur(14px);
+  z-index: 200;
+  display: flex;
+  align-items: stretch;
+  justify-content: stretch;
+}
+
+/* ── Main panel ──────────────────────────────────────────── */
+.summaryPanel {
+  position: fixed;
+  inset: 16px;
+  background: var(--table-bg);
+  border: 1px solid var(--table-border);
+  border-radius: var(--table-corner-radius);
+  box-shadow:
+    var(--table-shadow-inner),
+    var(--table-shadow-main),
+    var(--table-shadow-glow),
+    0 0 120px rgba(100, 160, 255, 0.06);
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  user-select: none;
+  cursor: default;
+  z-index: 201;
+}
+
+.summaryPanel::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  pointer-events: none;
+  background:
+    radial-gradient(ellipse 80% 40% at 50% 0%, rgba(100, 180, 255, 0.03) 0%, transparent 60%),
+    radial-gradient(ellipse 60% 30% at 50% 100%, rgba(120, 100, 255, 0.025) 0%, transparent 55%);
+  z-index: 0;
+}
+
+@media (min-width: 1024px) {
+  .summaryPanel {
+    inset: 40px;
+  }
+}
+
+/* ── HUD decorations ─────────────────────────────────────── */
+.summaryHudScanLine {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 1px;
+  background: linear-gradient(to right,
+    transparent 0%,
+    rgba(100, 200, 255, 0.6) 40%,
+    rgba(160, 120, 255, 0.6) 60%,
+    transparent 100%
+  );
+  box-shadow: 0 0 12px rgba(100, 200, 255, 0.5);
+  animation: summaryScan 18s ease-in-out infinite;
+  z-index: 1;
+  pointer-events: none;
+}
+
+@keyframes summaryScan {
+  0%   { top: 0;    opacity: 0; }
+  1%   { opacity: 1; }
+  18%  { opacity: 0.8; }
+  19%  { top: 100%; opacity: 0; }
+  100% { top: 100%; opacity: 0; }
+}
+
+.summaryHudCorner {
+  position: absolute;
+  width: 28px;
+  height: 28px;
+  border-color: rgba(100, 180, 255, 0.22);
+  opacity: 0.6;
+  animation: summaryCornerPulse 5s ease-in-out infinite;
+  pointer-events: none;
+  z-index: 2;
+}
+
+@keyframes summaryCornerPulse {
+  0%, 100% { border-color: rgba(100, 180, 255, 0.22); opacity: 0.55; }
+  50%       { border-color: rgba(180, 140, 255, 0.4);  opacity: 0.8;  }
+}
+
+.summaryHudCorner.topLeft    { top: 20px; left: 20px;   border-top: 1px solid; border-left:  1px solid; }
+.summaryHudCorner.topRight   { top: 20px; right: 20px;  border-top: 1px solid; border-right: 1px solid; }
+.summaryHudCorner.bottomLeft { bottom: 20px; left: 20px;  border-bottom: 1px solid; border-left:  1px solid; }
+.summaryHudCorner.bottomRight{ bottom: 20px; right: 20px; border-bottom: 1px solid; border-right: 1px solid; }
+
+.summaryHudTopBar {
+  position: absolute;
+  top: 20px;
+  left: 64px;
+  right: 64px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-family: 'Courier New', monospace;
+  font-size: 9px;
+  color: rgba(255, 255, 255, 0.2);
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  pointer-events: none;
+  z-index: 2;
+}
+
+.summaryHudBadge {
+  font-size: 9px;
+  letter-spacing: 0.18em;
+  color: rgba(100, 220, 160, 0.7);
+  animation: summaryBadgePulse 2.5s ease-in-out infinite;
+}
+
+@keyframes summaryBadgePulse {
+  0%, 100% { opacity: 0.7; }
+  50%       { opacity: 1; text-shadow: 0 0 8px rgba(100, 220, 160, 0.6); }
+}
+
+.summaryHudBottomBar {
+  position: absolute;
+  bottom: 20px;
+  left: 64px;
+  right: 64px;
+  display: flex;
+  justify-content: space-between;
+  font-family: 'Courier New', monospace;
+  font-size: 9px;
+  color: rgba(255, 255, 255, 0.15);
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  pointer-events: none;
+  z-index: 2;
+}
+
+/* ── Header ─────────────────────────────────────────────── */
+.summaryHeader {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 20px;
+  padding: 18px 28px;
+  background: var(--table-header-bg);
+  border-bottom: 1px solid var(--table-border);
+  position: relative;
+  z-index: 10;
+  flex-shrink: 0;
+}
+
+.summaryHeaderLeft {
+  display: flex;
+  flex-direction: column;
+  gap: 7px;
+}
+
+.summaryTitle {
+  margin: 0;
+  font-size: 16px;
+  font-weight: 700;
+  color: var(--table-text-dim);
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  font-family: 'Orbitron', 'Courier New', monospace;
+}
+
+.summarySubtitle {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+.summaryStatChip {
+  font-size: 11px;
+  font-family: 'Share Tech Mono', 'Courier New', monospace;
+  letter-spacing: 0.08em;
+  color: rgba(255, 255, 255, 0.4);
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 4px;
+  padding: 2px 8px;
+}
+
+.summaryStatChip.accent {
+  color: rgba(100, 200, 255, 0.85);
+  background: rgba(100, 200, 255, 0.07);
+  border-color: rgba(100, 200, 255, 0.2);
+  text-shadow: 0 0 8px rgba(100, 200, 255, 0.4);
+}
+
+.summaryNoData {
+  font-size: 12px;
+  color: rgba(255, 255, 255, 0.3);
+  font-family: 'Share Tech Mono', monospace;
+}
+
+.summaryClose {
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  font-size: 18px;
+  color: rgba(255, 255, 255, 0.35);
+  padding: 6px 12px;
+  border-radius: 4px;
+  transition: all 0.2s;
+  line-height: 1;
+}
+
+.summaryClose:hover {
+  color: rgba(255, 255, 255, 0.8);
+  background: rgba(255, 255, 255, 0.06);
+}
+
+/* ── Empty state ─────────────────────────────────────────── */
+.summaryEmptyOuter {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.summaryEmptyState {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 12px;
+  padding: 40px 0;
+}
+
+.summaryEmptyIcon {
+  font-size: 48px;
+  color: rgba(100, 180, 255, 0.2);
+  animation: summaryEmptyPulse 3s ease-in-out infinite;
+}
+
+@keyframes summaryEmptyPulse {
+  0%, 100% { opacity: 0.4; transform: scale(1);    }
+  50%       { opacity: 0.7; transform: scale(1.05); }
+}
+
+.summaryEmptyText {
+  font-family: 'Orbitron', monospace;
+  font-size: 14px;
+  letter-spacing: 0.15em;
+  color: rgba(255, 255, 255, 0.3);
+  text-transform: uppercase;
+}
+
+.summaryEmptyHint {
+  font-size: 12px;
+  color: rgba(255, 255, 255, 0.18);
+  font-family: 'Share Tech Mono', monospace;
+}
+
+/* ═══════════════════════════════════════════════════════════
+   3-COLUMN LAYOUT
+   ═══════════════════════════════════════════════════════════ */
+
+.summaryColumns {
+  flex: 1;
+  min-height: 0;
+  display: flex;
+  flex-direction: row;
+  overflow: hidden;
+  position: relative;
+  z-index: 5;
+}
+
+.summaryColDivider {
+  width: 1px;
+  flex-shrink: 0;
+  background: rgba(255, 255, 255, 0.06);
+  align-self: stretch;
+}
+
+/* Shared scrollbar style */
+.summaryLeftPanel,
+.summaryCenterPanel,
+.summaryRightPanel {
+  overflow-y: auto;
+  scrollbar-width: thin;
+  scrollbar-color: rgba(100, 160, 255, 0.2) transparent;
+}
+.summaryLeftPanel::-webkit-scrollbar,
+.summaryCenterPanel::-webkit-scrollbar,
+.summaryRightPanel::-webkit-scrollbar { width: 4px; }
+.summaryLeftPanel::-webkit-scrollbar-thumb,
+.summaryCenterPanel::-webkit-scrollbar-thumb,
+.summaryRightPanel::-webkit-scrollbar-thumb { background: rgba(100, 160, 255, 0.2); border-radius: 2px; }
+
+/* ── Left panel ──────────────────────────────────────────── */
+.summaryLeftPanel {
+  width: 380px;
+  flex-shrink: 0;
+  padding: 24px 22px 56px;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  gap: 0;
+}
+
+/* ── Center panel ────────────────────────────────────────── */
+.summaryCenterPanel {
+  flex: 1;
+  min-width: 0;
+  padding: 22px 24px 56px;
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
+}
+
+/* ── Right panel ─────────────────────────────────────────── */
+.summaryRightPanel {
+  width: 380px;
+  flex-shrink: 0;
+  padding: 24px 22px 56px;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  gap: 0;
+}
+
+/* ── Panel section header ────────────────────────────────── */
+.summaryPanelHeader {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-family: 'Orbitron', 'Courier New', monospace;
+  font-size: 12px;
+  font-weight: 600;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  flex-shrink: 0;
+}
+
+.summaryPanelHeader.cyan   { color: rgba(100, 220, 255, 0.65); }
+.summaryPanelHeader.purple { color: rgba(180, 120, 255, 0.65); }
+.summaryPanelHeader.amber  { color: rgba(255, 190,  60, 0.70); }
+
+.summaryPanelHeaderDot {
+  width: 5px;
+  height: 5px;
+  border-radius: 50%;
+  flex-shrink: 0;
+}
+.summaryPanelHeaderDot.cyan   { background: rgba(100, 220, 255, 0.8); box-shadow: 0 0 6px rgba(100, 220, 255, 0.5); }
+.summaryPanelHeaderDot.purple { background: rgba(180, 120, 255, 0.8); box-shadow: 0 0 6px rgba(180, 120, 255, 0.5); }
+.summaryPanelHeaderDot.amber  { background: rgba(255, 190,  60, 0.8); box-shadow: 0 0 6px rgba(255, 190,  60, 0.5); }
+
+.summaryPanelHeaderLabel {
+  flex-shrink: 0;
+}
+
+.summaryPanelHeaderLine {
+  flex: 1;
+  height: 1px;
+  background: linear-gradient(to right, rgba(255, 255, 255, 0.07), transparent);
+}
+
+/* ── Section groups + flex spacer (side panels) ─────────── */
+.summarySectionGroup {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  flex-shrink: 0;
+}
+
+.summaryFlexSpacer {
+  flex: 1;
+  min-height: 12px;
+}
+
+/* ═══════════════════════════════════════════════════════════
+   LEFT PANEL — PIE CHART
+   ═══════════════════════════════════════════════════════════ */
+
+.summaryPieWrap {
+  position: relative;
+  width: 100%;
+  max-width: 220px;
+  aspect-ratio: 1;
+  align-self: center;
+  flex-shrink: 0;
+}
+
+.summaryPieSvg {
+  width: 100%;
+  height: 100%;
+  display: block;
+}
+
+/* Centre overlay — sits over the donut hole */
+.summaryPieCenter {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 1px;
+  pointer-events: none;
+  text-align: center;
+  width: 110px;
+}
+
+.summaryPieCenterLabel {
+  font-family: 'Share Tech Mono', monospace;
+  font-size: 11px;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: rgba(255, 255, 255, 0.3);
+}
+
+.summaryPieCenterName {
+  font-family: 'Rajdhani', sans-serif;
+  font-size: 14px;
+  font-weight: 600;
+  color: rgba(255, 255, 255, 0.6);
+  letter-spacing: 0.04em;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  max-width: 100%;
+}
+
+.summaryPieCenterBig {
+  font-family: 'Orbitron', monospace;
+  font-size: 22px;
+  font-weight: 700;
+  color: rgba(255, 255, 255, 0.88);
+  letter-spacing: 0.03em;
+  line-height: 1.1;
+}
+
+.summaryPieCenterPct {
+  font-family: 'Share Tech Mono', monospace;
+  font-size: 13px;
+  color: rgba(255, 255, 255, 0.4);
+  margin-top: 1px;
+}
+
+/* ── Legend ──────────────────────────────────────────────── */
+.summaryPieLegend {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  flex-shrink: 0;
+}
+
+.summaryPieLegendRow {
+  display: flex;
+  align-items: center;
+  gap: 9px;
+  padding: 5px 8px;
+  border-radius: 6px;
+  border: 1px solid transparent;
+  cursor: default;
+  transition: background 0.15s, border-color 0.15s;
+}
+
+.summaryPieLegendRow.active,
+.summaryPieLegendRow:hover {
+  background: rgba(255, 255, 255, 0.04);
+  border-color: rgba(255, 255, 255, 0.07);
+}
+
+.summaryPieLegendDot {
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  flex-shrink: 0;
+}
+
+.summaryPieLegendName {
+  flex: 1;
+  font-family: 'Rajdhani', sans-serif;
+  font-size: 15px;
+  font-weight: 500;
+  color: rgba(255, 255, 255, 0.65);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.summaryPieLegendValue {
+  font-family: 'Share Tech Mono', monospace;
+  font-size: 14px;
+  color: rgba(255, 255, 255, 0.5);
+  flex-shrink: 0;
+}
+
+.summaryPieLegendPct {
+  font-family: 'Share Tech Mono', monospace;
+  font-size: 15px;
+  font-weight: 700;
+  flex-shrink: 0;
+  min-width: 46px;
+  text-align: right;
+}
+
+/* ── Key stats row ───────────────────────────────────────── */
+.summaryKeyStats {
+  display: flex;
+  gap: 10px;
+  flex-wrap: wrap;
+  flex-shrink: 0;
+}
+
+.summaryKeyStat {
+  flex: 1;
+  min-width: 80px;
+  background: rgba(255, 255, 255, 0.035);
+  border: 1px solid rgba(255, 255, 255, 0.07);
+  border-radius: 8px;
+  padding: 8px 12px;
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+}
+
+.summaryKeyStatLabel {
+  font-family: 'Share Tech Mono', monospace;
+  font-size: 11px;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: rgba(255, 255, 255, 0.28);
+}
+
+.summaryKeyStatValue {
+  font-family: 'Orbitron', monospace;
+  font-size: 20px;
+  font-weight: 700;
+  color: rgba(255, 255, 255, 0.8);
+  letter-spacing: 0.03em;
+  line-height: 1;
+}
+
+/* ── Field time bars ─────────────────────────────────────── */
+.summaryFieldTimeRows {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  flex-shrink: 0;
+}
+
+.summaryFieldTimeRow {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.summaryFieldTimeName {
+  font-family: 'Rajdhani', sans-serif;
+  font-size: 15px;
+  font-weight: 500;
+  color: rgba(255, 255, 255, 0.55);
+  width: 80px;
+  flex-shrink: 0;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.summaryFieldTimeBar {
+  flex: 1;
+  height: 7px;
+  background: rgba(255, 255, 255, 0.06);
+  border-radius: 3px;
+  overflow: hidden;
+}
+
+.summaryFieldTimeBarFill {
+  height: 100%;
+  border-radius: 3px;
+  transition: width 0.4s ease-out;
+  min-width: 2px;
+}
+
+.summaryFieldTimeVal {
+  font-family: 'Share Tech Mono', monospace;
+  font-size: 13px;
+  color: rgba(255, 255, 255, 0.4);
+  flex-shrink: 0;
+  width: 50px;
+  text-align: right;
+}
+
+/* ═══════════════════════════════════════════════════════════
+   CENTER PANEL — CHARACTER TYPE BREAKDOWN CARDS
+   ═══════════════════════════════════════════════════════════ */
+
+.summaryCharCards {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 12px;
+}
+
+/* ── Card shell ─────────────────────────────────────────── */
+.summaryCharCard {
+  background: rgba(255, 255, 255, 0.02);
+  border: 1px solid rgba(255, 255, 255, 0.07);
+  border-radius: 10px;
+  overflow: hidden;
+  transition: border-color 0.2s, box-shadow 0.2s;
+}
+
+.summaryCharCard:hover {
+  border-color: color-mix(in srgb, var(--char-color, rgba(100,200,255,0.5)) 60%, transparent);
+  box-shadow: 0 0 20px var(--char-glow, rgba(100, 200, 255, 0.12));
+}
+
+/* Top accent bar */
+.summaryCharCardAccent {
+  height: 2px;
+  background: linear-gradient(to right, var(--char-color, rgba(100, 200, 255, 0.6)), transparent 75%);
+  box-shadow: 0 0 8px var(--char-glow, rgba(100, 200, 255, 0.3));
+}
+
+/* ── Card header ─────────────────────────────────────────── */
+.summaryCharCardHeader {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 12px 16px 10px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+}
+
+.summaryCharCardPortrait {
+  width: 46px;
+  height: 46px;
+  border-radius: 50%;
+  border: 1.5px solid var(--char-color, rgba(100, 200, 255, 0.35));
+  overflow: visible;
+  position: relative;
+  flex-shrink: 0;
+}
+
+.summaryCharCardPortraitImg {
+  width: 100%;
+  height: 100%;
+  border-radius: 50%;
+  object-fit: cover;
+  object-position: center top;
+}
+
+.summaryCharCardPortraitFallback {
+  width: 100%;
+  height: 100%;
+  border-radius: 50%;
+  background: rgba(100, 200, 255, 0.08);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-family: 'Orbitron', monospace;
+  font-size: 13px;
+  font-weight: 700;
+  color: var(--char-color, rgba(100, 200, 255, 0.8));
+}
+
+.summaryCharCardPortraitGlow {
+  position: absolute;
+  inset: -4px;
+  border-radius: 50%;
+  background: radial-gradient(circle, var(--char-glow, rgba(100, 200, 255, 0.15)) 0%, transparent 70%);
+  pointer-events: none;
+}
+
+.summaryCharCardInfo {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+}
+
+.summaryCharCardName {
+  font-family: 'Orbitron', 'Rajdhani', sans-serif;
+  font-size: 16px;
+  font-weight: 600;
+  color: rgba(255, 255, 255, 0.9);
+  letter-spacing: 0.05em;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.summaryCharCardMeta {
+  display: flex;
+  align-items: baseline;
+  gap: 10px;
+}
+
+.summaryCharCardTotal {
+  font-family: 'Share Tech Mono', monospace;
+  font-size: 17px;
+  font-weight: 700;
+  color: rgba(255, 255, 255, 0.75);
+}
+
+.summaryCharCardShare {
+  font-family: 'Orbitron', monospace;
+  font-size: 16px;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  text-shadow: 0 0 10px var(--char-glow, rgba(100, 200, 255, 0.4));
+}
+
+.summaryCharCardChips {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 3px;
+  flex-shrink: 0;
+}
+
+.summaryCharCardChip {
+  font-family: 'Share Tech Mono', monospace;
+  font-size: 9.5px;
+  letter-spacing: 0.08em;
+  color: rgba(255, 255, 255, 0.35);
+  background: rgba(255, 255, 255, 0.04);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 4px;
+  padding: 1px 6px;
+  white-space: nowrap;
+}
+
+.summaryCharCardChip.amber {
+  color: rgba(255, 190, 60, 0.65);
+  background: rgba(255, 190, 60, 0.06);
+  border-color: rgba(255, 190, 60, 0.15);
+}
+
+/* ── Damage-type rows — PRIMARY CONTENT ──────────────────── */
+.summaryCharTypeRows {
+  display: flex;
+  flex-direction: column;
+  gap: 0;
+  padding: 10px 16px 14px;
+}
+
+/* ── Contribution origin strip ───────────────────────────── */
+.summaryCharOriginStrip {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 5px;
+  padding: 5px 16px 8px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+}
+
+.summaryCharOriginChip {
+  font-family: 'Share Tech Mono', monospace;
+  font-size: 10.5px;
+  letter-spacing: 0.04em;
+  background: rgba(255, 255, 255, 0.04);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 4px;
+  padding: 2px 7px;
+  white-space: nowrap;
+}
+
+.summaryCharTypeEmpty {
+  font-family: 'Share Tech Mono', monospace;
+  font-size: 11px;
+  color: rgba(255, 255, 255, 0.2);
+  padding: 8px 0;
+}
+
+.summaryCharTypeRow {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 6px 0;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.035);
+}
+
+.summaryCharTypeRow:last-child {
+  border-bottom: none;
+}
+
+.summaryCharTypeLabel {
+  font-family: 'Share Tech Mono', monospace;
+  font-size: 13px;
+  letter-spacing: 0.06em;
+  color: rgba(255, 255, 255, 0.45);
+  width: 84px;
+  flex-shrink: 0;
+  text-transform: capitalize;
+}
+
+.summaryCharTypeBar {
+  width: 110px;
+  flex-shrink: 0;
+  height: 10px;
+  background: rgba(255, 255, 255, 0.055);
+  border-radius: 5px;
+  overflow: hidden;
+}
+
+.summaryCharTypeBarFill {
+  height: 100%;
+  border-radius: 5px;
+  transition: width 0.45s ease-out;
+  min-width: 3px;
+}
+
+.summaryCharTypeValue {
+  font-family: 'Share Tech Mono', monospace;
+  font-size: 14px;
+  color: rgba(255, 255, 255, 0.6);
+  width: 56px;
+  text-align: right;
+  flex-shrink: 0;
+}
+
+.summaryCharTypePct {
+  font-family: 'Share Tech Mono', monospace;
+  font-size: 13px;
+  color: rgba(255, 255, 255, 0.3);
+  width: 40px;
+  text-align: right;
+  flex-shrink: 0;
+}
+
+/* ═══════════════════════════════════════════════════════════
+   RIGHT PANEL — TEAM TYPE COMPOSITION
+   ═══════════════════════════════════════════════════════════ */
+
+.summaryTeamTypeRows {
+  display: flex;
+  flex-direction: column;
+  gap: 0;
+}
+
+.summaryTeamTypeRow {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 6px 0;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.04);
+}
+
+.summaryTeamTypeRow:last-child {
+  border-bottom: none;
+}
+
+.summaryTeamTypeRowHeader {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+}
+
+.summaryTeamTypeName {
+  font-family: 'Share Tech Mono', monospace;
+  font-size: 11px;
+  letter-spacing: 0.06em;
+  color: rgba(255, 255, 255, 0.45);
+  width: 80px;
+  flex-shrink: 0;
+  text-transform: capitalize;
+}
+
+.summaryTeamTypePct {
+  font-family: 'Share Tech Mono', monospace;
+  font-size: 11px;
+  font-weight: 700;
+  flex-shrink: 0;
+  width: 38px;
+  text-align: right;
+}
+
+.summaryTeamTypeBar {
+  width: 110px;
+  flex-shrink: 0;
+  height: 8px;
+  background: rgba(255, 255, 255, 0.055);
+  border-radius: 4px;
+  overflow: hidden;
+}
+
+.summaryTeamTypeBarFill {
+  height: 100%;
+  border-radius: 4px;
+  transition: width 0.5s ease-out;
+  min-width: 3px;
+}
+
+.summaryTeamTypeValue {
+  font-family: 'Share Tech Mono', monospace;
+  font-size: 12px;
+  color: rgba(255, 255, 255, 0.5);
+  flex-shrink: 0;
+  width: 52px;
+  text-align: right;
+}
+
+/* ── Responsive fallback ─────────────────────────────────── */
+@media (max-width: 900px) {
+  .summaryColumns {
+    flex-direction: column;
+    overflow-y: auto;
+    overflow-x: hidden;
+  }
+
+  .summaryColDivider {
+    width: auto;
+    height: 1px;
+    align-self: stretch;
+  }
+
+  .summaryLeftPanel,
+  .summaryRightPanel {
+    width: 100%;
+    overflow: visible;
+  }
+
+  .summaryPieWrap {
+    max-width: 200px;
+  }
+
+  .summaryCharCards {
+    grid-template-columns: 1fr;
+  }
+
+  .summaryPiesRow {
+    flex-direction: column;
+    align-items: center;
+  }
+
+  .summaryPiesDivider {
+    width: 80%;
+    height: 1px;
+  }
+}
+
+/* ═══════════════════════════════════════════════════════════
+   LEFT PANEL — EFFICIENCY SECTION
+   ═══════════════════════════════════════════════════════════ */
+
+.summaryEfficiencyRows {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  flex-shrink: 0;
+}
+
+.summaryEfficiencyBlock {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+}
+
+.summaryEfficiencyBlockHeader {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+}
+
+.summaryEfficiencyDot {
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  flex-shrink: 0;
+}
+
+.summaryEfficiencyName {
+  flex: 1;
+  font-family: 'Rajdhani', sans-serif;
+  font-size: 15px;
+  font-weight: 600;
+  color: rgba(255, 255, 255, 0.75);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.summaryEfficiencyFieldTime {
+  font-family: 'Share Tech Mono', monospace;
+  font-size: 12px;
+  color: rgba(255, 255, 255, 0.28);
+  flex-shrink: 0;
+}
+
+.summaryEfficiencyRow {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  padding-left: 14px;
+}
+
+.summaryEfficiencyRowLabel {
+  font-family: 'Share Tech Mono', monospace;
+  font-size: 11px;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: rgba(255, 255, 255, 0.28);
+  width: 62px;
+  flex-shrink: 0;
+}
+
+.summaryEfficiencyBar {
+  flex: 1;
+  height: 6px;
+  background: rgba(255, 255, 255, 0.06);
+  border-radius: 3px;
+  overflow: hidden;
+}
+
+.summaryEfficiencyBarFill {
+  height: 100%;
+  border-radius: 3px;
+  transition: width 0.45s ease-out;
+  min-width: 2px;
+}
+
+/* Contribution bar — fixed purple tint independent of element */
+.summaryEfficiencyBarFill.contrib {
+  background: hsl(270 70% 62%);
+  box-shadow: 0 0 5px hsl(270 70% 62% / 0.4);
+}
+
+.summaryEfficiencyValue {
+  font-family: 'Share Tech Mono', monospace;
+  font-size: 13px;
+  color: rgba(255, 255, 255, 0.5);
+  flex-shrink: 0;
+  width: 72px;
+  text-align: right;
+}
+
+/* ═══════════════════════════════════════════════════════════
+   RIGHT PANEL — SHARED EMPTY STATE
+   ═══════════════════════════════════════════════════════════ */
+
+.summaryRightEmpty {
+  font-family: 'Share Tech Mono', monospace;
+  font-size: 12px;
+  letter-spacing: 0.05em;
+  color: rgba(255, 255, 255, 0.2);
+  padding: 4px 2px;
+}
+
+/* ═══════════════════════════════════════════════════════════
+   RIGHT PANEL — BUFF UPTIME
+   ═══════════════════════════════════════════════════════════ */
+
+.summaryBuffUptimeRows {
+  display: flex;
+  flex-direction: column;
+  gap: 0;
+}
+
+.summaryBuffUptimeRow {
+  display: flex;
+  align-items: center;
+  gap: 9px;
+  padding: 6px 0;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.04);
+}
+
+.summaryBuffUptimeRow:last-child {
+  border-bottom: none;
+}
+
+/* Buff modifier icon box */
+.summaryBuffIconBox {
+  width: 26px;
+  height: 26px;
+  border-radius: 5px;
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  overflow: hidden;
+  flex-shrink: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba(255, 255, 255, 0.04);
+}
+
+.summaryBuffIconImg {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  display: block;
+}
+
+.summaryBuffOwnerDot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  flex-shrink: 0;
+}
+
+.summaryBuffName {
+  flex: 1;
+  font-family: 'Share Tech Mono', monospace;
+  font-size: 13px;
+  letter-spacing: 0.03em;
+  color: rgba(255, 255, 255, 0.65);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  min-width: 0;
+}
+
+.summaryBuffBar {
+  width: 64px;
+  flex-shrink: 0;
+  height: 6px;
+  background: rgba(255, 255, 255, 0.06);
+  border-radius: 3px;
+  overflow: hidden;
+}
+
+.summaryBuffBarFill {
+  height: 100%;
+  border-radius: 3px;
+  transition: width 0.45s ease-out;
+  min-width: 2px;
+}
+
+.summaryBuffPct {
+  font-family: 'Share Tech Mono', monospace;
+  font-size: 13px;
+  font-weight: 700;
+  color: rgba(255, 255, 255, 0.5);
+  flex-shrink: 0;
+  width: 34px;
+  text-align: right;
+}
+
+/* ═══════════════════════════════════════════════════════════
+   RIGHT PANEL — CONTRIBUTION ORIGIN
+   ═══════════════════════════════════════════════════════════ */
+
+.summaryOriginRows {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.summaryOriginRow {
+  display: flex;
+  align-items: flex-start;
+  gap: 7px;
+}
+
+.summaryOriginDot {
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  flex-shrink: 0;
+  margin-top: 3px;
+}
+
+.summaryOriginName {
+  font-family: 'Rajdhani', sans-serif;
+  font-size: 12px;
+  font-weight: 600;
+  color: rgba(255, 255, 255, 0.6);
+  width: 64px;
+  flex-shrink: 0;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  padding-top: 1px;
+}
+
+.summaryOriginChips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px;
+  flex: 1;
+  min-width: 0;
+}
+
+.summaryOriginChip {
+  font-family: 'Share Tech Mono', monospace;
+  font-size: 9.5px;
+  letter-spacing: 0.05em;
+  background: rgba(255, 255, 255, 0.04);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 4px;
+  padding: 1px 6px;
+  white-space: nowrap;
+}
+
+/* ═══════════════════════════════════════════════════════════
+   RIGHT PANEL — ENERGY GENERATION (stat blocks, no bars)
+   ═══════════════════════════════════════════════════════════ */
+
+.summaryEnergyRows {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.summaryEnergyBlock {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.summaryEnergyBlockHeader {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.summaryEnergyDot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  flex-shrink: 0;
+}
+
+/* Two stat chips side by side: Generated | per second */
+.summaryEnergyStatRow {
+  display: flex;
+  gap: 8px;
+}
+
+.summaryEnergyStat {
+  flex: 1;
+  background: rgba(255, 255, 255, 0.03);
+  border: 1px solid rgba(255, 255, 255, 0.07);
+  border-radius: 7px;
+  padding: 7px 10px;
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+}
+
+.summaryEnergyStatLabel {
+  font-family: 'Share Tech Mono', monospace;
+  font-size: 10px;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: rgba(255, 255, 255, 0.25);
+  line-height: 1;
+}
+
+/* ═══════════════════════════════════════════════════════════
+   CHARACTER CARD — ACTION BREAKDOWN EXPAND
+   ═══════════════════════════════════════════════════════════ */
+
+.summaryCharExpandBtn {
+  all: unset;
+  display: block;
+  width: 100%;
+  padding: 6px 16px;
+  font-family: 'Share Tech Mono', monospace;
+  font-size: 10px;
+  letter-spacing: 0.08em;
+  cursor: pointer;
+  text-align: center;
+  color: rgba(255, 255, 255, 0.35);
+  border-top: 1px solid rgba(255, 255, 255, 0.05);
+  transition: color 0.15s;
+  box-sizing: border-box;
+}
+
+.summaryCharExpandBtn:hover {
+  color: rgba(255, 255, 255, 0.7);
+}
+
+.summaryActionBreakdown {
+  padding: 4px 16px 12px;
+  display: flex;
+  flex-direction: column;
+  gap: 0;
+  border-top: 1px solid rgba(255, 255, 255, 0.04);
+}
+
+.summaryActionRow {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 4px 0;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.025);
+}
+
+.summaryActionRow:last-child {
+  border-bottom: none;
+}
+
+.summaryActionName {
+  flex: 1;
+  font-family: 'Share Tech Mono', monospace;
+  font-size: 11px;
+  color: rgba(255, 255, 255, 0.45);
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.summaryActionBar {
+  width: 72px;
+  flex-shrink: 0;
+  height: 5px;
+  background: rgba(255, 255, 255, 0.06);
+  border-radius: 3px;
+  overflow: hidden;
+}
+
+.summaryActionBarFill {
+  height: 100%;
+  border-radius: 3px;
+  transition: width 0.4s ease-out;
+  min-width: 2px;
+}
+
+.summaryActionValue {
+  font-family: 'Share Tech Mono', monospace;
+  font-size: 12px;
+  color: rgba(255, 255, 255, 0.55);
+  width: 52px;
+  text-align: right;
+  flex-shrink: 0;
+}
+
+.summaryActionPct {
+  font-family: 'Share Tech Mono', monospace;
+  font-size: 11px;
+  color: rgba(255, 255, 255, 0.3);
+  width: 34px;
+  text-align: right;
+  flex-shrink: 0;
+}
+
+/* ═══════════════════════════════════════════════════════════
+   NEGATIVE STATUSES CARD
+   ═══════════════════════════════════════════════════════════ */
+
+.summaryNegativeStatusCard {
+  background: rgba(180, 60, 60, 0.06);
+  border: 1px solid rgba(220, 80, 80, 0.18);
+  border-radius: 10px;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+}
+
+/* ═══════════════════════════════════════════════════════════
+   RIGHT PANEL — CLICKABLE BUFF ROWS
+   ═══════════════════════════════════════════════════════════ */
+
+.summaryBuffUptimeRow--hasTooltip {
+  position: relative;
+}
+
+.summaryBuffUptimeRow--hasTooltip:hover {
+  background: rgba(255, 255, 255, 0.03);
+  border-radius: 5px;
+}
+
+/* Hover tooltip on buff rows — mirrors .statusTagTooltip pattern */
+.summaryBuffRowTooltip {
+  position: absolute;
+  bottom: calc(100% + 6px);
+  right: 0;
+  min-width: 180px;
+  max-width: 280px;
+  background: rgba(14, 14, 22, 0.97);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  border-radius: 8px;
+  padding: 10px 12px;
+  pointer-events: none;
+  opacity: 0;
+  visibility: hidden;
+  transition: opacity 0.18s ease, visibility 0.18s ease, transform 0.18s ease;
+  transform: translateY(4px);
+  z-index: 200;
+  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.55);
+  border-top: 2px solid var(--buff-tooltip-accent, rgba(100, 200, 255, 0.5));
+}
+
+.summaryBuffUptimeRow--hasTooltip:hover .summaryBuffRowTooltip {
+  opacity: 1;
+  visibility: visible;
+  transform: translateY(0);
+}
+
+.summaryBuffRowTooltipHeader {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 6px;
+}
+
+.summaryBuffRowTooltipIcon {
+  width: 22px;
+  height: 22px;
+  object-fit: contain;
+  flex-shrink: 0;
+}
+
+.summaryBuffRowTooltipLabel {
+  font-family: 'Share Tech Mono', monospace;
+  font-size: 13px;
+  font-weight: 600;
+  letter-spacing: 0.03em;
+  line-height: 1.2;
+}
+
+.summaryBuffRowTooltipDesc {
+  margin: 0;
+  font-family: 'Share Tech Mono', monospace;
+  font-size: 11.5px;
+  color: rgba(255, 255, 255, 0.65);
+  line-height: 1.5;
+  white-space: pre-wrap;
+}
+
+.summaryBuffRowTooltipStats {
+  margin-top: 8px;
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+  border-top: 1px solid rgba(255, 255, 255, 0.08);
+  padding-top: 6px;
+}
+
+.summaryBuffRowTooltipStat {
+  display: flex;
+  justify-content: space-between;
+  gap: 8px;
+}
+
+.summaryBuffRowTooltipStatKey {
+  font-family: 'Share Tech Mono', monospace;
+  font-size: 11px;
+  color: rgba(255, 255, 255, 0.4);
+}
+
+.summaryBuffRowTooltipStatVal {
+  font-family: 'Share Tech Mono', monospace;
+  font-size: 11px;
+  font-weight: 700;
+}
+
+.summaryBuffInfoHint {
+  width: 16px;
+  height: 16px;
+  border-radius: 50%;
+  background: rgba(100, 200, 255, 0.1);
+  border: 1px solid rgba(100, 200, 255, 0.25);
+  color: rgba(100, 200, 255, 0.7);
+  font-size: 10px;
+  font-style: italic;
+  font-family: serif;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  line-height: 1;
+}
+
+.summaryEnergyStatValue {
+  font-family: 'Orbitron', monospace;
+  font-size: 18px;
+  font-weight: 700;
+  color: rgba(255, 255, 255, 0.82);
+  letter-spacing: 0.03em;
+  line-height: 1;
+}
+
+.summaryEnergyName {
+  flex: 1;
+  font-family: 'Rajdhani', sans-serif;
+  font-size: 15px;
+  font-weight: 600;
+  color: rgba(255, 255, 255, 0.75);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.summaryEnergyLibBadge {
+  font-family: 'Share Tech Mono', monospace;
+  font-size: 11px;
+  letter-spacing: 0.06em;
+  color: rgba(255, 190, 60, 0.85);
+  background: rgba(255, 190, 60, 0.08);
+  border: 1px solid rgba(255, 190, 60, 0.22);
+  border-radius: 4px;
+  padding: 2px 7px;
+  flex-shrink: 0;
+}
+
+.summaryEnergyBarRow {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  padding-left: 14px;
+}
+
+.summaryEnergyBarLabel {
+  font-family: 'Share Tech Mono', monospace;
+  font-size: 9px;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+  color: rgba(255, 255, 255, 0.28);
+  width: 56px;
+  flex-shrink: 0;
+}
+
+.summaryEnergyBarTrack {
+  flex: 1;
+  height: 5px;
+  background: rgba(255, 255, 255, 0.06);
+  border-radius: 3px;
+  overflow: hidden;
+}
+
+.summaryEnergyBarFill {
+  height: 100%;
+  border-radius: 3px;
+  transition: width 0.45s ease-out;
+  min-width: 0;
+}
+
+.summaryEnergyBarValue {
+  font-family: 'Share Tech Mono', monospace;
+  font-size: 10px;
+  color: rgba(255, 255, 255, 0.35);
+  flex-shrink: 0;
+  width: 52px;
+  text-align: right;
+}
+
+
+/* ═══════════════════════════════════════════════════════════
+   LEFT PANEL — DAMAGE SUMMARY LIST (replaces pie)
+   ═══════════════════════════════════════════════════════════ */
+
+.summaryDamageSummaryList {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  flex-shrink: 0;
+}
+
+.summaryDamageSummaryRow {
+  display: flex;
+  align-items: center;
+  gap: 9px;
+  padding: 5px 8px;
+  border-radius: 6px;
+  border: 1px solid transparent;
+}
+
+.summaryDamageSummaryDot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  flex-shrink: 0;
+}
+
+.summaryDamageSummaryName {
+  flex: 1;
+  font-family: 'Rajdhani', sans-serif;
+  font-size: 13px;
+  font-weight: 500;
+  color: rgba(255, 255, 255, 0.65);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.summaryDamageSummaryValue {
+  font-family: 'Share Tech Mono', monospace;
+  font-size: 12px;
+  color: rgba(255, 255, 255, 0.5);
+  flex-shrink: 0;
+}
+
+.summaryDamageSummaryPct {
+  font-family: 'Share Tech Mono', monospace;
+  font-size: 13px;
+  font-weight: 700;
+  flex-shrink: 0;
+  min-width: 42px;
+  text-align: right;
+}
+
+/* ═══════════════════════════════════════════════════════════
+   CENTER PANEL — DUAL PIE LAYOUT
+   ═══════════════════════════════════════════════════════════ */
+
+/* Row holding both pies side by side */
+.summaryPiesRow {
+  display: flex;
+  flex-direction: row;
+  gap: 0;
+  align-items: flex-start;
+  flex-shrink: 0;
+}
+
+/* Vertical divider between the two pies */
+.summaryPiesDivider {
+  width: 1px;
+  align-self: stretch;
+  background: rgba(255, 255, 255, 0.06);
+  flex-shrink: 0;
+  margin: 0 4px;
+}
+
+/* Each individual pie section takes equal space */
+.summaryPieSection {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  padding: 0 16px 4px;
+}
+
+.summaryPieSection:first-child {
+  padding-left: 0;
+}
+
+.summaryPieSection:last-child {
+  padding-right: 0;
+}
+
+/* Optional subtitle below the pie header */
+.summaryPieSubtitle {
+  font-family: 'Share Tech Mono', monospace;
+  font-size: 10.5px;
+  letter-spacing: 0.06em;
+  color: rgba(255, 255, 255, 0.25);
+  margin-top: -10px;
+  line-height: 1.4;
+}

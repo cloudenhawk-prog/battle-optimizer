@@ -3,6 +3,7 @@ import { useState } from 'react'
 import { useRotationEditor } from '../../hooks/rotation-editor/useRotationEditor'
 import { RotationTable } from './RotationTable'
 import DataOverlay from './DataOverlay'
+import SummaryOverlay from './SummaryOverlay'
 import type { ResolvedCharacter } from '../../types/character'
 import type { Enemy } from '../../types/enemy'
 import type { TableConfig, ColumnVisibility } from '../../types/tableDefinitions'
@@ -29,6 +30,7 @@ export default function RotationEditor({ charactersInBattle, enemy, tableConfig,
   const { snapshots, damageEvents, handleCharacterSelect, handleActionSelect } = useRotationEditor({ charactersInBattle, tableConfig, enemy, onSnapshotsChange, gearResetKey, settings })
   const [overlayOpen, setOverlayOpen] = useState(false)
   const [overlayData, setOverlayData] = useState<null | { snapshot: Snapshot; damageEvents: DamageEvent[] }>(null)
+  const [summaryOpen, setSummaryOpen] = useState(false)
 
   function handleRowClick(snapshot: Snapshot) {
     if (!snapshot.action) return
@@ -37,11 +39,19 @@ export default function RotationEditor({ charactersInBattle, enemy, tableConfig,
     setOverlayOpen(true)
   }
 
+  const hasData = snapshots.some(s => s.action)
+
   return (
     <div className="pageWrapper">
       <h1 className="heading"></h1>
       <RotationTable snapshots={snapshots} charactersInBattle={charactersInBattle} tableConfig={tableConfig} onSelectCharacter={handleCharacterSelect} onSelectAction={handleActionSelect} columnVisibility={columnVisibility} setColumnVisibility={setColumnVisibility} onRowClick={handleRowClick} onGearChange={onGearChange} />
+      {hasData && (
+        <button className="summaryOpenButton" onClick={() => setSummaryOpen(true)} title="Open full team summary">
+          ◈ FIELD REPORT
+        </button>
+      )}
       <DataOverlay snapshot={overlayData?.snapshot ?? null} damageEvents={overlayData?.damageEvents ?? []} open={overlayOpen} onClose={() => setOverlayOpen(false)} />
+      <SummaryOverlay open={summaryOpen} onClose={() => setSummaryOpen(false)} snapshots={snapshots} damageEvents={damageEvents ?? []} characters={charactersInBattle} />
     </div>
   )
 }
