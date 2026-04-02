@@ -806,8 +806,8 @@ describe('damageCalculator', () => {
 
       const without = calculateDamage({ action, name: 'X', stats: baseStats, damageModifiers: [], modifierCharacterStats: withoutAgg, modifierEnemyStats: {}, enemy, snapshotId: 1, timeStamp: 0 })
 
-      expect(full.damageEvent.contributions).toHaveProperty('bonusMod')
-      const contrib = full.damageEvent.contributions['bonusMod']
+      expect(full.damageEvent.contributions).toHaveProperty('bonusMod::bonusMod')
+      const contrib = full.damageEvent.contributions['bonusMod::bonusMod']
       assertContribution(contrib, full.damageEvent, without.damageEvent)
     })
 
@@ -824,12 +824,12 @@ describe('damageCalculator', () => {
       // amp
       const withoutAmp: any = buildAggregatedWithoutModifier(m1, aggregated)
       const resWithoutAmp = calculateDamage({ action, name: 'X', stats: baseStats, damageModifiers: [], modifierCharacterStats: withoutAmp, modifierEnemyStats: {}, enemy, snapshotId: 1, timeStamp: 0 })
-      assertContribution(full.damageEvent.contributions['amp'], full.damageEvent, resWithoutAmp.damageEvent)
+      assertContribution(full.damageEvent.contributions['amp::amp'], full.damageEvent, resWithoutAmp.damageEvent)
 
       // total
       const withoutTotal: any = buildAggregatedWithoutModifier(m2, aggregated)
       const resWithoutTotal = calculateDamage({ action, name: 'X', stats: baseStats, damageModifiers: [], modifierCharacterStats: withoutTotal, modifierEnemyStats: {}, enemy, snapshotId: 1, timeStamp: 0 })
-      assertContribution(full.damageEvent.contributions['total'], full.damageEvent, resWithoutTotal.damageEvent)
+      assertContribution(full.damageEvent.contributions['total::total'], full.damageEvent, resWithoutTotal.damageEvent)
     })
 
     it('elemental and crit stats numeric match removal', () => {
@@ -844,14 +844,14 @@ describe('damageCalculator', () => {
 
       const withoutG: any = buildAggregatedWithoutModifier(m1, aggregated)
       const resWithoutG = calculateDamage({ action, name: 'X', stats: baseStats, damageModifiers: [], modifierCharacterStats: withoutG, modifierEnemyStats: {}, enemy, snapshotId: 1, timeStamp: 0 })
-      assertContribution(full.damageEvent.contributions['glacioBonus'], full.damageEvent, resWithoutG.damageEvent)
+      assertContribution(full.damageEvent.contributions['glacioBonus::glacioBonus'], full.damageEvent, resWithoutG.damageEvent)
 
       // critStuff
       const withoutC: any = buildAggregatedWithoutModifier(m2, aggregated)
       const resWithoutC = calculateDamage({ action, name: 'X', stats: baseStats, damageModifiers: [], modifierCharacterStats: withoutC, modifierEnemyStats: {}, enemy, snapshotId: 1, timeStamp: 0 })
-      assertContribution(full.damageEvent.contributions['critStuff'], full.damageEvent, resWithoutC.damageEvent)
+      assertContribution(full.damageEvent.contributions['critStuff::critStuff'], full.damageEvent, resWithoutC.damageEvent)
       // crit contribution should be present
-      expect(full.damageEvent.contributions['critStuff'].crit_damage_contributed).toBeGreaterThanOrEqual(0)
+      expect(full.damageEvent.contributions['critStuff::critStuff'].crit_damage_contributed).toBeGreaterThanOrEqual(0)
     })
 
     it('flat ATK numeric match removal', () => {
@@ -864,7 +864,7 @@ describe('damageCalculator', () => {
 
       const without: any = buildAggregatedWithoutModifier(m, aggregated)
       const resWithout = calculateDamage({ action, name: 'X', stats: baseStats, damageModifiers: [], modifierCharacterStats: without, modifierEnemyStats: {}, enemy, snapshotId: 1, timeStamp: 0 })
-      assertContribution(full.damageEvent.contributions['flatATK'], full.damageEvent, resWithout.damageEvent)
+      assertContribution(full.damageEvent.contributions['flatATK::flatATK'], full.damageEvent, resWithout.damageEvent)
     })
 
     it('multiple modifiers produce numerically-correct contributions', () => {
@@ -878,8 +878,9 @@ describe('damageCalculator', () => {
       for (const m of mods) {
         const withoutAgg: any = buildAggregatedWithoutModifier(m, aggregated)
         const resWithout = calculateDamage({ action, name: 'X', stats: baseStats, damageModifiers: [], modifierCharacterStats: withoutAgg, modifierEnemyStats: {}, enemy, snapshotId: 1, timeStamp: 0 })
-        expect(full.damageEvent.contributions).toHaveProperty(m.source)
-        assertContribution(full.damageEvent.contributions[m.source], full.damageEvent, resWithout.damageEvent)
+        const contribKey = `${m.source}::${m.displayName ?? m.source}`
+        expect(full.damageEvent.contributions).toHaveProperty(contribKey)
+        assertContribution(full.damageEvent.contributions[contribKey], full.damageEvent, resWithout.damageEvent)
       }
     })
   })

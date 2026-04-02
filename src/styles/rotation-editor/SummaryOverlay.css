@@ -754,7 +754,15 @@
   display: flex;
   flex-direction: column;
   gap: 0;
-  padding: 10px 16px 14px;
+  padding: 10px 16px 6px;
+}
+
+.summaryCharTypeDisclaimer {
+  font-family: 'Share Tech Mono', monospace;
+  font-size: 9.5px;
+  color: rgba(255, 255, 255, 0.22);
+  padding: 4px 0 10px;
+  letter-spacing: 0.03em;
 }
 
 /* ── Contribution origin strip ───────────────────────────── */
@@ -1073,8 +1081,15 @@
   display: flex;
   align-items: center;
   gap: 9px;
-  padding: 6px 0;
+  padding: 6px 4px;
   border-bottom: 1px solid rgba(255, 255, 255, 0.04);
+  border-radius: 5px;
+  transition: background 0.15s ease;
+}
+
+.summaryBuffUptimeRow:hover {
+  background: rgba(255, 255, 255, 0.08);
+  border-bottom-color: rgba(255, 255, 255, 0.08);
 }
 
 .summaryBuffUptimeRow:last-child {
@@ -1360,17 +1375,73 @@
   flex-direction: column;
 }
 
+/* Per-event tick list inside the negative statuses card */
+.summaryNsEventList {
+  max-height: 220px;
+  overflow-y: auto;
+  scrollbar-width: thin;
+  scrollbar-color: rgba(100, 160, 255, 0.2) transparent;
+}
+
+.summaryNsEventRow {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 3px 0;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.025);
+}
+
+.summaryNsEventRow:last-child {
+  border-bottom: none;
+}
+
+.summaryNsEventTime {
+  font-family: 'Share Tech Mono', monospace;
+  font-size: 10.5px;
+  color: rgba(255, 255, 255, 0.28);
+  width: 44px;
+  flex-shrink: 0;
+  text-align: right;
+}
+
+.summaryNsEventName {
+  flex: 1;
+  font-family: 'Share Tech Mono', monospace;
+  font-size: 11px;
+  color: rgba(255, 255, 255, 0.5);
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.summaryNsEventDmg {
+  font-family: 'Share Tech Mono', monospace;
+  font-size: 11px;
+  font-weight: 700;
+  color: rgba(255, 255, 255, 0.6);
+  flex-shrink: 0;
+  text-align: right;
+  width: 52px;
+}
+
+/* Section header hint line */
+.summarySectionHint {
+  font-family: 'Share Tech Mono', monospace;
+  font-size: 10px;
+  letter-spacing: 0.06em;
+  color: rgba(255, 255, 255, 0.22);
+  margin-top: -6px;
+  margin-bottom: 8px;
+}
+
 /* ═══════════════════════════════════════════════════════════
    RIGHT PANEL — CLICKABLE BUFF ROWS
    ═══════════════════════════════════════════════════════════ */
 
 .summaryBuffUptimeRow--hasTooltip {
   position: relative;
-}
-
-.summaryBuffUptimeRow--hasTooltip:hover {
-  background: rgba(255, 255, 255, 0.03);
-  border-radius: 5px;
+  cursor: pointer;
 }
 
 /* Hover tooltip on buff rows — mirrors .statusTagTooltip pattern */
@@ -1422,6 +1493,15 @@
   line-height: 1.2;
 }
 
+.summaryBuffRowTooltipCoverage {
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+  padding-bottom: 6px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+  margin-bottom: 8px;
+}
+
 .summaryBuffRowTooltipDesc {
   margin: 0;
   font-family: 'Share Tech Mono', monospace;
@@ -1429,6 +1509,7 @@
   color: rgba(255, 255, 255, 0.65);
   line-height: 1.5;
   white-space: pre-wrap;
+  margin-top: 6px;
 }
 
 .summaryBuffRowTooltipStats {

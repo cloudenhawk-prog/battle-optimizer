@@ -1,6 +1,7 @@
 import { createPortal } from 'react-dom'
 import { useState } from 'react'
 import '../../styles/rotation-editor/SummaryOverlay.css'
+import { negativeStatuses } from '../../data/negativeStatuses'
 import type { Snapshot } from '../../types/snapshot'
 import type { DamageEvent } from '../../types/events'
 import type { Character } from '../../types/character'
@@ -32,7 +33,7 @@ const DMG_TYPE_LABELS: Record<string, string> = {
   ECHO:            'Echo',
   INTRO:           'Intro',
   OUTRO:           'Outro',
-  NEGATIVE_STATUS: 'Field',
+  NEGATIVE_STATUS: 'Negative Status',
   '':              'Other',
 }
 
@@ -51,6 +52,11 @@ const DMG_TYPE_THEMES: Record<string, { color: string; glow: string }> = {
 function getDmgTypeTheme(type: string) {
   return DMG_TYPE_THEMES[type] ?? DMG_TYPE_THEMES['']
 }
+
+/** Maps element → the name of the negative status associated with that element. */
+const ELEMENT_TO_NEGATIVE_STATUS_LABEL: Record<string, string> = Object.fromEntries(
+  Object.values(negativeStatuses).map(s => [s.element, s.name])
+)
 
 // ========== Data Computation ================================================================================================
 
@@ -116,7 +122,6 @@ function computeSummaryData(
     const typeMap = new Map<string, number>()
     for (const e of [...directEvents, ...caEvents]) {
       for (const t of e.dmgTypes) {
-        if (t === 'NEGATIVE_STATUS') continue
         typeMap.set(t, (typeMap.get(t) ?? 0) + e.average)
       }
     }
@@ -175,8 +180,10 @@ function computeActionBreakdowns(
     for (const e of damageEvents) {
       const attributedToChar = e.dealer === char.name || e.dealer.startsWith(char.name + ': ')
       if (!attributedToChar) continue
-      // Skip truly global passive events (where dealer is just a status key, not a character)
-      if (e.dmgTypes.includes('NEGATIVE_STATUS') && !e.dealer.startsWith(char.name + ': ')) continue
+      // Skip pure negative-status events dealt directly by the character (e.g. DoT ticks attributed
+      // to the caster). Actions like Plunge Attack carry both BASIC and NEGATIVE_STATUS, so we only
+      // skip events where NEGATIVE_STATUS is the sole dmgType.
+      if (e.dmgTypes.every(t => t === 'NEGATIVE_STATUS') && e.dealer === char.name) continue
       byAction.set(e.actionName, (byAction.get(e.actionName) ?? 0) + e.average)
     }
     result.set(
@@ -558,19 +565,8 @@ function PanelHeader({ label, accent = 'cyan' }: { label: string; accent?: 'cyan
 function SummaryHud() {
   return (
     <>
-      <div className="summaryHudScanLine" />
-      <div className="summaryHudCorner topLeft" />
-      <div className="summaryHudCorner topRight" />
-      <div className="summaryHudCorner bottomLeft" />
-      <div className="summaryHudCorner bottomRight" />
       <div className="summaryHudTopBar">
         <span>SYS // TACTICAL ANALYSIS MODULE v4.1</span>
-        <span className="summaryHudBadge">LIVE</span>
-      </div>
-      <div className="summaryHudBottomBar">
-        <span>ECHO SIGNATURE: LOCKED</span>
-        <span>SYNC: 99.8%</span>
-        <span>TETHER // v3.2.17</span>
       </div>
     </>
   )
@@ -820,9 +816,10 @@ type CenterPanelProps = {
   contributionEntries: ContributionEntry[]
   contributionOrigin: ContributionOriginEntry[]
   actionBreakdowns: Map<string, ActionBreakdownEntry[]>
+  passiveDamageEvents: DamageEvent[]
 }
 
-function CenterPanel({ characterSummaries, globalDamage, totalPassiveDamage, grandTotal, contributionEntries, contributionOrigin, actionBreakdowns }: CenterPanelProps) {
+function CenterPanel({ characterSummaries, globalDamage, totalPassiveDamage, grandTotal, contributionEntries, contributionOrigin, actionBreakdowns, passiveDamageEvents }: CenterPanelProps) {
   const originByChar = new Map(contributionOrigin.map(e => [e.charName, e]))
   // Pie 1: damage share — per character (direct+CA) + pooled field effects
   const pie1Items: PieItem[] = [
@@ -835,20 +832,26 @@ function CenterPanel({ characterSummaries, globalDamage, totalPassiveDamage, gra
         glow: getElementColor(c.element).glow,
       })),
     ...(totalPassiveDamage > 0
-      ? [{ name: 'Field Effects', value: totalPassiveDamage, color: 'hsl(35 90% 58%)', glow: 'hsl(35 90% 58% / 0.35)' }]
+      ? [{ name: 'Negative Statuses', value: totalPassiveDamage, color: 'hsl(220 15% 60%)', glow: 'hsl(220 15% 60% / 0.3)' }]
       : []),
   ].filter(item => item.value > 0)
 
   // Pie 2: contribution attribution — damage attributed to each enabler
+  const characterNames = new Set(characterSummaries.map(c => c.name))
+  const pie2CharEntries = contributionEntries.filter(c => c.attributedDamage > 0 && characterNames.has(c.name))
+  const pie2NsTotal = contributionEntries.filter(c => c.attributedDamage > 0 && !characterNames.has(c.name)).reduce((s, c) => s + c.attributedDamage, 0)
   const pie2Total = contributionEntries.reduce((s, c) => s + c.attributedDamage, 0)
-  const pie2Items: PieItem[] = contributionEntries
-    .filter(c => c.attributedDamage > 0)
-    .map(c => ({
+  const pie2Items: PieItem[] = [
+    ...pie2CharEntries.map(c => ({
       name: c.name,
       value: c.attributedDamage,
       color: getElementColor(c.element).primary,
       glow: getElementColor(c.element).glow,
-    }))
+    })),
+    ...(pie2NsTotal > 0
+      ? [{ name: 'Negative Statuses', value: pie2NsTotal, color: 'hsl(220 15% 60%)', glow: 'hsl(220 15% 60% / 0.3)' }]
+      : []),
+  ]
 
   return (
     <div className="summaryCenterPanel">
@@ -860,7 +863,7 @@ function CenterPanel({ characterSummaries, globalDamage, totalPassiveDamage, gra
           items={pie1Items}
           total={grandTotal}
           centerLabel="Total"
-          subtitle="Direct + CA per character · field effects pooled"
+          subtitle="Direct + CA per character · negative statuses pooled"
         />
         <div className="summaryPiesDivider" />
         <PieSection
@@ -886,7 +889,7 @@ function CenterPanel({ characterSummaries, globalDamage, totalPassiveDamage, gra
           />
         ))}
         {globalDamage.length > 0 && (
-          <NegativeStatusesCard globalDamage={globalDamage} grandTotal={grandTotal} />
+          <NegativeStatusesCard globalDamage={globalDamage} grandTotal={grandTotal} passiveDamageEvents={passiveDamageEvents} />
         )}
       </div>
     </div>
@@ -966,11 +969,14 @@ function CharTypeCard({ summary, grandTotal, originEntry, actionBreakdown }: { s
         ) : (
           summary.damageByType.filter(({ damage }) => damage > 0).map(({ type, damage }) => {
             const barPct = (damage / maxTypeDmg) * 100
-            const teamPct = grandTotal > 0 ? (damage / grandTotal) * 100 : 0
+            const teamPct = allCharDamage > 0 ? (damage / allCharDamage) * 100 : 0
             const typeTheme = getDmgTypeTheme(type)
+            const typeLabel = type === 'NEGATIVE_STATUS'
+              ? (ELEMENT_TO_NEGATIVE_STATUS_LABEL[summary.element] ?? DMG_TYPE_LABELS[type])
+              : (DMG_TYPE_LABELS[type] ?? type)
             return (
               <div key={type} className="summaryCharTypeRow">
-                <span className="summaryCharTypeLabel">{DMG_TYPE_LABELS[type] ?? type}</span>
+                <span className="summaryCharTypeLabel">{typeLabel}</span>
                 <div className="summaryCharTypeBar">
                   <div
                     className="summaryCharTypeBarFill"
@@ -986,6 +992,9 @@ function CharTypeCard({ summary, grandTotal, originEntry, actionBreakdown }: { s
               </div>
             )
           })
+        )}
+        {summary.damageByType.length > 0 && (
+          <div className="summaryCharTypeDisclaimer">Damage Type Distribution</div>
         )}
       </div>
 
@@ -1028,8 +1037,9 @@ function CharTypeCard({ summary, grandTotal, originEntry, actionBreakdown }: { s
 
 // ========== Negative Statuses Card =========================================================================================
 
-function NegativeStatusesCard({ globalDamage, grandTotal }: { globalDamage: GlobalDamageEntry[]; grandTotal: number }) {
+function NegativeStatusesCard({ globalDamage, grandTotal, passiveDamageEvents }: { globalDamage: GlobalDamageEntry[]; grandTotal: number; passiveDamageEvents: DamageEvent[] }) {
   const [expanded, setExpanded] = useState(false)
+  const sortedEvents = [...passiveDamageEvents].sort((a, b) => a.timeStamp - b.timeStamp)
   const total = globalDamage.reduce((s, g) => s + g.damage, 0)
   const shareOfTotal = grandTotal > 0 ? (total / grandTotal) * 100 : 0
   const maxDmg = globalDamage.length > 0 ? globalDamage[0].damage : 1
@@ -1062,7 +1072,7 @@ function NegativeStatusesCard({ globalDamage, grandTotal }: { globalDamage: Glob
       <div className="summaryCharTypeRows">
         {globalDamage.map(entry => {
           const barPct = (entry.damage / maxDmg) * 100
-          const teamPct = grandTotal > 0 ? (entry.damage / grandTotal) * 100 : 0
+          const teamPct = total > 0 ? (entry.damage / total) * 100 : 0
           const elTheme = getElementColor(entry.element)
           return (
             <div key={entry.name} className="summaryCharTypeRow">
@@ -1088,8 +1098,14 @@ function NegativeStatusesCard({ globalDamage, grandTotal }: { globalDamage: Glob
         {expanded ? '▲ Hide per-action detail' : '▼ Show per-action breakdown'}
       </button>
       {expanded && (
-        <div className="summaryActionBreakdown summaryActionBreakdown--note">
-          <span className="summaryActionBreakdownNote">Negative status damage is attributed globally, not per source action.</span>
+        <div className="summaryActionBreakdown summaryNsEventList">
+          {sortedEvents.map((e, i) => (
+            <div key={i} className="summaryNsEventRow">
+              <span className="summaryNsEventTime">{formatTime(e.timeStamp)}</span>
+              <span className="summaryNsEventName">{e.actionName}</span>
+              <span className="summaryNsEventDmg">{formatDamage(e.average)}</span>
+            </div>
+          ))}
         </div>
       )}
     </div>
@@ -1105,6 +1121,7 @@ function RightPanel({ buffUptime, energyFlow, modifierInfoMap }: { buffUptime: B
       {/* ── Section 1: Buff Coverage ── */}
       <div className="summarySectionGroup">
         <PanelHeader label="BUFF COVERAGE" accent="cyan" />
+        <div className="summarySectionHint">% = share of team damage dealt while buff was active</div>
         {buffUptime.length === 0 ? (
           <div className="summaryRightEmpty">No limited-duration buffs detected</div>
         ) : (
@@ -1113,7 +1130,6 @@ function RightPanel({ buffUptime, energyFlow, modifierInfoMap }: { buffUptime: B
               const ownerTheme = getElementColor(entry.ownerElement)
               const iconPath = `/assets/modifiers/${entry.displayName.toLowerCase().replace(/:/g, '').replace(/\s+/g, '_')}.png`
               const info = modifierInfoMap.get(entry.displayName)
-              const hasTooltip = !!(info?.description || info?.showStats)
               const accentColor = info?.color ?? ownerTheme.primary
               const statsEntries = info?.showStats && info?.stats
                 ? (Object.entries(info.stats) as [string, number][]).filter(([, v]) => v !== 0)
@@ -1121,7 +1137,7 @@ function RightPanel({ buffUptime, energyFlow, modifierInfoMap }: { buffUptime: B
               return (
                 <div
                   key={entry.key}
-                  className={`summaryBuffUptimeRow${hasTooltip ? ' summaryBuffUptimeRow--hasTooltip' : ''}`}
+                  className="summaryBuffUptimeRow summaryBuffUptimeRow--hasTooltip"
                 >
                   <div className="summaryBuffIconBox" style={{ borderColor: `color-mix(in srgb, ${ownerTheme.primary} 55%, transparent)` }}>
                     <img
@@ -1151,29 +1167,43 @@ function RightPanel({ buffUptime, energyFlow, modifierInfoMap }: { buffUptime: B
                     />
                   </div>
                   <span className="summaryBuffPct">{entry.coveragePct.toFixed(0)}%</span>
-                  {hasTooltip && (
-                    <div className="summaryBuffRowTooltip" style={{ '--buff-tooltip-accent': accentColor } as React.CSSProperties}>
-                      <div className="summaryBuffRowTooltipHeader">
-                        <img src={iconPath} alt="" className="summaryBuffRowTooltipIcon" onError={e => { (e.currentTarget as HTMLImageElement).style.opacity = '0' }} />
-                        <span className="summaryBuffRowTooltipLabel" style={{ color: accentColor }}>{entry.displayName}</span>
-                      </div>
-                      {info?.description && (
-                        <p className="summaryBuffRowTooltipDesc">{info.description}</p>
-                      )}
-                      {statsEntries.length > 0 && (
-                        <div className="summaryBuffRowTooltipStats">
-                          {statsEntries.map(([key, val]) => (
-                            <div key={key} className="summaryBuffRowTooltipStat">
-                              <span className="summaryBuffRowTooltipStatKey">{key.replace(/([a-z])([A-Z])/g, '$1 $2').replace(/^./, s => s.toUpperCase())}</span>
-                              <span className="summaryBuffRowTooltipStatVal" style={{ color: accentColor }}>
-                                {['level','flatATK','flatHP','flatDEF'].includes(key) ? `+${val}` : `+${(val * 100).toFixed(1)}%`}
-                              </span>
-                            </div>
-                          ))}
+                  <div className="summaryBuffRowTooltip" style={{ '--buff-tooltip-accent': accentColor } as React.CSSProperties}>
+                    <div className="summaryBuffRowTooltipHeader">
+                      <img src={iconPath} alt="" className="summaryBuffRowTooltipIcon" onError={e => { (e.currentTarget as HTMLImageElement).style.opacity = '0' }} />
+                      <span className="summaryBuffRowTooltipLabel" style={{ color: accentColor }}>{entry.displayName}</span>
+                    </div>
+                    <div className="summaryBuffRowTooltipCoverage">
+                      {entry.ownerCharacter && (
+                        <div className="summaryBuffRowTooltipStat">
+                          <span className="summaryBuffRowTooltipStatKey">Source</span>
+                          <span className="summaryBuffRowTooltipStatVal" style={{ color: ownerTheme.primary }}>{entry.ownerCharacter}</span>
                         </div>
                       )}
+                      <div className="summaryBuffRowTooltipStat">
+                        <span className="summaryBuffRowTooltipStatKey">Coverage</span>
+                        <span className="summaryBuffRowTooltipStatVal" style={{ color: accentColor }}>{entry.coveragePct.toFixed(1)}%</span>
+                      </div>
+                      <div className="summaryBuffRowTooltipStat">
+                        <span className="summaryBuffRowTooltipStatKey">Damage covered</span>
+                        <span className="summaryBuffRowTooltipStatVal" style={{ color: accentColor }}>{formatDamage(entry.coveredDamage)}</span>
+                      </div>
                     </div>
-                  )}
+                    {info?.description && (
+                      <p className="summaryBuffRowTooltipDesc">{info.description}</p>
+                    )}
+                    {statsEntries.length > 0 && (
+                      <div className="summaryBuffRowTooltipStats">
+                        {statsEntries.map(([key, val]) => (
+                          <div key={key} className="summaryBuffRowTooltipStat">
+                            <span className="summaryBuffRowTooltipStatKey">{key.replace(/([a-z])([A-Z])/g, '$1 $2').replace(/^./, s => s.toUpperCase())}</span>
+                            <span className="summaryBuffRowTooltipStatVal" style={{ color: accentColor }}>
+                              {['level','flatATK','flatHP','flatDEF'].includes(key) ? `+${val}` : `+${(val * 100).toFixed(1)}%`}
+                            </span>
+                          </div>
+                        ))}
+                      </div>
+                    )}
+                  </div>
                 </div>
               )
             })}
@@ -1250,6 +1280,9 @@ export default function SummaryOverlay({ open, onClose, snapshots, damageEvents,
     computeSummaryData(activeChars, snapshots, damageEvents)
 
   const contributionEntries = computeContributionData(activeChars, damageEvents)
+  const passiveDamageEvents = damageEvents.filter(e =>
+    !activeChars.some(c => e.dealer === c.name || e.dealer.startsWith(c.name + ': '))
+  )
   const buffUptime = computeBuffUptime(snapshots, damageEvents, activeChars, grandTotal)
   const contributionOrigin = computeContributionOrigin(activeChars, damageEvents)
   const energyFlow = computeEnergyFlow(activeChars, snapshots)
@@ -1311,6 +1344,7 @@ export default function SummaryOverlay({ open, onClose, snapshots, damageEvents,
               contributionEntries={contributionEntries}
               contributionOrigin={contributionOrigin}
               actionBreakdowns={actionBreakdowns}
+              passiveDamageEvents={passiveDamageEvents}
             />
             <div className="summaryColDivider" />
             <RightPanel
