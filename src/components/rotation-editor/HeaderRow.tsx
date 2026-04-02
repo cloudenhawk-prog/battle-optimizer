@@ -44,7 +44,7 @@ export function HeaderRow({ tableConfig, columnVisibility, setColumnVisibility }
   }
 
   return (
-    <thead className="tableHeader">
+    <>
       {/* Top-level group headers */}
       <tr>
         {/* Group: Selectors (Character + Action) */}
@@ -129,7 +129,7 @@ export function HeaderRow({ tableConfig, columnVisibility, setColumnVisibility }
         {/* Other Columns (Coordinated Attacks, etc.) */}
         {tableConfig.other && renderColumns(tableConfig.other.columns, columnVisibility, setColumnVisibility)}
       </tr>
-    </thead>
+    </>
   )
 }
 

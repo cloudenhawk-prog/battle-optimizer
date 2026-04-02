@@ -1,12 +1,8 @@
 /* Current State Row - inline with table */
-.currentStateBody {
+.currentStateRow {
   background: var(--table-header-bg);
   border-top: 1px solid var(--table-border);
   border-bottom: 2px solid var(--table-border);
-}
-
-.currentStateRow {
-  background: var(--table-header-bg);
 }
 
 .currentStateCell {

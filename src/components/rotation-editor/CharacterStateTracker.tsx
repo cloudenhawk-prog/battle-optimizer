@@ -52,11 +52,6 @@ export function CharacterStateTracker({
 
   if (tableConfig.characters.length === 0) return null
 
-  const anyVisible = tableConfig.characters.some(group =>
-    group.columns.some(col => columnVisibility[col.key]),
-  )
-  if (!anyVisible) return null
-
   // ========== Derived State Helpers ==========================================================================================
 
   // Goal 1: compute swap cooldown remaining
@@ -121,7 +116,6 @@ export function CharacterStateTracker({
           if (!character) return null
 
           const visibleColumns = group.columns.filter(col => columnVisibility[col.key])
-          if (visibleColumns.length === 0) return null
 
           // ========== Derived Data ===========================================================================================
 

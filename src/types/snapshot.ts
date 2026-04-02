@@ -78,4 +78,8 @@ export interface Snapshot {
    *  Set from `Action.comboChainTags` at cast time. Read by `castConditions.requiredComboTags`
    *  checks (honoring the persistence window) to enforce sequential combo ordering. */
   charactersComboChainTags: Record<string, string[]>
+  /** When true, this row was automatically inserted by the engine (Outro/Intro swap or
+   *  auto-cast follow-up). Autocast rows are excluded from exports so they are not
+   *  replayed manually on import (the engine re-generates them from the user-defined steps). */
+  isAutocast?: boolean
 }

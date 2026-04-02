@@ -57,8 +57,10 @@ export function RotationTable({ snapshots, charactersInBattle, tableConfig, onSe
       <CharacterStateTracker snapshot={currentSnapshot || null} charactersInBattle={charactersInBattle} tableConfig={tableConfig} columnVisibility={columnVisibility} setColumnVisibility={setColumnVisibility} activeCharacterName={activeCharacterName} onGearChange={onGearChange} />
       <div className="tableWrapper">
         <table className="tableBase">
-          <HeaderRow tableConfig={tableConfig} columnVisibility={columnVisibility} setColumnVisibility={setColumnVisibility} />
-          <CurrentStateRow snapshot={currentSnapshot || null} firstFromTime={firstFromTime} tableConfig={tableConfig} columnVisibility={columnVisibility} />
+          <thead className="tableHeader">
+            <HeaderRow tableConfig={tableConfig} columnVisibility={columnVisibility} setColumnVisibility={setColumnVisibility} />
+            <CurrentStateRow snapshot={currentSnapshot || null} firstFromTime={firstFromTime} tableConfig={tableConfig} columnVisibility={columnVisibility} />
+          </thead>
           <tbody>
           {snapshots.map((snapshot, idx) => {
             // For statuses, show the state from the PREVIOUS snapshot since statuses

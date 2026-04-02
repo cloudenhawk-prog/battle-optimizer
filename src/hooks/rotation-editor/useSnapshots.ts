@@ -38,7 +38,7 @@ export function useSnapshots({ charactersInBattle, tableConfig }: UseSnapshotsPr
 
 // ========== Internal Helpers =================================================================================================
 
-function createEmptySnapshot(charactersMap: Record<string, Character>, characterColumnsMap: Record<string, string[]>, globalColumns: GlobalColumns, tableConfig: TableConfig): Snapshot {
+export function createEmptySnapshot(charactersMap: Record<string, Character>, characterColumnsMap: Record<string, string[]>, globalColumns: GlobalColumns, tableConfig: TableConfig): Snapshot {
   const charactersEnergies = Object.fromEntries(Object.keys(charactersMap).map(charName => [charName, Object.fromEntries(characterColumnsMap[charName].map(key => [key, 0]))]))
 
   const basicValues = Object.fromEntries(globalColumns.basic.map(col => [col, 0]))

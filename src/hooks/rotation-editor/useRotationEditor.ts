@@ -1,10 +1,9 @@
 import { useSnapshots } from './useSnapshots'
 import { useCharacterActions } from './useCharacterActions'
+import { useImportExport } from './useImportExport'
 import type { ResolvedCharacter } from '../../types/character'
-import type { TableConfig } from '../../types/tableDefinitions'
+import type { TableConfig, GlobalColumns } from '../../types/tableDefinitions'
 import type { Enemy } from '../../types/enemy'
-import type { DamageEvent } from '../../types/events'
-import type { Snapshot } from '../../types/snapshot'
 import type { Settings } from '../useSettings'
 import { useState, useEffect } from 'react'
 
@@ -14,12 +13,11 @@ type UseRotationEditorProps = {
   charactersInBattle: ResolvedCharacter[]
   tableConfig: TableConfig
   enemy: Enemy
-  onSnapshotsChange?: (snapshots: Snapshot[], damageEvents: DamageEvent[]) => void
   gearResetKey?: number
   settings: Settings
 }
 
-export function useRotationEditor({ charactersInBattle, tableConfig, enemy, onSnapshotsChange, gearResetKey = 0, settings }: UseRotationEditorProps) {
+export function useRotationEditor({ charactersInBattle, tableConfig, enemy, gearResetKey = 0, settings }: UseRotationEditorProps) {
   const [damageEvents, setDamageEvents] = useState<DamageEvent[]>([])
   const { snapshots, setSnapshots, resetTimeline } = useSnapshots({ charactersInBattle, tableConfig })
 
@@ -28,13 +26,46 @@ export function useRotationEditor({ charactersInBattle, tableConfig, enemy, onSn
     resetTimeline()
     setDamageEvents([])
   }, [gearResetKey])
-  const { handleCharacterSelect, handleActionSelect } = useCharacterActions({ setSnapshots, charactersInBattle, enemy, tableConfig, setDamageEvents, settings })
 
-  useEffect(() => {
-    if (onSnapshotsChange) {
-      onSnapshotsChange(snapshots, damageEvents)
-    }
-  }, [snapshots, damageEvents, onSnapshotsChange])
+  const charactersMap: Record<string, ResolvedCharacter> = Object.fromEntries(charactersInBattle.map(c => [c.name, c]))
+  const characterColumnsMap: Record<string, string[]> = Object.fromEntries(charactersInBattle.map(c => [c.name, Object.keys(c.maxEnergies)]))
+
+  const statusEffectsColumns = tableConfig.statusEffects?.columns ?? []
+  const buffsCol = statusEffectsColumns.find(col => col.key === 'buffs')
+  const debuffsCol = statusEffectsColumns.find(col => col.key === 'debuffs')
+  const negativeStatusesCol = statusEffectsColumns.find(col => col.key === 'negativeStatuses')
+
+  const globalColumns: GlobalColumns = {
+    basic: tableConfig.basic.columns.map(col => col.key),
+    buffs: buffsCol?.statusMetadata?.map(meta => meta.key) ?? [],
+    debuffs: debuffsCol?.statusMetadata?.map(meta => meta.key) ?? [],
+    negativeStatuses: negativeStatusesCol?.statusMetadata?.map(meta => meta.key) ?? [],
+  }
+
+  const { handleCharacterSelect, handleActionSelect, coordinatedAttacksInAction, negativeStatusesInAction, modifiersInAction } = useCharacterActions({
+    setSnapshots,
+    charactersInBattle,
+    enemy,
+    tableConfig,
+    setDamageEvents,
+    settings,
+  })
+
+  const importExport = useImportExport({
+    snapshots,
+    setSnapshots,
+    setDamageEvents,
+    resetTimeline,
+    charactersMap,
+    characterColumnsMap,
+    globalColumns,
+    tableConfig,
+    enemy,
+    settings,
+    negativeStatusesInAction,
+    modifiersInAction,
+    coordinatedAttacksInAction,
+  })
 
   return {
     snapshots,
@@ -42,5 +73,6 @@ export function useRotationEditor({ charactersInBattle, tableConfig, enemy, onSn
     handleCharacterSelect,
     handleActionSelect,
     tableConfig,
+    importExport,
   }
 }

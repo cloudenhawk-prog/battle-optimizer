@@ -97,12 +97,12 @@ export function useCharacterActions({ setSnapshots, charactersInBattle, enemy, t
     })
   }
 
-  return { handleCharacterSelect, handleActionSelect, coordinatedAttacksInAction }
+  return { handleCharacterSelect, handleActionSelect, coordinatedAttacksInAction, negativeStatusesInAction, modifiersInAction }
 }
 
 // ========== Internal Helpers =================================================================================================
 
-function updateSnapshotsWithAction(params: { snapshots: Snapshot[]; snapshotId: number; actionName: string; charactersMap: Record<string, ResolvedCharacter>; characterColumnsMap: Record<string, string[]>; globalColumns: GlobalColumns; enemy: Enemy; setDamageEvents: Dispatch<SetStateAction<DamageEvent[]>>; negativeStatusesInAction: React.MutableRefObject<NegativeStatusInAction[]>; modifiersInAction: React.MutableRefObject<ModifierInAction[]>; coordinatedAttacksInAction: React.MutableRefObject<CoordinatedAttackInAction[]> }): Snapshot[] {
+export function updateSnapshotsWithAction(params: { snapshots: Snapshot[]; snapshotId: number; actionName: string; charactersMap: Record<string, ResolvedCharacter>; characterColumnsMap: Record<string, string[]>; globalColumns: GlobalColumns; enemy: Enemy; setDamageEvents: Dispatch<SetStateAction<DamageEvent[]>>; negativeStatusesInAction: React.MutableRefObject<NegativeStatusInAction[]>; modifiersInAction: React.MutableRefObject<ModifierInAction[]>; coordinatedAttacksInAction: React.MutableRefObject<CoordinatedAttackInAction[]> }): Snapshot[] {
   // -------- Validate Input --------------------
   const validated = validateActionInputs(params)
   if (!validated) {
@@ -154,7 +154,7 @@ function updateSnapshotsWithAction(params: { snapshots: Snapshot[]; snapshotId: 
 
 // =============================================================================================================================
 
-function shouldTriggerOutroIntro(snapshots: Snapshot[], snapshotId: number): boolean {
+export function shouldTriggerOutroIntro(snapshots: Snapshot[], snapshotId: number): boolean {
   if (snapshotId === 0) return false
 
   const prevChar = getPrevCharacter(snapshots, snapshotId)
@@ -170,7 +170,7 @@ function shouldTriggerOutroIntro(snapshots: Snapshot[], snapshotId: number): boo
 
 // =============================================================================================================================
 
-function handleOutroIntroFlow(params: { snapshots: Snapshot[]; snapshotId: number; charactersMap: Record<string, ResolvedCharacter>; characterColumnsMap: Record<string, string[]>; globalColumns: GlobalColumns; enemy: Enemy; setDamageEvents: Dispatch<SetStateAction<DamageEvent[]>>; negativeStatusesInAction: React.MutableRefObject<NegativeStatusInAction[]>; modifiersInAction: React.MutableRefObject<ModifierInAction[]>; coordinatedAttacksInAction: React.MutableRefObject<CoordinatedAttackInAction[]> }): Snapshot[] {
+export function handleOutroIntroFlow(params: { snapshots: Snapshot[]; snapshotId: number; charactersMap: Record<string, ResolvedCharacter>; characterColumnsMap: Record<string, string[]>; globalColumns: GlobalColumns; enemy: Enemy; setDamageEvents: Dispatch<SetStateAction<DamageEvent[]>>; negativeStatusesInAction: React.MutableRefObject<NegativeStatusInAction[]>; modifiersInAction: React.MutableRefObject<ModifierInAction[]>; coordinatedAttacksInAction: React.MutableRefObject<CoordinatedAttackInAction[]> }): Snapshot[] {
   const { snapshots, snapshotId, charactersMap, characterColumnsMap, globalColumns, enemy, setDamageEvents, negativeStatusesInAction, modifiersInAction, coordinatedAttacksInAction } = params
 
   let updated = copySnapshots(snapshots)
@@ -198,11 +198,13 @@ function handleOutroIntroFlow(params: { snapshots: Snapshot[]; snapshotId: numbe
   // Force Outro row
   updated[snapshotId] = assignCharacterToRow(updated[snapshotId], prevChar)
   updated = updateSnapshotsWithAction({ snapshots: updated, snapshotId, actionName: outroActionName, charactersMap, characterColumnsMap, globalColumns, enemy, setDamageEvents, negativeStatusesInAction, modifiersInAction, coordinatedAttacksInAction })
+  updated[snapshotId] = { ...updated[snapshotId], isAutocast: true }
 
   // Insert Intro row
   const introId = snapshotId + 1
   updated[introId] = assignCharacterToRow(updated[introId], currChar)
   updated = updateSnapshotsWithAction({ snapshots: updated, snapshotId: introId, actionName: introActionName, charactersMap, characterColumnsMap, globalColumns, enemy, setDamageEvents, negativeStatusesInAction, modifiersInAction, coordinatedAttacksInAction })
+  updated[introId] = { ...updated[introId], isAutocast: true }
 
   // Prepare the next blank row for the real action
   const nextId = introId + 1
@@ -243,7 +245,7 @@ function validateActionInputs(params: { snapshots: Snapshot[]; snapshotId: numbe
 
 // =============================================================================================================================
 
-type AutocastParams = {
+export type AutocastParams = {
   snapshots: Snapshot[]
   resolvedSnapshotId: number
   charactersMap: Record<string, ResolvedCharacter>
@@ -265,7 +267,7 @@ type AutocastParams = {
  * "If possible" follow-ups (must === false) are auto-cast only when the follow-up
  * is actually castable in the current state; otherwise the chain stops.
  */
-function autocastFollowUpChain(params: AutocastParams): Snapshot[] {
+export function autocastFollowUpChain(params: AutocastParams): Snapshot[] {
   let { snapshots, resolvedSnapshotId, ...rest } = params
 
   while (true) {
@@ -317,6 +319,8 @@ function autocastFollowUpChain(params: AutocastParams): Snapshot[] {
       snapshotId: nextSnapshotId,
       actionName: followUpActionName,
     })
+    const castIdx = snapshots.findIndex(s => Number(s.id) === nextSnapshotId)
+    if (castIdx !== -1) snapshots[castIdx] = { ...snapshots[castIdx], isAutocast: true }
 
     resolvedSnapshotId = nextSnapshotId
   }

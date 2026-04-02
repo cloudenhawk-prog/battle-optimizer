@@ -93,23 +93,23 @@ function computeSummaryData(
     fieldTimeMap[s.character] = (fieldTimeMap[s.character] ?? 0) + (s.toTime - s.fromTime)
   }
 
-  const passiveEvents = damageEvents.filter(e => e.dmgTypes.includes('NEGATIVE_STATUS'))
+  const passiveEvents = damageEvents.filter(e =>
+    !characters.some(char => e.dealer === char.name || e.dealer.startsWith(char.name + ': '))
+  )
 
   const characterSummaries: CharacterSummary[] = characters.map(char => {
     const directEvents = damageEvents.filter(
-      e => e.dealer === char.name && !e.dmgTypes.includes('NEGATIVE_STATUS'),
+      e => e.dealer === char.name,
     )
     const caEvents = damageEvents.filter(
       e =>
         e.dealer !== char.name &&
-        e.dealer.startsWith(char.name + ': ') &&
-        !e.dmgTypes.includes('NEGATIVE_STATUS'),
+        e.dealer.startsWith(char.name + ': '),
     )
-    const charPassiveEvents = passiveEvents.filter(e => e.dealer.startsWith(char.name + ': '))
 
     const directDamage = directEvents.reduce((s, e) => s + e.average, 0)
     const caDamage = caEvents.reduce((s, e) => s + e.average, 0)
-    const passiveDamage = charPassiveEvents.reduce((s, e) => s + e.average, 0)
+    const passiveDamage = 0
     // totalCharacterDamage excludes passive so Pie 1 slices + "Field Effects" sum to grandTotal
     const totalCharacterDamage = directDamage + caDamage
 
@@ -119,10 +119,6 @@ function computeSummaryData(
         if (t === 'NEGATIVE_STATUS') continue
         typeMap.set(t, (typeMap.get(t) ?? 0) + e.average)
       }
-    }
-    // Include character-attributed negative status damage (e.g. Aero Erosion) grouped by action name
-    for (const e of charPassiveEvents) {
-      typeMap.set(e.actionName, (typeMap.get(e.actionName) ?? 0) + e.average)
     }
     const damageByType = Array.from(typeMap.entries())
       .map(([type, damage]) => ({ type, damage }))
@@ -963,6 +959,7 @@ function CharTypeCard({ summary, grandTotal, originEntry, actionBreakdown }: { s
       )}
 
       {/* Damage-type bars — primary content. Click to toggle action breakdown */}
+      {/* Each type receives the full damage of any action that carries it, so bars may sum beyond the card total. */}
       <div className="summaryCharTypeRows">
         {summary.damageByType.length === 0 ? (
           <div className="summaryCharTypeEmpty">No direct damage recorded</div>

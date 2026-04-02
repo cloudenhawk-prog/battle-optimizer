@@ -51,8 +51,7 @@ export function CurrentStateRow({ snapshot, firstFromTime, tableConfig, columnVi
   const hasCharacter = displaySnapshot.character && displaySnapshot.character !== ''
 
   return (
-    <tbody className="currentStateBody">
-      <tr className="currentStateRow">
+    <tr className="currentStateRow">
         {/* Character */}
         <td className="currentStateCell"></td>
 
@@ -108,7 +107,6 @@ export function CurrentStateRow({ snapshot, firstFromTime, tableConfig, columnVi
         {/* Other columns (Coordinated Attacks, etc.) */}
         {tableConfig.other && renderStatusColumns(tableConfig.other.columns, columnVisibility, displaySnapshot)}
       </tr>
-    </tbody>
   )
 }
 

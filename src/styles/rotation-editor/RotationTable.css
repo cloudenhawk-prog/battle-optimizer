@@ -3,6 +3,9 @@
 .tableWrapper {
   position: relative;
   overflow-x: visible;
+  overflow-y: auto;
+  min-height: 0;
+  flex: 1;
   border-radius: var(--table-corner-radius);
   background: var(--table-bg);
   backdrop-filter: var(--table-blur);
@@ -31,6 +34,14 @@
   background: transparent;
   overflow: visible;
   border-radius: inherit;
+}
+
+thead.tableHeader th,
+thead.tableHeader td {
+  position: sticky;
+  top: 0;
+  z-index: 4;
+  background: rgb(30, 30, 40);
 }
 
 /* -------------- Table Column Seperators --- */

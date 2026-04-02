@@ -4,11 +4,10 @@ import { useRotationEditor } from '../../hooks/rotation-editor/useRotationEditor
 import { RotationTable } from './RotationTable'
 import DataOverlay from './DataOverlay'
 import SummaryOverlay from './SummaryOverlay'
+import { ImportExportPanel } from './ImportExportPanel'
 import type { ResolvedCharacter } from '../../types/character'
 import type { Enemy } from '../../types/enemy'
 import type { TableConfig, ColumnVisibility } from '../../types/tableDefinitions'
-import type { DamageEvent } from '../../types/events'
-import type { Snapshot } from '../../types/snapshot'
 import type { Gear } from '../../types/gear'
 import type { Settings } from '../../hooks/useSettings'
 
@@ -20,17 +19,17 @@ type RotationEditorProps = {
   tableConfig: TableConfig
   columnVisibility: ColumnVisibility
   setColumnVisibility: React.Dispatch<React.SetStateAction<ColumnVisibility>>
-  onSnapshotsChange?: (snapshots: Snapshot[], damageEvents: DamageEvent[]) => void
   onGearChange?: (characterName: string, newGear: Gear) => void
   gearResetKey?: number
   settings: Settings
 }
 
-export default function RotationEditor({ charactersInBattle, enemy, tableConfig, columnVisibility, setColumnVisibility, onSnapshotsChange, onGearChange, gearResetKey, settings }: RotationEditorProps) {
-  const { snapshots, damageEvents, handleCharacterSelect, handleActionSelect } = useRotationEditor({ charactersInBattle, tableConfig, enemy, onSnapshotsChange, gearResetKey, settings })
+export default function RotationEditor({ charactersInBattle, enemy, tableConfig, columnVisibility, setColumnVisibility, onGearChange, gearResetKey, settings }: RotationEditorProps) {
+  const { snapshots, damageEvents, handleCharacterSelect, handleActionSelect, importExport } = useRotationEditor({ charactersInBattle, tableConfig, enemy, gearResetKey, settings })
   const [overlayOpen, setOverlayOpen] = useState(false)
   const [overlayData, setOverlayData] = useState<null | { snapshot: Snapshot; damageEvents: DamageEvent[] }>(null)
   const [summaryOpen, setSummaryOpen] = useState(false)
+  const [rotationsOpen, setRotationsOpen] = useState(false)
 
   function handleRowClick(snapshot: Snapshot) {
     if (!snapshot.action) return
@@ -45,11 +44,30 @@ export default function RotationEditor({ charactersInBattle, enemy, tableConfig,
     <div className="pageWrapper">
       <h1 className="heading"></h1>
       <RotationTable snapshots={snapshots} charactersInBattle={charactersInBattle} tableConfig={tableConfig} onSelectCharacter={handleCharacterSelect} onSelectAction={handleActionSelect} columnVisibility={columnVisibility} setColumnVisibility={setColumnVisibility} onRowClick={handleRowClick} onGearChange={onGearChange} />
-      {hasData && (
-        <button className="summaryOpenButton" onClick={() => setSummaryOpen(true)} title="Open full team summary">
-          ◈ FIELD REPORT
+      <div className="editorFloatingButtons">
+        <button className="summaryOpenButton" onClick={() => setRotationsOpen(true)} title="Save / load rotations">
+          ◈ ROTATIONS
         </button>
-      )}
+        {hasData && (
+          <button className="summaryOpenButton" onClick={() => setSummaryOpen(true)} title="Open full team summary">
+            ◈ FIELD REPORT
+          </button>
+        )}
+      </div>
+      <ImportExportPanel
+        open={rotationsOpen}
+        onClose={() => setRotationsOpen(false)}
+        savedRotations={importExport.savedRotations}
+        hasCurrentRotation={hasData}
+        lastImportError={importExport.lastImportError}
+        lastImportCompleted={importExport.lastImportCompleted}
+        onSave={importExport.handleSave}
+        onLoad={importExport.handleLoad}
+        onDelete={importExport.handleDelete}
+        onDownload={importExport.handleDownload}
+        onFileUpload={importExport.handleFileUpload}
+        onClearImportStatus={importExport.clearImportStatus}
+      />
       <DataOverlay snapshot={overlayData?.snapshot ?? null} damageEvents={overlayData?.damageEvents ?? []} open={overlayOpen} onClose={() => setOverlayOpen(false)} />
       <SummaryOverlay open={summaryOpen} onClose={() => setSummaryOpen(false)} snapshots={snapshots} damageEvents={damageEvents ?? []} characters={charactersInBattle} />
     </div>
