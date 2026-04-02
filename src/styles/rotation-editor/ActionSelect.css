@@ -50,7 +50,6 @@
 
 .actionSelectDropdown {
   position: fixed;
-  margin-top: 4px;
   background: var(--table-bg);
   border: 1px solid var(--table-border);
   border-radius: var(--rows-selectors-corner-radius);

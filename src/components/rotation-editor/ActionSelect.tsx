@@ -51,7 +51,7 @@ export function ActionSelect({ value, actions, character, currentEnergies, previ
   const variantPopupRef = useRef<HTMLDivElement>(null)
   const buttonRef = useRef<HTMLButtonElement>(null)
   const groupRowRefs = useRef<Map<string, HTMLDivElement>>(new Map())
-  const [dropdownPosition, setDropdownPosition] = useState({ top: 0, left: 0, width: 0 })
+  const [dropdownPosition, setDropdownPosition] = useState({ top: 0, left: 0, width: 0, openUpward: false, bottomPos: 0 })
 
   // Close dropdown when clicking outside
   useEffect(() => {
@@ -76,10 +76,15 @@ export function ActionSelect({ value, actions, character, currentEnergies, previ
   useEffect(() => {
     if (isOpen && buttonRef.current) {
       const rect = buttonRef.current.getBoundingClientRect()
+      const DROPDOWN_GAP = 4
+      const spaceBelow = window.innerHeight - rect.bottom
+      const openUpward = spaceBelow < 300
       setDropdownPosition({
-        top: rect.bottom,
+        top: rect.bottom + DROPDOWN_GAP,
         left: rect.left,
         width: rect.width,
+        openUpward,
+        bottomPos: window.innerHeight - rect.top + DROPDOWN_GAP,
       })
     }
   }, [isOpen])
@@ -459,10 +464,11 @@ export function ActionSelect({ value, actions, character, currentEnergies, previ
           <div
             ref={dropdownRef}
             className="actionSelectDropdown"
-            style={{
-              top: `${dropdownPosition.top}px`,
-              left: `${dropdownPosition.left}px`,
-            }}>
+            style={
+              dropdownPosition.openUpward
+                ? { bottom: `${dropdownPosition.bottomPos}px`, left: `${dropdownPosition.left}px` }
+                : { top: `${dropdownPosition.top}px`, left: `${dropdownPosition.left}px` }
+            }>
             <div className="actionSelectTable">
               {/* Header */}
               <div className="actionSelectHeader">
