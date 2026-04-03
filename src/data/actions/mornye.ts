@@ -13,8 +13,9 @@ import { always } from '../../utils/conditions/damageModifierConditions'
 //       -> If no: use their current form (this should be how the selector acts by default though)
 
 // TODO: Test whether BA1-3 -> Heavy Attack is faster than BA1-3 (cancel) -> Skill -> Heavy Attack.
-// TODO: Test whether BA1 -> BA2-X or Skill -> BA2-X is faster
-// TODO: Either way we might want the skill combo to be able to trigger heal
+// 6.24 -> 9.41 = 197 (skill cancel)
+// 3.26 -> 6.47 = 201 (normal)
+// SKILL CANCEL IS 4 FRAMES FASTER BUT LESS DMG (STILL WORTH IT)
 
 // TODO: All BA versions should equal in the same cast time for BA1, BA2, BA3. Swapping should penalize by 0.4, skill cancel no penalty
 
@@ -222,6 +223,41 @@ const mornye_BA_1_3_cancel_with_swap: Action = {
   variantName: 'Cancel With Swap'
 }
 
+const mornye_BA_1_3_cancel_with_skill: Action = {
+  tags: ['BASIC_ATTACK'],
+  name: 'Basic Attack 1-3 (skill cancel)',
+  displayName: 'Basic Attack 1-3 (skill cancel)',
+  category: 'Basics',
+  castTime: 0.8,
+  multiplier: BA1_multiplier + BA2_multiplier,
+  scaling: 'ATK',
+  elements: ['FUSION'],
+  dmgTypes: ['BASIC'],
+  cooldown: 0,
+  energyGenerated: [
+    { energyType: 'energy', amount: BA1_energy + BA2_energy, share: 0.5, scalingStat: 'energyPercent' },
+    { energyType: 'concerto', amount: BA1_concerto + BA2_concerto, share: 0 },
+    { energyType: 'forte', amount: BA1_forte + BA2_forte + BA3_forte, share: 0 },
+  ],
+  energyCost: [],
+  statusModifications: [],
+  damageModifiers: [],
+  sideEffects: [],
+  coordinatedAttacks: [],
+  castConditions: {
+    startState: 'GROUND',
+    endState: 'GROUND',
+    requiredForms: ['Baseline Mode'],
+    blockedComboTags: ['BA1', 'BA2', 'BA3'],
+  },
+  offtune: BA1_offtune + BA2_offtune + BA3_offtune,
+  comboChainTags: ['BA3'],
+  hideWhenNotCastable: true,
+  groupName: 'Basic Attack 1-3',
+  variantName: 'Cancel With Skill',
+  attemptFollowUp: { actionName: 'Resonance Skill', must: true }
+}
+
 // ========== Basic Attack 2 ===================================================================================================
 const mornye_BA_2_cancel_with_swap: Action = {
   tags: ['BASIC_ATTACK'],
@@ -334,6 +370,42 @@ const mornye_BA_2_3_cancel_with_swap: Action = {
   hideWhenNotCastable: true,
   groupName: 'Basic Attack 2-3',
   variantName: 'Cancel With Swap'
+}
+
+const mornye_BA_2_3_cancel_with_skill: Action = {
+  tags: ['BASIC_ATTACK'],
+  name: 'Basic Attack 2-3 (skill cancel)',
+  displayName: 'Basic Attack 2-3 (skill cancel)',
+  category: 'Basics',
+  castTime: 0.56,
+  multiplier: BA2_multiplier,
+  scaling: 'ATK',
+  elements: ['FUSION'],
+  dmgTypes: ['BASIC'],
+  cooldown: 0,
+  energyGenerated: [
+    { energyType: 'energy', amount: BA2_energy, share: 0.5, scalingStat: 'energyPercent' },
+    { energyType: 'concerto', amount: BA2_concerto, share: 0 },
+    { energyType: 'forte', amount: BA2_forte + BA3_forte, share: 0 },
+  ],
+  energyCost: [],
+  statusModifications: [],
+  damageModifiers: [],
+  sideEffects: [],
+  coordinatedAttacks: [],
+  castConditions: {
+    startState: 'GROUND',
+    endState: 'GROUND',
+    requiredForms: ['Baseline Mode'],
+    requiredComboTags: ['BA1'],
+    blockedComboTags: ['BA2', 'BA3']
+  },
+  offtune: BA2_offtune + BA3_offtune,
+  comboChainTags: ['BA3'],
+  hideWhenNotCastable: true,
+  groupName: 'Basic Attack 2-3',
+  variantName: 'Cancel With Skill',
+  attemptFollowUp: { actionName: 'Resonance Skill', must: true }
 }
 
 // ========== Basic Attack 3 ===================================================================================================
@@ -614,12 +686,14 @@ const mornye_skill: Action = {
   castConditions: {
     startState: 'GROUND',
     endState: 'GROUND',
-    requiredForms: ['Baseline Mode']
+    requiredForms: ['Baseline Mode'],
+    previousActions: [mornye_BA_1_3_cancel_with_skill, mornye_BA_2_3_cancel_with_skill, mornye_BA_3_cancel_with_skill]
   },
   offtune: 0,
   comboChainTags: ['BA1'],
   groupName: 'Resonance Skill',
-  variantName: 'Default'
+  variantName: 'Default',
+  attemptFollowUp: {actionName: 'Heavy Attack', must: true }
 }
 
 // ========== Mode: Basic Attack 1-3 ===========================================================================================
@@ -701,7 +775,7 @@ const mode_mornye_heavy: Action = {
   name: 'Mode: Heavy Attack',
   displayName: 'Mode: Heavy Attack',
   category: 'Basics',
-  castTime: 1.4, // TODO: does it slow time in ToA?
+  castTime: 1.32,
   multiplier: (258.46) / 100,
   scaling: 'ATK',
   elements: ['FUSION'],
@@ -776,12 +850,12 @@ const mornye_liberation: Action = {
   name: 'Liberation',
   displayName: 'Critical Protocol',
   category: 'Skills',
-  castTime: 1, // TODO
+  castTime: 0.01,
   multiplier: (522.33) / 100,
   scaling: 'DEF',
   elements: ['FUSION'],
   dmgTypes: ['LIBERATION'],
-  cooldown: 100, // TODO
+  cooldown: 25,
   energyGenerated: [
     { energyType: 'concerto', amount: 20, share: 0 },
   ],
@@ -852,7 +926,7 @@ const mornye_intro: Action = {
   name: 'Mornye Intro',
   displayName: 'Convergence',
   category: 'Other',
-  castTime: 1, // TODO
+  castTime: 1.7,
   multiplier: (202.79) / 100,
   scaling: 'ATK',
   elements: ['FUSION'],
@@ -1117,11 +1191,13 @@ export {
   mornye_BA_1_2_cancel_with_swap,
   mornye_BA_1_3_into_heavy,
   mornye_BA_1_3_cancel_with_swap,
+  mornye_BA_1_3_cancel_with_skill,
   
   // Basic Attacks 2
   mornye_BA_2_cancel_with_swap,
   mornye_BA_2_3_into_heavy,
   mornye_BA_2_3_cancel_with_swap,
+  mornye_BA_2_3_cancel_with_skill,
   
   // Basic Attacks 3
   mornye_BA_3_into_heavy,

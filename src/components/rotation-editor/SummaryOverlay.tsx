@@ -1054,7 +1054,7 @@ function CharTypeCard({ summary, grandTotal, originEntry, actionBreakdown, role 
                 className="summaryCharOriginChip"
                 style={{ color: bTheme.primary, borderColor: `color-mix(in srgb, ${bTheme.primary} 40%, transparent)` }}
               >
-                +{b.pct.toFixed(0)}% from {b.charName}
+                {b.pct.toFixed(0)}% from {b.charName}
               </span>
             )
           })}
@@ -1148,8 +1148,14 @@ function NegativeStatusesCard({ globalDamage, grandTotal, passiveDamageEvents }:
   const total = globalDamage.reduce((s, g) => s + g.damage, 0)
   const shareOfTotal = grandTotal > 0 ? (total / grandTotal) * 100 : 0
   const maxDmg = globalDamage.length > 0 ? globalDamage[0].damage : 1
-  const fieldColor = 'hsl(35 90% 58%)'
-  const fieldGlow = 'hsl(35 90% 58% / 0.35)'
+  const fieldColor = 'hsl(215 20% 62%)'
+  const fieldGlow = 'hsl(215 20% 62% / 0.3)'
+  const statusCount = globalDamage.length
+  const statusChipLabel = statusCount === 1
+    ? globalDamage[0].name
+    : statusCount === 2
+      ? 'Dual Status'
+      : `${statusCount} Statuses`
 
   return (
     <div
@@ -1160,7 +1166,7 @@ function NegativeStatusesCard({ globalDamage, grandTotal, passiveDamageEvents }:
 
       <div className="summaryCharCardHeader">
         <div className="summaryCharCardPortrait">
-          <div className="summaryCharCardPortraitFallback" style={{ fontSize: '10px', letterSpacing: 0 }}>NS</div>
+          <div className="summaryCharCardPortraitFallback" style={{ fontSize: '20px', letterSpacing: 0 }}>◈</div>
           <div className="summaryCharCardPortraitGlow" />
         </div>
         <div className="summaryCharCardInfo">
@@ -1171,6 +1177,14 @@ function NegativeStatusesCard({ globalDamage, grandTotal, passiveDamageEvents }:
               {shareOfTotal.toFixed(1)}%
             </span>
           </div>
+        </div>
+        <div className="summaryCharCardChips">
+          <span
+            className="summaryCharCardChip"
+            style={{ color: fieldColor, borderColor: `color-mix(in srgb, ${fieldColor} 30%, transparent)`, background: `color-mix(in srgb, ${fieldColor} 8%, transparent)` }}
+          >
+            {statusChipLabel}
+          </span>
         </div>
       </div>
 
@@ -1224,11 +1238,11 @@ function RightPanel({ buffUptime, energyFlow, modifierInfoMap }: { buffUptime: B
   const [activeTooltip, setActiveTooltip] = useState<{ entry: BuffUptimeEntry; rect: DOMRect } | null>(null)
 
   const STRATEGY_LABELS: Record<string, string> = {
-    self: 'Self only',
-    active: 'Active character',
-    all: 'All resonators',
-    nextSwap: 'Next swap in',
-    activeAlly: 'Active ally',
+    self: 'Self',
+    active: 'Active Character',
+    all: 'All Resonators',
+    nextSwap: 'Swap In Character',
+    activeAlly: 'Active Ally',
   }
 
   const tooltipPortal = (() => {
@@ -1260,7 +1274,7 @@ function RightPanel({ buffUptime, energyFlow, modifierInfoMap }: { buffUptime: B
         } as React.CSSProperties}
       >
         <div className="summaryBuffRowTooltipHeader">
-          <img src={iconPath} alt="" className="summaryBuffRowTooltipIcon" onError={e => { (e.currentTarget as HTMLImageElement).style.opacity = '0' }} />
+          <img key={entry.key} src={iconPath} alt="" className="summaryBuffRowTooltipIcon" onError={e => { (e.currentTarget as HTMLImageElement).style.display = 'none' }} />
           <span className="summaryBuffRowTooltipLabel" style={{ color: accentColor }}>{entry.displayName}</span>
         </div>
         <div className="summaryBuffRowTooltipCoverage">

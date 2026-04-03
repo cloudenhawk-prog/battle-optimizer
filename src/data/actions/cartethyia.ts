@@ -460,7 +460,7 @@ const cartethyia_skill_cancel_with_swap: Action = {
   name: 'Resonance Skill (swap cancel)',
   displayName: 'Sword to Bear Their Names (swap cancel)',
   category: 'Skills',
-  castTime: 1, // TODO : Cast Time
+  castTime: 0.09,
   multiplier: (3 * 6.89 + 8.86) / 100,
   scaling: 'HP',
   elements: ['AERO'],
