@@ -2,7 +2,6 @@ import { useState, useRef } from 'react'
 import { createPortal } from 'react-dom'
 import '../../styles/rotation-editor/ImportExportPanel.css'
 import type { SavedRotation } from '../../utils/importExport'
-import type { ImportError } from '../../utils/importExport'
 
 // ========== Component: ImportExportPanel =====================================================================================
 
@@ -11,14 +10,14 @@ type ImportExportPanelProps = {
   onClose: () => void
   savedRotations: SavedRotation[]
   hasCurrentRotation: boolean
-  lastImportError: ImportError | null
-  lastImportCompleted: number | null
   onSave: (name: string) => void
   onLoad: (rotation: SavedRotation) => void
   onDelete: (name: string) => void
   onDownload: () => void
   onFileUpload: (content: string) => void
   onClearImportStatus: () => void
+  ignoreCastConditions: boolean
+  onToggleIgnoreCastConditions: () => void
 }
 
 export function ImportExportPanel({
@@ -26,14 +25,14 @@ export function ImportExportPanel({
   onClose,
   savedRotations,
   hasCurrentRotation,
-  lastImportError,
-  lastImportCompleted,
   onSave,
   onLoad,
   onDelete,
   onDownload,
   onFileUpload,
   onClearImportStatus,
+  ignoreCastConditions,
+  onToggleIgnoreCastConditions,
 }: ImportExportPanelProps) {
   const [saveName, setSaveName] = useState('')
   const [confirmDelete, setConfirmDelete] = useState<string | null>(null)
@@ -79,25 +78,7 @@ export function ImportExportPanel({
           <button className="ieCloseBtn" onClick={() => { onClearImportStatus(); onClose() }} aria-label="Close">✕</button>
         </div>
 
-        {/* Import result feedback */}
-        {(lastImportError || lastImportCompleted !== null) && (
-          <div className={`ieImportFeedback ${lastImportError ? 'ieImportFeedbackError' : 'ieImportFeedbackSuccess'}`}>
-            {lastImportError ? (
-              <>
-                <span className="ieFeedbackIcon">⚠</span>
-                <span>
-                  Stopped after {lastImportCompleted} step{lastImportCompleted !== 1 ? 's' : ''} — step {lastImportError.stepIndex + 1} ({lastImportError.character} / {lastImportError.action}): {lastImportError.reason}
-                </span>
-              </>
-            ) : (
-              <>
-                <span className="ieFeedbackIcon">✓</span>
-                <span>Loaded {lastImportCompleted} step{lastImportCompleted !== 1 ? 's' : ''} successfully</span>
-              </>
-            )}
-            <button className="ieFeedbackDismiss" onClick={onClearImportStatus}>✕</button>
-          </div>
-        )}
+        {/* Import result feedback — moved to top banner in RotationEditor */}
 
         {/* Saved rotations list */}
         <div className="ieSectionLabel">SAVED ROTATIONS</div>
@@ -158,6 +139,15 @@ export function ImportExportPanel({
           </button>
           <input ref={fileInputRef} type="file" accept=".json" style={{ display: 'none' }} onChange={handleFileChange} />
         </div>
+        <label className="ieIgnoreConditionsRow">
+          <input
+            type="checkbox"
+            className="ieIgnoreConditionsCheckbox"
+            checked={ignoreCastConditions}
+            onChange={onToggleIgnoreCastConditions}
+          />
+          Ignore position &amp; energy requirements on import
+        </label>
       </div>
     </div>,
     document.body,

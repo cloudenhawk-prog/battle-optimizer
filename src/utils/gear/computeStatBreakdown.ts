@@ -164,7 +164,7 @@ export function computeActiveModifierBreakdown(
     if (mod.ownerCharacter === character.name) {
       selfItems.push({ name: entry.displayName, stats: scaled })
       selfTotal = mergePartialStats(selfTotal, scaled)
-    } else {
+    } else if (mod.targetStrategy !== 'self' && mod.targetStrategy !== 'nextSwap') { // not sure if nextSwap here is correct. nextSwap will apply to the next character and will need to be active; I don't remember how we treat these in our resolver engine
       teamItems.push({ name: entry.displayName, stats: scaled })
       teamTotal = mergePartialStats(teamTotal, scaled)
     }

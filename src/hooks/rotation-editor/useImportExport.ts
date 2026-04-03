@@ -57,6 +57,7 @@ export function useImportExport({
   snapshots,
   setSnapshots,
   setDamageEvents,
+  resetTimeline,
   charactersMap,
   characterColumnsMap,
   globalColumns,
@@ -70,6 +71,7 @@ export function useImportExport({
   const [savedRotations, setSavedRotations] = useState<SavedRotation[]>(() => loadSavedRotations())
   const [lastImportError, setLastImportError] = useState<ImportError | null>(null)
   const [lastImportCompleted, setLastImportCompleted] = useState<number | null>(null)
+  const [ignoreCastConditions, setIgnoreCastConditions] = useState(false)
 
   function refreshSaved() {
     setSavedRotations(loadSavedRotations())
@@ -104,7 +106,27 @@ export function useImportExport({
       globalColumns,
       enemy,
       settings,
+      ignoreCastConditions,
     })
+
+    setLastImportError(result.error)
+    setLastImportCompleted(result.completedSteps)
+
+    if (result.error) {
+      // Reset the table to a clean state so the partial import doesn't cause confusion
+      resetTimeline()
+      setDamageEvents([])
+      negativeStatusesInAction.current = Object.values(negativeStatusesData).map(status => ({
+        negativeStatus: status,
+        applicationTime: -1,
+        timeLeft: 0,
+        currentStacks: 0,
+        lastDamageTime: 0,
+      }))
+      modifiersInAction.current = []
+      coordinatedAttacksInAction.current = []
+      return
+    }
 
     setSnapshots(result.snapshots)
     setDamageEvents(result.damageEvents)
@@ -114,9 +136,6 @@ export function useImportExport({
     negativeStatusesInAction.current = result.finalNegativeStatuses
     modifiersInAction.current = result.finalModifiers
     coordinatedAttacksInAction.current = result.finalCoordinatedAttacks
-
-    setLastImportError(result.error)
-    setLastImportCompleted(result.completedSteps)
   }
 
   function handleFileUpload(content: string) {
@@ -139,6 +158,8 @@ export function useImportExport({
     savedRotations,
     lastImportError,
     lastImportCompleted,
+    ignoreCastConditions,
+    setIgnoreCastConditions,
     handleSave,
     handleDelete,
     handleLoad,
@@ -151,7 +172,7 @@ export function useImportExport({
 
 // ========== Failure Reason Detection =========================================================================================
 
-function getActionFailureReason(action: Action, prevSnapshot: Snapshot | undefined, character: ResolvedCharacter): string | null {
+function getActionFailureReason(action: Action, prevSnapshot: Snapshot | undefined, character: ResolvedCharacter, ignoreCastConditions: boolean): string | null {
   const charName = character.name
 
   // Must follow-up check (the action is locked until a specific follow-up is cast)
@@ -166,18 +187,22 @@ function getActionFailureReason(action: Action, prevSnapshot: Snapshot | undefin
   }
 
   // Energy check
-  const energies = prevSnapshot?.charactersEnergies?.[charName] ?? {}
-  for (const cost of action.energyCost) {
-    const current = energies[cost.energyType] ?? 0
-    if (current < cost.amount) {
-      return `Not enough ${cost.energyType} to cast "${action.displayName}" (need ${cost.amount}, have ${Math.round(current * 10) / 10})`
+  if (!ignoreCastConditions) {
+    const energies = prevSnapshot?.charactersEnergies?.[charName] ?? {}
+    for (const cost of action.energyCost) {
+      const current = energies[cost.energyType] ?? 0
+      if (current < cost.amount) {
+        return `Not enough ${cost.energyType} to cast "${action.displayName}" (need ${cost.amount}, have ${Math.round(current * 10) / 10})`
+      }
     }
   }
 
   // Position check
-  const position = prevSnapshot?.charactersPositions?.[charName] ?? 'GROUND'
-  if (action.castConditions.startState !== 'ANY' && action.castConditions.startState !== position) {
-    return `"${action.displayName}" requires ${action.castConditions.startState} position (currently ${position})`
+  if (!ignoreCastConditions) {
+    const position = prevSnapshot?.charactersPositions?.[charName] ?? 'GROUND'
+    if (action.castConditions.startState !== 'ANY' && action.castConditions.startState !== position) {
+      return `"${action.displayName}" requires ${action.castConditions.startState} position (currently ${position})`
+    }
   }
 
   // Form check
@@ -201,10 +226,12 @@ function getActionFailureReason(action: Action, prevSnapshot: Snapshot | undefin
     return `"${action.displayName}" is on cooldown (${cooldownRemaining.toFixed(1)}s remaining)`
   }
 
-  // Custom cast condition
-  if (action.castConditions.customCanCast && prevSnapshot) {
-    if (!action.castConditions.customCanCast(prevSnapshot, charName)) {
-      return `"${action.displayName}" cannot be cast at this point (a cast condition is not met)`
+  if (!ignoreCastConditions) {
+    // Custom cast condition
+    if (action.castConditions.customCanCast && prevSnapshot) {
+      if (!action.castConditions.customCanCast(prevSnapshot, charName)) {
+        return `"${action.displayName}" cannot be cast at this point (a cast condition is not met)`
+      }
     }
   }
 
@@ -221,6 +248,7 @@ type ImportRunParams = {
   globalColumns: GlobalColumns
   enemy: Enemy
   settings: Settings
+  ignoreCastConditions: boolean
 }
 
 type FullImportRunResult = ImportRunResult & {
@@ -230,7 +258,7 @@ type FullImportRunResult = ImportRunResult & {
 }
 
 function runImportSteps(params: ImportRunParams): FullImportRunResult {
-  const { steps, initialSnapshot, charactersMap, characterColumnsMap, globalColumns, enemy, settings } = params
+  const { steps, initialSnapshot, charactersMap, characterColumnsMap, globalColumns, enemy, settings, ignoreCastConditions } = params
 
   let snapshots: Snapshot[] = [{ ...initialSnapshot }]
   let localDamageEvents: DamageEvent[] = []
@@ -327,7 +355,7 @@ function runImportSteps(params: ImportRunParams): FullImportRunResult {
     }
 
     // Check if the action is castable in the current state
-    const failureReason = getActionFailureReason(resolvedAction, prevSnapshot, character)
+    const failureReason = getActionFailureReason(resolvedAction, prevSnapshot, character, ignoreCastConditions)
     if (failureReason) {
       return {
         snapshots,

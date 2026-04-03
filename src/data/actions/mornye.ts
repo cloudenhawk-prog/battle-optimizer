@@ -12,11 +12,6 @@ import { always } from '../../utils/conditions/damageModifierConditions'
 //       -> If yes: use that form as basis for the selectable actions
 //       -> If no: use their current form (this should be how the selector acts by default though)
 
-// TODO: Test whether BA1-3 -> Heavy Attack is faster than BA1-3 (cancel) -> Skill -> Heavy Attack.
-// 6.24 -> 9.41 = 197 (skill cancel)
-// 3.26 -> 6.47 = 201 (normal)
-// SKILL CANCEL IS 4 FRAMES FASTER BUT LESS DMG (STILL WORTH IT)
-
 // TODO: All BA versions should equal in the same cast time for BA1, BA2, BA3. Swapping should penalize by 0.4, skill cancel no penalty
 
 
@@ -976,7 +971,20 @@ const mornye_outro: Action = {
   energyCost: [],
   statusModifications: [],
   damageModifiers: [
-    // TODO: For 30 seconds: all Resonators gain 25% All DMG Amplification.
+    {
+      source: 'Mornye Outro Buff',
+      displayName: 'Recursion',
+      type: 'buff',
+      ownerCharacter: 'Mornye',
+      characterStats: { amplifyDMG: 0.25 },
+      condition: always(),
+      targetStrategy: 'all',
+      durationStrategy: { type: 'limited', timeDuration: 30 },
+      stackingStrategy: { maxStacks: 1, resetTimerOnApplication: true, stacksRemovedEachTime: 1 },
+      color: '#FFD700',
+      description: 'For 30 seconds: all Resonators gain 25% All DMG Amplification.',
+      showStats: true
+    }
   ],
   sideEffects: [],
   castConditions: {

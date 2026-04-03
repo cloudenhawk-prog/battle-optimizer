@@ -311,3 +311,28 @@
   flex: 1;
   text-align: center;
 }
+
+/* ── Ignore Cast Conditions Toggle ───────────────────── */
+.ieIgnoreConditionsRow {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 0 14px 14px;
+  font-size: 0.74rem;
+  color: var(--table-text-subtle);
+  cursor: pointer;
+  user-select: none;
+  flex-shrink: 0;
+}
+
+.ieIgnoreConditionsRow:hover {
+  color: var(--table-text-dim);
+}
+
+.ieIgnoreConditionsCheckbox {
+  accent-color: rgba(100, 180, 255, 0.8);
+  cursor: pointer;
+  width: 13px;
+  height: 13px;
+  flex-shrink: 0;
+}

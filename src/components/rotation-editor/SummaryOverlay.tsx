@@ -25,6 +25,53 @@ function getElementColor(element: string) {
   return ELEMENT_COLORS[element] ?? ELEMENT_COLORS['']
 }
 
+type CharColor = { primary: string; glow: string; bg: string; label: string }
+
+const ELEMENT_HSL: Record<string, { h: number; s: number; l: number }> = {
+  AERO:     { h: 160, s: 80, l: 55 },
+  SPECTRO:  { h: 45,  s: 90, l: 62 },
+  HAVOC:    { h: 270, s: 80, l: 65 },
+  ELECTRO:  { h: 292, s: 82, l: 70 },
+  GLACIO:   { h: 200, s: 80, l: 67 },
+  FUSION:   { h: 15,  s: 90, l: 62 },
+  '':       { h: 220, s: 15, l: 60 },
+}
+
+/** Lightness & saturation offsets for each character slot sharing an element (up to 3). */
+const CHAR_VARIANTS = [
+  { lOff: 0,   sOff: 0   },  // first: base color
+  { lOff: +22, sOff: -18 },  // second: noticeably lighter, less saturated (pastel-ish)
+  { lOff: -20, sOff: +12 },  // third: noticeably darker, more vivid
+]
+
+/**
+ * Builds a per-character color map so characters sharing an element get
+ * visually distinct but hue-consistent colors across every panel.
+ */
+function buildCharacterColorMap(characters: Character[]): Map<string, CharColor> {
+  const map = new Map<string, CharColor>()
+  const elementGroups = new Map<string, string[]>()
+  for (const char of characters) {
+    const el = char.element ?? ''
+    if (!elementGroups.has(el)) elementGroups.set(el, [])
+    elementGroups.get(el)!.push(char.name)
+  }
+  for (const [element, names] of elementGroups) {
+    const base = ELEMENT_HSL[element] ?? ELEMENT_HSL['']
+    names.forEach((name, i) => {
+      const v = CHAR_VARIANTS[i] ?? CHAR_VARIANTS[i % CHAR_VARIANTS.length]
+      const l = Math.min(84, Math.max(30, base.l + v.lOff))
+      const s = Math.min(95, Math.max(10, base.s + v.sOff))
+      const primary = `hsl(${base.h} ${s}% ${l}%)`
+      const glow    = `hsl(${base.h} ${s}% ${l}% / 0.35)`
+      const bg      = `hsl(${base.h} ${Math.round(s * 0.5)}% 8%)`
+      const label   = ELEMENT_COLORS[element]?.label ?? '—'
+      map.set(name, { primary, glow, bg, label })
+    })
+  }
+  return map
+}
+
 const DMG_TYPE_LABELS: Record<string, string> = {
   BASIC:           'Basic',
   HEAVY:           'Heavy',
@@ -73,6 +120,9 @@ type CharacterSummary = {
   damageByType: { type: string; damage: number }[]
   fieldTime: number
   libCount: number
+  sequence: 0 | 1 | 2 | 3 | 4 | 5 | 6
+  weaponRank: 1 | 2 | 3 | 4 | 5
+  weaponName: string
 }
 
 type GlobalDamageEntry = { name: string; damage: number; element: string }
@@ -90,10 +140,11 @@ function computeSummaryData(
   snapshots: Snapshot[],
   damageEvents: DamageEvent[],
 ) {
-  const totalDuration =
-    snapshots.length > 0
-      ? (snapshots.find(s => s.action) ? (snapshots[snapshots.length - 1]?.toTime ?? 0) - (snapshots.find(s => s.action)?.fromTime ?? 0) : 0)
-      : 0
+  const firstActionSnap = snapshots.find(s => s.action)
+  const lastActionSnap = [...snapshots].reverse().find(s => s.action)
+  const totalDuration = firstActionSnap && lastActionSnap
+    ? lastActionSnap.toTime - firstActionSnap.fromTime
+    : 0
 
   const fieldTimeMap: Record<string, number> = {}
   for (const s of snapshots) {
@@ -153,6 +204,9 @@ function computeSummaryData(
       damageByType,
       fieldTime: fieldTimeMap[char.name] ?? 0,
       libCount: libCountMap[char.name] ?? 0,
+      sequence: char.sequence,
+      weaponRank: char.gear.weapon.rank,
+      weaponName: char.gear.weapon.name,
     }
   })
 
@@ -505,6 +559,31 @@ function computeContributionOrigin(
     }
   }
 
+  // Debug logging: contribution origin breakdown per character
+  for (const [charName, { self, external }] of charTotals.entries()) {
+    if (!charMap.has(charName)) continue
+    const total = self + Array.from(external.values()).reduce((s, v) => s + v, 0)
+    if (total <= 0) continue
+    const selfPct = (self / total) * 100
+    console.group(`${charName}:`)
+    console.log(`- Self ${selfPct.toFixed(1)}%:`)
+    console.log(`   - Base damage (caster's own share, after scaling): ${self.toFixed(2)}`)
+    console.log(`   - Total attributed damage: ${total.toFixed(2)}`)
+    console.log(`   - Derivation: ${self.toFixed(2)} / ${total.toFixed(2)} = ${selfPct.toFixed(1)}%`)
+    for (const [ownerName, amount] of Array.from(external.entries()).sort((a, b) => b[1] - a[1])) {
+      const pct = (amount / total) * 100
+      const amplification = total / self
+      const pctBoostOnBase = (amount / self) * 100
+      console.log(`- ${pct.toFixed(1)}% from ${ownerName}:`)
+      console.log(`   - ${ownerName}'s attributed contribution: ${amount.toFixed(2)}`)
+      console.log(`   - Total attributed damage: ${total.toFixed(2)}`)
+      console.log(`   - Derivation: ${amount.toFixed(2)} / ${total.toFixed(2)} = ${pct.toFixed(1)}%`)
+      console.log(`   - Amplification factor (total / self): ${total.toFixed(2)} / ${self.toFixed(2)} = ${amplification.toFixed(6)} → ${((amplification - 1) * 100).toFixed(1)}% additional damage on top of base`)
+      console.log(`   - Same result: contribution / self = ${amount.toFixed(2)} / ${self.toFixed(2)} = ${pctBoostOnBase.toFixed(1)}% of base → attributed as ${pct.toFixed(1)}% of total`)
+    }
+    console.groupEnd()
+  }
+
   return Array.from(charTotals.entries())
     .filter(([name]) => charMap.has(name))
     .map(([charName, { self, external }]) => {
@@ -626,28 +705,15 @@ function PanelHeader({ label, accent = 'cyan' }: { label: string; accent?: 'cyan
   )
 }
 
-// ========== HUD Decorations =================================================================================================
-
-function SummaryHud() {
-  return (
-    <>
-      <div className="summaryHudTopBar">
-        <span>SYS // TACTICAL ANALYSIS MODULE v4.1</span>
-      </div>
-    </>
-  )
-}
-
 // ========== Left Panel — efficiency DpFS + field time ======================================================================
 
 type LeftPanelProps = {
   characterSummaries: CharacterSummary[]
   contributionEntries: ContributionEntry[]
-  grandTotal: number
-  totalDuration: number
+  charColorMap: Map<string, CharColor>
 }
 
-function LeftPanel({ characterSummaries, contributionEntries, grandTotal, totalDuration }: LeftPanelProps) {
+function LeftPanel({ characterSummaries, contributionEntries, charColorMap }: LeftPanelProps) {
   const efficiencyData = computeEfficiencyData(characterSummaries, contributionEntries)
   const maxRawDpFS = Math.max(...efficiencyData.map(e => e.rawDpFS), 1)
   const maxContribDpFS = Math.max(...efficiencyData.map(e => e.contribDpFS), 1)
@@ -660,7 +726,7 @@ function LeftPanel({ characterSummaries, contributionEntries, grandTotal, totalD
         <PanelHeader label="DPS EFFICIENCY" accent="cyan" />
         <div className="summaryEfficiencyRows">
           {efficiencyData.map(entry => {
-            const theme = getElementColor(entry.element)
+            const theme = charColorMap.get(entry.name) ?? getElementColor(entry.element)
             return (
               <div key={entry.name} className="summaryEfficiencyBlock">
                 <div className="summaryEfficiencyBlockHeader">
@@ -669,7 +735,6 @@ function LeftPanel({ characterSummaries, contributionEntries, grandTotal, totalD
                     style={{ background: theme.primary, boxShadow: `0 0 5px ${theme.glow}` }}
                   />
                   <span className="summaryEfficiencyName">{entry.name}</span>
-                  <span className="summaryEfficiencyFieldTime">{formatTime(entry.fieldTime)}</span>
                 </div>
                 <div className="summaryEfficiencyRow">
                   <span className="summaryEfficiencyRowLabel">Raw DPS</span>
@@ -703,46 +768,43 @@ function LeftPanel({ characterSummaries, contributionEntries, grandTotal, totalD
 
       <div className="summaryFlexSpacer" />
 
-      {/* ── Section 2: Team Key Stats ── */}
-      {totalDuration > 0 && (
-        <div className="summarySectionGroup">
-          <div className="summaryKeyStats">
-            <div className="summaryKeyStat">
-              <span className="summaryKeyStatLabel">Team DPS</span>
-              <span className="summaryKeyStatValue">{formatDamage(grandTotal / totalDuration)}/s</span>
-            </div>
-            <div className="summaryKeyStat">
-              <span className="summaryKeyStatLabel">Duration</span>
-              <span className="summaryKeyStatValue">{formatTime(totalDuration)}</span>
-            </div>
-          </div>
-        </div>
-      )}
-
-      <div className="summaryFlexSpacer" />
-
-      {/* ── Section 3: Field Time ── */}
+      {/* ── Section 2: Field Time ── */}
       <div className="summarySectionGroup">
         <PanelHeader label="FIELD TIME" accent="purple" />
         <div className="summaryFieldTimeRows">
           {(() => {
             const totalFieldTime = characterSummaries.reduce((s, c) => s + c.fieldTime, 0)
-            return characterSummaries.filter(c => c.fieldTime > 0).map(c => {
-              const pct = totalFieldTime > 0 ? (c.fieldTime / totalFieldTime) * 100 : 0
-              const theme = getElementColor(c.element)
-              return (
-                <div key={c.name} className="summaryFieldTimeRow">
-                  <span className="summaryFieldTimeName">{c.name}</span>
-                  <div className="summaryFieldTimeBar">
-                    <div
-                      className="summaryFieldTimeBarFill"
-                      style={{ width: `${pct}%`, background: theme.primary, boxShadow: `0 0 6px ${theme.glow}` }}
-                    />
+            return (
+              <>
+                {characterSummaries.filter(c => c.fieldTime > 0).map(c => {
+                  const pct = totalFieldTime > 0 ? (c.fieldTime / totalFieldTime) * 100 : 0
+                  const theme = charColorMap.get(c.name) ?? getElementColor(c.element)
+                  return (
+                    <div key={c.name} className="summaryFieldTimeRow">
+                      <span className="summaryFieldTimeName">{c.name}</span>
+                      <div className="summaryFieldTimeBar">
+                        <div
+                          className="summaryFieldTimeBarFill"
+                          style={{ width: `${pct}%`, background: theme.primary, boxShadow: `0 0 6px ${theme.glow}` }}
+                        />
+                      </div>
+                      <span className="summaryFieldTimePct">{pct.toFixed(0)}%</span>
+                      <span className="summaryFieldTimeVal">{formatTime(c.fieldTime)}</span>
+                    </div>
+                  )
+                })}
+                {totalFieldTime > 0 && (
+                  <div className="summaryFieldTimeRow summaryFieldTimeRowTotal">
+                    <span className="summaryFieldTimeName">Total</span>
+                    <div className="summaryFieldTimeBar">
+                      <div className="summaryFieldTimeBarFill" style={{ width: '100%', background: 'rgba(255,255,255,0.15)' }} />
+                    </div>
+                    <span className="summaryFieldTimePct" aria-hidden="true" />
+                    <span className="summaryFieldTimeVal">{formatTime(totalFieldTime)}</span>
                   </div>
-                  <span className="summaryFieldTimeVal">{formatTime(c.fieldTime)}</span>
-                </div>
-              )
-            })
+                )}
+              </>
+            )
           })()}
         </div>
       </div>
@@ -883,20 +945,19 @@ type CenterPanelProps = {
   contributionOrigin: ContributionOriginEntry[]
   actionBreakdowns: Map<string, ActionBreakdownEntry[]>
   passiveDamageEvents: DamageEvent[]
+  charColorMap: Map<string, CharColor>
 }
 
-function CenterPanel({ characterSummaries, globalDamage, totalPassiveDamage, grandTotal, contributionEntries, contributionOrigin, actionBreakdowns, passiveDamageEvents }: CenterPanelProps) {
+function CenterPanel({ characterSummaries, globalDamage, totalPassiveDamage, grandTotal, contributionEntries, contributionOrigin, actionBreakdowns, passiveDamageEvents, charColorMap }: CenterPanelProps) {
   const originByChar = new Map(contributionOrigin.map(e => [e.charName, e]))
   // Pie 1: damage share — per character (direct+CA) + pooled field effects
   const pie1Items: PieItem[] = [
     ...characterSummaries
       .filter(c => c.totalCharacterDamage > 0)
-      .map(c => ({
-        name: c.name,
-        value: c.totalCharacterDamage,
-        color: getElementColor(c.element).primary,
-        glow: getElementColor(c.element).glow,
-      })),
+      .map(c => {
+        const cc = charColorMap.get(c.name) ?? getElementColor(c.element)
+        return { name: c.name, value: c.totalCharacterDamage, color: cc.primary, glow: cc.glow }
+      }),
     ...(totalPassiveDamage > 0
       ? [{ name: 'Negative Statuses', value: totalPassiveDamage, color: 'hsl(220 15% 60%)', glow: 'hsl(220 15% 60% / 0.3)' }]
       : []),
@@ -928,12 +989,10 @@ function CenterPanel({ characterSummaries, globalDamage, totalPassiveDamage, gra
   }
 
   const pie2Items: PieItem[] = [
-    ...pie2CharEntries.map(c => ({
-      name: c.name,
-      value: c.attributedDamage,
-      color: getElementColor(c.element).primary,
-      glow: getElementColor(c.element).glow,
-    })),
+    ...pie2CharEntries.map(c => {
+      const cc = charColorMap.get(c.name) ?? getElementColor(c.element)
+      return { name: c.name, value: c.attributedDamage, color: cc.primary, glow: cc.glow }
+    }),
     ...(pie2NsTotal > 0
       ? [{ name: 'Negative Statuses', value: pie2NsTotal, color: 'hsl(220 15% 60%)', glow: 'hsl(220 15% 60% / 0.3)' }]
       : []),
@@ -949,7 +1008,7 @@ function CenterPanel({ characterSummaries, globalDamage, totalPassiveDamage, gra
           items={pie1Items}
           total={grandTotal}
           centerLabel="Total"
-          subtitle="Direct + CA per character · negative statuses pooled"
+          subtitle="Damage done by each character"
         />
         <div className="summaryPiesDivider" />
         <PieSection
@@ -973,6 +1032,7 @@ function CenterPanel({ characterSummaries, globalDamage, totalPassiveDamage, gra
             originEntry={originByChar.get(char.name)}
             actionBreakdown={actionBreakdowns.get(char.name)}
             role={roleMap.get(char.name)}
+            charColorMap={charColorMap}
           />
         ))}
         {globalDamage.length > 0 && (
@@ -983,9 +1043,9 @@ function CenterPanel({ characterSummaries, globalDamage, totalPassiveDamage, gra
   )
 }
 
-function CharTypeCard({ summary, grandTotal, originEntry, actionBreakdown, role }: { summary: CharacterSummary; grandTotal: number; originEntry?: ContributionOriginEntry; actionBreakdown?: ActionBreakdownEntry[]; role?: 'Main Carry' | 'Sub DPS' | 'Buffer' }) {
+function CharTypeCard({ summary, grandTotal, originEntry, actionBreakdown, role, charColorMap }: { summary: CharacterSummary; grandTotal: number; originEntry?: ContributionOriginEntry; actionBreakdown?: ActionBreakdownEntry[]; role?: 'Main Carry' | 'Sub DPS' | 'Buffer'; charColorMap: Map<string, CharColor> }) {
   const [expanded, setExpanded] = useState(false)
-  const theme = getElementColor(summary.element)
+  const theme = charColorMap.get(summary.name) ?? getElementColor(summary.element)
   const allCharDamage = summary.directDamage + summary.caDamage + summary.passiveDamage
   const shareOfTotal = grandTotal > 0 ? (allCharDamage / grandTotal) * 100 : 0
   const maxTypeDmg = summary.damageByType.length > 0 ? summary.damageByType[0].damage : 1
@@ -1009,7 +1069,11 @@ function CharTypeCard({ summary, grandTotal, originEntry, actionBreakdown, role 
           <div className="summaryCharCardPortraitGlow" />
         </div>
         <div className="summaryCharCardInfo">
-          <div className="summaryCharCardName">{summary.name}</div>
+          <div className="summaryCharCardName">
+            {summary.name}
+            <span className="summaryCharCardGearChip">S{summary.sequence}</span>
+            <span className="summaryCharCardGearChip">R{summary.weaponRank} {summary.weaponName}</span>
+          </div>
           <div className="summaryCharCardMeta">
             <span className="summaryCharCardTotal">{formatDamage(allCharDamage)}</span>
             <span className="summaryCharCardShare" style={{ color: theme.primary }}>
@@ -1047,7 +1111,7 @@ function CharTypeCard({ summary, grandTotal, originEntry, actionBreakdown, role 
             Self {originEntry.selfPct.toFixed(0)}%
           </span>
           {originEntry.buffedBy.map(b => {
-            const bTheme = getElementColor(b.element)
+            const bTheme = charColorMap.get(b.charName) ?? getElementColor(b.element)
             return (
               <span
                 key={b.charName}
@@ -1117,7 +1181,7 @@ function CharTypeCard({ summary, grandTotal, originEntry, actionBreakdown, role 
             <div className="summaryActionBreakdown">
               {actionBreakdown.map(entry => {
                 const barPct = maxActionDmg > 0 ? (entry.damage / maxActionDmg) * 100 : 0
-                const teamPct = grandTotal > 0 ? (entry.damage / grandTotal) * 100 : 0
+                const teamPct = allCharDamage > 0 ? (entry.damage / allCharDamage) * 100 : 0
                 return (
                   <div key={entry.actionName} className="summaryActionRow">
                     <span className="summaryActionName">{entry.actionName}</span>
@@ -1233,7 +1297,7 @@ function NegativeStatusesCard({ globalDamage, grandTotal, passiveDamageEvents }:
 
 // ========== Right Panel — buff uptime + contribution origin + energy overview =============================================
 
-function RightPanel({ buffUptime, energyFlow, modifierInfoMap }: { buffUptime: BuffUptimeEntry[]; energyFlow: EnergyFlowEntry[]; modifierInfoMap: Map<string, ModifierDisplayInfo> }) {
+function RightPanel({ buffUptime, energyFlow, modifierInfoMap, charColorMap }: { buffUptime: BuffUptimeEntry[]; energyFlow: EnergyFlowEntry[]; modifierInfoMap: Map<string, ModifierDisplayInfo>; charColorMap: Map<string, CharColor> }) {
   const [buffView, setBuffView] = useState<'coverage' | 'uptime'>('coverage')
   const [activeTooltip, setActiveTooltip] = useState<{ entry: BuffUptimeEntry; rect: DOMRect } | null>(null)
 
@@ -1248,7 +1312,7 @@ function RightPanel({ buffUptime, energyFlow, modifierInfoMap }: { buffUptime: B
   const tooltipPortal = (() => {
     if (!activeTooltip) return null
     const { entry, rect } = activeTooltip
-    const ownerTheme = getElementColor(entry.ownerElement)
+    const ownerTheme = (entry.ownerCharacter ? charColorMap.get(entry.ownerCharacter) : null) ?? getElementColor(entry.ownerElement)
     const iconPath = `/assets/modifiers/${entry.displayName.toLowerCase().replace(/:/g, '').replace(/\s+/g, '_')}.png`
     const info = modifierInfoMap.get(entry.displayName)
     const accentColor = ownerTheme.primary
@@ -1343,7 +1407,7 @@ function RightPanel({ buffUptime, energyFlow, modifierInfoMap }: { buffUptime: B
         ) : (
           <div className="summaryBuffUptimeRows">
             {buffUptime.map(entry => {
-              const ownerTheme = getElementColor(entry.ownerElement)
+              const ownerTheme = (entry.ownerCharacter ? charColorMap.get(entry.ownerCharacter) : null) ?? getElementColor(entry.ownerElement)
               const iconPath = `/assets/modifiers/${entry.displayName.toLowerCase().replace(/:/g, '').replace(/\s+/g, '_')}.png`
               return (
                 <div
@@ -1399,7 +1463,7 @@ function RightPanel({ buffUptime, energyFlow, modifierInfoMap }: { buffUptime: B
         ) : (
           <div className="summaryEnergyRows">
             {energyFlow.map(entry => {
-              const theme = getElementColor(entry.element)
+              const theme = charColorMap.get(entry.name) ?? getElementColor(entry.element)
               return (
                 <div key={entry.name} className="summaryEnergyBlock">
                   <div className="summaryEnergyBlockHeader">
@@ -1449,6 +1513,7 @@ export default function SummaryOverlay({ open, onClose, snapshots, damageEvents,
   if (!open) return null
 
   const activeChars = characters.filter(c => snapshots.some(s => s.character === c.name && s.action))
+  const charColorMap = buildCharacterColorMap(activeChars)
 
   const { characterSummaries, globalDamage, totalPassiveDamage, grandTotal, totalDuration } =
     computeSummaryData(activeChars, snapshots, damageEvents)
@@ -1468,12 +1533,10 @@ export default function SummaryOverlay({ open, onClose, snapshots, damageEvents,
   return createPortal(
     <div className="summaryOverlay" role="dialog" aria-modal="true">
       <div className="summaryPanel">
-        <SummaryHud />
-
         {/* Header */}
         <div className="summaryHeader">
           <div className="summaryHeaderLeft">
-            <h2 className="summaryTitle">TACTICAL FIELD REPORT</h2>
+            <h2 className="summaryTitle">ROTATION SUMMARY</h2>
             <div className="summarySubtitle">
               {hasData ? (
                 <>
@@ -1482,7 +1545,7 @@ export default function SummaryOverlay({ open, onClose, snapshots, damageEvents,
                   {totalDuration > 0 && (
                     <span className="summaryStatChip">{formatDamage(grandTotal / totalDuration)}/s</span>
                   )}
-                  <span className="summaryStatChip accent">{formatDamage(grandTotal)} Total</span>
+                  <span className="summaryStatChip">{formatDamage(grandTotal)} Total</span>
                 </>
               ) : (
                 <span className="summaryNoData">No data — build a rotation first</span>
@@ -1506,8 +1569,7 @@ export default function SummaryOverlay({ open, onClose, snapshots, damageEvents,
             <LeftPanel
               characterSummaries={characterSummaries}
               contributionEntries={contributionEntries}
-              grandTotal={grandTotal}
-              totalDuration={totalDuration}
+              charColorMap={charColorMap}
             />
             <div className="summaryColDivider" />
             <CenterPanel
@@ -1519,12 +1581,14 @@ export default function SummaryOverlay({ open, onClose, snapshots, damageEvents,
               contributionOrigin={contributionOrigin}
               actionBreakdowns={actionBreakdowns}
               passiveDamageEvents={passiveDamageEvents}
+              charColorMap={charColorMap}
             />
             <div className="summaryColDivider" />
             <RightPanel
               buffUptime={buffUptime}
               energyFlow={energyFlow}
               modifierInfoMap={modifierInfoMap}
+              charColorMap={charColorMap}
             />
           </div>
         )}

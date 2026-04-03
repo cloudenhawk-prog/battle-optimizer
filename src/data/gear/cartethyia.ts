@@ -2,6 +2,8 @@ import type { Echo, EchoSetBonus } from '../../types/gear'
 import { always } from '../../utils/conditions/damageModifierConditions'
 import { weaponCatalog, buildWeapon } from './weaponCatalog'
 
+const SUBS = { critRate: 0.075, critDamage: 0.15, bonusHP: 0.079 }
+
 // ========== Weapon ===========================================================================================================
 const cartethyia_weapon = buildWeapon(weaponCatalog.find(w => w.name === "Defier's Thorn")!, 1, 'Cartethyia')!
 
@@ -11,7 +13,7 @@ const cartethyia_cost_4_echo_1: Echo = {
   setName: 'Windward Pilgrimage',
   cost: 4,
   baseStats: { flatATK: 150, critDamage: 0.44 },
-  subStats: { critRate: 0.099, critDamage: 0.174, bonusHP: 0.086, bonusDEF: 0.100, flatHP: 470 },
+  subStats: SUBS,
   firstSlotStats: { aeroBonusDMG: 0.10 },
   conditionalStats: {
     condition: (name) => name === 'Cartethyia' || name === 'Rover',
@@ -48,7 +50,7 @@ const cartethyia_cost_4_echo_2: Echo = {
   setName: 'Windward Pilgrimage',
   cost: 4,
   baseStats: { flatATK: 150, critRate: 0.22 },
-  subStats: { bonusHP: 0.101, critRate: 0.075, skillBonusDMG: 0.094, energyPercent: 0.076, basicBonusDMG: 0.101 },
+  subStats: SUBS,
   icon: 'assets/gear/echoes/nightmare_kelpie.png',
   info: 'The Resonator with this Echo equipped in the main slot gains 12.00% Glacio DMG Bonus and 12.00% Aero DMG Bonus. Switching out the Resonator with Outro Skill summons Nightmare: Kelpie to deal 405.00% Aero DMG.',
   info_icon: 'assets/gear/echoes/info_nightmare_kelpie.png'
@@ -59,7 +61,7 @@ const cartethyia_cost_1_echo_1: Echo = {
   setName: 'Windward Pilgrimage',
   cost: 1,
   baseStats: { flatHP: 2280, bonusHP: 0.228 },
-  subStats: { critDamage: 0.126, energyPercent: 0.084, critRate: 0.081, flatATK: 50, bonusHP: 0.094 },
+  subStats: SUBS,
   icon: 'assets/gear/echoes/spectro_drake.png',
   info_icon: 'assets/gear/echoes/info_spectro_drake.png'
 }
@@ -69,7 +71,7 @@ const cartethyia_cost_1_echo_2: Echo = {
   setName: 'Windward Pilgrimage',
   cost: 1,
   baseStats: { flatHP: 2280, bonusHP: 0.228 },
-  subStats: { bonusHP: 0.064, critRate: 0.063, critDamage: 0.126, bonusDEF: 0.109, basicBonusDMG: 0.086 },
+  subStats: SUBS,
   icon: 'assets/gear/echoes/sacerdos.png',
   info_icon: 'assets/gear/echoes/info_sacerdos.png'
 }
@@ -79,7 +81,7 @@ const cartethyia_cost_1_echo_3: Echo = {
   setName: 'Windward Pilgrimage',
   cost: 1,
   baseStats: { flatHP: 2280, bonusHP: 0.228 },
-  subStats: { critDamage: 0.150, bonusHP: 0.079, energyPercent: 0.108, bonusATK: 0.079, critRate: 0.093 },
+  subStats: SUBS,
   icon: 'assets/gear/echoes/devotee\'s_flesh.png',
   info_icon: 'assets/gear/echoes/info_devotee\'s_flesh.png'
 }

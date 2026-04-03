@@ -1,5 +1,5 @@
 import '../../styles/rotation-editor/RotationEditor.css'
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { useRotationEditor } from '../../hooks/rotation-editor/useRotationEditor'
 import { RotationTable } from './RotationTable'
 import DataOverlay from './DataOverlay'
@@ -30,6 +30,21 @@ export default function RotationEditor({ charactersInBattle, enemy, tableConfig,
   const [overlayData, setOverlayData] = useState<null | { snapshot: Snapshot; damageEvents: DamageEvent[] }>(null)
   const [summaryOpen, setSummaryOpen] = useState(false)
   const [rotationsOpen, setRotationsOpen] = useState(false)
+  const [bannerVisible, setBannerVisible] = useState(false)
+
+  const { lastImportError, lastImportCompleted } = importExport
+
+  useEffect(() => {
+    if (lastImportError || lastImportCompleted !== null) {
+      setBannerVisible(true)
+      const timer = setTimeout(() => {
+        setBannerVisible(false)
+        importExport.clearImportStatus()
+      }, 6000)
+      return () => clearTimeout(timer)
+    }
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [lastImportError, lastImportCompleted])
 
   function handleRowClick(snapshot: Snapshot) {
     if (!snapshot.action) return
@@ -43,6 +58,22 @@ export default function RotationEditor({ charactersInBattle, enemy, tableConfig,
   return (
     <div className="pageWrapper">
       <h1 className="heading"></h1>
+      {bannerVisible && (lastImportError || lastImportCompleted !== null) && (
+        <div className={`importBanner ${lastImportError ? 'importBannerError' : 'importBannerSuccess'}`}>
+          <span className="importBannerIcon">{lastImportError ? '⚠' : '✓'}</span>
+          <span className="importBannerText">
+            {lastImportError
+              ? `Stopped after ${lastImportCompleted} step${lastImportCompleted !== 1 ? 's' : ''} — step ${lastImportError.stepIndex + 1} (${lastImportError.character} / ${lastImportError.action}): ${lastImportError.reason}`
+              : `Loaded ${lastImportCompleted} step${lastImportCompleted !== 1 ? 's' : ''} successfully`
+            }
+          </span>
+          <button
+            className="importBannerDismiss"
+            onClick={() => { setBannerVisible(false); importExport.clearImportStatus() }}
+            aria-label="Dismiss"
+          >✕</button>
+        </div>
+      )}
       <RotationTable snapshots={snapshots} charactersInBattle={charactersInBattle} tableConfig={tableConfig} onSelectCharacter={handleCharacterSelect} onSelectAction={handleActionSelect} columnVisibility={columnVisibility} setColumnVisibility={setColumnVisibility} onRowClick={handleRowClick} onGearChange={onGearChange} />
       <div className="editorFloatingButtons">
         <button className="summaryOpenButton" onClick={() => setRotationsOpen(true)} title="Save / load rotations">
@@ -59,14 +90,14 @@ export default function RotationEditor({ charactersInBattle, enemy, tableConfig,
         onClose={() => setRotationsOpen(false)}
         savedRotations={importExport.savedRotations}
         hasCurrentRotation={hasData}
-        lastImportError={importExport.lastImportError}
-        lastImportCompleted={importExport.lastImportCompleted}
         onSave={importExport.handleSave}
         onLoad={importExport.handleLoad}
         onDelete={importExport.handleDelete}
         onDownload={importExport.handleDownload}
         onFileUpload={importExport.handleFileUpload}
         onClearImportStatus={importExport.clearImportStatus}
+        ignoreCastConditions={importExport.ignoreCastConditions}
+        onToggleIgnoreCastConditions={() => importExport.setIgnoreCastConditions(v => !v)}
       />
       <DataOverlay snapshot={overlayData?.snapshot ?? null} damageEvents={overlayData?.damageEvents ?? []} open={overlayOpen} onClose={() => setOverlayOpen(false)} />
       <SummaryOverlay open={summaryOpen} onClose={() => setSummaryOpen(false)} snapshots={snapshots} damageEvents={damageEvents ?? []} characters={charactersInBattle} />
