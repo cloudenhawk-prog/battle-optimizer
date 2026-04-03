@@ -98,7 +98,7 @@ export function useImportExport({
   function handleLoad(rotation: SavedRotation) {
     const result = runImportSteps({
       steps: rotation.steps,
-      initialSnapshot: createEmptySnapshot(charactersMap, characterColumnsMap, globalColumns, tableConfig),
+      initialSnapshot: createEmptySnapshot(charactersMap, characterColumnsMap, globalColumns, tableConfig, settings.startWithFullEnergy),
       charactersMap,
       characterColumnsMap,
       globalColumns,

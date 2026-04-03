@@ -41,8 +41,9 @@ export function RotationTable({ snapshots, charactersInBattle, tableConfig, onSe
     }
   }, [snapshots])
 
-  // Get the last snapshot that has an action selected
-  const currentSnapshot = [...snapshots].reverse().find(s => s.action !== undefined && s.action !== '')
+  // Get the last snapshot that has an action selected; fall back to the initial snapshot so the
+  // tracker always shows the correct starting state (e.g. full Energy when that setting is on).
+  const currentSnapshot = [...snapshots].reverse().find(s => s.action !== undefined && s.action !== '') ?? snapshots[0]
 
   // Get the first fromTime from the first snapshot with an action
   const firstSnapshot = snapshots.find(s => s.action !== undefined && s.action !== '')

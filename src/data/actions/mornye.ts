@@ -852,7 +852,7 @@ const mornye_intro: Action = {
   name: 'Mornye Intro',
   displayName: 'Convergence',
   category: 'Other',
-  castTime: 100, // TODO
+  castTime: 1, // TODO
   multiplier: (202.79) / 100,
   scaling: 'ATK',
   elements: ['FUSION'],

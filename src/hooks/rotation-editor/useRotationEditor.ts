@@ -19,7 +19,7 @@ type UseRotationEditorProps = {
 
 export function useRotationEditor({ charactersInBattle, tableConfig, enemy, gearResetKey = 0, settings }: UseRotationEditorProps) {
   const [damageEvents, setDamageEvents] = useState<DamageEvent[]>([])
-  const { snapshots, setSnapshots, resetTimeline } = useSnapshots({ charactersInBattle, tableConfig })
+  const { snapshots, setSnapshots, resetTimeline } = useSnapshots({ charactersInBattle, tableConfig, settings })
 
   useEffect(() => {
     if (gearResetKey === 0) return

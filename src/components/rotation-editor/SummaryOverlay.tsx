@@ -7,6 +7,7 @@ import type { DamageEvent } from '../../types/events'
 import type { Character } from '../../types/character'
 import type { ElementType } from '../../types/baseTypes'
 import type { CharacterStats } from '../../types/stats'
+import type { DamageModifier } from '../../types/modifiers'
 
 // ========== Element Themes ==================================================================================================
 
@@ -71,6 +72,7 @@ type CharacterSummary = {
   totalCharacterDamage: number
   damageByType: { type: string; damage: number }[]
   fieldTime: number
+  libCount: number
 }
 
 type GlobalDamageEntry = { name: string; damage: number; element: string }
@@ -97,6 +99,17 @@ function computeSummaryData(
   for (const s of snapshots) {
     if (!s.character || !s.action) continue
     fieldTimeMap[s.character] = (fieldTimeMap[s.character] ?? 0) + (s.toTime - s.fromTime)
+  }
+
+  const libCountMap: Record<string, number> = {}
+  for (let i = 1; i < snapshots.length; i++) {
+    for (const char of characters) {
+      const maxE = char.maxEnergies.energy ?? 0
+      if (maxE === 0) continue
+      const cur = snapshots[i].charactersEnergies[char.name]?.energy ?? 0
+      const prv = snapshots[i - 1].charactersEnergies[char.name]?.energy ?? 0
+      if (prv - cur >= maxE * 0.5) libCountMap[char.name] = (libCountMap[char.name] ?? 0) + 1
+    }
   }
 
   const passiveEvents = damageEvents.filter(e =>
@@ -139,6 +152,7 @@ function computeSummaryData(
       totalCharacterDamage,
       damageByType,
       fieldTime: fieldTimeMap[char.name] ?? 0,
+      libCount: libCountMap[char.name] ?? 0,
     }
   })
 
@@ -203,20 +217,30 @@ type ModifierDisplayInfo = {
   color?: string
   stats?: Partial<CharacterStats>
   showStats?: boolean
+  targetStrategy?: string
 }
 
 function buildModifierInfoMap(characters: Character[]): Map<string, ModifierDisplayInfo> {
   const map = new Map<string, ModifierDisplayInfo>()
+  const addMod = (mod: DamageModifier) => {
+    const info: ModifierDisplayInfo = {
+      description: mod.description,
+      color: mod.color,
+      stats: mod.characterStats,
+      showStats: mod.showStats,
+      targetStrategy: mod.targetStrategy,
+    }
+    // Index by original name AND stripped name so lookup works regardless of
+    // whether entry.displayName came from contributions (original) or fell
+    // back to the snapshot buff key (stripped, no spaces).
+    if (!map.has(mod.displayName)) map.set(mod.displayName, info)
+    const stripped = mod.displayName.replace(/\s+/g, '')
+    if (stripped !== mod.displayName && !map.has(stripped)) map.set(stripped, info)
+  }
   for (const char of characters) {
-    for (const mod of char.damageModifiers) {
-      if (!map.has(mod.displayName)) {
-        map.set(mod.displayName, {
-          description: mod.description,
-          color: mod.color,
-          stats: mod.characterStats,
-          showStats: mod.showStats,
-        })
-      }
+    for (const mod of char.damageModifiers) addMod(mod)
+    for (const action of char.actions) {
+      for (const mod of action.damageModifiers) addMod(mod)
     }
   }
   return map
@@ -327,6 +351,8 @@ type BuffUptimeEntry = {
   ownerElement: ElementType | ''
   coveredDamage: number
   coveragePct: number
+  timeUptimePct: number
+  firstAppliedAt: number
 }
 
 function computeBuffUptime(
@@ -338,6 +364,13 @@ function computeBuffUptime(
   if (grandTotal === 0 || damageEvents.length === 0) return []
 
   const charElementMap = new Map(characters.map(c => [c.name, c.element]))
+
+  // Use the last snapshot that has a resolved action for duration — the final row is always empty
+  const firstActionSnap = snapshots.find(s => s.action)
+  const lastActionSnap = [...snapshots].reverse().find(s => s.action)
+  const rotationDuration = firstActionSnap && lastActionSnap
+    ? lastActionSnap.toTime - firstActionSnap.fromTime
+    : 0
 
   // Build display-name lookup from contributions: stripped key → original name + owner
   const displayNameMap = new Map<string, { displayName: string; ownerCharacter: string | null }>()
@@ -378,10 +411,39 @@ function computeBuffUptime(
     }
   }
 
+  // Accumulate active time per limited buff key
+  const timeMap = new Map<string, number>()
+  for (const snap of snapshots) {
+    if (!snap.action) continue
+    const duration = snap.toTime - snap.fromTime
+    if (duration <= 0) continue
+    for (const [key, stacks] of Object.entries(snap.buffs)) {
+      if (stacks > 0 && limitedBuffKeys.has(key)) {
+        timeMap.set(key, (timeMap.get(key) ?? 0) + duration)
+      }
+    }
+  }
+
+  // Find the first snapshot where each buff transitions from absent/0 → active
+  const firstAppliedAtMap = new Map<string, number>()
+  for (let i = 0; i < snapshots.length; i++) {
+    const snap = snapshots[i]
+    const prev = snapshots[i - 1]
+    for (const key of limitedBuffKeys) {
+      if (firstAppliedAtMap.has(key)) continue
+      const cur = snap.buffs[key] ?? 0
+      const prv = prev ? (prev.buffs[key] ?? 0) : 0
+      if (cur > 0 && prv === 0) {
+        firstAppliedAtMap.set(key, snap.fromTime)
+      }
+    }
+  }
+
   return Array.from(coverageMap.entries())
     .map(([key, coveredDamage]) => {
       const info = displayNameMap.get(key)
       const ownerCharacter = info?.ownerCharacter ?? null
+      const activeTime = timeMap.get(key) ?? 0
       return {
         key,
         displayName: info?.displayName ?? key,
@@ -389,6 +451,8 @@ function computeBuffUptime(
         ownerElement: (ownerCharacter ? (charElementMap.get(ownerCharacter) ?? '') : '') as ElementType | '',
         coveredDamage,
         coveragePct: (coveredDamage / grandTotal) * 100,
+        timeUptimePct: rotationDuration > 0 ? (activeTime / rotationDuration) * 100 : 0,
+        firstAppliedAt: firstAppliedAtMap.get(key) ?? 0,
       }
     })
     .filter(e => e.coveragePct >= 1)
@@ -496,7 +560,9 @@ function computeEnergyFlow(
         libCounts.set(char.name, (libCounts.get(char.name) ?? 0) + 1)
       }
       if (cur > prv) {
-        energyGainMap.set(char.name, (energyGainMap.get(char.name) ?? 0) + (cur - prv))
+        const energyPercent = char.stats?.energyPercent ?? 1
+        const baseGain = energyPercent > 0 ? (cur - prv) / energyPercent : (cur - prv)
+        energyGainMap.set(char.name, (energyGainMap.get(char.name) ?? 0) + baseGain)
       }
     }
   }
@@ -841,6 +907,26 @@ function CenterPanel({ characterSummaries, globalDamage, totalPassiveDamage, gra
   const pie2CharEntries = contributionEntries.filter(c => c.attributedDamage > 0 && characterNames.has(c.name))
   const pie2NsTotal = contributionEntries.filter(c => c.attributedDamage > 0 && !characterNames.has(c.name)).reduce((s, c) => s + c.attributedDamage, 0)
   const pie2Total = contributionEntries.reduce((s, c) => s + c.attributedDamage, 0)
+
+  // Compute role tags
+  const activeCharsForRole = characterSummaries.filter(c => c.totalCharacterDamage > 0 || c.fieldTime > 0)
+  const charDamages = activeCharsForRole.map(c => c.totalCharacterDamage)
+  const maxDamage = charDamages.length > 0 ? Math.max(...charDamages) : 0
+  const minDamage = charDamages.length > 0 ? Math.min(...charDamages) : 0
+  const totalCharDamage = charDamages.reduce((s, v) => s + v, 0)
+  const contribMap = new Map(contributionEntries.map(c => [c.name, c.attributedDamage]))
+  const roleMap = new Map<string, 'Main Carry' | 'Sub DPS' | 'Buffer'>()
+  for (const c of activeCharsForRole) {
+    const contribPct = pie2Total > 0 ? ((contribMap.get(c.name) ?? 0) / pie2Total) * 100 : 0
+    if (c.totalCharacterDamage === maxDamage && totalCharDamage > 0 && c.totalCharacterDamage / totalCharDamage > 0.5) {
+      roleMap.set(c.name, 'Main Carry')
+    } else if (c.totalCharacterDamage === minDamage && contribPct > 15) {
+      roleMap.set(c.name, 'Buffer')
+    } else if (c.totalCharacterDamage !== maxDamage && c.totalCharacterDamage !== minDamage) {
+      roleMap.set(c.name, 'Sub DPS')
+    }
+  }
+
   const pie2Items: PieItem[] = [
     ...pie2CharEntries.map(c => ({
       name: c.name,
@@ -886,6 +972,7 @@ function CenterPanel({ characterSummaries, globalDamage, totalPassiveDamage, gra
             grandTotal={grandTotal}
             originEntry={originByChar.get(char.name)}
             actionBreakdown={actionBreakdowns.get(char.name)}
+            role={roleMap.get(char.name)}
           />
         ))}
         {globalDamage.length > 0 && (
@@ -896,7 +983,7 @@ function CenterPanel({ characterSummaries, globalDamage, totalPassiveDamage, gra
   )
 }
 
-function CharTypeCard({ summary, grandTotal, originEntry, actionBreakdown }: { summary: CharacterSummary; grandTotal: number; originEntry?: ContributionOriginEntry; actionBreakdown?: ActionBreakdownEntry[] }) {
+function CharTypeCard({ summary, grandTotal, originEntry, actionBreakdown, role }: { summary: CharacterSummary; grandTotal: number; originEntry?: ContributionOriginEntry; actionBreakdown?: ActionBreakdownEntry[]; role?: 'Main Carry' | 'Sub DPS' | 'Buffer' }) {
   const [expanded, setExpanded] = useState(false)
   const theme = getElementColor(summary.element)
   const allCharDamage = summary.directDamage + summary.caDamage + summary.passiveDamage
@@ -931,8 +1018,21 @@ function CharTypeCard({ summary, grandTotal, originEntry, actionBreakdown }: { s
           </div>
         </div>
         <div className="summaryCharCardChips">
-          {summary.caDamage > 0 && (
-            <span className="summaryCharCardChip">C.Atk {formatDamage(summary.caDamage)}</span>
+          {role && (
+            <span
+              className="summaryCharCardChip"
+              style={{ color: theme.primary, borderColor: `color-mix(in srgb, ${theme.primary} 30%, transparent)`, background: `color-mix(in srgb, ${theme.primary} 8%, transparent)` }}
+            >
+              {role}
+            </span>
+          )}
+          {summary.libCount > 0 && (
+            <span
+              className="summaryCharCardChip"
+              style={{ color: theme.primary, borderColor: `color-mix(in srgb, ${theme.primary} 30%, transparent)`, background: `color-mix(in srgb, ${theme.primary} 8%, transparent)` }}
+            >
+              ×{summary.libCount} Liberation{summary.libCount > 1 ? 's' : ''}
+            </span>
           )}
         </div>
       </div>
@@ -963,6 +1063,14 @@ function CharTypeCard({ summary, grandTotal, originEntry, actionBreakdown }: { s
 
       {/* Damage-type bars — primary content. Click to toggle action breakdown */}
       {/* Each type receives the full damage of any action that carries it, so bars may sum beyond the card total. */}
+      {summary.damageByType.length > 0 && (
+        <div
+          className="summaryCharTypeDisclaimer"
+          style={{ color: `color-mix(in srgb, ${theme.primary} 70%, rgba(255,255,255,0.4))` }}
+        >
+          Damage Type Distribution
+        </div>
+      )}
       <div className="summaryCharTypeRows">
         {summary.damageByType.length === 0 ? (
           <div className="summaryCharTypeEmpty">No direct damage recorded</div>
@@ -992,9 +1100,6 @@ function CharTypeCard({ summary, grandTotal, originEntry, actionBreakdown }: { s
               </div>
             )
           })
-        )}
-        {summary.damageByType.length > 0 && (
-          <div className="summaryCharTypeDisclaimer">Damage Type Distribution</div>
         )}
       </div>
 
@@ -1115,13 +1220,110 @@ function NegativeStatusesCard({ globalDamage, grandTotal, passiveDamageEvents }:
 // ========== Right Panel — buff uptime + contribution origin + energy overview =============================================
 
 function RightPanel({ buffUptime, energyFlow, modifierInfoMap }: { buffUptime: BuffUptimeEntry[]; energyFlow: EnergyFlowEntry[]; modifierInfoMap: Map<string, ModifierDisplayInfo> }) {
+  const [buffView, setBuffView] = useState<'coverage' | 'uptime'>('coverage')
+  const [activeTooltip, setActiveTooltip] = useState<{ entry: BuffUptimeEntry; rect: DOMRect } | null>(null)
+
+  const STRATEGY_LABELS: Record<string, string> = {
+    self: 'Self only',
+    active: 'Active character',
+    all: 'All resonators',
+    nextSwap: 'Next swap in',
+    activeAlly: 'Active ally',
+  }
+
+  const tooltipPortal = (() => {
+    if (!activeTooltip) return null
+    const { entry, rect } = activeTooltip
+    const ownerTheme = getElementColor(entry.ownerElement)
+    const iconPath = `/assets/modifiers/${entry.displayName.toLowerCase().replace(/:/g, '').replace(/\s+/g, '_')}.png`
+    const info = modifierInfoMap.get(entry.displayName)
+    const accentColor = ownerTheme.primary
+
+    // Open upward when the row is in the bottom 40% of the viewport to stay visible
+    const openUpward = rect.bottom > window.innerHeight * 0.6
+    const posStyle: React.CSSProperties = openUpward
+      ? { bottom: `${window.innerHeight - rect.top + 6}px`, top: 'auto' }
+      : { top: `${rect.bottom + 6}px`, bottom: 'auto' }
+
+    return createPortal(
+      <div
+        className="summaryBuffRowTooltip"
+        style={{
+          position: 'fixed',
+          right: `${window.innerWidth - rect.right}px`,
+          opacity: 1,
+          visibility: 'visible',
+          transform: 'none',
+          zIndex: 9999,
+          '--buff-tooltip-accent': accentColor,
+          ...posStyle,
+        } as React.CSSProperties}
+      >
+        <div className="summaryBuffRowTooltipHeader">
+          <img src={iconPath} alt="" className="summaryBuffRowTooltipIcon" onError={e => { (e.currentTarget as HTMLImageElement).style.opacity = '0' }} />
+          <span className="summaryBuffRowTooltipLabel" style={{ color: accentColor }}>{entry.displayName}</span>
+        </div>
+        <div className="summaryBuffRowTooltipCoverage">
+          {entry.ownerCharacter && (
+            <div className="summaryBuffRowTooltipStat">
+              <span className="summaryBuffRowTooltipStatKey">Source</span>
+              <span className="summaryBuffRowTooltipStatVal" style={{ color: ownerTheme.primary }}>{entry.ownerCharacter}</span>
+            </div>
+          )}
+          {info?.targetStrategy && (
+            <div className="summaryBuffRowTooltipStat">
+              <span className="summaryBuffRowTooltipStatKey">Targets</span>
+              <span className="summaryBuffRowTooltipStatVal" style={{ color: accentColor }}>{STRATEGY_LABELS[info.targetStrategy] ?? info.targetStrategy}</span>
+            </div>
+          )}
+          <div className="summaryBuffRowTooltipStat">
+            <span className="summaryBuffRowTooltipStatKey">Damage covered</span>
+            <span className="summaryBuffRowTooltipStatVal" style={{ color: accentColor }}>{formatDamage(entry.coveredDamage)}</span>
+          </div>
+          <div className="summaryBuffRowTooltipStat">
+            <span className="summaryBuffRowTooltipStatKey">First applied</span>
+            <span className="summaryBuffRowTooltipStatVal" style={{ color: accentColor }}>{formatTime(entry.firstAppliedAt)}</span>
+          </div>
+        </div>
+        <div className="summaryBuffRowTooltipDivider" />
+        <div className="summaryBuffRowTooltipStats">
+          <div className="summaryBuffRowTooltipStat">
+            <span className="summaryBuffRowTooltipStatKey">Coverage</span>
+            <span className="summaryBuffRowTooltipStatVal" style={{ color: accentColor }}>{entry.coveragePct.toFixed(1)}%</span>
+          </div>
+          <div className="summaryBuffRowTooltipStat">
+            <span className="summaryBuffRowTooltipStatKey">Uptime</span>
+            <span className="summaryBuffRowTooltipStatVal" style={{ color: accentColor }}>{entry.timeUptimePct.toFixed(1)}%</span>
+          </div>
+        </div>
+      </div>,
+      document.body,
+    )
+  })()
+
   return (
     <div className="summaryRightPanel">
 
       {/* ── Section 1: Buff Coverage ── */}
       <div className="summarySectionGroup">
-        <PanelHeader label="BUFF COVERAGE" accent="cyan" />
-        <div className="summarySectionHint">% = share of team damage dealt while buff was active</div>
+        <div className="summaryBuffViewHeader">
+          <PanelHeader label="BUFF COVERAGE" accent="cyan" />
+          <div className="summaryBuffViewToggle">
+            <button
+              className={`summaryBuffViewBtn${buffView === 'coverage' ? ' active' : ''}`}
+              onClick={() => setBuffView('coverage')}
+            >Coverage</button>
+            <button
+              className={`summaryBuffViewBtn${buffView === 'uptime' ? ' active' : ''}`}
+              onClick={() => setBuffView('uptime')}
+            >Uptime</button>
+          </div>
+        </div>
+        <div className="summarySectionHint">
+          {buffView === 'coverage'
+            ? '% of total team damage dealt while buff was active'
+            : '% of total rotation time buff was active'}
+        </div>
         {buffUptime.length === 0 ? (
           <div className="summaryRightEmpty">No limited-duration buffs detected</div>
         ) : (
@@ -1129,15 +1331,12 @@ function RightPanel({ buffUptime, energyFlow, modifierInfoMap }: { buffUptime: B
             {buffUptime.map(entry => {
               const ownerTheme = getElementColor(entry.ownerElement)
               const iconPath = `/assets/modifiers/${entry.displayName.toLowerCase().replace(/:/g, '').replace(/\s+/g, '_')}.png`
-              const info = modifierInfoMap.get(entry.displayName)
-              const accentColor = info?.color ?? ownerTheme.primary
-              const statsEntries = info?.showStats && info?.stats
-                ? (Object.entries(info.stats) as [string, number][]).filter(([, v]) => v !== 0)
-                : []
               return (
                 <div
                   key={entry.key}
                   className="summaryBuffUptimeRow summaryBuffUptimeRow--hasTooltip"
+                  onMouseEnter={(e) => setActiveTooltip({ entry, rect: e.currentTarget.getBoundingClientRect() })}
+                  onMouseLeave={() => setActiveTooltip(null)}
                 >
                   <div className="summaryBuffIconBox" style={{ borderColor: `color-mix(in srgb, ${ownerTheme.primary} 55%, transparent)` }}>
                     <img
@@ -1160,50 +1359,15 @@ function RightPanel({ buffUptime, energyFlow, modifierInfoMap }: { buffUptime: B
                     <div
                       className="summaryBuffBarFill"
                       style={{
-                        width: `${Math.min(entry.coveragePct, 100)}%`,
+                        width: `${Math.min(buffView === 'coverage' ? entry.coveragePct : entry.timeUptimePct, 100)}%`,
                         background: ownerTheme.primary,
                         boxShadow: `0 0 4px ${ownerTheme.glow}`,
                       }}
                     />
                   </div>
-                  <span className="summaryBuffPct">{entry.coveragePct.toFixed(0)}%</span>
-                  <div className="summaryBuffRowTooltip" style={{ '--buff-tooltip-accent': accentColor } as React.CSSProperties}>
-                    <div className="summaryBuffRowTooltipHeader">
-                      <img src={iconPath} alt="" className="summaryBuffRowTooltipIcon" onError={e => { (e.currentTarget as HTMLImageElement).style.opacity = '0' }} />
-                      <span className="summaryBuffRowTooltipLabel" style={{ color: accentColor }}>{entry.displayName}</span>
-                    </div>
-                    <div className="summaryBuffRowTooltipCoverage">
-                      {entry.ownerCharacter && (
-                        <div className="summaryBuffRowTooltipStat">
-                          <span className="summaryBuffRowTooltipStatKey">Source</span>
-                          <span className="summaryBuffRowTooltipStatVal" style={{ color: ownerTheme.primary }}>{entry.ownerCharacter}</span>
-                        </div>
-                      )}
-                      <div className="summaryBuffRowTooltipStat">
-                        <span className="summaryBuffRowTooltipStatKey">Coverage</span>
-                        <span className="summaryBuffRowTooltipStatVal" style={{ color: accentColor }}>{entry.coveragePct.toFixed(1)}%</span>
-                      </div>
-                      <div className="summaryBuffRowTooltipStat">
-                        <span className="summaryBuffRowTooltipStatKey">Damage covered</span>
-                        <span className="summaryBuffRowTooltipStatVal" style={{ color: accentColor }}>{formatDamage(entry.coveredDamage)}</span>
-                      </div>
-                    </div>
-                    {info?.description && (
-                      <p className="summaryBuffRowTooltipDesc">{info.description}</p>
-                    )}
-                    {statsEntries.length > 0 && (
-                      <div className="summaryBuffRowTooltipStats">
-                        {statsEntries.map(([key, val]) => (
-                          <div key={key} className="summaryBuffRowTooltipStat">
-                            <span className="summaryBuffRowTooltipStatKey">{key.replace(/([a-z])([A-Z])/g, '$1 $2').replace(/^./, s => s.toUpperCase())}</span>
-                            <span className="summaryBuffRowTooltipStatVal" style={{ color: accentColor }}>
-                              {['level','flatATK','flatHP','flatDEF'].includes(key) ? `+${val}` : `+${(val * 100).toFixed(1)}%`}
-                            </span>
-                          </div>
-                        ))}
-                      </div>
-                    )}
-                  </div>
+                  <span className="summaryBuffPct">
+                    {buffView === 'coverage' ? entry.coveragePct.toFixed(0) : entry.timeUptimePct.toFixed(0)}%
+                  </span>
                 </div>
               )
             })}
@@ -1230,15 +1394,10 @@ function RightPanel({ buffUptime, energyFlow, modifierInfoMap }: { buffUptime: B
                       style={{ background: theme.primary, boxShadow: `0 0 5px ${theme.glow}` }}
                     />
                     <span className="summaryEnergyName">{entry.name}</span>
-                    {entry.libCount > 0 && (
-                      <span className="summaryEnergyLibBadge">
-                        ×{entry.libCount} Liberation{entry.libCount > 1 ? 's' : ''}
-                      </span>
-                    )}
                   </div>
                   <div className="summaryEnergyStatRow">
                     <div className="summaryEnergyStat">
-                      <span className="summaryEnergyStatLabel">Resonance Gained</span>
+                      <span className="summaryEnergyStatLabel">Energy Generated</span>
                       <span className="summaryEnergyStatValue" style={{ color: theme.primary, textShadow: `0 0 12px ${theme.glow}` }}>
                         {Math.round(entry.energyGenerated)}
                       </span>
@@ -1257,6 +1416,7 @@ function RightPanel({ buffUptime, energyFlow, modifierInfoMap }: { buffUptime: B
         )}
       </div>
 
+      {tooltipPortal}
     </div>
   )
 }

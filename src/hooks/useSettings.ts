@@ -4,6 +4,7 @@ import { useState } from 'react'
 
 export type Settings = {
   autocastFollowUps: boolean
+  startWithFullEnergy: boolean
 }
 
 // ========== Defaults & Persistence ===========================================================================================
@@ -13,6 +14,7 @@ const SETTINGS_KEY = 'battle-optimizer-settings'
 function getDefaultSettings(): Settings {
   return {
     autocastFollowUps: false,
+    startWithFullEnergy: false,
   }
 }
 

@@ -2,15 +2,17 @@ import { useState } from 'react'
 import type { Character } from '../../types/character'
 import type { TableConfig, GlobalColumns } from '../../types/tableDefinitions'
 import type { Snapshot } from '../../types/snapshot'
+import type { Settings } from '../useSettings'
 
 // ========== Hook: useSnapshots ===============================================================================================
 
 type UseSnapshotsProps = {
   charactersInBattle: Character[]
   tableConfig: TableConfig
+  settings: Settings
 }
 
-export function useSnapshots({ charactersInBattle, tableConfig }: UseSnapshotsProps) {
+export function useSnapshots({ charactersInBattle, tableConfig, settings }: UseSnapshotsProps) {
   const charactersMap = Object.fromEntries(charactersInBattle.map(c => [c.name, c]))
   const characterColumnsMap = Object.fromEntries(charactersInBattle.map(c => [c.name, Object.keys(c.maxEnergies)]))
 
@@ -27,10 +29,10 @@ export function useSnapshots({ charactersInBattle, tableConfig }: UseSnapshotsPr
     negativeStatuses: negativeStatusesCol?.statusMetadata?.map(meta => meta.key) ?? [],
   }
 
-  const [snapshots, setSnapshots] = useState<Snapshot[]>([createEmptySnapshot(charactersMap, characterColumnsMap, globalColumns, tableConfig)])
+  const [snapshots, setSnapshots] = useState<Snapshot[]>([createEmptySnapshot(charactersMap, characterColumnsMap, globalColumns, tableConfig, settings.startWithFullEnergy)])
 
   function resetTimeline() {
-    setSnapshots([createEmptySnapshot(charactersMap, characterColumnsMap, globalColumns, tableConfig)])
+    setSnapshots([createEmptySnapshot(charactersMap, characterColumnsMap, globalColumns, tableConfig, settings.startWithFullEnergy)])
   }
 
   return { snapshots, setSnapshots, resetTimeline, createEmptySnapshot }
@@ -38,8 +40,18 @@ export function useSnapshots({ charactersInBattle, tableConfig }: UseSnapshotsPr
 
 // ========== Internal Helpers =================================================================================================
 
-export function createEmptySnapshot(charactersMap: Record<string, Character>, characterColumnsMap: Record<string, string[]>, globalColumns: GlobalColumns, tableConfig: TableConfig): Snapshot {
-  const charactersEnergies = Object.fromEntries(Object.keys(charactersMap).map(charName => [charName, Object.fromEntries(characterColumnsMap[charName].map(key => [key, 0]))]))
+export function createEmptySnapshot(charactersMap: Record<string, Character>, characterColumnsMap: Record<string, string[]>, globalColumns: GlobalColumns, tableConfig: TableConfig, startWithFullEnergy = false): Snapshot {
+  const charactersEnergies = Object.fromEntries(
+    Object.keys(charactersMap).map(charName => [
+      charName,
+      Object.fromEntries(
+        characterColumnsMap[charName].map(key => [
+          key,
+          startWithFullEnergy && key === 'energy' ? (charactersMap[charName].maxEnergies.energy ?? 0) : 0,
+        ])
+      ),
+    ])
+  )
 
   const basicValues = Object.fromEntries(globalColumns.basic.map(col => [col, 0]))
   const buffs = Object.fromEntries(globalColumns.buffs.map(col => [col, 0]))

@@ -279,7 +279,6 @@
   flex-direction: row;
   overflow: hidden;
   position: relative;
-  z-index: 5;
 }
 
 .summaryColDivider {
@@ -725,9 +724,11 @@
 
 .summaryCharCardChips {
   display: flex;
-  flex-direction: column;
-  align-items: flex-end;
-  gap: 3px;
+  flex-direction: row;
+  flex-wrap: wrap;
+  align-items: flex-start;
+  justify-content: flex-end;
+  gap: 4px;
   flex-shrink: 0;
 }
 
@@ -759,10 +760,10 @@
 
 .summaryCharTypeDisclaimer {
   font-family: 'Share Tech Mono', monospace;
-  font-size: 9.5px;
-  color: rgba(255, 255, 255, 0.22);
-  padding: 4px 0 10px;
-  letter-spacing: 0.03em;
+  font-size: 11px;
+  padding: 10px 0 6px 16px;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
 }
 
 /* ── Contribution origin strip ───────────────────────────── */
@@ -1425,13 +1426,52 @@
   width: 52px;
 }
 
+/* Buff coverage view toggle */
+.summaryBuffViewHeader {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+}
+
+.summaryBuffViewToggle {
+  display: flex;
+  gap: 2px;
+  flex-shrink: 0;
+  margin-bottom: 4px;
+}
+
+.summaryBuffViewBtn {
+  font-family: 'Share Tech Mono', monospace;
+  font-size: 9.5px;
+  letter-spacing: 0.06em;
+  padding: 2px 8px;
+  border-radius: 4px;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  background: transparent;
+  color: rgba(255, 255, 255, 0.3);
+  cursor: pointer;
+  transition: background 0.12s ease, color 0.12s ease, border-color 0.12s ease;
+}
+
+.summaryBuffViewBtn:hover {
+  color: rgba(255, 255, 255, 0.6);
+  background: rgba(255, 255, 255, 0.05);
+}
+
+.summaryBuffViewBtn.active {
+  color: hsl(180 70% 58%);
+  background: hsl(180 70% 58% / 0.08);
+  border-color: hsl(180 70% 58% / 0.3);
+}
+
 /* Section header hint line */
 .summarySectionHint {
   font-family: 'Share Tech Mono', monospace;
   font-size: 10px;
   letter-spacing: 0.06em;
   color: rgba(255, 255, 255, 0.22);
-  margin-top: -6px;
+  margin-top: -2px;
   margin-bottom: 8px;
 }
 
@@ -1447,7 +1487,7 @@
 /* Hover tooltip on buff rows — mirrors .statusTagTooltip pattern */
 .summaryBuffRowTooltip {
   position: absolute;
-  bottom: calc(100% + 6px);
+  top: calc(100% + 6px);
   right: 0;
   min-width: 180px;
   max-width: 280px;
@@ -1459,7 +1499,7 @@
   opacity: 0;
   visibility: hidden;
   transition: opacity 0.18s ease, visibility 0.18s ease, transform 0.18s ease;
-  transform: translateY(4px);
+  transform: translateY(-4px);
   z-index: 200;
   box-shadow: 0 6px 20px rgba(0, 0, 0, 0.55);
   border-top: 2px solid var(--buff-tooltip-accent, rgba(100, 200, 255, 0.5));
@@ -1498,8 +1538,13 @@
   flex-direction: column;
   gap: 3px;
   padding-bottom: 6px;
-  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
-  margin-bottom: 8px;
+  margin-bottom: 6px;
+}
+
+.summaryBuffRowTooltipDivider {
+  height: 1px;
+  background: rgba(255, 255, 255, 0.1);
+  margin-bottom: 6px;
 }
 
 .summaryBuffRowTooltipDesc {
@@ -1513,12 +1558,9 @@
 }
 
 .summaryBuffRowTooltipStats {
-  margin-top: 8px;
   display: flex;
   flex-direction: column;
   gap: 3px;
-  border-top: 1px solid rgba(255, 255, 255, 0.08);
-  padding-top: 6px;
 }
 
 .summaryBuffRowTooltipStat {
