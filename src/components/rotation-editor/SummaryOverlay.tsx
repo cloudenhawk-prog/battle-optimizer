@@ -1,5 +1,6 @@
 import { createPortal } from 'react-dom'
-import { useState } from 'react'
+import { useState, useId } from 'react'
+import { motion, AnimatePresence } from 'framer-motion'
 import '../../styles/rotation-editor/SummaryOverlay.css'
 import { negativeStatuses } from '../../data/negativeStatuses'
 import type { Snapshot } from '../../types/snapshot'
@@ -662,24 +663,18 @@ function computeEnergyFlow(
 
 // ========== Helpers =========================================================================================================
 
-function calculateSummaryPieSlices(values: number[], colors: string[]) {
-  const total = values.reduce((s, v) => s + v, 0)
-  if (total === 0) return []
-  const rad = (deg: number) => (deg * Math.PI) / 180
-  let cumPercent = 0
-  return values.map((value, i) => {
-    const pct = value / total
-    const startAngle = cumPercent * 360
-    const endAngle = startAngle + pct * 360
-    const x1 = 100 + 80 * Math.cos(rad(startAngle - 90))
-    const y1 = 100 + 80 * Math.sin(rad(startAngle - 90))
-    const x2 = 100 + 80 * Math.cos(rad(endAngle - 90))
-    const y2 = 100 + 80 * Math.sin(rad(endAngle - 90))
-    const largeArc = pct > 0.5 ? 1 : 0
-    const path = `M 100 100 L ${x1.toFixed(3)} ${y1.toFixed(3)} A 80 80 0 ${largeArc} 1 ${x2.toFixed(3)} ${y2.toFixed(3)} Z`
-    cumPercent += pct
-    return { path, color: colors[i] }
-  })
+function polarToCartesian(cx: number, cy: number, r: number, angleDeg: number) {
+  const rad = ((angleDeg - 90) * Math.PI) / 180
+  return { x: cx + r * Math.cos(rad), y: cy + r * Math.sin(rad) }
+}
+
+function annularArcPath(cx: number, cy: number, r1: number, r2: number, startDeg: number, endDeg: number) {
+  const large = endDeg - startDeg > 180 ? 1 : 0
+  const s1 = polarToCartesian(cx, cy, r2, startDeg)
+  const e1 = polarToCartesian(cx, cy, r2, endDeg)
+  const s2 = polarToCartesian(cx, cy, r1, endDeg)
+  const e2 = polarToCartesian(cx, cy, r1, startDeg)
+  return `M ${s1.x} ${s1.y} A ${r2} ${r2} 0 ${large} 1 ${e1.x} ${e1.y} L ${s2.x} ${s2.y} A ${r1} ${r1} 0 ${large} 0 ${e2.x} ${e2.y} Z`
 }
 
 function formatDamage(value: number): string {
@@ -828,16 +823,34 @@ type PieSectionProps = {
 
 function PieSection({ title, accent, items, total, centerLabel = 'Total', subtitle }: PieSectionProps) {
   const [hoveredIdx, setHoveredIdx] = useState<number | null>(null)
+  const uid = useId()
 
-  const svgSlices =
-    items.length > 0
-      ? calculateSummaryPieSlices(
-          items.map(s => s.value),
-          items.map(s => s.color),
-        )
-      : []
+  const CX = 200, CY = 200
+  const INNER_R = 80, OUTER_R = 128
+  const TICK_R = 136, RING2_INNER = 145, RING2_OUTER = 153
+  const GAP = items.length > 1 ? 2.0 : 0
+  // Single-item arcs would produce a degenerate 360° path; use 359.99 to keep it drawable
+  const usableDeg = items.length > 1 ? (360 - GAP * items.length) : 359.99
+  let cursor = 0
+  const arcs = total > 0 ? items.map((item, i) => {
+    const sweep = (item.value / total) * usableDeg
+    const start = cursor
+    const end = cursor + sweep
+    cursor = end + GAP
+    return { ...item, start, end, mid: (start + end) / 2, index: i }
+  }) : []
+
+  const ticks = Array.from({ length: 60 }, (_, i) => {
+    const angle = i * 6
+    const isMajor = i % 5 === 0
+    const p1 = polarToCartesian(CX, CY, TICK_R, angle)
+    const p2 = polarToCartesian(CX, CY, TICK_R + (isMajor ? 6 : 3), angle)
+    return { p1, p2, isMajor }
+  })
 
   const hoveredItem = hoveredIdx !== null ? items[hoveredIdx] : null
+  const glowId = `spie-glow-${uid}`
+  const gradId = (i: number) => `spie-grad-${uid}-${i}`
 
   return (
     <div className="summaryPieSection">
@@ -845,43 +858,117 @@ function PieSection({ title, accent, items, total, centerLabel = 'Total', subtit
       {subtitle && <div className="summaryPieSubtitle">{subtitle}</div>}
 
       <div className="summaryPieWrap">
-        <svg viewBox="0 0 200 200" className="summaryPieSvg" style={{ overflow: 'visible' }}>
-          <circle cx="100" cy="100" r="85" fill="none" stroke="rgba(255,255,255,0.05)" strokeWidth="0.5" />
-          {items.length === 1 ? (
-            <circle
-              cx="100" cy="100" r="80"
-              fill={items[0].color}
-              stroke="rgba(8,10,18,0.95)" strokeWidth="1"
-              style={{ cursor: 'pointer', opacity: 0.92 }}
-              onMouseEnter={() => setHoveredIdx(0)}
-              onMouseLeave={() => setHoveredIdx(null)}
+        <svg viewBox="34 34 332 332" className="summaryPieSvg" style={{ overflow: 'visible' }}>
+          <defs>
+            {arcs.map((a, i) => (
+              <radialGradient key={gradId(i)} id={gradId(i)} cx="50%" cy="50%" r="50%">
+                <stop offset="30%" stopColor={a.color} stopOpacity="0.9" />
+                <stop offset="100%" stopColor={a.color} stopOpacity="0.55" />
+              </radialGradient>
+            ))}
+            <filter id={glowId}>
+              <feGaussianBlur stdDeviation="3" result="blur" />
+              <feMerge>
+                <feMergeNode in="blur" />
+                <feMergeNode in="SourceGraphic" />
+              </feMerge>
+            </filter>
+          </defs>
+
+          {/* Background rings — idle: slow desynchronised opacity breathing */}
+          <motion.circle
+            cx={CX} cy={CY} r={OUTER_R + 20}
+            fill="none" stroke="rgba(255,255,255,0.07)" strokeWidth="0.5"
+            animate={{ opacity: [0.2, 0.55, 0.2] }}
+            transition={{ duration: 5.5, ease: 'easeInOut', repeat: Infinity }}
+          />
+          <motion.circle
+            cx={CX} cy={CY} r={INNER_R - 8}
+            fill="none" stroke="rgba(255,255,255,0.07)" strokeWidth="0.5"
+            animate={{ opacity: [0.12, 0.38, 0.12] }}
+            transition={{ duration: 4, ease: 'easeInOut', repeat: Infinity, delay: 1.8 }}
+          />
+
+          {/* Tick marks */}
+          {ticks.map((t, i) => (
+            <motion.line
+              key={`${uid}-tick-${i}`}
+              x1={t.p1.x} y1={t.p1.y} x2={t.p2.x} y2={t.p2.y}
+              stroke="rgba(255,255,255,0.25)"
+              strokeWidth={t.isMajor ? 1 : 0.5}
+              initial={{ opacity: 0 }}
+              animate={{ opacity: t.isMajor ? 0.5 : 0.2 }}
+              transition={{ delay: 0.6 + i * 0.008, duration: 0.3 }}
             />
-          ) : (
-            svgSlices.map((slice, i) => (
-              <path
-                key={i}
-                d={slice.path}
-                fill={slice.color}
-                stroke="rgba(8,10,18,0.95)"
-                strokeWidth="1"
-                style={{
-                  opacity: hoveredIdx !== null && hoveredIdx !== i ? 0.32 : 0.92,
-                  transform: hoveredIdx === i ? 'scale(1.03)' : 'scale(1)',
-                  transformOrigin: '100px 100px',
-                  transition: 'opacity 0.15s ease, transform 0.15s ease',
-                  cursor: 'pointer',
+          ))}
+
+          {/* Outer thin ring (secondary data layer) */}
+          {arcs.map((a) => {
+            const sweep2 = (a.end - a.start) * 0.7
+            return (
+              <motion.path
+                key={`${uid}-ring2-${a.index}`}
+                d={annularArcPath(CX, CY, RING2_INNER, RING2_OUTER, a.start, a.start + sweep2)}
+                fill={a.color}
+                fillOpacity="0.22"
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                transition={{ delay: 0.8 + a.index * 0.06, duration: 0.4 }}
+              />
+            )
+          })}
+
+
+
+          {/* Main donut segments */}
+          {arcs.map((a) => {
+            const isHovered = hoveredIdx === a.index
+            return (
+              <motion.path
+                key={`${uid}-seg-${a.index}`}
+                d={annularArcPath(CX, CY, INNER_R, OUTER_R + (isHovered ? 6 : 0), a.start, a.end)}
+                fill={`url(#${gradId(a.index)})`}
+                stroke="rgba(8,10,18,0.9)"
+                strokeWidth={1.5}
+                filter={isHovered ? `url(#${glowId})` : undefined}
+                initial={{ opacity: 0, scale: 0.85 }}
+                animate={{
+                  opacity: isHovered ? 1 : (hoveredIdx !== null ? 0.55 : 0.88),
+                  scale: 1,
                 }}
-                onMouseEnter={() => setHoveredIdx(i)}
+                transition={{
+                  // opacity uses a fast tween — works for both entrance fade-in and hover dimming
+                  opacity: { duration: 0.15 },
+                  // scale uses a staggered spring — only meaningful on mount (entrance)
+                  scale: { delay: 0.15 + a.index * 0.07, type: 'spring', stiffness: 120, damping: 14 },
+                }}
+                style={{ transformOrigin: `${CX}px ${CY}px`, cursor: 'pointer' }}
+                onMouseEnter={() => setHoveredIdx(a.index)}
                 onMouseLeave={() => setHoveredIdx(null)}
               />
-            ))
-          )}
-          <circle
-            cx="100" cy="100" r="52"
-            fill="rgba(8,10,18,0.97)"
-            stroke="rgba(255,255,255,0.06)" strokeWidth="0.5"
-            style={{ pointerEvents: 'none' }}
+            )
+          })}
+
+          {/* Idle: center glow pulse — soft halo at the inner edge of the donut */}
+          <motion.circle
+            cx={CX} cy={CY} r={INNER_R + 5}
+            fill="none" stroke="rgba(255,255,255,0.09)" strokeWidth={4}
+            animate={{ opacity: [0.2, 0.7, 0.2] }}
+            transition={{ duration: 6, ease: 'easeInOut', repeat: Infinity, delay: 0.8 }}
           />
+
+          {/* Center circle */}
+          <motion.circle
+            cx={CX} cy={CY} r={INNER_R - 2}
+            fill="rgba(8,10,18,0.97)"
+            stroke="rgba(255,255,255,0.06)" strokeWidth={1}
+            initial={{ scale: 0 }}
+            animate={{ scale: 1 }}
+            style={{ transformOrigin: `${CX}px ${CY}px` }}
+            transition={{ delay: 0.3, type: 'spring', stiffness: 150, damping: 16 }}
+          />
+
+
         </svg>
 
         <div className="summaryPieCenter">
@@ -959,7 +1046,7 @@ function CenterPanel({ characterSummaries, globalDamage, totalPassiveDamage, gra
         return { name: c.name, value: c.totalCharacterDamage, color: cc.primary, glow: cc.glow }
       }),
     ...(totalPassiveDamage > 0
-      ? [{ name: 'Negative Statuses', value: totalPassiveDamage, color: 'hsl(220 15% 60%)', glow: 'hsl(220 15% 60% / 0.3)' }]
+      ? [{ name: 'Other Sources', value: totalPassiveDamage, color: 'hsl(220 15% 60%)', glow: 'hsl(220 15% 60% / 0.3)' }]
       : []),
   ].filter(item => item.value > 0)
 
@@ -994,7 +1081,7 @@ function CenterPanel({ characterSummaries, globalDamage, totalPassiveDamage, gra
       return { name: c.name, value: c.attributedDamage, color: cc.primary, glow: cc.glow }
     }),
     ...(pie2NsTotal > 0
-      ? [{ name: 'Negative Statuses', value: pie2NsTotal, color: 'hsl(220 15% 60%)', glow: 'hsl(220 15% 60% / 0.3)' }]
+      ? [{ name: 'Other Sources', value: pie2NsTotal, color: 'hsl(220 15% 60%)', glow: 'hsl(220 15% 60% / 0.3)' }]
       : []),
   ]
 
@@ -1048,7 +1135,6 @@ function CharTypeCard({ summary, grandTotal, originEntry, actionBreakdown, role,
   const theme = charColorMap.get(summary.name) ?? getElementColor(summary.element)
   const allCharDamage = summary.directDamage + summary.caDamage + summary.passiveDamage
   const shareOfTotal = grandTotal > 0 ? (allCharDamage / grandTotal) * 100 : 0
-  const maxTypeDmg = summary.damageByType.length > 0 ? summary.damageByType[0].damage : 1
   const maxActionDmg = actionBreakdown && actionBreakdown.length > 0 ? actionBreakdown[0].damage : 1
 
   return (
@@ -1069,16 +1155,10 @@ function CharTypeCard({ summary, grandTotal, originEntry, actionBreakdown, role,
           <div className="summaryCharCardPortraitGlow" />
         </div>
         <div className="summaryCharCardInfo">
-          <div className="summaryCharCardName">
-            {summary.name}
-            <span className="summaryCharCardGearChip">S{summary.sequence}</span>
-            <span className="summaryCharCardGearChip">R{summary.weaponRank} {summary.weaponName}</span>
-          </div>
-          <div className="summaryCharCardMeta">
-            <span className="summaryCharCardTotal">{formatDamage(allCharDamage)}</span>
-            <span className="summaryCharCardShare" style={{ color: theme.primary }}>
-              {shareOfTotal.toFixed(1)}%
-            </span>
+          <div className="summaryCharCardName">{summary.name}</div>
+          <div className="summaryCharCardGearTags">
+            <span className="summaryCharCardGearTag">S{summary.sequence}</span>
+            <span className="summaryCharCardGearTag">R{summary.weaponRank} {summary.weaponName}</span>
           </div>
         </div>
         <div className="summaryCharCardChips">
@@ -1135,12 +1215,11 @@ function CharTypeCard({ summary, grandTotal, originEntry, actionBreakdown, role,
           Damage Type Distribution
         </div>
       )}
-      <div className="summaryCharTypeRows">
+      <div className="summaryCharTypeRowsGrid">
         {summary.damageByType.length === 0 ? (
           <div className="summaryCharTypeEmpty">No direct damage recorded</div>
         ) : (
           summary.damageByType.filter(({ damage }) => damage > 0).map(({ type, damage }) => {
-            const barPct = (damage / maxTypeDmg) * 100
             const teamPct = allCharDamage > 0 ? (damage / allCharDamage) * 100 : 0
             const typeTheme = getDmgTypeTheme(type)
             const typeLabel = type === 'NEGATIVE_STATUS'
@@ -1153,13 +1232,12 @@ function CharTypeCard({ summary, grandTotal, originEntry, actionBreakdown, role,
                   <div
                     className="summaryCharTypeBarFill"
                     style={{
-                      width: `${barPct}%`,
+                      width: `${teamPct}%`,
                       background: typeTheme.color,
                       boxShadow: `0 0 8px ${typeTheme.glow}`,
                     }}
                   />
                 </div>
-                <span className="summaryCharTypeValue">{formatDamage(damage)}</span>
                 <span className="summaryCharTypePct">{teamPct.toFixed(1)}%</span>
               </div>
             )
@@ -1234,7 +1312,7 @@ function NegativeStatusesCard({ globalDamage, grandTotal, passiveDamageEvents }:
           <div className="summaryCharCardPortraitGlow" />
         </div>
         <div className="summaryCharCardInfo">
-          <div className="summaryCharCardName">Negative Statuses</div>
+          <div className="summaryCharCardName">Other Sources</div>
           <div className="summaryCharCardMeta">
             <span className="summaryCharCardTotal">{formatDamage(total)}</span>
             <span className="summaryCharCardShare" style={{ color: fieldColor }}>
@@ -1540,12 +1618,12 @@ export default function SummaryOverlay({ open, onClose, snapshots, damageEvents,
             <div className="summarySubtitle">
               {hasData ? (
                 <>
-                  <span className="summaryStatChip">{activeChars.length} Resonators</span>
-                  <span className="summaryStatChip">{formatTime(totalDuration)} Combat</span>
+                  <span className="summaryStatChip accent">{activeChars.length} Resonators</span>
+                  <span className="summaryStatChip accent">{formatTime(totalDuration)} Combat</span>
                   {totalDuration > 0 && (
-                    <span className="summaryStatChip">{formatDamage(grandTotal / totalDuration)}/s</span>
+                    <span className="summaryStatChip accent">{formatDamage(grandTotal / totalDuration)} dps</span>
                   )}
-                  <span className="summaryStatChip">{formatDamage(grandTotal)} Total</span>
+                  <span className="summaryStatChip accent">{formatDamage(grandTotal)} Total</span>
                 </>
               ) : (
                 <span className="summaryNoData">No data — build a rotation first</span>
