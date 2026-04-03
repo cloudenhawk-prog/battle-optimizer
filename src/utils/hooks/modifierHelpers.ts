@@ -37,7 +37,7 @@ export function collectAllModifiers(character: Character, action: Action, negati
  * Activates new modifiers by converting blueprints to ModifierInAction.
  * Handles stacking for existing modifiers.
  */
-export function activateModifiers(modifiers: DamageModifier[], existingModifiersInAction: ModifierInAction[], ctx: StepContext): ModifierInAction[] {
+export function activateModifiers(modifiers: DamageModifier[], existingModifiersInAction: ModifierInAction[], ctx: StepContext, applicationTimeOffset: number = 0): ModifierInAction[] {
   const result: ModifierInAction[] = [...existingModifiersInAction]
 
   for (const modifier of modifiers) {
@@ -64,7 +64,7 @@ export function activateModifiers(modifiers: DamageModifier[], existingModifiers
       const newStacks = Math.min(existing.currentStacks + 1, stacking.maxStacks)
 
       // Reset timer if configured
-      const newTimeLeft = stacking.resetTimerOnApplication ? (modifier.durationStrategy.type === 'limited' ? (modifier.durationStrategy.timeDuration ?? Infinity) : Infinity) : existing.timeLeft
+      const newTimeLeft = stacking.resetTimerOnApplication ? (modifier.durationStrategy.type === 'limited' ? (modifier.durationStrategy.timeDuration ?? Infinity) + applicationTimeOffset : Infinity) : existing.timeLeft
 
       const newSwapsLeft = stacking.resetTimerOnApplication ? (modifier.durationStrategy.type === 'limited' ? (modifier.durationStrategy.numberOfSwaps ?? Infinity) : Infinity) : existing.swapsLeft
 
@@ -100,7 +100,7 @@ export function activateModifiers(modifiers: DamageModifier[], existingModifiers
       result.push({
         modifier,
         applicationTime: ctx.fromTime,
-        timeLeft: limited?.timeDuration ?? Infinity,
+        timeLeft: limited != null ? limited.timeDuration + applicationTimeOffset : Infinity,
         swapsLeft: limited?.numberOfSwaps ?? Infinity,
         currentStacks: 1,
         targetCharacter: ctx.lastSwappedToCharacter ?? null,

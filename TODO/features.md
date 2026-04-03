@@ -5,6 +5,11 @@ On-click works for Negative Statuses, Modifiers, and Coordinated Attacks labels
 BUT only the ones in 'CurrentStateRow' should be clickable
 AND finish the implementation (see TODO inside StatusDetailPanel.tsx)
 
+When the table shows NaN (DPS) it should be set to 0 instead. This usually happens whe nthe first action you do doesnt deal damage, so you get 0/X seconds, which for some reason shows NaN instead of 0.
+
+# Rotation Summary
+Eventually work further with DPS Efficiency - consider if it should be inserted into the pie diagrams by being able to switch between Raw and Time Based
+
 # Modifiers
 Right now we aren't distinguishing well between "buffs/debuffs" and a conditional amplifier on certain actions.
 Example: Cartethyia's final liberation (Fleurdelys Form) has a modifier that increases its damage by 20 % per Aero Erosion stack on the target (up to 100 %).

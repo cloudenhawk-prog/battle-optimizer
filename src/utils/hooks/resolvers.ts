@@ -111,7 +111,11 @@ export function resolveDamageModifiers(ctx: StepContext) {
   const allModifiers = collectAllModifiers(ctx.character, ctx.action, ctx.negativeStatusesInAction)
 
   // Step 2: Activate new modifiers (convert limited ones to ModifierInAction, handle stacking)
-  ctx.modifiersInAction = activateModifiers(allModifiers, ctx.modifiersInAction, ctx)
+  // Pass the cast duration as an offset so that limited modifier timers start from end-of-cast (ctx.toTime)
+  // rather than start-of-cast (ctx.fromTime). resolveModifierState will subtract this same duration,
+  // so the net effect is that timeLeft equals timeDuration at the moment the action finishes casting.
+  const castTimeOffset = ctx.toTime - ctx.fromTime
+  ctx.modifiersInAction = activateModifiers(allModifiers, ctx.modifiersInAction, ctx, castTimeOffset)
 
   // Step 3: Filter modifiers that apply to current context
   // This includes both permanent modifiers and active limited modifiers
