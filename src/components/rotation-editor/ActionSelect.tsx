@@ -141,12 +141,66 @@ export function ActionSelect({ value, actions, character, currentEnergies, previ
       }
     }
 
+    // Resolve the character's current form from the snapshot (needed for intro simulation and form checks).
+    let baseForm: string = ''
+    if (character) {
+      if (previousSnapshot) {
+        const storedForm = previousSnapshot.charactersForms?.[character.name] ?? ''
+        if (!storedForm) {
+          const defaultForm = character.forms?.find(f => f.name === character.defaultForm) ?? character.forms?.[0]
+          baseForm = defaultForm?.name ?? ''
+        } else {
+          baseForm = storedForm
+        }
+      } else {
+        const defaultForm = character.forms?.find(f => f.name === character.defaultForm) ?? character.forms?.[0]
+        baseForm = defaultForm?.name ?? ''
+      }
+    }
+
+    // When the active character has full concerto (100) and this is a different character,
+    // the swap will automatically trigger this character's Intro skill before the user's action.
+    // Pre-simulate the Intro's position and form changes so that action availability is evaluated
+    // against the correct post-intro state rather than the raw snapshot state.
+    let effectivePosition = charPosition
+    let effectiveForm = baseForm
+    let effectiveLastAction = charLastAction
+
+    if (character && previousSnapshot) {
+      const activeCharName = previousSnapshot.character
+      if (activeCharName && activeCharName !== character.name) {
+        const activeCharConcerto = previousSnapshot.charactersEnergies?.[activeCharName]?.['concerto'] ?? 0
+        if (activeCharConcerto >= 100) {
+          // Prefer a form-specific intro action; fall back to the default intro in the actions list.
+          let introAction: Action | undefined
+          if (baseForm && character.forms) {
+            const currentFormObj = character.forms.find(f => f.name === baseForm)
+            if (currentFormObj?.introAction) introAction = currentFormObj.introAction
+          }
+          if (!introAction) {
+            introAction = actions.find(a => (a.dmgTypes as string[]).includes('INTRO'))
+          }
+
+          if (introAction) {
+            const introEndState = introAction.castConditions.endState
+            if (introEndState !== 'PRESERVE' && introEndState !== 'ANY') {
+              effectivePosition = introEndState as 'GROUND' | 'AIR'
+            }
+            if (introAction.formChange) {
+              effectiveForm = introAction.formChange
+            }
+            effectiveLastAction = introAction.name
+          }
+        }
+      }
+    }
+
     // Goal 1: position check
-    const isWrongPosition = action.castConditions.startState !== 'ANY' && action.castConditions.startState !== charPosition
+    const isWrongPosition = action.castConditions.startState !== 'ANY' && action.castConditions.startState !== effectivePosition
 
     // Goal 2: previousActions check
     const previousActionsConstraint = action.castConditions.previousActions
-    const isPreviousActionMismatch = !!previousActionsConstraint?.length && !previousActionsConstraint.some(pa => pa.name === charLastAction)
+    const isPreviousActionMismatch = !!previousActionsConstraint?.length && !previousActionsConstraint.some(pa => pa.name === effectiveLastAction)
 
     // Goal 3: requiresSwapIn check
     // Allowed if: the last timeline action was cast by a different character (justSwappedIn),
@@ -166,33 +220,16 @@ export function ActionSelect({ value, actions, character, currentEnergies, previ
     }
 
     // Goal 4: form check
-    // Check if action requires a specific form and if character is in that form
+    // Check if action requires a specific form and if character is in that form.
+    // Uses effectiveForm which already accounts for any intro skill form change that
+    // would occur when swapping in with the active character at full concerto.
     let isWrongForm = false
     if (character && action.castConditions.requiredForms !== undefined) {
       // If requiredForms is empty array, action can't be cast
       if (action.castConditions.requiredForms.length === 0) {
         isWrongForm = true
       } else {
-        // Resolve the character's current form:
-        // - Use previousSnapshot if available, falling back to the default form when the
-        //   stored form value is absent.
-        // - When previousSnapshot is null (first row), the character is always in their
-        //   default form, so use that directly instead of skipping the check.
-        let currentForm: string
-        if (previousSnapshot) {
-          const storedForm = previousSnapshot.charactersForms?.[character.name] ?? ''
-          if (!storedForm) {
-            const defaultForm = character.forms?.find(f => f.name === character.defaultForm) ?? character.forms?.[0]
-            currentForm = defaultForm?.name ?? ''
-          } else {
-            currentForm = storedForm
-          }
-        } else {
-          const defaultForm = character.forms?.find(f => f.name === character.defaultForm) ?? character.forms?.[0]
-          currentForm = defaultForm?.name ?? ''
-        }
-
-        isWrongForm = !action.castConditions.requiredForms.includes(currentForm)
+        isWrongForm = !action.castConditions.requiredForms.includes(effectiveForm)
       }
     }
 

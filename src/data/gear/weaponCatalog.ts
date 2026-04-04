@@ -134,6 +134,261 @@ export const weaponCatalog: WeaponCatalogEntry[] = [
     },
   },
 
+  {
+    name: 'Hiyuki Weapon Name',
+    weaponType: 'Sword',
+    stats: { baseATK: 587, critRate: 0.243 },
+    icon: 'assets/gear/weapons/unknown.png',
+    info: "Increase ATK by 12%. When applying Glacio Chafe, Glacio DMG is Amplified by 28% and Liberation DMG ignore 8% DEF for 6 seconds",
+    ranks: {
+      1: {
+        injectedModifiers: [
+          {
+            targets: ['character'],
+            modifiers: [
+              {
+                source: 'Hiyuki Weapon name',
+                displayName: 'Hiyuki Weapon name: Passive ATK',
+                type: 'buff',
+                ownerCharacter: null,
+                condition: always(),
+                characterStats: { bonusATK: 0.12 },
+                targetStrategy: 'self',
+                durationStrategy: { type: 'permanent' },
+                stackingStrategy: { maxStacks: 1, resetTimerOnApplication: false, stacksRemovedEachTime: 0 },
+              }
+            ],
+          },
+          {
+            targets: [{ tag: 'GLACIO_CHAFE_APPLIER' }, { tag: 'GLACIO_BITE_APPLIER' }],
+            modifiers: [
+              {
+                source: 'Hiyuki Weapon name',
+                displayName: 'Hiyuki Weapon name: Buff',
+                type: 'buff',
+                ownerCharacter: null,
+                condition: always(),
+                characterStats: { glacioAmplifyDMG: 0.28 },
+                targetStrategy: 'self',
+                durationStrategy: { type: 'limited', timeDuration: 6 },
+                stackingStrategy: { maxStacks: 1, resetTimerOnApplication: true, stacksRemovedEachTime: 1 },
+                contributionGroup: 'Hiyuki Weapon name: Buff'
+              },
+              {
+                source: 'Hiyuki Weapon name',
+                displayName: 'Hiyuki Weapon name: Buff',
+                type: 'buff',
+                ownerCharacter: null,
+                condition: (ctx) => ctx.action.dmgTypes.includes('LIBERATION') ? 1 : 0,
+                characterStats: { defIgnore: 0.08 },
+                targetStrategy: 'self',
+                durationStrategy: { type: 'limited', timeDuration: 6 },
+                stackingStrategy: { maxStacks: 1, resetTimerOnApplication: true, stacksRemovedEachTime: 1 },
+                contributionGroup: 'Hiyuki Weapon name: Buff'
+              },
+            ],
+          }
+        ],
+      },
+      2: {
+        injectedModifiers: [
+          {
+            targets: ['character'],
+            modifiers: [
+              {
+                source: 'Hiyuki Weapon name',
+                displayName: 'Hiyuki Weapon name: Passive ATK',
+                type: 'buff',
+                ownerCharacter: null,
+                condition: always(),
+                characterStats: { bonusATK: 0.15 },
+                targetStrategy: 'self',
+                durationStrategy: { type: 'permanent' },
+                stackingStrategy: { maxStacks: 1, resetTimerOnApplication: false, stacksRemovedEachTime: 0 },
+              }
+            ],
+          },
+          {
+            targets: [{ tag: 'GLACIO_CHAFE_APPLIER' }, { tag: 'GLACIO_BITE_APPLIER' }],
+            modifiers: [
+              {
+                source: 'Hiyuki Weapon name',
+                displayName: 'Hiyuki Weapon name: Buff',
+                type: 'buff',
+                ownerCharacter: null,
+                condition: always(),
+                characterStats: { glacioAmplifyDMG: 0.35 },
+                targetStrategy: 'self',
+                durationStrategy: { type: 'limited', timeDuration: 6 },
+                stackingStrategy: { maxStacks: 1, resetTimerOnApplication: true, stacksRemovedEachTime: 1 },
+                contributionGroup: 'Hiyuki Weapon name: Buff'
+              },
+              {
+                source: 'Hiyuki Weapon name',
+                displayName: 'Hiyuki Weapon name: Buff',
+                type: 'buff',
+                ownerCharacter: null,
+                condition: (ctx) => ctx.action.dmgTypes.includes('LIBERATION') ? 1 : 0,
+                characterStats: { defIgnore: 0.10 },
+                targetStrategy: 'self',
+                durationStrategy: { type: 'limited', timeDuration: 6 },
+                stackingStrategy: { maxStacks: 1, resetTimerOnApplication: true, stacksRemovedEachTime: 1 },
+                contributionGroup: 'Hiyuki Weapon name: Buff'
+              },
+            ],
+          }
+        ],
+      },
+      3: {
+        injectedModifiers: [
+          {
+            targets: ['character'],
+            modifiers: [
+              {
+                source: 'Hiyuki Weapon name',
+                displayName: 'Hiyuki Weapon name: Passive ATK',
+                type: 'buff',
+                ownerCharacter: null,
+                condition: always(),
+                characterStats: { bonusATK: 0.18 },
+                targetStrategy: 'self',
+                durationStrategy: { type: 'permanent' },
+                stackingStrategy: { maxStacks: 1, resetTimerOnApplication: false, stacksRemovedEachTime: 0 },
+              }
+            ],
+          },
+          {
+            targets: [{ tag: 'GLACIO_CHAFE_APPLIER' }, { tag: 'GLACIO_BITE_APPLIER' }],
+            modifiers: [
+              {
+                source: 'Hiyuki Weapon name',
+                displayName: 'Hiyuki Weapon name: Buff',
+                type: 'buff',
+                ownerCharacter: null,
+                condition: always(),
+                characterStats: { glacioAmplifyDMG: 0.42 },
+                targetStrategy: 'self',
+                durationStrategy: { type: 'limited', timeDuration: 6 },
+                stackingStrategy: { maxStacks: 1, resetTimerOnApplication: true, stacksRemovedEachTime: 1 },
+                contributionGroup: 'Hiyuki Weapon name: Buff'
+              },
+              {
+                source: 'Hiyuki Weapon name',
+                displayName: 'Hiyuki Weapon name: Buff',
+                type: 'buff',
+                ownerCharacter: null,
+                condition: (ctx) => ctx.action.dmgTypes.includes('LIBERATION') ? 1 : 0,
+                characterStats: { defIgnore: 0.12 },
+                targetStrategy: 'self',
+                durationStrategy: { type: 'limited', timeDuration: 6 },
+                stackingStrategy: { maxStacks: 1, resetTimerOnApplication: true, stacksRemovedEachTime: 1 },
+                contributionGroup: 'Hiyuki Weapon name: Buff'
+              },
+            ],
+          }
+        ],
+      },
+      4: {
+        injectedModifiers: [
+          {
+            targets: ['character'],
+            modifiers: [
+              {
+                source: 'Hiyuki Weapon name',
+                displayName: 'Hiyuki Weapon name: Passive ATK',
+                type: 'buff',
+                ownerCharacter: null,
+                condition: always(),
+                characterStats: { bonusATK: 0.21 },
+                targetStrategy: 'self',
+                durationStrategy: { type: 'permanent' },
+                stackingStrategy: { maxStacks: 1, resetTimerOnApplication: false, stacksRemovedEachTime: 0 },
+              }
+            ],
+          },
+          {
+            targets: [{ tag: 'GLACIO_CHAFE_APPLIER' }, { tag: 'GLACIO_BITE_APPLIER' }],
+            modifiers: [
+              {
+                source: 'Hiyuki Weapon name',
+                displayName: 'Hiyuki Weapon name: Buff',
+                type: 'buff',
+                ownerCharacter: null,
+                condition: always(),
+                characterStats: { glacioAmplifyDMG: 0.49 },
+                targetStrategy: 'self',
+                durationStrategy: { type: 'limited', timeDuration: 6 },
+                stackingStrategy: { maxStacks: 1, resetTimerOnApplication: true, stacksRemovedEachTime: 1 },
+                contributionGroup: 'Hiyuki Weapon name: Buff'
+              },
+              {
+                source: 'Hiyuki Weapon name',
+                displayName: 'Hiyuki Weapon name: Buff',
+                type: 'buff',
+                ownerCharacter: null,
+                condition: (ctx) => ctx.action.dmgTypes.includes('LIBERATION') ? 1 : 0,
+                characterStats: { defIgnore: 0.14 },
+                targetStrategy: 'self',
+                durationStrategy: { type: 'limited', timeDuration: 6 },
+                stackingStrategy: { maxStacks: 1, resetTimerOnApplication: true, stacksRemovedEachTime: 1 },
+                contributionGroup: 'Hiyuki Weapon name: Buff'
+              },
+            ],
+          }
+        ],
+      },
+      5: {
+        injectedModifiers: [
+          {
+            targets: ['character'],
+            modifiers: [
+              {
+                source: 'Hiyuki Weapon name',
+                displayName: 'Hiyuki Weapon name: Passive ATK',
+                type: 'buff',
+                ownerCharacter: null,
+                condition: always(),
+                characterStats: { bonusATK: 0.24 },
+                targetStrategy: 'self',
+                durationStrategy: { type: 'permanent' },
+                stackingStrategy: { maxStacks: 1, resetTimerOnApplication: false, stacksRemovedEachTime: 0 },
+              }
+            ],
+          },
+          {
+            targets: [{ tag: 'GLACIO_CHAFE_APPLIER' }, { tag: 'GLACIO_BITE_APPLIER' }],
+            modifiers: [
+              {
+                source: 'Hiyuki Weapon name',
+                displayName: 'Hiyuki Weapon name: Buff',
+                type: 'buff',
+                ownerCharacter: null,
+                condition: always(),
+                characterStats: { glacioAmplifyDMG: 0.56 },
+                targetStrategy: 'self',
+                durationStrategy: { type: 'limited', timeDuration: 6 },
+                stackingStrategy: { maxStacks: 1, resetTimerOnApplication: true, stacksRemovedEachTime: 1 },
+                contributionGroup: 'Hiyuki Weapon name: Buff'
+              },
+              {
+                source: 'Hiyuki Weapon name',
+                displayName: 'Hiyuki Weapon name: Buff',
+                type: 'buff',
+                ownerCharacter: null,
+                condition: (ctx) => ctx.action.dmgTypes.includes('LIBERATION') ? 1 : 0,
+                characterStats: { defIgnore: 0.16 },
+                targetStrategy: 'self',
+                durationStrategy: { type: 'limited', timeDuration: 6 },
+                stackingStrategy: { maxStacks: 1, resetTimerOnApplication: true, stacksRemovedEachTime: 1 },
+                contributionGroup: 'Hiyuki Weapon name: Buff'
+              },
+            ],
+          }
+        ],
+      },
+    },
+  },
+
   // ==========================================================================================================================
   // Pistol
   // ==========================================================================================================================

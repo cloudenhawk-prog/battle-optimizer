@@ -54,4 +54,62 @@ export const negativeStatuses: Record<string, NegativeStatus> = {
     damageModifiers: [],
     color: '#ffe066'
   },
+  glacioChafe: {
+    name: 'Glacio Chafe',
+    duration: 15,
+    maxStacksDefault: 10,
+    frequency: 3,
+    damage: {
+      1: 2450,
+      2: 4442,
+      3: 6434,
+      4: 8426,
+      5: 10417,
+      6: 12409,
+      7: 14401,
+      8: 16393,
+      9: 18385,
+      10: 20377,
+      11: 27169,
+      12: 33961,
+      13: 40753
+    },
+    element: 'GLACIO',
+    reductionStrategy: {
+      stackConsumption: 999,
+      triggerDmgOnReduction: false,
+      resetTimerOnApplication: true,
+    },
+    damageModifiers: [],
+    color: '#66ccff'
+  },
+  glacioBite: {
+    name: 'Glacio Bite',
+    duration: 15,
+    maxStacksDefault: 10,
+    frequency: 3,
+    damage: {
+      1: 2450,
+      2: 4442,
+      3: 6434,
+      4: 8426,
+      5: 10417,
+      6: 12409,
+      7: 14401,
+      8: 16393,
+      9: 18385,
+      10: 20377,
+      11: 27169,
+      12: 33961,
+      13: 40753
+    },
+    element: 'GLACIO',
+    reductionStrategy: {
+      stackConsumption: 999,
+      triggerDmgOnReduction: false,
+      resetTimerOnApplication: true,
+    },
+    damageModifiers: [],
+    color: '#66ccff'
+  }
 }

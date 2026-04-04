@@ -118,7 +118,7 @@ export type NegativeStatusEffect = {
 
 // ========== Type: Target Strategy ============================================================================================
 
-export type TargetStrategy = 'self' | 'active' | 'all' | 'nextSwap' | 'activeAlly'
+export type TargetStrategy = 'self' | 'active' | 'all' | 'nextSwap' | 'activeAlly' | 'allExceptSelf'
 
 // ========== Type: Duration Strategy ==========================================================================================
 

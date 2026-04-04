@@ -6,6 +6,102 @@
    Right:   Team-wide damage type composition + field effects
    ===================================================================================== */
 
+/* ╔══════════════════════════════════════════════════════════════════════════════════╗
+   ║  SIZE TOKENS — edit values here to rescale any part of the overlay              ║
+   ╚══════════════════════════════════════════════════════════════════════════════════╝ */
+:root {
+  /* ── Main title ──────────────────────────────────────────────── */
+  --sum-title-fs:            22px;  /* "ROTATION SUMMARY" heading                             */
+
+  /* ── Layout ─────────────────────────────────────────────────── */
+  --sum-side-col-width:     450px;  /* Width of both left and right panels                    */
+
+  /* ── Section panel headers (shared by all 7 labelled sections) ─
+       DPS Efficiency · Damage Share · Contribution ·
+       Resonator Breakdown · Field Time · Buff Coverage ·
+       Energy Generation                                           */
+  --sum-section-header-fs:   19px;
+  --sum-section-dot-size:     10px;
+
+  /* ── Header chips — right under the "ROTATION SUMMARY" title ── */
+  --sum-header-chip-fs:      14px;  /* "X Resonators" · "Xs Combat" · total · dps chips       */
+
+  /* ── Pie chart center ────────────────────────────────────────── */
+  --sum-pie-center-label-fs: 15px;  /* "TOTAL" label above the big number in the donut        */
+  --sum-pie-center-value-fs: 24px;  /* Grand total damage number in the donut hole             */
+  --sum-pie-center-pct-fs:   20px;
+
+  /* ── Pie subtitle lines ─────────────────────────────────────── */
+  --sum-pie-subtitle-fs:   15px;  /* "Damage done by each character" · "Damage attributed…" */
+
+  /* ── Pie legend rows ─────────────────────────────────────────── */
+  --sum-legend-dot-size:     11px;
+  --sum-legend-name-fs:      18px;
+  --sum-legend-value-fs:     18px;
+  --sum-legend-pct-fs:       17px;
+
+  /* ── Character card — header ─────────────────────────────────── */
+  --sum-char-portrait-size:  60px;
+  --sum-char-name-fs:        20px;  /* Character name                                          */
+  --sum-gear-tag-fs:         13px;  /* Weapon · sequence gear tags                             */
+  --sum-chip-fs:             13px;  /* Lib count · misc stat chips                             */
+  --sum-char-total-fs:       18px;  /* Damage total                                            */
+  --sum-char-share-fs:       17px;  /* "XX%" share label                                       */
+
+  /* ── Character card — damage type section ───────────────────── */
+  --sum-dmg-type-header-fs:  16px;  /* "Damage Type Distribution" label                       */
+  --sum-type-label-fs:       14px;
+  --sum-type-value-fs:       15px;
+  --sum-type-pct-fs:         14px;
+
+  /* ── Damage distribution / contribution origin chips ────────── */
+  --sum-origin-chip-fs:    13px;  /* "Self X%" and "Y% from <CharName>" chips               */
+
+  /* ── Action Breakdown (expanded card section) ───────────────── */
+  --sum-expand-btn-fs:       13px;  /* "Show / Hide action breakdown" button                  */
+  --sum-action-name-fs:      13px;
+  --sum-action-value-fs:     13px;
+  --sum-action-pct-fs:       13px;
+
+  /* ── DPS Efficiency rows (left panel) ───────────────────────── */
+  --sum-eff-dot-size:         8px;
+  --sum-eff-name-fs:         18px;
+  --sum-eff-label-fs:        15px;  /* "RAW" / "CONTRIB" labels                               */
+  --sum-eff-label-w:         120px;  /* Fixed width of the RAW/CONTRIB label column             */
+  --sum-eff-value-fs:        15px;  /* DpFS numbers                                            */
+
+  /* ── Field Time rows (left panel) ───────────────────────────── */
+  --sum-field-name-fs:       18px;  /* Per-character name entries                              */
+  --sum-field-total-fs:      18px;  /* "Total" row label — overrides the character entry size  */
+  --sum-field-pct-fs:        15px;
+  --sum-field-pct-w:         28px;  /* Width of the % column (e.g. "60%")                      */
+  --sum-field-val-fs:        15px;
+  --sum-field-val-w:         60px;  /* Width of the time-value column (e.g. "18.5s")           */
+  --sum-field-col-gap:       10px;  /* Horizontal gap between columns inside a subrow          */
+  --sum-field-subrow-label-fs: 13px; /* "TIME" / "DPS" micro-labels                            */
+  --sum-field-tag-w:         40px;  /* Width of the "TIME" / "DPS" left-side label column      */
+  --sum-field-dps-val-fs:    15px;  /* DPS value font size (e.g. "175.6k/s")                  */
+
+  /* ── Buff Coverage section (right panel) ────────────────────── */
+  --sum-buff-toggle-fs:      13px; /* "Coverage" / "Uptime" toggle buttons                   */
+  --sum-section-hint-fs:     14px;  /* Hint line: "% of total team damage dealt while…"       */
+  --sum-buff-icon-size:      33px;
+  --sum-buff-owner-dot-size: 10px;
+  --sum-buff-name-fs:        15px;
+  --sum-buff-pct-fs:         15px;
+
+  /* ── Buff Coverage tooltip (on hover) ───────────────────────── */
+  --sum-tooltip-icon-size:   35px;  /* Modifier icon in the tooltip header                    */
+  --sum-tooltip-label-fs:    17px;  /* Buff name in the tooltip header                        */
+  --sum-tooltip-row-fs:      15px;  /* Stat rows: "Source" · "Targets" · "Coverage" etc.      */
+
+  /* ── Energy Generation rows (right panel) ───────────────────── */
+  --sum-energy-dot-size:      7px;
+  --sum-energy-name-fs:      18px;
+  --sum-energy-stat-label-fs: 14px;
+  --sum-energy-stat-value-fs: 18px;
+}
+
 /* ── Outer backdrop ──────────────────────────────────────── */
 .summaryOverlay {
   position: fixed;
@@ -171,7 +267,7 @@
 
 .summaryTitle {
   margin: 0;
-  font-size: 16px;
+  font-size: var(--sum-title-fs);
   font-weight: 700;
   color: var(--table-text-dim);
   letter-spacing: 0.2em;
@@ -187,7 +283,7 @@
 }
 
 .summaryStatChip {
-  font-size: 11px;
+  font-size: var(--sum-header-chip-fs);
   font-family: 'Share Tech Mono', 'Courier New', monospace;
   letter-spacing: 0.08em;
   color: rgba(100, 220, 255, 0.65);
@@ -305,7 +401,7 @@
 
 /* ── Left panel ──────────────────────────────────────────── */
 .summaryLeftPanel {
-  width: 380px;
+  width: var(--sum-side-col-width);
   flex-shrink: 0;
   padding: 24px 22px 56px;
   display: flex;
@@ -326,7 +422,7 @@
 
 /* ── Right panel ─────────────────────────────────────────── */
 .summaryRightPanel {
-  width: 380px;
+  width: var(--sum-side-col-width);
   flex-shrink: 0;
   padding: 24px 22px 56px;
   display: flex;
@@ -335,13 +431,15 @@
   gap: 0;
 }
 
-/* ── Panel section header ────────────────────────────────── */
+/* ── Panel section header — controls ALL 7 section labels ──
+       (DPS Efficiency, Damage Share, Contribution, Resonator
+       Breakdown, Field Time, Buff Coverage, Energy Generation) */
 .summaryPanelHeader {
   display: flex;
   align-items: center;
   gap: 8px;
   font-family: 'Orbitron', 'Courier New', monospace;
-  font-size: 12px;
+  font-size: var(--sum-section-header-fs);
   font-weight: 600;
   letter-spacing: 0.22em;
   text-transform: uppercase;
@@ -353,8 +451,8 @@
 .summaryPanelHeader.amber  { color: rgba(255, 190,  60, 0.70); }
 
 .summaryPanelHeaderDot {
-  width: 5px;
-  height: 5px;
+  width: var(--sum-section-dot-size);
+  height: var(--sum-section-dot-size);
   border-radius: 50%;
   flex-shrink: 0;
 }
@@ -422,7 +520,7 @@
 
 .summaryPieCenterLabel {
   font-family: 'Share Tech Mono', monospace;
-  font-size: 11px;
+  font-size: var(--sum-pie-center-label-fs);
   letter-spacing: 0.14em;
   text-transform: uppercase;
   color: rgba(255, 255, 255, 0.3);
@@ -442,7 +540,7 @@
 
 .summaryPieCenterBig {
   font-family: 'Orbitron', monospace;
-  font-size: 22px;
+  font-size: var(--sum-pie-center-value-fs);
   font-weight: 700;
   color: rgba(255, 255, 255, 0.88);
   letter-spacing: 0.03em;
@@ -451,7 +549,7 @@
 
 .summaryPieCenterPct {
   font-family: 'Share Tech Mono', monospace;
-  font-size: 13px;
+  font-size: var(--sum-pie-center-pct-fs);
   color: rgba(255, 255, 255, 0.4);
   margin-top: 1px;
 }
@@ -483,8 +581,8 @@
 }
 
 .summaryPieLegendDot {
-  width: 10px;
-  height: 10px;
+  width: var(--sum-legend-dot-size);
+  height: var(--sum-legend-dot-size);
   border-radius: 50%;
   flex-shrink: 0;
 }
@@ -492,7 +590,7 @@
 .summaryPieLegendName {
   flex: 1;
   font-family: 'Rajdhani', sans-serif;
-  font-size: 15px;
+  font-size: var(--sum-legend-name-fs);
   font-weight: 500;
   color: rgba(255, 255, 255, 0.65);
   white-space: nowrap;
@@ -502,14 +600,14 @@
 
 .summaryPieLegendValue {
   font-family: 'Share Tech Mono', monospace;
-  font-size: 14px;
+  font-size: var(--sum-legend-value-fs);
   color: rgba(255, 255, 255, 0.5);
   flex-shrink: 0;
 }
 
 .summaryPieLegendPct {
   font-family: 'Share Tech Mono', monospace;
-  font-size: 15px;
+  font-size: var(--sum-legend-pct-fs);
   font-weight: 700;
   flex-shrink: 0;
   min-width: 46px;
@@ -569,7 +667,7 @@
 
 .summaryFieldTimeName {
   font-family: 'Rajdhani', sans-serif;
-  font-size: 15px;
+  font-size: var(--sum-field-name-fs);
   font-weight: 500;
   color: rgba(255, 255, 255, 0.55);
   width: 80px;
@@ -596,19 +694,19 @@
 
 .summaryFieldTimePct {
   font-family: 'Share Tech Mono', monospace;
-  font-size: 11px;
+  font-size: var(--sum-field-pct-fs);
   color: rgba(255, 255, 255, 0.28);
   flex-shrink: 0;
-  width: 28px;
-  text-align: right;
+  width: var(--sum-field-pct-w);
+  text-align: left;
 }
 
 .summaryFieldTimeVal {
   font-family: 'Share Tech Mono', monospace;
-  font-size: 13px;
+  font-size: var(--sum-field-val-fs);
   color: rgba(255, 255, 255, 0.4);
   flex-shrink: 0;
-  width: 50px;
+  width: var(--sum-field-val-w);
   text-align: right;
 }
 
@@ -619,12 +717,64 @@
 }
 
 .summaryFieldTimeRowTotal .summaryFieldTimeName {
-  color: rgba(255, 255, 255, 0.35);
-  font-size: 13px;
+  color: rgba(180, 120, 255, 0.55);
+  font-size: var(--sum-field-total-fs);
 }
 
 .summaryFieldTimeRowTotal .summaryFieldTimeVal {
   color: rgba(255, 255, 255, 0.35);
+}
+
+/* ── Per-character block (name + two sub-rows) ───────────── */
+.summaryFieldTimeBlock {
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+}
+
+.summaryFieldTimeBlockName {
+  font-family: 'Rajdhani', sans-serif;
+  font-size: var(--sum-field-name-fs);
+  font-weight: 600;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.summaryFieldTimeSubrows {
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+}
+
+.summaryFieldTimeSubrow {
+  display: flex;
+  align-items: center;
+  gap: var(--sum-field-col-gap);
+}
+
+.summaryFieldTimeSubrowLabel {
+  font-family: 'Share Tech Mono', monospace;
+  font-size: var(--sum-field-subrow-label-fs);
+  letter-spacing: 0.08em;
+  color: rgba(255, 255, 255, 0.22);
+  width: var(--sum-field-tag-w);
+  flex-shrink: 0;
+  text-align: left;
+}
+
+.summaryFieldTimeDpsFill {
+  opacity: 0.5;
+}
+
+/* spans pct-col + gap + val-col so the value sits left-aligned under the % */
+.summaryFieldTimeDpsVal {
+  font-family: 'Share Tech Mono', monospace;
+  font-size: var(--sum-field-dps-val-fs);
+  color: rgba(255, 255, 255, 0.35);
+  flex-shrink: 0;
+  width: calc(var(--sum-field-pct-w) + var(--sum-field-col-gap) + var(--sum-field-val-w));
+  text-align: right;
 }
 
 /* ═══════════════════════════════════════════════════════════
@@ -668,8 +818,8 @@
 }
 
 .summaryCharCardPortrait {
-  width: 46px;
-  height: 46px;
+  width: var(--sum-char-portrait-size);
+  height: var(--sum-char-portrait-size);
   border-radius: 50%;
   overflow: visible;
   position: relative;
@@ -717,7 +867,7 @@
 
 .summaryCharCardName {
   font-family: 'Orbitron', 'Rajdhani', sans-serif;
-  font-size: 16px;
+  font-size: var(--sum-char-name-fs);
   font-weight: 600;
   color: rgba(255, 255, 255, 0.9);
   letter-spacing: 0.05em;
@@ -738,7 +888,7 @@
 
 .summaryCharCardGearTag {
   font-family: 'Share Tech Mono', monospace;
-  font-size: 11px;
+  font-size: var(--sum-gear-tag-fs);
   letter-spacing: 0.05em;
   color: rgba(255, 255, 255, 0.5);
   background: rgba(255, 255, 255, 0.05);
@@ -764,7 +914,7 @@
 
 .summaryCharCardChip {
   font-family: 'Share Tech Mono', monospace;
-  font-size: 11px;
+  font-size: var(--sum-chip-fs);
   letter-spacing: 0.06em;
   color: rgba(255, 255, 255, 0.45);
   background: rgba(255, 255, 255, 0.04);
@@ -788,14 +938,14 @@
 
 .summaryCharCardTotal {
   font-family: 'Share Tech Mono', monospace;
-  font-size: 17px;
+  font-size: var(--sum-char-total-fs);
   font-weight: 700;
   color: rgba(255, 255, 255, 0.75);
 }
 
 .summaryCharCardShare {
   font-family: 'Orbitron', monospace;
-  font-size: 16px;
+  font-size: var(--sum-char-share-fs);
   font-weight: 700;
   letter-spacing: 0.04em;
   text-shadow: 0 0 10px var(--char-glow, rgba(100, 200, 255, 0.4));
@@ -819,7 +969,7 @@
 
 .summaryCharTypeDisclaimer {
   font-family: 'Share Tech Mono', monospace;
-  font-size: 11px;
+  font-size: var(--sum-dmg-type-header-fs);
   padding: 10px 0 6px 16px;
   letter-spacing: 0.06em;
   text-transform: uppercase;
@@ -836,7 +986,7 @@
 
 .summaryCharOriginChip {
   font-family: 'Share Tech Mono', monospace;
-  font-size: 10.5px;
+  font-size: var(--sum-origin-chip-fs);
   letter-spacing: 0.04em;
   background: rgba(255, 255, 255, 0.04);
   border: 1px solid rgba(255, 255, 255, 0.1);
@@ -866,7 +1016,7 @@
 
 .summaryCharTypeLabel {
   font-family: 'Share Tech Mono', monospace;
-  font-size: 13px;
+  font-size: var(--sum-type-label-fs);
   letter-spacing: 0.06em;
   color: rgba(255, 255, 255, 0.45);
   width: 84px;
@@ -892,7 +1042,7 @@
 
 .summaryCharTypeValue {
   font-family: 'Share Tech Mono', monospace;
-  font-size: 14px;
+  font-size: var(--sum-type-value-fs);
   color: rgba(255, 255, 255, 0.6);
   width: 56px;
   text-align: right;
@@ -901,7 +1051,7 @@
 
 .summaryCharTypePct {
   font-family: 'Share Tech Mono', monospace;
-  font-size: 13px;
+  font-size: var(--sum-type-pct-fs);
   color: rgba(255, 255, 255, 0.3);
   width: 40px;
   text-align: right;
@@ -1044,8 +1194,8 @@
 }
 
 .summaryEfficiencyDot {
-  width: 7px;
-  height: 7px;
+  width: var(--sum-eff-dot-size);
+  height: var(--sum-eff-dot-size);
   border-radius: 50%;
   flex-shrink: 0;
 }
@@ -1053,7 +1203,7 @@
 .summaryEfficiencyName {
   flex: 1;
   font-family: 'Rajdhani', sans-serif;
-  font-size: 15px;
+  font-size: var(--sum-eff-name-fs);
   font-weight: 600;
   color: rgba(255, 255, 255, 0.75);
   white-space: nowrap;
@@ -1077,11 +1227,11 @@
 
 .summaryEfficiencyRowLabel {
   font-family: 'Share Tech Mono', monospace;
-  font-size: 11px;
+  font-size: var(--sum-eff-label-fs);
   letter-spacing: 0.06em;
   text-transform: uppercase;
   color: rgba(255, 255, 255, 0.28);
-  width: 62px;
+  width: var(--sum-eff-label-w);
   flex-shrink: 0;
 }
 
@@ -1108,7 +1258,7 @@
 
 .summaryEfficiencyValue {
   font-family: 'Share Tech Mono', monospace;
-  font-size: 13px;
+  font-size: var(--sum-eff-value-fs);
   color: rgba(255, 255, 255, 0.5);
   flex-shrink: 0;
   width: 72px;
@@ -1158,8 +1308,8 @@
 
 /* Buff modifier icon box */
 .summaryBuffIconBox {
-  width: 26px;
-  height: 26px;
+  width: var(--sum-buff-icon-size);
+  height: var(--sum-buff-icon-size);
   border-radius: 5px;
   border: 1px solid rgba(255, 255, 255, 0.15);
   overflow: hidden;
@@ -1178,8 +1328,8 @@
 }
 
 .summaryBuffOwnerDot {
-  width: 8px;
-  height: 8px;
+  width: var(--sum-buff-owner-dot-size);
+  height: var(--sum-buff-owner-dot-size);
   border-radius: 50%;
   flex-shrink: 0;
 }
@@ -1187,7 +1337,7 @@
 .summaryBuffName {
   flex: 1;
   font-family: 'Share Tech Mono', monospace;
-  font-size: 13px;
+  font-size: var(--sum-buff-name-fs);
   letter-spacing: 0.03em;
   color: rgba(255, 255, 255, 0.65);
   white-space: nowrap;
@@ -1214,7 +1364,7 @@
 
 .summaryBuffPct {
   font-family: 'Share Tech Mono', monospace;
-  font-size: 13px;
+  font-size: var(--sum-buff-pct-fs);
   font-weight: 700;
   color: rgba(255, 255, 255, 0.5);
   flex-shrink: 0;
@@ -1301,8 +1451,8 @@
 }
 
 .summaryEnergyDot {
-  width: 8px;
-  height: 8px;
+  width: var(--sum-energy-dot-size);
+  height: var(--sum-energy-dot-size);
   border-radius: 50%;
   flex-shrink: 0;
 }
@@ -1326,7 +1476,7 @@
 
 .summaryEnergyStatLabel {
   font-family: 'Share Tech Mono', monospace;
-  font-size: 10px;
+  font-size: var(--sum-energy-stat-label-fs);
   letter-spacing: 0.1em;
   text-transform: uppercase;
   color: rgba(255, 255, 255, 0.25);
@@ -1343,7 +1493,7 @@
   width: 100%;
   padding: 6px 16px;
   font-family: 'Share Tech Mono', monospace;
-  font-size: 10px;
+  font-size: var(--sum-expand-btn-fs);
   letter-spacing: 0.08em;
   cursor: pointer;
   text-align: center;
@@ -1380,7 +1530,7 @@
 .summaryActionName {
   flex: 1;
   font-family: 'Share Tech Mono', monospace;
-  font-size: 11px;
+  font-size: var(--sum-action-name-fs);
   color: rgba(255, 255, 255, 0.45);
   min-width: 0;
   overflow: hidden;
@@ -1406,7 +1556,7 @@
 
 .summaryActionValue {
   font-family: 'Share Tech Mono', monospace;
-  font-size: 12px;
+  font-size: var(--sum-action-value-fs);
   color: rgba(255, 255, 255, 0.55);
   width: 52px;
   text-align: right;
@@ -1415,7 +1565,7 @@
 
 .summaryActionPct {
   font-family: 'Share Tech Mono', monospace;
-  font-size: 11px;
+  font-size: var(--sum-action-pct-fs);
   color: rgba(255, 255, 255, 0.3);
   width: 34px;
   text-align: right;
@@ -1498,7 +1648,7 @@
 
 .summaryBuffViewBtn {
   font-family: 'Share Tech Mono', monospace;
-  font-size: 9.5px;
+  font-size: var(--sum-buff-toggle-fs);
   letter-spacing: 0.06em;
   padding: 2px 8px;
   border-radius: 4px;
@@ -1523,7 +1673,7 @@
 /* Section header hint line */
 .summarySectionHint {
   font-family: 'Share Tech Mono', monospace;
-  font-size: 10px;
+  font-size: var(--sum-section-hint-fs);
   letter-spacing: 0.06em;
   color: rgba(255, 255, 255, 0.22);
   margin-top: -2px;
@@ -1574,15 +1724,15 @@
 }
 
 .summaryBuffRowTooltipIcon {
-  width: 22px;
-  height: 22px;
+  width: var(--sum-tooltip-icon-size);
+  height: var(--sum-tooltip-icon-size);
   object-fit: contain;
   flex-shrink: 0;
 }
 
 .summaryBuffRowTooltipLabel {
   font-family: 'Share Tech Mono', monospace;
-  font-size: 13px;
+  font-size: var(--sum-tooltip-label-fs);
   font-weight: 600;
   letter-spacing: 0.03em;
   line-height: 1.2;
@@ -1626,13 +1776,13 @@
 
 .summaryBuffRowTooltipStatKey {
   font-family: 'Share Tech Mono', monospace;
-  font-size: 11px;
+  font-size: var(--sum-tooltip-row-fs);
   color: rgba(255, 255, 255, 0.4);
 }
 
 .summaryBuffRowTooltipStatVal {
   font-family: 'Share Tech Mono', monospace;
-  font-size: 11px;
+  font-size: var(--sum-tooltip-row-fs);
   font-weight: 700;
 }
 
@@ -1655,7 +1805,7 @@
 
 .summaryEnergyStatValue {
   font-family: 'Orbitron', monospace;
-  font-size: 18px;
+  font-size: var(--sum-energy-stat-value-fs);
   font-weight: 700;
   color: rgba(255, 255, 255, 0.82);
   letter-spacing: 0.03em;
@@ -1665,7 +1815,7 @@
 .summaryEnergyName {
   flex: 1;
   font-family: 'Rajdhani', sans-serif;
-  font-size: 15px;
+  font-size: var(--sum-energy-name-fs);
   font-weight: 600;
   color: rgba(255, 255, 255, 0.75);
   white-space: nowrap;
@@ -1785,6 +1935,16 @@
    CENTER PANEL — DUAL PIE LAYOUT
    ═══════════════════════════════════════════════════════════ */
 
+/* Toggle row above the pies — reuses summaryBuffViewBtn styles */
+.summaryPiesToggleRow {
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  gap: 4px;
+  padding-bottom: 4px;
+  flex-shrink: 0;
+}
+
 /* Row holding both pies side by side */
 .summaryPiesRow {
   display: flex;
@@ -1824,7 +1984,7 @@
 /* Optional subtitle below the pie header */
 .summaryPieSubtitle {
   font-family: 'Share Tech Mono', monospace;
-  font-size: 10.5px;
+  font-size: var(--sum-pie-subtitle-fs);
   letter-spacing: 0.06em;
   color: rgba(255, 255, 255, 0.25);
   margin-top: -10px;

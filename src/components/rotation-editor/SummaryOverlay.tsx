@@ -367,36 +367,6 @@ function computeContributionData(
     .sort((a, b) => b.attributedDamage - a.attributedDamage)
 }
 
-// ========== Efficiency Data =================================================================================================
-
-type EfficiencyEntry = {
-  name: string
-  element: ElementType
-  fieldTime: number
-  rawDpFS: number     // (direct + CA + passive) / fieldTime
-  contribDpFS: number // attributedDamage / fieldTime
-}
-
-function computeEfficiencyData(
-  characterSummaries: CharacterSummary[],
-  contributionEntries: ContributionEntry[],
-): EfficiencyEntry[] {
-  const contribMap = new Map(contributionEntries.map(c => [c.name, c.attributedDamage]))
-  return characterSummaries
-    .filter(c => c.fieldTime > 0)
-    .map(char => {
-      const allDamage = char.directDamage + char.caDamage + char.passiveDamage
-      const attributed = contribMap.get(char.name) ?? 0
-      return {
-        name: char.name,
-        element: char.element,
-        fieldTime: char.fieldTime,
-        rawDpFS: allDamage / char.fieldTime,
-        contribDpFS: attributed / char.fieldTime,
-      }
-    })
-}
-
 // ========== Buff Uptime Data ================================================================================================
 
 type BuffUptimeEntry = {
@@ -704,103 +674,75 @@ function PanelHeader({ label, accent = 'cyan' }: { label: string; accent?: 'cyan
 
 type LeftPanelProps = {
   characterSummaries: CharacterSummary[]
-  contributionEntries: ContributionEntry[]
   charColorMap: Map<string, CharColor>
 }
 
-function LeftPanel({ characterSummaries, contributionEntries, charColorMap }: LeftPanelProps) {
-  const efficiencyData = computeEfficiencyData(characterSummaries, contributionEntries)
-  const maxRawDpFS = Math.max(...efficiencyData.map(e => e.rawDpFS), 1)
-  const maxContribDpFS = Math.max(...efficiencyData.map(e => e.contribDpFS), 1)
+function LeftPanel({ characterSummaries, charColorMap }: LeftPanelProps) {
+  const activeChars = characterSummaries.filter(c => c.fieldTime > 0)
+  const totalFieldTime = activeChars.reduce((s, c) => s + c.fieldTime, 0)
+  const maxOnFieldDps = Math.max(
+    ...activeChars.map(c => (c.directDamage + c.caDamage) / c.fieldTime),
+    1,
+  )
 
   return (
     <div className="summaryLeftPanel">
 
-      {/* ── Section 1: DPS Efficiency ── */}
+      {/* ── Field Time & on-field DPS ── */}
       <div className="summarySectionGroup">
-        <PanelHeader label="DPS EFFICIENCY" accent="cyan" />
-        <div className="summaryEfficiencyRows">
-          {efficiencyData.map(entry => {
-            const theme = charColorMap.get(entry.name) ?? getElementColor(entry.element)
+        <PanelHeader label="FIELD TIME" accent="purple" />
+        <div className="summaryFieldTimeRows">
+          {activeChars.map(c => {
+            const pct = totalFieldTime > 0 ? (c.fieldTime / totalFieldTime) * 100 : 0
+            const onFieldDps = (c.directDamage + c.caDamage) / c.fieldTime
+            const dpsPct = (onFieldDps / maxOnFieldDps) * 100
+            const theme = charColorMap.get(c.name) ?? getElementColor(c.element)
             return (
-              <div key={entry.name} className="summaryEfficiencyBlock">
-                <div className="summaryEfficiencyBlockHeader">
-                  <div
-                    className="summaryEfficiencyDot"
-                    style={{ background: theme.primary, boxShadow: `0 0 5px ${theme.glow}` }}
-                  />
-                  <span className="summaryEfficiencyName">{entry.name}</span>
-                </div>
-                <div className="summaryEfficiencyRow">
-                  <span className="summaryEfficiencyRowLabel">Raw DPS</span>
-                  <div className="summaryEfficiencyBar">
-                    <div
-                      className="summaryEfficiencyBarFill"
-                      style={{
-                        width: `${(entry.rawDpFS / maxRawDpFS) * 100}%`,
-                        background: theme.primary,
-                        boxShadow: `0 0 6px ${theme.glow}`,
-                      }}
-                    />
+              <div key={c.name} className="summaryFieldTimeBlock">
+                <span
+                  className="summaryFieldTimeBlockName"
+                  style={{ color: theme.primary, textShadow: `0 0 10px ${theme.glow}` }}
+                >
+                  {c.name}
+                </span>
+                <div className="summaryFieldTimeSubrows">
+                  {/* Field time row */}
+                  <div className="summaryFieldTimeSubrow">
+                    <span className="summaryFieldTimeSubrowLabel">TIME</span>
+                    <div className="summaryFieldTimeBar">
+                      <div
+                        className="summaryFieldTimeBarFill"
+                        style={{ width: `${pct}%`, background: theme.primary, boxShadow: `0 0 6px ${theme.glow}` }}
+                      />
+                    </div>
+                    <span className="summaryFieldTimePct">{pct.toFixed(0)}%</span>
+                    <span className="summaryFieldTimeVal">{formatTime(c.fieldTime)}</span>
                   </div>
-                  <span className="summaryEfficiencyValue">{formatDamage(entry.rawDpFS)}/s</span>
-                </div>
-                <div className="summaryEfficiencyRow">
-                  <span className="summaryEfficiencyRowLabel">Contrib DPS</span>
-                  <div className="summaryEfficiencyBar">
-                    <div
-                      className="summaryEfficiencyBarFill contrib"
-                      style={{ width: `${(entry.contribDpFS / maxContribDpFS) * 100}%` }}
-                    />
+                  {/* On-field DPS row */}
+                  <div className="summaryFieldTimeSubrow">
+                    <span className="summaryFieldTimeSubrowLabel">DPS</span>
+                    <div className="summaryFieldTimeBar">
+                      <div
+                        className="summaryFieldTimeBarFill summaryFieldTimeDpsFill"
+                        style={{ width: `${dpsPct}%`, background: theme.primary, boxShadow: `0 0 4px ${theme.glow}` }}
+                      />
+                    </div>
+                    <span className="summaryFieldTimeDpsVal">{formatDamage(onFieldDps)}/s</span>
                   </div>
-                  <span className="summaryEfficiencyValue">{formatDamage(entry.contribDpFS)}/s</span>
                 </div>
               </div>
             )
           })}
-        </div>
-      </div>
-
-      <div className="summaryFlexSpacer" />
-
-      {/* ── Section 2: Field Time ── */}
-      <div className="summarySectionGroup">
-        <PanelHeader label="FIELD TIME" accent="purple" />
-        <div className="summaryFieldTimeRows">
-          {(() => {
-            const totalFieldTime = characterSummaries.reduce((s, c) => s + c.fieldTime, 0)
-            return (
-              <>
-                {characterSummaries.filter(c => c.fieldTime > 0).map(c => {
-                  const pct = totalFieldTime > 0 ? (c.fieldTime / totalFieldTime) * 100 : 0
-                  const theme = charColorMap.get(c.name) ?? getElementColor(c.element)
-                  return (
-                    <div key={c.name} className="summaryFieldTimeRow">
-                      <span className="summaryFieldTimeName">{c.name}</span>
-                      <div className="summaryFieldTimeBar">
-                        <div
-                          className="summaryFieldTimeBarFill"
-                          style={{ width: `${pct}%`, background: theme.primary, boxShadow: `0 0 6px ${theme.glow}` }}
-                        />
-                      </div>
-                      <span className="summaryFieldTimePct">{pct.toFixed(0)}%</span>
-                      <span className="summaryFieldTimeVal">{formatTime(c.fieldTime)}</span>
-                    </div>
-                  )
-                })}
-                {totalFieldTime > 0 && (
-                  <div className="summaryFieldTimeRow summaryFieldTimeRowTotal">
-                    <span className="summaryFieldTimeName">Total</span>
-                    <div className="summaryFieldTimeBar">
-                      <div className="summaryFieldTimeBarFill" style={{ width: '100%', background: 'rgba(255,255,255,0.15)' }} />
-                    </div>
-                    <span className="summaryFieldTimePct" aria-hidden="true" />
-                    <span className="summaryFieldTimeVal">{formatTime(totalFieldTime)}</span>
-                  </div>
-                )}
-              </>
-            )
-          })()}
+          {totalFieldTime > 0 && (
+            <div className="summaryFieldTimeRow summaryFieldTimeRowTotal">
+              <span className="summaryFieldTimeName">Total</span>
+              <div className="summaryFieldTimeBar">
+                <div className="summaryFieldTimeBarFill" style={{ width: '100%', background: 'rgba(255,255,255,0.15)' }} />
+              </div>
+              <span className="summaryFieldTimePct" aria-hidden="true" />
+              <span className="summaryFieldTimeVal">{formatTime(totalFieldTime)}</span>
+            </div>
+          )}
         </div>
       </div>
 
@@ -1028,6 +970,7 @@ type CenterPanelProps = {
   globalDamage: GlobalDamageEntry[]
   totalPassiveDamage: number
   grandTotal: number
+  totalDuration: number
   contributionEntries: ContributionEntry[]
   contributionOrigin: ContributionOriginEntry[]
   actionBreakdowns: Map<string, ActionBreakdownEntry[]>
@@ -1035,7 +978,11 @@ type CenterPanelProps = {
   charColorMap: Map<string, CharColor>
 }
 
-function CenterPanel({ characterSummaries, globalDamage, totalPassiveDamage, grandTotal, contributionEntries, contributionOrigin, actionBreakdowns, passiveDamageEvents, charColorMap }: CenterPanelProps) {
+function CenterPanel({ characterSummaries, globalDamage, totalPassiveDamage, grandTotal, totalDuration, contributionEntries, contributionOrigin, actionBreakdowns, passiveDamageEvents, charColorMap }: CenterPanelProps) {
+  const [pieMode, setPieMode] = useState<'damage' | 'dps'>('damage')
+  const isDps = pieMode === 'dps' && totalDuration > 0
+  const dpsScale = isDps ? 1 / totalDuration : 1
+
   const originByChar = new Map(contributionOrigin.map(e => [e.charName, e]))
   // Pie 1: damage share — per character (direct+CA) + pooled field effects
   const pie1Items: PieItem[] = [
@@ -1043,10 +990,10 @@ function CenterPanel({ characterSummaries, globalDamage, totalPassiveDamage, gra
       .filter(c => c.totalCharacterDamage > 0)
       .map(c => {
         const cc = charColorMap.get(c.name) ?? getElementColor(c.element)
-        return { name: c.name, value: c.totalCharacterDamage, color: cc.primary, glow: cc.glow }
+        return { name: c.name, value: c.totalCharacterDamage * dpsScale, color: cc.primary, glow: cc.glow }
       }),
     ...(totalPassiveDamage > 0
-      ? [{ name: 'Other Sources', value: totalPassiveDamage, color: 'hsl(220 15% 60%)', glow: 'hsl(220 15% 60% / 0.3)' }]
+      ? [{ name: 'Other Sources', value: totalPassiveDamage * dpsScale, color: 'hsl(220 15% 60%)', glow: 'hsl(220 15% 60% / 0.3)' }]
       : []),
   ].filter(item => item.value > 0)
 
@@ -1078,33 +1025,48 @@ function CenterPanel({ characterSummaries, globalDamage, totalPassiveDamage, gra
   const pie2Items: PieItem[] = [
     ...pie2CharEntries.map(c => {
       const cc = charColorMap.get(c.name) ?? getElementColor(c.element)
-      return { name: c.name, value: c.attributedDamage, color: cc.primary, glow: cc.glow }
+      return { name: c.name, value: c.attributedDamage * dpsScale, color: cc.primary, glow: cc.glow }
     }),
     ...(pie2NsTotal > 0
-      ? [{ name: 'Other Sources', value: pie2NsTotal, color: 'hsl(220 15% 60%)', glow: 'hsl(220 15% 60% / 0.3)' }]
+      ? [{ name: 'Other Sources', value: pie2NsTotal * dpsScale, color: 'hsl(220 15% 60%)', glow: 'hsl(220 15% 60% / 0.3)' }]
       : []),
   ]
 
+  const pieCenterLabel = isDps ? 'Team DPS' : 'Total'
+  const pie1Total = isDps ? grandTotal / totalDuration : grandTotal
+  const pie2TotalScaled = isDps ? pie2Total / totalDuration : pie2Total
+
   return (
     <div className="summaryCenterPanel">
+      {/* Pie mode toggle */}
+      <div className="summaryPiesToggleRow">
+        <button
+          className={`summaryBuffViewBtn${pieMode === 'damage' ? ' active' : ''}`}
+          onClick={() => setPieMode('damage')}
+        >Damage</button>
+        <button
+          className={`summaryBuffViewBtn${pieMode === 'dps' ? ' active' : ''}`}
+          onClick={() => setPieMode('dps')}
+        >DPS</button>
+      </div>
       {/* Dual pie row */}
       <div className="summaryPiesRow">
         <PieSection
           title="DAMAGE SHARE"
           accent="cyan"
           items={pie1Items}
-          total={grandTotal}
-          centerLabel="Total"
-          subtitle="Damage done by each character"
+          total={pie1Total}
+          centerLabel={pieCenterLabel}
+          subtitle={isDps ? 'Rotation DPS by character' : 'Damage done by each character'}
         />
         <div className="summaryPiesDivider" />
         <PieSection
           title="CONTRIBUTION"
           accent="purple"
           items={pie2Items}
-          total={pie2Total}
-          centerLabel="Total"
-          subtitle="Damage attributed to each resonator (buffs credited to buffer)"
+          total={pie2TotalScaled}
+          centerLabel={pieCenterLabel}
+          subtitle={isDps ? 'Attributed DPS per resonator (buffs credited to buffer)' : 'Damage attributed to each resonator (buffs credited to buffer)'}
         />
       </div>
 
@@ -1646,7 +1608,6 @@ export default function SummaryOverlay({ open, onClose, snapshots, damageEvents,
           <div className="summaryColumns">
             <LeftPanel
               characterSummaries={characterSummaries}
-              contributionEntries={contributionEntries}
               charColorMap={charColorMap}
             />
             <div className="summaryColDivider" />
@@ -1655,6 +1616,7 @@ export default function SummaryOverlay({ open, onClose, snapshots, damageEvents,
               globalDamage={globalDamage}
               totalPassiveDamage={totalPassiveDamage}
               grandTotal={grandTotal}
+              totalDuration={totalDuration}
               contributionEntries={contributionEntries}
               contributionOrigin={contributionOrigin}
               actionBreakdowns={actionBreakdowns}

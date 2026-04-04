@@ -28,6 +28,8 @@ export type ActionTag =
                           // will inject modifiers that are activated whenever a tagged action is cast or a tagged CA ticks.
   | 'AERO_EROSION_APPLIER'     // Action applies Aero Erosion stacks
   | 'SPECTRO_FRAZZLE_APPLIER'  // Action applies Spectro Frazzle stacks
+  | 'GLACIO_CHAFE_APPLIER'     // Action applies Glacio Chafe stacks
+  | 'GLACIO_BITE_APPLIER'      // Action applies Glacio Bite stacks
 
 // ========== Type: Action =====================================================================================================
 
