@@ -675,9 +675,10 @@ function PanelHeader({ label, accent = 'cyan' }: { label: string; accent?: 'cyan
 type LeftPanelProps = {
   characterSummaries: CharacterSummary[]
   charColorMap: Map<string, CharColor>
+  energyFlow: EnergyFlowEntry[]
 }
 
-function LeftPanel({ characterSummaries, charColorMap }: LeftPanelProps) {
+function LeftPanel({ characterSummaries, charColorMap, energyFlow }: LeftPanelProps) {
   const activeChars = characterSummaries.filter(c => c.fieldTime > 0)
   const totalFieldTime = activeChars.reduce((s, c) => s + c.fieldTime, 0)
   const maxOnFieldDps = Math.max(
@@ -689,7 +690,7 @@ function LeftPanel({ characterSummaries, charColorMap }: LeftPanelProps) {
     <div className="summaryLeftPanel">
 
       {/* ── Field Time & on-field DPS ── */}
-      <div className="summarySectionGroup">
+      <div className="summaryLeftHalf">
         <PanelHeader label="FIELD TIME" accent="purple" />
         <div className="summaryFieldTimeRows">
           {activeChars.map(c => {
@@ -744,6 +745,47 @@ function LeftPanel({ characterSummaries, charColorMap }: LeftPanelProps) {
             </div>
           )}
         </div>
+      </div>
+
+      <div className="summaryLeftHalfDivider" />
+
+      {/* ── Energy Generation ── */}
+      <div className="summaryLeftHalf">
+        <PanelHeader label="ENERGY GENERATION" accent="amber" />
+        {energyFlow.length === 0 ? (
+          <div className="summaryRightEmpty">No energy data available</div>
+        ) : (
+          <div className="summaryEnergyRows">
+            {energyFlow.map(entry => {
+              const theme = charColorMap.get(entry.name) ?? getElementColor(entry.element)
+              return (
+                <div key={entry.name} className="summaryEnergyBlock">
+                  <div className="summaryEnergyBlockHeader">
+                    <div
+                      className="summaryEnergyDot"
+                      style={{ background: theme.primary, boxShadow: `0 0 5px ${theme.glow}` }}
+                    />
+                    <span className="summaryEnergyName">{entry.name}</span>
+                  </div>
+                  <div className="summaryEnergyStatRow">
+                    <div className="summaryEnergyStat">
+                      <span className="summaryEnergyStatLabel" style={{ color: theme.primary, textShadow: `0 0 10px ${theme.glow}` }}>Energy Generated</span>
+                      <span className="summaryEnergyStatValue">
+                        {Math.round(entry.energyGenerated)}
+                      </span>
+                    </div>
+                    <div className="summaryEnergyStat">
+                      <span className="summaryEnergyStatLabel" style={{ color: theme.primary, textShadow: `0 0 10px ${theme.glow}` }}>per second on field</span>
+                      <span className="summaryEnergyStatValue">
+                        {entry.energyGenPerSecond.toFixed(1)}/s
+                      </span>
+                    </div>
+                  </div>
+                </div>
+              )
+            })}
+          </div>
+        )}
       </div>
 
     </div>
@@ -1337,7 +1379,7 @@ function NegativeStatusesCard({ globalDamage, grandTotal, passiveDamageEvents }:
 
 // ========== Right Panel — buff uptime + contribution origin + energy overview =============================================
 
-function RightPanel({ buffUptime, energyFlow, modifierInfoMap, charColorMap }: { buffUptime: BuffUptimeEntry[]; energyFlow: EnergyFlowEntry[]; modifierInfoMap: Map<string, ModifierDisplayInfo>; charColorMap: Map<string, CharColor> }) {
+function RightPanel({ buffUptime, modifierInfoMap, charColorMap }: { buffUptime: BuffUptimeEntry[]; modifierInfoMap: Map<string, ModifierDisplayInfo>; charColorMap: Map<string, CharColor> }) {
   const [buffView, setBuffView] = useState<'coverage' | 'uptime'>('coverage')
   const [activeTooltip, setActiveTooltip] = useState<{ entry: BuffUptimeEntry; rect: DOMRect } | null>(null)
 
@@ -1493,47 +1535,6 @@ function RightPanel({ buffUptime, energyFlow, modifierInfoMap, charColorMap }: {
         )}
       </div>
 
-      <div className="summaryFlexSpacer" />
-
-      {/* ── Section 2: Energy Generation ── */}
-      <div className="summarySectionGroup">
-        <PanelHeader label="ENERGY GENERATION" accent="amber" />
-        {energyFlow.length === 0 ? (
-          <div className="summaryRightEmpty">No energy data available</div>
-        ) : (
-          <div className="summaryEnergyRows">
-            {energyFlow.map(entry => {
-              const theme = charColorMap.get(entry.name) ?? getElementColor(entry.element)
-              return (
-                <div key={entry.name} className="summaryEnergyBlock">
-                  <div className="summaryEnergyBlockHeader">
-                    <div
-                      className="summaryEnergyDot"
-                      style={{ background: theme.primary, boxShadow: `0 0 5px ${theme.glow}` }}
-                    />
-                    <span className="summaryEnergyName">{entry.name}</span>
-                  </div>
-                  <div className="summaryEnergyStatRow">
-                    <div className="summaryEnergyStat">
-                      <span className="summaryEnergyStatLabel">Energy Generated</span>
-                      <span className="summaryEnergyStatValue" style={{ color: theme.primary, textShadow: `0 0 12px ${theme.glow}` }}>
-                        {Math.round(entry.energyGenerated)}
-                      </span>
-                    </div>
-                    <div className="summaryEnergyStat">
-                      <span className="summaryEnergyStatLabel">per second on field</span>
-                      <span className="summaryEnergyStatValue">
-                        {entry.energyGenPerSecond.toFixed(1)}/s
-                      </span>
-                    </div>
-                  </div>
-                </div>
-              )
-            })}
-          </div>
-        )}
-      </div>
-
       {tooltipPortal}
     </div>
   )
@@ -1609,6 +1610,7 @@ export default function SummaryOverlay({ open, onClose, snapshots, damageEvents,
             <LeftPanel
               characterSummaries={characterSummaries}
               charColorMap={charColorMap}
+              energyFlow={energyFlow}
             />
             <div className="summaryColDivider" />
             <CenterPanel
@@ -1626,7 +1628,6 @@ export default function SummaryOverlay({ open, onClose, snapshots, damageEvents,
             <div className="summaryColDivider" />
             <RightPanel
               buffUptime={buffUptime}
-              energyFlow={energyFlow}
               modifierInfoMap={modifierInfoMap}
               charColorMap={charColorMap}
             />

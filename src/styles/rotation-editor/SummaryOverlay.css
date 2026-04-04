@@ -403,11 +403,33 @@
 .summaryLeftPanel {
   width: var(--sum-side-col-width);
   flex-shrink: 0;
-  padding: 24px 22px 56px;
+  padding: 0 22px;
   display: flex;
   flex-direction: column;
-  justify-content: space-between;
+  overflow: hidden;
   gap: 0;
+}
+
+/* Each half takes ~50% of the panel height, content anchored to the top */
+.summaryLeftHalf {
+  flex: 1;
+  min-height: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  padding: 22px 0 16px;
+  overflow-y: auto;
+  scrollbar-width: thin;
+  scrollbar-color: rgba(100, 160, 255, 0.2) transparent;
+}
+.summaryLeftHalf::-webkit-scrollbar { width: 4px; }
+.summaryLeftHalf::-webkit-scrollbar-thumb { background: rgba(100, 160, 255, 0.2); border-radius: 2px; }
+
+.summaryLeftHalfDivider {
+  flex-shrink: 0;
+  height: 1px;
+  background: rgba(255, 255, 255, 0.06);
+  margin: 0 -22px;
 }
 
 /* ── Center panel ────────────────────────────────────────── */
@@ -427,7 +449,7 @@
   padding: 24px 22px 56px;
   display: flex;
   flex-direction: column;
-  justify-content: space-between;
+  justify-content: flex-start;
   gap: 0;
 }
 
