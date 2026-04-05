@@ -334,7 +334,7 @@ function runImportSteps(params: ImportRunParams): FullImportRunResult {
   // Fresh state for this import run — isolated from the living refs
   const localNegativeStatuses: React.MutableRefObject<NegativeStatusInAction[]> = {
     current: initialNegativeStatuses
-      ? [...initialNegativeStatuses]
+      ? initialNegativeStatuses.map(s => ({ ...s }))
       : Object.values(negativeStatusesData).map(status => ({
           negativeStatus: status,
           applicationTime: -1,
@@ -344,7 +344,7 @@ function runImportSteps(params: ImportRunParams): FullImportRunResult {
         })),
   }
   const localModifiers: React.MutableRefObject<ModifierInAction[]> = { current: initialModifiers ? [...initialModifiers] : [] }
-  const localCAs: React.MutableRefObject<CoordinatedAttackInAction[]> = { current: initialCoordinatedAttacks ? [...initialCoordinatedAttacks] : [] }
+  const localCAs: React.MutableRefObject<CoordinatedAttackInAction[]> = { current: initialCoordinatedAttacks ? initialCoordinatedAttacks.map(ca => ({ ...ca })) : [] }
 
   const baseParams: Omit<AutocastParams, 'snapshots' | 'resolvedSnapshotId'> = {
     charactersMap,

@@ -4,6 +4,7 @@ import type { DamageModifier, InherentModifier } from './modifiers'
 import type { SideEffect, StatusModification, CooldownReduction } from './sideEffect'
 import type { CoordinatedAttack } from './coordinatedAttack'
 import type { Snapshot } from './snapshot'
+import type { CharacterStats } from './stats'
 
 // ========== Type: ActionTag ===================================================================================================
 
@@ -39,7 +40,7 @@ export type ActionTag =
 export type ResolveVariantOwner = {
   name: string
   sequence: 0 | 1 | 2 | 3 | 4 | 5 | 6
-  stats: Record<string, number>
+  stats: Partial<CharacterStats>
 }
 
 // ========== Type: Action =====================================================================================================
