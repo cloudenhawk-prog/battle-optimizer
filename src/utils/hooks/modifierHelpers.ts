@@ -164,6 +164,14 @@ export function updateModifiersForSwap(modifiersInAction: ModifierInAction[], sw
 
   for (const mia of modifiersInAction) {
     const stacking = mia.modifier.stackingStrategy
+
+    // For 'nextSwap' modifiers that haven't claimed a target yet, this swap IS the claim.
+    // Assign the target without decrementing swapsLeft — the counter starts after the target is set.
+    if (mia.modifier.targetStrategy === 'nextSwap' && mia.targetCharacter === null) {
+      result.push({ ...mia, targetCharacter: swappedToCharacter })
+      continue
+    }
+
     const newSwapsLeft = mia.swapsLeft === Infinity ? Infinity : mia.swapsLeft - 1
 
     // Check if swaps expired

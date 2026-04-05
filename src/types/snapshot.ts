@@ -23,6 +23,8 @@ export interface Snapshot {
    * when present, so the stat breakdown reflects what was locked in at application time.
    */
   buffsActivationStats: Record<string, Partial<CharacterStats>>
+  /** Runtime target character for 'nextSwap' buffs. Keyed by space-stripped displayName. */
+  buffsTargetCharacter: Record<string, string | null>
   debuffs: Record<string, number>
   debuffsTimeLeft: Record<string, number>
   debuffsSwapsLeft: Record<string, number>

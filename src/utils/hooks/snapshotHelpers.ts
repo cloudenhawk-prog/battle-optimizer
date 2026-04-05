@@ -80,6 +80,7 @@ export function createSnapshot(previousSnapshot: Snapshot, charactersMap: Record
 
   // Carry forward frozen activation stats for modifiers that need them in the stat breakdown
   const buffsActivationStats = { ...(previousSnapshot.buffsActivationStats ?? {}) }
+  const buffsTargetCharacter = { ...(previousSnapshot.buffsTargetCharacter ?? {}) }
 
   const prevChar = previousSnapshot.character ?? ''
   const isPrevCharLocked = fillInCharacter && prevChar !== '' && isSwapRequiredLocked(previousSnapshot, prevChar)
@@ -99,6 +100,7 @@ export function createSnapshot(previousSnapshot: Snapshot, charactersMap: Record
     buffsSwapsLeft: Object.fromEntries(globalColumns.buffs.map(col => [col, 0])),
     buffsMaxStacks,
     buffsActivationStats,
+    buffsTargetCharacter,
     debuffs,
     debuffsTimeLeft: Object.fromEntries(globalColumns.debuffs.map(col => [col, 0])),
     debuffsSwapsLeft: Object.fromEntries(globalColumns.debuffs.map(col => [col, 0])),

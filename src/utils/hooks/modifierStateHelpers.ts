@@ -31,6 +31,7 @@ export function updateModifierStacks(snapshot: Snapshot, modifiersInAction: Modi
   const buffsSwapsLeft: Record<string, number> = {}
   const buffsMaxStacks: Record<string, number> = {}
   const buffsActivationStats: Record<string, Partial<CharacterStats>> = {}
+  const buffsTargetCharacter: Record<string, string | null> = {}
 
   const debuffs: Record<string, number> = {}
   const debuffsTimeLeft: Record<string, number> = {}
@@ -54,6 +55,7 @@ export function updateModifierStacks(snapshot: Snapshot, modifiersInAction: Modi
       buffsMaxStacks[key] = maxStacks
       if (mia.activationStats) buffsActivationStats[key] = mia.activationStats
       else if (mia.modifier.characterStats) buffsActivationStats[key] = mia.modifier.characterStats
+      if (mia.modifier.targetStrategy === 'nextSwap') buffsTargetCharacter[key] = mia.targetCharacter
     } else if (type === 'debuff') {
       debuffs[key] = stacks
       debuffsTimeLeft[key] = timeLeft
@@ -94,6 +96,7 @@ export function updateModifierStacks(snapshot: Snapshot, modifiersInAction: Modi
   snapshot.buffsSwapsLeft = buffsSwapsLeft
   snapshot.buffsMaxStacks = buffsMaxStacks
   snapshot.buffsActivationStats = buffsActivationStats
+  snapshot.buffsTargetCharacter = buffsTargetCharacter
 
   snapshot.debuffs = debuffs
   snapshot.debuffsTimeLeft = debuffsTimeLeft

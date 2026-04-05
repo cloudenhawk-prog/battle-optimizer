@@ -124,6 +124,8 @@ function createInitialSnapshot(): Snapshot {
     buffsTimeLeft: {},
     buffsSwapsLeft: {},
     buffsMaxStacks: {},
+    buffsActivationStats: {},
+    buffsTargetCharacter: {},
     debuffs: {},
     debuffsTimeLeft: {},
     debuffsSwapsLeft: {},

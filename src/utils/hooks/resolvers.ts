@@ -258,7 +258,7 @@ export function resolveDamage(ctx: StepContext, setDamageEvents: Dispatch<SetSta
   setDamageEvents(prevEvents => [...prevEvents, damageEvent])
 
   const cumulativeDamage = prev.damage + average
-  const dps = cumulativeDamage / toTime
+  const dps = toTime > 0 ? cumulativeDamage / toTime : 0
 
   current.damage = cumulativeDamage
   current.dps = dps

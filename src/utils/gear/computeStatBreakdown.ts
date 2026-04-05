@@ -161,10 +161,22 @@ export function computeActiveModifierBreakdown(
 
     const scaled = scaleStats(statsSource, entry.stacks)
 
-    if (mod.ownerCharacter === character.name) {
+    if (mod.targetStrategy === 'nextSwap') {
+      // Only show on the specific character the buff has been assigned to.
+      // ownerCharacter is the caster and must never receive it.
+      const targetChar = snapshot.buffsTargetCharacter?.[entry.displayName] ?? null
+      if (targetChar !== character.name) continue
+      teamItems.push({ name: entry.displayName, stats: scaled })
+      teamTotal = mergePartialStats(teamTotal, scaled)
+    } else if (mod.targetStrategy === 'activeAlly' || mod.targetStrategy === 'allExceptSelf') {
+      // Owner is explicitly excluded from these buffs — never add to owner's self total.
+      if (mod.ownerCharacter === character.name) continue
+      teamItems.push({ name: entry.displayName, stats: scaled })
+      teamTotal = mergePartialStats(teamTotal, scaled)
+    } else if (mod.ownerCharacter === character.name) {
       selfItems.push({ name: entry.displayName, stats: scaled })
       selfTotal = mergePartialStats(selfTotal, scaled)
-    } else if (mod.targetStrategy !== 'self' && mod.targetStrategy !== 'nextSwap') { // not sure if nextSwap here is correct. nextSwap will apply to the next character and will need to be active; I don't remember how we treat these in our resolver engine
+    } else if (mod.targetStrategy !== 'self') {
       teamItems.push({ name: entry.displayName, stats: scaled })
       teamTotal = mergePartialStats(teamTotal, scaled)
     }

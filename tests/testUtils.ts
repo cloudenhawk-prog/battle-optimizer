@@ -32,6 +32,8 @@ export function createMockSnapshot(overrides: Partial<Snapshot> = {}): Snapshot 
     buffsTimeLeft: {},
     buffsSwapsLeft: {},
     buffsMaxStacks: {},
+    buffsActivationStats: {},
+    buffsTargetCharacter: {},
     debuffs: {},
     debuffsTimeLeft: {},
     debuffsSwapsLeft: {},

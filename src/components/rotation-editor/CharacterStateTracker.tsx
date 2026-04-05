@@ -144,14 +144,16 @@ export function CharacterStateTracker({
             <div key={group.label} className={`stateTrackerCard${isActive ? ' stateTrackerCard--active' : ''}`}>
 
               {/* Profile Button */}
-              <button
-                type="button"
-                className="stateTrackerGearBtn"
-                onClick={() => setProfileOpen(group.label)}
-                title="Character Profile"
-              >
-                <img src="/assets/ui/gear.png" alt="Profile" />
-              </button>
+              {visibleColumns.length > 0 && (
+                <button
+                  type="button"
+                  className="stateTrackerGearBtn"
+                  onClick={() => handleGroupClick(group.columns)}
+                  title="Character Profile"
+                >
+                  <img src="/assets/ui/close.png" alt="Profile" />
+                </button>
+              )}
 
               {/* Header */}
               <div className="stateTrackerHeader">
@@ -161,7 +163,7 @@ export function CharacterStateTracker({
                       src={group.nametag}
                       alt={group.label}
                       className="stateTrackerNametagImg"
-                      onClick={() => handleGroupClick(group.columns)}
+                      onClick={() => setProfileOpen(group.label)}
                     />
                     <span className="stateTrackerNametagLabel">{group.label}</span>
                   </div>

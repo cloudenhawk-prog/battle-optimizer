@@ -9,8 +9,10 @@ import type { ModifierInAction } from '../../types/modifiers'
 import { calculateDamage } from '../calculators/damageCalculator'
 import { makeCoordinatedAttackKey } from '../coordinatedAttackKey'
 import { updateEnergyValue } from './energyHelpers'
-import { activateModifiers } from './modifierHelpers'
+import { activateModifiers, applyStackMultiplier } from './modifierHelpers'
+import { aggregateStat } from './resolvers'
 import { getNegativeStatusStacks, updateNegativeStatusStacks } from './negativeStatusHelpers'
+import type { EnemyStats } from '../../types/stats'
 
 // ========== Coordinated Attack Helpers =======================================================================================
 
@@ -221,13 +223,48 @@ export function processCoordinatedAttacks(ctx: StepContext, setDamageEvents: Dis
         ctx.modifiersInAction = activateModifiers(ca.damageModifiers, ctx.modifiersInAction, ctx)
       }
 
+      // Filter ctx.damageModifiers to only those applicable to the off-field owner character.
+      // 'nextSwap' and 'self' buffs targeting the on-field character must not apply to
+      // an off-field coordinated attacker.
+      const coordDamageModifiers = ctx.damageModifiers.filter(mod => {
+        switch (mod.targetStrategy) {
+          case 'self': return mod.ownerCharacter === caia.ownerCharacter
+          case 'nextSwap': return false
+          case 'active': return false  // 'active' means the on-field character; CA owner is off-field
+          case 'activeAlly': return mod.ownerCharacter !== caia.ownerCharacter
+          case 'allExceptSelf': return mod.ownerCharacter !== caia.ownerCharacter
+          default: return true // 'all'
+        }
+      })
+
+      // Recompute aggregated stats from the filtered modifier list so that on-field-only
+      // stat contributions (e.g. Static Mist nextSwap ATK) are excluded.
+      const coordCharMods: Partial<CharacterStats> = {}
+      const coordEnemyMods: Partial<EnemyStats> = {}
+      for (const modifier of coordDamageModifiers) {
+        const stackedModifier = modifier.durationStrategy?.type === 'limited' ? applyStackMultiplier(modifier, ctx.modifiersInAction) : modifier
+        const condMult = stackedModifier.condition ? stackedModifier.condition(ctx) : 1
+        if (stackedModifier.characterStats) {
+          for (const [k, v] of Object.entries(stackedModifier.characterStats)) {
+            const key = k as keyof CharacterStats
+            coordCharMods[key] = aggregateStat(coordCharMods[key] as number | undefined, (v as number) * condMult, key) as any
+          }
+        }
+        if (stackedModifier.enemyStats) {
+          for (const [k, v] of Object.entries(stackedModifier.enemyStats)) {
+            const key = k as keyof EnemyStats
+            coordEnemyMods[key] = aggregateStat(coordEnemyMods[key] as number | undefined, (v as number) * condMult, key) as any
+          }
+        }
+      }
+
       const { average, damageEvent } = calculateDamage({
         action: fakeAction,
         name: `${caia.ownerCharacter}: ${ca.displayName ?? ca.name}`,
         stats: ownerChar.stats,
-        damageModifiers: ctx.damageModifiers,
-        modifierCharacterStats: ctx.aggregatedCharacterModifiers,
-        modifierEnemyStats: ctx.aggregatedEnemyModifiers,
+        damageModifiers: coordDamageModifiers,
+        modifierCharacterStats: coordCharMods,
+        modifierEnemyStats: coordEnemyMods,
         enemy: ctx.enemy,
         snapshotId: ctx.snapshotId,
         timeStamp: lastDamageTime,

@@ -1186,6 +1186,7 @@ export const all_actions = [
   mornye_liberation,
   ...mornye_intro_outro_actions,
   mornye_wait_005,
+  mornye_wait_1,
   mornye_wait_for_swap,
   mornye_energy,
   mornye_concerto,

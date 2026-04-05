@@ -10,6 +10,7 @@ import { EchoPickerModal } from './EchoPickerModal'
 import { WeaponPickerModal } from './WeaponPickerModal'
 import { calculateScalingStat } from '../../utils/calculators/damageCalculator'
 import { computeGearStatBreakdown, computeActiveModifierBreakdown, computeFinalStats } from '../../utils/gear/computeStatBreakdown'
+import type { ActiveModifierBreakdown, NamedStatContribution } from '../../utils/gear/computeStatBreakdown'
 import '../../styles/rotation-editor/CharacterStateTracker.css'
 import '../../styles/rotation-editor/DataOverlay.css'
 import '../../styles/rotation-editor/CharacterProfileOverlay.css'
@@ -1091,6 +1092,116 @@ function EchoInfo({ echo, slot, elColor }: { echo: Echo; slot: number; elColor: 
   )
 }
 
+// ========== Sub-component: Active Buffs Panel ===============================================================================
+
+function ActiveBuffsPanel({ activeBreakdown, baseStat, elColor, onClose }: { activeBreakdown: ActiveModifierBreakdown; baseStat: CharacterStats; elColor: string; onClose: () => void }) {
+  const selfItems = activeBreakdown.selfBuffs.items
+  const teamItems = activeBreakdown.teamBuffs.items
+
+  function renderBuffEntry(item: NamedStatContribution, category: 'Self' | 'Team') {
+    const iconPath = `/assets/modifiers/${item.name.toLowerCase().replace(/:/g, '').replace(/\s+/g, '_')}.png`
+    const stats = formatGearStats(item.stats)
+    return (
+      <div key={item.name} style={{ display: 'flex', flexDirection: 'column', gap: 6, background: `hsl(${elColor} / 0.05)`, border: `1px solid hsl(${elColor} / 0.14)`, borderRadius: 8, padding: '10px 12px' }}>
+        <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
+          <img
+            src={iconPath}
+            alt=""
+            style={{ width: 32, height: 32, objectFit: 'contain', flexShrink: 0 }}
+            onError={e => {
+              ;(e.target as HTMLImageElement).style.display = 'none'
+            }}
+          />
+          <div style={{ display: 'flex', flexDirection: 'column', gap: 2 }}>
+            <span style={{ fontFamily: FONT_BODY, fontSize: '0.88rem', fontWeight: 700, color: `hsl(${elColor})` }}>{item.name}</span>
+            <span style={{ fontFamily: FONT_MONO, fontSize: '0.62rem', color: MUTED, textTransform: 'uppercase', letterSpacing: '0.08em' }}>{category} Buff</span>
+          </div>
+        </div>
+        {stats.length > 0 && (
+          <div style={{ display: 'flex', flexDirection: 'column', gap: 3, paddingTop: 4, borderTop: `1px solid hsl(${elColor} / 0.1)` }}>
+            {stats.map(({ label, value }) => (
+              <div key={label} style={{ display: 'flex', justifyContent: 'space-between', gap: 8, fontSize: '0.8rem' }}>
+                <span style={{ color: 'rgba(150, 165, 195, 0.8)' }}>{label}</span>
+                <span style={{ color: `hsl(${elColor} / 0.9)`, fontWeight: 600, fontVariantNumeric: 'tabular-nums' }}>{value}</span>
+              </div>
+            ))}
+          </div>
+        )}
+      </div>
+    )
+  }
+
+  return (
+    <div className="charStatBreakdown">
+      <div className="charStatBreakdownHeader">
+        <span className="charStatBreakdownTitle">Active Buffs</span>
+        <button className="cpo-close-btn" onClick={onClose} aria-label="Close active buffs panel">
+          ✕
+        </button>
+      </div>
+      <div className="charStatBreakdownBody">
+        {/* Self Buffs */}
+        <div>
+          <SectionHeader label="Self Buffs" elColor={elColor} />
+          {selfItems.length === 0 ? (
+            <div style={{ color: MUTED, fontSize: '0.78rem', fontFamily: FONT_MONO, padding: '4px 0' }}>None</div>
+          ) : (
+            <div style={{ display: 'flex', flexDirection: 'column', gap: 8 }}>{selfItems.map(item => renderBuffEntry(item, 'Self'))}</div>
+          )}
+        </div>
+
+        {/* Team Buffs */}
+        <div>
+          <SectionHeader label="Team Buffs" elColor={elColor} />
+          {teamItems.length === 0 ? (
+            <div style={{ color: MUTED, fontSize: '0.78rem', fontFamily: FONT_MONO, padding: '4px 0' }}>None</div>
+          ) : (
+            <div style={{ display: 'flex', flexDirection: 'column', gap: 8 }}>{teamItems.map(item => renderBuffEntry(item, 'Team'))}</div>
+          )}
+        </div>
+
+        {/* Divider */}
+        <div style={{ height: 1, background: `linear-gradient(90deg, transparent, hsl(${elColor} / 0.2), transparent)`, flexShrink: 0 }} />
+
+        {/* Base Stats */}
+        <div>
+          <SectionHeader label="Base Stats" elColor={elColor} />
+          <div style={{ display: 'flex', flexDirection: 'column' }}>
+            {STAT_DISPLAY.map(stat => {
+              let value: number
+              if (SCALING_STAT_KEYS.has(stat.key)) {
+                value = calculateScalingStat(baseStat, stat.key as 'ATK' | 'HP' | 'DEF')
+              } else {
+                value = (baseStat[stat.key as keyof CharacterStats] as number) ?? 0
+              }
+              return (
+                <div key={stat.key} style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '5px 0', borderBottom: '1px solid rgba(50, 70, 100, 0.2)', gap: 4 }}>
+                  <div style={{ display: 'flex', alignItems: 'center', gap: 6 }}>
+                    {stat.iconPath && (
+                      <img
+                        src={stat.iconPath}
+                        alt=""
+                        style={{ width: 18, height: 18, objectFit: 'contain', flexShrink: 0, filter: stat.elementClass ? undefined : 'brightness(0) invert(1) brightness(0.77)' }}
+                        onError={e => {
+                          ;(e.target as HTMLImageElement).style.display = 'none'
+                        }}
+                      />
+                    )}
+                    <span style={{ fontFamily: FONT_BODY, fontSize: '0.84rem', color: 'rgba(150, 165, 195, 0.85)' }}>{stat.label}</span>
+                  </div>
+                  <span style={{ fontFamily: 'system-ui, -apple-system, "Segoe UI", sans-serif', fontSize: '0.88rem', fontWeight: 650, color: `hsl(${elColor} / 0.9)`, fontVariantNumeric: 'tabular-nums' }}>{formatStatValue(stat.key, value, stat.format)}</span>
+                </div>
+              )
+            })}
+          </div>
+        </div>
+      </div>
+    </div>
+  )
+}
+
+// ========== Sub-component: OrbitalScanPanel =================================================================================
+
 function OrbitalScanPanel({ item, elColor }: { item: OrbitalScanItem | null; elColor: string }) {
   return (
     <div>
@@ -1162,6 +1273,7 @@ export function CharacterProfileOverlay({ characterName, character, snapshot, al
   // prevLocalSequence is initialised to -1 so the full arc animates on first open for any sequence level
   const [prevLocalSequence, setPrevLocalSequence] = useState<0 | 1 | 2 | 3 | 4 | 5 | 6>(-1 as 0 | 1 | 2 | 3 | 4 | 5 | 6) // initially -1 casted to satisfy TS
   const [orbitalItem, setOrbitalItem] = useState<OrbitalScanItem | null>(null)
+  const [activeBuffsPanelOpen, setActiveBuffsPanelOpen] = useState(false)
 
   function handleSequenceChange(seq: 0 | 1 | 2 | 3 | 4 | 5 | 6) {
     setPrevLocalSequence(localSequence)
@@ -1312,6 +1424,38 @@ export function CharacterProfileOverlay({ characterName, character, snapshot, al
                   </button>
                 </motion.div>
               ))}
+
+              {/* Active Buffs Button */}
+              <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: 0.6 }} style={{ marginTop: 14, flexShrink: 0 }}>
+                <button
+                  type="button"
+                  onClick={() => setActiveBuffsPanelOpen(true)}
+                  style={{
+                    width: '100%',
+                    padding: '8px 0',
+                    background: `hsl(${elTheme.primary} / 0.07)`,
+                    border: `1px solid hsl(${elTheme.primary} / 0.25)`,
+                    borderRadius: 6,
+                    cursor: 'pointer',
+                    color: `hsl(${elTheme.primary} / 0.85)`,
+                    fontFamily: FONT_DISPLAY,
+                    fontSize: '0.62rem',
+                    fontWeight: 700,
+                    letterSpacing: '0.12em',
+                    textTransform: 'uppercase',
+                    transition: 'background 0.15s, border-color 0.15s',
+                  }}
+                  onMouseEnter={e => {
+                    ;(e.currentTarget as HTMLButtonElement).style.background = `hsl(${elTheme.primary} / 0.14)`
+                    ;(e.currentTarget as HTMLButtonElement).style.borderColor = `hsl(${elTheme.primary} / 0.45)`
+                  }}
+                  onMouseLeave={e => {
+                    ;(e.currentTarget as HTMLButtonElement).style.background = `hsl(${elTheme.primary} / 0.07)`
+                    ;(e.currentTarget as HTMLButtonElement).style.borderColor = `hsl(${elTheme.primary} / 0.25)`
+                  }}>
+                  Active Buffs
+                </button>
+              </motion.div>
             </div>
 
             {/* ── CENTER COL: Equipment Orbit + Resonance Chain ── */}
@@ -1391,6 +1535,13 @@ export function CharacterProfileOverlay({ characterName, character, snapshot, al
             {selectedStatDisplay !== null && (
               <div className="cpo-breakdown-overlay">
                 <BreakdownModal statDisplay={selectedStatDisplay} finalStats={finalStats} gearBreakdown={gearBreakdown} activeBreakdown={activeBreakdown} baseStat={baseStat} onClose={() => setSelectedStat(null)} />
+              </div>
+            )}
+
+            {/* Active buffs panel — covers entire body */}
+            {activeBuffsPanelOpen && (
+              <div className="cpo-breakdown-overlay">
+                <ActiveBuffsPanel activeBreakdown={activeBreakdown} baseStat={baseStat} elColor={elTheme.primary} onClose={() => setActiveBuffsPanelOpen(false)} />
               </div>
             )}
           </div>

@@ -81,6 +81,7 @@ export function createEmptySnapshot(charactersMap: Record<string, Character>, ch
     buffsSwapsLeft: Object.fromEntries(globalColumns.buffs.map(col => [col, 0])),
     buffsMaxStacks,
     buffsActivationStats: {},
+    buffsTargetCharacter: {},
     debuffs,
     debuffsTimeLeft: Object.fromEntries(globalColumns.debuffs.map(col => [col, 0])),
     debuffsSwapsLeft: Object.fromEntries(globalColumns.debuffs.map(col => [col, 0])),
