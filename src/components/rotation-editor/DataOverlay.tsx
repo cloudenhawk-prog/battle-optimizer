@@ -1,7 +1,8 @@
 import { useState, useMemo, useRef } from 'react'
 import { createPortal } from 'react-dom'
-import type { CSSProperties, ReactNode, ReactElement } from 'react'
 import '../../styles/rotation-editor/DataOverlay.css'
+import { StatusDetailPanel } from './StatusDetailPanel'
+import type { StatusDetailInfo } from './StatusDetailPanel'
 import type { Snapshot } from '../../types/snapshot'
 import type { DamageEvent } from '../../types/events'
 import type { ResolvedCharacter } from '../../types/character'
@@ -30,8 +31,8 @@ function buildModifierMap(characters: ResolvedCharacter[]): Map<string, Modifier
   const map = new Map<string, ModifierInfo>()
 
   const register = (mod: { source: string; displayName: string; description?: string; type?: 'buff' | 'debuff'; characterStats?: Partial<CharacterStats>; enemyStats?: Partial<EnemyStats> }) => {
-    if (!map.has(mod.source)) {
-      map.set(mod.source, {
+    if (!map.has(mod.displayName)) {
+      map.set(mod.displayName, {
         displayName: mod.displayName,
         description: mod.description,
         type: mod.type,
@@ -591,12 +592,10 @@ function ContributionsSection({ damageEvents, mode, characters, snapshot }: { da
           })}
         </div>
       )}
-      {tooltipState !== null && createPortal(
-        <ContribDetailTooltip
-          source={contributionsList[tooltipState.index].source}
-          displayName={contributionsList[tooltipState.index].displayName}
-          modifierMap={modifierMap}
-          snapshot={snapshot}
+      {tooltipState !== null && (
+        <StatusDetailPanel
+          variant="tooltip"
+          status={buildContribStatusInfo(contributionsList[tooltipState.index], modifierMap, snapshot)}
           style={{
             position: 'fixed',
             right: `${window.innerWidth - tooltipState.rect.left + 12}px`,
@@ -604,133 +603,46 @@ function ContributionsSection({ damageEvents, mode, characters, snapshot }: { da
             transform: 'translateY(-50%)',
             left: 'auto',
             bottom: 'auto',
+            zIndex: 300,
           }}
-        />,
-        document.body,
+        />
       )}
     </div>
   )
 }
 
-// ========== ContribDetailTooltip ==============================================================================================
+// ========== Contrib Status Info Builder ======================================================================================
 
-const FLAT_CONTRIB_STAT_KEYS = new Set(['level', 'flatATK', 'flatHP', 'flatDEF'])
-
-const TYPE_CONTRIB_ACCENTS: Record<string, string> = {
-  buff: 'rgba(255, 190, 60, 0.95)',
-  debuff: 'rgba(255, 130, 100, 0.95)',
-}
-
-function deriveModifierIcon(displayName: string): string {
-  return `/assets/modifiers/${displayName.toLowerCase().replace(/:/g, '').replace(/\s+/g, '_')}.png`
-}
-
-function formatContribStatKey(key: string): string {
-  return key
-    .replace(/([a-z])([A-Z])/g, '$1 $2')
-    .replace(/([A-Z]+)([A-Z][a-z])/g, '$1 $2')
-    .replace(/^./, s => s.toUpperCase())
-    .trim()
-}
-
-function formatContribStatValue(key: string, value: number): string {
-  if (FLAT_CONTRIB_STAT_KEYS.has(key)) {
-    return value < 0 ? `${value.toFixed(0)}` : `+${value.toFixed(0)}`
-  }
-  const pct = (value * 100).toFixed(1)
-  return value < 0 ? `${pct}%` : `+${pct}%`
-}
-
-function colorizeContribText(text: string, accent: string): ReactNode {
-  const pattern = /(\d+(?:[.,]\d+)*|[%/])/g
-  const parts: (string | ReactElement)[] = []
-  let lastIndex = 0
-  let match: RegExpExecArray | null
-  while ((match = pattern.exec(text)) !== null) {
-    if (match.index > lastIndex) parts.push(text.slice(lastIndex, match.index))
-    parts.push(
-      <span key={match.index} style={{ color: accent, fontWeight: 600 }}>
-        {match[0]}
-      </span>,
-    )
-    lastIndex = pattern.lastIndex
-  }
-  if (lastIndex < text.length) parts.push(text.slice(lastIndex))
-  return <>{parts}</>
-}
-
-function ContribDetailTooltip({ source, displayName, modifierMap, snapshot, style }: { source: string; displayName?: string; modifierMap: Map<string, ModifierInfo>; snapshot?: Snapshot | null; style?: CSSProperties }) {
-  const info = modifierMap.get(source)
-  const name = info?.displayName ?? displayName ?? source
-  const icon = deriveModifierIcon(name)
-  const accent = TYPE_CONTRIB_ACCENTS[info?.type ?? ''] ?? 'rgba(180, 120, 255, 0.95)'
-
-  // For statsOnActivation modifiers the blueprint has placeholder zeros; prefer the frozen
-  // activation-time stats stored in the snapshot (same logic as computeActiveModifierBreakdown).
+function buildContribStatusInfo(
+  contrib: { source: string; displayName?: string },
+  modifierMap: Map<string, ModifierInfo>,
+  snapshot: Snapshot | null,
+): StatusDetailInfo {
+  const lookupKey = contrib.displayName ?? contrib.source
+  const info = modifierMap.get(lookupKey)
+  const name = contrib.displayName ?? contrib.source
+  const icon = `/assets/modifiers/${name.toLowerCase().replace(/:/g, '').replace(/\s+/g, '_')}.png`
   const activationStats = snapshot?.buffsActivationStats?.[name.replace(/\s+/g, '')]
   const charStatsSource =
     activationStats && Object.values(activationStats).some(v => v !== 0)
       ? activationStats
       : info?.characterStats
-  const charStatsEntries = charStatsSource
-    ? (Object.entries(charStatsSource) as [string, number][]).filter(([, v]) => v !== 0)
-    : []
-  const enemyStatsEntries = info?.enemyStats
-    ? (Object.entries(info.enemyStats) as [string, number][]).filter(([, v]) => v !== 0)
-    : []
-
-  const hasStats = charStatsEntries.length > 0 || enemyStatsEntries.length > 0
-
-  return (
-    <div className="dataPillarTooltip dataPillarTooltipRich" style={{ ...style, '--contrib-accent': accent } as CSSProperties}>
-      <div className="contribTooltipHeader">
-        <img
-          src={icon}
-          alt={name}
-          className="contribTooltipIcon"
-          onError={e => { ;(e.target as HTMLImageElement).style.opacity = '0' }}
-        />
-        <span className="contribTooltipName">{name}</span>
-      </div>
-
-      {info?.description && (
-        <>
-          <div className="dataPillarTooltipDivider" />
-          <div className="contribTooltipSection">
-            <span className="contribTooltipSectionLabel">Description</span>
-            <p className="contribTooltipDesc">{colorizeContribText(info.description, accent)}</p>
-          </div>
-        </>
-      )}
-
-      {hasStats && (
-        <>
-          <div className="dataPillarTooltipDivider" />
-          <div className="contribTooltipSection">
-            <span className="contribTooltipSectionLabel">Active Stats</span>
-            <div className="contribTooltipStats">
-              {charStatsEntries.map(([key, value]) => (
-                <div key={key} className="contribTooltipStat">
-                  <span className="dataPillarTooltipLabel">{formatContribStatKey(key)}</span>
-                  <span className={`dataPillarTooltipValue contribTooltipStatValue${value < 0 ? ' negative' : ''}`}>
-                    {formatContribStatValue(key, value)}
-                  </span>
-                </div>
-              ))}
-              {enemyStatsEntries.map(([key, value]) => (
-                <div key={key} className="contribTooltipStat">
-                  <span className="dataPillarTooltipLabel">{formatContribStatKey(key)}</span>
-                  <span className={`dataPillarTooltipValue contribTooltipStatValue${value < 0 ? ' negative' : ''}`}>
-                    {formatContribStatValue(key, value)}
-                  </span>
-                </div>
-              ))}
-            </div>
-          </div>
-        </>
-      )}
-    </div>
-  )
+  const accent =
+    info?.type === 'buff' ? 'rgba(255, 190, 60, 0.95)' :
+    info?.type === 'debuff' ? 'rgba(255, 130, 100, 0.95)' :
+    undefined
+  return {
+    key: contrib.source,
+    label: name,
+    icon,
+    showStatus: false,
+    type: info?.type,
+    color: accent,
+    description: info?.description,
+    showStats: true,
+    stats: charStatsSource,
+    enemyStats: info?.enemyStats,
+  }
 }
 
 function DataRow({ label, value, barPct, barExcessPct, color = 'cyan', customColor }: { label: React.ReactNode; value: string; barPct?: number; barExcessPct?: number; color?: 'cyan' | 'amber' | 'purple'; customColor?: string }) {

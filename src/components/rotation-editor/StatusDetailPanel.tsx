@@ -1,7 +1,7 @@
 import { createPortal } from 'react-dom'
 import type { CSSProperties, ReactNode, ReactElement } from 'react'
 import '../../styles/rotation-editor/StatusDetailPanel.css'
-import type { CharacterStats } from '../../types/stats'
+import type { CharacterStats, EnemyStats } from '../../types/stats'
 
 // ========== Types ============================================================================================================
 
@@ -9,19 +9,23 @@ export type StatusDetailInfo = {
   key: string
   label: string
   icon: string
-  value: number
+  value?: number
   maxStacks?: number
   type?: 'buff' | 'debuff' | 'negativeStatus'
   color?: string
   timeLeft?: number
   description?: string
+  showStatus?: boolean
   showStats?: boolean
   stats?: Partial<CharacterStats>
+  enemyStats?: Partial<EnemyStats>
 }
 
 type StatusDetailPanelProps = {
   status: StatusDetailInfo | null
-  onClose: () => void
+  onClose?: () => void
+  variant?: 'modal' | 'tooltip'
+  style?: CSSProperties
 }
 
 // ========== Constants ========================================================================================================
@@ -54,8 +58,9 @@ function formatStatKey(key: string): string {
 }
 
 function formatStatValue(key: string, value: number): string {
-  if (FLAT_STAT_KEYS.has(key)) return `+${value.toFixed(0)}`
-  return `+${(value * 100).toFixed(1)}%`
+  if (FLAT_STAT_KEYS.has(key)) return value < 0 ? `${value.toFixed(0)}` : `+${value.toFixed(0)}`
+  const pct = (value * 100).toFixed(1)
+  return value < 0 ? `${pct}%` : `+${pct}%`
 }
 
 /**
@@ -81,44 +86,52 @@ function colorizeText(text: string, accentColor: string): ReactNode {
 
 // ========== Component: Status Detail Panel ===================================================================================
 
-export function StatusDetailPanel({ status, onClose }: StatusDetailPanelProps) {
+export function StatusDetailPanel({ status, onClose, variant = 'modal', style }: StatusDetailPanelProps) {
   if (!status) return null
 
   const typeLabel = TYPE_LABELS[status.type ?? ''] ?? 'Effect'
   const accent = status.color ?? TYPE_ACCENT_DEFAULTS[status.type ?? ''] ?? '#88AACC'
-  const isActive = status.value === 1 && (!status.maxStacks || status.maxStacks === 1)
-  const stacksDisplay = isActive ? 'Active' : `${status.value} / ${status.maxStacks}`
+  const value = status.value ?? 0
+  const isActive = value === 1 && (!status.maxStacks || status.maxStacks === 1)
+  const stacksDisplay = isActive ? 'Active' : `${value} / ${status.maxStacks}`
+  const showStatusSection = status.showStatus !== false
 
-  const statsEntries = status.showStats && status.stats
+  const charStatsEntries = status.showStats && status.stats
     ? (Object.entries(status.stats) as [string, number][]).filter(([, v]) => v !== 0)
     : []
+  const enemyStatsEntries = status.showStats && status.enemyStats
+    ? (Object.entries(status.enemyStats) as [string, number][]).filter(([, v]) => v !== 0)
+    : []
+  const statsEntries = [...charStatsEntries, ...enemyStatsEntries]
 
-  return createPortal(
-    <div className="statusDetailOverlay" onClick={onClose}>
-      <div
-        className="statusDetailPanel"
-        style={{ '--sdp-accent': accent } as CSSProperties}
-        onClick={e => e.stopPropagation()}
-      >
-        {/* ── Header ── */}
-        <div className="statusDetailHeader">
-          <img
-            src={status.icon}
-            alt={status.label}
-            className="statusDetailIcon"
-            onError={e => { ;(e.target as HTMLImageElement).style.opacity = '0.25' }}
-          />
-          <div className="statusDetailTitleGroup">
-            <span className="statusDetailName">{status.label}</span>
-            <span className="statusDetailType">{typeLabel}</span>
-          </div>
-          <button className="statusDetailClose" onClick={onClose} aria-label="Close">✕</button>
+  const panelContent = (
+    <div
+      className="statusDetailPanel"
+      style={{ '--sdp-accent': accent, ...(variant === 'tooltip' ? style : {}) } as CSSProperties}
+      onClick={variant === 'modal' ? (e => e.stopPropagation()) : undefined}
+    >
+      {/* ── Header ── */}
+      <div className="statusDetailHeader">
+        <img
+          src={status.icon}
+          alt={status.label}
+          className="statusDetailIcon"
+          onError={e => { ;(e.target as HTMLImageElement).style.opacity = '0.25' }}
+        />
+        <div className="statusDetailTitleGroup">
+          <span className="statusDetailName">{status.label}</span>
+          <span className="statusDetailType">{typeLabel}</span>
         </div>
+        {variant === 'modal' && onClose && (
+          <button className="statusDetailClose" onClick={onClose} aria-label="Close">✕</button>
+        )}
+      </div>
 
-        {/* ── Body ── */}
-        <div className="statusDetailBody">
+      {/* ── Body ── */}
+      <div className="statusDetailBody">
 
-          {/* Status */}
+        {/* Status */}
+        {showStatusSection && (
           <div className="statusDetailSection">
             <span className="statusDetailSectionLabel">Status</span>
             <div className="statusDetailRow">
@@ -128,32 +141,42 @@ export function StatusDetailPanel({ status, onClose }: StatusDetailPanelProps) {
               </span>
             </div>
           </div>
+        )}
 
-          {/* Description */}
-          {status.description && (
-            <div className="statusDetailSection">
-              <span className="statusDetailSectionLabel">Description</span>
-              <p className="statusDetailDescription">
-                {colorizeText(status.description, accent)}
-              </p>
-            </div>
-          )}
+        {/* Description */}
+        {status.description && (
+          <div className="statusDetailSection">
+            <span className="statusDetailSectionLabel">Description</span>
+            <p className="statusDetailDescription">
+              {colorizeText(status.description, accent)}
+            </p>
+          </div>
+        )}
 
-          {/* Active Stats */}
-          {statsEntries.length > 0 && (
-            <div className="statusDetailSection">
-              <span className="statusDetailSectionLabel">Active Stats</span>
-              {statsEntries.map(([key, value]) => (
-                <div key={key} className="statusDetailRow">
-                  <span className="statusDetailRowLabel">{formatStatKey(key)}</span>
-                  <span className="statusDetailRowValue statusDetailRowValue--stat">{formatStatValue(key, value)}</span>
-                </div>
-              ))}
-            </div>
-          )}
+        {/* Active Stats */}
+        {statsEntries.length > 0 && (
+          <div className="statusDetailSection">
+            <span className="statusDetailSectionLabel">Active Stats</span>
+            {statsEntries.map(([key, val]) => (
+              <div key={key} className="statusDetailRow">
+                <span className="statusDetailRowLabel">{formatStatKey(key)}</span>
+                <span className="statusDetailRowValue statusDetailRowValue--stat">{formatStatValue(key, val)}</span>
+              </div>
+            ))}
+          </div>
+        )}
 
-        </div>
       </div>
+    </div>
+  )
+
+  if (variant === 'tooltip') {
+    return createPortal(panelContent, document.body)
+  }
+
+  return createPortal(
+    <div className="statusDetailOverlay" onClick={onClose}>
+      {panelContent}
     </div>,
     document.body,
   )

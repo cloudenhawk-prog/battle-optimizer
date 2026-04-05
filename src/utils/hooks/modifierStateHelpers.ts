@@ -73,14 +73,20 @@ export function updateModifierStacks(snapshot: Snapshot, modifiersInAction: Modi
     const maxStacks = modifier.stackingStrategy.maxStacks
 
     // Only track if condition is active (returns > 0)
-    // Note: conditionValue is used internally for damage calculation as a multiplier, not for display
-    // For display purposes: permanent modifiers show as having 1 current stack when active
     if (conditionValue > 0) {
       if (type === 'buff') {
         buffs[key] = 1 // Permanent modifiers show 1 stack when active (not the condition value)
         buffsTimeLeft[key] = Infinity
         buffsSwapsLeft[key] = Infinity
         buffsMaxStacks[key] = maxStacks
+        if (modifier.characterStats) {
+          // Scale each stat by the condition multiplier so the tooltip reflects the true effective value
+          const scaled: Partial<CharacterStats> = {}
+          for (const [stat, val] of Object.entries(modifier.characterStats) as [keyof CharacterStats, number][]) {
+            scaled[stat] = val * conditionValue
+          }
+          buffsActivationStats[key] = scaled
+        }
       } else if (type === 'debuff') {
         debuffs[key] = 1 // Permanent modifiers show 1 stack when active (not the condition value)
         debuffsTimeLeft[key] = Infinity
