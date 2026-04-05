@@ -99,7 +99,7 @@ export default function RotationEditor({ charactersInBattle, enemy, tableConfig,
         ignoreCastConditions={importExport.ignoreCastConditions}
         onToggleIgnoreCastConditions={() => importExport.setIgnoreCastConditions(v => !v)}
       />
-      <DataOverlay snapshot={overlayData?.snapshot ?? null} damageEvents={overlayData?.damageEvents ?? []} open={overlayOpen} onClose={() => setOverlayOpen(false)} />
+      <DataOverlay snapshot={overlayData?.snapshot ?? null} damageEvents={overlayData?.damageEvents ?? []} characters={charactersInBattle} open={overlayOpen} onClose={() => setOverlayOpen(false)} />
       <SummaryOverlay open={summaryOpen} onClose={() => setSummaryOpen(false)} snapshots={snapshots} damageEvents={damageEvents ?? []} characters={charactersInBattle} />
     </div>
   )

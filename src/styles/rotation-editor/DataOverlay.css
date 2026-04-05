@@ -1,8 +1,8 @@
 ﻿/* =====================================================================================
    RESONANCE FIELD ANALYSIS — DATA OVERLAY
    Layout:  3-column flex (left | center | right), full-panel like SummaryOverlay
-   Left:    Combat Metrics + Damage Sources
-   Center:  Animated pie chart
+   Left:    (empty)
+   Center:  Combat Metrics + Pie chart + Damage Sources
    Right:   Modifier Contributions
    ===================================================================================== */
 
@@ -54,103 +54,6 @@
   .dataPanel {
     inset: 40px;
   }
-}
-
-/* ── HUD Scan Line ──────────────────────────────────────────── */
-.dataHudScanLine {
-  position: absolute;
-  top: 0;
-  left: 0;
-  right: 0;
-  height: 1px;
-  background: linear-gradient(
-    to right,
-    transparent 0%,
-    rgba(100, 200, 255, 0.6) 40%,
-    rgba(160, 120, 255, 0.6) 60%,
-    transparent 100%
-  );
-  box-shadow: 0 0 12px rgba(100, 200, 255, 0.5);
-  animation: dataScan 18s ease-in-out infinite;
-  z-index: 1;
-  pointer-events: none;
-}
-
-@keyframes dataScan {
-  0%   { top: 0;    opacity: 0; }
-  1%   { opacity: 1; }
-  18%  { opacity: 0.8; }
-  19%  { top: 100%; opacity: 0; }
-  100% { top: 100%; opacity: 0; }
-}
-
-/* ── HUD Corners ─────────────────────────────────────────────── */
-.dataHudCorner {
-  position: absolute;
-  width: 28px;
-  height: 28px;
-  border-color: rgba(100, 180, 255, 0.22);
-  opacity: 0.6;
-  animation: dataCornerPulse 5s ease-in-out infinite;
-  pointer-events: none;
-  z-index: 2;
-}
-
-@keyframes dataCornerPulse {
-  0%, 100% { border-color: rgba(100, 180, 255, 0.22); opacity: 0.55; }
-  50%       { border-color: rgba(180, 140, 255, 0.4);  opacity: 0.8;  }
-}
-
-.dataHudCorner.topLeft    { top: 20px; left: 20px;   border-top: 1px solid; border-left:  1px solid; }
-.dataHudCorner.topRight   { top: 20px; right: 20px;  border-top: 1px solid; border-right: 1px solid; }
-.dataHudCorner.bottomLeft { bottom: 20px; left: 20px;  border-bottom: 1px solid; border-left:  1px solid; }
-.dataHudCorner.bottomRight{ bottom: 20px; right: 20px; border-bottom: 1px solid; border-right: 1px solid; }
-
-/* ── HUD Top Bar ─────────────────────────────────────────────── */
-.dataHudTopBar {
-  position: absolute;
-  top: 20px;
-  left: 64px;
-  right: 64px;
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  font-family: 'Share Tech Mono', 'Courier New', monospace;
-  font-size: 9px;
-  color: rgba(255, 255, 255, 0.2);
-  letter-spacing: 0.12em;
-  text-transform: uppercase;
-  pointer-events: none;
-  z-index: 2;
-}
-
-.dataHudBadge {
-  font-size: 9px;
-  letter-spacing: 0.18em;
-  color: rgba(100, 220, 160, 0.7);
-  animation: dataHudBadgePulse 2.5s ease-in-out infinite;
-}
-
-@keyframes dataHudBadgePulse {
-  0%, 100% { opacity: 0.7; }
-  50%       { opacity: 1; text-shadow: 0 0 8px rgba(100, 220, 160, 0.6); }
-}
-
-/* ── HUD Bottom Bar ──────────────────────────────────────────── */
-.dataHudBottomBar {
-  position: absolute;
-  bottom: 20px;
-  left: 64px;
-  right: 64px;
-  display: flex;
-  justify-content: space-between;
-  font-family: 'Share Tech Mono', 'Courier New', monospace;
-  font-size: 9px;
-  color: rgba(255, 255, 255, 0.15);
-  letter-spacing: 0.1em;
-  text-transform: uppercase;
-  pointer-events: none;
-  z-index: 2;
 }
 
 /* ── Header ──────────────────────────────────────────────────── */
@@ -269,7 +172,7 @@
   display: flex;
   flex-direction: column;
   gap: 20px;
-  width: 380px;
+  width: 260px;
   flex-shrink: 0;
 }
 
@@ -294,13 +197,41 @@
 .dataCenterPanel::-webkit-scrollbar { width: 4px; }
 .dataCenterPanel::-webkit-scrollbar-thumb { background: rgba(100, 160, 255, 0.2); border-radius: 2px; }
 
-/* Pie chart area — centered, fixed height */
-.dataCenterPieArea {
+/* Top area — combat metrics */
+.dataCenterTopArea {
+  padding: 24px 22px 20px;
+  flex-shrink: 0;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.05);
   display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+/* Mode selector bar — sits above combat metrics */
+.dataModeBar {
+  display: flex;
+  justify-content: center;
+  padding-bottom: 4px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.04);
+}
+
+/* View toggle bar — sits below the pie chart */
+.dataPieViewBar {
+  display: flex;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+/* Pie chart area — grows to fill space between top and bottom, centers pie */
+.dataCenterPieArea {
+  flex: 1;
+  min-height: 340px;
+  display: flex;
+  flex-direction: column;
   align-items: center;
   justify-content: center;
-  padding: 24px 24px 16px;
-  flex-shrink: 0;
+  padding: 24px;
+  gap: 16px;
 }
 
 /* Damage sources list below the pie */
@@ -1014,11 +945,124 @@
   text-shadow: 0 0 8px rgba(180, 120, 255, 0.35);
 }
 
+/* ── Contrib Tooltip Rich — overrides + new layout classes ───── */
+.dataPillarTooltipRich {
+  --contrib-accent: rgba(180, 120, 255, 0.95); /* default; overridden per-instance */
+  padding: 0;
+  min-width: 220px;
+  max-width: 300px;
+  overflow: hidden;
+  /* position/top/bottom/left/right/transform are injected inline by the portal */
+}
+
+.contribTooltipHeader {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 10px 12px 10px;
+  background: linear-gradient(
+    150deg,
+    color-mix(in srgb, var(--contrib-accent) 14%, transparent) 0%,
+    transparent 70%
+  );
+  border-bottom: 1px solid color-mix(in srgb, var(--contrib-accent) 20%, rgba(255, 255, 255, 0.06));
+}
+
+.contribTooltipIcon {
+  width: 44px;
+  height: 44px;
+  border-radius: 7px;
+  object-fit: contain;
+  flex-shrink: 0;
+  background: rgba(0, 0, 0, 0.25);
+  padding: 3px;
+  border: 1.5px solid color-mix(in srgb, var(--contrib-accent) 40%, rgba(255, 255, 255, 0.1));
+  box-shadow: 0 0 14px color-mix(in srgb, var(--contrib-accent) 22%, transparent);
+  transition: opacity 0.2s;
+}
+
+.contribTooltipName {
+  font-family: 'Rajdhani', 'Segoe UI', sans-serif;
+  font-size: 13px;
+  font-weight: 700;
+  color: var(--contrib-accent);
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  white-space: normal;
+  word-break: break-word;
+  line-height: 1.25;
+  flex: 1;
+  min-width: 0;
+}
+
+/* Sections below the header */
+.contribTooltipSection {
+  display: flex;
+  flex-direction: column;
+  padding: 8px 12px;
+}
+
+.contribTooltipSectionLabel {
+  font-size: 9px;
+  font-weight: 700;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--contrib-accent);
+  opacity: 0.7;
+  margin-bottom: 5px;
+}
+
+.contribTooltipDesc {
+  font-family: 'Rajdhani', 'Segoe UI', sans-serif;
+  font-size: 11px;
+  color: rgba(175, 185, 210, 0.85);
+  line-height: 1.55;
+  margin: 0;
+}
+
+.contribTooltipStats {
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+}
+
+.contribTooltipStat {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 12px;
+  padding: 3px 0;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+}
+
+.contribTooltipStat:last-child {
+  border-bottom: none;
+}
+
+.contribTooltipStatValue {
+  color: var(--contrib-accent);
+  font-weight: 700;
+  text-shadow: 0 0 6px color-mix(in srgb, var(--contrib-accent) 35%, transparent);
+}
+
+.contribTooltipStatValue.negative {
+  color: rgba(255, 130, 100, 0.9);
+  text-shadow: 0 0 6px rgba(255, 130, 100, 0.3);
+}
+
+/* Ensure dataPillarTooltipDivider between sections is hidden when inside the rich tooltip
+   (sections handle spacing themselves) */
+.dataPillarTooltipRich .dataPillarTooltipDivider {
+  height: 1px;
+  margin: 0;
+  background: color-mix(in srgb, var(--contrib-accent) 18%, rgba(255, 255, 255, 0.06));
+}
+
 /* ── Responsive ──────────────────────────────────────────────── */
 @media (max-width: 1100px) {
   .dataLeftPanel,
   .dataRightPanel {
-    width: 300px;
+    width: 220px;
   }
 
   .pieChartCenter {
