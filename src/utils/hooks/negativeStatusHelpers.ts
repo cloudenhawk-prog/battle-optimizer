@@ -207,12 +207,14 @@ export function updateNegativeStatusStacks(
   ctx?: StepContext,
 ): void {
   // Apply all aggregated status modifications (from both action and side effects)
+  const maxStacksCurr: Record<string, number> = {}
   for (const [name, mod] of Object.entries(negativeStatusModifications)) {
     const statusInAction = negativeStatusesInAction.find(nsa => nsa.negativeStatus.name === name)
 
     if (!statusInAction) continue
 
     const maxStacks = computeEffectiveMaxStacks(name, statusInAction.negativeStatus.maxStacksDefault, ctx)
+    maxStacksCurr[name] = maxStacks
 
     // Apply stack change
     stacksCurr[name] = (stacksCurr[name] ?? 0) + mod.stackChange
@@ -246,6 +248,7 @@ export function updateNegativeStatusStacks(
   }
 
   snapshot.negativeStatuses = { ...stacksCurr }
+  snapshot.negativeStatusesMaxStacks = { ...snapshot.negativeStatusesMaxStacks, ...maxStacksCurr }
 
   // Update time left for all negative statuses
   const timeLeftCurr: Record<string, number> = {}

@@ -65,9 +65,14 @@ type DataOverlayProps = {
   characters?: ResolvedCharacter[]
   open: boolean
   onClose: () => void
+  onPrev?: () => void
+  onNext?: () => void
+  hasPrev?: boolean
+  hasNext?: boolean
+  rowInfo?: { current: number; total: number }
 }
 
-export default function DataOverlay({ snapshot, damageEvents = [], characters = [], open, onClose }: DataOverlayProps) {
+export default function DataOverlay({ snapshot, damageEvents = [], characters = [], open, onClose, onPrev, onNext, hasPrev, hasNext, rowInfo }: DataOverlayProps) {
   const [mode, setMode] = useState<'average' | 'normal' | 'crit'>('average')
   const [pieChartView, setPieChartView] = useState<'events' | 'types'>('events')
   const [highlightedIndex, setHighlightedIndex] = useState<number | null>(null)
@@ -76,6 +81,7 @@ export default function DataOverlay({ snapshot, damageEvents = [], characters = 
 
   const totalDamage = calculateTotalDamage(damageEvents, mode)
   const duration = calculateDuration(snapshot)
+  const showNav = onPrev !== undefined || onNext !== undefined
 
   return createPortal(
     <div className="dataOverlay" role="dialog" aria-modal="true">
@@ -87,6 +93,31 @@ export default function DataOverlay({ snapshot, damageEvents = [], characters = 
             <h2 className="dataTitle">RESONANCE FIELD ANALYSIS</h2>
           </div>
           <div className="dataHeaderRight">
+            {showNav && (
+              <div className="dataNavGroup">
+                <button
+                  className="dataNavButton"
+                  onClick={onPrev}
+                  disabled={!hasPrev}
+                  title="Previous row (↑)"
+                  aria-label="Previous row"
+                >
+                  ▲
+                </button>
+                {rowInfo && (
+                  <span className="dataNavCounter">{rowInfo.current} / {rowInfo.total}</span>
+                )}
+                <button
+                  className="dataNavButton"
+                  onClick={onNext}
+                  disabled={!hasNext}
+                  title="Next row (↓)"
+                  aria-label="Next row"
+                >
+                  ▼
+                </button>
+              </div>
+            )}
             <button className="dataClose" onClick={onClose}>
               ✕
             </button>

@@ -31,6 +31,7 @@ export interface Snapshot {
   debuffsMaxStacks: Record<string, number>
   negativeStatuses: Record<string, number>
   negativeStatusesTimeLeft: Record<string, number>
+  negativeStatusesMaxStacks: Record<string, number>
   coordinatedAttacks: Record<string, number>
   coordinatedAttacksTimeLeft: Record<string, number>
   coordinatedAttacksSwapRequired: Record<string, boolean>

@@ -28,11 +28,15 @@ export default function RotationEditor({ charactersInBattle, enemy, tableConfig,
   const { snapshots, damageEvents, handleCharacterSelect, handleActionSelect, importExport } = useRotationEditor({ charactersInBattle, tableConfig, enemy, gearResetKey, settings })
   const [overlayOpen, setOverlayOpen] = useState(false)
   const [overlayData, setOverlayData] = useState<null | { snapshot: Snapshot; damageEvents: DamageEvent[] }>(null)
+  const [overlayIndex, setOverlayIndex] = useState<number>(0)
   const [summaryOpen, setSummaryOpen] = useState(false)
   const [rotationsOpen, setRotationsOpen] = useState(false)
   const [bannerVisible, setBannerVisible] = useState(false)
 
   const { lastImportError, lastImportCompleted } = importExport
+
+  // Action snapshots are the navigable rows (only rows with an action are shown in the overlay)
+  const actionSnapshots = snapshots.filter(s => s.action)
 
   useEffect(() => {
     if (lastImportError || lastImportCompleted !== null) {
@@ -46,11 +50,19 @@ export default function RotationEditor({ charactersInBattle, enemy, tableConfig,
   // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [lastImportError, lastImportCompleted])
 
+  function openOverlayAt(index: number) {
+    const s = actionSnapshots[index]
+    if (!s) return
+    const filtered = (damageEvents ?? []).filter(e => Number(e.snapshotId) === Number(s.id))
+    setOverlayIndex(index)
+    setOverlayData({ snapshot: s, damageEvents: filtered })
+    setOverlayOpen(true)
+  }
+
   function handleRowClick(snapshot: Snapshot) {
     if (!snapshot.action) return
-    const filtered = (damageEvents ?? []).filter(e => Number(e.snapshotId) === Number(snapshot.id))
-    setOverlayData({ snapshot, damageEvents: filtered })
-    setOverlayOpen(true)
+    const index = actionSnapshots.findIndex(s => s.id === snapshot.id)
+    openOverlayAt(index)
   }
 
   const hasData = snapshots.some(s => s.action)
@@ -99,7 +111,18 @@ export default function RotationEditor({ charactersInBattle, enemy, tableConfig,
         ignoreCastConditions={importExport.ignoreCastConditions}
         onToggleIgnoreCastConditions={() => importExport.setIgnoreCastConditions(v => !v)}
       />
-      <DataOverlay snapshot={overlayData?.snapshot ?? null} damageEvents={overlayData?.damageEvents ?? []} characters={charactersInBattle} open={overlayOpen} onClose={() => setOverlayOpen(false)} />
+      <DataOverlay
+        snapshot={overlayData?.snapshot ?? null}
+        damageEvents={overlayData?.damageEvents ?? []}
+        characters={charactersInBattle}
+        open={overlayOpen}
+        onClose={() => setOverlayOpen(false)}
+        onPrev={overlayIndex > 0 ? () => openOverlayAt(overlayIndex - 1) : undefined}
+        onNext={overlayIndex < actionSnapshots.length - 1 ? () => openOverlayAt(overlayIndex + 1) : undefined}
+        hasPrev={overlayIndex > 0}
+        hasNext={overlayIndex < actionSnapshots.length - 1}
+        rowInfo={{ current: overlayIndex + 1, total: actionSnapshots.length }}
+      />
       <SummaryOverlay open={summaryOpen} onClose={() => setSummaryOpen(false)} snapshots={snapshots} damageEvents={damageEvents ?? []} characters={charactersInBattle} />
     </div>
   )

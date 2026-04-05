@@ -303,6 +303,7 @@ export function CharacterStateTracker({
             allCharacters={charactersInBattle}
             onClose={() => setProfileOpen(null)}
             onGearChange={onGearChange}
+            onCharacterChange={name => setProfileOpen(name)}
           />
         )
       })()}

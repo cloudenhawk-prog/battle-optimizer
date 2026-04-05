@@ -77,6 +77,7 @@ export function createSnapshot(previousSnapshot: Snapshot, charactersMap: Record
   // Copy maxStacks from previous snapshot to preserve them
   const buffsMaxStacks = { ...previousSnapshot.buffsMaxStacks }
   const debuffsMaxStacks = { ...previousSnapshot.debuffsMaxStacks }
+  const negativeStatusesMaxStacks = { ...previousSnapshot.negativeStatusesMaxStacks }
 
   // Carry forward frozen activation stats for modifiers that need them in the stat breakdown
   const buffsActivationStats = { ...(previousSnapshot.buffsActivationStats ?? {}) }
@@ -107,6 +108,7 @@ export function createSnapshot(previousSnapshot: Snapshot, charactersMap: Record
     debuffsMaxStacks,
     negativeStatuses,
     negativeStatusesTimeLeft: Object.fromEntries(globalColumns.negativeStatuses.map(col => [col, 0])),
+    negativeStatusesMaxStacks,
     coordinatedAttacks: {},
     coordinatedAttacksTimeLeft: {},
     coordinatedAttacksSwapRequired: {},

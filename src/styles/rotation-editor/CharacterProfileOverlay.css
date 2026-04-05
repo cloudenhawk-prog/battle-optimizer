@@ -141,6 +141,31 @@
   background: var(--table-select-bg);
 }
 
+/* ── Character Navigation Buttons ── */
+
+.cpo-nav-btn {
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  font-size: 12px;
+  padding: 5px 9px;
+  border-radius: 4px;
+  transition: all 0.2s;
+  color: rgba(255, 255, 255, 0.35);
+  line-height: 1;
+}
+
+.cpo-nav-btn:hover:not(:disabled) {
+  background: rgba(255, 255, 255, 0.07);
+  color: inherit;
+  filter: brightness(1.4);
+}
+
+.cpo-nav-btn:disabled {
+  opacity: 0.2;
+  cursor: default;
+}
+
 /* ═════════════════════════════════════════════════════════════
  *  BODY SHELL
  * ═════════════════════════════════════════════════════════════ */

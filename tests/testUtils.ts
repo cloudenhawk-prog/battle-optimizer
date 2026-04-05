@@ -40,6 +40,7 @@ export function createMockSnapshot(overrides: Partial<Snapshot> = {}): Snapshot 
     debuffsMaxStacks: {},
     negativeStatuses: {},
     negativeStatusesTimeLeft: {},
+    negativeStatusesMaxStacks: {},
     coordinatedAttacks: {},
     coordinatedAttacksTimeLeft: {},
     coordinatedAttacksSwapRequired: {},

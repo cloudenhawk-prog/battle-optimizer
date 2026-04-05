@@ -1259,9 +1259,10 @@ type CharacterProfileOverlayProps = {
   allCharacters: Character[]
   onClose: () => void
   onGearChange?: (characterName: string, newGear: Gear) => void
+  onCharacterChange?: (characterName: string) => void
 }
 
-export function CharacterProfileOverlay({ characterName, character, snapshot, allCharacters, onClose, onGearChange }: CharacterProfileOverlayProps) {
+export function CharacterProfileOverlay({ characterName, character, snapshot, allCharacters, onClose, onGearChange, onCharacterChange }: CharacterProfileOverlayProps) {
   const [selectedStat, setSelectedStat] = useState<string | null>(null)
   const [isClosing, setIsClosing] = useState(false)
   const [tooltip, setTooltip] = useState<TooltipData | null>(null)
@@ -1306,6 +1307,11 @@ export function CharacterProfileOverlay({ characterName, character, snapshot, al
 
   const selectedStatDisplay = selectedStat !== null ? (STAT_DISPLAY.find(s => s.key === selectedStat) ?? null) : null
 
+  const charIndex = allCharacters.findIndex(c => c.name === characterName)
+  const prevChar = charIndex > 0 ? allCharacters[charIndex - 1] : null
+  const nextChar = charIndex < allCharacters.length - 1 ? allCharacters[charIndex + 1] : null
+  const showCharNav = onCharacterChange !== undefined && allCharacters.length > 1
+
   return createPortal(
     <>
       {/* Backdrop */}
@@ -1348,11 +1354,41 @@ export function CharacterProfileOverlay({ characterName, character, snapshot, al
         <div
           style={{
             display: 'flex',
-            justifyContent: 'flex-end',
+            alignItems: 'center',
+            justifyContent: 'space-between',
             padding: '6px 14px',
             flexShrink: 0,
             background: `linear-gradient(90deg, transparent, hsl(${elTheme.primary} / 0.04))`,
           }}>
+          {showCharNav ? (
+            <div style={{ display: 'flex', alignItems: 'center', gap: 4 }}>
+              <button
+                className="cpo-nav-btn"
+                onClick={() => prevChar && onCharacterChange(prevChar.name)}
+                disabled={!prevChar}
+                title={prevChar ? `← ${prevChar.name}` : undefined}
+                aria-label="Previous character"
+                style={{ color: prevChar ? `hsl(${elTheme.primary} / 0.7)` : undefined }}
+              >
+                ◀
+              </button>
+              <span style={{ fontFamily: FONT_MONO, fontSize: '10px', color: `hsl(${elTheme.primary} / 0.45)`, minWidth: 20, textAlign: 'center', letterSpacing: '0.04em' }}>
+                {charIndex + 1} / {allCharacters.length}
+              </span>
+              <button
+                className="cpo-nav-btn"
+                onClick={() => nextChar && onCharacterChange(nextChar.name)}
+                disabled={!nextChar}
+                title={nextChar ? `${nextChar.name} →` : undefined}
+                aria-label="Next character"
+                style={{ color: nextChar ? `hsl(${elTheme.primary} / 0.7)` : undefined }}
+              >
+                ▶
+              </button>
+            </div>
+          ) : (
+            <div />
+          )}
           <button className="cpo-close-btn" onClick={handleClose} aria-label="Close">
             ✕
           </button>

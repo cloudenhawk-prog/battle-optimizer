@@ -152,8 +152,10 @@ function renderBodyColumnsWithTags(columns: ColumnDef[], columnVisibility: Colum
         let activationStatsData: Record<string, object> | undefined
         let statusType: 'buff' | 'debuff' | 'negativeStatus' = 'buff'
 
+        let negativeStatusesMaxStacksData: Record<string, number> | undefined
         if (col.key === 'negativeStatuses') {
           statusData = sourceSnapshot?.negativeStatuses as Record<string, number> | undefined
+          negativeStatusesMaxStacksData = sourceSnapshot?.negativeStatusesMaxStacks as Record<string, number> | undefined
           statusType = 'negativeStatus'
         } else if (col.key === 'buffs') {
           statusData = sourceSnapshot?.buffs as Record<string, number> | undefined
@@ -187,7 +189,7 @@ function renderBodyColumnsWithTags(columns: ColumnDef[], columnVisibility: Colum
             label: meta.label,
             icon: meta.icon,
             value: statusData?.[meta.key] ?? 0,
-            maxStacks: meta.maxStacks,
+            maxStacks: negativeStatusesMaxStacksData?.[meta.key] ?? meta.maxStacks,
             type: statusType,
             color: meta.color,
             description: meta.description,

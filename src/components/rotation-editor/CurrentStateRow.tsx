@@ -132,6 +132,7 @@ function createInitialSnapshot(): Snapshot {
     debuffsMaxStacks: {},
     negativeStatuses: {},
     negativeStatusesTimeLeft: {},
+    negativeStatusesMaxStacks: {},
     charactersCooldowns: {},
     coordinatedAttacks: {},
     coordinatedAttacksTimeLeft: {},
@@ -184,13 +185,17 @@ function renderStatusColumns(columns: any[], columnVisibility: ColumnVisibility,
           statusType = 'buff'
         }
 
+        const negativeStatusesMaxStacksData = col.key === 'negativeStatuses'
+          ? snapshot.negativeStatusesMaxStacks as Record<string, number> | undefined
+          : undefined
+
         const statuses =
           col.statusMetadata?.map((meta: any) => ({
             key: meta.key,
             label: meta.label,
             icon: meta.icon,
             value: statusData?.[meta.key] ?? 0,
-            maxStacks: meta.maxStacks,
+            maxStacks: negativeStatusesMaxStacksData?.[meta.key] ?? meta.maxStacks,
             type: statusType,
             color: meta.color,
             timeLeft: timeLeftData?.[meta.key],
