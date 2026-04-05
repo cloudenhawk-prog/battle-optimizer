@@ -4,6 +4,7 @@ import type { DamageModifier, InherentModifier } from './modifiers'
 import type { SideEffect, StatusModification, CooldownReduction } from './sideEffect'
 import type { CoordinatedAttack } from './coordinatedAttack'
 import type { Snapshot } from './snapshot'
+import type { CharacterStats } from './stats'
 
 // ========== Type: ActionTag ===================================================================================================
 
@@ -30,6 +31,17 @@ export type ActionTag =
   | 'SPECTRO_FRAZZLE_APPLIER'  // Action applies Spectro Frazzle stacks
   | 'GLACIO_CHAFE_APPLIER'     // Action applies Glacio Chafe stacks
   | 'GLACIO_BITE_APPLIER'      // Action applies Glacio Bite stacks
+
+/**
+ * Minimal character view passed to resolveVariant. Deliberately kept separate from the full
+ * Character type to avoid a circular import (character.ts → action.ts). Add fields here as
+ * new resolveVariant implementations require them.
+ */
+export type ResolveVariantOwner = {
+  name: string
+  sequence: 0 | 1 | 2 | 3 | 4 | 5 | 6
+  stats: Partial<CharacterStats>
+}
 
 // ========== Type: Action =====================================================================================================
 
@@ -77,8 +89,13 @@ export type Action = {
 
   /** When present, the system calls this before executing the action to dynamically
    *  select the actual variant to run (e.g. picking the right plunge tier based on forte).
-   *  The returned Action is used in place of this one for all resolvers. */
-  resolveVariant?: (prevSnapshot: Snapshot | undefined, characterName: string) => Action
+   *  The returned Action is used in place of this one for all resolvers.
+   *
+   *  Receives the character whose action list contains this action, giving access to
+   *  `owner.sequence`, `owner.stats`, etc. for sequence-gated or stat-scaled variants.
+   *  Existing implementations that only declare (prevSnapshot, characterName) still work
+   *  because TypeScript allows functions to declare fewer parameters than their type. */
+  resolveVariant?: (prevSnapshot: Snapshot | undefined, characterName: string, owner: ResolveVariantOwner) => Action
 
   /** When true, this action is hidden from the action selector when it is not castable.
    *  Does not affect form-based hiding — actions outside the current form are always hidden. */

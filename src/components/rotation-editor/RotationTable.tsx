@@ -21,9 +21,10 @@ type RotationTableProps = {
   setColumnVisibility: React.Dispatch<React.SetStateAction<ColumnVisibility>>
   onRowClick?: (snapshot: Snapshot) => void
   onGearChange?: (characterName: string, newGear: Gear) => void
+  onSequenceChange?: (characterName: string, sequence: 0 | 1 | 2 | 3 | 4 | 5 | 6) => void
 }
 
-export function RotationTable({ snapshots, charactersInBattle, tableConfig, onSelectCharacter, onSelectAction, columnVisibility, setColumnVisibility, onRowClick, onGearChange }: RotationTableProps) {
+export function RotationTable({ snapshots, charactersInBattle, tableConfig, onSelectCharacter, onSelectAction, columnVisibility, setColumnVisibility, onRowClick, onGearChange, onSequenceChange }: RotationTableProps) {
   const [highlightIds, setHighlightIds] = useState<Set<number>>(new Set())
   const lastMaxId = useRef(0)
 
@@ -55,7 +56,7 @@ export function RotationTable({ snapshots, charactersInBattle, tableConfig, onSe
 
   return (
     <>
-      <CharacterStateTracker snapshot={currentSnapshot || null} charactersInBattle={charactersInBattle} tableConfig={tableConfig} columnVisibility={columnVisibility} setColumnVisibility={setColumnVisibility} activeCharacterName={activeCharacterName} onGearChange={onGearChange} />
+      <CharacterStateTracker snapshot={currentSnapshot || null} charactersInBattle={charactersInBattle} tableConfig={tableConfig} columnVisibility={columnVisibility} setColumnVisibility={setColumnVisibility} activeCharacterName={activeCharacterName} onGearChange={onGearChange} onSequenceChange={onSequenceChange} />
       <div className="tableWrapper">
         <table className="tableBase">
           <thead className="tableHeader">

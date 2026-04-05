@@ -26,6 +26,9 @@ import {
   loadSavedRotations,
   saveRotationToStorage,
   deleteRotationFromStorage,
+  loadSavedSnippets,
+  saveSnippetToStorage,
+  deleteSnippetFromStorage,
   extractSteps,
   downloadRotationAsJson,
   parseRotationFromJson,
@@ -69,12 +72,17 @@ export function useImportExport({
   coordinatedAttacksInAction,
 }: UseImportExportProps) {
   const [savedRotations, setSavedRotations] = useState<SavedRotation[]>(() => loadSavedRotations())
+  const [savedSnippets, setSavedSnippets] = useState<SavedRotation[]>(() => loadSavedSnippets())
   const [lastImportError, setLastImportError] = useState<ImportError | null>(null)
   const [lastImportCompleted, setLastImportCompleted] = useState<number | null>(null)
   const [ignoreCastConditions, setIgnoreCastConditions] = useState(false)
 
   function refreshSaved() {
     setSavedRotations(loadSavedRotations())
+  }
+
+  function refreshSnippets() {
+    setSavedSnippets(loadSavedSnippets())
   }
 
   function handleSave(name: string) {
@@ -88,6 +96,49 @@ export function useImportExport({
   function handleDelete(name: string) {
     deleteRotationFromStorage(name)
     refreshSaved()
+  }
+
+  function handleSaveSnippet(name: string) {
+    const steps = extractSteps(snapshots)
+    if (steps.length === 0) return
+    const snippet: SavedRotation = { name: name.trim(), createdAt: new Date().toISOString(), steps }
+    saveSnippetToStorage(snippet)
+    refreshSnippets()
+  }
+
+  function handleDeleteSnippet(name: string) {
+    deleteSnippetFromStorage(name)
+    refreshSnippets()
+  }
+
+  function handleAppend(snippet: SavedRotation) {
+    const result = runImportSteps({
+      steps: snippet.steps,
+      startingSnapshots: snapshots,
+      initialNegativeStatuses: negativeStatusesInAction.current,
+      initialModifiers: modifiersInAction.current,
+      initialCoordinatedAttacks: coordinatedAttacksInAction.current,
+      charactersMap,
+      characterColumnsMap,
+      globalColumns,
+      enemy,
+      settings,
+      ignoreCastConditions,
+    })
+
+    setLastImportError(result.error)
+    setLastImportCompleted(result.completedSteps)
+
+    if (result.error) {
+      // Do not reset on append error — keep current timeline intact
+      return
+    }
+
+    setSnapshots(result.snapshots)
+    setDamageEvents(prev => [...prev, ...result.damageEvents])
+    negativeStatusesInAction.current = result.finalNegativeStatuses
+    modifiersInAction.current = result.finalModifiers
+    coordinatedAttacksInAction.current = result.finalCoordinatedAttacks
   }
 
   function handleDownload() {
@@ -156,12 +207,16 @@ export function useImportExport({
 
   return {
     savedRotations,
+    savedSnippets,
     lastImportError,
     lastImportCompleted,
     ignoreCastConditions,
     setIgnoreCastConditions,
     handleSave,
     handleDelete,
+    handleSaveSnippet,
+    handleDeleteSnippet,
+    handleAppend,
     handleLoad,
     handleDownload,
     handleDownloadNamed,
@@ -242,7 +297,11 @@ function getActionFailureReason(action: Action, prevSnapshot: Snapshot | undefin
 
 type ImportRunParams = {
   steps: RotationStep[]
-  initialSnapshot: Snapshot
+  initialSnapshot?: Snapshot
+  startingSnapshots?: Snapshot[]
+  initialNegativeStatuses?: NegativeStatusInAction[]
+  initialModifiers?: ModifierInAction[]
+  initialCoordinatedAttacks?: CoordinatedAttackInAction[]
   charactersMap: Record<string, ResolvedCharacter>
   characterColumnsMap: Record<string, string[]>
   globalColumns: GlobalColumns
@@ -258,9 +317,11 @@ type FullImportRunResult = ImportRunResult & {
 }
 
 function runImportSteps(params: ImportRunParams): FullImportRunResult {
-  const { steps, initialSnapshot, charactersMap, characterColumnsMap, globalColumns, enemy, settings, ignoreCastConditions } = params
+  const { steps, initialSnapshot, startingSnapshots, initialNegativeStatuses, initialModifiers, initialCoordinatedAttacks, charactersMap, characterColumnsMap, globalColumns, enemy, settings, ignoreCastConditions } = params
 
-  let snapshots: Snapshot[] = [{ ...initialSnapshot }]
+  let snapshots: Snapshot[] = startingSnapshots
+    ? [...startingSnapshots]
+    : [{ ...initialSnapshot! }]
   let localDamageEvents: DamageEvent[] = []
 
   // Accumulate damage events synchronously (callers use updater form, e.g. prev => [...prev, e])
@@ -272,16 +333,18 @@ function runImportSteps(params: ImportRunParams): FullImportRunResult {
 
   // Fresh state for this import run — isolated from the living refs
   const localNegativeStatuses: React.MutableRefObject<NegativeStatusInAction[]> = {
-    current: Object.values(negativeStatusesData).map(status => ({
-      negativeStatus: status,
-      applicationTime: -1,
-      timeLeft: 0,
-      currentStacks: 0,
-      lastDamageTime: 0,
-    })),
+    current: initialNegativeStatuses
+      ? initialNegativeStatuses.map(s => ({ ...s }))
+      : Object.values(negativeStatusesData).map(status => ({
+          negativeStatus: status,
+          applicationTime: -1,
+          timeLeft: 0,
+          currentStacks: 0,
+          lastDamageTime: 0,
+        })),
   }
-  const localModifiers: React.MutableRefObject<ModifierInAction[]> = { current: [] }
-  const localCAs: React.MutableRefObject<CoordinatedAttackInAction[]> = { current: [] }
+  const localModifiers: React.MutableRefObject<ModifierInAction[]> = { current: initialModifiers ? [...initialModifiers] : [] }
+  const localCAs: React.MutableRefObject<CoordinatedAttackInAction[]> = { current: initialCoordinatedAttacks ? initialCoordinatedAttacks.map(ca => ({ ...ca })) : [] }
 
   const baseParams: Omit<AutocastParams, 'snapshots' | 'resolvedSnapshotId'> = {
     charactersMap,

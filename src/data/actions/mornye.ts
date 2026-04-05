@@ -1,5 +1,5 @@
 import type { Action } from '../../types/action'
-import { always } from '../../utils/conditions/damageModifierConditions'
+import { always, ownerAtLeast } from '../../utils/conditions/damageModifierConditions'
 
 // TODO: Make sure all sequence/echo/gear specific things in her kit are defined in one data folder and referenced/rebuilt rather than hardcoding it in every action
 // Path: src/data/modifiers/<single mega file, one file per category/character, or what> and similar if we need for sideEffects and other properties with heavy building
@@ -559,10 +559,7 @@ const mornye_heavy: Action = {
       color: '#FFC247',
       ownerCharacter: 'Mornye',
       characterStats: { offtuneBuildupRate: 0.2 },
-      condition: (ctx) => {
-        const mornye = ctx.character.name === 'Mornye' ? ctx.character : ctx.allies.find(c => c.name === 'Mornye')
-        return (mornye?.sequence ?? 0) >= 2 ? 1 : 0
-      },
+      condition: ownerAtLeast('Mornye', 2),
       targetStrategy: 'all',
       durationStrategy: { type: 'limited', timeDuration: 25 },
       stackingStrategy: { maxStacks: 1, resetTimerOnApplication: true, stacksRemovedEachTime: 1 },
@@ -634,10 +631,7 @@ const mornye_heavy_swap_in: Action = {
       color: '#FFC247',
       ownerCharacter: 'Mornye',
       characterStats: { offtuneBuildupRate: 0.2 },
-      condition: (ctx) => {
-        const mornye = ctx.character.name === 'Mornye' ? ctx.character : ctx.allies.find(c => c.name === 'Mornye')
-        return (mornye?.sequence ?? 0) >= 2 ? 1 : 0
-      },
+      condition: ownerAtLeast('Mornye', 2),
       targetStrategy: 'all',
       durationStrategy: { type: 'limited', timeDuration: 25 },
       stackingStrategy: { maxStacks: 1, resetTimerOnApplication: true, stacksRemovedEachTime: 1 },
@@ -762,6 +756,18 @@ const mode_mornye_skill: Action = {
     requiredForms: ['Wide Field Observation Mode']
   },
   offtune: 4 * 0.20,
+  resolveVariant(_prevSnapshot, _characterName, owner) {
+    if (owner.sequence < 3) return { ...this, resolveVariant: undefined }
+    return {
+      ...this,
+      energyGenerated: [
+        ...this.energyGenerated,
+        { energyType: 'concerto', amount: 25, share: 0, cooldownKey: 'Mornye S3: Distributed Array', cooldownDuration: 25 },
+        { energyType: 'relative_momentum', amount: 100, share: 0, cooldownKey: 'Mornye S3: Distributed Array', cooldownDuration: 25 },
+      ],
+      resolveVariant: undefined,
+    }
+  },
 }
 
 // ========== Mode: Heavy Attack ===============================================================================================
@@ -795,10 +801,7 @@ const mode_mornye_heavy: Action = {
         const excess = Math.min(Math.max(0, ((mornye?.stats.energyPercent ?? 1) - 1) * 100), 160)
         return { bonusDMG: excess * 0.0025 }
       },
-      condition: (ctx) => {
-        const mornye = ctx.character.name === 'Mornye' ? ctx.character : ctx.allies.find(c => c.name === 'Mornye')
-        return (mornye?.sequence ?? 0) >= 1 ? 1 : 0
-      },
+      condition: ownerAtLeast('Mornye', 1),
       targetStrategy: 'all',
       durationStrategy: { type: 'limited', timeDuration: 20 },
       stackingStrategy: { maxStacks: 1, resetTimerOnApplication: true, stacksRemovedEachTime: 1 },
@@ -806,7 +809,7 @@ const mode_mornye_heavy: Action = {
       showStats: true
     },
     {
-      source: 'Mornye: Interfered Marker',
+      source: 'Mornye: Interfered Marker (S2)',
       displayName: 'Interfered Marker (S2)',
       type: 'buff',
       color: '#B87EFF',
@@ -817,14 +820,10 @@ const mode_mornye_heavy: Action = {
         const excess = Math.min(Math.max(0, ((mornye?.stats.energyPercent ?? 1) - 1) * 100), 160)
         return { critDamage: excess * 0.002 }
       },
-      condition: (ctx) => {
-        const mornye = ctx.character.name === 'Mornye' ? ctx.character : ctx.allies.find(c => c.name === 'Mornye')
-        return (mornye?.sequence ?? 0) >= 2 ? 1 : 0
-      },
+      condition: ownerAtLeast('Mornye', 2),
       targetStrategy: 'all',
       durationStrategy: { type: 'limited', timeDuration: 20 },
       stackingStrategy: { maxStacks: 1, resetTimerOnApplication: true, stacksRemovedEachTime: 1 },
-      contributionGroup: 'Mornye: Interfered Marker',
       description: 'For 20 seconds: Every 1 % of Mornye\'s Energy Regen over 100 % grants 0.2% Crit DMG to all Resonators, up to 32%.',
       showStats: true
     },
@@ -885,10 +884,7 @@ const mornye_liberation: Action = {
       color: '#FF2E3A',
       ownerCharacter: 'Mornye',
       characterStats: { offtuneBuildupRate: 0.2 },
-      condition: (ctx) => {
-        const mornye = ctx.character.name === 'Mornye' ? ctx.character : ctx.allies.find(c => c.name === 'Mornye')
-        return (mornye?.sequence ?? 0) >= 2 ? 1 : 0
-      },
+      condition: ownerAtLeast('Mornye', 2),
       targetStrategy: 'all',
       durationStrategy: { type: 'limited', timeDuration: 25 },
       stackingStrategy: { maxStacks: 1, resetTimerOnApplication: true, stacksRemovedEachTime: 1 },
@@ -912,7 +908,18 @@ const mornye_liberation: Action = {
     endState: 'PRESERVE',
     requiredForms: ['Wide Field Observation Mode'] // Technically not true, but practically required
   },
-  offtune: 7.20
+  offtune: 7.20,
+  resolveVariant(_prevSnapshot, _characterName, owner) {
+    const s5Multiplier = owner.sequence >= 5 ? 1.4 : 1
+    const s6Multiplier = owner.sequence >= 6 ? 5 : 1
+    const totalMultiplier = s5Multiplier * s6Multiplier
+    if (totalMultiplier === 1) return { ...this, resolveVariant: undefined }
+    return {
+      ...this,
+      multiplier: this.multiplier * totalMultiplier,
+      resolveVariant: undefined,
+    }
+  },
 }
 
 // ========== Intro & Outro ====================================================================================================

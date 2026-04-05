@@ -939,19 +939,24 @@ export function resolveCastState(ctx: StepContext): void {
     }
   }
 
-  // Record this action for potential combo window usage
-  // The actual validation (whether this action can start a combo) happens in ActionSelect
-  // by checking if any follow-up action has this action in its comboWindow.previousActions
-  // Note: We always use fromTime (cast start) because ActionSelect will apply the timerStartsAt
-  // logic when validating. This simplifies the tracking.
-  ctx.current.charactersComboWindows = {
-    ...ctx.current.charactersComboWindows,
-    [charName]: {
-      actionName: ctx.action.name,
-      startTime: ctx.fromTime, // Record cast start time
-      wasSwapped: false, // Reset when a new action is cast
-      formChanged: false, // Reset when a new action is cast
-    },
+  // Record this action for potential combo window usage, but only if it is actually a combo
+  // window starter (referenced in another action's comboWindow.previousActions).
+  // Non-starter actions (e.g. intermediate mid-air attacks between Skill 1 and Skill 2) must
+  // NOT overwrite the existing entry — the window must survive those intermediate actions.
+  // The wasSwapped / formChanged flags set above still apply to the preserved entry.
+  const isComboWindowStarter = ctx.character.actions.some(a =>
+    a.castConditions.comboWindow?.previousActions.some(pa => pa.name === ctx.action.name)
+  )
+  if (isComboWindowStarter) {
+    ctx.current.charactersComboWindows = {
+      ...ctx.current.charactersComboWindows,
+      [charName]: {
+        actionName: ctx.action.name,
+        startTime: ctx.fromTime, // Record cast start time
+        wasSwapped: false, // Reset when a new combo window is opened
+        formChanged: false, // Reset when a new combo window is opened
+      },
+    }
   }
 
   ctx.logs.push({

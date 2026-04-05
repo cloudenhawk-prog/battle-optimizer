@@ -47,7 +47,9 @@ const hiyuki_intro: Action = {
   cooldown: 0,
   energyGenerated: [
     { energyType: 'energy', amount: 100, share: 0.5, scalingStat: 'energyPercent' }, // TODO
-    { energyType: 'concerto', amount: 100, share: 0 } // TODO
+    { energyType: 'concerto', amount: 100, share: 0 }, // TODO
+    { energyType: 'mind', amount: 100, share: 0 }, // TODO
+    { energyType: 'chill', amount: 100, share: 0 }, // TODO
     // TODO: depending on form, gives 100 special energy
     // TODO: depending on form, allows for a follow up attack
   ],

@@ -55,6 +55,33 @@ export function deleteRotationFromStorage(name: string): void {
   localStorage.setItem(STORAGE_KEY, JSON.stringify(filtered))
 }
 
+// ========== Snippet LocalStorage =============================================================================================
+
+const SNIPPETS_KEY = 'battle-optimizer:saved-snippets'
+
+export function loadSavedSnippets(): SavedRotation[] {
+  try {
+    const raw = localStorage.getItem(SNIPPETS_KEY)
+    return raw ? (JSON.parse(raw) as SavedRotation[]) : []
+  } catch {
+    return []
+  }
+}
+
+export function saveSnippetToStorage(snippet: SavedRotation): void {
+  const existing = loadSavedSnippets()
+  const idx = existing.findIndex(s => s.name === snippet.name)
+  if (idx !== -1) existing[idx] = snippet
+  else existing.push(snippet)
+  localStorage.setItem(SNIPPETS_KEY, JSON.stringify(existing))
+}
+
+export function deleteSnippetFromStorage(name: string): void {
+  const existing = loadSavedSnippets()
+  const filtered = existing.filter(s => s.name !== name)
+  localStorage.setItem(SNIPPETS_KEY, JSON.stringify(filtered))
+}
+
 // ========== Step Extraction ==================================================================================================
 
 /**

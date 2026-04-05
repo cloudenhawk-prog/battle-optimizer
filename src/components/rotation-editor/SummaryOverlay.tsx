@@ -597,9 +597,8 @@ function computeEnergyFlow(
     fieldTimeMap[s.character] = (fieldTimeMap[s.character] ?? 0) + (s.toTime - s.fromTime)
   }
 
-  // Count liberation casts (resonance energy drops >= 50% of max) and sum positive energy gains
+  // Count liberation casts (resonance energy drops >= 50% of max)
   const libCounts = new Map<string, number>()
-  const energyGainMap = new Map<string, number>()
   for (let i = 1; i < snapshots.length; i++) {
     for (const char of characters) {
       const maxE = char.maxEnergies.energy ?? 0
@@ -609,12 +608,26 @@ function computeEnergyFlow(
       if (prv - cur >= maxE * 0.5) {
         libCounts.set(char.name, (libCounts.get(char.name) ?? 0) + 1)
       }
-      if (cur > prv) {
-        const energyPercent = char.stats?.energyPercent ?? 1
-        const baseGain = energyPercent > 0 ? (cur - prv) / energyPercent : (cur - prv)
-        energyGainMap.set(char.name, (energyGainMap.get(char.name) ?? 0) + baseGain)
-      }
     }
+  }
+
+  // Sum raw energy generated per character directly from action definitions (ignoring scaling/share/caps)
+  const actionMapByChar = new Map<string, Map<string, (typeof characters)[number]['actions'][number]>>()
+  for (const char of characters) {
+    const m = new Map<string, (typeof characters)[number]['actions'][number]>()
+    for (const action of char.actions) m.set(action.name, action)
+    actionMapByChar.set(char.name, m)
+  }
+  const energyGainMap = new Map<string, number>()
+  for (const snap of snapshots) {
+    if (!snap.character || !snap.action) continue
+    const action = actionMapByChar.get(snap.character)?.get(snap.action)
+    if (!action) continue
+    const generated = action.energyGenerated
+      .filter(e => e.energyType === 'energy')
+      .reduce((sum, e) => sum + e.amount, 0)
+    if (generated > 0)
+      energyGainMap.set(snap.character, (energyGainMap.get(snap.character) ?? 0) + generated)
   }
 
   return characters.map(char => {
@@ -771,7 +784,7 @@ function LeftPanel({ characterSummaries, charColorMap, energyFlow }: LeftPanelPr
                     <div className="summaryEnergyStat">
                       <span className="summaryEnergyStatLabel" style={{ color: theme.primary, textShadow: `0 0 10px ${theme.glow}` }}>Energy Generated</span>
                       <span className="summaryEnergyStatValue">
-                        {Math.round(entry.energyGenerated)}
+                        {entry.energyGenerated.toFixed(1)}
                       </span>
                     </div>
                     <div className="summaryEnergyStat">

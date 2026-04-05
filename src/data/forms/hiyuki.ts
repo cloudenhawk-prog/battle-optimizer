@@ -11,6 +11,5 @@ export const form_default: Form = { // TODO
 export const form_sakura: Form = { // TODO
   name: 'Sakura Blossom',
   displayName: 'Sakura Blossom',
-  resetFormOnSwapOut: false,
-  resetEnergiesOnSwapOut: ['unknown_energy'],
+  resetFormOnSwapOut: false
 }
