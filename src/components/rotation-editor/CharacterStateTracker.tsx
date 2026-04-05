@@ -16,6 +16,7 @@ type CharacterStateTrackerProps = {
   setColumnVisibility: React.Dispatch<React.SetStateAction<ColumnVisibility>>
   activeCharacterName?: string | null
   onGearChange?: (characterName: string, newGear: Gear) => void
+  onSequenceChange?: (characterName: string, sequence: 0 | 1 | 2 | 3 | 4 | 5 | 6) => void
 }
 
 export function CharacterStateTracker({
@@ -26,6 +27,7 @@ export function CharacterStateTracker({
   setColumnVisibility,
   activeCharacterName,
   onGearChange,
+  onSequenceChange,
 }: CharacterStateTrackerProps) {
   const [profileOpen, setProfileOpen] = useState<string | null>(null)
 
@@ -303,6 +305,7 @@ export function CharacterStateTracker({
             allCharacters={charactersInBattle}
             onClose={() => setProfileOpen(null)}
             onGearChange={onGearChange}
+            onSequenceChange={onSequenceChange}
             onCharacterChange={name => setProfileOpen(name)}
           />
         )

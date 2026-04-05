@@ -20,11 +20,12 @@ type RotationEditorProps = {
   columnVisibility: ColumnVisibility
   setColumnVisibility: React.Dispatch<React.SetStateAction<ColumnVisibility>>
   onGearChange?: (characterName: string, newGear: Gear) => void
+  onSequenceChange?: (characterName: string, sequence: 0 | 1 | 2 | 3 | 4 | 5 | 6) => void
   gearResetKey?: number
   settings: Settings
 }
 
-export default function RotationEditor({ charactersInBattle, enemy, tableConfig, columnVisibility, setColumnVisibility, onGearChange, gearResetKey, settings }: RotationEditorProps) {
+export default function RotationEditor({ charactersInBattle, enemy, tableConfig, columnVisibility, setColumnVisibility, onGearChange, onSequenceChange, gearResetKey, settings }: RotationEditorProps) {
   const { snapshots, damageEvents, handleCharacterSelect, handleActionSelect, importExport } = useRotationEditor({ charactersInBattle, tableConfig, enemy, gearResetKey, settings })
   const [overlayOpen, setOverlayOpen] = useState(false)
   const [overlayData, setOverlayData] = useState<null | { snapshot: Snapshot; damageEvents: DamageEvent[] }>(null)
@@ -86,7 +87,7 @@ export default function RotationEditor({ charactersInBattle, enemy, tableConfig,
           >✕</button>
         </div>
       )}
-      <RotationTable snapshots={snapshots} charactersInBattle={charactersInBattle} tableConfig={tableConfig} onSelectCharacter={handleCharacterSelect} onSelectAction={handleActionSelect} columnVisibility={columnVisibility} setColumnVisibility={setColumnVisibility} onRowClick={handleRowClick} onGearChange={onGearChange} />
+      <RotationTable snapshots={snapshots} charactersInBattle={charactersInBattle} tableConfig={tableConfig} onSelectCharacter={handleCharacterSelect} onSelectAction={handleActionSelect} columnVisibility={columnVisibility} setColumnVisibility={setColumnVisibility} onRowClick={handleRowClick} onGearChange={onGearChange} onSequenceChange={onSequenceChange} />
       <div className="editorFloatingButtons">
         <button className="summaryOpenButton" onClick={() => setRotationsOpen(true)} title="Save / load rotations">
           ◈ ROTATIONS
@@ -101,10 +102,14 @@ export default function RotationEditor({ charactersInBattle, enemy, tableConfig,
         open={rotationsOpen}
         onClose={() => setRotationsOpen(false)}
         savedRotations={importExport.savedRotations}
+        savedSnippets={importExport.savedSnippets}
         hasCurrentRotation={hasData}
         onSave={importExport.handleSave}
         onLoad={importExport.handleLoad}
         onDelete={importExport.handleDelete}
+        onSaveSnippet={importExport.handleSaveSnippet}
+        onDeleteSnippet={importExport.handleDeleteSnippet}
+        onAppend={importExport.handleAppend}
         onDownload={importExport.handleDownload}
         onFileUpload={importExport.handleFileUpload}
         onClearImportStatus={importExport.clearImportStatus}

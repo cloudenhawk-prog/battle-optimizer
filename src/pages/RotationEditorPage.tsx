@@ -28,13 +28,27 @@ export default function RotationEditorPage() {
    * Called when the player swaps weapon or echoes on a character.
    * Re-resolves the character's stats with the new gear, then resets the timeline
    * since past snapshots were computed with the old character stats.
+   * Preserves the current sequence level so it survives gear changes.
    */
   const handleGearChange = useCallback((characterName: string, newGear: Gear) => {
     const base = baseCharacters.find(c => c.name === characterName)
     if (!base) return
-    const reResolved = resolveCharacter(base, newGear)
-    setResolvedCharacters(prev => prev.map(c => (c.name === characterName ? reResolved : c)))
+    setResolvedCharacters(prev => {
+      const currentSeq = prev.find(c => c.name === characterName)?.sequence ?? base.sequence
+      const reResolved = resolveCharacter({ ...base, sequence: currentSeq }, newGear)
+      return prev.map(c => (c.name === characterName ? reResolved : c))
+    })
     // Soft-reset the timeline without remounting RotationEditor (remounting would close the profile overlay)
+    setGearResetKey(k => k + 1)
+  }, [])
+
+  /**
+   * Called when the player changes a character's sequence level in the profile overlay.
+   * Updates the character in state and resets the timeline since sequence-gated modifiers
+   * may now appear or disappear.
+   */
+  const handleSequenceChange = useCallback((characterName: string, sequence: 0 | 1 | 2 | 3 | 4 | 5 | 6) => {
+    setResolvedCharacters(prev => prev.map(c => (c.name === characterName ? { ...c, sequence } : c)))
     setGearResetKey(k => k + 1)
   }, [])
 
@@ -49,7 +63,7 @@ export default function RotationEditorPage() {
       </button>
       {topbarVisible && <Topbar tableConfig={tableConfig} allColumns={allColumns} columnVisibility={columnVisibility} setColumnVisibility={setColumnVisibility} />}
 
-      <RotationEditor key={timelineKey} gearResetKey={gearResetKey} charactersInBattle={resolvedCharacters} enemy={enemies[0]} tableConfig={tableConfig} columnVisibility={columnVisibility} setColumnVisibility={setColumnVisibility} onGearChange={handleGearChange} settings={settings} />
+      <RotationEditor key={timelineKey} gearResetKey={gearResetKey} charactersInBattle={resolvedCharacters} enemy={enemies[0]} tableConfig={tableConfig} columnVisibility={columnVisibility} setColumnVisibility={setColumnVisibility} onGearChange={handleGearChange} onSequenceChange={handleSequenceChange} settings={settings} />
     </div>
   )
 }

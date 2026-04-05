@@ -8,7 +8,7 @@ export const hiyuki: Character = {
   name: 'Hiyuki',
   element: 'GLACIO',
   weaponType: 'Sword',
-  maxEnergies: {energy: 100, concerto: 100, forte: 100, unknown_energy: 100 }, // TODO
+  maxEnergies: {energy: 100, concerto: 100, forte: 100, mind: 300, chill: 300 }, // TODO
   actions: [...all_actions],
   damageModifiers: [],
   stats: hiyuki_stats,
@@ -29,7 +29,7 @@ export const hiyuki: Character = {
   sequence: 6, // TODO
   sequence_nodes: [ // TODO
     'The DMG multipliers of Normal Attacks - Foreclaimed Self other than Frost Splinter: Foreclaimed Self are increased by 120%. Basic Attack - Foreclaimed Self Stage 3 now has an increased range and pulls enemies within range toward the center once.',
-    'Frost Rite\'s DMG multiplier is increased by 110%. Agfter staying out of combat for more than 4s, the following effects are triggered: 1: Restore 3 points of SOMETHING. 2: Reset the cooldown of 2 charges of Frostblight: Jade Cleave. 3: Restore an additional 50 points of SOMETHING for the next 2 casts of Frostblight: Jade Cleave or Frostblight: Petalfall.',
+    'Frost Rite\'s DMG multiplier is increased by 110%. After staying out of combat for more than 4s, the following effects are triggered: 1: Restore 3 points of SOMETHING. 2: Reset the cooldown of 2 charges of Frostblight: Jade Cleave. 3: Restore an additional 50 points of SOMETHING for the next 2 casts of Frostblight: Jade Cleave or Frostblight: Petalfall.',
     'Every 2s after joining the tam, gain 1 stack of Ringing Frost. The DMG multipliers of Rimeblade: Present Self and Rimeblade: Foreclaimed Self are increased by 120%. At 2 stacks of Ringing Frost, while Hiyuki is on the field, the DMG multiplier of the additional Negative Status applied each time she inflicts Glacio Chafe is increased by 488%.',
     'Casting Resonance Skill: Present Self, Frotblight: Jade Cleave, or Frostblight: Petalfall increases the damage dealt by all resonators in the team by 20% for 30s.',
     'The DMG multipliers of Resonance Skill - Present Self, Frostblight: Jade Cleave, and Frostblight: Petalfall are increased by 80%.',

@@ -11,7 +11,7 @@ export function getActionFromCharacter(charactersMap: Record<string, Character>,
   const action = character.actions.find(a => a.name === actionName)
   if (!action) return undefined
   if (action.resolveVariant) {
-    return action.resolveVariant(prevSnapshot, characterName)
+    return action.resolveVariant(prevSnapshot, characterName, character)
   }
   return action
 }

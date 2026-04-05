@@ -26,7 +26,8 @@ All example code references real data from the codebase. Types are defined in `s
    - [stacksOf(name)](#33-stacksof)
    - [stacksOfCap(name)](#34-stacksofcap)
    - [hasForteGrant(name)](#35-hasfortegrant)
-   - [Custom inline condition](#36-custom-inline-condition)
+   - [ownerAtLeast(name, minSequence)](#36-owneratleastname-minsequence)
+   - [Custom inline condition](#37-custom-inline-condition)
 4. [StatusModification — Explicit Stack / Duration Changes](#4-statusmodification--explicit-stack--duration-changes)
    - [Apply stacks of a NegativeStatus](#41-apply-stacks-of-a-negativestatus)
    - [Remove stacks of a NegativeStatus](#42-remove-stacks-of-a-negativestatus)
@@ -52,6 +53,9 @@ All example code references real data from the codebase. Types are defined in `s
 9. [Cooldown Reductions](#9-cooldown-reductions)
 10. [Forms & Form-Specific Intro/Outro](#10-forms--form-specific-introoutro)
 11. [Dynamic Variants (resolveVariant)](#11-dynamic-variants-resolvevariant)
+    - [Signature and available context](#111-signature-and-available-context)
+    - [Sequence-gating any action property](#112-sequence-gating-any-action-property)
+    - [Runtime-state variants (forte, cooldowns)](#113-runtime-state-variants-forte-cooldowns)
 12. [Combo & Sequencing Mechanics](#12-combo--sequencing-mechanics)
     - [previousActions — must immediately follow another action](#121-previousactions--must-immediately-follow-another-action)
     - [attemptFollowUp — forces the next action](#122-attemptFollowUp--forces-the-next-action)
@@ -363,7 +367,25 @@ condition: hasForteGrant('Mandate of Divinity')
 
 ---
 
-### 3.6 Custom inline condition
+### 3.6 `ownerAtLeast(name, minSequence)`
+
+Returns `1` when the named character's sequence level is ≥ `minSequence`, `0` otherwise. Works whether that character is the active character or an ally. This is the standard way to gate a `DamageModifier` behind a sequence node.
+
+```ts
+import { ownerAtLeast } from '../../utils/conditions/damageModifierConditions'
+
+// Active only at S1+
+condition: ownerAtLeast('Mornye', 1)
+
+// Active only at S2+
+condition: ownerAtLeast('Mornye', 2)
+```
+
+Use this whenever a buff or debuff in a character's kit is unlocked by a specific sequence node — in `Action.damageModifiers`, `Character.damageModifiers`, `CoordinatedAttack.damageModifiers`, etc.
+
+---
+
+### 3.7 Custom inline condition
 
 Write a function `(ctx: StepContext) => number` inline for anything not covered by the helpers above.
 
@@ -853,7 +875,130 @@ When no `requiredForms` is specified, the action is available in all forms.
 
 ## 11. Dynamic Variants (`resolveVariant`)
 
-Use `resolveVariant` when the actual `Action` to run must be determined at cast time based on runtime state (energies, form, etc.). The function receives `(prevSnapshot, characterName)` and returns the resolved `Action`.
+Use `resolveVariant` when the actual `Action` to run must be determined at cast time based on runtime state. It is the primary mechanism for **sequence-gating any action property**, and also handles forte/cooldown-based tier selection.
+
+---
+
+### 11.1 Signature and available context
+
+```ts
+resolveVariant(
+  prevSnapshot: Snapshot | undefined,  // full snapshot before this action executes
+  characterName: string,                // name of the owning character
+  owner: ResolveVariantOwner,           // { name, sequence, stats } of the owning character
+): Action
+```
+
+`owner` gives you the character's current `sequence` level and `stats` directly. `prevSnapshot` gives you energies, cooldowns, forms, and anything else tracked at runtime. Existing implementations that declare only the first one or two parameters continue to work — TypeScript allows functions to ignore trailing parameters.
+
+**Rule:** always set `resolveVariant: undefined` on the returned object so the resolved action is never re-resolved.
+
+---
+
+### 11.2 Sequence-gating any action property
+
+Every field of an `Action` can be branched on `owner.sequence`. Spread `this` as the base and override only what changes:
+
+```ts
+const myAction: Action = {
+  name: 'My Action',
+  castTime: 1.0,
+  multiplier: 2.0,
+  tags: ['HEAVY_ATTACK'],
+  elements: ['FUSION'],
+  dmgTypes: ['HEAVY'],
+  offtune: 0.5,
+  energyGenerated: [{ energyType: 'energy', amount: 10, share: 0.5 }],
+  energyCost: [{ energyType: 'forte', amount: 50 }],
+  statusModifications: [],
+  sideEffects: [],
+  coordinatedAttacks: [],
+  castConditions: { startState: 'GROUND', endState: 'AIR' },
+  damageModifiers: [...baseModifiers],
+  ...
+
+  resolveVariant(_prevSnapshot, _characterName, owner) {
+    // S1: different multiplier and damage modifier
+    if (owner.sequence >= 1) {
+      return {
+        ...this,
+        multiplier: 3.0,
+        damageModifiers: [...this.damageModifiers, s1ExtraModifier],
+        resolveVariant: undefined,
+      }
+    }
+    return { ...this, resolveVariant: undefined }
+  },
+}
+```
+
+**Reference — every overridable property:**
+
+| Property | How to override |
+|---|---|
+| `name` / `displayName` | `name: 'My Action (S3)'` |
+| `tags` | `tags: [...this.tags, 'NEW_TAG']` |
+| `elements` / `dmgTypes` | `elements: ['FUSION', 'HAVOC']` |
+| `castTime` | `castTime: 0.8` |
+| `multiplier` | `multiplier: higherMultiplier` |
+| `scaling` | `scaling: 'DEF'` |
+| `energyGenerated` | `energyGenerated: [...this.energyGenerated, extraEnergy]` |
+| `energyCost` | `energyCost: [{ energyType: 'energy', amount: 150 }]` |
+| `statusModifications` | `statusModifications: [...this.statusModifications, addStacks]` |
+| `sideEffects` | `sideEffects: [...this.sideEffects, s3SideEffect]` |
+| `coordinatedAttacks` | `coordinatedAttacks: [...this.coordinatedAttacks, s3Attack]` |
+| `damageModifiers` | `damageModifiers: [...this.damageModifiers, s3Modifier]` |
+| `castConditions` | `castConditions: { ...this.castConditions, startState: 'ANY' }` |
+| `offtune` | `offtune: 1.5` |
+| `cooldown` | `cooldown: 20` |
+| `formChange` | `formChange: 'New Form'` |
+
+> **Tip:** spread `this` first, then override only the differing fields. This keeps the base definition as the single source of truth and avoids duplicating unchanged values.
+
+**Multi-sequence branching example (Mornye's Mode: Heavy Attack):**
+
+```ts
+const mode_mornye_heavy: Action = {
+  // Base (no sequence nodes)
+  name: 'Mode: Heavy Attack',
+  multiplier: 2.5846,
+  damageModifiers: [],               // Interfered Marker — only at S1+
+  energyCost: [{ energyType: 'relative_momentum', amount: 100 }],
+  offtune: 1.04,
+  castConditions: { startState: 'AIR', endState: 'AIR', requiredForms: ['Wide Field Observation Mode'] },
+  ...
+
+  resolveVariant(_prevSnapshot, _characterName, owner) {
+    let overrides: Partial<Action> = {}
+
+    // S1: add Interfered Marker damage bonus modifier
+    if (owner.sequence >= 1) {
+      overrides.damageModifiers = [
+        ...this.damageModifiers,
+        interferedMarkerModifier,    // { condition: ownerAtLeast('Mornye', 1), ... }
+      ]
+    }
+
+    // S2: also add Interfered Marker crit damage modifier
+    if (owner.sequence >= 2) {
+      overrides.damageModifiers = [
+        ...(overrides.damageModifiers ?? this.damageModifiers),
+        interferedMarkerS2Modifier,  // { condition: ownerAtLeast('Mornye', 2), ... }
+      ]
+    }
+
+    return { ...this, ...overrides, resolveVariant: undefined }
+  },
+}
+```
+
+> **Modifier conditions vs. resolveVariant:** for modifiers that are *always present in the action* but only *apply* at a certain sequence level, keep them in `damageModifiers` and gate them with `condition: ownerAtLeast('Mornye', 2)` (see §3.6). Use `resolveVariant` when the modifier should not exist at all below that sequence level, or when other action fields (multiplier, cast time, energy) also change.
+
+---
+
+### 11.3 Runtime-state variants (forte, cooldowns)
+
+`resolveVariant` also handles any runtime state beyond sequence — forte sub-energies, cooldowns, snapshot fields, etc.
 
 ```ts
 // Cartethyia plunge — picks the correct tier based on how many sub-energies are available
@@ -876,16 +1021,7 @@ const cartethyia_plunge: Action = {
     return { ...base, energyCost, name: this.name, groupName: this.groupName, castConditions: this.castConditions }
   },
 }
-```
 
-**Rules for `resolveVariant`:**
-- Always keeps `name`, `groupName`, `variantName`, `castConditions`, `castTime`, `cooldown`, and `offtune` from the parent action (`this` / `this.xxx`) — these are used by the UI and cooldown system.
-- Only override `multiplier`, `energyCost`, `energyGenerated`, `statusModifications`, `damageModifiers`, `sideEffects`, `cooldownReductions`, and `displayName`.
-- The parent action's `displayName` becomes the displayed name on the row; if you want the resolved variant's display name shown, set `resolvedDisplayName` (it is set automatically from `action.displayName` in `buildStepContext`).
-
-**Another use case — computing castTime from runtime state:**
-
-```ts
 // Ciaccona "Wait Until Next Swap Is Available" — castTime equals remaining swap cooldown
 const ciaccona_wait_for_swap: Action = {
   castTime: 0, // placeholder, resolved below
@@ -899,6 +1035,8 @@ const ciaccona_wait_for_swap: Action = {
   },
 }
 ```
+
+All three parameters can be combined freely — the same `resolveVariant` can branch on `owner.sequence`, `prevSnapshot` energies, and `characterName` simultaneously.
 
 ---
 

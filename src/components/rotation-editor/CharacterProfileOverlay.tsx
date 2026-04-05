@@ -1260,16 +1260,15 @@ type CharacterProfileOverlayProps = {
   onClose: () => void
   onGearChange?: (characterName: string, newGear: Gear) => void
   onCharacterChange?: (characterName: string) => void
+  onSequenceChange?: (characterName: string, sequence: 0 | 1 | 2 | 3 | 4 | 5 | 6) => void
 }
 
-export function CharacterProfileOverlay({ characterName, character, snapshot, allCharacters, onClose, onGearChange, onCharacterChange }: CharacterProfileOverlayProps) {
+export function CharacterProfileOverlay({ characterName, character, snapshot, allCharacters, onClose, onGearChange, onCharacterChange, onSequenceChange }: CharacterProfileOverlayProps) {
   const [selectedStat, setSelectedStat] = useState<string | null>(null)
   const [isClosing, setIsClosing] = useState(false)
   const [tooltip, setTooltip] = useState<TooltipData | null>(null)
   const [pickerSlot, setPickerSlot] = useState<1 | 2 | 3 | 4 | 5 | null>(null)
   const [weaponPickerOpen, setWeaponPickerOpen] = useState(false)
-  // todo: localSequence tracks visual-only resonance chain state.
-  // Later this should persist to character data so sequence-gated modifiers are applied.
   const [localSequence, setLocalSequence] = useState<0 | 1 | 2 | 3 | 4 | 5 | 6>(character.sequence)
   // prevLocalSequence is initialised to -1 so the full arc animates on first open for any sequence level
   const [prevLocalSequence, setPrevLocalSequence] = useState<0 | 1 | 2 | 3 | 4 | 5 | 6>(-1 as 0 | 1 | 2 | 3 | 4 | 5 | 6) // initially -1 casted to satisfy TS
@@ -1279,6 +1278,7 @@ export function CharacterProfileOverlay({ characterName, character, snapshot, al
   function handleSequenceChange(seq: 0 | 1 | 2 | 3 | 4 | 5 | 6) {
     setPrevLocalSequence(localSequence)
     setLocalSequence(seq)
+    onSequenceChange?.(characterName, seq)
   }
 
   const finalStats = computeFinalStats(character, snapshot, allCharacters)

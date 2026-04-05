@@ -57,3 +57,20 @@ export function hasForteGrant(grantName: string) {
     return grants.includes(grantName) ? 1 : 0
   }
 }
+
+// ========== Sequence Conditions ===============================================================
+
+/**
+ * Returns a condition that is active (returns 1) when the named character's sequence level
+ * is at least `minSequence`. Works whether that character is the active character or an ally.
+ *
+ * Usage: condition: ownerAtLeast('Mornye', 2)
+ */
+export function ownerAtLeast(characterName: string, minSequence: number) {
+  return (ctx: StepContext): number => {
+    const char = ctx.character.name === characterName
+      ? ctx.character
+      : ctx.allies.find(c => c.name === characterName)
+    return (char?.sequence ?? 0) >= minSequence ? 1 : 0
+  }
+}

@@ -111,6 +111,57 @@
   opacity: 1;
 }
 
+/* ── Tab Strip ───────────────────────────────────────────── */
+.ieTabStrip {
+  display: flex;
+  border-bottom: 1px solid var(--table-border);
+  flex-shrink: 0;
+}
+
+.ieTab {
+  flex: 1;
+  background: none;
+  border: none;
+  border-bottom: 2px solid transparent;
+  color: var(--table-text-subtle);
+  font-size: 0.74rem;
+  font-weight: 500;
+  letter-spacing: 0.06em;
+  padding: 9px 0;
+  cursor: pointer;
+  transition: color 0.15s, border-color 0.15s;
+  text-transform: uppercase;
+}
+
+.ieTab:hover {
+  color: var(--table-text-dim);
+}
+
+.ieTabActive {
+  color: var(--table-text);
+  border-bottom-color: rgba(100, 180, 255, 0.6);
+}
+
+/* ── Snippet Hint ────────────────────────────────────────── */
+.ieSnippetHint {
+  font-size: 0.72rem;
+  color: var(--table-text-subtle);
+  padding: 10px 20px 4px;
+  line-height: 1.5;
+  flex-shrink: 0;
+}
+
+/* ── Append Button ───────────────────────────────────────── */
+.ieActionBtnAppend {
+  border-color: rgba(180, 140, 255, 0.3);
+  color: hsl(265 70% 75%);
+}
+
+.ieActionBtnAppend:hover:not(:disabled) {
+  background: rgba(180, 140, 255, 0.1);
+  border-color: rgba(180, 140, 255, 0.5);
+}
+
 /* ── Section Labels ──────────────────────────────────────── */
 .ieSectionLabel {
   font-size: 0.65rem;
