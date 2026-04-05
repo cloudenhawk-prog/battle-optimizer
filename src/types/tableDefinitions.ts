@@ -25,7 +25,9 @@ export type StatusMetadata = {
   label: string
   icon: string
   maxStacks?: number
-  color?: string // Optional color override
+  color?: string
+  description?: string
+  showStats?: boolean
 }
 
 export type EnergyMetadata = {

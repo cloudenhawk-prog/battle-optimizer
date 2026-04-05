@@ -26,12 +26,16 @@ export function buildDebuffColumns(selectedCharacters: Character[]): ColumnGroup
   // Create a map of modifier name -> maxStacks for initialization
   const modifierMaxStacksMap = new Map<string, number>()
   const permanentModifiersSet = new Set<string>()
+  const modifierDescriptionMap = new Map<string, string>()
+  const modifierShowStatsMap = new Map<string, boolean>()
   for (const mod of allModifiers) {
     const key = mod.displayName.replace(/\s+/g, '')
     modifierMaxStacksMap.set(key, mod.stackingStrategy.maxStacks)
     if (mod.durationStrategy.type === 'permanent') {
       permanentModifiersSet.add(key)
     }
+    if (mod.description) modifierDescriptionMap.set(key, mod.description)
+    if (mod.showStats) modifierShowStatsMap.set(key, true)
   }
 
   const activeDebuffs = Array.from(new Set([...actionDebuffs, ...modifierNames]))
@@ -50,6 +54,8 @@ export function buildDebuffColumns(selectedCharacters: Character[]): ColumnGroup
         label: debuff,
         icon: `/assets/${debuff.toLowerCase().replace(/\s+/g, '_')}.png`,
         maxStacks,
+        description: modifierDescriptionMap.get(key),
+        showStats: modifierShowStatsMap.get(key),
       }
     })
 

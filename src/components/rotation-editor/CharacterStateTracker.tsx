@@ -4,6 +4,7 @@ import { CharacterProfileOverlay } from './CharacterProfileOverlay'
 import type { Snapshot } from '../../types/snapshot'
 import type { Character } from '../../types/character'
 import type { TableConfig, ColumnVisibility } from '../../types/tableDefinitions'
+import type { Gear } from '../../types/gear'
 
 // ========== Component: Character State Tracker ===============================================================================
 
@@ -14,6 +15,7 @@ type CharacterStateTrackerProps = {
   columnVisibility: ColumnVisibility
   setColumnVisibility: React.Dispatch<React.SetStateAction<ColumnVisibility>>
   activeCharacterName?: string | null
+  onGearChange?: (characterName: string, newGear: Gear) => void
 }
 
 export function CharacterStateTracker({
@@ -23,6 +25,7 @@ export function CharacterStateTracker({
   columnVisibility,
   setColumnVisibility,
   activeCharacterName,
+  onGearChange,
 }: CharacterStateTrackerProps) {
   const [profileOpen, setProfileOpen] = useState<string | null>(null)
 
@@ -48,11 +51,6 @@ export function CharacterStateTracker({
   // ========== Early Exit Guards ==============================================================================================
 
   if (tableConfig.characters.length === 0) return null
-
-  const anyVisible = tableConfig.characters.some(group =>
-    group.columns.some(col => columnVisibility[col.key]),
-  )
-  if (!anyVisible) return null
 
   // ========== Derived State Helpers ==========================================================================================
 
@@ -118,7 +116,6 @@ export function CharacterStateTracker({
           if (!character) return null
 
           const visibleColumns = group.columns.filter(col => columnVisibility[col.key])
-          if (visibleColumns.length === 0) return null
 
           // ========== Derived Data ===========================================================================================
 
@@ -134,6 +131,10 @@ export function CharacterStateTracker({
           const isActiveChar = snapshot?.character === character.name
           const isOffField = !isActiveChar && !isWithinPersistence
 
+          const comboTags = !isOffField
+            ? (snapshot?.charactersComboChainTags?.[character.name] ?? [])
+            : []
+
           const displayForm = getDisplayForm(character)
           const isActive = activeCharacterName === group.label
 
@@ -143,14 +144,16 @@ export function CharacterStateTracker({
             <div key={group.label} className={`stateTrackerCard${isActive ? ' stateTrackerCard--active' : ''}`}>
 
               {/* Profile Button */}
-              <button
-                type="button"
-                className="stateTrackerGearBtn"
-                onClick={() => setProfileOpen(group.label)}
-                title="Character Profile"
-              >
-                <img src="/assets/ui/gear.png" alt="Profile" />
-              </button>
+              {visibleColumns.length > 0 && (
+                <button
+                  type="button"
+                  className="stateTrackerGearBtn"
+                  onClick={() => handleGroupClick(group.columns)}
+                  title="Character Profile"
+                >
+                  <img src="/assets/ui/close.png" alt="Profile" />
+                </button>
+              )}
 
               {/* Header */}
               <div className="stateTrackerHeader">
@@ -160,7 +163,7 @@ export function CharacterStateTracker({
                       src={group.nametag}
                       alt={group.label}
                       className="stateTrackerNametagImg"
-                      onClick={() => handleGroupClick(group.columns)}
+                      onClick={() => setProfileOpen(group.label)}
                     />
                     <span className="stateTrackerNametagLabel">{group.label}</span>
                   </div>
@@ -194,9 +197,6 @@ export function CharacterStateTracker({
                   <div className="stateTrackerStateItem">
                     <span className="stateTrackerStateLabel">Form</span>
                     <span className="stateTrackerFormBadge">
-                      {displayForm.icon && ( // No longer have icons, remove
-                        <img src={displayForm.icon} alt={displayForm.name} className="stateTrackerFormIcon" />
-                      )}
                       {displayForm.displayName || displayForm.name}
                     </span>
                   </div>
@@ -208,6 +208,16 @@ export function CharacterStateTracker({
                     <span className="stateTrackerStateLabel">Lingers</span>
                     <span className="stateTrackerPersistBadge">
                       {(persistentUntil - (snapshot?.toTime ?? 0)).toFixed(2)}s
+                    </span>
+                  </div>
+                )}
+
+                {/* Combo (relies on persistence window being active) */}
+                {comboTags.length > 0 && (
+                  <div className="stateTrackerStateItem">
+                    <span className="stateTrackerStateLabel">Combo</span>
+                    <span className="stateTrackerComboBadge">
+                      {comboTags.map(t => t.charAt(0).toUpperCase() + t.slice(1)).join(' · ')}
                     </span>
                   </div>
                 )}
@@ -292,6 +302,8 @@ export function CharacterStateTracker({
             snapshot={snapshot}
             allCharacters={charactersInBattle}
             onClose={() => setProfileOpen(null)}
+            onGearChange={onGearChange}
+            onCharacterChange={name => setProfileOpen(name)}
           />
         )
       })()}

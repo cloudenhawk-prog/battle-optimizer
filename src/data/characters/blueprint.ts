@@ -2,6 +2,8 @@ import type { Character } from '../../types/character'
 
 export const blueprint: Character = {
   name: 'XXX',
+  element: '',
+  weaponType: null,
   maxEnergies: { energy: 100, concerto: 100, forte: 100 },
   actions: [],
   damageModifiers: [],
@@ -9,16 +11,20 @@ export const blueprint: Character = {
   inherentStats: null,
   gear: {
     weapon: null,
-    echoSlots:  {
+    echoSlots: {
       1: null,
       2: null,
       3: null,
       4: null,
-      5: null
+      5: null,
     },
-    setBonus: null
+    setBonus: null,
   },
   defaultForm: null, // Optional
   forms: [], // Optional
-  sequence: 0
+  sequence: 0,
+  sequence_nodes: [],
+  sequence_nodes_icons: [],
+  image: '', // Optional
+  resourceMilestones: [], // Optional
 }

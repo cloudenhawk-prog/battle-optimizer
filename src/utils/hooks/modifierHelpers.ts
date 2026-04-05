@@ -37,13 +37,18 @@ export function collectAllModifiers(character: Character, action: Action, negati
  * Activates new modifiers by converting blueprints to ModifierInAction.
  * Handles stacking for existing modifiers.
  */
-export function activateModifiers(modifiers: DamageModifier[], existingModifiersInAction: ModifierInAction[], ctx: StepContext): ModifierInAction[] {
+export function activateModifiers(modifiers: DamageModifier[], existingModifiersInAction: ModifierInAction[], ctx: StepContext, applicationTimeOffset: number = 0): ModifierInAction[] {
   const result: ModifierInAction[] = [...existingModifiersInAction]
 
   for (const modifier of modifiers) {
     // Skip permanent modifiers - they don't need tracking
     // Also skip if durationStrategy is missing (treat as permanent for backwards compatibility)
     if (!modifier.durationStrategy || modifier.durationStrategy.type === 'permanent') {
+      continue
+    }
+
+    // Respect activation condition — skip if condition is present and returns false
+    if (modifier.activationCondition && !modifier.activationCondition(ctx)) {
       continue
     }
 
@@ -59,7 +64,7 @@ export function activateModifiers(modifiers: DamageModifier[], existingModifiers
       const newStacks = Math.min(existing.currentStacks + 1, stacking.maxStacks)
 
       // Reset timer if configured
-      const newTimeLeft = stacking.resetTimerOnApplication ? (modifier.durationStrategy.type === 'limited' ? (modifier.durationStrategy.timeDuration ?? Infinity) : Infinity) : existing.timeLeft
+      const newTimeLeft = stacking.resetTimerOnApplication ? (modifier.durationStrategy.type === 'limited' ? (modifier.durationStrategy.timeDuration ?? Infinity) + applicationTimeOffset : Infinity) : existing.timeLeft
 
       const newSwapsLeft = stacking.resetTimerOnApplication ? (modifier.durationStrategy.type === 'limited' ? (modifier.durationStrategy.numberOfSwaps ?? Infinity) : Infinity) : existing.swapsLeft
 
@@ -68,18 +73,41 @@ export function activateModifiers(modifiers: DamageModifier[], existingModifiers
         currentStacks: newStacks,
         timeLeft: newTimeLeft,
         swapsLeft: newSwapsLeft,
+        // Re-compute frozen activation stats when the modifier duration is reset
+        ...(modifier.statsOnActivation && stacking.resetTimerOnApplication
+          ? { activationStats: modifier.statsOnActivation(ctx) }
+          : {}),
+        // Re-trigger on-cast heal proc when the modifier duration is reset
+        ...(modifier.healProc && stacking.resetTimerOnApplication
+          ? { lastHealProcTime: ctx.fromTime - modifier.healProc.frequency }
+          : {}),
       }
     } else {
       // New modifier - create ModifierInAction
+
+      // Remove any existing modifiers whose source matches the removal target
+      if (modifier.removesModifierSourceOnActivation) {
+        const removeSource = modifier.removesModifierSourceOnActivation
+        for (let i = result.length - 1; i >= 0; i--) {
+          if (result[i].modifier.source === removeSource) {
+            result.splice(i, 1)
+          }
+        }
+      }
+
       const limited = modifier.durationStrategy.type === 'limited' ? modifier.durationStrategy : null
 
       result.push({
         modifier,
         applicationTime: ctx.fromTime,
-        timeLeft: limited?.timeDuration ?? Infinity,
+        timeLeft: limited != null ? limited.timeDuration + applicationTimeOffset : Infinity,
         swapsLeft: limited?.numberOfSwaps ?? Infinity,
         currentStacks: 1,
         targetCharacter: ctx.lastSwappedToCharacter ?? null,
+        // Freeze stat contribution at activation time when statsOnActivation is defined
+        ...(modifier.statsOnActivation ? { activationStats: modifier.statsOnActivation(ctx) } : {}),
+        // Place lastHealProcTime one frequency behind so the first tick fires immediately at applicationTime
+        ...(modifier.healProc ? { lastHealProcTime: ctx.fromTime - modifier.healProc.frequency } : {}),
       })
     }
   }
@@ -136,6 +164,14 @@ export function updateModifiersForSwap(modifiersInAction: ModifierInAction[], sw
 
   for (const mia of modifiersInAction) {
     const stacking = mia.modifier.stackingStrategy
+
+    // For 'nextSwap' modifiers that haven't claimed a target yet, this swap IS the claim.
+    // Assign the target without decrementing swapsLeft — the counter starts after the target is set.
+    if (mia.modifier.targetStrategy === 'nextSwap' && mia.targetCharacter === null) {
+      result.push({ ...mia, targetCharacter: swappedToCharacter })
+      continue
+    }
+
     const newSwapsLeft = mia.swapsLeft === Infinity ? Infinity : mia.swapsLeft - 1
 
     // Check if swaps expired
@@ -189,8 +225,8 @@ export function filterApplicableModifiers(modifiersInAction: ModifierInAction[],
   // Add active limited modifiers that match target strategy
   for (const mia of modifiersInAction) {
     if (mia.currentStacks > 0 && shouldApplyModifier(mia.modifier, activeCharacter, mia.targetCharacter)) {
-      // Create a modified version with stacks multiplied
-      result.push(mia.modifier)
+      // Use frozen activation-time stats if present, otherwise fall back to static characterStats
+      result.push(mia.activationStats ? { ...mia.modifier, characterStats: mia.activationStats } : mia.modifier)
     }
   }
 
@@ -211,6 +247,8 @@ function shouldApplyModifier(modifier: DamageModifier, activeCharacter: string, 
     case 'all':
       return true
     case 'activeAlly':
+      return ownerCharacter !== activeCharacter
+    case 'allExceptSelf':
       return ownerCharacter !== activeCharacter
     case 'nextSwap':
       // Only applies if targetCharacter is set and matches active

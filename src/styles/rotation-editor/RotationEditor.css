@@ -65,3 +65,141 @@
   --rows-selectors-text-size: 0.8rem;
   --rows-added-animation-speed: 1s;
 }
+
+/* ── Import Banner ────────────────────────────────────── */
+.importBanner {
+  position: fixed;
+  top: 16px;
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 500;
+  display: flex;
+  align-items: flex-start;
+  gap: 8px;
+  padding: 10px 16px;
+  border-radius: 8px;
+  border: 1px solid;
+  font-size: 0.775rem;
+  line-height: 1.45;
+  max-width: min(560px, calc(100vw - 32px));
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.5);
+  backdrop-filter: blur(10px);
+  animation: importBannerIn 0.2s ease;
+}
+
+@keyframes importBannerIn {
+  from { opacity: 0; transform: translateX(-50%) translateY(-8px); }
+  to   { opacity: 1; transform: translateX(-50%) translateY(0); }
+}
+
+.importBannerError {
+  background: rgba(30, 12, 12, 0.92);
+  border-color: rgba(255, 80, 80, 0.35);
+  color: hsl(10 80% 72%);
+}
+
+.importBannerSuccess {
+  background: rgba(10, 28, 18, 0.92);
+  border-color: rgba(80, 200, 120, 0.35);
+  color: hsl(140 65% 65%);
+}
+
+.importBannerIcon {
+  flex-shrink: 0;
+  font-size: 0.9rem;
+  margin-top: 1px;
+}
+
+.importBannerText {
+  flex: 1;
+  min-width: 0;
+}
+
+.importBannerDismiss {
+  background: none;
+  border: none;
+  color: inherit;
+  cursor: pointer;
+  opacity: 0.6;
+  font-size: 0.75rem;
+  padding: 0 2px;
+  margin-left: 4px;
+  flex-shrink: 0;
+  align-self: flex-start;
+}
+
+.importBannerDismiss:hover {
+  opacity: 1;
+}
+
+/* ── Page Wrapper ─────────────────────────────────────── */
+.pageWrapper {
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+  min-height: 0;
+}
+
+/* ── Summary / Field Report button ─────────────────────── */
+.editorFloatingButtons {
+  display: flex;
+  justify-content: center;
+  gap: 12px;
+  margin-top: 16px;
+  flex-wrap: wrap;
+}
+
+.summaryOpenButton {
+  display: block;
+  padding: 10px 28px;
+  background: rgba(100, 180, 255, 0.07);
+  border: 1px solid rgba(100, 180, 255, 0.25);
+  border-radius: 8px;
+  color: rgba(100, 200, 255, 0.75);
+  font-family: 'Orbitron', 'Courier New', monospace;
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.summaryOpenButton:hover {
+  background: rgba(100, 180, 255, 0.13);
+  border-color: rgba(100, 180, 255, 0.5);
+  color: rgba(100, 220, 255, 0.95);
+  box-shadow: 0 0 20px rgba(100, 180, 255, 0.15);
+  transform: translateY(-1px);
+}
+
+.summaryOpenButton:active {
+  transform: translateY(0);
+}
+
+/* ── Topbar toggle button ─────────────────────────────── */
+.topbarToggleButton {
+  position: fixed;
+  top: 10px;
+  right: 14px;
+  z-index: 9999;
+  padding: 6px 16px;
+  background: rgba(100, 180, 255, 0.07);
+  border: 1px solid rgba(100, 180, 255, 0.25);
+  border-radius: 8px;
+  color: rgba(100, 200, 255, 0.75);
+  font-family: 'Orbitron', 'Courier New', monospace;
+  font-size: 10px;
+  font-weight: 600;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.topbarToggleButton:hover {
+  background: rgba(100, 180, 255, 0.13);
+  border-color: rgba(100, 180, 255, 0.5);
+  color: rgba(100, 220, 255, 0.95);
+  box-shadow: 0 0 16px rgba(100, 180, 255, 0.15);
+}

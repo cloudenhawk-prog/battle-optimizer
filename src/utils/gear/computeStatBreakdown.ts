@@ -4,6 +4,7 @@ import type { Snapshot } from '../../types/snapshot'
 import type { DamageModifier } from '../../types/modifiers'
 import { aggregateStat } from '../hooks/resolvers'
 import { mergeStats } from '../calculators/damageCalculator'
+import { echoSetRegistry, computeEchoSetCounts } from '../../data/gear/echoSets'
 
 // ========== Types ============================================================================================================
 
@@ -60,10 +61,22 @@ export function computeGearStatBreakdown(character: Character): GearStatBreakdow
     echoesTotal = mergePartialStats(echoesTotal, echoStats)
   }
 
-  // Set bonus (only when all 5 slots are filled)
-  const allFilled = slots[1] && slots[2] && slots[3] && slots[4] && slots[5]
-  const setBonus: GearStatBreakdown['setBonus'] = allFilled && gear.setBonus
-    ? { name: gear.setBonus.name, total: { ...gear.setBonus.stats } }
+  // Set bonus stats from global EchoSet registry (supports multiple active sets / partial sets)
+  const setCounts = computeEchoSetCounts(slots)
+  let setBonusTotal: Partial<CharacterStats> = {}
+  const activeSetNames: string[] = []
+  for (const [setName, count] of Object.entries(setCounts)) {
+    const echoSet = echoSetRegistry[setName]
+    if (!echoSet) continue
+    for (const [milestoneStr, milestone] of Object.entries(echoSet.milestones)) {
+      if (count >= Number(milestoneStr) && milestone.stats) {
+        setBonusTotal = mergePartialStats(setBonusTotal, milestone.stats)
+        if (!activeSetNames.includes(setName)) activeSetNames.push(setName)
+      }
+    }
+  }
+  const setBonus: GearStatBreakdown['setBonus'] = activeSetNames.length > 0
+    ? { name: activeSetNames.join(', '), total: setBonusTotal }
     : null
 
   // Passive: inherent stats + flattened passive modifier stats
@@ -142,12 +155,28 @@ export function computeActiveModifierBreakdown(
     const mod = allModifiers.find(m => m.displayName.replace(/\s+/g, '') === entry.displayName && m.type === entry.type)
     if (!mod?.characterStats) continue
 
-    const scaled = scaleStats(mod.characterStats, entry.stacks)
+    // Use the frozen activation-time stats when present (e.g. Halo 5-piece bonusATK computed at cast time).
+    // Fall back to the blueprint's static characterStats for modifiers without statsOnActivation.
+    const statsSource = (entry.type === 'buff' && snapshot.buffsActivationStats?.[entry.displayName]) || mod.characterStats
 
-    if (mod.ownerCharacter === character.name) {
+    const scaled = scaleStats(statsSource, entry.stacks)
+
+    if (mod.targetStrategy === 'nextSwap') {
+      // Only show on the specific character the buff has been assigned to.
+      // ownerCharacter is the caster and must never receive it.
+      const targetChar = snapshot.buffsTargetCharacter?.[entry.displayName] ?? null
+      if (targetChar !== character.name) continue
+      teamItems.push({ name: entry.displayName, stats: scaled })
+      teamTotal = mergePartialStats(teamTotal, scaled)
+    } else if (mod.targetStrategy === 'activeAlly' || mod.targetStrategy === 'allExceptSelf') {
+      // Owner is explicitly excluded from these buffs — never add to owner's self total.
+      if (mod.ownerCharacter === character.name) continue
+      teamItems.push({ name: entry.displayName, stats: scaled })
+      teamTotal = mergePartialStats(teamTotal, scaled)
+    } else if (mod.ownerCharacter === character.name) {
       selfItems.push({ name: entry.displayName, stats: scaled })
       selfTotal = mergePartialStats(selfTotal, scaled)
-    } else {
+    } else if (mod.targetStrategy !== 'self') {
       teamItems.push({ name: entry.displayName, stats: scaled })
       teamTotal = mergePartialStats(teamTotal, scaled)
     }

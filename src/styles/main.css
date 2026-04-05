@@ -12,6 +12,16 @@ body,
   overflow: hidden;
 }
 
+/* -------------- Hide Scrollbars -------------- */
+
+* {
+  scrollbar-width: none; /* Firefox */
+}
+
+::-webkit-scrollbar {
+  display: none; /* Chrome/Safari */
+}
+
 /* -------------- Animated Background -------------- */
 
 .background-container {

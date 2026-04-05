@@ -15,9 +15,11 @@ All example code references real data from the codebase. Types are defined in `s
    - [Time-limited buff — triggered by an action](#23-time-limited-buff--triggered-by-an-action)
    - [Swap-limited buff](#24-swap-limited-buff)
    - [Multi-stack buff with individual stack timers](#25-multi-stack-buff-with-individual-stack-timers)
-   - [Buff targeting the next character swapped to](#26-buff-targeting-the-next-character-swapped-to)
-   - [Buff that targets allies (not self)](#27-buff-that-targets-allies-not-self)
-   - [Team-wide buff](#28-team-wide-buff)
+   - [Target Strategy Reference](#26-target-strategy-reference)
+   - [Buff targeting the next character swapped to](#27-buff-targeting-the-next-character-swapped-to)
+   - [Buff that targets allies (not self)](#28-buff-that-targets-allies-not-self)
+   - [Team-wide buff](#29-team-wide-buff)
+   - [Buff for all allies except self](#210-buff-for-all-allies-except-self)
 3. [Condition Functions](#3-condition-functions)
    - [always()](#31-always)
    - [atLeastOneStackOf(name)](#32-atleastoneStackof)
@@ -52,7 +54,7 @@ All example code references real data from the codebase. Types are defined in `s
 11. [Dynamic Variants (resolveVariant)](#11-dynamic-variants-resolvevariant)
 12. [Combo & Sequencing Mechanics](#12-combo--sequencing-mechanics)
     - [previousActions — must immediately follow another action](#121-previousactions--must-immediately-follow-another-action)
-    - [requiredFollowUp — forces the next action](#122-requiredfollowup--forces-the-next-action)
+    - [attemptFollowUp — forces the next action](#122-attemptFollowUp--forces-the-next-action)
     - [comboWindow — must be cast within a time window](#123-combowindow--must-be-cast-within-a-time-window)
 13. [Gear: Injecting Modifiers and Side Effects](#13-gear-injecting-modifiers-and-side-effects)
     - [Weapon injecting a modifier onto the character](#131-weapon-injecting-a-modifier-onto-the-character)
@@ -212,13 +214,28 @@ Set `maxStacks > 1`, `resetTimerOnApplication: false`, and `stacksRemovedEachTim
 
 ---
 
-### 2.6 Buff targeting the next character swapped to
+### 2.6 Target Strategy Reference
 
-Use `targetStrategy: 'nextSwap'`. The `targetCharacter` field on `ModifierInAction` is updated on each swap via `updateModifiersForSwap`.
+The `targetStrategy` field controls who receives the stat contribution of a modifier. `ownerCharacter` refers to the character whose kit defined the modifier (typically set at gear/action data time).
+
+| Strategy | Who benefits | Notes |
+|----------|-------------|-------|
+| `self` | Only the `ownerCharacter` | Applies both when on-field and during off-field coordinated attacks. Does **not** apply to other characters. |
+| `active` | The currently on-field character | Applies to whoever is the active attacker for a main action. Does **not** apply to off-field coordinated attack hits. |
+| `all` | Every character universally | Applies during main actions, all off-field coordinated attack hits, etc. |
+| `activeAlly` | The currently on-field character, **excluding** the `ownerCharacter` | If the owner is active, the buff does nothing for those moments. Does not apply to the owner's own off-field coordinated attack hits. |
+| `allExceptSelf` | All characters **except** the `ownerCharacter` | Universal during duration, but the owning character is permanently excluded — even during their own coordinated attack hits. |
+| `nextSwap` | The character who is swapped in after the buff activates, until `numberOfSwaps` swap-outs or `timeDuration` expires | The caster never receives this buff. On activation, `targetCharacter` is `null` — the first swap "claims" the buff and assigns it to the swap-in. Subsequent swaps decrement `numberOfSwaps`. |
+
+---
+
+### 2.7 Buff targeting the next character swapped to
+
+Use `targetStrategy: 'nextSwap'`. The `targetCharacter` field on `ModifierInAction` starts as `null` when activated; the first swap after activation claims the buff and assigns it to the incoming character without spending a swap count. After that, each swap decrements `numberOfSwaps`.
 
 ```ts
 // Static Mist weapon outro buff — 15% ATK to the next swap-in only
-// src/data/gear/ciaccona.ts
+// src/data/gear/weaponCatalog.ts
 {
   targetStrategy: 'nextSwap',
   durationStrategy: { type: 'limited', timeDuration: 14, numberOfSwaps: 1 },
@@ -226,13 +243,13 @@ Use `targetStrategy: 'nextSwap'`. The `targetCharacter` field on `ModifierInActi
 }
 ```
 
-When this modifier is active, it applies only to the character who was most recently swapped to. `numberOfSwaps: 1` means it expires after that character is swapped out once.
+`numberOfSwaps: 1` means the buff expires after the claimed character is swapped out once. The caster never receives the buff regardless of `ownerCharacter`.
 
 ---
 
-### 2.7 Buff that targets allies (not self)
+### 2.8 Buff that targets allies (not self)
 
-`targetStrategy: 'activeAlly'` — the modifier applies when the currently acting character is **not** the `ownerCharacter`.
+`targetStrategy: 'activeAlly'` — the modifier applies to whoever is currently on-field, as long as it is **not** the `ownerCharacter`. If the owner swaps in, the buff effectively does nothing until they swap out again.
 
 ```ts
 // Cartethyia's outro — aero amplify for whoever is on-field after her
@@ -245,9 +262,9 @@ When this modifier is active, it applies only to the character who was most rece
 
 ---
 
-### 2.8 Team-wide buff
+### 2.9 Team-wide buff
 
-`targetStrategy: 'all'` — applies regardless of who is acting.
+`targetStrategy: 'all'` — applies to every character regardless of who is acting, including the owner.
 
 ```ts
 // Ciaccona's outro — aero erosion amplify for the whole team
@@ -267,7 +284,21 @@ When this modifier is active, it applies only to the character who was most rece
 
 ---
 
-## 3. Condition Functions
+### 2.10 Buff for all allies except self
+
+`targetStrategy: 'allExceptSelf'` — universal during duration, but the `ownerCharacter` is permanently excluded. Unlike `activeAlly`, this does **not** depend on who is currently on field; every character other than the owner benefits at all times.
+
+```ts
+// Hiyuki's outro — Glacio Amplification for everyone but Hiyuki
+// src/data/actions/hiyuki.ts
+{
+  targetStrategy: 'allExceptSelf',
+  durationStrategy: { type: 'limited', timeDuration: 20 },
+  ...
+}
+```
+
+
 
 All condition functions live in `src/utils/conditions/damageModifierConditions.ts`. A `condition(ctx)` returns a **number** used as a multiplier on the modifier's stat contribution. `0` = inactive, `1` = full value, other values = partial/scaled.
 
@@ -785,7 +816,6 @@ export const form_fleurdelys: Form = {
   displayName: 'Fleurdelys',
   introAction: fleurdelys_intro_outro_actions.find(a => a.dmgTypes.includes('INTRO')),
   // outroAction is optional — defaults to character's global OUTRO if absent
-  icon: '/assets/form-fleurdelys.png',
 }
 ```
 
@@ -887,17 +917,17 @@ Only the character's **own** last action matters. Other characters acting in bet
 
 ---
 
-### 12.2 `requiredFollowUp` — forces the next action
+### 12.2 `attemptFollowUp` — forces the next action
 
 ```ts
 // Action A forces the next cast to be Action B (all others are locked)
 const actionA: Action = {
   ...
-  requiredFollowUp: { actionName: 'Action B' },
+  attemptFollowUp: { actionName: 'Action B' },
 }
 ```
 
-When Action A is cast, `Snapshot.charactersRequiredFollowUp[char] = 'Action B'`. In the next row, only Action B is selectable for that character. Action B must also be off cooldown before Action A completes (validated as `isFollowUpNotReady`).
+When Action A is cast, `Snapshot.charactersattemptFollowUp[char] = 'Action B'`. In the next row, only Action B is selectable for that character. Action B must also be off cooldown before Action A completes (validated as `isFollowUpNotReady`).
 
 ---
 

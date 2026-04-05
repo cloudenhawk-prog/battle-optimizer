@@ -7,6 +7,13 @@ export type EnergyGeneration = {
   amount: number
   share: number
   scalingStat?: string
+  /**
+   * When set, this energy entry is only granted at most once per `cooldownDuration` seconds.
+   * The cooldown is tracked in `charactersCooldowns` under this key.
+   * Used for gear effects like "restore X concerto from Liberation, once every 20s".
+   */
+  cooldownKey?: string
+  cooldownDuration?: number
 }
 
 // ========== Type: Energy Cost ================================================================================================

@@ -1,37 +1,15 @@
-import type { Echo, EchoSetBonus, Weapon } from '../../types/gear'
+import type { Echo, EchoSetBonus } from '../../types/gear'
 import { always } from '../../utils/conditions/damageModifierConditions'
-import { ciaccona_BA_3_4_cancel_with_skill, ciaccona_BA_3_4_cancel_with_swap, ciaccona_midair_2_BA_4_cancel_with_skill, ciaccona_midair_2_BA_4_cancel_with_swap, ciaccona_outro, ciaccona_skill, ciaccona_skill_cancel_with_swap } from '../actions/ciaccona'
-import { ciaccona_singers_triple_cadenza_coordinated } from '../coordinatedAttacks/ciaccona'
 import { nightmareKelpieOutroTrigger } from '../sideEffects/sideEffects'
+import { weaponCatalog, buildWeapon } from './weaponCatalog'
 
 // ========== Weapon ===========================================================================================================
-const ciaccona_weapon: Weapon = {
-  name: 'Static Mist',
-  stats: { baseATK: 587.50, critRate: 0.2430, energyPercent: 0.192 },
-  injectedModifiers: [
-    {
-      targets: [ciaccona_outro], // TODO: Would this correctly inject it into ciaccona's outro action?
-      modifiers: [
-        {
-          source: 'Static Mist',
-          displayName: 'Static Mist Outro Buff',
-          type: 'buff',
-          ownerCharacter: 'Ciaccona',
-          condition: always(),
-          characterStats: { bonusATK: 0.15 },
-          targetStrategy: 'nextSwap',
-          durationStrategy: { type: 'limited', timeDuration: 14, numberOfSwaps: 1 }, // TODO: would this correctly give only the next character after the outro 15 % ATK for 14 seconds (NOT herself, and not 2 future characters, just the next one until swapped out again)?
-          stackingStrategy: { maxStacks: 1, resetTimerOnApplication: true, stacksRemovedEachTime: 1 },
-        }
-      ]
-    }
-  ],
-  rank: 3
-}
+const ciaccona_weapon = buildWeapon(weaponCatalog.find(w => w.name === 'Static Mist')!, 3, 'Ciaccona')!
 
 // ========== Echoes ===========================================================================================================
 const ciaccona_cost_4_echo_1: Echo = {
   name: 'Nightmare: Kelpie',
+  setName: 'Gusts of Welkin',
   cost: 4,
   baseStats: { flatATK: 150, critDamage: 0.44 },
   subStats: { critRate: 0.075, critDamage: 0.150, bonusATK: 0.079 },
@@ -60,38 +38,54 @@ const ciaccona_cost_4_echo_1: Echo = {
   },
   injectedSideEffects: [
     {
-      targets: [ciaccona_outro],
+      targets: [{ tag: 'OUTRO_ACTION' }],
       sideEffects: [nightmareKelpieOutroTrigger]
     }
-  ]
+  ],
+  info: 'The Resonator with this Echo equipped in the main slot gains 12.00% Glacio DMG Bonus and 12.00% Aero DMG Bonus. Switching out the Resonator with Outro Skill summons Nightmare: Kelpie to deal 405.00% Aero DMG.',
+  icon: 'assets/gear/echoes/nightmare_kelpie.png',
+  info_icon: 'assets/gear/echoes/info/info_nightmare_kelpie.png'
 }
 
 const ciaccona_cost_3_echo_1: Echo = {
   name: 'Capitaneus',
+  setName: 'Gusts of Welkin',
   cost: 3,
   baseStats: { flatATK: 100, aeroBonusDMG: 0.30 },
-  subStats: { critRate: 0.075, critDamage: 0.150, bonusATK: 0.079 }
+  subStats: { critRate: 0.075, critDamage: 0.150, bonusATK: 0.079 },
+  icon: 'assets/gear/echoes/capitaneus.png',
+  info: 'The Resonator with this Echo equipped in their main slot gains 12.00% Spectro DMG Bonus and 12.00% Heavy Attack DMG Bonus.',
+  info_icon: 'assets/gear/echoes/info_capitaneus.png'
 }
 
 const ciaccona_cost_3_echo_2: Echo = {
-  name: 'Capitaneus',
+  name: 'Hurriclaw',
+  setName: 'Gusts of Welkin',
   cost: 3,
   baseStats: { flatATK: 100, aeroBonusDMG: 0.30 },
-  subStats: { critRate: 0.075, critDamage: 0.150, bonusATK: 0.079 }
+  subStats: { critRate: 0.075, critDamage: 0.150, bonusATK: 0.079 },
+  icon: 'assets/gear/echoes/hurriclaw.png',
+  info_icon: 'assets/gear/echoes/info_hurriclaw.png'
 }
 
 const ciaccona_cost_1_echo_1: Echo = {
-  name: 'Sagittario',
+  name: 'Sacerdos',
+  setName: 'Gusts of Welkin',
   cost: 1,
   baseStats: { flatHP: 2280, bonusATK: 0.18 },
-  subStats: { critRate: 0.075, critDamage: 0.150, bonusATK: 0.079 }
+  subStats: { critRate: 0.075, critDamage: 0.150, bonusATK: 0.079 },
+  icon: 'assets/gear/echoes/sagittario.png',
+  info_icon: 'assets/gear/echoes/info_sagittario.png'
 }
 
 const ciaccona_cost_1_echo_2: Echo = {
   name: 'Sacerdos',
+  setName: 'Gusts of Welkin',
   cost: 1,
   baseStats: { flatHP: 2280, bonusATK: 0.18 },
-  subStats: { critRate: 0.075, critDamage: 0.150, bonusATK: 0.079 }
+  subStats: { critRate: 0.075, critDamage: 0.150, bonusATK: 0.079 },
+  icon: 'assets/gear/echoes/sacerdos.png',
+  info_icon: 'assets/gear/echoes/info_sacerdos.png'
 }
 
 // ========== Set Bonus ========================================================================================================
@@ -100,7 +94,7 @@ const ciaccona_set_bonus: EchoSetBonus = {
   stats: { aeroBonusDMG: 0.10 },
   injectedModifiers: [
     {
-      targets: [ciaccona_BA_3_4_cancel_with_skill, ciaccona_BA_3_4_cancel_with_swap, ciaccona_midair_2_BA_4_cancel_with_skill, ciaccona_midair_2_BA_4_cancel_with_swap, ciaccona_skill, ciaccona_skill_cancel_with_swap, ciaccona_singers_triple_cadenza_coordinated],
+      targets: [{ tag: 'AERO_EROSION_APPLIER' }],
       modifiers: [
         {
           source: 'Ciaccona',
@@ -126,7 +120,12 @@ const ciaccona_set_bonus: EchoSetBonus = {
         }
       ]
     }
-  ]
+  ],
+  info: {
+    '2-piece': 'Aero DMG + 10%',
+    '5-piece': 'Inflicting Aero Erosion upon enemies increases Aero DMG for all Resonators in the team by 15%, and for the Resonator triggering this effect by an additional 15%, lasting for 20s.'
+  },
+  icon: 'assets/gear/set-bonuses/gusts_of_welkin.png'
 }
 
 export {

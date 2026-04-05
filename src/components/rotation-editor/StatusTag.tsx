@@ -3,6 +3,7 @@ import type { CSSProperties } from 'react'
 import '../../styles/rotation-editor/StatusTag.css'
 import { StatusDetailPanel } from './StatusDetailPanel'
 import type { StatusDetailInfo } from './StatusDetailPanel'
+import type { CharacterStats } from '../../types/stats'
 
 // ========== Component: Status Tag ============================================================================================
 
@@ -15,9 +16,13 @@ type StatusTagProps = {
   color?: string
   statusKey?: string
   timeLeft?: number
+  description?: string
+  showStats?: boolean
+  stats?: Partial<CharacterStats>
+  clickable?: boolean
 }
 
-export function StatusTag({ icon, label, value, maxStacks, type, color, statusKey, timeLeft }: StatusTagProps) {
+export function StatusTag({ icon, label, value, maxStacks, type, color, statusKey, timeLeft, description, showStats, stats, clickable = true }: StatusTagProps) {
   const [panelOpen, setPanelOpen] = useState(false)
 
   // Don't render if value is 0 or undefined
@@ -32,6 +37,9 @@ export function StatusTag({ icon, label, value, maxStacks, type, color, statusKe
     type,
     color,
     timeLeft,
+    description,
+    showStats,
+    stats,
   }
 
   const displayValue = maxStacks && maxStacks > 1 ? value : undefined
@@ -55,13 +63,12 @@ export function StatusTag({ icon, label, value, maxStacks, type, color, statusKe
   return (
     <>
     <div
-      className={`statusTag ${typeClass} ${color ? 'statusTag-custom' : ''}`}
+      className={`statusTag ${typeClass} ${color ? 'statusTag-custom' : ''} ${!clickable ? 'statusTag-readonly' : ''}`}
       style={{ ...customStyle, ...customHoverStyle } as CSSProperties}
-      onClick={() => setPanelOpen(true)}
+      onClick={clickable ? () => setPanelOpen(true) : undefined}
     >
       <div className="statusTagContent">
         <img src={icon} alt={label} className="statusTagIcon" />
-        {displayValue !== undefined && <span className="statusTagValue">{displayValue}</span>}
       </div>
       <div className="statusTagTooltip">
         <div className="statusTagTooltipHeader">
@@ -69,12 +76,13 @@ export function StatusTag({ icon, label, value, maxStacks, type, color, statusKe
           <span className="statusTagTooltipLabel">{label}</span>
         </div>
         <div className="statusTagTooltipValue">
-          Stacks: {value}
-          {maxStacks && maxStacks > 1 && ` / ${maxStacks}`}
+          {(value === 1 && (!maxStacks || maxStacks === 1))
+            ? <span className="statusTagTooltipValue--active">Active</span>
+            : `Stacks ${value} / ${maxStacks}`}
         </div>
       </div>
     </div>
-    <StatusDetailPanel status={panelOpen ? detail : null} onClose={() => setPanelOpen(false)} />
+    {clickable && <StatusDetailPanel status={panelOpen ? detail : null} onClose={() => setPanelOpen(false)} />}
     </>
   )
 }

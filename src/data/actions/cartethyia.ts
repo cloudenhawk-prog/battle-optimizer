@@ -17,6 +17,7 @@ import { aeroErosionExplosion } from '../sideEffects/sideEffects'
 
 // ========== Basic Attack 1-4 =================================================================================================
 const cartethyia_BA_1_4_cancel_with_skill: Action = {
+  tags: ['BASIC_ATTACK'],
   name: 'Basic Attack 1-4 (skill cancel)',
   displayName: 'Basic Attack 1-4 (skill cancel)',
   category: 'Basics',
@@ -39,13 +40,14 @@ const cartethyia_BA_1_4_cancel_with_skill: Action = {
     startState: 'GROUND',
     endState: 'GROUND',
   },
-  requiredFollowUp: { actionName: 'Resonance Skill' },
+  attemptFollowUp: { actionName: 'Resonance Skill' },
   offtune: 0.22 + (2 * 0.18 + 0.25) + 4 * 0.2 + (3 * 0.12 + 0.35),
   groupName: 'Basic Attack 1-4',
   variantName: 'Cancel With Skill',
 }
 
 const cartethyia_BA_1_4_cancel_with_swap: Action = {
+  tags: ['BASIC_ATTACK'],
   name: 'Basic Attack 1-4 (swap cancel)',
   displayName: 'Basic Attack 1-4 (swap cancel)',
   category: 'Basics',
@@ -78,6 +80,7 @@ const cartethyia_BA_1_4_cancel_with_swap: Action = {
 
 // ========== Basic Attack 2-4 =================================================================================================
 const cartethyia_BA_2_4: Action = {
+  tags: ['BASIC_ATTACK'],
   name: 'Basic Attack 2-4',
   displayName: 'Basic Attack 2-4',
   category: 'Basics',
@@ -108,6 +111,7 @@ const cartethyia_BA_2_4: Action = {
 }
 
 const cartethyia_BA_2_4_cancel_with_jump: Action = {
+  tags: ['BASIC_ATTACK'],
   name: 'Basic Attack 2-4 (jump cancel)',
   displayName: 'Basic Attack 2-4 (jump cancel)',
   category: 'Basics',
@@ -138,6 +142,7 @@ const cartethyia_BA_2_4_cancel_with_jump: Action = {
 }
 
 const cartethyia_BA_2_4_cancel_with_swap: Action = {
+  tags: ['BASIC_ATTACK'],
   name: 'Basic Attack 2-4 (swap cancel)',
   displayName: 'Basic Attack 2-4 (swap cancel)',
   category: 'Basics',
@@ -172,6 +177,7 @@ const cartethyia_BA_2_4_cancel_with_swap: Action = {
 
 // ========== Heavy Attack =====================================================================================================
 const cartethyia_heavy: Action = {
+  tags: ['HEAVY_ATTACK'],
   name: 'Heavy Attack',
   displayName: 'Heavy Attack',
   category: 'Basics',
@@ -200,6 +206,7 @@ const cartethyia_heavy: Action = {
 }
 
 const cartethyia_heavy_cancel_with_swap: Action = {
+  tags: ['HEAVY_ATTACK'],
   name: 'Heavy Attack (swap cancel)',
   displayName: 'Heavy Attack (swap cancel)',
   category: 'Basics',
@@ -233,6 +240,7 @@ const cartethyia_heavy_cancel_with_swap: Action = {
 // ========== Plunge Attack ====================================================================================================
 const cartethyia_plunge: Action = {
   // TODO: If the sub actions aren't necessary in full, could simply define the rows we need to update (multipliers & offtune & substring to append to name...?)
+  tags: ['BASIC_ATTACK'],
   name: 'Plunge Attack',
   displayName: 'Plunge Attack',
   category: 'Basics',
@@ -281,6 +289,7 @@ const cartethyia_plunge: Action = {
 }
 
 const cartethyia_plunge_cancel_with_swap: Action = {
+  tags: ['BASIC_ATTACK'],
   name: 'Plunge Attack (swap cancel)',
   displayName: 'Plunge Attack (swap cancel)',
   category: 'Basics',
@@ -334,6 +343,7 @@ const cartethyia_plunge_cancel_with_swap: Action = {
 
 // Internal Action used as a variant for the main plunge actions
 const cartethyia_plunge_1: Action = {
+  tags: ['BASIC_ATTACK'],
   name: 'Plunge Attack (0-1 swords)',
   displayName: 'Plunge Attack 1',
   category: 'Basics',
@@ -361,6 +371,7 @@ const cartethyia_plunge_1: Action = {
 
 // Internal Action used as a variant for the main plunge actions
 const cartethyia_plunge_2: Action = {
+  tags: ['BASIC_ATTACK'],
   name: 'Plunge Attack (2 swords)',
   displayName: 'Plunge Attack 2',
   category: 'Basics',
@@ -388,6 +399,7 @@ const cartethyia_plunge_2: Action = {
 
 // Internal Action used as a variant for the main plunge actions
 const cartethyiaPlunge_3: Action = {
+  tags: ['BASIC_ATTACK'],
   name: 'Plunge Attack (3 swords)',
   displayName: 'Plunge Attack 3',
   category: 'Basics',
@@ -415,6 +427,7 @@ const cartethyiaPlunge_3: Action = {
 
 // ========== Resonance Skill ==================================================================================================
 const cartethyia_skill: Action = {
+  tags: ['SKILL'],
   name: 'Resonance Skill',
   displayName: 'Sword to Bear Their Names',
   category: 'Skills',
@@ -443,10 +456,11 @@ const cartethyia_skill: Action = {
 }
 
 const cartethyia_skill_cancel_with_swap: Action = {
+  tags: ['SKILL'],
   name: 'Resonance Skill (swap cancel)',
   displayName: 'Sword to Bear Their Names (swap cancel)',
   category: 'Skills',
-  castTime: 1, // TODO : Cast Time
+  castTime: 0.09,
   multiplier: (3 * 6.89 + 8.86) / 100,
   scaling: 'HP',
   elements: ['AERO'],
@@ -565,6 +579,7 @@ const cartethyia_transform: Action = {
 
 // ========== Intro & Outro ====================================================================================================
 const cartethyia_intro: Action = {
+  tags: ['INTRO_ACTION'],
   name: 'Cartethyia Intro',
   displayName: 'Sword to Mark Tides Trace',
   category: 'Other',
@@ -591,6 +606,7 @@ const cartethyia_intro: Action = {
 }
 
 const cartethyia_outro: Action = {
+  tags: ['OUTRO_ACTION'],
   name: 'Outro',
   displayName: 'Winds Divine Blessing',
   category: 'Other',
@@ -627,6 +643,7 @@ const cartethyia_outro: Action = {
 
 // ========== Basic 1-5 ========================================================================================================
 const fleurdelys_BA_1_5: Action = {
+  tags: ['BASIC_ATTACK'],
   name: 'Basic 1-5',
   displayName: 'Basic 1-5',
   category: 'Basics',
@@ -655,6 +672,7 @@ const fleurdelys_BA_1_5: Action = {
 }
 
 const fleurdelys_BA_1_5_cancel_with_swap: Action = {
+  tags: ['BASIC_ATTACK'],
   name: 'Basic 1-5 (swap cancel)',
   displayName: 'Basic 1-5 (swap cancel)',
   category: 'Basics',
@@ -687,6 +705,7 @@ const fleurdelys_BA_1_5_cancel_with_swap: Action = {
 
 // ========== Basic 3-5 ========================================================================================================
 const fleurdelys_BA_3_5: Action = {
+  tags: ['BASIC_ATTACK'],
   name: 'Basic 3-5',
   displayName: 'Basic 3-5',
   category: 'Basics',
@@ -717,6 +736,7 @@ const fleurdelys_BA_3_5: Action = {
 }
 
 const fleurdelys_BA_3_5_cancel_with_swap: Action = {
+  tags: ['BASIC_ATTACK'],
   name: 'Basic 3-5 (swap cancel)',
   displayName: 'Basic 3-5 (swap cancel)',
   category: 'Basics',
@@ -751,6 +771,7 @@ const fleurdelys_BA_3_5_cancel_with_swap: Action = {
 
 // ========== Heavy Attack 1 ===================================================================================================
 const fleurdelys_heavy_1: Action = {
+  tags: ['HEAVY_ATTACK'],
   name: 'Heavy Attack 1',
   displayName: 'Heavy Attack 1',
   category: 'Basics',
@@ -779,6 +800,7 @@ const fleurdelys_heavy_1: Action = {
 }
 
 const fleurdelys_heavy_1_cancel_with_swap: Action = {
+  tags: ['HEAVY_ATTACK'],
   name: 'Heavy Attack 1 (swap cancel)',
   displayName: 'Heavy Attack 1 (swap cancel)',
   category: 'Basics',
@@ -811,6 +833,7 @@ const fleurdelys_heavy_1_cancel_with_swap: Action = {
 
 // ========== Heavy Attack 2 ===================================================================================================
 const fleurdelys_heavy_2: Action = {
+  tags: ['HEAVY_ATTACK'],
   name: 'Enhanced Heavy Attack',
   displayName: 'Heavy Attack 2',
   category: 'Basics',
@@ -840,6 +863,7 @@ const fleurdelys_heavy_2: Action = {
 }
 
 const fleurdelys_heavy_2_cancel_with_swap: Action = {
+  tags: ['HEAVY_ATTACK'],
   name: 'Enhanced Heavy Attack (swap cancel)',
   displayName: 'Heavy Attack 2 (swap cancel)',
   category: 'Basics',
@@ -873,6 +897,7 @@ const fleurdelys_heavy_2_cancel_with_swap: Action = {
 
 // ========== Mid-air Attack 1-3 ===============================================================================================
 const fleurdelys_midair_1_3: Action = {
+  tags: ['BASIC_ATTACK'],
   name: 'Mid-air Attack 1-3',
   displayName: 'Mid-air Attack 1-3',
   category: 'Basics',
@@ -901,6 +926,7 @@ const fleurdelys_midair_1_3: Action = {
 }
 
 const fleurdelys_midair_1_3_cancel_with_swap: Action = {
+  tags: ['BASIC_ATTACK'],
   name: 'Mid-air Attack 1-3 (swap cancel)',
   displayName: 'Mid-air Attack 1-3 (swap cancel)',
   category: 'Basics',
@@ -933,6 +959,7 @@ const fleurdelys_midair_1_3_cancel_with_swap: Action = {
 
 // ========== Mid-air Attack 1-2 ===============================================================================================
 const fleurdelys_midair_1_2: Action = {
+  tags: ['BASIC_ATTACK'],
   name: 'Mid-air Attack 1-2',
   displayName: 'Mid-air Attack 1-2',
   category: 'Basics',
@@ -961,6 +988,7 @@ const fleurdelys_midair_1_2: Action = {
 }
 
 const fleurdelys_midair_1_2_cancel_with_swap: Action = {
+  tags: ['BASIC_ATTACK'],
   name: 'Mid-air Attack 1-2 (swap cancel)',
   displayName: 'Mid-air Attack 1-2 (swap cancel)',
   category: 'Basics',
@@ -993,6 +1021,7 @@ const fleurdelys_midair_1_2_cancel_with_swap: Action = {
 
 // ========== Resonance Skill 1 ================================================================================================
 const fleurdelys_skill_1: Action = {
+  tags: ['SKILL'],
   name: 'Resonance Skill 1',
   displayName: 'Sword to Answer Waves Call',
   category: 'Skills',
@@ -1021,6 +1050,7 @@ const fleurdelys_skill_1: Action = {
 }
 
 const fleurdelys_skill_1_cancel_with_swap: Action = {
+  tags: ['SKILL'],
   name: 'Resonance Skill 1 (swap cancel)',
   displayName: 'Sword to Answer Waves Call (swap cancel)',
   category: 'Skills',
@@ -1053,6 +1083,7 @@ const fleurdelys_skill_1_cancel_with_swap: Action = {
 
 // ========== Resonance Skill 2 ================================================================================================
 const fleurdelys_skill_2: Action = {
+  tags: ['SKILL'],
   name: 'Resonance Skill 2',
   displayName: 'May Tempest Break the Tides',
   category: 'Skills',
@@ -1088,6 +1119,7 @@ const fleurdelys_skill_2: Action = {
 }
 
 const fleurdelys_skill_2_cancel_with_swap: Action = {
+  tags: ['SKILL'],
   name: 'Resonance Skill 2 (swap cancel)',
   displayName: 'May Tempest Break the Tides (swap cancel)',
   category: 'Skills',
@@ -1127,6 +1159,7 @@ const fleurdelys_skill_2_cancel_with_swap: Action = {
 
 // ========== Liberation =======================================================================================================
 const fleurdelys_liberation: Action = {
+  tags: ['LIBERATION'],
   name: 'Liberation (Fleurdelys)',
   displayName: 'Blade of Howling Squall',
   category: 'Skills',
@@ -1147,21 +1180,17 @@ const fleurdelys_liberation: Action = {
     { type: 'buff', targetName: 'Power of Discord', stackChange: -1 },
     { type: 'buff', targetName: "Fleurdelys's Conviction", stackChange: -100 },
   ],
-  damageModifiers: [
+  damageModifiers: [],
+  inherentModifiers: [
     {
-      source: 'Liberation Stacks',
-      displayName: 'Liberation Passive',
-      type: 'buff',
-      ownerCharacter: 'Cartethyia',
+      // +100% Liberation Total Multiplier DMG base, +20% per Aero Erosion stack (max 5 stacks)
+      displayName: 'Liberation Aero Erosion Stacks',
+      characterStats: { liberationTotalMultiplierDMG: 1 },
       condition: (ctx) => {
         const status = ctx.negativeStatusesInAction.find(ns => ns.negativeStatus.name === 'Aero Erosion')
         const stacks = status?.currentStacks ?? 0
         return 1 + 0.2 * Math.min(stacks, 5)
       },
-      characterStats: { liberationTotalMultiplierDMG: 1 },
-      targetStrategy: 'self',
-      durationStrategy: { type: 'permanent' },
-      stackingStrategy: { maxStacks: 1, resetTimerOnApplication: false, stacksRemovedEachTime: 0 },
     },
   ],
   sideEffects: [],
@@ -1396,3 +1425,4 @@ export const cartethyia_intro_outro_actions = [cartethyia_intro, cartethyia_outr
 export const fleurdelys_intro_outro_actions = [fleurdelys_intro]
 
 export const all_actions = [...cartethyia_actions, ...fleurdelys_actions, ...universal_actions, ...cartethyia_intro_outro_actions, ...fleurdelys_intro_outro_actions]
+

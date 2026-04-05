@@ -44,12 +44,12 @@ export function HeaderRow({ tableConfig, columnVisibility, setColumnVisibility }
   }
 
   return (
-    <thead className="tableHeader">
+    <>
       {/* Top-level group headers */}
       <tr>
         {/* Group: Selectors (Character + Action) */}
         <th className="groupHeader groupHeaderStatic" colSpan={2}>
-          <HeaderContent label="Selectors" icon="assets/selector.png" />
+          <HeaderContent label="Selectors" icon="assets/table/selector.png" />
         </th>
 
         {/* Group: Basic Columns */}
@@ -95,7 +95,7 @@ export function HeaderRow({ tableConfig, columnVisibility, setColumnVisibility }
         {/* Character */}
         <th className="tableCellHeader">
           <div className="header-cell-content">
-            <IconRenderer icon={'assets/character.png'} alt={'Character'} />
+            <IconRenderer icon={'assets/table/character.png'} alt={'Character'} />
             <span>Character</span>
           </div>
         </th>
@@ -129,7 +129,7 @@ export function HeaderRow({ tableConfig, columnVisibility, setColumnVisibility }
         {/* Other Columns (Coordinated Attacks, etc.) */}
         {tableConfig.other && renderColumns(tableConfig.other.columns, columnVisibility, setColumnVisibility)}
       </tr>
-    </thead>
+    </>
   )
 }
 

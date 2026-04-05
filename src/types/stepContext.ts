@@ -39,6 +39,13 @@ export type StepContext = {
   // Track the character who was swapped to most recently (for 'nextSwap' target strategy)
   lastSwappedToCharacter?: string
 
+  /**
+   * Energy cooldowns queued by resolveResources to be applied after resolveCooldowns
+   * rebuilds charactersCooldowns from prev. Each entry registers a cooldown key so the
+   * energy won't fire again until the timer expires.
+   */
+  pendingEnergyCooldowns: Array<{ charName: string; cooldownKey: string; cooldownDuration: number }>
+
   logs: StepLog[]
 }
 

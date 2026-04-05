@@ -61,7 +61,7 @@ This document is the single authoritative reference for everything that happens 
 17. [Form System](#17-form-system)
 18. [Combo Systems](#18-combo-systems)
     - [previousActions (immediate follow-up)](#181-previousactions-immediate-follow-up)
-    - [requiredFollowUp (forced next action)](#182-requiredfollowup-forced-next-action)
+    - [attemptFollowUp (forced next action)](#182-attemptFollowUp-forced-next-action)
     - [comboWindow (time-based window)](#183-combowindow-time-based-window)
 19. [Snapshot Lifecycle](#19-snapshot-lifecycle)
 20. [Persistent Refs vs. Snapshot State](#20-persistent-refs-vs-snapshot-state)
@@ -114,7 +114,7 @@ type DamageType =
 type EnergyType =
   | 'energy' | 'forte'
   | 'forte_divinity' | 'forte_discord' | 'forte_virtue'
-  | 'concerto' | 'conviction'
+  | 'concerto' | 'conviction' | 'relative_momentum'
 
 type Position = 'GROUND' | 'AIR' | 'PRESERVE' | 'ANY'
 // PRESERVE/ANY are only valid in CastConditions; resolved positions are always GROUND or AIR
@@ -222,7 +222,7 @@ type Action = {
 
   formChange?: string               // form to transition to when cast
   resolveVariant?: (prevSnapshot, characterName) => Action   // dynamic variant picker
-  requiredFollowUp?: { actionName: string }   // locks all other actions in next row
+  attemptFollowUp?: { actionName: string }   // locks all other actions in next row
 }
 ```
 
@@ -311,7 +311,7 @@ interface Snapshot {
   charactersRequiresSwapOut: Record<string, boolean>
   charactersForms: Record<string, string>            // '' = default form
   charactersSwapCooldownUntil: Record<string, number> // absolute time swap-in cooldown expires
-  charactersRequiredFollowUp: Record<string, string>  // charName → required next action name
+  charactersattemptFollowUp: Record<string, string>  // charName → required next action name
   charactersComboWindows: Record<string, {
     actionName: string    // last action that could start a combo
     startTime: number     // fromTime of that action
@@ -614,6 +614,8 @@ type Weapon = {
   stats: Partial<CharacterStats>
   injectedModifiers?: InjectedModifier[]
   rank: 1 | 2 | 3 | 4 | 5
+  info: string       // display info string
+  icon: string       // asset path for weapon icon
 }
 
 type Echo = {
@@ -626,6 +628,9 @@ type Echo = {
   echoSkill?: Action                         // replaces the ECHO placeholder action
   injectedModifiers?: InjectedModifier[]
   injectedSideEffects?: InjectedSideEffect[]
+  icon: string       // asset path for echo icon
+  info?: string      // display description
+  info_icon?: string // optional secondary icon path
 }
 
 // InjectedModifier: attaches modifiers to one or more specific targets
@@ -651,7 +656,6 @@ type Form = {
   displayName?: string
   introAction?: Action     // custom intro when entering this form
   outroAction?: Action     // custom outro when leaving this form
-  icon: string
 }
 ```
 
@@ -786,7 +790,7 @@ handleCharacterSelect(snapshotId, characterName)
 
 Pruning ensures that any previously resolved rows following the edited row are invalidated — the user must re-select actions from that point forward.
 
-**Locked characters:** `ActionSelect` receives a `lockedCharacters` set. A character is locked from being selected if it is the character who cast an action required as a follow-up (from `charactersRequiredFollowUp`).
+**Locked characters:** `ActionSelect` receives a `lockedCharacters` set. A character is locked from being selected if it is the character who cast an action required as a follow-up (from `charactersattemptFollowUp`).
 
 ---
 
@@ -831,7 +835,7 @@ updateSnapshotsWithAction
   └─ resolveResourceMilestones (R6)    checks energy thresholds now that R7 has run; fires modifier stacks per crossing
   └─ resolveModifierState   (R5)       advances buff timers; removes expired stacks; clears forte grants on expiry
   └─ resolveCooldowns       (R8)       decays all CDs by castTime; sets this action's CD; applies CD reductions
-  └─ resolveCastState       (R9)       position, form, lastAction, swapCooldown, requiredFollowUp, comboWindow
+  └─ resolveCastState       (R9)       position, form, lastAction, swapCooldown, attemptFollowUp, comboWindow
   └─ commit refs:     modifiersInAction.current = ctx.modifiersInAction
   └─ commit snapshot: updatedSnapshots[index] = { ...ctx.current }
   └─ append blank row if this was the last
@@ -855,8 +859,8 @@ updateSnapshotsWithAction
 | `isCustomCanCastFailed` | `customCanCast(prevSnapshot, charName)` returns false |
 | `isOnSwapCooldown` | `charactersSwapCooldownUntil[char] > prevSnapshot.toTime` |
 | `isNoSwapTarget` | `requiresSwapOut` is true but no other character will be available after the action completes |
-| `isNotRequiredFollowUp` | `charactersRequiredFollowUp[char]` is set and this action is not that action |
-| `isFollowUpNotReady` | action has `requiredFollowUp` and the follow-up action is still on cooldown when this action would complete |
+| `isNotattemptFollowUp` | `charactersattemptFollowUp[char]` is set and this action is not that action |
+| `isFollowUpNotReady` | action has `attemptFollowUp` and the follow-up action is still on cooldown when this action would complete |
 | `isComboWindowExpired` | `comboWindow` is set and the window has expired, the swap flag broke it, or the form change flag broke it |
 
 **Position resolution for filtering:**
@@ -1048,8 +1052,8 @@ Updates all per-character state tracking fields in `current`:
 - `charactersRequiresSwapOut[char]` = `action.castConditions.requiresSwapOut ?? false`.
 
 **Required follow-up:**
-- If `action.requiredFollowUp` is set: `charactersRequiredFollowUp[char]` = `action.requiredFollowUp.actionName`.
-- Otherwise: `charactersRequiredFollowUp` is cleared.
+- If `action.attemptFollowUp` is set: `charactersattemptFollowUp[char]` = `action.attemptFollowUp.actionName`.
+- Otherwise: `charactersattemptFollowUp` is cleared.
 
 **Form:**
 - If `action.formChange` is set: `charactersForms[char]` = `action.formChange`. Otherwise the previous form is preserved.
@@ -1255,13 +1259,13 @@ castConditions.previousActions?: Action[]
 
 The action can only be cast if the character's most recent personal action (`charactersLastAction[char]`) is one of the listed actions. There is no time window — it must be the immediately previous entry, accounting for persistence windows.
 
-### 18.2 requiredFollowUp (forced next action)
+### 18.2 attemptFollowUp (forced next action)
 
 ```ts
-action.requiredFollowUp?: { actionName: string }
+action.attemptFollowUp?: { actionName: string }
 ```
 
-When cast, sets `current.charactersRequiredFollowUp[char] = actionName`. In the next row, all actions except the specified one are blocked (`isNotRequiredFollowUp = true` for all others). The required action must also be validated as off-cooldown when the current action completes (`isFollowUpNotReady` check in `getActionState`).
+When cast, sets `current.charactersattemptFollowUp[char] = actionName`. In the next row, all actions except the specified one are blocked (`isNotattemptFollowUp = true` for all others). The required action must also be validated as off-cooldown when the current action completes (`isFollowUpNotReady` check in `getActionState`).
 
 ### 18.3 comboWindow (time-based window)
 

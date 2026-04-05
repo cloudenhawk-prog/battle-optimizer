@@ -8,7 +8,15 @@ import type { Snapshot } from '../../types/snapshot'
 
 export function buildCharacterGroupsColumns(selectedCharacters: Character[]): ColumnGroup[] {
   return selectedCharacters.map(c => {
-    const allEnergyKeys = Object.keys(c.maxEnergies) as EnergyType[]
+    function energyOrder(key: string): number {
+      if (key === 'energy') return 0
+      if (key === 'forte' || key.startsWith('forte_')) return 1
+      if (key === 'concerto') return 2
+      return 3
+    }
+
+    const allEnergyKeys = (Object.keys(c.maxEnergies) as EnergyType[])
+      .sort((a, b) => energyOrder(a) - energyOrder(b))
 
     // Group multiple forte_* sub-keys into a single combined column
     const forteSubKeys = allEnergyKeys.filter(key => key.startsWith('forte_'))
@@ -39,7 +47,7 @@ export function buildCharacterGroupsColumns(selectedCharacters: Character[]): Co
         } else if (!shouldGroupForte) {
           columns.push({
             key: `${c.name}_${key}`,
-            label: key.charAt(0).toUpperCase() + key.slice(1),
+            label: key.split('_').map(w => w.charAt(0).toUpperCase() + w.slice(1)).join(' '),
             icon: `/assets/energy/${key}.png`,
             render: (snapshot: Snapshot) => {
               const energy = snapshot.charactersEnergies[c.name]?.[key]
@@ -52,7 +60,7 @@ export function buildCharacterGroupsColumns(selectedCharacters: Character[]): Co
 
       columns.push({
         key: `${c.name}_${key}`,
-        label: key.charAt(0).toUpperCase() + key.slice(1),
+        label: key.split('_').map(w => w.charAt(0).toUpperCase() + w.slice(1)).join(' '),
         icon: `/assets/energy/${key}.png`,
         render: (snapshot: Snapshot) => {
           const energy = snapshot.charactersEnergies[c.name]?.[key]

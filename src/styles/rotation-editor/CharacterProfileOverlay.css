@@ -1,0 +1,482 @@
+/* ===== Character Profile Overlay ===================================================================
+ *
+ *  QUICK-FIND INDEX — "what do I change to..."
+ *  ─────────────────────────────────────────────────────────────────────────────────────────────────
+ *
+ *  Make the whole overlay larger / add more margin around it
+ *    → CharacterStateTracker.css  .charProfilePanel  top/left/right/bottom
+ *      (16 px on mobile, 40 px on ≥1024 px screens)
+ *
+ *  Change left column width  (portrait + stats)
+ *    → --cpo-left-width  (below)
+ *
+ *  Change right column width  (set bonus)
+ *    → --cpo-right-width  (below)
+ *
+ *  Change portrait circle size
+ *    → --cpo-portrait-size  (below)
+ *
+ *  Change space between portrait and stat list
+ *    → --cpo-portrait-gap  (below)
+ *
+ *  Change resonance-chain strip height
+ *    → --cpo-chain-height  (below)
+ *
+ *  Change column padding
+ *    → --cpo-col-padding-x / --cpo-col-padding-y  (below)
+ *
+ *  ─── Stats list  —  left column attribute rows ────────────────────────────────────────────────
+ *
+ *  Change stat icon size (small icon left of each stat name)
+ *    → .cpo-stat-icon  width / height  (below)
+ *
+ *  Change stat name label size / font
+ *    → .cpo-stat-label  font-size  (below)
+ *
+ *  Change stat value size (the clickable number on the right)
+ *    → .cpo-stat-value-btn  font-size  (below)
+ *
+ *  Change row padding / divider
+ *    → .cpo-stat-row  padding / border-bottom  (below)
+ *
+ *  Change section header label size ("Attributes", "Set Bonus" text)
+ *    → .cpo-section-header-label  font-size  (below)
+ *
+ *  ─── Gear orbit — all in CharacterProfileOverlay.tsx  EquipmentOrbit() ────────────────────────
+ *
+ *  Make the gear orbit circle larger / smaller
+ *    → `const radius = Math.max(60, containerSize / 2 - 48)`
+ *      Decrease the  48  →  larger orbit ring
+ *      Increase the  48  →  smaller orbit ring
+ *      The orbit fills the center column automatically; to give it more room
+ *      shrink --cpo-left-width and --cpo-right-width.
+ *
+ *  Change weapon / echo icon slot sizes
+ *    → `const largeSlot = Math.max(60, Math.min(92, Math.round(radius * 0.36)))`  ← weapon + 4-cost echoes
+ *    → `const baseSlot  = Math.max(52, Math.min(80, Math.round(radius * 0.32)))`  ← smaller echoes
+ *      Adjust the multipliers (0.36 / 0.32) or the min/max clamp values.
+ *
+ *  Change the central emblem circle sizes
+ *    → outer container:  width/height  64  in the "Central element emblem" block
+ *    → inner glowing dot: width/height 32  just below it
+ *
+ *  Change the breathing/pulsing glow animation speed on the central emblem
+ *    → `transition={{ duration: 4, repeat: Infinity, ease: 'easeInOut' }}`  on the breathing glow
+ *
+ *  Change orbiting particle sizes & speeds
+ *    Particle 1 (clockwise, rides the main orbit ring):
+ *      size    → `width: 6, height: 6`
+ *      speed   → `transition={{ duration: 20, ... }}`
+ *    Particle 2 (counter-clockwise, rides the inner smooth ring):
+ *      size    → `width: 4, height: 4`
+ *      speed   → `transition={{ duration: 32, ... }}`
+ *
+ *  Change rotating ring speeds
+ *    Outer dashed ring (clockwise)       → `transition={{ duration: 60, ... }}`
+ *    Inner dashed ring (counter-clockwise) → `transition={{ duration: 45, ... }}`
+ *
+ *  Change the gap between the main orbit ring and the outer/inner decorative rings
+ *    Outer ring drawn at  radius + 20   ← change the  20
+ *    Inner dashed ring at radius - 20   ← change the  20
+ *    Inner smooth ring at radius - 15   ← change the  15
+ *    Particle 2 also follows radius - 15
+ *
+ *  Change the resonance chain node size / connector length
+ *    → HorizontalSequenceChain()  — node div  width: 32, height: 32
+ *    → connector div  width: 24
+ *
+ *  ─── Tooltip ──────────────────────────────────────────────────────────────────────────────────
+ *
+ *  Change tooltip width / style
+ *    → tooltipStyle()  near the top of CharacterProfileOverlay.tsx
+ *      const W = 340    ← max width in pixels
+ *
+ *  ─── Layout diagram ───────────────────────────────────────────────────────────────────────────
+ *
+ *    ┌──────────────┬─────────────────────────┬──────────────┐  ← overlay inset: CharacterStateTracker.css
+ *    │  LEFT COL    │      CENTER (gear)       │  RIGHT COL   │
+ *    │  (portrait   │      orbit fills         │  (set bonus) │
+ *    │   + stats)   │      all space here      │              │
+ *    │              ├─────────────────────────┤              │
+ *    │              │    CHAIN STRIP (bottom)  │              │
+ *    └──────────────┴─────────────────────────┴──────────────┘
+ *
+ * ================================================================================================= */
+
+.charProfilePanel {
+
+  /* ══ COLUMN WIDTHS ════════════════════════════════════════════ */
+  --cpo-left-width:   375px;   /* Left column  — portrait + stats */
+  --cpo-right-width:  375px;   /* Right column — set bonus        */
+  /* Center column takes all remaining space automatically (flex: 1) */
+
+  /* ══ PORTRAIT ════════════════════════════════════════════════ */
+  --cpo-portrait-size:  250px;   /* Circle diameter */
+  --cpo-portrait-gap:    75px;   /* Space below portrait before the stats list */
+
+  /* ══ RESONANCE CHAIN STRIP ═══════════════════════════════════ */
+  --cpo-chain-height:   68px;   /* Height of the bottom strip inside the center column */
+
+  /* ══ COLUMN PADDING ══════════════════════════════════════════ */
+  --cpo-col-padding-x: 18px;   /* Horizontal padding inside left & right columns */
+  --cpo-col-padding-y: 35px;   /* Vertical padding inside left & right columns   */
+}
+
+/* ── Close Button ── */
+
+.cpo-close-btn {
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  font-size: 20px;
+  font-weight: 400;
+  color: var(--table-text-dim);
+  padding: 4px 12px;
+  transition: all 0.2s;
+  border-radius: 4px;
+}
+
+.cpo-close-btn:hover {
+  color: var(--table-text);
+  background: var(--table-select-bg);
+}
+
+/* ── Character Navigation Buttons ── */
+
+.cpo-nav-btn {
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  font-size: 12px;
+  padding: 5px 9px;
+  border-radius: 4px;
+  transition: all 0.2s;
+  color: rgba(255, 255, 255, 0.35);
+  line-height: 1;
+}
+
+.cpo-nav-btn:hover:not(:disabled) {
+  background: rgba(255, 255, 255, 0.07);
+  color: inherit;
+  filter: brightness(1.4);
+}
+
+.cpo-nav-btn:disabled {
+  opacity: 0.2;
+  cursor: default;
+}
+
+/* ═════════════════════════════════════════════════════════════
+ *  BODY SHELL
+ * ═════════════════════════════════════════════════════════════ */
+
+.cpo-content {
+  flex: 1;
+  min-height: 0;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+}
+
+.cpo-body {
+  flex: 1;
+  display: flex;
+  flex-direction: row;
+  overflow: hidden;
+  position: relative;
+}
+
+/* ═════════════════════════════════════════════════════════════
+ *  LEFT COLUMN  —  portrait + stats
+ * ═════════════════════════════════════════════════════════════ */
+
+.cpo-left-col {
+  width: var(--cpo-left-width);
+  flex-shrink: 0;
+  display: flex;
+  flex-direction: column;
+  overflow-y: auto;
+  overflow-x: hidden;
+  padding: 10px var(--cpo-col-padding-x) var(--cpo-col-padding-y);
+  scrollbar-width: thin;
+  scrollbar-color: rgba(80, 100, 130, 0.3) transparent;
+}
+
+/* Identity block — name, level, element badge above the portrait */
+
+.cpo-identity-block {
+  margin-bottom: 70px;
+  text-align: center;
+  flex-shrink: 0;
+}
+
+/* Portrait */
+
+.cpo-portrait-wrap {
+  position: relative;
+  display: flex;
+  justify-content: center;
+  margin-bottom: var(--cpo-portrait-gap);
+  flex-shrink: 0;
+}
+
+.cpo-portrait {
+  width:  var(--cpo-portrait-size);
+  height: var(--cpo-portrait-size);
+  object-fit: cover;
+  border-radius: 50%;
+  border: 2px solid;
+  box-sizing: border-box;
+}
+
+/* Section header (shared, used in left + right cols) */
+
+.cpo-section-header {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 16px;   /* ← gap below the section header label */
+  flex-shrink: 0;
+}
+
+.cpo-section-header-line { flex: 1; height: 1px; }
+
+.cpo-section-header-label {
+  font-family: 'Orbitron', sans-serif;
+  font-size: 0.6rem;     /* ← section header label size */
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.2em;
+  color: hsl(210 15% 50%);
+}
+
+/* Stat rows */
+
+.cpo-stat-value-btn {
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  padding: 1px 0;
+  flex-shrink: 0;
+  font-family: system-ui, -apple-system, 'Segoe UI', sans-serif;
+  font-size: 1.00rem;
+  font-weight: 650;
+  font-variant-numeric: tabular-nums;
+  letter-spacing: 0.01em;
+  transition: color 0.15s;
+}
+
+/* ═════════════════════════════════════════════════════════════
+ *  CENTER COLUMN  —  equipment orbit
+ * ═════════════════════════════════════════════════════════════ */
+
+.cpo-center-col {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+}
+
+/* Orbit fills all center space above the chain strip */
+.cpo-orbit-wrap {
+  flex: 1;
+  position: relative;
+}
+
+/* ResizeObserver target — always fills its parent */
+.cpo-orbit-container {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* ═════════════════════════════════════════════════════════════
+ *  CHAIN STRIP  —  resonance chain, bottom of center col
+ * ═════════════════════════════════════════════════════════════ */
+
+.cpo-chain-strip {
+  height: var(--cpo-chain-height);
+  flex-shrink: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0 24px;
+}
+
+/* ═════════════════════════════════════════════════════════════
+ *  RIGHT COLUMN  —  set bonus
+ * ═════════════════════════════════════════════════════════════ */
+
+.cpo-right-col {
+  width: var(--cpo-right-width);
+  flex-shrink: 0;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  padding: var(--cpo-col-padding-y) var(--cpo-col-padding-x) 0;
+}
+
+/* Each half scrolls independently */
+.cpo-right-col > div {
+  scrollbar-width: thin;
+  scrollbar-color: rgba(80, 100, 130, 0.3) transparent;
+}
+
+/* Set bonus cards */
+
+.cpo-set-bonus-name-row {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 6px;
+}
+
+.cpo-set-bonus-name-text {
+  font-family: 'Rajdhani', 'Segoe UI', sans-serif;
+  font-size: 1.00rem;
+  font-weight: 700;
+  letter-spacing: 0.03em;
+}
+
+.cpo-set-bonus-entry {
+  padding: 10px 10px;
+  border-radius: 8px;
+  flex-shrink: 0;
+}
+
+.cpo-set-bonus-entry-key {
+  font-family: 'Orbitron', sans-serif;
+  font-size: 0.70rem;
+  font-weight: 650;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  margin-bottom: 4px;
+}
+
+.cpo-set-bonus-entry-desc {
+  margin: 0;
+  font-family: 'Rajdhani', 'Segoe UI', sans-serif;
+  font-size: 0.86rem;
+  color: hsl(210 15% 50%);
+  line-height: 1.5;
+}
+
+/* ═════════════════════════════════════════════════════════════
+ *  BREAKDOWN MODAL
+ * ═════════════════════════════════════════════════════════════ */
+
+.cpo-breakdown-overlay {
+  position: absolute;
+  inset: 0;
+  z-index: 10;
+}
+
+/* ═════════════════════════════════════════════════════════════
+ *  STATS LIST  —  attribute rows in the left column
+ *
+ *  Change stat icon size
+ *    → .cpo-stat-icon  width / height  (below)
+ *
+ *  Change stat name label size / font
+ *    → .cpo-stat-label  font-size  (below)
+ *
+ *  Change stat value button size  (clickable number on the right)
+ *    → .cpo-stat-value-btn  font-size  (above)
+ *
+ *  Change row spacing / divider line
+ *    → .cpo-stat-row  padding / border-bottom  (below)
+ * ═════════════════════════════════════════════════════════════ */
+
+/* Stat row container */
+.cpo-stat-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 6px 0;               /* ← vertical spacing between rows */
+  border-bottom: 1px solid rgba(50, 70, 100, 0.2);
+  gap: 4px;
+}
+
+/* Left side: icon + label */
+.cpo-stat-label-group {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  min-width: 0;
+}
+
+/* Stat icon (small image to the left of the label) */
+.cpo-stat-icon {
+  width: 25px;            /* ← stat icon width  */
+  height: 25px;           /* ← stat icon height */
+  object-fit: contain;
+  flex-shrink: 0;
+}
+
+/* Non-elemental icons: rendered as near-white (no color, no glow). */
+.cpo-stat-icon:not(.cpo-stat-icon--element) {
+  filter: brightness(0) invert(1) brightness(0.77);
+}
+
+/* Elemental icon variant — full brightness; element-specific animation handles everything */
+.cpo-stat-icon--element {
+  opacity: 1;
+}
+
+/* Stat name label */
+.cpo-stat-label {
+  font-family: 'Rajdhani', 'Segoe UI', sans-serif;
+  font-size: 0.9rem;     /* ← stat label size */
+  font-weight: 500;
+  color: hsl(210 15% 50%);
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+/* ═════════════════════════════════════════════════════════════
+ *  ELEMENT STAT ICONS  —  painted in each element's color
+ *
+ *  Technique: normalize the white PNG to a mid-gray, apply
+ *  sepia(1) to introduce chroma, then hue-rotate + saturate
+ *  to land on the element color. Fine-tune with brightness.
+ *
+ *  To adjust a color: tweak hue-rotate (hue), saturate (vividness),
+ *  or the final brightness (lightness).
+ * ═════════════════════════════════════════════════════════════ */
+
+/* —— Glacio: teal / icy cyan  ~#3FD1C2 —— */
+.cpo-stat-icon--glacio {
+  filter: brightness(0) invert(1) brightness(0.6) sepia(1) hue-rotate(138deg) saturate(300%) brightness(0.85);
+}
+
+/* —— Fusion: orange / red  ~#FF7A3C —— */
+.cpo-stat-icon--fusion {
+  filter: brightness(0) invert(1) brightness(0.6) sepia(1) hue-rotate(342deg) saturate(500%) brightness(1.0);
+}
+
+/* —— Electro: purple  ~#9B6BFF —— */
+.cpo-stat-icon--electro {
+  filter: brightness(0) invert(1) brightness(0.6) sepia(1) hue-rotate(226deg) saturate(300%) brightness(1.05);
+}
+
+/* —— Aero: light green  ~#58D68D —— */
+.cpo-stat-icon--aero {
+  filter: brightness(0) invert(1) brightness(0.6) sepia(1) hue-rotate(107deg) saturate(300%) brightness(0.95);
+}
+
+/* —— Spectro: yellow / soft gold  ~#FFD84D —— */
+.cpo-stat-icon--spectro {
+  filter: brightness(0) invert(1) brightness(0.6) sepia(1) hue-rotate(9deg) saturate(500%) brightness(1.15);
+}
+
+/* —— Havoc: magenta / red-purple  ~#C14B8A —— */
+.cpo-stat-icon--havoc {
+  filter: brightness(0) invert(1) brightness(0.6) sepia(1) hue-rotate(287deg) saturate(400%) brightness(0.9);
+}
+

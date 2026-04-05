@@ -13,6 +13,7 @@ import { calculateDamage } from '../../utils/calculators/damageCalculator'
 import { activateCoordinatedAttacks, processCoordinatedAttacks, updateCoordinatedAttackSnapshot } from './coordinatedAttackHelpers'
 import { getNegativeStatusStacks, processNegativeStatusStacks, updateNegativeStatusStacks } from './negativeStatusHelpers'
 import { getCharacterEnergyState, updateEnergyValue } from './energyHelpers'
+import { getDefaultFormName } from './formHelpers'
 import { updateModifiersForSwap, collectAllModifiers, activateModifiers, filterApplicableModifiers, applyStackMultiplier, updateModifiersForTime } from './modifierHelpers'
 import { updateModifierStacks } from './modifierStateHelpers'
 import { updateAllCharactersCooldowns, setActionOnCooldown, reduceCooldown } from './cooldownHelpers'
@@ -69,6 +70,8 @@ export function buildStepContext(snapshotId: number, current: Snapshot, prev: Sn
 
     lastSwappedToCharacter,
 
+    pendingEnergyCooldowns: [],
+
     logs: [],
   }
 
@@ -108,7 +111,11 @@ export function resolveDamageModifiers(ctx: StepContext) {
   const allModifiers = collectAllModifiers(ctx.character, ctx.action, ctx.negativeStatusesInAction)
 
   // Step 2: Activate new modifiers (convert limited ones to ModifierInAction, handle stacking)
-  ctx.modifiersInAction = activateModifiers(allModifiers, ctx.modifiersInAction, ctx)
+  // Pass the cast duration as an offset so that limited modifier timers start from end-of-cast (ctx.toTime)
+  // rather than start-of-cast (ctx.fromTime). resolveModifierState will subtract this same duration,
+  // so the net effect is that timeLeft equals timeDuration at the moment the action finishes casting.
+  const castTimeOffset = ctx.toTime - ctx.fromTime
+  ctx.modifiersInAction = activateModifiers(allModifiers, ctx.modifiersInAction, ctx, castTimeOffset)
 
   // Step 3: Filter modifiers that apply to current context
   // This includes both permanent modifiers and active limited modifiers
@@ -168,7 +175,6 @@ export function resolveDamage(ctx: StepContext, setDamageEvents: Dispatch<SetSta
   const name = ctx.character.name
   const baseStats = ctx.character.stats
   const damageModifiers = ctx.damageModifiers
-  const modifierCharacterStats = ctx.aggregatedCharacterModifiers
   const modifierEnemyStats = ctx.aggregatedEnemyModifiers
   const enemy = ctx.enemy
   const snapshotId = ctx.snapshotId
@@ -176,11 +182,83 @@ export function resolveDamage(ctx: StepContext, setDamageEvents: Dispatch<SetSta
   const current = ctx.current
   const toTime = ctx.toTime
 
+  // Apply inherent modifiers — ephemeral conditional amplifiers on this action only.
+  // Never dispatched into modifiersInAction; evaluated once here and discarded.
+  let modifierCharacterStats = ctx.aggregatedCharacterModifiers
+  if (action.inherentModifiers?.length) {
+    const merged = { ...modifierCharacterStats }
+    for (const im of action.inherentModifiers) {
+      const scale = im.condition(ctx)
+      if (scale !== 0 && im.characterStats) {
+        for (const key in im.characterStats) {
+          const statKey = key as keyof CharacterStats
+          const value = (im.characterStats[statKey] as number) * scale
+          merged[statKey] = aggregateStat(merged[statKey] as number | undefined, value, statKey) as any
+        }
+      }
+    }
+    modifierCharacterStats = merged
+  }
+
   const { average, damageEvent } = calculateDamage({ action, name, stats: baseStats, damageModifiers, modifierCharacterStats, modifierEnemyStats, enemy, snapshotId, timeStamp: ctx.fromTime, ctx })
+
+  // Compute inherent modifier contributions: "damage without modifier i" using pre-inherent baseline
+  if (action.inherentModifiers?.length) {
+    for (const im of action.inherentModifiers) {
+      const scale = im.condition(ctx)
+      if (scale === 0) continue
+
+      // Rebuild charStats = aggregatedCharacterModifiers + all OTHER inherent mods
+      const charWithout: Partial<CharacterStats> = { ...ctx.aggregatedCharacterModifiers }
+      for (const other of action.inherentModifiers) {
+        if (other === im) continue
+        const otherScale = other.condition(ctx)
+        if (otherScale !== 0 && other.characterStats) {
+          for (const key in other.characterStats) {
+            const statKey = key as keyof CharacterStats
+            const value = (other.characterStats[statKey] as number) * otherScale
+            charWithout[statKey] = aggregateStat(charWithout[statKey] as number | undefined, value, statKey) as any
+          }
+        }
+      }
+
+      // Rebuild enemyStats = aggregatedEnemyModifiers + all OTHER inherent mods
+      const enemyWithout: Partial<EnemyStats> = { ...ctx.aggregatedEnemyModifiers }
+      for (const other of action.inherentModifiers) {
+        if (other === im) continue
+        const otherScale = other.condition(ctx)
+        if (otherScale !== 0 && other.enemyStats) {
+          for (const key in other.enemyStats) {
+            const statKey = key as keyof EnemyStats
+            const value = (other.enemyStats[statKey] as number) * otherScale
+            enemyWithout[statKey] = aggregateStat(enemyWithout[statKey] as number | undefined, value, statKey) as any
+          }
+        }
+      }
+
+      const { damageEvent: withoutEvent } = calculateDamage({ action, name, stats: baseStats, damageModifiers, modifierCharacterStats: charWithout, modifierEnemyStats: enemyWithout, enemy, snapshotId, timeStamp: ctx.fromTime, skipContributions: true })
+
+      const safePercent = (withVal: number, withoutVal: number) => (!withoutVal ? 0 : (withVal / withoutVal - 1) * 100)
+
+      const contribKey = `inherent_${im.displayName}`
+      damageEvent.contributions[contribKey] = {
+        source: contribKey,
+        displayName: im.displayName,
+        isInherent: true,
+        normal_damage_contributed: Math.max(0, damageEvent.normalStrike - withoutEvent.normalStrike),
+        normal_percent_damage_contributed: safePercent(damageEvent.normalStrike, withoutEvent.normalStrike),
+        crit_damage_contributed: Math.max(0, damageEvent.criticalStrike - withoutEvent.criticalStrike),
+        crit_percent_damage_contributed: safePercent(damageEvent.criticalStrike, withoutEvent.criticalStrike),
+        average_damage_contributed: Math.max(0, damageEvent.average - withoutEvent.average),
+        average_percent_damage_contributed: safePercent(damageEvent.average, withoutEvent.average),
+      }
+    }
+  }
+
   setDamageEvents(prevEvents => [...prevEvents, damageEvent])
 
   const cumulativeDamage = prev.damage + average
-  const dps = cumulativeDamage / toTime
+  const dps = toTime > 0 ? cumulativeDamage / toTime : 0
 
   current.damage = cumulativeDamage
   current.dps = dps
@@ -206,6 +284,9 @@ export function resolveSideEffectsAndStatuses(ctx: StepContext, setDamageEvents:
 
   // Buff/Debuff modifier stack modifications (e.g. an action forcefully ending a buff)
   helpModifierStatusModifications(ctx, statusModifications)
+
+  // Tick periodic heal procs from active heal-proc modifiers (e.g. Syntony Field)
+  helpHealProcModifiers(ctx)
 }
 
 function aggregateStatusModifications(ctx: StepContext) {
@@ -398,6 +479,64 @@ export function helpNegativeStatuses(ctx: StepContext, setDamageEvents: Dispatch
 // ========== Resolver 4.5: Coordinated Attacks ===============================================================================
 
 /**
+ * Ticks periodic heal procs from active heal-proc modifiers (e.g. Syntony Field).
+ *
+ * For each ModifierInAction that carries `healProc`:
+ *  - Computes how many ticks fall in [lastHealProcTime + frequency, toTime].
+ *  - For each tick: calls activateModifiers on healProc.procModifiers so gear-injected
+ *    buffs (e.g. Starfield Calibrator crit DMG) are activated or refreshed.
+ *  - Updates lastHealProcTime on the live MIA entry.
+ *
+ * Runs after helpModifierStatusModifications so that any modifier removed this step
+ * (e.g. Liberation destroying Syntony Field) does not fire a final proc.
+ */
+function helpHealProcModifiers(ctx: StepContext): void {
+  // Snapshot to avoid processing procs activated within this same step
+  const snapshot = [...ctx.modifiersInAction]
+  for (const mia of snapshot) {
+    const { healProc } = mia.modifier
+    if (!healProc || healProc.procModifiers.length === 0) continue
+
+    const lastProcTimeBase = mia.lastHealProcTime ?? (mia.applicationTime - healProc.frequency)
+    if (lastProcTimeBase + healProc.frequency > ctx.toTime) continue
+
+    let lastProcTime = lastProcTimeBase
+    while (lastProcTime + healProc.frequency <= ctx.toTime) {
+      lastProcTime += healProc.frequency
+      ctx.modifiersInAction = activateModifiers(healProc.procModifiers, ctx.modifiersInAction, ctx)
+    }
+
+    // activateModifiers sets each proc-modifier's timeLeft = timeDuration measured from ctx.fromTime,
+    // but the tick actually fires at lastProcTime (which may be > ctx.fromTime for long steps).
+    // resolveModifierState will later subtract (toTime - fromTime) from timeLeft, so we pre-compensate
+    // by adding (lastProcTime - fromTime) here, making the effective duration start from lastProcTime.
+    const tickOffset = lastProcTime - ctx.fromTime
+    if (tickOffset > 0) {
+      for (const procMod of healProc.procModifiers) {
+        if (!procMod.durationStrategy || procMod.durationStrategy.type === 'permanent') continue
+        const procIdx = ctx.modifiersInAction.findIndex(
+          m => m.modifier.source === procMod.source && m.modifier.displayName === procMod.displayName,
+        )
+        if (procIdx !== -1 && ctx.modifiersInAction[procIdx].timeLeft !== Infinity) {
+          ctx.modifiersInAction[procIdx] = {
+            ...ctx.modifiersInAction[procIdx],
+            timeLeft: ctx.modifiersInAction[procIdx].timeLeft + tickOffset,
+          }
+        }
+      }
+    }
+
+    // Update lastHealProcTime on the live entry (activateModifiers may have replaced the object)
+    const liveIndex = ctx.modifiersInAction.findIndex(
+      m => m.modifier.source === mia.modifier.source && m.modifier.displayName === mia.modifier.displayName,
+    )
+    if (liveIndex !== -1) {
+      ctx.modifiersInAction[liveIndex] = { ...ctx.modifiersInAction[liveIndex], lastHealProcTime: lastProcTime }
+    }
+  }
+}
+
+/**
  * Ticks all active coordinated attacks for the current step window [fromTime, toTime].
  *
  * Runs after resolveSideEffectsAndStatuses so that ctx.damageModifiers and
@@ -546,6 +685,14 @@ export function resolveResources(ctx: StepContext): void {
 
   // Update Character Energy
   for (const generated of action.energyGenerated) {
+    // Skip entries that are gated behind a cooldown that hasn't expired yet
+    if (generated.cooldownKey) {
+      const charName = character.name
+      const cooldownRemaining = ctx.prev.charactersCooldowns?.[charName]?.[generated.cooldownKey] ?? 0
+      if (cooldownRemaining > 0) continue
+      ctx.pendingEnergyCooldowns.push({ charName, cooldownKey: generated.cooldownKey, cooldownDuration: generated.cooldownDuration! })
+    }
+
     const key = generated.energyType
     const maxValue = maxEnergies?.[key] ?? Infinity
     let amount = generated.amount
@@ -612,6 +759,13 @@ export function resolveCooldowns(ctx: StepContext): void {
     }
   }
 
+  // Apply energy cooldowns queued by resolveResources (must run after updateAllCharactersCooldowns
+  // so these entries are not overwritten by the rebuild from prev)
+  for (const pending of ctx.pendingEnergyCooldowns) {
+    current.charactersCooldowns[pending.charName] ??= {}
+    current.charactersCooldowns[pending.charName][pending.cooldownKey] = pending.cooldownDuration
+  }
+
   ctx.logs.push({
     resolver: 'resolveCooldowns',
     message: `Cooldowns updated: ${action.name} set on ${action.cooldown}s cooldown`,
@@ -666,20 +820,30 @@ export function resolveCastState(ctx: StepContext): void {
     [charName]: ctx.action.name,
   }
 
+  // Record the combo chain tags produced by this action
+  ctx.current.charactersComboChainTags = {
+    ...(ctx.prev.charactersComboChainTags ?? {}),
+    [charName]: ctx.action.comboChainTags ?? [],
+  }
+
   // Track whether this character must swap out after this action
   ctx.current.charactersRequiresSwapOut = {
     [charName]: ctx.action.castConditions.requiresSwapOut ?? false,
   }
 
-  // Track required follow-up actions for combo system
-  // If this action has a requiredFollowUp, set it for the same character
-  if (ctx.action.requiredFollowUp) {
-    ctx.current.charactersRequiredFollowUp = {
-      [charName]: ctx.action.requiredFollowUp.actionName,
+  // Track follow-up actions for combo system
+  // If this action has an attemptFollowUp, set it for the same character
+  if (ctx.action.attemptFollowUp) {
+    ctx.current.charactersAttemptFollowUp = {
+      [charName]: {
+        actionName: ctx.action.attemptFollowUp.actionName,
+        // Default is false ("if possible") — must: true must be explicitly declared
+        must: ctx.action.attemptFollowUp.must ?? false,
+      },
     }
   } else {
-    // Clear any previous required follow-up for this character
-    ctx.current.charactersRequiredFollowUp = {}
+    // Clear any previous follow-up for this character
+    ctx.current.charactersAttemptFollowUp = {}
   }
 
   // Handle form changes if this action changes the character's form
@@ -710,6 +874,41 @@ export function resolveCastState(ctx: StepContext): void {
   }
 
   const swapCooldownUntil = swapOccurred && prevCharName ? ctx.current.charactersSwapCooldownUntil[prevCharName] : undefined
+
+  // On swap-out: reset the leaving character's form to default and clear any form-specific energies
+  if (swapOccurred && prevCharName) {
+    const prevChar = ctx.allies.find(a => a.name === prevCharName)
+    if (prevChar?.forms && prevChar.forms.length > 0) {
+      const prevCurrentFormName = ctx.current.charactersForms?.[prevCharName] ?? ''
+      const defaultFormName = getDefaultFormName(prevChar)
+
+      // Reset energies specified by the form that was active at swap-out time
+      const prevForm = prevChar.forms.find(f => f.name === prevCurrentFormName)
+      if (prevForm?.resetEnergiesOnSwapOut && prevForm.resetEnergiesOnSwapOut.length > 0) {
+        const prevEnergies = { ...(ctx.current.charactersEnergies?.[prevCharName] ?? {}) }
+        for (const energyType of prevForm.resetEnergiesOnSwapOut) {
+          prevEnergies[energyType] = 0
+        }
+        ctx.current.charactersEnergies = {
+          ...(ctx.current.charactersEnergies ?? {}),
+          [prevCharName]: prevEnergies,
+        }
+      }
+
+      // Reset to default form if the form opts in
+      if (prevForm?.resetFormOnSwapOut && prevCurrentFormName !== defaultFormName) {
+        ctx.current.charactersForms = {
+          ...ctx.current.charactersForms,
+          [prevCharName]: defaultFormName,
+        }
+        ctx.logs.push({
+          resolver: 'resolveCastState',
+          message: `Form reset for ${prevCharName} on swap-out: ${prevCurrentFormName || 'default'} → ${defaultFormName}`,
+          details: { prevForm: prevCurrentFormName, defaultForm: defaultFormName },
+        })
+      }
+    }
+  }
 
   // Handle combo windows: track actions that can start time-based combo chains
   // First, copy over existing combo windows and update their swap/form change flags

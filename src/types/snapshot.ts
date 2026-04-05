@@ -1,4 +1,5 @@
 import type { EnergyType } from './baseTypes'
+import type { CharacterStats } from './stats'
 
 // ========== Type: Snapshot ===================================================================================================
 
@@ -15,12 +16,22 @@ export interface Snapshot {
   buffsTimeLeft: Record<string, number>
   buffsSwapsLeft: Record<string, number>
   buffsMaxStacks: Record<string, number>
+  /**
+   * Frozen stat contributions for limited buff modifiers that use `statsOnActivation`.
+   * Keyed by the same space-stripped displayName used in `buffs`.
+   * `computeActiveModifierBreakdown` reads this instead of the blueprint's `characterStats`
+   * when present, so the stat breakdown reflects what was locked in at application time.
+   */
+  buffsActivationStats: Record<string, Partial<CharacterStats>>
+  /** Runtime target character for 'nextSwap' buffs. Keyed by space-stripped displayName. */
+  buffsTargetCharacter: Record<string, string | null>
   debuffs: Record<string, number>
   debuffsTimeLeft: Record<string, number>
   debuffsSwapsLeft: Record<string, number>
   debuffsMaxStacks: Record<string, number>
   negativeStatuses: Record<string, number>
   negativeStatusesTimeLeft: Record<string, number>
+  negativeStatusesMaxStacks: Record<string, number>
   coordinatedAttacks: Record<string, number>
   coordinatedAttacksTimeLeft: Record<string, number>
   coordinatedAttacksSwapRequired: Record<string, boolean>
@@ -42,9 +53,10 @@ export interface Snapshot {
    */
   charactersSwapCooldownUntil: Record<string, number>
   /** Tracks which character must cast which action in the next row (for combo systems).
-   *  Key: character name, Value: required action name.
-   *  When set, all other actions/characters are locked in the next row. */
-  charactersRequiredFollowUp: Record<string, string>
+   *  Key: character name. Value: follow-up action info.
+   *  When set, all other actions/characters are locked in the next row (subject to
+   *  the `must` flag — see Action.attemptFollowUp for semantics). */
+  charactersAttemptFollowUp: Record<string, { actionName: string; must: boolean }>
   /** Tracks active combo windows for time-based combo systems.
    *  Key: character name. Value: info about the last combo starter action. */
   charactersComboWindows: Record<
@@ -65,4 +77,12 @@ export interface Snapshot {
    *  Grants accumulate as forte sub-energies are consumed (deduplicated) and are cleared
    *  when the associated modifier with clearsForteGrantsOnExpiry expires or is removed. */
   charactersForteGrants: Record<string, string[]>
+  /** Combo chain tags left by the most recently cast action for each character.
+   *  Set from `Action.comboChainTags` at cast time. Read by `castConditions.requiredComboTags`
+   *  checks (honoring the persistence window) to enforce sequential combo ordering. */
+  charactersComboChainTags: Record<string, string[]>
+  /** When true, this row was automatically inserted by the engine (Outro/Intro swap or
+   *  auto-cast follow-up). Autocast rows are excluded from exports so they are not
+   *  replayed manually on import (the engine re-generates them from the user-defined steps). */
+  isAutocast?: boolean
 }

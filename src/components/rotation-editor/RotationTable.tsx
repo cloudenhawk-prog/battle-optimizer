@@ -7,6 +7,7 @@ import { CharacterStateTracker } from './CharacterStateTracker'
 import type { TableConfig, ColumnVisibility } from '../../types/tableDefinitions'
 import type { Character } from '../../types/character'
 import type { Snapshot } from '../../types/snapshot'
+import type { Gear } from '../../types/gear'
 
 // ========== Component: Rotation Table ========================================================================================
 
@@ -19,9 +20,10 @@ type RotationTableProps = {
   columnVisibility: ColumnVisibility
   setColumnVisibility: React.Dispatch<React.SetStateAction<ColumnVisibility>>
   onRowClick?: (snapshot: Snapshot) => void
+  onGearChange?: (characterName: string, newGear: Gear) => void
 }
 
-export function RotationTable({ snapshots, charactersInBattle, tableConfig, onSelectCharacter, onSelectAction, columnVisibility, setColumnVisibility, onRowClick }: RotationTableProps) {
+export function RotationTable({ snapshots, charactersInBattle, tableConfig, onSelectCharacter, onSelectAction, columnVisibility, setColumnVisibility, onRowClick, onGearChange }: RotationTableProps) {
   const [highlightIds, setHighlightIds] = useState<Set<number>>(new Set())
   const lastMaxId = useRef(0)
 
@@ -39,8 +41,9 @@ export function RotationTable({ snapshots, charactersInBattle, tableConfig, onSe
     }
   }, [snapshots])
 
-  // Get the last snapshot that has an action selected
-  const currentSnapshot = [...snapshots].reverse().find(s => s.action !== undefined && s.action !== '')
+  // Get the last snapshot that has an action selected; fall back to the initial snapshot so the
+  // tracker always shows the correct starting state (e.g. full Energy when that setting is on).
+  const currentSnapshot = [...snapshots].reverse().find(s => s.action !== undefined && s.action !== '') ?? snapshots[0]
 
   // Get the first fromTime from the first snapshot with an action
   const firstSnapshot = snapshots.find(s => s.action !== undefined && s.action !== '')
@@ -52,11 +55,13 @@ export function RotationTable({ snapshots, charactersInBattle, tableConfig, onSe
 
   return (
     <>
-      <CharacterStateTracker snapshot={currentSnapshot || null} charactersInBattle={charactersInBattle} tableConfig={tableConfig} columnVisibility={columnVisibility} setColumnVisibility={setColumnVisibility} activeCharacterName={activeCharacterName} />
+      <CharacterStateTracker snapshot={currentSnapshot || null} charactersInBattle={charactersInBattle} tableConfig={tableConfig} columnVisibility={columnVisibility} setColumnVisibility={setColumnVisibility} activeCharacterName={activeCharacterName} onGearChange={onGearChange} />
       <div className="tableWrapper">
         <table className="tableBase">
-          <HeaderRow tableConfig={tableConfig} columnVisibility={columnVisibility} setColumnVisibility={setColumnVisibility} />
-          <CurrentStateRow snapshot={currentSnapshot || null} firstFromTime={firstFromTime} tableConfig={tableConfig} columnVisibility={columnVisibility} />
+          <thead className="tableHeader">
+            <HeaderRow tableConfig={tableConfig} columnVisibility={columnVisibility} setColumnVisibility={setColumnVisibility} />
+            <CurrentStateRow snapshot={currentSnapshot || null} firstFromTime={firstFromTime} tableConfig={tableConfig} columnVisibility={columnVisibility} />
+          </thead>
           <tbody>
           {snapshots.map((snapshot, idx) => {
             // For statuses, show the state from the PREVIOUS snapshot since statuses

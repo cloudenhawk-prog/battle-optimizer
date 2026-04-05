@@ -37,5 +37,5 @@ export const blueprint: Action = {
   variantName: undefined, // Optional
   formChange: undefined, // Optional
   resolveVariant: undefined, // Optional
-  requiredFollowUp: undefined, // Optional: { actionName: 'XXX' }
+  attemptFollowUp: undefined, // Optional: { actionName: 'XXX' }
 }

@@ -280,7 +280,7 @@ function collectAssetPaths(): string[] {
 
       // Coordinated attack icons (buildCoordinatedAttackColumns)
       for (const ca of action.coordinatedAttacks ?? []) {
-        paths.add(ca.icon ?? `/assets/coordinated_attacks/${ca.name.toLowerCase().replace(/\s+/g, '_')}.png`)
+        paths.add(ca.icon ?? `/assets/coordinated-attacks/${ca.name.toLowerCase().replace(/\s+/g, '_')}.png`)
       }
     }
   }

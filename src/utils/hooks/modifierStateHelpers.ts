@@ -1,5 +1,6 @@
 import type { Snapshot } from '../../types/snapshot'
 import type { ModifierInAction, DamageModifier } from '../../types/modifiers'
+import type { CharacterStats } from '../../types/stats'
 import type { StepContext } from '../../types/stepContext'
 
 // ========== Modifier State Helpers ===========================================================================================
@@ -29,6 +30,8 @@ export function updateModifierStacks(snapshot: Snapshot, modifiersInAction: Modi
   const buffsTimeLeft: Record<string, number> = {}
   const buffsSwapsLeft: Record<string, number> = {}
   const buffsMaxStacks: Record<string, number> = {}
+  const buffsActivationStats: Record<string, Partial<CharacterStats>> = {}
+  const buffsTargetCharacter: Record<string, string | null> = {}
 
   const debuffs: Record<string, number> = {}
   const debuffsTimeLeft: Record<string, number> = {}
@@ -50,6 +53,9 @@ export function updateModifierStacks(snapshot: Snapshot, modifiersInAction: Modi
       buffsTimeLeft[key] = timeLeft
       buffsSwapsLeft[key] = swapsLeft
       buffsMaxStacks[key] = maxStacks
+      if (mia.activationStats) buffsActivationStats[key] = mia.activationStats
+      else if (mia.modifier.characterStats) buffsActivationStats[key] = mia.modifier.characterStats
+      if (mia.modifier.targetStrategy === 'nextSwap') buffsTargetCharacter[key] = mia.targetCharacter
     } else if (type === 'debuff') {
       debuffs[key] = stacks
       debuffsTimeLeft[key] = timeLeft
@@ -67,14 +73,20 @@ export function updateModifierStacks(snapshot: Snapshot, modifiersInAction: Modi
     const maxStacks = modifier.stackingStrategy.maxStacks
 
     // Only track if condition is active (returns > 0)
-    // Note: conditionValue is used internally for damage calculation as a multiplier, not for display
-    // For display purposes: permanent modifiers show as having 1 current stack when active
     if (conditionValue > 0) {
       if (type === 'buff') {
         buffs[key] = 1 // Permanent modifiers show 1 stack when active (not the condition value)
         buffsTimeLeft[key] = Infinity
         buffsSwapsLeft[key] = Infinity
         buffsMaxStacks[key] = maxStacks
+        if (modifier.characterStats) {
+          // Scale each stat by the condition multiplier so the tooltip reflects the true effective value
+          const scaled: Partial<CharacterStats> = {}
+          for (const [stat, val] of Object.entries(modifier.characterStats) as [keyof CharacterStats, number][]) {
+            scaled[stat] = val * conditionValue
+          }
+          buffsActivationStats[key] = scaled
+        }
       } else if (type === 'debuff') {
         debuffs[key] = 1 // Permanent modifiers show 1 stack when active (not the condition value)
         debuffsTimeLeft[key] = Infinity
@@ -89,6 +101,8 @@ export function updateModifierStacks(snapshot: Snapshot, modifiersInAction: Modi
   snapshot.buffsTimeLeft = buffsTimeLeft
   snapshot.buffsSwapsLeft = buffsSwapsLeft
   snapshot.buffsMaxStacks = buffsMaxStacks
+  snapshot.buffsActivationStats = buffsActivationStats
+  snapshot.buffsTargetCharacter = buffsTargetCharacter
 
   snapshot.debuffs = debuffs
   snapshot.debuffsTimeLeft = debuffsTimeLeft

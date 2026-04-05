@@ -7,6 +7,7 @@ import { ActionSelect } from './ActionSelect'
 import { StatusTagGroup } from './StatusTagGroup'
 import { parseCoordinatedAttackKey } from '../../utils/hooks/coordinatedAttackHelpers'
 import { isSwapRequiredLocked } from '../../utils/hooks/snapshotHelpers'
+import { isFollowUpCastableNow, validateMustChain } from '../../utils/conditions/mustChainValidator'
 
 // ========== Component: Body Row ==============================================================================================
 
@@ -43,9 +44,18 @@ export function BodyRow({ snapshot, previousSnapshot, charactersInBattle, tableC
         lockedCharacters.add(charName)
       }
     }
-    // Lock all characters except the one with a required follow-up (combo system)
-    const requiredFollowUps = previousSnapshot.charactersRequiredFollowUp ?? {}
-    const charactersWithFollowUp = Object.keys(requiredFollowUps).filter(char => requiredFollowUps[char])
+    // Lock all characters except the one with a follow-up (combo system)
+    const attemptFollowUps = previousSnapshot.charactersAttemptFollowUp ?? {}
+    const charactersWithFollowUp = Object.keys(attemptFollowUps).filter(char => {
+      const entry = attemptFollowUps[char]
+      if (!entry) return false
+      if (entry.must) return true
+      // "if possible": only lock the character when the follow-up is castable AND its own MUST chain can be satisfied
+      const charObj = charactersInBattle.find(c => c.name === char)
+      if (!charObj) return false
+      const followUpAction = charObj.actions.find(a => a.name === entry.actionName || a.groupName === entry.actionName)
+      return !!followUpAction && isFollowUpCastableNow(followUpAction, previousSnapshot, charObj) && validateMustChain(followUpAction, previousSnapshot, charObj, charObj.actions)
+    })
     if (charactersWithFollowUp.length > 0) {
       // Lock all characters that don't have a required follow-up
       for (const char of charactersInBattle) {
@@ -139,13 +149,17 @@ function renderBodyColumnsWithTags(columns: ColumnDef[], columnVisibility: Colum
         // completes, not during. If no previous snapshot exists, show empty (0 stacks).
         const sourceSnapshot = previousSnapshot
         let statusData: Record<string, number> | undefined
+        let activationStatsData: Record<string, object> | undefined
         let statusType: 'buff' | 'debuff' | 'negativeStatus' = 'buff'
 
+        let negativeStatusesMaxStacksData: Record<string, number> | undefined
         if (col.key === 'negativeStatuses') {
           statusData = sourceSnapshot?.negativeStatuses as Record<string, number> | undefined
+          negativeStatusesMaxStacksData = sourceSnapshot?.negativeStatusesMaxStacks as Record<string, number> | undefined
           statusType = 'negativeStatus'
         } else if (col.key === 'buffs') {
           statusData = sourceSnapshot?.buffs as Record<string, number> | undefined
+          activationStatsData = sourceSnapshot?.buffsActivationStats as Record<string, object> | undefined
           statusType = 'buff'
         } else if (col.key === 'debuffs') {
           statusData = sourceSnapshot?.debuffs as Record<string, number> | undefined
@@ -175,14 +189,17 @@ function renderBodyColumnsWithTags(columns: ColumnDef[], columnVisibility: Colum
             label: meta.label,
             icon: meta.icon,
             value: statusData?.[meta.key] ?? 0,
-            maxStacks: meta.maxStacks,
+            maxStacks: negativeStatusesMaxStacksData?.[meta.key] ?? meta.maxStacks,
             type: statusType,
             color: meta.color,
+            description: meta.description,
+            showStats: meta.showStats,
+            stats: activationStatsData?.[meta.key] as object | undefined,
           })) ?? []
 
         return (
           <td key={col.key} className={className}>
-            {character && action ? <StatusTagGroup statuses={statuses} /> : ''}
+            {character && action ? <StatusTagGroup statuses={statuses} clickable={false} /> : ''}
           </td>
         )
       }

@@ -395,11 +395,40 @@ function convertLevelToDefense(level: number): number {
 export function calculateAllContrubutions(action: Action, name: string, stats: CharacterStats, damageModifiers: DamageModifier[], enemy: Enemy, snapshotId: number, timeStamp: number, normalStrike: number, criticalStrike: number, average: number, ctx?: StepContext): Record<string, Contribution> {
   const results: Record<string, Contribution> = {}
 
-  // Group modifiers by contributionGroup (or own source for ungrouped)
+  // Pre-compute inherent modifier stats so every "without modifier X" baseline includes them.
+  // Without this, inherentModifiers would be missing from normalWithout, inflating all contributions.
+  const inherentCharBase: Partial<CharacterStats> = {}
+  const inherentEnemyBase: Partial<EnemyStats> = {}
+  if (ctx && action.inherentModifiers?.length) {
+    for (const im of action.inherentModifiers) {
+      const scale = im.condition(ctx)
+      if (scale !== 0) {
+        if (im.characterStats) {
+          for (const key in im.characterStats) {
+            const statKey = key as keyof CharacterStats
+            const value = (im.characterStats[statKey] as number) * scale
+            inherentCharBase[statKey] = aggregateStat(inherentCharBase[statKey] as number | undefined, value, statKey) as any
+          }
+        }
+        if (im.enemyStats) {
+          for (const key in im.enemyStats) {
+            const statKey = key as keyof EnemyStats
+            const value = (im.enemyStats[statKey] as number) * scale
+            inherentEnemyBase[statKey] = aggregateStat(inherentEnemyBase[statKey] as number | undefined, value, statKey) as any
+          }
+        }
+      }
+    }
+  }
+
+  // Group modifiers by contributionGroup (explicit opt-in), or by unique `source::displayName` key.
+  // Using source::displayName (not just source) ensures that two modifiers sharing the same source
+  // but representing distinct effects (e.g. S1 base vs S2 enhancement) are reported separately.
+  // Modifiers that should be reported as one combined entry must explicitly set contributionGroup.
   const groupIndices = new Map<string, number[]>()
   for (let i = 0; i < damageModifiers.length; i++) {
     const mod = damageModifiers[i]
-    const groupKey = mod.contributionGroup ?? mod.source ?? `modifier_${i}`
+    const groupKey = mod.contributionGroup ?? (mod.source !== undefined ? `${mod.source}::${mod.displayName ?? mod.source}` : `modifier_${i}`)
     if (!groupIndices.has(groupKey)) groupIndices.set(groupKey, [])
     groupIndices.get(groupKey)!.push(i)
   }
@@ -412,9 +441,9 @@ export function calculateAllContrubutions(action: Action, name: string, stats: C
 
     const excludedIndices = new Set(indices)
 
-    // Rebuild modifiers excluding the entire group
-    const charModsWithout: Partial<CharacterStats> = {}
-    const enemyModsWithout: Partial<EnemyStats> = {}
+    // Rebuild modifiers excluding the entire group, seeded with inherent modifier stats
+    const charModsWithout: Partial<CharacterStats> = { ...inherentCharBase }
+    const enemyModsWithout: Partial<EnemyStats> = { ...inherentEnemyBase }
 
     for (let j = 0; j < damageModifiers.length; j++) {
       if (excludedIndices.has(j)) continue
@@ -478,6 +507,7 @@ export function calculateAllContrubutions(action: Action, name: string, stats: C
 
     results[uniqueKey] = {
       source: representativeMod.source,
+      ownerCharacter: representativeMod.ownerCharacter ?? null,
       displayName: representativeMod.displayName,
       crit_damage_contributed: Math.max(0, crit_contrib),
       crit_percent_damage_contributed: crit_pct,
@@ -584,11 +614,11 @@ export function calculateDamageNegativeStatus(currStacks: number, element: Eleme
 function calculateNegativeStatusContributions(baseDMG: number, element: ElementType, enemy: Enemy, baseStats: CharacterStats, damageModifiers: DamageModifier[], fullDamage: number, ctx: StepContext): Record<string, Contribution> {
   const results: Record<string, Contribution> = {}
 
-  // Group modifiers by contributionGroup (or own source for ungrouped)
+  // Group modifiers by contributionGroup (explicit opt-in), or by unique `source::displayName` key.
   const groupIndices = new Map<string, number[]>()
   for (let i = 0; i < damageModifiers.length; i++) {
     const mod = damageModifiers[i]
-    const groupKey = mod.contributionGroup ?? mod.source ?? `modifier_${i}`
+    const groupKey = mod.contributionGroup ?? (mod.source !== undefined ? `${mod.source}::${mod.displayName ?? mod.source}` : `modifier_${i}`)
     if (!groupIndices.has(groupKey)) groupIndices.set(groupKey, [])
     groupIndices.get(groupKey)!.push(i)
   }
@@ -669,7 +699,9 @@ function calculateNegativeStatusContributions(baseDMG: number, element: ElementT
 
     results[uniqueKey] = {
       source: representativeMod.source,
+      ownerCharacter: representativeMod.ownerCharacter ?? null,
       displayName: representativeMod.displayName,
+      isSelf: representativeMod.targetStrategy === 'self',
       crit_damage_contributed: Math.max(0, contrib),
       crit_percent_damage_contributed: pct,
       normal_damage_contributed: Math.max(0, contrib),

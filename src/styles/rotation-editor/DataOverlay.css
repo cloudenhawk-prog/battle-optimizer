@@ -1,842 +1,366 @@
-/* Clean HUD Design System */
+﻿/* =====================================================================================
+   RESONANCE FIELD ANALYSIS — DATA OVERLAY
+   Layout:  3-column flex (left | center | right), full-panel like SummaryOverlay
+   Left:    (empty)
+   Center:  Combat Metrics + Pie chart + Damage Sources
+   Right:   Modifier Contributions
+   ===================================================================================== */
+
+/* ── Backdrop ───────────────────────────────────────────────── */
 .dataOverlay {
   position: fixed;
   inset: 0;
-  background: rgba(25, 25, 30, 0.75); /* Make it a little lighter - it feels gloomy (this is the overlay surrounding background shade) */
+  background: rgba(10, 10, 18, 0.82);
+  backdrop-filter: blur(14px);
   display: flex;
-  align-items: center;
-  justify-content: center;
+  align-items: stretch;
+  justify-content: stretch;
   z-index: 200;
-  backdrop-filter: blur(12px);
 }
 
-.dataOverlayContent {
+/* ── Main panel ─────────────────────────────────────────────── */
+.dataPanel {
+  position: fixed;
+  inset: 16px;
   background: var(--table-bg);
   border: 1px solid var(--table-border);
   border-radius: var(--table-corner-radius);
-  width: 95%;
-  max-width: 1400px;
-  height: 90vh;
-  max-height: 90vh;
-  overflow: hidden;
-  box-shadow: var(--table-shadow-inner), var(--table-shadow-main), var(--table-shadow-glow);
+  box-shadow:
+    var(--table-shadow-inner),
+    var(--table-shadow-main),
+    var(--table-shadow-glow),
+    0 0 120px rgba(100, 160, 255, 0.06);
   display: flex;
   flex-direction: column;
+  overflow: hidden;
   user-select: none;
   cursor: default;
-  position: relative;
+  z-index: 201;
 }
 
-.dataOverlayContent::before {
+.dataPanel::before {
   content: '';
   position: absolute;
   inset: 0;
   border-radius: inherit;
   pointer-events: none;
-  box-shadow:
-    inset 0 0 0 1px var(--table-border),
-    var(--table-shadow-inner-glow);
+  background:
+    radial-gradient(ellipse 80% 40% at 50% 0%, rgba(100, 180, 255, 0.03) 0%, transparent 60%),
+    radial-gradient(ellipse 60% 30% at 50% 100%, rgba(120, 100, 255, 0.025) 0%, transparent 55%);
+  z-index: 0;
 }
 
-.dataOverlayHeader {
+@media (min-width: 1024px) {
+  .dataPanel {
+    inset: 40px;
+  }
+}
+
+/* ── Header ──────────────────────────────────────────────────── */
+.dataHeader {
   display: flex;
-  justify-content: space-between;
   align-items: center;
-  gap: 24px;
-  padding: 20px 28px;
+  justify-content: space-between;
+  gap: 20px;
+  padding: 18px 28px;
   background: var(--table-header-bg);
   border-bottom: 1px solid var(--table-border);
   position: relative;
-  z-index: 51;
+  z-index: 10;
+  flex-shrink: 0;
 }
 
-.overlayTitle {
+.dataHeaderLeft {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.dataTitle {
   margin: 0;
-  font-size: 18px;
-  font-weight: 600;
+  font-size: 22px;
+  font-weight: 700;
   color: var(--table-text-dim);
+  letter-spacing: 0.2em;
   text-transform: uppercase;
-  letter-spacing: 0.15em;
-  font-family:
-    system-ui,
-    -apple-system,
-    sans-serif;
+  font-family: 'Orbitron', 'Courier New', monospace;
 }
 
-.overlayCloseButton {
+.dataHeaderRight {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+/* ── Mode Selector ───────────────────────────────────────────── */
+.dataModeGroup {
+  display: flex;
+  gap: 4px;
+  padding: 3px;
+  background: rgba(255, 255, 255, 0.03);
+  border-radius: 6px;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.dataModeButton {
+  padding: 5px 14px;
+  font-family: 'Share Tech Mono', 'Courier New', monospace;
+  font-size: 11px;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  background: transparent;
+  border: none;
+  color: rgba(255, 255, 255, 0.35);
+  cursor: pointer;
+  border-radius: 4px;
+  transition: all 0.2s;
+  white-space: nowrap;
+}
+
+.dataModeButton:hover {
+  background: rgba(100, 200, 255, 0.08);
+  color: rgba(255, 255, 255, 0.7);
+}
+
+.dataModeButton.active {
+  background: rgba(100, 200, 255, 0.14);
+  color: rgba(100, 220, 255, 0.95);
+  box-shadow: 0 0 8px rgba(100, 200, 255, 0.18), inset 0 0 8px rgba(100, 200, 255, 0.07);
+}
+
+/* ── Row Navigation ──────────────────────────────────────────── */
+.dataNavGroup {
+  display: flex;
+  align-items: center;
+  gap: 2px;
+  padding: 3px;
+  background: rgba(255, 255, 255, 0.03);
+  border-radius: 6px;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+.dataNavButton {
   background: transparent;
   border: none;
   cursor: pointer;
-  font-size: 20px;
-  font-weight: 400;
-  color: var(--table-text-dim);
-  padding: 4px 12px;
-  transition: all 0.2s;
+  font-size: 11px;
+  color: rgba(255, 255, 255, 0.4);
+  padding: 5px 10px;
   border-radius: 4px;
+  transition: all 0.2s;
+  line-height: 1;
 }
 
-.overlayCloseButton:hover {
-  color: var(--table-text);
-  background: var(--table-select-bg);
+.dataNavButton:hover:not(:disabled) {
+  color: rgba(100, 220, 255, 0.9);
+  background: rgba(100, 200, 255, 0.1);
 }
 
-.dataOverlayBody {
-  position: relative;
-  flex: 1;
-  overflow: hidden;
-  display: flex;
-  align-items: center;
-  justify-content: center;
+.dataNavButton:disabled {
+  opacity: 0.2;
+  cursor: default;
 }
 
-/* Scanning line effect */
-.hudScanLine {
-  position: absolute;
-  top: 0;
-  left: 0;
-  right: 0;
-  height: 2px;
-  background: linear-gradient(to bottom, transparent, rgba(100, 200, 255, 0.3), transparent);
-  box-shadow: 0 0 10px rgba(100, 200, 255, 0.4);
-  animation: scan 15s ease-in-out infinite;
-  z-index: 1;
-  pointer-events: none;
-}
-
-@keyframes scan {
-  0% {
-    top: 0;
-    opacity: 0;
-  }
-  1% {
-    opacity: 1;
-  }
-  15% {
-    opacity: 1;
-  }
-  16% {
-    top: 100%;
-    opacity: 0;
-  }
-  100% {
-    top: 100%;
-    opacity: 0;
-  }
-}
-
-/* HUD Corner Brackets */
-.hudCorner {
-  position: absolute;
-  width: 32px;
-  height: 32px;
-  border-color: rgba(255, 255, 255, 0.15);
-  opacity: 0.5;
-  animation: cornerPulse 4s ease-in-out infinite;
-}
-
-@keyframes cornerPulse {
-  0%,
-  100% {
-    border-color: rgba(255, 255, 255, 0.15);
-    opacity: 0.5;
-  }
-  50% {
-    border-color: rgba(100, 150, 255, 0.25);
-    opacity: 0.7;
-  }
-}
-
-.hudCorner.topLeft {
-  top: 24px;
-  left: 24px;
-  border-top: 1px solid;
-  border-left: 1px solid;
-}
-.hudCorner.topRight {
-  top: 24px;
-  right: 24px;
-  border-top: 1px solid;
-  border-right: 1px solid;
-}
-.hudCorner.bottomLeft {
-  bottom: 24px;
-  left: 24px;
-  border-bottom: 1px solid;
-  border-left: 1px solid;
-}
-.hudCorner.bottomRight {
-  bottom: 24px;
-  right: 24px;
-  border-bottom: 1px solid;
-  border-right: 1px solid;
-}
-
-/* HUD Top/Bottom Info Bars */
-.hudTopBar {
-  position: absolute;
-  top: 24px;
-  left: 72px;
-  right: 72px;
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  font-family: 'Courier New', monospace;
-  font-size: 10px;
-  color: rgba(243, 244, 246, 0.4);
-  letter-spacing: 0.1em;
-  z-index: 5;
-}
-
-.hudTopLeft {
-  font-weight: 600;
-}
-
-.hudTopRight {
-  display: flex;
-  gap: 8px;
-  align-items: center;
-}
-
-.hudLabel {
-  color: rgba(243, 244, 246, 0.25);
-  font-weight: 400;
-}
-
-.hudBottomBar {
-  position: absolute;
-  bottom: 24px;
-  left: 72px;
-  right: 72px;
-  display: grid;
-  grid-template-columns: 1fr auto 1fr;
-  gap: 24px;
-  font-family: 'Courier New', monospace;
-  font-size: 9px;
-  color: rgba(243, 244, 246, 0.35);
-  letter-spacing: 0.08em;
-  z-index: 5;
-}
-
-.hudBottomLeft,
-.hudBottomCenter {
-  display: flex;
-  flex-direction: column;
-  gap: 2px;
-}
-
-.hudBottomCenter {
+.dataNavCounter {
+  font-family: 'Share Tech Mono', 'Courier New', monospace;
+  font-size: 11px;
+  color: rgba(255, 255, 255, 0.4);
+  min-width: 36px;
   text-align: center;
-  align-items: center;
+  letter-spacing: 0.05em;
 }
 
-.hudBottomRight {
+/* ── Close Button ────────────────────────────────────────────── */
+.dataClose {
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  font-size: 18px;
+  color: rgba(255, 255, 255, 0.35);
+  padding: 6px 12px;
+  border-radius: 4px;
+  transition: all 0.2s;
+  line-height: 1;
+}
+
+.dataClose:hover {
+  color: rgba(255, 255, 255, 0.8);
+  background: rgba(255, 255, 255, 0.06);
+}
+
+/* ── 3-column body ───────────────────────────────────────────── */
+.dataColumns {
+  flex: 1;
+  min-height: 0;
   display: flex;
-  justify-content: flex-end;
-  align-items: center;
-}
-
-.liveIndicator {
-  color: rgba(100, 200, 255, 0.7);
-  font-weight: 600;
-  text-shadow: 0 0 8px rgba(100, 200, 255, 0.4);
-  animation: liveBlink 2s ease-in-out infinite;
-}
-
-.hudTopBar .separator {
-  margin: 0 6px;
-  opacity: 0.25;
-}
-
-@keyframes subtleBlink {
-  0%,
-  100% {
-    opacity: 0.5;
-  }
-  50% {
-    opacity: 1;
-  }
-}
-
-@keyframes liveBlink {
-  0%,
-  100% {
-    opacity: 0.6;
-    text-shadow: 0 0 8px rgba(100, 200, 255, 0.3);
-  }
-  50% {
-    opacity: 1;
-    text-shadow:
-      0 0 15px rgba(100, 200, 255, 0.6),
-      0 0 25px rgba(100, 200, 255, 0.3);
-  }
-}
-
-@keyframes dataFlicker {
-  0%,
-  100% {
-    opacity: 1;
-  }
-  92% {
-    opacity: 1;
-  }
-  93% {
-    opacity: 0.3;
-  }
-  94% {
-    opacity: 1;
-  }
-  96% {
-    opacity: 0.5;
-  }
-  97% {
-    opacity: 1;
-  }
-}
-
-/* Pie Chart Center */
-.pieChartCenter {
+  flex-direction: row;
+  overflow: hidden;
   position: relative;
-  width: 320px;
-  height: 320px;
-  z-index: 10;
 }
 
-.pieOuterRing {
-  position: absolute;
-  inset: -20px;
-  border-radius: 50%;
-  border: 1px dashed rgba(255, 255, 255, 0.12);
-  animation: rotateSlow 8s linear infinite;
-  pointer-events: none;
+.dataColDivider {
+  width: 1px;
+  flex-shrink: 0;
+  background: rgba(255, 255, 255, 0.06);
+  align-self: stretch;
 }
 
-.pieOuterRingDashed {
-  position: absolute;
-  inset: -45px;
-  border-radius: 50%;
-  border: 1px dashed rgba(255, 255, 255, 0.04);
-  pointer-events: none;
+.dataLeftPanel,
+.dataRightPanel {
+  overflow-y: auto;
+  scrollbar-width: thin;
+  scrollbar-color: rgba(100, 160, 255, 0.2) transparent;
+  padding: 24px 22px 56px;
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  width: 260px;
+  flex-shrink: 0;
 }
 
-@keyframes rotateSlow {
-  from {
-    transform: rotate(0deg);
-  }
-  to {
-    transform: rotate(360deg);
-  }
+.dataLeftPanel::-webkit-scrollbar,
+.dataRightPanel::-webkit-scrollbar { width: 4px; }
+
+.dataLeftPanel::-webkit-scrollbar-thumb,
+.dataRightPanel::-webkit-scrollbar-thumb { background: rgba(100, 160, 255, 0.2); border-radius: 2px; }
+
+.dataCenterPanel {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  overflow-y: auto;
+  overflow-x: hidden;
+  position: relative;
+  scrollbar-width: thin;
+  scrollbar-color: rgba(100, 160, 255, 0.2) transparent;
 }
 
-@keyframes rotateReverse {
-  from {
-    transform: rotate(360deg);
-  }
-  to {
-    transform: rotate(0deg);
-  }
+.dataCenterPanel::-webkit-scrollbar { width: 4px; }
+.dataCenterPanel::-webkit-scrollbar-thumb { background: rgba(100, 160, 255, 0.2); border-radius: 2px; }
+
+/* Top area — combat metrics */
+.dataCenterTopArea {
+  padding: 24px 22px 20px;
+  flex-shrink: 0;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
 }
 
-/* Outer notches rotating counter-clockwise */
-.pieOuterNotchContainer {
-  position: absolute;
-  inset: -50px;
-  animation: rotateReverse 25s linear infinite;
-  pointer-events: none;
+/* Mode selector bar — sits above combat metrics */
+.dataModeBar {
+  display: flex;
+  justify-content: center;
+  padding-bottom: 4px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.04);
 }
 
-.pieOuterNotch {
-  position: absolute;
-  top: 50%;
-  left: 50%;
-  width: 2px;
-  transform-origin: center;
-  animation: notchPulse 3.5s ease-in-out infinite;
+/* View toggle bar — sits below the pie chart */
+.dataPieViewBar {
+  display: flex;
+  justify-content: center;
+  flex-shrink: 0;
 }
 
-@keyframes notchPulse {
-  0%,
-  100% {
-    opacity: 0.6;
-  }
-  50% {
-    opacity: 1;
-  }
-}
-
-.pieChartSvg {
-  width: 100%;
-  height: 100%;
-  border-radius: 50%;
-  box-shadow:
-    0 4px 20px rgba(0, 0, 0, 0.3),
-    inset 0 0 1px rgba(255, 255, 255, 0.1);
-}
-
-.pieSlice {
-  transition: transform 0.22s ease, stroke-width 0.22s ease;
-  transform-origin: 75px 75px;
-  transform-box: fill-box;
-}
-
-@keyframes slicePulse {
-  0%, 100% {
-    filter: brightness(1.05) drop-shadow(0 0 3.5px rgba(255, 255, 255, 0.25)); 
-  }
-  50% {
-    filter: brightness(1.05) drop-shadow(0 0 8.4px rgba(255, 255, 255, 0.45));
-  }
-}
-
-.pieSlice.highlighted {
-  transform: scale(1.05);
-  transform-origin: 75px 75px;
-  transform-box: view-box;
-  stroke-width: 2px;
-  filter: brightness(0.9) drop-shadow(0 0 8.4px rgba(255, 255, 255, 0.45));
-}
-
-.pieInnerCircle {
-  position: absolute;
-  inset: 40px;
-  border-radius: 50%;
-  background: var(--table-bg);
+/* Pie chart area — grows to fill space between top and bottom, centers pie */
+.dataCenterPieArea {
+  flex: 1;
+  min-height: 340px;
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  box-shadow:
-    0 0 20px rgba(0, 0, 0, 0.5),
-    var(--table-shadow-inner);
-  border: 1px solid var(--table-border);
-  pointer-events: none;
+  padding: 24px;
+  gap: 16px;
 }
 
-.piePercentage {
-  font-family:
-    system-ui,
-    -apple-system,
-    sans-serif;
-  font-size: 42px;
-  font-weight: 600;
-  color: var(--table-text);
-  transition: opacity 0.2s ease;
-  margin-bottom: 2px;
+/* Damage sources list below the pie */
+.dataCenterSourcesArea {
+  padding: 0 22px 32px;
+  flex-shrink: 0;
+  border-top: 1px solid rgba(255, 255, 255, 0.05);
 }
 
-.pieLabel {
-  font-family: 'Courier New', monospace;
-  font-size: 11px;
-  color: var(--table-text-subtle);
-  letter-spacing: 0.2em;
-  margin-bottom: 6px;
-  text-transform: uppercase;
-  transition: opacity 0.2s ease;
-}
-
-/* Hover tooltip */
-.pieTooltip {
-  position: absolute;
-  top: 50%;
-  left: calc(100% + 50px);
-  transform: translateY(-50%);
-  background: var(--table-bg);
-  border: 1px solid var(--table-border);
-  border-radius: 6px;
-  padding: 20px;
-  min-width: 260px;
-  box-shadow:
-    var(--table-shadow-inner),
-    0 4px 16px rgba(0, 0, 0, 0.4),
-    0 0 20px rgba(100, 150, 255, 0.1);
-  z-index: 100;
-  pointer-events: none;
-  animation: tooltipFadeIn 0.2s ease;
-}
-
-@keyframes tooltipFadeIn {
-  from {
-    opacity: 0;
-  }
-  to {
-    opacity: 1;
-  }
-}
-
-.pieTooltip::before {
-  content: '';
-  position: absolute;
-  left: -50px;
-  top: 50%;
-  transform: translateY(-50%);
-  width: 50px;
-  height: 2px;
-  background: linear-gradient(to right, transparent, var(--tooltip-color, rgba(100, 150, 255, 0.4)), var(--tooltip-color, rgba(100, 200, 255, 0.8)));
-  box-shadow: 0 0 8px var(--tooltip-color, rgba(100, 200, 255, 0.6));
-  animation: connectorPulse 2s ease-in-out infinite;
-}
-
-/* Override connector for damage source tooltips */
-.damageSourceTooltip::before {
-  left: 50%;
-  top: 100%;
-  transform: translateX(-50%);
-  width: 2px;
-  height: 20px;
-  background: linear-gradient(to bottom, var(--tooltip-color, rgba(100, 150, 255, 0.8)), transparent);
-}
-
-@keyframes connectorPulse {
-  0%,
-  100% {
-    opacity: 0.6;
-    box-shadow: 0 0 8px rgba(100, 200, 255, 0.6);
-  }
-  50% {
-    opacity: 1;
-    box-shadow: 0 0 12px rgba(100, 200, 255, 0.9);
-  }
-}
-
-.pieTooltipAccent {
-  position: absolute;
-  top: 0;
-  left: 0;
-  right: 0;
-  height: 2px;
-  background: linear-gradient(to right, rgba(100, 150, 255, 0.6), transparent);
-  box-shadow: 0 0 4px rgba(100, 150, 255, 0.4);
-}
-
-.pieTooltipTitle {
-  font-family:
-    system-ui,
-    -apple-system,
-    sans-serif;
-  font-size: 15px;
-  font-weight: 600;
-  color: var(--table-text);
-  margin-bottom: 10px;
-  letter-spacing: 0.02em;
-}
-
-.pieTooltipDivider {
-  height: 1px;
-  background: linear-gradient(to right, var(--table-border), transparent);
-  margin-bottom: 12px;
-  opacity: 0.5;
-}
-
-.pieTooltipRow {
+/* ── Section Groups ──────────────────────────────────────────── */
+.dataSectionGroup {
   display: flex;
-  justify-content: space-between;
-  align-items: center;
-  gap: 20px;
-  margin-bottom: 8px;
-  font-size: 13px;
-}
-
-.pieTooltipRow:last-child {
-  margin-bottom: 0;
-}
-
-.pieTooltipLabel {
-  font-family: 'Courier New', monospace;
-  color: var(--table-text-dim);
-  text-transform: uppercase;
-  letter-spacing: 0.08em;
-  font-size: 11px;
-}
-
-.pieTooltipValue {
-  font-family:
-    system-ui,
-    -apple-system,
-    sans-serif;
-  color: var(--table-text);
-  font-weight: 500;
-  text-align: right;
-}
-
-.pieTooltipHighlight {
-  color: rgba(100, 200, 255, 0.9);
-  font-weight: 600;
-  font-size: 14px;
-}
-
-/* Remove old hover info styles that are no longer used */
-.pieTickContainer {
-  position: absolute;
-  inset: 0;
-  animation: tickRotate 20s linear infinite;
-  pointer-events: none;
-}
-
-@keyframes tickRotate {
-  from {
-    transform: rotate(0deg);
-  }
-  to {
-    transform: rotate(360deg);
-  }
-}
-
-.pieTick {
-  position: absolute;
-  top: 50%;
-  left: 50%;
-  width: 1px;
-  transform-origin: center;
-  animation: tickPulse 3s ease-in-out infinite;
-}
-
-@keyframes tickPulse {
-  0%,
-  100% {
-    opacity: 0.8;
-  }
-  50% {
-    opacity: 1;
-  }
-}
-
-/* Radial Sections */
-.radialSection {
-  position: absolute;
-  width: 360px;
-  z-index: 5;
-}
-
-.radialSection.damageSourcesSection {
-  left: calc(50% - 600px);
-  top: calc(50% - 120px);
-}
-.radialSection.combatOverview {
-  left: 50%;
-  transform: translateX(-50%);
-  top: 60px;
-}
-.radialSection.contributions {
-  left: 50%;
-  transform: translateX(-50%);
-  bottom: 20px;
-  width: max-content;
-  min-width: 360px;
-  max-width: min(1300px, calc(95vw - 80px));
-}
-
-.sectionCard {
-  border-radius: 6px;
-  background: var(--table-bg);
-  backdrop-filter: var(--table-blur);
-  padding: 20px;
-  position: relative;
-  overflow: hidden;
-  border: 1px solid var(--table-border);
-  box-shadow:
-    var(--table-shadow-inner),
-    0 4px 12px rgba(0, 0, 0, 0.3);
-}
-
-.sectionCard::before {
-  content: '';
-  position: absolute;
-  top: 0;
-  left: -100%;
-  width: 100%;
-  height: 100%;
-  background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.03), transparent);
-  animation: shimmer 8s ease-in-out infinite;
-}
-
-@keyframes shimmer {
-  0% {
-    left: -100%;
-  }
-  50%,
-  100% {
-    left: 100%;
-  }
-}
-
-.sectionCard.cyan {
-  border-top: 2px solid rgba(100, 150, 255, 0.3);
-}
-.sectionCard.amber {
-  border-top: 2px solid rgba(255, 150, 100, 0.3);
-}
-.sectionCard.magenta {
-  border-top: 2px solid rgba(200, 150, 255, 0.3);
-  padding-bottom: 7px;
-  overflow: visible;
-}
-.sectionCard.purple {
-  border-top: 2px solid rgba(150, 100, 255, 0.3);
-}
-.sectionCard.silver {
-  border-top: 2px solid rgba(180, 200, 220, 0.35);
-}
-
-.sectionTopAccent {
-  position: absolute;
-  top: 0;
-  left: 0;
-  right: 0;
-  height: 2px;
-}
-
-.sectionTopAccent.cyan {
-  background: linear-gradient(to right, rgba(100, 150, 255, 0.4), transparent);
-}
-.sectionTopAccent.amber {
-  background: linear-gradient(to right, rgba(255, 150, 100, 0.4), transparent);
-}
-.sectionTopAccent.magenta {
-  background: linear-gradient(to right, rgba(200, 150, 255, 0.4), transparent);
-}
-.sectionTopAccent.purple {
-  background: linear-gradient(to right, rgba(150, 100, 255, 0.4), transparent);
-}
-.sectionTopAccent.silver {
-  background: linear-gradient(to right, rgba(180, 200, 220, 0.45), transparent);
-}
-
-.sectionBottomAccent {
-  position: absolute;
-  bottom: 0;
-  left: 0;
-  right: 0;
-  height: 1px;
-  opacity: 0.3;
-}
-
-.sectionBottomAccent.cyan {
-  background: linear-gradient(to right, rgba(100, 150, 255, 0.2), transparent);
-}
-.sectionBottomAccent.amber {
-  background: linear-gradient(to right, rgba(255, 150, 100, 0.2), transparent);
-}
-.sectionBottomAccent.magenta {
-  background: linear-gradient(to right, rgba(200, 150, 255, 0.2), transparent);
-}
-.sectionBottomAccent.purple {
-  background: linear-gradient(to right, rgba(150, 100, 255, 0.2), transparent);
-}
-.sectionBottomAccent.silver {
-  background: linear-gradient(to right, rgba(180, 200, 220, 0.25), transparent);
-}
-
-.sectionTitle {
-  display: flex;
-  align-items: center;
+  flex-direction: column;
   gap: 10px;
-  margin-bottom: 16px;
-  font-family:
-    system-ui,
-    -apple-system,
-    sans-serif;
+  flex-shrink: 0;
+  position: relative;
+}
+
+/* ── Panel Headers ───────────────────────────────────────────── */
+.dataPanelHeader {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-family: 'Orbitron', 'Courier New', monospace;
   font-size: 13px;
-  letter-spacing: 0.08em;
-  text-transform: uppercase;
   font-weight: 600;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  flex-shrink: 0;
 }
 
-.sectionTitle.cyan {
-  color: rgba(100, 150, 255, 0.85);
-}
-.sectionTitle.amber {
-  color: rgba(255, 150, 100, 0.85);
-}
-.sectionTitle.magenta {
-  color: rgba(200, 150, 255, 0.85);
-}
-.sectionTitle.purple {
-  color: rgba(150, 100, 255, 0.85);
-}
-.sectionTitle.silver {
-  color: rgba(180, 200, 220, 0.9);
-}
+.dataPanelHeader.cyan   { color: rgba(100, 220, 255, 0.65); }
+.dataPanelHeader.purple { color: rgba(180, 120, 255, 0.65); }
+.dataPanelHeader.amber  { color: rgba(255, 190,  60, 0.70); }
+.dataPanelHeader.silver { color: rgba(180, 200, 220, 0.70); }
 
-.titleDot {
+.dataPanelHeaderDot {
   width: 8px;
   height: 8px;
   border-radius: 50%;
   flex-shrink: 0;
 }
 
-.titleDot.cyan {
-  background: rgba(100, 150, 255, 0.6);
-  box-shadow: 0 0 6px rgba(100, 150, 255, 0.4);
-  animation: dotPulse 2.5s ease-in-out infinite;
-}
-.titleDot.amber {
-  background: rgba(255, 150, 100, 0.6);
-  box-shadow: 0 0 6px rgba(255, 150, 100, 0.4);
-  animation: dotPulse 2.5s ease-in-out infinite 0.3s;
-}
-.titleDot.magenta {
-  background: rgba(200, 150, 255, 0.6);
-  box-shadow: 0 0 6px rgba(200, 150, 255, 0.4);
-  animation: dotPulse 2.5s ease-in-out infinite 0.6s;
-}
-.titleDot.purple {
-  background: rgba(150, 100, 255, 0.6);
-  box-shadow: 0 0 6px rgba(150, 100, 255, 0.4);
-  animation: dotPulse 2.5s ease-in-out infinite 0.9s;
-}
-.titleDot.silver {
-  background: rgba(180, 200, 220, 0.65);
-  box-shadow: 0 0 6px rgba(180, 200, 220, 0.45);
-  animation: dotPulse 2.5s ease-in-out infinite 1.2s;
+.dataPanelHeaderDot.cyan   { background: rgba(100, 220, 255, 0.8); box-shadow: 0 0 6px rgba(100, 220, 255, 0.5); }
+.dataPanelHeaderDot.purple { background: rgba(180, 120, 255, 0.8); box-shadow: 0 0 6px rgba(180, 120, 255, 0.5); }
+.dataPanelHeaderDot.amber  { background: rgba(255, 190,  60, 0.8); box-shadow: 0 0 6px rgba(255, 190,  60, 0.5); }
+.dataPanelHeaderDot.silver { background: rgba(180, 200, 220, 0.8); box-shadow: 0 0 6px rgba(180, 200, 220, 0.5); }
+
+.dataPanelHeaderLabel {
+  flex-shrink: 0;
 }
 
-@keyframes dotPulse {
-  0%,
-  100% {
-    opacity: 0.6;
-    transform: scale(1);
-  }
-  50% {
-    opacity: 1;
-    transform: scale(1.15);
-  }
+.dataPanelHeaderLine {
+  flex: 1;
+  height: 1px;
+  background: linear-gradient(to right, rgba(255, 255, 255, 0.07), transparent);
 }
 
-.sectionContent {
-  font-family:
-    system-ui,
-    -apple-system,
-    sans-serif;
-  font-size: 13px;
-  display: flex;
-  flex-direction: column;
-  gap: 10px;
-}
-
-/* Data Row */
+/* ── Data Rows ───────────────────────────────────────────────── */
 .dataRow {
   display: flex;
   flex-direction: column;
-  gap: 6px;
+  gap: 5px;
 }
 
 .dataRowTop {
   display: flex;
   justify-content: space-between;
   align-items: baseline;
+  gap: 8px;
 }
 
 .dataRowLabel {
-  color: var(--table-text-subtle);
+  font-family: 'Share Tech Mono', 'Courier New', monospace;
   font-size: 11px;
-  letter-spacing: 0.05em;
+  letter-spacing: 0.1em;
   text-transform: uppercase;
-  font-weight: 500;
+  color: rgba(255, 255, 255, 0.3);
 }
 
 .dataRowValue {
-  color: var(--table-text);
-  font-weight: 600;
+  font-family: 'Share Tech Mono', 'Courier New', monospace;
   font-size: 14px;
+  font-weight: 700;
+  color: rgba(255, 255, 255, 0.75);
+  text-align: right;
+  flex-shrink: 0;
 }
 
 .dataRowBar {
@@ -868,76 +392,58 @@
   filter: brightness(1.3);
 }
 
-.dataRowBarFill.cyan {
-  background: rgba(100, 150, 255, 0.7);
-  box-shadow: 0 0 6px rgba(100, 150, 255, 0.4);
-  animation: barGlow 2s ease-in-out infinite;
-}
-.dataRowBarFill.amber {
-  background: rgba(255, 150, 100, 0.7);
-  box-shadow: 0 0 6px rgba(255, 150, 100, 0.4);
-  animation: barGlow 2s ease-in-out infinite 0.5s;
-}
-.dataRowBarFill.magenta {
-  background: rgba(200, 150, 255, 0.7);
-  box-shadow: 0 0 6px rgba(200, 150, 255, 0.4);
-  animation: barGlow 2s ease-in-out infinite 1s;
-}
-.dataRowBarFill.purple {
-  background: rgba(150, 100, 255, 0.7);
-  box-shadow: 0 0 6px rgba(150, 100, 255, 0.4);
-  animation: barGlow 2s ease-in-out infinite 1.5s;
+.dataRowBarFill.cyan   { background: rgba(100, 220, 255, 0.7); box-shadow: 0 0 6px rgba(100, 220, 255, 0.4); }
+.dataRowBarFill.amber  { background: rgba(255, 190,  60, 0.7); box-shadow: 0 0 6px rgba(255, 190,  60, 0.4); }
+.dataRowBarFill.purple { background: rgba(180, 120, 255, 0.7); box-shadow: 0 0 6px rgba(180, 120, 255, 0.4); }
+
+.dataRowBarFillExcess.cyan   { background: rgba(150, 230, 255, 0.8); }
+.dataRowBarFillExcess.amber  { background: rgba(255, 215, 110, 0.8); }
+.dataRowBarFillExcess.purple { background: rgba(210, 160, 255, 0.8); }
+
+/* ── Damage Source Rows ──────────────────────────────────────── */
+.dataSourceRows {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
 }
 
-@keyframes barGlow {
-  0%,
-  100% {
-    filter: brightness(1);
-  }
-  50% {
-    filter: brightness(1.3);
-  }
-}
-
-.dataRowBarFillExcess.cyan {
-  background: rgba(150, 200, 255, 0.8);
-}
-.dataRowBarFillExcess.amber {
-  background: rgba(255, 200, 150, 0.8);
-}
-.dataRowBarFillExcess.magenta {
-  background: rgba(230, 180, 255, 0.8);
-}
-.dataRowBarFillExcess.purple {
-  background: rgba(200, 150, 255, 0.8);
-}
-
-/* Empty states */
-.emptyMessage {
-  color: var(--table-text-subtle);
-  font-style: italic;
-  margin: 0;
-  padding: 12px;
-  text-align: center;
-  font-size: 12px;
-}
-
-/* Damage Source Row Hover */
-.damageSourceRow {
-  transition: all 0.2s ease;
-  border-radius: 4px;
-  padding: 4px;
-  margin: -4px;
+.dataSourceRow {
+  padding: 4px 6px;
+  margin: 0 -6px;
+  border-radius: 5px;
+  transition: background 0.15s, transform 0.15s;
+  cursor: pointer;
   position: relative;
 }
 
-.damageSourceRow:hover {
-  background: rgba(100, 150, 255, 0.1);
+.dataSourceRow:hover {
+  background: rgba(255, 255, 255, 0.04);
   transform: translateX(2px);
 }
 
+.dataSourceRow.pinned {
+  background: rgba(100, 180, 255, 0.07);
+  box-shadow: inset 2px 0 0 rgba(100, 200, 255, 0.4);
+}
+
+@keyframes dataRowBeacon {
+  0%, 100% {
+    background: rgba(255, 255, 255, 0.04);
+    box-shadow: inset 3px 0 0 rgba(255, 255, 255, 0.25);
+  }
+  50% {
+    background: rgba(255, 255, 255, 0.09);
+    box-shadow: inset 3px 0 0 rgba(255, 255, 255, 0.6), 0 0 10px rgba(255, 255, 255, 0.05);
+  }
+}
+
+.dataSourceRow.externalHighlight {
+  animation: dataRowBeacon 1.4s ease-in-out infinite;
+  transform: translateX(3px);
+}
+
 /* Event count badge (e.g. ×3 hits) */
-.eventCountBadge {
+.dataCountBadge {
   display: inline-block;
   margin-left: 6px;
   padding: 0 5px;
@@ -945,381 +451,688 @@
   font-weight: 700;
   line-height: 16px;
   border-radius: 3px;
-  background: rgba(100, 150, 255, 0.18);
-  color: rgba(140, 190, 255, 0.85);
-  border: 1px solid rgba(100, 150, 255, 0.25);
+  background: rgba(100, 220, 255, 0.12);
+  color: rgba(140, 220, 255, 0.85);
+  border: 1px solid rgba(100, 220, 255, 0.2);
   letter-spacing: 0.03em;
   vertical-align: middle;
+  font-family: 'Share Tech Mono', monospace;
 }
 
-@keyframes rowBeacon {
-  0%, 100% {
-    background: rgba(255, 255, 255, 0.04);
-    box-shadow: inset 3px 0 0 rgba(255, 255, 255, 0.25);
-  }
-  50% {
-    background: rgba(255, 255, 255, 0.1);
-    box-shadow: inset 3px 0 0 rgba(255, 255, 255, 0.65), 0 0 10px rgba(255, 255, 255, 0.06);
-  }
+/* ── Empty State ─────────────────────────────────────────────── */
+.dataEmptyMsg {
+  font-family: 'Share Tech Mono', 'Courier New', monospace;
+  font-size: 12px;
+  letter-spacing: 0.05em;
+  color: rgba(255, 255, 255, 0.2);
+  padding: 4px 2px;
+  margin: 0;
 }
 
-.damageSourceRow.externalHighlight {
-  animation: rowBeacon 1.4s ease-in-out infinite;
-  transform: translateX(3px);
-}
-
-/* Damage Sources Header with Toggle */
-.damageSourcesHeader {
+/* ── Pie Toggle ─────────────────────────────────────────────── */
+.dataPieToggle {
   display: flex;
-  justify-content: flex-start;
-  margin-top: 12px;
-}
-
-.damageSourcesHeader .pieViewToggle {
-  display: flex;
-  gap: 4px;
-  padding: 3px;
-  background: rgba(255, 255, 255, 0.03);
+  gap: 2px;
+  padding: 2px;
+  background: rgba(255, 255, 255, 0.04);
   border-radius: 4px;
-  border: 1px solid var(--table-border);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  flex-shrink: 0;
 }
 
-.pieViewButton {
-  padding: 4px 12px;
-  font-family:
-    system-ui,
-    -apple-system,
-    sans-serif;
+.dataPieToggleButton {
+  padding: 3px 9px;
+  font-family: 'Share Tech Mono', 'Courier New', monospace;
   font-size: 10px;
-  font-weight: 600;
-  text-transform: uppercase;
   letter-spacing: 0.06em;
+  text-transform: uppercase;
   background: transparent;
   border: none;
-  color: var(--table-text-subtle);
+  color: rgba(255, 255, 255, 0.3);
   cursor: pointer;
   border-radius: 3px;
-  transition: all 0.2s ease;
+  transition: all 0.2s;
   white-space: nowrap;
 }
 
-.pieViewButton:hover {
-  background: rgba(100, 150, 255, 0.1);
-  color: var(--table-text);
+.dataPieToggleButton:hover {
+  color: rgba(255, 255, 255, 0.65);
+  background: rgba(255, 255, 255, 0.05);
 }
 
-.pieViewButton.active {
-  background: rgba(100, 150, 255, 0.2);
-  color: rgba(100, 200, 255, 0.95);
-  box-shadow:
-    0 0 6px rgba(100, 150, 255, 0.2),
-    inset 0 0 6px rgba(100, 150, 255, 0.1);
+.dataPieToggleButton.active {
+  background: rgba(100, 220, 255, 0.14);
+  color: rgba(100, 220, 255, 0.95);
 }
 
-/* Mode Selector */
-.modeSelectorContainer {
+/* ── Contribution Filter Bar ─────────────────────────────────── */
+.dataContribFilterBar {
   display: flex;
-  gap: 6px;
-  padding: 4px;
-  background: rgba(255, 255, 255, 0.03);
-  border-radius: 6px;
-  border: 1px solid var(--table-border);
-}
-
-.modeButton {
-  padding: 8px 16px;
-  font-family:
-    system-ui,
-    -apple-system,
-    sans-serif;
-  font-size: 11px;
-  font-weight: 600;
-  text-transform: uppercase;
-  letter-spacing: 0.08em;
-  background: transparent;
-  border: none;
-  color: var(--table-text-subtle);
-  cursor: pointer;
-  border-radius: 4px;
-  transition: all 0.2s ease;
-  white-space: nowrap;
-}
-
-.modeButton:hover {
-  background: rgba(100, 150, 255, 0.1);
-  color: var(--table-text);
-}
-
-.modeButton.active {
-  background: rgba(100, 150, 255, 0.2);
-  color: rgba(100, 200, 255, 0.95);
-  box-shadow:
-    0 0 8px rgba(100, 150, 255, 0.25),
-    inset 0 0 8px rgba(100, 150, 255, 0.1);
-}
-
-/* Pillar Graph */
-.pillarGraphContainer {
-  display: flex;
-  gap: 12px;
-  align-items: flex-end;
-  justify-content: center;
-  height: 150px;
-  padding: 0 8px;
-  overflow: visible;
-}
-
-.pillarWrapper {
-  display: flex;
-  flex-direction: column;
   align-items: center;
-  gap: 8px;
-  height: 100%;
-  position: relative;
+  gap: 5px;
+  padding: 0 2px;
 }
 
-.pillarBar {
-  position: relative;
-  width: 40px;
-  flex: 1;
-  background: rgba(255, 255, 255, 0.04);
-  border-radius: 4px 4px 0 0;
-  border: 1px solid rgba(255, 255, 255, 0.06);
-  border-bottom: none;
-  display: flex;
-  align-items: flex-end;
-  overflow: hidden;
+.dataContribFilterLabel {
+  font-family: 'Share Tech Mono', 'Courier New', monospace;
+  font-size: 11px;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: rgba(255, 255, 255, 0.18);
+  flex-shrink: 0;
+  margin-right: 2px;
 }
 
-.pillarFill {
-  position: relative;
-  width: 100%;
-  border-radius: 3px 3px 0 0;
-  transition: height 0.7s cubic-bezier(0.34, 1.56, 0.64, 1);
-  min-height: 8px;
+.dataContribFilterBtn {
+  padding: 2px 8px;
+  font-family: 'Share Tech Mono', 'Courier New', monospace;
+  font-size: 9px;
+  letter-spacing: 0.07em;
+  text-transform: uppercase;
+  background: rgba(255, 255, 255, 0.03);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  color: rgba(255, 255, 255, 0.2);
+  cursor: pointer;
+  border-radius: 3px;
+  transition: all 0.18s;
+  white-space: nowrap;
+  line-height: 1.7;
 }
 
-.pillarFill.magenta {
-  background: linear-gradient(to top, rgba(200, 150, 255, 0.8), rgba(200, 150, 255, 0.5));
+.dataContribFilterBtn:hover {
+  color: rgba(255, 255, 255, 0.55);
+  background: rgba(255, 255, 255, 0.06);
+  border-color: rgba(255, 255, 255, 0.15);
+}
+
+/* active (type is currently visible) */
+.dataContribFilterBtn.active {
+  background: rgba(180, 120, 255, 0.12);
+  border-color: rgba(180, 120, 255, 0.28);
+  color: rgba(180, 120, 255, 0.9);
+}
+
+/* inherent filter active — amber accent */
+.dataContribFilterBtn.active.amber {
+  background: rgba(255, 190, 60, 0.11);
+  border-color: rgba(255, 190, 60, 0.28);
+  color: rgba(255, 190, 60, 0.9);
+}
+
+/* zeros filter active — cyan accent */
+.dataContribFilterBtn.active.cyan {
+  background: rgba(100, 220, 255, 0.1);
+  border-color: rgba(100, 220, 255, 0.28);
+  color: rgba(100, 220, 255, 0.9);
+}
+
+/* ── Damage Source Tooltip ───────────────────────────────────── */
+.dataSourceTooltip {
+  position: absolute;
+  bottom: calc(100% + 14px);
+  left: 50%;
+  transform: translateX(-50%);
+  background: hsl(222 28% 7%);
+  border: 1px solid rgba(100, 120, 170, 0.3);
+  border-radius: 8px;
+  padding: 12px 14px;
+  min-width: 240px;
+  max-width: 300px;
+  z-index: 100;
+  pointer-events: none;
   box-shadow:
-    0 0 12px rgba(200, 150, 255, 0.4),
-    inset 0 -2px 8px rgba(255, 255, 255, 0.2);
-  animation: pillarPulse 3s ease-in-out infinite;
+    0 8px 28px rgba(0, 0, 0, 0.7),
+    0 0 16px rgba(100, 150, 255, 0.08);
+  animation: dataTooltipFadeIn 0.15s ease;
 }
 
-@keyframes pillarPulse {
-  0%,
-  100% {
-    filter: brightness(1);
-  }
-  50% {
-    filter: brightness(1.2);
-  }
+@keyframes dataTooltipFadeIn {
+  from { opacity: 0; transform: translateX(-50%) translateY(4px); }
+  to   { opacity: 1; transform: translateX(-50%) translateY(0); }
 }
 
-.pillarGlow {
+.dataSourceTooltip::after {
+  content: '';
+  position: absolute;
+  top: 100%;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 2px;
+  height: 14px;
+  background: linear-gradient(to bottom, var(--tooltip-color, rgba(100, 220, 255, 0.6)), transparent);
+}
+
+.dataTooltipAccent {
   position: absolute;
   top: 0;
   left: 0;
   right: 0;
-  height: 30%;
-  background: linear-gradient(to bottom, rgba(255, 255, 255, 0.3), transparent);
-  border-radius: 3px 3px 0 0;
-  animation: glowShimmer 2s ease-in-out infinite;
+  height: 2px;
+  border-radius: 8px 8px 0 0;
 }
 
-@keyframes glowShimmer {
-  0%,
-  100% {
-    opacity: 0.5;
-  }
-  50% {
-    opacity: 1;
-  }
+.dataTooltipTitle {
+  font-family: 'Rajdhani', 'Segoe UI', sans-serif;
+  font-size: 14px;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  margin-bottom: 8px;
 }
 
-.pillarLabel {
+.dataTooltipDivider {
+  height: 1px;
+  background: linear-gradient(to right, rgba(255, 255, 255, 0.1), transparent);
+  margin-bottom: 10px;
+}
+
+.dataTooltipRow {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 16px;
+  margin-bottom: 6px;
+  font-size: 12px;
+}
+
+.dataTooltipRow:last-child { margin-bottom: 0; }
+
+.dataTooltipLabel {
+  font-family: 'Share Tech Mono', 'Courier New', monospace;
+  font-size: 10px;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: rgba(255, 255, 255, 0.3);
+}
+
+.dataTooltipValue {
+  font-family: 'Share Tech Mono', 'Courier New', monospace;
+  font-size: 12px;
+  color: rgba(255, 255, 255, 0.65);
+  text-align: right;
+}
+
+.dataTooltipHighlight {
+  font-weight: 700;
+  font-size: 13px;
+}
+
+/* ═══════════════════════════════════════════════════════════════
+   PIE CHART CENTER — ALL ANIMATIONS PRESERVED
+   ═══════════════════════════════════════════════════════════════ */
+
+.pieChartCenter {
+  position: relative;
+  width: 320px;
+  height: 320px;
+  z-index: 10;
+  flex-shrink: 0;
+}
+
+/* Outer rotating ring (clockwise) */
+.pieOuterRing {
+  position: absolute;
+  inset: -20px;
+  border-radius: 50%;
+  border: 1px dashed rgba(100, 200, 255, 0.18);
+  animation: rotateSlow 8s linear infinite;
+  pointer-events: none;
+}
+
+/* Outer dashed ring (static) */
+.pieOuterRingDashed {
+  position: absolute;
+  inset: -45px;
+  border-radius: 50%;
+  border: 1px dashed rgba(255, 255, 255, 0.04);
+  pointer-events: none;
+}
+
+@keyframes rotateSlow {
+  from { transform: rotate(0deg); }
+  to   { transform: rotate(360deg); }
+}
+
+@keyframes rotateReverse {
+  from { transform: rotate(360deg); }
+  to   { transform: rotate(0deg); }
+}
+
+/* Outer notches rotating counter-clockwise */
+.pieOuterNotchContainer {
+  position: absolute;
+  inset: -50px;
+  animation: rotateReverse 25s linear infinite;
+  pointer-events: none;
+}
+
+.pieOuterNotch {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 2px;
+  transform-origin: center;
+  animation: notchPulse 3.5s ease-in-out infinite;
+}
+
+@keyframes notchPulse {
+  0%, 100% { opacity: 0.6; }
+  50%       { opacity: 1; }
+}
+
+/* Pie chart SVG */
+.pieChartSvg {
+  width: 100%;
+  height: 100%;
+  border-radius: 50%;
+  box-shadow:
+    0 4px 20px rgba(0, 0, 0, 0.4),
+    inset 0 0 1px rgba(255, 255, 255, 0.08);
+}
+
+.pieSlice {
+  transition: transform 0.22s ease, stroke-width 0.22s ease;
+  transform-origin: 75px 75px;
+  transform-box: fill-box;
+}
+
+.pieSlice.highlighted {
+  transform: scale(1.05);
+  transform-origin: 75px 75px;
+  transform-box: view-box;
+  stroke-width: 2px;
+  filter: brightness(0.9) drop-shadow(0 0 8.4px rgba(255, 255, 255, 0.45));
+}
+
+/* Inner circle */
+.pieInnerCircle {
+  position: absolute;
+  inset: 40px;
+  border-radius: 50%;
+  background: var(--table-bg);
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 2px;
-  text-align: center;
+  justify-content: center;
+  box-shadow:
+    0 0 20px rgba(0, 0, 0, 0.5),
+    var(--table-shadow-inner);
+  border: 1px solid var(--table-border);
+  pointer-events: none;
 }
 
-.pillarSource {
-  font-family:
-    system-ui,
-    -apple-system,
-    sans-serif;
+.pieLabel {
+  font-family: 'Share Tech Mono', 'Courier New', monospace;
   font-size: 10px;
-  font-weight: 600;
-  color: var(--table-text-subtle);
+  color: rgba(255, 255, 255, 0.25);
+  letter-spacing: 0.18em;
+  margin-bottom: 4px;
   text-transform: uppercase;
-  letter-spacing: 0.05em;
+}
+
+.piePercentage {
+  font-family: 'Orbitron', monospace;
+  font-size: 34px;
+  font-weight: 700;
+  color: rgba(255, 255, 255, 0.85);
+  letter-spacing: 0.02em;
+  line-height: 1;
+}
+
+/* Tick marks rotating clockwise */
+.pieTickContainer {
+  position: absolute;
+  inset: 0;
+  animation: tickRotate 20s linear infinite;
+  pointer-events: none;
+}
+
+@keyframes tickRotate {
+  from { transform: rotate(0deg); }
+  to   { transform: rotate(360deg); }
+}
+
+.pieTick {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 1px;
+  transform-origin: center;
+}
+
+/* ═══════════════════════════════════════════════════════════════
+   CONTRIBUTIONS LIST
+   ═══════════════════════════════════════════════════════════════ */
+
+.dataContribList {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.dataContribRow {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  padding: 5px 4px;
+  border-radius: 4px;
+  cursor: default;
+  transition: background 0.15s;
+}
+
+.dataContribRow:hover {
+  background: rgba(255, 255, 255, 0.03);
+}
+
+/* Name + +% row */
+.dataContribMeta {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  gap: 8px;
+}
+
+.dataContribName {
+  font-family: 'Rajdhani', 'Segoe UI', sans-serif;
+  font-size: 12px;
+  font-weight: 600;
+  color: rgba(180, 120, 255, 0.8);
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
-  max-width: 80px;
+  flex: 1;
+  min-width: 0;
 }
 
-.pillarValue {
-  font-family: 'Courier New', monospace;
+.dataContribName.amber {
+  color: rgba(255, 190, 60, 0.8);
+}
+
+.dataContribName.cyan {
+  color: rgba(100, 220, 255, 0.6);
+}
+
+.dataContribPct {
+  font-family: 'Share Tech Mono', 'Courier New', monospace;
   font-size: 11px;
-  font-weight: 500;
-  color: var(--table-text-dim);
-  opacity: 0.9;
-}
-
-.pillarPercent {
-  font-family: 'Courier New', monospace;
-  font-size: 14px;
   font-weight: 700;
-  color: rgba(200, 150, 255, 0.95);
-  text-shadow: 0 0 8px rgba(200, 150, 255, 0.3);
+  color: rgba(180, 120, 255, 0.9);
+  flex-shrink: 0;
+  text-shadow: 0 0 6px rgba(180, 120, 255, 0.3);
 }
 
-/* Pillar Tooltip */
-.pillarTooltip {
+.dataContribPct.amber {
+  color: rgba(255, 190, 60, 0.9);
+  text-shadow: 0 0 6px rgba(255, 190, 60, 0.3);
+}
+
+.dataContribPct.cyan {
+  color: rgba(100, 220, 255, 0.7);
+  text-shadow: 0 0 6px rgba(100, 220, 255, 0.25);
+}
+
+/* Bar + flat value row */
+.dataContribBarRow {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.dataContribBarTrack {
+  flex: 1;
+  height: 5px;
+  background: rgba(255, 255, 255, 0.05);
+  border-radius: 3px;
+  overflow: hidden;
+}
+
+.dataContribBarFill {
+  height: 100%;
+  border-radius: 3px;
+  transition: width 0.55s ease;
+  background: linear-gradient(to right, rgba(180, 120, 255, 0.75), rgba(180, 120, 255, 0.45));
+  box-shadow: 0 0 6px rgba(180, 120, 255, 0.3);
+}
+
+.dataContribBarFill.amber {
+  background: linear-gradient(to right, rgba(255, 190, 60, 0.75), rgba(255, 190, 60, 0.45));
+  box-shadow: 0 0 6px rgba(255, 190, 60, 0.3);
+}
+
+.dataContribBarFill.cyan {
+  background: linear-gradient(to right, rgba(100, 220, 255, 0.45), rgba(100, 220, 255, 0.22));
+  box-shadow: 0 0 4px rgba(100, 220, 255, 0.2);
+}
+
+.dataContribValue {
+  font-family: 'Share Tech Mono', 'Courier New', monospace;
+  font-size: 10px;
+  color: rgba(255, 255, 255, 0.28);
+  flex-shrink: 0;
+  min-width: 48px;
+  text-align: right;
+  font-variant-numeric: tabular-nums;
+}
+
+/* ── Pillar Tooltip ──────────────────────────────────────────── */
+.dataPillarTooltip {
   position: absolute;
   bottom: calc(100% + 10px);
   left: 50%;
   transform: translateX(-50%);
-  background: rgba(18, 18, 24, 0.97);
-  border: 1px solid rgba(200, 150, 255, 0.45);
-  border-radius: 6px;
+  background: hsl(222 28% 7%);
+  border: 1px solid rgba(180, 120, 255, 0.35);
+  border-radius: 7px;
   padding: 10px 13px;
   min-width: 170px;
   z-index: 200;
   pointer-events: none;
   box-shadow:
-    0 4px 20px rgba(0, 0, 0, 0.6),
-    0 0 12px rgba(200, 150, 255, 0.12);
+    0 4px 20px rgba(0, 0, 0, 0.65),
+    0 0 12px rgba(180, 120, 255, 0.1);
 }
 
-.pillarTooltipTitle {
-  font-family:
-    system-ui,
-    -apple-system,
-    sans-serif;
-  font-size: 11px;
+.dataPillarTooltipTitle {
+  font-family: 'Rajdhani', sans-serif;
+  font-size: 12px;
   font-weight: 700;
-  color: rgba(200, 150, 255, 0.95);
-  text-transform: uppercase;
+  color: rgba(180, 120, 255, 0.95);
   letter-spacing: 0.05em;
+  text-transform: uppercase;
   margin-bottom: 4px;
   white-space: normal;
   word-break: break-word;
   max-width: 220px;
 }
 
-.pillarTooltipSource {
-  font-family: 'Courier New', monospace;
+.dataPillarTooltipSource {
+  font-family: 'Share Tech Mono', 'Courier New', monospace;
   font-size: 10px;
-  color: var(--table-text-subtle);
+  color: rgba(255, 255, 255, 0.28);
   margin-bottom: 6px;
-  white-space: normal;
-  word-break: break-all;
 }
 
-.pillarTooltipDivider {
+.dataPillarTooltipDivider {
   height: 1px;
-  background: rgba(200, 150, 255, 0.2);
+  background: rgba(180, 120, 255, 0.2);
   margin: 6px 0;
 }
 
-.pillarTooltipRow {
+.dataPillarTooltipRow {
   display: flex;
   justify-content: space-between;
-  gap: 18px;
+  gap: 16px;
   font-size: 11px;
   line-height: 1.65;
 }
 
-.pillarTooltipLabel {
-  font-family:
-    system-ui,
-    -apple-system,
-    sans-serif;
-  color: var(--table-text-subtle);
+.dataPillarTooltipLabel {
+  font-family: 'Share Tech Mono', 'Courier New', monospace;
+  font-size: 10px;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: rgba(255, 255, 255, 0.28);
 }
 
-.pillarTooltipValue {
-  font-family: 'Courier New', monospace;
-  color: var(--table-text-dim);
+.dataPillarTooltipValue {
+  font-family: 'Share Tech Mono', 'Courier New', monospace;
+  color: rgba(255, 255, 255, 0.6);
 }
 
-.pillarTooltipHighlight {
-  color: rgba(200, 150, 255, 0.95);
-  text-shadow: 0 0 8px rgba(200, 150, 255, 0.3);
+.dataPillarTooltipHighlight {
+  color: rgba(180, 120, 255, 0.95);
+  font-weight: 700;
+  text-shadow: 0 0 8px rgba(180, 120, 255, 0.35);
 }
 
-/* Responsive */
-@media (max-width: 1400px) {
-  .radialSection.damageSourcesSection {
-    left: 40px;
-    top: 140px;
-  }
-  .radialSection.combatOverview {
-    top: 40px;
-  }
-  .radialSection.contributions {
-    bottom: 40px;
+/* ── Contrib Tooltip Rich — overrides + new layout classes ───── */
+.dataPillarTooltipRich {
+  --contrib-accent: rgba(180, 120, 255, 0.95); /* default; overridden per-instance */
+  padding: 0;
+  min-width: 220px;
+  max-width: 300px;
+  overflow: hidden;
+  /* position/top/bottom/left/right/transform are injected inline by the portal */
+}
+
+.contribTooltipHeader {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 10px 12px 10px;
+  background: linear-gradient(
+    150deg,
+    color-mix(in srgb, var(--contrib-accent) 14%, transparent) 0%,
+    transparent 70%
+  );
+  border-bottom: 1px solid color-mix(in srgb, var(--contrib-accent) 20%, rgba(255, 255, 255, 0.06));
+}
+
+.contribTooltipIcon {
+  width: 44px;
+  height: 44px;
+  border-radius: 7px;
+  object-fit: contain;
+  flex-shrink: 0;
+  background: rgba(0, 0, 0, 0.25);
+  padding: 3px;
+  border: 1.5px solid color-mix(in srgb, var(--contrib-accent) 40%, rgba(255, 255, 255, 0.1));
+  box-shadow: 0 0 14px color-mix(in srgb, var(--contrib-accent) 22%, transparent);
+  transition: opacity 0.2s;
+}
+
+.contribTooltipName {
+  font-family: 'Rajdhani', 'Segoe UI', sans-serif;
+  font-size: 13px;
+  font-weight: 700;
+  color: var(--contrib-accent);
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  white-space: normal;
+  word-break: break-word;
+  line-height: 1.25;
+  flex: 1;
+  min-width: 0;
+}
+
+/* Sections below the header */
+.contribTooltipSection {
+  display: flex;
+  flex-direction: column;
+  padding: 8px 12px;
+}
+
+.contribTooltipSectionLabel {
+  font-size: 9px;
+  font-weight: 700;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--contrib-accent);
+  opacity: 0.7;
+  margin-bottom: 5px;
+}
+
+.contribTooltipDesc {
+  font-family: 'Rajdhani', 'Segoe UI', sans-serif;
+  font-size: 11px;
+  color: rgba(175, 185, 210, 0.85);
+  line-height: 1.55;
+  margin: 0;
+}
+
+.contribTooltipStats {
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+}
+
+.contribTooltipStat {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 12px;
+  padding: 3px 0;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+}
+
+.contribTooltipStat:last-child {
+  border-bottom: none;
+}
+
+.contribTooltipStatValue {
+  color: var(--contrib-accent);
+  font-weight: 700;
+  text-shadow: 0 0 6px color-mix(in srgb, var(--contrib-accent) 35%, transparent);
+}
+
+.contribTooltipStatValue.negative {
+  color: rgba(255, 130, 100, 0.9);
+  text-shadow: 0 0 6px rgba(255, 130, 100, 0.3);
+}
+
+/* Ensure dataPillarTooltipDivider between sections is hidden when inside the rich tooltip
+   (sections handle spacing themselves) */
+.dataPillarTooltipRich .dataPillarTooltipDivider {
+  height: 1px;
+  margin: 0;
+  background: color-mix(in srgb, var(--contrib-accent) 18%, rgba(255, 255, 255, 0.06));
+}
+
+/* ── Responsive ──────────────────────────────────────────────── */
+@media (max-width: 1100px) {
+  .dataLeftPanel,
+  .dataRightPanel {
+    width: 220px;
   }
 
   .pieChartCenter {
     width: 260px;
     height: 260px;
   }
+}
 
-  .radialSection {
-    width: 300px;
+@media (max-width: 900px) {
+  .dataColumns {
+    flex-direction: column;
+    overflow-y: auto;
+    overflow-x: hidden;
   }
-}
 
-/* Contributions Header with Scope Toggle */
-.contributionsHeader {
-  display: flex;
-  justify-content: flex-start;
-  margin-top: 12px;
-}
+  .dataColDivider {
+    width: auto;
+    height: 1px;
+    align-self: stretch;
+  }
 
-.contributionScopeToggle {
-  display: flex;
-  gap: 4px;
-  padding: 3px;
-  background: rgba(255, 255, 255, 0.03);
-  border-radius: 4px;
-  border: 1px solid var(--table-border);
-}
+  .dataLeftPanel,
+  .dataRightPanel {
+    width: 100%;
+    overflow: visible;
+  }
 
-.scopeButton {
-  padding: 4px 12px;
-  font-family:
-    system-ui,
-    -apple-system,
-    sans-serif;
-  font-size: 10px;
-  font-weight: 600;
-  text-transform: uppercase;
-  letter-spacing: 0.06em;
-  background: transparent;
-  border: none;
-  color: var(--table-text-subtle);
-  cursor: pointer;
-  border-radius: 3px;
-  transition: all 0.2s ease;
-  white-space: nowrap;
-}
-
-.scopeButton:hover {
-  background: rgba(255, 100, 255, 0.1);
-  color: var(--table-text);
-}
-
-.scopeButton.active {
-  background: rgba(255, 100, 255, 0.2);
-  color: rgba(255, 150, 255, 0.95);
-  box-shadow:
-    0 0 6px rgba(255, 100, 255, 0.2),
-    inset 0 0 6px rgba(255, 100, 255, 0.1);
+  .dataCenterPanel {
+    min-height: 360px;
+  }
 }

@@ -3,6 +3,7 @@ import { always } from '../../utils/conditions/damageModifierConditions'
 
 // ========== Resonance Skill 1 ================================================================================================
 const roverAero_skill_1: Action = {
+  tags: ['SKILL'],
   name: 'Resonance Skill 1',
   displayName: 'Awakening Gale',
   category: 'Skills',
@@ -30,6 +31,7 @@ const roverAero_skill_1: Action = {
 }
 
 const roverAero_skill_1_cancel_with_swap: Action = {
+  tags: ['SKILL'],
   name: 'Resonance Skill 1 (swap cancel)',
   displayName: 'Awakening Gale (swap cancel)',
   category: 'Skills',
@@ -61,6 +63,7 @@ const roverAero_skill_1_cancel_with_swap: Action = {
 
 // ========== Resonance Skill 2 ================================================================================================
 const roverAero_skill_2: Action = {
+  tags: ['SKILL'],
   name: 'Resonance Skill 2',
   displayName: 'Skyfall Severance',
   category: 'Skills',
@@ -88,6 +91,7 @@ const roverAero_skill_2: Action = {
 }
 
 const roverAero_skill_2_cancel_with_swap: Action = {
+  tags: ['SKILL'],
   name: 'Resonance Skill 2 (swap cancel)',
   displayName: 'Skyfall Severance (swap cancel)',
   category: 'Skills',
@@ -110,7 +114,7 @@ const roverAero_skill_2_cancel_with_swap: Action = {
     swapOutState: 'AIR',
     endState: 'AIR',
     requiresSwapOut: true,
-    persistenceTime: 100 // TODO
+    persistenceTime: 1 // TODO
   },
   offtune: 3 * 0.11 + 0.48,
   groupName: 'Resonance Skill 2',
@@ -119,6 +123,7 @@ const roverAero_skill_2_cancel_with_swap: Action = {
 
 // ========== Resonance Skill 3 ================================================================================================
 const roverAero_skill_3: Action = {
+  tags: ['SKILL', 'HEAL_PROC'],
   name: 'Resonance Skill 3',
   displayName: 'Unbound Flow 1-2',
   category: 'Skills',
@@ -134,19 +139,7 @@ const roverAero_skill_3: Action = {
   ],
   energyCost: [{ energyType: 'forte', amount: 120 }],
   statusModifications: [],
-  damageModifiers: [
-    {
-      source: 'Bloodpacts Pledge Unbound',
-      displayName: 'Bloodpacts Pledge Unbound',
-      type: 'buff',
-      ownerCharacter: 'Rover',
-      condition: always(),
-      characterStats: { aeroAmplifyDMG: 0.26 },
-      targetStrategy: 'all',
-      durationStrategy: { type: 'limited', timeDuration: 30 },
-      stackingStrategy: { maxStacks: 1, resetTimerOnApplication: true, stacksRemovedEachTime: 1 },
-    },
-  ],
+  damageModifiers: [],
   sideEffects: [],
   castConditions: {
     startState: 'GROUND',
@@ -158,6 +151,7 @@ const roverAero_skill_3: Action = {
 }
 
 const roverAero_skill_3_cancel_with_swap_1: Action = {
+  tags: ['SKILL', 'HEAL_PROC'],
   name: 'Resonance Skill 3 (swap cancel 1)',
   displayName: 'Unbound Flow 1-2 (swap cancel 1)',
   category: 'Skills',
@@ -173,26 +167,14 @@ const roverAero_skill_3_cancel_with_swap_1: Action = {
   ],
   energyCost: [{ energyType: 'forte', amount: 120 }],
   statusModifications: [],
-  damageModifiers: [
-    {
-      source: 'Bloodpacts Pledge Unbound',
-      displayName: 'Bloodpacts Pledge Unbound',
-      type: 'buff',
-      ownerCharacter: 'Rover',
-      condition: always(),
-      characterStats: { aeroAmplifyDMG: 0.26 },
-      targetStrategy: 'all',
-      durationStrategy: { type: 'limited', timeDuration: 30 },
-      stackingStrategy: { maxStacks: 1, resetTimerOnApplication: true, stacksRemovedEachTime: 1 },
-    },
-  ],
+  damageModifiers: [],
   sideEffects: [],
   castConditions: {
     startState: 'GROUND',
     swapOutState: 'GROUND',
     endState: 'GROUND',
     requiresSwapOut: true,
-    persistenceTime: 100 // TODO
+    persistenceTime: 1 // TODO
   },
   offtune: 5 * 0.6 + 2.83,
   groupName: 'Resonance Skill 3',
@@ -200,6 +182,7 @@ const roverAero_skill_3_cancel_with_swap_1: Action = {
 }
 
 const roverAero_skill_3_cancel_with_swap_2: Action = {
+  tags: ['SKILL', 'HEAL_PROC'],
   name: 'Resonance Skill 3 (swap cancel 2)',
   displayName: 'Unbound Flow 1-2 (swap cancel 2)',
   category: 'Skills',
@@ -215,26 +198,14 @@ const roverAero_skill_3_cancel_with_swap_2: Action = {
   ],
   energyCost: [{ energyType: 'forte', amount: 120 }],
   statusModifications: [],
-  damageModifiers: [
-    {
-      source: 'Bloodpacts Pledge Unbound',
-      displayName: 'Bloodpacts Pledge Unbound',
-      type: 'buff',
-      ownerCharacter: 'Rover',
-      condition: always(),
-      characterStats: { aeroAmplifyDMG: 0.26 },
-      targetStrategy: 'all',
-      durationStrategy: { type: 'limited', timeDuration: 30 },
-      stackingStrategy: { maxStacks: 1, resetTimerOnApplication: true, stacksRemovedEachTime: 1 },
-    },
-  ],
+  damageModifiers: [],
   sideEffects: [],
   castConditions: {
     startState: 'GROUND',
     swapOutState: 'GROUND',
     endState: 'GROUND',
     requiresSwapOut: true,
-    persistenceTime: 100 // TODO
+    persistenceTime: 1.33 // TODO
   },
   offtune: 5 * 0.6 + 2.83,
   groupName: 'Resonance Skill 3',
@@ -243,6 +214,7 @@ const roverAero_skill_3_cancel_with_swap_2: Action = {
 
 // ========== Liberation =======================================================================================================
 const roverAero_liberation: Action = {
+  tags: ['LIBERATION', 'HEAL_PROC'],
   name: 'Liberation',
   displayName: 'Omega Storm',
   category: 'Skills',
@@ -259,19 +231,7 @@ const roverAero_liberation: Action = {
   ],
   energyCost: [{ energyType: 'energy', amount: 150 }],
   statusModifications: [],
-  damageModifiers: [
-    {
-      source: 'Bloodpacts Pledge Heal',
-      displayName: 'Bloodpacts Pledge Heal',
-      type: 'buff',
-      ownerCharacter: 'Rover',
-      condition: always(),
-      characterStats: { skillBonusDMG: 0.26 },
-      targetStrategy: 'self',
-      durationStrategy: { type: 'limited', timeDuration: 12 },
-      stackingStrategy: { maxStacks: 1, resetTimerOnApplication: true, stacksRemovedEachTime: 1 },
-    },
-  ],
+  damageModifiers: [],
   sideEffects: [],
   castConditions: {
     startState: 'ANY',
@@ -282,6 +242,7 @@ const roverAero_liberation: Action = {
 
 // ========== Mid Air 1-2 ======================================================================================================
 const roverAero_midair_1_2: Action = {
+  tags: ['HEAL_PROC'],
   name: 'Mid Air 1-2',
   displayName: 'Cloudburst Dance 1-2',
   category: 'Skills',
@@ -299,17 +260,6 @@ const roverAero_midair_1_2: Action = {
   energyCost: [],
   statusModifications: [],
   damageModifiers: [
-    {
-      source: 'Bloodpacts Pledge Heal',
-      displayName: 'Bloodpacts Pledge Heal',
-      type: 'buff',
-      ownerCharacter: 'Rover',
-      condition: always(),
-      characterStats: { skillBonusDMG: 0.26 },
-      targetStrategy: 'self',
-      durationStrategy: { type: 'limited', timeDuration: 12 },
-      stackingStrategy: { maxStacks: 1, resetTimerOnApplication: true, stacksRemovedEachTime: 1 },
-    },
     {
       source: 'Rover S4',
       displayName: 'Rover S4',
@@ -334,6 +284,7 @@ const roverAero_midair_1_2: Action = {
 }
 
 const roverAero_midair_1_2_cancel_with_swap: Action = {
+  tags: ['HEAL_PROC'],
   name: 'Mid Air 1-2 (swap cancel)',
   displayName: 'Cloudburst Dance 1-2 (swap cancel)',
   category: 'Skills',
@@ -351,17 +302,6 @@ const roverAero_midair_1_2_cancel_with_swap: Action = {
   energyCost: [],
   statusModifications: [],
   damageModifiers: [
-    {
-      source: 'Bloodpacts Pledge Heal',
-      displayName: 'Bloodpacts Pledge Heal',
-      type: 'buff',
-      ownerCharacter: 'Rover',
-      condition: always(),
-      characterStats: { skillBonusDMG: 0.26 },
-      targetStrategy: 'self',
-      durationStrategy: { type: 'limited', timeDuration: 12 },
-      stackingStrategy: { maxStacks: 1, resetTimerOnApplication: true, stacksRemovedEachTime: 1 },
-    },
     {
       source: 'Rover S4',
       displayName: 'Rover S4',
@@ -381,7 +321,7 @@ const roverAero_midair_1_2_cancel_with_swap: Action = {
     swapOutState: 'AIR',
     endState: 'AIR',
     requiresSwapOut: true,
-    persistenceTime: 100 // TODO
+    persistenceTime: 1 // TODO
   },
   offtune: 0.29 + 0.32,
   groupName: 'Mid Air 1-2',
@@ -390,6 +330,7 @@ const roverAero_midair_1_2_cancel_with_swap: Action = {
 
 // ========== Plunge ===========================================================================================================
 const roverAero_plunge: Action = {
+  tags: ['BASIC_ATTACK'],
   name: 'Plunge',
   displayName: 'Plunge',
   category: 'Basics',
@@ -417,6 +358,7 @@ const roverAero_plunge: Action = {
 }
 
 const roverAero_plunge_cancel_with_swap: Action = {
+  tags: ['BASIC_ATTACK'],
   name: 'Plunge (swap cancel)',
   displayName: 'Plunge (swap cancel)',
   category: 'Basics',
@@ -439,7 +381,7 @@ const roverAero_plunge_cancel_with_swap: Action = {
     swapOutState: 'AIR',
     endState: 'GROUND',
     requiresSwapOut: true,
-    persistenceTime: 100 // TODO
+    persistenceTime: 1 // TODO
   },
   offtune: 0.96,
   groupName: 'Plunge',
@@ -448,6 +390,7 @@ const roverAero_plunge_cancel_with_swap: Action = {
 
 // ========== Basic Attack 4 ===================================================================================================
 const roverAero_BA_4: Action = {
+  tags: ['BASIC_ATTACK'],
   name: 'Basic Attack 4',
   displayName: 'Basic Attack 4',
   category: 'Basics',
@@ -477,6 +420,7 @@ const roverAero_BA_4: Action = {
 }
 
 const roverAero_BA_4_cancel_with_swap: Action = {
+  tags: ['BASIC_ATTACK'],
   name: 'Basic Attack 4 (swap cancel)',
   displayName: 'Basic Attack 4 (swap cancel)',
   category: 'Basics',
@@ -501,7 +445,7 @@ const roverAero_BA_4_cancel_with_swap: Action = {
     swapOutState: 'GROUND',
     endState: 'GROUND',
     requiresSwapOut: true,
-    persistenceTime: 100 // TODO
+    persistenceTime: 1 // TODO
   },
   offtune: 0.52,
   groupName: 'Basic Attack 4',
@@ -510,6 +454,7 @@ const roverAero_BA_4_cancel_with_swap: Action = {
 
 // ========== Intro & Outro ====================================================================================================
 const roverAero_intro: Action = {
+  tags: ['INTRO_ACTION'],
   name: 'Intro Skill',
   displayName: 'Relentless Squall',
   category: 'Other',
@@ -548,6 +493,7 @@ const roverAero_intro: Action = {
 }
 
 const roverAero_outro: Action = {
+  tags: ['OUTRO_ACTION'],
   name: 'Outro Skill',
   displayName: 'Storms Echo',
   category: 'Other',

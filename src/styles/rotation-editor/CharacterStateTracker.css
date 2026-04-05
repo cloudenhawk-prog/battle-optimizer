@@ -1,3 +1,45 @@
+@import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@400;500;600;700;900&family=Rajdhani:wght@300;400;500;600;700&family=Share+Tech+Mono&display=swap');
+
+/* ===== Character Profile Panel ===== */
+
+.charProfilePanel {
+  position: fixed;
+  top: 16px;
+  left: 16px;
+  right: 16px;
+  bottom: 16px;
+  z-index: 201;
+  border-radius: var(--table-corner-radius);
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  background: var(--table-bg);
+  backdrop-filter: blur(12px);
+  user-select: none;
+  cursor: default;
+}
+
+.charProfilePanel::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  pointer-events: none;
+  box-shadow:
+    inset 0 0 0 1px var(--table-border),
+    var(--table-shadow-inner-glow);
+  z-index: 0;
+}
+
+@media (min-width: 1024px) {
+  .charProfilePanel {
+    top: 40px;
+    left: 40px;
+    right: 40px;
+    bottom: 40px;
+  }
+}
+
 /* ===== Character State Tracker ===== */
 
 .stateTracker {
@@ -242,6 +284,19 @@
   object-fit: contain;
 }
 
+/* ===== Combo Badge ===== */
+
+.stateTrackerComboBadge {
+  font-size: 0.7rem;
+  font-weight: 600;
+  letter-spacing: 0.05em;
+  padding: 3px 10px;
+  border-radius: 5px;
+  border: 1px solid rgba(140, 220, 130, 0.35);
+  color: rgba(190, 240, 160, 0.95);
+  background: rgba(40, 90, 35, 0.4);
+}
+
 /* ===== Swap Cooldown Badge ===== */
 
 .stateTrackerPersistBadge {
@@ -269,26 +324,24 @@
 /* ===== Energy List ===== */
 
 .stateTrackerEnergies {
-  display: flex;
-  flex-direction: column;
+  display: grid;
+  grid-template-columns: auto auto 1fr;
+  align-items: center;
   padding: 10px 14px;
-  gap: 6px;
+  gap: 6px 8px;
   border-top: none;
 }
 
 /* ===== Individual energy bar row ===== */
 
 .stateTrackerBarRow {
-  display: flex;
-  align-items: center;
-  gap: 8px;
+  display: contents;
 }
 
 .stateTrackerEnergyLabel {
   font-size: 0.75rem;
   font-weight: 600;
   color: var(--table-text-dim);
-  min-width: 58px;
   white-space: nowrap;
 }
 
@@ -625,8 +678,7 @@
 .charStatBreakdown {
   position: absolute;
   inset: 0;
-  /* Solid opaque background so the stat list never bleeds through */
-  background: #13151c;
+  background: var(--table-bg);
   display: flex;
   flex-direction: column;
   z-index: 10;

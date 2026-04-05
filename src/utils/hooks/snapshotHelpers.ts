@@ -63,6 +63,12 @@ export function createSnapshot(previousSnapshot: Snapshot, charactersMap: Record
     charactersForteGrants[k] = [...v]
   }
 
+  // Copy combo chain tags (shallow copy of each character's array)
+  const charactersComboChainTags: Record<string, string[]> = {}
+  for (const [k, v] of Object.entries(previousSnapshot.charactersComboChainTags ?? {})) {
+    charactersComboChainTags[k] = [...v]
+  }
+
   const basicValues = Object.fromEntries(globalColumns.basic.map(col => [col, 0]))
   const buffs = Object.fromEntries(globalColumns.buffs.map(col => [col, 0]))
   const debuffs = Object.fromEntries(globalColumns.debuffs.map(col => [col, 0]))
@@ -71,6 +77,11 @@ export function createSnapshot(previousSnapshot: Snapshot, charactersMap: Record
   // Copy maxStacks from previous snapshot to preserve them
   const buffsMaxStacks = { ...previousSnapshot.buffsMaxStacks }
   const debuffsMaxStacks = { ...previousSnapshot.debuffsMaxStacks }
+  const negativeStatusesMaxStacks = { ...previousSnapshot.negativeStatusesMaxStacks }
+
+  // Carry forward frozen activation stats for modifiers that need them in the stat breakdown
+  const buffsActivationStats = { ...(previousSnapshot.buffsActivationStats ?? {}) }
+  const buffsTargetCharacter = { ...(previousSnapshot.buffsTargetCharacter ?? {}) }
 
   const prevChar = previousSnapshot.character ?? ''
   const isPrevCharLocked = fillInCharacter && prevChar !== '' && isSwapRequiredLocked(previousSnapshot, prevChar)
@@ -89,12 +100,15 @@ export function createSnapshot(previousSnapshot: Snapshot, charactersMap: Record
     buffsTimeLeft: Object.fromEntries(globalColumns.buffs.map(col => [col, 0])),
     buffsSwapsLeft: Object.fromEntries(globalColumns.buffs.map(col => [col, 0])),
     buffsMaxStacks,
+    buffsActivationStats,
+    buffsTargetCharacter,
     debuffs,
     debuffsTimeLeft: Object.fromEntries(globalColumns.debuffs.map(col => [col, 0])),
     debuffsSwapsLeft: Object.fromEntries(globalColumns.debuffs.map(col => [col, 0])),
     debuffsMaxStacks,
     negativeStatuses,
     negativeStatusesTimeLeft: Object.fromEntries(globalColumns.negativeStatuses.map(col => [col, 0])),
+    negativeStatusesMaxStacks,
     coordinatedAttacks: {},
     coordinatedAttacksTimeLeft: {},
     coordinatedAttacksSwapRequired: {},
@@ -105,8 +119,9 @@ export function createSnapshot(previousSnapshot: Snapshot, charactersMap: Record
     charactersRequiresSwapOut: {},
     charactersForms,
     charactersSwapCooldownUntil,
-    charactersRequiredFollowUp: {},
+    charactersAttemptFollowUp: {},
     charactersComboWindows: {},
     charactersForteGrants,
+    charactersComboChainTags,
   }
 }
