@@ -756,6 +756,18 @@ const mode_mornye_skill: Action = {
     requiredForms: ['Wide Field Observation Mode']
   },
   offtune: 4 * 0.20,
+  resolveVariant(_prevSnapshot, _characterName, owner) {
+    if (owner.sequence < 3) return { ...this, resolveVariant: undefined }
+    return {
+      ...this,
+      energyGenerated: [
+        ...this.energyGenerated,
+        { energyType: 'concerto', amount: 25, share: 0, cooldownKey: 'Mornye S3: Distributed Array', cooldownDuration: 25 },
+        { energyType: 'relative_momentum', amount: 100, share: 0, cooldownKey: 'Mornye S3: Distributed Array', cooldownDuration: 25 },
+      ],
+      resolveVariant: undefined,
+    }
+  },
 }
 
 // ========== Mode: Heavy Attack ===============================================================================================
@@ -896,7 +908,18 @@ const mornye_liberation: Action = {
     endState: 'PRESERVE',
     requiredForms: ['Wide Field Observation Mode'] // Technically not true, but practically required
   },
-  offtune: 7.20
+  offtune: 7.20,
+  resolveVariant(_prevSnapshot, _characterName, owner) {
+    const s5Multiplier = owner.sequence >= 5 ? 1.4 : 1
+    const s6Multiplier = owner.sequence >= 6 ? 5 : 1
+    const totalMultiplier = s5Multiplier * s6Multiplier
+    if (totalMultiplier === 1) return { ...this, resolveVariant: undefined }
+    return {
+      ...this,
+      multiplier: this.multiplier * totalMultiplier,
+      resolveVariant: undefined,
+    }
+  },
 }
 
 // ========== Intro & Outro ====================================================================================================

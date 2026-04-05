@@ -10,6 +10,8 @@ import type { Enemy } from '../../types/enemy'
 import type { TableConfig, ColumnVisibility } from '../../types/tableDefinitions'
 import type { Gear } from '../../types/gear'
 import type { Settings } from '../../hooks/useSettings'
+import type { Snapshot } from '../../types/snapshot'
+import type { DamageEvent } from '../../types/events'
 
 // ========== Component: Rotation Editor =======================================================================================
 
@@ -28,7 +30,7 @@ type RotationEditorProps = {
 export default function RotationEditor({ charactersInBattle, enemy, tableConfig, columnVisibility, setColumnVisibility, onGearChange, onSequenceChange, gearResetKey, settings }: RotationEditorProps) {
   const { snapshots, damageEvents, handleCharacterSelect, handleActionSelect, importExport } = useRotationEditor({ charactersInBattle, tableConfig, enemy, gearResetKey, settings })
   const [overlayOpen, setOverlayOpen] = useState(false)
-  const [overlayData, setOverlayData] = useState<null | { snapshot: Snapshot; damageEvents: DamageEvent[] }>(null)
+  const [overlayData, setOverlayData] = useState<null | { snapshot: Snapshot; previousSnapshot: Snapshot | null; damageEvents: DamageEvent[] }>(null)
   const [overlayIndex, setOverlayIndex] = useState<number>(0)
   const [summaryOpen, setSummaryOpen] = useState(false)
   const [rotationsOpen, setRotationsOpen] = useState(false)
@@ -55,8 +57,10 @@ export default function RotationEditor({ charactersInBattle, enemy, tableConfig,
     const s = actionSnapshots[index]
     if (!s) return
     const filtered = (damageEvents ?? []).filter(e => Number(e.snapshotId) === Number(s.id))
+    const fullIndex = snapshots.findIndex(snap => snap.id === s.id)
+    const prevSnapshot = fullIndex > 0 ? snapshots[fullIndex - 1] : null
     setOverlayIndex(index)
-    setOverlayData({ snapshot: s, damageEvents: filtered })
+    setOverlayData({ snapshot: s, previousSnapshot: prevSnapshot, damageEvents: filtered })
     setOverlayOpen(true)
   }
 
@@ -118,6 +122,8 @@ export default function RotationEditor({ charactersInBattle, enemy, tableConfig,
       />
       <DataOverlay
         snapshot={overlayData?.snapshot ?? null}
+        previousSnapshot={overlayData?.previousSnapshot ?? null}
+        startWithFullEnergy={settings.startWithFullEnergy}
         damageEvents={overlayData?.damageEvents ?? []}
         characters={charactersInBattle}
         open={overlayOpen}
