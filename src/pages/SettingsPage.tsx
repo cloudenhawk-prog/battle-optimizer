@@ -1,38 +1,102 @@
 // ========== Main Settings Page ===============================================================================================
 
+import '../styles/SettingsPage.css'
 import { useSettings } from '../hooks/useSettings'
 
 export default function SettingsPage() {
   const { settings, updateSetting } = useSettings()
 
   return (
-    <div style={{ padding: '2rem' }}>
-      <h2>Settings</h2>
-      <div style={{ marginTop: '1.5rem' }}>
-        <label style={{ display: 'flex', alignItems: 'center', gap: '0.75rem', cursor: 'pointer' }}>
-          <input
-            type="checkbox"
-            checked={settings.startWithFullEnergy}
-            onChange={e => updateSetting('startWithFullEnergy', e.target.checked)}
-          />
-          Start characters with full Energy
-        </label>
-        <p style={{ marginTop: '0.5rem', fontSize: '0.875rem', opacity: 0.7 }}>
-          When enabled, all characters begin with their maximum Energy. This also applies when loading or importing a rotation.
-        </p>
-      </div>
-      <div style={{ marginTop: '1.5rem' }}>
-        <label style={{ display: 'flex', alignItems: 'center', gap: '0.75rem', cursor: 'pointer' }}>
-          <input
-            type="checkbox"
-            checked={settings.autocastFollowUps}
-            onChange={e => updateSetting('autocastFollowUps', e.target.checked)}
-          />
-          Auto-cast required follow-ups
-        </label>
-        <p style={{ marginTop: '0.5rem', fontSize: '0.875rem', opacity: 0.7 }}>
-          When enabled, actions that require a specific follow-up will automatically cast the entire follow-up chain without manual selection.
-        </p>
+    <div className="settingsPage">
+      <div className="settingsContainer">
+
+        {/* Page title */}
+        <div className="settingsPageHeader">
+          <h1 className="settingsPageTitle">Settings</h1>
+          <div className="settingsPageTitleLine" />
+        </div>
+
+        {/* Gameplay section */}
+        <section className="settingsSection">
+          <div className="settingsSectionHeader">
+            <div className="settingsSectionLine" />
+            <span className="settingsSectionLabel">Gameplay</span>
+            <div className="settingsSectionLine" />
+          </div>
+
+          <div className="settingsCard">
+            <label className="settingsRow">
+              <div className="settingsRowBody">
+                <span className="settingsRowLabel">Start with full Energy</span>
+                <p className="settingsRowDesc">
+                  When enabled, all characters begin with their maximum Energy. This also applies when loading or importing a rotation.
+                </p>
+              </div>
+              <div className="settingsToggleWrap">
+                <input
+                  type="checkbox"
+                  checked={settings.startWithFullEnergy}
+                  onChange={e => updateSetting('startWithFullEnergy', e.target.checked)}
+                />
+                <div className="settingsToggleTrack">
+                  <div className="settingsToggleThumb" />
+                </div>
+              </div>
+            </label>
+
+            <div className="settingsRowDivider" />
+
+            <label className="settingsRow">
+              <div className="settingsRowBody">
+                <span className="settingsRowLabel">Auto-cast required follow-ups</span>
+                <p className="settingsRowDesc">
+                  When enabled, actions that require a specific follow-up will automatically cast the entire follow-up chain without manual selection.
+                </p>
+              </div>
+              <div className="settingsToggleWrap">
+                <input
+                  type="checkbox"
+                  checked={settings.autocastFollowUps}
+                  onChange={e => updateSetting('autocastFollowUps', e.target.checked)}
+                />
+                <div className="settingsToggleTrack">
+                  <div className="settingsToggleThumb" />
+                </div>
+              </div>
+            </label>
+          </div>
+        </section>
+
+        {/* Debug section */}
+        <section className="settingsSection">
+          <div className="settingsSectionHeader">
+            <div className="settingsSectionLine" />
+            <span className="settingsSectionLabel">Debug</span>
+            <div className="settingsSectionLine" />
+          </div>
+
+          <div className="settingsCard settingsCardSandbox">
+            <label className="settingsRow settingsRowSandbox">
+              <div className="settingsRowBody">
+                <span className="settingsRowLabel settingsRowLabelSandbox">Sandbox mode</span>
+                <p className="settingsRowDesc">
+                  When enabled, all cast restrictions are ignored: cooldowns, energy costs, position requirements, form requirements, follow-up locks, and any other condition that would normally block an action.
+                </p>
+              </div>
+              <div className="settingsToggleWrap settingsToggleWrapSandbox">
+                <input
+                  type="checkbox"
+                  checked={settings.sandboxMode}
+                  onChange={e => updateSetting('sandboxMode', e.target.checked)}
+                />
+                <div className="settingsToggleTrack">
+                  <div className="settingsToggleThumb" />
+                </div>
+              </div>
+            </label>
+          </div>
+        </section>
+
       </div>
     </div>
   )

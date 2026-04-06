@@ -227,7 +227,9 @@ export function useImportExport({
 
 // ========== Failure Reason Detection =========================================================================================
 
-function getActionFailureReason(action: Action, prevSnapshot: Snapshot | undefined, character: ResolvedCharacter, ignoreCastConditions: boolean): string | null {
+function getActionFailureReason(action: Action, prevSnapshot: Snapshot | undefined, character: ResolvedCharacter, ignoreCastConditions: boolean, skipAllChecks = false): string | null {
+  if (skipAllChecks) return null
+
   const charName = character.name
 
   // Must follow-up check (the action is locked until a specific follow-up is cast)
@@ -418,7 +420,7 @@ function runImportSteps(params: ImportRunParams): FullImportRunResult {
     }
 
     // Check if the action is castable in the current state
-    const failureReason = getActionFailureReason(resolvedAction, prevSnapshot, character, ignoreCastConditions)
+    const failureReason = getActionFailureReason(resolvedAction, prevSnapshot, character, ignoreCastConditions, settings.sandboxMode)
     if (failureReason) {
       return {
         snapshots,

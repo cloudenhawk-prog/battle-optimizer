@@ -93,12 +93,58 @@ export const hiyuki: Character = {
     }
   ],
   sequence_nodes: [ // TODO
-    'The DMG Multipliers of Basic Attack - Foreclaimed Self, Heavy Attack - Foreclaimed Self, Mid-air Attack - Foreclaimed Self, Mid-air Plunging Attack - Foreclaimed Self, Dodge Counter - Foreclaimed Self are increased by 120%. Basic Attack - Foreclaimed Self Stage 3 now has an increased range and pulls enemies within range toward the center. Hiyuki is immune to interruptions while casting Basic Attack - Foreclaimed Self Stage 4 & 5. Casting Foreclaiming: Inward Vision enhances the next Basic Attack - Foreclaimed Self Stage 1 & 2, which now inflict 1 stack of Glacio Chafe on hit.',
-    'Iai\'s DMG Multiplier is increased by 140%. After staying out of combat for more than 4s, the following effects are triggered: 1: Restore 3 points of Frostharden Iai. 2: Reset the Cooldown of 2 charges of Frostblight: Jade Cleave. 3: Restore an additional 50 points of Frostheart for the next 2 casts of Frostblight: Jade Cleave or Frostblight: Petalfall.',
-    'Every 2s after joining the team, gain 1 stack of Snow Rust. The DMG Multipliers of Frost Splinter: Present Self and Bitterfrost: Foreclaimed Self are increased by 120%. At 2 stacks of Snow Rust, while Hiyuki is on the field, the DMG Multiplier of the Glacio Bite DMG additionally applied each time she inflicts Glacio Chafe is increased by 488%.',
-    'Casting Resonance Skill: Present Self, Frostblight: Jade Cleave, or Frostblight: Petalfall increases the damage dealt by all nearby Resonators in the team by 20% for 30s. Restore 18% of Max HP while casting Frostblight: Jade Cleave or Frostblight: Petalfall.',
-    'The DMG Multipliers of Resonance Skill - Present Self, Frostblight: Jade Cleave, and Frostblight: Petalfall are increased by 80%.',
-    'The DMG Multipliers of Foreclaiming: Inward Vision and Foreclaiming: Blade Liberation are increased by 150%. At 2 stacks of Snow Rust, the effect "While Hiyuki is on the field, each time she applies Glacio Chafe, she additionally deals an instance of Glacio Bite DMG" changes to "While Hiyuki is on the field, each time a Resonator in the team applies Glacio Chafe, she additionally deals an instance of Glacio Bite DMG." At 2 stacks of Snow Rust, the total Glacio Bite DMG enemies within a certain range of the active Resonator take is increased by 25%. Hiyuki\'s Crit. DMG is increased by 40%. Inherent Skill Ephemeral Realm\'s effect is replaced: After staying out of combat for more than 4s, restore 3 points of Snowforged Blade.'
+    `The DMG Multipliers of
+      Basic Attack - Foreclaimed Self,
+      Heavy Attack - Foreclaimed Self,
+      Mid-air Attack - Foreclaimed Self,
+      Mid-air Plunging Attack - Foreclaimed Self,
+      Dodge Counter - Foreclaimed Self
+    are increased by 120%.
+    Basic Attack - Foreclaimed Self Stage 3 now has an increased range and pulls enemies within range toward the center.
+    Hiyuki is immune to interruptions while casting Basic Attack - Foreclaimed Self Stage 4 & 5.
+    Casting Foreclaiming: Inward Vision enhances the next Basic Attack - Foreclaimed Self Stage 1 & 2, which now inflict 1 stack of Glacio Chafe on hit.`,
+
+    `Iai\'s DMG Multiplier is increased by 140%.
+    After staying out of combat for more than 4s, the following effects are triggered:
+      1: Restore 3 points of Frostharden Iai.
+      2: Reset the Cooldown of 2 charges of Frostblight: Jade Cleave.
+      3: Restore an additional 50 points of Frostheart for the next 2 casts of Frostblight: Jade Cleave or Frostblight: Petalfall.`,
+    
+    `Every 2s after joining the team, gain 1 stack of Snow Rust.
+    The DMG Multipliers of
+      Frost Splinter: Present Self,
+      Bitterfrost: Foreclaimed Self
+    are increased by 120%.
+    At 2 stacks of Snow Rust, while Hiyuki is on the field,
+      the DMG Multiplier of the Glacio Bite DMG
+      additionally applied each time she inflicts Glacio Chafe
+    is increased by 488%.`,
+    
+    `Casting
+      Resonance Skill: Present Self,
+      Frostblight: Jade Cleave,
+      Frostblight: Petalfall
+    increases the damage dealt by all nearby Resonators in the team by 20% for 30s.
+    Restore 18% of Max HP while casting Frostblight: Jade Cleave or Frostblight: Petalfall.`,
+    
+    `The DMG Multipliers of
+      Resonance Skill - Present Self,
+      Frostblight: Jade Cleave,
+      Frostblight: Petalfall
+    are increased by 80%.`,
+    
+    `The DMG Multipliers of
+      Foreclaiming: Inward Vision,
+      Foreclaiming: Blade Liberation
+    are increased by 150%.
+    At 2 stacks of Snow Rust, the effect
+      "While Hiyuki is on the field, each time she applies Glacio Chafe, she additionally deals an instance of Glacio Bite DMG"
+      changes to
+      "While Hiyuki is on the field, each time a Resonator in the team applies Glacio Chafe, she additionally deals an instance of Glacio Bite DMG."
+    At 2 stacks of Snow Rust,
+      the total Glacio Bite DMG enemies within a certain range of the active Resonator take is increased by 25%.
+      Hiyuki\'s Crit. DMG is increased by 40%.
+      Inherent Skill Ephemeral Realm\'s effect is replaced: After staying out of combat for more than 4s, restore 3 points of Snowforged Blade.`
   ],
   sequence_nodes_icons: [ // TODO
     'assets/characters/sequences/hiyuki_1.png',

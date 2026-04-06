@@ -18,6 +18,7 @@ type ActionSelectProps = {
   previousSnapshot?: Snapshot | null
   onChange: (actionName: string) => void
   disabled?: boolean
+  sandboxMode?: boolean
 }
 
 type ActionState = {
@@ -43,7 +44,7 @@ type ActionState = {
   isComboTagMismatch: boolean
 }
 
-export function ActionSelect({ value, actions, character, currentEnergies, previousSnapshot, onChange, disabled = false }: ActionSelectProps) {
+export function ActionSelect({ value, actions, character, currentEnergies, previousSnapshot, onChange, disabled = false, sandboxMode = false }: ActionSelectProps) {
   const [isOpen, setIsOpen] = useState(false)
   const [expandedGroup, setExpandedGroup] = useState<string | null>(null)
   const [variantPopupPosition, setVariantPopupPosition] = useState({ top: 0, left: 0 })
@@ -93,6 +94,31 @@ export function ActionSelect({ value, actions, character, currentEnergies, previ
   const getActionState = (action: Action): ActionState => {
     const isSpecial = action.name === 'Intro' || action.name === 'Outro'
     const isCurrent = action.name === value
+
+    if (sandboxMode) {
+      return {
+        action,
+        isSpecial,
+        isCurrent,
+        isUnaffordable: false,
+        isOnCooldown: false,
+        cooldownRemaining: 0,
+        missingEnergy: [],
+        isWrongPosition: false,
+        isPreviousActionMismatch: false,
+        isRequiresSwapIn: false,
+        isWrongForm: false,
+        isCustomCanCastFailed: false,
+        isOnSwapCooldown: false,
+        swapCooldownRemaining: 0,
+        isNoSwapTarget: false,
+        isNotRequiredFollowUp: false,
+        isFollowUpNotReady: false,
+        isMustChainUnsatisfiable: false,
+        isComboWindowExpired: false,
+        isComboTagMismatch: false,
+      }
+    }
 
     let isUnaffordable = false
     let cooldownRemaining = 0

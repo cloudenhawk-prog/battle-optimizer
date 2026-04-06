@@ -22,16 +22,17 @@ type BodyRowProps = {
   isNewRow?: boolean
   columnVisibility: ColumnVisibility
   onRowClick?: (snapshot: Snapshot) => void
+  sandboxMode?: boolean
 }
 
-export function BodyRow({ snapshot, previousSnapshot, charactersInBattle, tableConfig, onSelectCharacter, onSelectAction, isLastRow = false, isNewRow = false, columnVisibility, onRowClick }: BodyRowProps) {
+export function BodyRow({ snapshot, previousSnapshot, charactersInBattle, tableConfig, onSelectCharacter, onSelectAction, isLastRow = false, isNewRow = false, columnVisibility, onRowClick, sandboxMode = false }: BodyRowProps) {
   const snapshotId = Number(snapshot.id)
   const character = snapshot.character ?? ''
   const action = snapshot.action ?? ''
   const isLocked = !isLastRow && !!character && !!action
 
   const lockedCharacters = new Set<string>()
-  if (previousSnapshot) {
+  if (!sandboxMode && previousSnapshot) {
     const prevChar = previousSnapshot.character ?? ''
     if (prevChar && isSwapRequiredLocked(previousSnapshot, prevChar)) {
       lockedCharacters.add(prevChar)
@@ -110,6 +111,7 @@ export function BodyRow({ snapshot, previousSnapshot, charactersInBattle, tableC
               onSelectAction(snapshotId, actionName)
             }}
             disabled={!character}
+            sandboxMode={sandboxMode}
           />
         )}
       </td>
