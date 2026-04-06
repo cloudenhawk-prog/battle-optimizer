@@ -9,7 +9,7 @@ export const hiyuki: Character = {
   name: 'Hiyuki',
   element: 'GLACIO',
   weaponType: 'Sword',
-  maxEnergies: {energy: 0, concerto: 100, dedication: 300, foreclaiming: 1, frostharden_iai: 3, frostheart: 300, whiteout_bitterfrost: 3, snowforged_blade: 3, snow_rust: 3 }, // TODO
+  maxEnergies: {energy: 0, concerto: 100, dedication: 300, foreclaiming: 1, frostharden_iai: 3, frostheart: 300, whiteout_bitterfrost: 3, snowforged_blade: 3, snow_rust: 3, s1_enhanced_ba: 1 }, // TODO
   actions: [...all_actions],
   damageModifiers: [
     {

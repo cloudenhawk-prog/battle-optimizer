@@ -211,7 +211,22 @@ const hiyuki_liberation: Action = {
     requiredForms: ['Present Self']
   },
   offtune: 8.4,
-  formChange: 'Foreclaimed Self'
+  formChange: 'Foreclaimed Self',
+  resolveVariant(_prevSnapshot, _characterName, owner) {
+    // S1: Casting this action enhances the next Basic Attack 1-5 so that BA1 & BA2 also apply
+    // Glacio Chafe. Grant a one-shot s1_enhanced_ba token consumed by hiyuki_foreclaimed_BA_1_5.
+    if (owner.sequence >= 1) {
+      return {
+        ...this,
+        energyGenerated: [
+          ...this.energyGenerated,
+          { energyType: 's1_enhanced_ba' as const, amount: 1, share: 0 },
+        ],
+        resolveVariant: undefined,
+      }
+    }
+    return { ...this, resolveVariant: undefined }
+  },
 }
 
 // ========== Foreclaimed Self =================================================================================================
@@ -246,6 +261,26 @@ const hiyuki_foreclaimed_BA_1_5: Action = {
   hideWhenNotCastable: true,
   groupName: 'Foreclaimed: Basic Attack 1-5',
   variantName: 'Default',
+  resolveVariant(prevSnapshot, characterName, owner) {
+    // S1: DMG Multipliers of Basic Attack - Foreclaimed Self are increased by 120%.
+    // S1: After casting Liberation (Foreclaiming: Inward Vision), the NEXT Basic Attack 1-5
+    // has BA1 and BA2 each apply +1 Glacio Chafe, consuming the s1_enhanced_ba token.
+    const s1Active = owner.sequence >= 1
+    const s1Enhanced = s1Active && (prevSnapshot?.charactersEnergies[characterName]?.s1_enhanced_ba ?? 0) >= 1
+    if (!s1Active) return { ...this, resolveVariant: undefined }
+    return {
+      ...this,
+      multiplier: this.multiplier * 2.2,
+      ...(s1Enhanced ? {
+        statusModifications: [{ type: 'negativeStatus' as const, targetName: 'Glacio Chafe', stackChange: foreclaimed_BA1_stack + foreclaimed_BA2_stack + foreclaimed_BA3_stack + foreclaimed_BA4_stack + foreclaimed_BA5_stack + 2 }],
+        energyCost: [
+          ...this.energyCost,
+          { energyType: 's1_enhanced_ba' as const, amount: 1 },
+        ],
+      } : {}),
+      resolveVariant: undefined,
+    }
+  },
 }
 
 const hiyuki_foreclaimed_enhanced_heavy_attack: Action = {
@@ -280,6 +315,15 @@ const hiyuki_foreclaimed_enhanced_heavy_attack: Action = {
   hideWhenNotCastable: true,
   groupName: 'Foreclaimed: Enhanced Heavy Attack',
   variantName: 'Default',
+  resolveVariant(_prevSnapshot, _characterName, owner) {
+    // S1: DMG Multipliers of Heavy Attack - Foreclaimed Self are increased by 120%.
+    if (owner.sequence < 1) return { ...this, resolveVariant: undefined }
+    return {
+      ...this,
+      multiplier: this.multiplier * 2.2,
+      resolveVariant: undefined,
+    }
+  },
 }
 
 const hiyuki_foreclaimed_skill_1: Action = {
