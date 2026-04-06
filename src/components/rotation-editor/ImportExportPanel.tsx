@@ -211,7 +211,7 @@ export function ImportExportPanel({
                     <span className="ieSavedMeta">{s.steps.length} steps · {new Date(s.createdAt).toLocaleDateString()}</span>
                   </div>
                   <div className="ieSavedActions">
-                    <button className="ieActionBtn ieActionBtnAppend" onClick={() => handleAppend(s)} disabled={!hasCurrentRotation} title="Append these steps to the end of the current timeline">+ Add</button>
+                    <button className="ieActionBtn ieActionBtnAppend" onClick={() => handleAppend(s)} title="Append these steps to the end of the current timeline">+ Add</button>
                     {confirmDeleteSnippet === s.name ? (
                       <>
                         <button className="ieActionBtn ieActionBtnConfirmDelete" onClick={() => { onDeleteSnippet(s.name); setConfirmDeleteSnippet(null) }}>Confirm</button>

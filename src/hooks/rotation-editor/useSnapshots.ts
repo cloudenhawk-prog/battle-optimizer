@@ -103,5 +103,7 @@ export function createEmptySnapshot(charactersMap: Record<string, Character>, ch
     charactersComboWindows: {},
     charactersForteGrants: {},
     charactersComboChainTags: {},
+    charactersOffFieldSince: {},
+    offFieldTriggerEvents: {},
   }
 }

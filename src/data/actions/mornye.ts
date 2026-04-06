@@ -21,7 +21,7 @@ import { always, ownerAtLeast } from '../../utils/conditions/damageModifierCondi
 const BA1_multiplier = (22.27 + 2 * 16.71) / 100
 const BA1_energy = (0.35 + 2 * 0.27)
 const BA1_concerto = (1.12 + 2 * 0.84)
-const BA1_forte = 20
+const BA1_rest_mass_energy = 20
 const BA1_offtune = (0.11 + 2 * 0.08)
 const BA1_persistenceTime = 1.4
 
@@ -29,7 +29,7 @@ const BA1_persistenceTime = 1.4
 const BA2_multiplier = (23.86 + 23.86 + 4 * 17.90) / 100
 const BA2_energy = (0.38 + 0.38 + 4 * 0.29)
 const BA2_concerto = (1.20 + 1.20 + 4 * 0.90)
-const BA2_forte = 40
+const BA2_rest_mass_energy = 40
 const BA2_offtune = (0.12 + 0.12 + 2 * 0.09)
 const BA2_persistenceTime = 2.551
 
@@ -37,7 +37,7 @@ const BA2_persistenceTime = 2.551
 const BA3_multiplier = (41.36 + 6 * 10.34) / 100
 const BA3_energy = (0.65 + 6 * 0.17)
 const BA3_concerto = (2.08 + 6 * 0.52)
-const BA3_forte = 40
+const BA3_rest_mass_energy = 40
 const BA3_offtune = (0.21 + 6 * 0.05)
 const BA3_persistenceTime = 2.92
 
@@ -45,7 +45,7 @@ const BA3_persistenceTime = 2.92
 const heavy_multiplier = (44.14 + 99.02) / 100
 const heavy_energy = (0.93 + 2.08)
 const heavy_concerto = (2.96 + 6.65)
-const heavy_forte_cost = 100
+const heavy_rest_mass_energy_cost = 100
 const heavy_offtune = 0.30 + 0.66
 
 // Mode: BA1
@@ -84,7 +84,7 @@ const mornye_BA_1_cancel_with_swap: Action = {
   energyGenerated: [
     { energyType: 'energy', amount: BA1_energy, share: 0.5, scalingStat: 'energyPercent' },
     { energyType: 'concerto', amount: BA1_concerto, share: 0 },
-    { energyType: 'forte', amount: BA1_forte, share: 0 },
+    { energyType: 'rest_mass_energy', amount: BA1_rest_mass_energy, share: 0 },
   ],
   energyCost: [],
   statusModifications: [],
@@ -122,7 +122,7 @@ const mornye_BA_1_2_cancel_with_swap: Action = {
   energyGenerated: [
     { energyType: 'energy', amount: BA1_energy + BA2_energy, share: 0.5, scalingStat: 'energyPercent' },
     { energyType: 'concerto', amount: BA1_concerto + BA2_concerto, share: 0 },
-    { energyType: 'forte', amount: BA1_forte + BA2_forte, share: 0 },
+    { energyType: 'rest_mass_energy', amount: BA1_rest_mass_energy + BA2_rest_mass_energy, share: 0 },
   ],
   energyCost: [],
   statusModifications: [],
@@ -160,7 +160,7 @@ const mornye_BA_1_3_into_heavy: Action = {
   energyGenerated: [
     { energyType: 'energy', amount: BA1_energy + BA2_energy + BA3_energy, share: 0.5, scalingStat: 'energyPercent' },
     { energyType: 'concerto', amount: BA1_concerto + BA2_concerto + BA3_concerto, share: 0 },
-    { energyType: 'forte', amount: BA1_forte + BA2_forte + BA3_forte, share: 0 },
+    { energyType: 'rest_mass_energy', amount: BA1_rest_mass_energy + BA2_rest_mass_energy + BA3_rest_mass_energy, share: 0 },
   ],
   energyCost: [],
   statusModifications: [],
@@ -195,7 +195,7 @@ const mornye_BA_1_3_cancel_with_swap: Action = {
   energyGenerated: [
     { energyType: 'energy', amount: BA1_energy + BA2_energy + BA3_energy, share: 0.5, scalingStat: 'energyPercent' },
     { energyType: 'concerto', amount: BA1_concerto + BA2_concerto + BA3_concerto, share: 0 },
-    { energyType: 'forte', amount: BA1_forte + BA2_forte + BA3_forte, share: 0 },
+    { energyType: 'rest_mass_energy', amount: BA1_rest_mass_energy + BA2_rest_mass_energy + BA3_rest_mass_energy, share: 0 },
   ],
   energyCost: [],
   statusModifications: [],
@@ -232,7 +232,7 @@ const mornye_BA_1_3_cancel_with_skill: Action = {
   energyGenerated: [
     { energyType: 'energy', amount: BA1_energy + BA2_energy, share: 0.5, scalingStat: 'energyPercent' },
     { energyType: 'concerto', amount: BA1_concerto + BA2_concerto, share: 0 },
-    { energyType: 'forte', amount: BA1_forte + BA2_forte + BA3_forte, share: 0 },
+    { energyType: 'rest_mass_energy', amount: BA1_rest_mass_energy + BA2_rest_mass_energy + BA3_rest_mass_energy, share: 0 },
   ],
   energyCost: [],
   statusModifications: [],
@@ -268,7 +268,7 @@ const mornye_BA_2_cancel_with_swap: Action = {
   energyGenerated: [
     { energyType: 'energy', amount: BA2_energy, share: 0.5, scalingStat: 'energyPercent' },
     { energyType: 'concerto', amount: BA2_concerto, share: 0 },
-    { energyType: 'forte', amount: BA2_forte, share: 0 },
+    { energyType: 'rest_mass_energy', amount: BA2_rest_mass_energy, share: 0 },
   ],
   energyCost: [],
   statusModifications: [],
@@ -307,7 +307,7 @@ const mornye_BA_2_3_into_heavy: Action = {
   energyGenerated: [
     { energyType: 'energy', amount: BA2_energy + BA3_energy, share: 0.5, scalingStat: 'energyPercent' },
     { energyType: 'concerto', amount: BA2_concerto + BA3_concerto, share: 0 },
-    { energyType: 'forte', amount: BA2_forte + BA3_forte, share: 0 },
+    { energyType: 'rest_mass_energy', amount: BA2_rest_mass_energy + BA3_rest_mass_energy, share: 0 },
   ],
   energyCost: [],
   statusModifications: [],
@@ -343,7 +343,7 @@ const mornye_BA_2_3_cancel_with_swap: Action = {
   energyGenerated: [
     { energyType: 'energy', amount: BA2_energy + BA3_energy, share: 0.5, scalingStat: 'energyPercent' },
     { energyType: 'concerto', amount: BA2_concerto + BA3_concerto, share: 0 },
-    { energyType: 'forte', amount: BA2_forte + BA3_forte, share: 0 },
+    { energyType: 'rest_mass_energy', amount: BA2_rest_mass_energy + BA3_rest_mass_energy, share: 0 },
   ],
   energyCost: [],
   statusModifications: [],
@@ -381,7 +381,7 @@ const mornye_BA_2_3_cancel_with_skill: Action = {
   energyGenerated: [
     { energyType: 'energy', amount: BA2_energy, share: 0.5, scalingStat: 'energyPercent' },
     { energyType: 'concerto', amount: BA2_concerto, share: 0 },
-    { energyType: 'forte', amount: BA2_forte + BA3_forte, share: 0 },
+    { energyType: 'rest_mass_energy', amount: BA2_rest_mass_energy + BA3_rest_mass_energy, share: 0 },
   ],
   energyCost: [],
   statusModifications: [],
@@ -418,7 +418,7 @@ const mornye_BA_3_into_heavy: Action = {
   energyGenerated: [
     { energyType: 'energy', amount: BA3_energy, share: 0.5, scalingStat: 'energyPercent' },
     { energyType: 'concerto', amount: BA3_concerto, share: 0 },
-    { energyType: 'forte', amount: BA3_forte, share: 0 },
+    { energyType: 'rest_mass_energy', amount: BA3_rest_mass_energy, share: 0 },
   ],
   energyCost: [],
   statusModifications: [],
@@ -454,7 +454,7 @@ const mornye_BA_3_cancel_with_swap: Action = {
   energyGenerated: [
     { energyType: 'energy', amount: BA3_energy, share: 0.5, scalingStat: 'energyPercent' },
     { energyType: 'concerto', amount: BA3_concerto, share: 0 },
-    { energyType: 'forte', amount: BA3_forte, share: 0 },
+    { energyType: 'rest_mass_energy', amount: BA3_rest_mass_energy, share: 0 },
   ],
   energyCost: [],
   statusModifications: [],
@@ -492,7 +492,7 @@ const mornye_BA_3_cancel_with_skill: Action = {
   energyGenerated: [
     { energyType: 'energy', amount: (0), share: 0.5, scalingStat: 'energyPercent' },
     { energyType: 'concerto', amount: (0), share: 0 },
-    { energyType: 'forte', amount: BA3_forte, share: 0 },
+    { energyType: 'rest_mass_energy', amount: BA3_rest_mass_energy, share: 0 },
   ],
   energyCost: [],
   statusModifications: [],
@@ -530,7 +530,7 @@ const mornye_heavy: Action = {
     { energyType: 'energy', amount: heavy_energy, share: 0.5, scalingStat: 'energyPercent' },
     { energyType: 'concerto', amount: heavy_concerto, share: 0 }
   ],
-  energyCost: [{ energyType: 'forte', amount: heavy_forte_cost }],
+  energyCost: [{ energyType: 'rest_mass_energy', amount: heavy_rest_mass_energy_cost }],
   statusModifications: [],
   damageModifiers: [
     {
@@ -597,7 +597,7 @@ const mornye_heavy_swap_in: Action = {
     { energyType: 'energy', amount: heavy_energy, share: 0.5, scalingStat: 'energyPercent' },
     { energyType: 'concerto', amount: heavy_concerto, share: 0 }
   ],
-  energyCost: [{ energyType: 'forte', amount: heavy_forte_cost }],
+  energyCost: [{ energyType: 'rest_mass_energy', amount: heavy_rest_mass_energy_cost }],
   statusModifications: [],
   damageModifiers: [
     {
@@ -1127,9 +1127,9 @@ const mornye_concerto: Action = {
   offtune: 0,
 }
 
-const mornye_forte: Action = {
-  name: 'Forte Up',
-  displayName: 'Forte Up',
+const mornye_rest_mass_energy: Action = {
+  name: 'Rest Mass Energy',
+  displayName: 'Rest Mass Energy',
   category: 'Testing',
   castTime: 0,
   multiplier: 0,
@@ -1137,7 +1137,7 @@ const mornye_forte: Action = {
   elements: [''],
   dmgTypes: [''],
   cooldown: 0,
-  energyGenerated: [{ energyType: 'forte', amount: 1000, share: 0 }],
+  energyGenerated: [{ energyType: 'rest_mass_energy', amount: 1000, share: 0 }],
   energyCost: [],
   statusModifications: [],
   damageModifiers: [],
@@ -1197,7 +1197,7 @@ export const all_actions = [
   mornye_wait_for_swap,
   mornye_energy,
   mornye_concerto,
-  mornye_forte,
+  mornye_rest_mass_energy,
   mornye_relative_momentum
 ]
 
@@ -1251,7 +1251,7 @@ export {
   // Testing
   mornye_energy,
   mornye_concerto,
-  mornye_forte,
+  mornye_rest_mass_energy,
   mornye_relative_momentum
 }
 

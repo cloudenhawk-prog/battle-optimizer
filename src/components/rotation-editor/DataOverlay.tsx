@@ -785,6 +785,7 @@ function EnergySection({ snapshot, previousSnapshot, startWithFullEnergy, charac
       ) : (
         charDeltas.map(({ charName, element, isActing, deltas }) => {
           const color = CHAR_ELEMENT_COLORS[element] ?? CHAR_ELEMENT_COLORS['']
+          const triggerEvents = snapshot.offFieldTriggerEvents?.[charName] ?? []
           return (
             <div key={charName} className="dataEnergyCharBlock">
               <div className="dataEnergyCharHeader">
@@ -799,6 +800,11 @@ function EnergySection({ snapshot, previousSnapshot, startWithFullEnergy, charac
                   <span className={`dataEnergyDelta ${delta >= 0 ? 'gain' : 'cost'}`}>
                     {formatEnergyDelta(delta)}
                   </span>
+                </div>
+              ))}
+              {triggerEvents.map((desc, i) => (
+                <div key={`trigger-${i}`} className="dataEnergyTriggerNote">
+                  ⚡ {desc}
                 </div>
               ))}
             </div>

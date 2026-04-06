@@ -1,16 +1,21 @@
 import type { DamageModifier, ModifierInAction } from '../../types/modifiers'
 import type { StepContext } from '../../types/stepContext'
-import type { Character } from '../../types/character'
+import type { Character, ResolvedCharacter } from '../../types/character'
 import type { Action } from '../../types/action'
 import type { NegativeStatusInAction } from '../../types/negativeStatus'
 
 // ========== Modifier Helpers =================================================================================================
 
 /**
- * Collects all damage modifiers from various sources (character, action, negative statuses).
+ * Collects all damage modifiers from various sources (character, action, negative statuses,
+ * and ally characters' permanent 'all'-targeted passives).
  * Returns blueprints that need to be converted to ModifierInAction.
+ *
+ * Ally permanent modifiers with targetStrategy 'all' are included so that passives which
+ * amplify a negative status (e.g. Hiyuki's Fine Snow → glacioChafeAmplifyDMG) apply to
+ * DoT ticks regardless of which character is currently active.
  */
-export function collectAllModifiers(character: Character, action: Action, negativeStatusesInAction: NegativeStatusInAction[]): DamageModifier[] {
+export function collectAllModifiers(character: Character, action: Action, negativeStatusesInAction: NegativeStatusInAction[], allies: readonly ResolvedCharacter[] = []): DamageModifier[] {
   const characterModifiers = (character.damageModifiers ?? []).map(mod => ({
     ...mod,
     ownerCharacter: mod.ownerCharacter ?? character.name,
@@ -30,7 +35,19 @@ export function collectAllModifiers(character: Character, action: Action, negati
       })),
     )
 
-  return [...characterModifiers, ...actionModifiers, ...negativeStatusModifiers]
+  // Collect permanent 'all'-targeted modifiers from ally characters.
+  // These passives (e.g. Hiyuki's Fine Snow Glacio Chafe amplification) must apply universally,
+  // including during DoT ticks when the owning character is off-field.
+  const allyPassiveModifiers = allies.flatMap(ally =>
+    (ally.damageModifiers ?? [])
+      .filter(mod => (!mod.durationStrategy || mod.durationStrategy.type === 'permanent') && mod.targetStrategy === 'all')
+      .map(mod => ({
+        ...mod,
+        ownerCharacter: mod.ownerCharacter ?? ally.name,
+      }))
+  )
+
+  return [...characterModifiers, ...actionModifiers, ...negativeStatusModifiers, ...allyPassiveModifiers]
 }
 
 /**

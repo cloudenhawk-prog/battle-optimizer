@@ -147,6 +147,8 @@ function createInitialSnapshot(): Snapshot {
     charactersComboWindows: {},
     charactersForteGrants: {},
     charactersComboChainTags: {},
+    charactersOffFieldSince: {},
+    offFieldTriggerEvents: {},
   }
 }
 

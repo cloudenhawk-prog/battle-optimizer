@@ -69,6 +69,9 @@ export function createSnapshot(previousSnapshot: Snapshot, charactersMap: Record
     charactersComboChainTags[k] = [...v]
   }
 
+  // Carry forward off-field-since timestamps so resolveOffFieldTriggers can detect duration crossings
+  const charactersOffFieldSince = { ...(previousSnapshot.charactersOffFieldSince ?? {}) }
+
   const basicValues = Object.fromEntries(globalColumns.basic.map(col => [col, 0]))
   const buffs = Object.fromEntries(globalColumns.buffs.map(col => [col, 0]))
   const debuffs = Object.fromEntries(globalColumns.debuffs.map(col => [col, 0]))
@@ -123,5 +126,7 @@ export function createSnapshot(previousSnapshot: Snapshot, charactersMap: Record
     charactersComboWindows: {},
     charactersForteGrants,
     charactersComboChainTags,
+    charactersOffFieldSince,
+    offFieldTriggerEvents: {},
   }
 }

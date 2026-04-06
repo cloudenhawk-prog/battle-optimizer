@@ -135,10 +135,10 @@ export const weaponCatalog: WeaponCatalogEntry[] = [
   },
 
   {
-    name: 'Hiyuki Weapon Name',
+    name: 'Frostburn',
     weaponType: 'Sword',
     stats: { baseATK: 587, critRate: 0.243 },
-    icon: 'assets/gear/weapons/unknown.png',
+    icon: 'assets/gear/weapons/frostburn.png',
     info: "Increase ATK by 12%. When applying Glacio Chafe, Glacio DMG is Amplified by 28% and Liberation DMG ignore 8% DEF for 6 seconds",
     ranks: {
       1: {
@@ -147,8 +147,8 @@ export const weaponCatalog: WeaponCatalogEntry[] = [
             targets: ['character'],
             modifiers: [
               {
-                source: 'Hiyuki Weapon name',
-                displayName: 'Hiyuki Weapon name: Passive ATK',
+                source: 'Frostburn',
+                displayName: 'Frostburn: Passive ATK',
                 type: 'buff',
                 ownerCharacter: null,
                 condition: always(),
@@ -163,8 +163,8 @@ export const weaponCatalog: WeaponCatalogEntry[] = [
             targets: [{ tag: 'GLACIO_CHAFE_APPLIER' }, { tag: 'GLACIO_BITE_APPLIER' }],
             modifiers: [
               {
-                source: 'Hiyuki Weapon name',
-                displayName: 'Hiyuki Weapon name: Buff',
+                source: 'Frostburn',
+                displayName: 'Frostburn: Buff',
                 type: 'buff',
                 ownerCharacter: null,
                 condition: always(),
@@ -172,11 +172,11 @@ export const weaponCatalog: WeaponCatalogEntry[] = [
                 targetStrategy: 'self',
                 durationStrategy: { type: 'limited', timeDuration: 6 },
                 stackingStrategy: { maxStacks: 1, resetTimerOnApplication: true, stacksRemovedEachTime: 1 },
-                contributionGroup: 'Hiyuki Weapon name: Buff'
+                contributionGroup: 'Frostburn: Buff'
               },
               {
-                source: 'Hiyuki Weapon name',
-                displayName: 'Hiyuki Weapon name: Buff',
+                source: 'Frostburn',
+                displayName: 'Frostburn: Buff',
                 type: 'buff',
                 ownerCharacter: null,
                 condition: (ctx) => ctx.action.dmgTypes.includes('LIBERATION') ? 1 : 0,
@@ -184,7 +184,7 @@ export const weaponCatalog: WeaponCatalogEntry[] = [
                 targetStrategy: 'self',
                 durationStrategy: { type: 'limited', timeDuration: 6 },
                 stackingStrategy: { maxStacks: 1, resetTimerOnApplication: true, stacksRemovedEachTime: 1 },
-                contributionGroup: 'Hiyuki Weapon name: Buff'
+                contributionGroup: 'Frostburn: Buff'
               },
             ],
           }
@@ -196,8 +196,8 @@ export const weaponCatalog: WeaponCatalogEntry[] = [
             targets: ['character'],
             modifiers: [
               {
-                source: 'Hiyuki Weapon name',
-                displayName: 'Hiyuki Weapon name: Passive ATK',
+                source: 'Frostburn',
+                displayName: 'Frostburn: Passive ATK',
                 type: 'buff',
                 ownerCharacter: null,
                 condition: always(),
@@ -212,8 +212,8 @@ export const weaponCatalog: WeaponCatalogEntry[] = [
             targets: [{ tag: 'GLACIO_CHAFE_APPLIER' }, { tag: 'GLACIO_BITE_APPLIER' }],
             modifiers: [
               {
-                source: 'Hiyuki Weapon name',
-                displayName: 'Hiyuki Weapon name: Buff',
+                source: 'Frostburn',
+                displayName: 'Frostburn: Buff',
                 type: 'buff',
                 ownerCharacter: null,
                 condition: always(),
@@ -221,11 +221,11 @@ export const weaponCatalog: WeaponCatalogEntry[] = [
                 targetStrategy: 'self',
                 durationStrategy: { type: 'limited', timeDuration: 6 },
                 stackingStrategy: { maxStacks: 1, resetTimerOnApplication: true, stacksRemovedEachTime: 1 },
-                contributionGroup: 'Hiyuki Weapon name: Buff'
+                contributionGroup: 'Frostburn: Buff'
               },
               {
-                source: 'Hiyuki Weapon name',
-                displayName: 'Hiyuki Weapon name: Buff',
+                source: 'Frostburn',
+                displayName: 'Frostburn: Buff',
                 type: 'buff',
                 ownerCharacter: null,
                 condition: (ctx) => ctx.action.dmgTypes.includes('LIBERATION') ? 1 : 0,
@@ -233,7 +233,7 @@ export const weaponCatalog: WeaponCatalogEntry[] = [
                 targetStrategy: 'self',
                 durationStrategy: { type: 'limited', timeDuration: 6 },
                 stackingStrategy: { maxStacks: 1, resetTimerOnApplication: true, stacksRemovedEachTime: 1 },
-                contributionGroup: 'Hiyuki Weapon name: Buff'
+                contributionGroup: 'Frostburn: Buff'
               },
             ],
           }
@@ -245,8 +245,8 @@ export const weaponCatalog: WeaponCatalogEntry[] = [
             targets: ['character'],
             modifiers: [
               {
-                source: 'Hiyuki Weapon name',
-                displayName: 'Hiyuki Weapon name: Passive ATK',
+                source: 'Frostburn',
+                displayName: 'Frostburn: Passive ATK',
                 type: 'buff',
                 ownerCharacter: null,
                 condition: always(),
@@ -261,8 +261,8 @@ export const weaponCatalog: WeaponCatalogEntry[] = [
             targets: [{ tag: 'GLACIO_CHAFE_APPLIER' }, { tag: 'GLACIO_BITE_APPLIER' }],
             modifiers: [
               {
-                source: 'Hiyuki Weapon name',
-                displayName: 'Hiyuki Weapon name: Buff',
+                source: 'Frostburn',
+                displayName: 'Frostburn: Buff',
                 type: 'buff',
                 ownerCharacter: null,
                 condition: always(),
@@ -270,11 +270,11 @@ export const weaponCatalog: WeaponCatalogEntry[] = [
                 targetStrategy: 'self',
                 durationStrategy: { type: 'limited', timeDuration: 6 },
                 stackingStrategy: { maxStacks: 1, resetTimerOnApplication: true, stacksRemovedEachTime: 1 },
-                contributionGroup: 'Hiyuki Weapon name: Buff'
+                contributionGroup: 'Frostburn: Buff'
               },
               {
-                source: 'Hiyuki Weapon name',
-                displayName: 'Hiyuki Weapon name: Buff',
+                source: 'Frostburn',
+                displayName: 'Frostburn: Buff',
                 type: 'buff',
                 ownerCharacter: null,
                 condition: (ctx) => ctx.action.dmgTypes.includes('LIBERATION') ? 1 : 0,
@@ -282,7 +282,7 @@ export const weaponCatalog: WeaponCatalogEntry[] = [
                 targetStrategy: 'self',
                 durationStrategy: { type: 'limited', timeDuration: 6 },
                 stackingStrategy: { maxStacks: 1, resetTimerOnApplication: true, stacksRemovedEachTime: 1 },
-                contributionGroup: 'Hiyuki Weapon name: Buff'
+                contributionGroup: 'Frostburn: Buff'
               },
             ],
           }
@@ -294,8 +294,8 @@ export const weaponCatalog: WeaponCatalogEntry[] = [
             targets: ['character'],
             modifiers: [
               {
-                source: 'Hiyuki Weapon name',
-                displayName: 'Hiyuki Weapon name: Passive ATK',
+                source: 'Frostburn',
+                displayName: 'Frostburn: Passive ATK',
                 type: 'buff',
                 ownerCharacter: null,
                 condition: always(),
@@ -310,8 +310,8 @@ export const weaponCatalog: WeaponCatalogEntry[] = [
             targets: [{ tag: 'GLACIO_CHAFE_APPLIER' }, { tag: 'GLACIO_BITE_APPLIER' }],
             modifiers: [
               {
-                source: 'Hiyuki Weapon name',
-                displayName: 'Hiyuki Weapon name: Buff',
+                source: 'Frostburn',
+                displayName: 'Frostburn: Buff',
                 type: 'buff',
                 ownerCharacter: null,
                 condition: always(),
@@ -319,11 +319,11 @@ export const weaponCatalog: WeaponCatalogEntry[] = [
                 targetStrategy: 'self',
                 durationStrategy: { type: 'limited', timeDuration: 6 },
                 stackingStrategy: { maxStacks: 1, resetTimerOnApplication: true, stacksRemovedEachTime: 1 },
-                contributionGroup: 'Hiyuki Weapon name: Buff'
+                contributionGroup: 'Frostburn: Buff'
               },
               {
-                source: 'Hiyuki Weapon name',
-                displayName: 'Hiyuki Weapon name: Buff',
+                source: 'Frostburn',
+                displayName: 'Frostburn: Buff',
                 type: 'buff',
                 ownerCharacter: null,
                 condition: (ctx) => ctx.action.dmgTypes.includes('LIBERATION') ? 1 : 0,
@@ -331,7 +331,7 @@ export const weaponCatalog: WeaponCatalogEntry[] = [
                 targetStrategy: 'self',
                 durationStrategy: { type: 'limited', timeDuration: 6 },
                 stackingStrategy: { maxStacks: 1, resetTimerOnApplication: true, stacksRemovedEachTime: 1 },
-                contributionGroup: 'Hiyuki Weapon name: Buff'
+                contributionGroup: 'Frostburn: Buff'
               },
             ],
           }
@@ -343,8 +343,8 @@ export const weaponCatalog: WeaponCatalogEntry[] = [
             targets: ['character'],
             modifiers: [
               {
-                source: 'Hiyuki Weapon name',
-                displayName: 'Hiyuki Weapon name: Passive ATK',
+                source: 'Frostburn',
+                displayName: 'Frostburn: Passive ATK',
                 type: 'buff',
                 ownerCharacter: null,
                 condition: always(),
@@ -359,8 +359,8 @@ export const weaponCatalog: WeaponCatalogEntry[] = [
             targets: [{ tag: 'GLACIO_CHAFE_APPLIER' }, { tag: 'GLACIO_BITE_APPLIER' }],
             modifiers: [
               {
-                source: 'Hiyuki Weapon name',
-                displayName: 'Hiyuki Weapon name: Buff',
+                source: 'Frostburn',
+                displayName: 'Frostburn: Buff',
                 type: 'buff',
                 ownerCharacter: null,
                 condition: always(),
@@ -368,11 +368,11 @@ export const weaponCatalog: WeaponCatalogEntry[] = [
                 targetStrategy: 'self',
                 durationStrategy: { type: 'limited', timeDuration: 6 },
                 stackingStrategy: { maxStacks: 1, resetTimerOnApplication: true, stacksRemovedEachTime: 1 },
-                contributionGroup: 'Hiyuki Weapon name: Buff'
+                contributionGroup: 'Frostburn: Buff'
               },
               {
-                source: 'Hiyuki Weapon name',
-                displayName: 'Hiyuki Weapon name: Buff',
+                source: 'Frostburn',
+                displayName: 'Frostburn: Buff',
                 type: 'buff',
                 ownerCharacter: null,
                 condition: (ctx) => ctx.action.dmgTypes.includes('LIBERATION') ? 1 : 0,
@@ -380,7 +380,7 @@ export const weaponCatalog: WeaponCatalogEntry[] = [
                 targetStrategy: 'self',
                 durationStrategy: { type: 'limited', timeDuration: 6 },
                 stackingStrategy: { maxStacks: 1, resetTimerOnApplication: true, stacksRemovedEachTime: 1 },
-                contributionGroup: 'Hiyuki Weapon name: Buff'
+                contributionGroup: 'Frostburn: Buff'
               },
             ],
           }

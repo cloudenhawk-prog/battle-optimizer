@@ -35,6 +35,9 @@ export function getActionNameByDmgType(character: Character, dmgType: DamageType
     }
   }
 
-  // Fall back to default action with the specified damage type
+  // Find by tag
+  const tag = dmgType === 'INTRO' ? 'INTRO_ACTION' : dmgType === 'OUTRO' ? 'OUTRO_ACTION' : undefined
+  if (tag) return character.actions.find(a => a.tags?.includes(tag))?.name
+
   return character.actions.find(a => (a.dmgTypes as string[]).includes(dmgType))?.name
 }

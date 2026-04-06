@@ -108,7 +108,7 @@ export function resolveDamageModifiers(ctx: StepContext) {
   const enemyModifiers = initializeEmptyEnemyStats()
 
   // Step 1: Collect all modifier blueprints from various sources
-  const allModifiers = collectAllModifiers(ctx.character, ctx.action, ctx.negativeStatusesInAction)
+  const allModifiers = collectAllModifiers(ctx.character, ctx.action, ctx.negativeStatusesInAction, ctx.allies)
 
   // Step 2: Activate new modifiers (convert limited ones to ModifierInAction, handle stacking)
   // Pass the cast duration as an offset so that limited modifier timers start from end-of-cast (ctx.toTime)
@@ -419,16 +419,22 @@ function helpModifierStatusModifications(ctx: StepContext, statusModifications: 
 }
 
 function helpSideEffectsDamage(ctx: StepContext, setDamageEvents: Dispatch<SetStateAction<DamageEvent[]>>): void {
-  const sideEffects = ctx.action.sideEffects
+  const sideEffects = ctx.action.sideEffects ?? []
 
-  if (!sideEffects || sideEffects.length === 0) {
-    return
-  }
+  // Collect character-level action triggers whose required tags all match and condition passes
+  const triggeredSideEffects = (ctx.character.actionTriggers ?? [])
+    .filter(trigger =>
+      trigger.requiredTags.every(tag => ctx.action.tags?.includes(tag)) &&
+      (!trigger.condition || trigger.condition(ctx))
+    )
+    .map(trigger => trigger.sideEffect)
+
+  if (sideEffects.length === 0 && triggeredSideEffects.length === 0) return
 
   let totalSideEffectDamage = 0
   const damageEvents: DamageEvent[] = []
 
-  for (const sideEffect of sideEffects) {
+  for (const sideEffect of [...sideEffects, ...triggeredSideEffects]) {
     const damageEvent = sideEffect.damageDealt(ctx, sideEffect.name, ctx.fromTime)
     if (damageEvent.average > 0) {
       damageEvents.push(damageEvent)
@@ -442,7 +448,7 @@ function helpSideEffectsDamage(ctx: StepContext, setDamageEvents: Dispatch<SetSt
   ctx.logs.push({
     resolver: 'resolveSideEffectsDamage',
     message: `Side effects damage resolved: +${totalSideEffectDamage} dmg`,
-    details: { sideEffectsCount: sideEffects.length, totalDamage: totalSideEffectDamage, damageEvents },
+    details: { sideEffectsCount: sideEffects.length + triggeredSideEffects.length, totalDamage: totalSideEffectDamage, damageEvents },
   })
 }
 
@@ -873,6 +879,15 @@ export function resolveCastState(ctx: StepContext): void {
     ...(swapOccurred ? { [prevCharName!]: ctx.fromTime + 1 } : {}),
   }
 
+  // Track when each character goes off-field so off-field duration triggers can fire.
+  // On swap: the leaving character records the absolute time they went off-field.
+  // The arriving character is cleared to null (= currently on-field).
+  // null means "on-field / no off-field tracking" — 0 is a valid timestamp (start of rotation).
+  ctx.current.charactersOffFieldSince = {
+    ...(ctx.prev.charactersOffFieldSince ?? {}),
+    ...(swapOccurred ? { [prevCharName!]: ctx.fromTime, [charName]: null } : {}),
+  }
+
   const swapCooldownUntil = swapOccurred && prevCharName ? ctx.current.charactersSwapCooldownUntil[prevCharName] : undefined
 
   // On swap-out: reset the leaving character's form to default and clear any form-specific energies
@@ -964,6 +979,99 @@ export function resolveCastState(ctx: StepContext): void {
     message: `Cast state resolved for ${charName}: position=${newPosition}, persistentUntil=${ctx.current.charactersPersistentUntil[charName]}`,
     details: { prevPosition, rawEndState, newPosition, persistenceTime, swapOccurred, swapCooldownUntil },
   })
+}
+
+// ========== Resolver: Off-Field Triggers ====================================================================================
+
+/**
+ * Fires once-per-off-field-stretch when a character's continuous off-field duration crosses
+ * the threshold declared on `Character.offFieldTriggers`.
+ *
+ * Detection mirrors `resolveResourceMilestones`: the trigger fires exactly when
+ *   prevOffFieldDuration < threshold ≤ currOffFieldDuration
+ * so it fires at most once per continuous off-field stretch regardless of step length.
+ *
+ * Must run AFTER `resolveResources` (so energies are already written to `ctx.current`)
+ * and BEFORE `resolveCastState` (which updates `charactersOffFieldSince` for the NEXT step).
+ * The off-field-since timestamps used here come from `ctx.prev`.
+ *
+ * `null` in `charactersOffFieldSince` means the character is currently on-field or was never
+ * swapped out — NOT "went off-field at t=0". Use null as the sentinel, not 0.
+ */
+export function resolveOffFieldTriggers(ctx: StepContext): void {
+  const allCharacters = [ctx.character, ...ctx.allies]
+
+  for (const char of allCharacters) {
+    if (!char.offFieldTriggers || char.offFieldTriggers.length === 0) continue
+
+    const offFieldSinceRaw = ctx.prev.charactersOffFieldSince?.[char.name]
+    // null  = explicitly on-field (resolveCastState writes null when a character swaps in)
+    // absent + active character = always been on-field, never swapped out → skip
+    // absent + ally = never came on-field → treat as off-field since t=0
+    if (offFieldSinceRaw === null || (offFieldSinceRaw === undefined && char.name === ctx.character.name)) {
+      console.log(`[resolveOffFieldTriggers] ${char.name}: on-field or never swapped, skipping`)
+      continue
+    }
+    const offFieldSince = offFieldSinceRaw ?? 0
+
+    const prevOffFieldDuration = ctx.fromTime - offFieldSince
+    const currOffFieldDuration = ctx.toTime - offFieldSince
+
+    console.log(`[resolveOffFieldTriggers] ${char.name}: offFieldSince=${offFieldSince}, fromTime=${ctx.fromTime}, toTime=${ctx.toTime}, prevDuration=${prevOffFieldDuration.toFixed(2)}s, currDuration=${currOffFieldDuration.toFixed(2)}s`)
+
+    for (const trigger of char.offFieldTriggers) {
+      const threshold = trigger.minOffFieldDuration
+      // Fire once: the first step whose window crosses the threshold
+      if (prevOffFieldDuration >= threshold) {
+        console.log(`[resolveOffFieldTriggers] ${char.name}: threshold ${threshold}s already passed (prev=${prevOffFieldDuration.toFixed(2)}s), skipping`)
+        continue
+      }
+      if (currOffFieldDuration < threshold) {
+        console.log(`[resolveOffFieldTriggers] ${char.name}: threshold ${threshold}s not yet reached (curr=${currOffFieldDuration.toFixed(2)}s), skipping`)
+        continue
+      }
+
+      if (trigger.condition && !trigger.condition(ctx.current, char.name)) {
+        console.log(`[resolveOffFieldTriggers] ${char.name}: threshold crossed but condition false, skipping`)
+        continue
+      }
+
+      const charEnergies = { ...(ctx.current.charactersEnergies?.[char.name] ?? {}) }
+      const maxEnergies = char.maxEnergies
+
+      const restoredParts: string[] = []
+      for (const [energyType, amount] of Object.entries(trigger.energyRestore) as [keyof typeof trigger.energyRestore, number][]) {
+        const maxValue = maxEnergies[energyType] ?? Infinity
+        const prev = charEnergies[energyType] ?? 0
+        const next = Math.min(prev + amount, maxValue)
+        charEnergies[energyType] = next
+        if (next > prev) {
+          restoredParts.push(`${energyType} +${next - prev}`)
+        }
+      }
+
+      ctx.current.charactersEnergies = {
+        ...ctx.current.charactersEnergies,
+        [char.name]: charEnergies,
+      }
+
+      // Record the event so DataOverlay and other readers can surface it with a source label
+      const description = trigger.description ?? `Off-field ≥${threshold}s: ${restoredParts.join(', ')}`
+      if (!ctx.current.offFieldTriggerEvents) ctx.current.offFieldTriggerEvents = {}
+      ctx.current.offFieldTriggerEvents[char.name] = [
+        ...(ctx.current.offFieldTriggerEvents[char.name] ?? []),
+        description,
+      ]
+
+      console.log(`[resolveOffFieldTriggers] FIRED for ${char.name}: ${description}`)
+
+      ctx.logs.push({
+        resolver: 'resolveOffFieldTriggers',
+        message: `[${char.name}] Off-field trigger fired: off-field for ${currOffFieldDuration.toFixed(2)}s >= ${threshold}s`,
+        details: { description, energyRestore: trigger.energyRestore, offFieldSince, fromTime: ctx.fromTime, toTime: ctx.toTime, restoredParts },
+      })
+    }
+  }
 }
 
 // ========== Internal Helpers ================================================================================================

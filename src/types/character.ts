@@ -1,9 +1,52 @@
 import type { CharacterStats } from './stats'
 import type { DamageModifier } from './modifiers'
-import type { Action } from './action'
+import type { Action, ActionTag } from './action'
 import type { ElementType, EnergyType } from './baseTypes'
 import type { Gear, WeaponType } from './gear'
 import type { Form } from './form'
+import type { Snapshot } from './snapshot'
+import type { SideEffect } from './sideEffect'
+import type { StepContext } from './stepContext'
+
+// ========== Type: Action Trigger ============================================================================================
+
+/**
+ * Fires a side effect automatically whenever this character casts an action that has all
+ * of the specified tags, and the optional runtime condition passes.
+ *
+ * Evaluated in `helpSideEffectsDamage` after the action's own side effects. This avoids
+ * having to manually add a side effect to every current and future tagged action.
+ *
+ * Example: Hiyuki's Fine Snow proc — fires on every GLACIO_CHAFE_APPLIER cast when snow_rust >= 2.
+ */
+export type ActionTrigger = {
+  /** All of these tags must be present on the cast action. */
+  requiredTags: ActionTag[]
+  /** Optional extra runtime condition. Absent = always fire when tags match. */
+  condition?: (ctx: StepContext) => boolean
+  /** The side effect to execute when the trigger fires. */
+  sideEffect: SideEffect
+}
+
+// ========== Type: Off-Field Trigger ==========================================================================================
+
+/**
+ * Fires once per continuous off-field stretch when the character's off-field duration
+ * crosses `minOffFieldDuration`. Typically used to restore resources after a character
+ * has been sitting off-field long enough (e.g. Hiyuki's Snowforged Blade recovery).
+ */
+export type OffFieldTrigger = {
+  /** Minimum continuous off-field duration (seconds) before this trigger fires. Fires once per off-field stretch. */
+  minOffFieldDuration: number
+  /** Optional extra condition evaluated at the moment the threshold is crossed.
+   *  Receives the in-progress current snapshot and the character's name. Return true to allow firing. */
+  condition?: (snapshot: Snapshot, charName: string) => boolean
+  /** Resources to restore when the trigger fires. Values are clamped to each resource's max. */
+  energyRestore: Partial<Record<EnergyType, number>>
+  /** Human-readable description shown in DataOverlay when this trigger fires.
+   *  Falls back to "Off-field ≥Xs: <energy list>" if omitted. */
+  description?: string
+}
 
 // ========== Type: Resource Milestone =========================================================================================
 
@@ -44,6 +87,10 @@ export type Character = {
   image?: string
   /** Passive milestone effects: gain modifier stacks each time the watched resource crosses a threshold. */
   resourceMilestones?: ResourceMilestoneDef[]
+  /** One-shot triggers that fire when a character has been off-field for a minimum continuous duration. */
+  offFieldTriggers?: OffFieldTrigger[]
+  /** Side effects that fire automatically when this character casts a matching tagged action. */
+  actionTriggers?: ActionTrigger[]
 }
 
 // A Character whose stats have been fully resolved by resolveCharacter().

@@ -427,6 +427,14 @@
   background: linear-gradient(90deg, rgba(255, 165, 0, 0.5), rgba(255, 165, 0, 0.8));
 }
 
+.stateTrackerBar[data-energy-type='rest_mass_energy'] {
+  background: linear-gradient(90deg, rgba(232, 149, 107, 0.5), rgba(230, 105, 67, 0.8));
+}
+
+.stateTrackerBar[data-energy-type='relative_momentum'] {
+  background: linear-gradient(90deg, rgba(75, 134, 215, 0.5), rgba(110, 147, 220, 0.8));
+}
+
 .stateTrackerBarText {
   position: relative;
   z-index: 1;

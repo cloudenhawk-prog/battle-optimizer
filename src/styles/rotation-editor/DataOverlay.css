@@ -1211,3 +1211,15 @@
   color: rgba(255, 130, 100, 0.9);
   text-shadow: 0 0 6px rgba(255, 130, 100, 0.3);
 }
+
+.dataEnergyTriggerNote {
+  font-family: 'Share Tech Mono', 'Courier New', monospace;
+  font-size: 9px;
+  letter-spacing: 0.05em;
+  color: rgba(180, 230, 255, 0.55);
+  border-top: 1px solid rgba(100, 220, 255, 0.08);
+  margin-top: 4px;
+  padding-top: 3px;
+  white-space: normal;
+  line-height: 1.4;
+}

@@ -14,7 +14,7 @@ import { getActionFromCharacter, getActionNameByDmgType } from '../../utils/hook
 import { getSnapshotIndex, getPrevSnapshot, copySnapshots, getSnapshotById, assignCharacterToRow } from '../../utils/hooks/snapshotHelpers'
 import type { Settings } from '../useSettings'
 import { isFollowUpCastableNow, validateMustChain } from '../../utils/conditions/mustChainValidator'
-import { buildStepContext, resolveTime, resolveDamageModifiers, resolveDamage, resolveSideEffectsAndStatuses, resolveModifierState, resolveResources, resolveCooldowns, resolveCoordinatedAttacks, resolveCastState, resolveResourceMilestones } from '../../utils/hooks/resolvers'
+import { buildStepContext, resolveTime, resolveDamageModifiers, resolveDamage, resolveSideEffectsAndStatuses, resolveModifierState, resolveResources, resolveCooldowns, resolveCoordinatedAttacks, resolveCastState, resolveResourceMilestones, resolveOffFieldTriggers } from '../../utils/hooks/resolvers'
 import { negativeStatuses as negativeStatusesData } from '../../data/negativeStatuses'
 import { createSnapshot } from '../../utils/hooks/snapshotHelpers'
 
@@ -131,6 +131,8 @@ export function updateSnapshotsWithAction(params: { snapshots: Snapshot[]; snaps
   resolveResources(context)
 
   resolveResourceMilestones(context)
+
+  resolveOffFieldTriggers(context)
 
   resolveModifierState(context)
 

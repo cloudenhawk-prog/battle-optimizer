@@ -52,6 +52,8 @@ export function createMockSnapshot(overrides: Partial<Snapshot> = {}): Snapshot 
     charactersForms: {},
     charactersForteGrants: {},
     charactersComboChainTags: {},
+    charactersOffFieldSince: {},
+    offFieldTriggerEvents: {},
     ...overrides,
   }
 }
