@@ -45,6 +45,8 @@ export function createMockSnapshot(overrides: Partial<Snapshot> = {}): Snapshot 
     coordinatedAttacksTimeLeft: {},
     coordinatedAttacksSwapRequired: {},
     charactersCooldowns: {},
+    charactersActionStacks: {},
+    charactersActionStacksConfig: {},
     charactersPositions: {},
     charactersPersistentUntil: {},
     charactersLastAction: {},

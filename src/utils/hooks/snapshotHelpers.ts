@@ -50,6 +50,16 @@ export function createSnapshot(previousSnapshot: Snapshot, charactersMap: Record
   // Copy cooldowns from previous snapshot to carry them forward
   const charactersCooldowns = Object.fromEntries(Object.keys(charactersMap).map(charName => [charName, { ...(previousSnapshot.charactersCooldowns?.[charName] ?? {}) }]))
 
+  // Carry forward stacks data for charged actions
+  const charactersActionStacks: Record<string, Record<string, number>> = {}
+  for (const [k, v] of Object.entries(previousSnapshot.charactersActionStacks ?? {})) {
+    charactersActionStacks[k] = { ...v }
+  }
+  const charactersActionStacksConfig: Record<string, Record<string, { max: number; cooldown: number }>> = {}
+  for (const [k, v] of Object.entries(previousSnapshot.charactersActionStacksConfig ?? {})) {
+    charactersActionStacksConfig[k] = { ...v }
+  }
+
   // Copy cast-state fields from previous snapshot to carry them forward
   const charactersPositions = { ...(previousSnapshot.charactersPositions ?? {}) }
   const charactersPersistentUntil = { ...(previousSnapshot.charactersPersistentUntil ?? {}) }
@@ -116,6 +126,8 @@ export function createSnapshot(previousSnapshot: Snapshot, charactersMap: Record
     coordinatedAttacksTimeLeft: {},
     coordinatedAttacksSwapRequired: {},
     charactersCooldowns,
+    charactersActionStacks,
+    charactersActionStacksConfig,
     charactersPositions,
     charactersPersistentUntil,
     charactersLastAction,

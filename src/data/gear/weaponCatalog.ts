@@ -160,7 +160,7 @@ export const weaponCatalog: WeaponCatalogEntry[] = [
             ],
           },
           {
-            targets: [{ tag: 'GLACIO_CHAFE_APPLIER' }, { tag: 'GLACIO_BITE_APPLIER' }],
+            targets: [{ tag: 'GLACIO_CHAFE_APPLIER' }],
             modifiers: [
               {
                 source: 'Frostburn',
@@ -209,7 +209,7 @@ export const weaponCatalog: WeaponCatalogEntry[] = [
             ],
           },
           {
-            targets: [{ tag: 'GLACIO_CHAFE_APPLIER' }, { tag: 'GLACIO_BITE_APPLIER' }],
+            targets: [{ tag: 'GLACIO_CHAFE_APPLIER' }],
             modifiers: [
               {
                 source: 'Frostburn',
@@ -258,7 +258,7 @@ export const weaponCatalog: WeaponCatalogEntry[] = [
             ],
           },
           {
-            targets: [{ tag: 'GLACIO_CHAFE_APPLIER' }, { tag: 'GLACIO_BITE_APPLIER' }],
+            targets: [{ tag: 'GLACIO_CHAFE_APPLIER' }],
             modifiers: [
               {
                 source: 'Frostburn',
@@ -307,7 +307,7 @@ export const weaponCatalog: WeaponCatalogEntry[] = [
             ],
           },
           {
-            targets: [{ tag: 'GLACIO_CHAFE_APPLIER' }, { tag: 'GLACIO_BITE_APPLIER' }],
+            targets: [{ tag: 'GLACIO_CHAFE_APPLIER' }],
             modifiers: [
               {
                 source: 'Frostburn',
@@ -356,7 +356,7 @@ export const weaponCatalog: WeaponCatalogEntry[] = [
             ],
           },
           {
-            targets: [{ tag: 'GLACIO_CHAFE_APPLIER' }, { tag: 'GLACIO_BITE_APPLIER' }],
+            targets: [{ tag: 'GLACIO_CHAFE_APPLIER' }],
             modifiers: [
               {
                 source: 'Frostburn',

@@ -36,6 +36,14 @@ export interface Snapshot {
   coordinatedAttacksTimeLeft: Record<string, number>
   coordinatedAttacksSwapRequired: Record<string, boolean>
   charactersCooldowns: Record<string, Record<string, number>>
+  /** Current stack counts for actions that use the stacks/charges system (maxStacks > 1).
+   *  Keyed by [characterName][cooldownKey]. Absent entry means the action is at max stacks.
+   *  An entry with value 0 means no stacks left (action is blocked). */
+  charactersActionStacks: Record<string, Record<string, number>>
+  /** Config for actions using the stacks system, stored on first use so regeneration logic
+   *  can restart the timer without access to the original Action objects.
+   *  Keyed by [characterName][cooldownKey]. Written once and never deleted. */
+  charactersActionStacksConfig: Record<string, Record<string, { max: number; cooldown: number }>>
   /** Resolved position (GROUND or AIR) for each character after their last action. */
   charactersPositions: Record<string, 'GROUND' | 'AIR'>
   /** Absolute time until which each character's persistence is active (0 = no persistence). */

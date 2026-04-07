@@ -16,7 +16,8 @@ import { getCharacterEnergyState, updateEnergyValue } from './energyHelpers'
 import { getDefaultFormName } from './formHelpers'
 import { updateModifiersForSwap, collectAllModifiers, activateModifiers, filterApplicableModifiers, applyStackMultiplier, updateModifiersForTime } from './modifierHelpers'
 import { updateModifierStacks } from './modifierStateHelpers'
-import { updateAllCharactersCooldowns, setActionOnCooldown, reduceCooldown } from './cooldownHelpers'
+import { updateAllCharactersCooldowns, setActionOnCooldown, reduceCooldown, getActionCooldownKey } from './cooldownHelpers'
+import type { SideEffect } from '../../types/sideEffect'
 
 // ========== Resolver 0: Build Step Context ==================================================================================
 
@@ -421,15 +422,37 @@ function helpModifierStatusModifications(ctx: StepContext, statusModifications: 
 function helpSideEffectsDamage(ctx: StepContext, setDamageEvents: Dispatch<SetStateAction<DamageEvent[]>>): void {
   const sideEffects = ctx.action.sideEffects ?? []
 
-  // Collect character-level action triggers whose required tags all match and condition passes
-  const triggeredSideEffects = (ctx.character.actionTriggers ?? [])
+  // Collect character-level action triggers whose required tags all match and condition passes.
+  // Each trigger may fire more than once if fireCount is specified (e.g. once per application event).
+  const triggeredSideEffects: SideEffect[] = (ctx.character.actionTriggers ?? [])
     .filter(trigger =>
       trigger.requiredTags.every(tag => ctx.action.tags?.includes(tag)) &&
       (!trigger.condition || trigger.condition(ctx))
     )
-    .map(trigger => trigger.sideEffect)
+    .flatMap(trigger => {
+      const count = trigger.fireCount ? trigger.fireCount(ctx) : 1
+      return Array.from({ length: count }, () => trigger.sideEffect)
+    })
 
-  if (sideEffects.length === 0 && triggeredSideEffects.length === 0) return
+  // Collect team-wide triggers from all characters (active + allies).
+  // Each fires with an owner-substituted context so ctx.character = trigger owner,
+  // ensuring correct dealer attribution and owner stats regardless of who is active.
+  type TeamFiring = { sideEffect: SideEffect; ownerCtx: StepContext }
+  const teamFirings: TeamFiring[] = []
+  for (const teamChar of [ctx.character, ...ctx.allies]) {
+    if (!teamChar.teamActionTriggers?.length) continue
+    const ownerCtx: StepContext = teamChar.name === ctx.character.name ? ctx : { ...ctx, character: teamChar }
+    for (const trigger of teamChar.teamActionTriggers) {
+      if (!trigger.requiredTags.every(tag => ctx.action.tags?.includes(tag))) continue
+      if (trigger.condition && !trigger.condition(ownerCtx)) continue
+      const count = trigger.fireCount ? trigger.fireCount(ownerCtx) : 1
+      for (let i = 0; i < count; i++) {
+        teamFirings.push({ sideEffect: trigger.sideEffect, ownerCtx })
+      }
+    }
+  }
+
+  if (sideEffects.length === 0 && triggeredSideEffects.length === 0 && teamFirings.length === 0) return
 
   let totalSideEffectDamage = 0
   const damageEvents: DamageEvent[] = []
@@ -442,13 +465,21 @@ function helpSideEffectsDamage(ctx: StepContext, setDamageEvents: Dispatch<SetSt
     }
   }
 
+  for (const { sideEffect, ownerCtx } of teamFirings) {
+    const damageEvent = sideEffect.damageDealt(ownerCtx, sideEffect.name, ctx.fromTime)
+    if (damageEvent.average > 0) {
+      damageEvents.push(damageEvent)
+      totalSideEffectDamage += damageEvent.average
+    }
+  }
+
   setDamageEvents(prevEvents => [...prevEvents, ...damageEvents])
   ctx.current.damage += totalSideEffectDamage
 
   ctx.logs.push({
     resolver: 'resolveSideEffectsDamage',
     message: `Side effects damage resolved: +${totalSideEffectDamage} dmg`,
-    details: { sideEffectsCount: sideEffects.length + triggeredSideEffects.length, totalDamage: totalSideEffectDamage, damageEvents },
+    details: { sideEffectsCount: sideEffects.length + triggeredSideEffects.length + teamFirings.length, totalDamage: totalSideEffectDamage, damageEvents },
   })
 }
 
@@ -752,6 +783,68 @@ export function resolveCooldowns(ctx: StepContext): void {
   const allCharacters = [character, ...allies]
   current.charactersCooldowns = updateAllCharactersCooldowns(ctx.prev, allCharacters, elapsedTime)
 
+  // Carry forward stacks data from previous snapshot
+  current.charactersActionStacksConfig = {}
+  current.charactersActionStacks = {}
+  for (const char of allCharacters) {
+    const prevConfig = ctx.prev.charactersActionStacksConfig?.[char.name]
+    if (prevConfig) {
+      current.charactersActionStacksConfig[char.name] = { ...prevConfig }
+    }
+    const prevStacks = ctx.prev.charactersActionStacks?.[char.name]
+    if (prevStacks) {
+      current.charactersActionStacks[char.name] = { ...prevStacks }
+    }
+  }
+
+  // Regenerate stacks for any stacked actions whose timers expired this step
+  for (const char of allCharacters) {
+    const config = current.charactersActionStacksConfig?.[char.name]
+    if (!config) continue
+    for (const [key, stackConfig] of Object.entries(config)) {
+      const wasOnCooldown = (ctx.prev.charactersCooldowns?.[char.name]?.[key] ?? 0) > 0
+      const isNowOnCooldown = (current.charactersCooldowns[char.name]?.[key] ?? 0) > 0
+      if (!wasOnCooldown || isNowOnCooldown) continue // Didn't expire this step
+
+      const prevStackCount = ctx.prev.charactersActionStacks?.[char.name]?.[key] ?? stackConfig.max
+      const newStackCount = Math.min(stackConfig.max, prevStackCount + 1)
+
+      if (newStackCount >= stackConfig.max) {
+        // Reached max stacks: stop the timer, remove tracking entry (absent = max)
+        if (current.charactersActionStacks[char.name]) {
+          delete current.charactersActionStacks[char.name][key]
+        }
+      } else {
+        // Still below max: restart the timer and store the incremented count
+        current.charactersCooldowns[char.name] ??= {}
+        current.charactersCooldowns[char.name][key] = stackConfig.cooldown
+        current.charactersActionStacks[char.name] ??= {}
+        current.charactersActionStacks[char.name][key] = newStackCount
+      }
+    }
+  }
+
+  // If the cast action uses stacks: store its config and consume one stack
+  if (action.maxStacks && action.maxStacks > 1) {
+    const cooldownKey = getActionCooldownKey(action)
+    const charName = character.name
+
+    current.charactersActionStacksConfig[charName] ??= {}
+    current.charactersActionStacksConfig[charName][cooldownKey] = {
+      max: action.maxStacks,
+      cooldown: action.cooldown,
+    }
+
+    // Read stacks from post-regeneration state (current may have been updated above)
+    const stacksAfterRegen = current.charactersActionStacks?.[charName]?.[cooldownKey]
+      ?? ctx.prev.charactersActionStacks?.[charName]?.[cooldownKey]
+      ?? action.maxStacks // absent entry = at max stacks
+    const newStackCount = Math.max(0, stacksAfterRegen - 1)
+
+    current.charactersActionStacks[charName] ??= {}
+    current.charactersActionStacks[charName][cooldownKey] = newStackCount
+  }
+
   // Set the used action on cooldown
   current.charactersCooldowns[character.name] = setActionOnCooldown(current, character.name, action)
 
@@ -1031,7 +1124,7 @@ export function resolveOffFieldTriggers(ctx: StepContext): void {
         continue
       }
 
-      if (trigger.condition && !trigger.condition(ctx.current, char.name)) {
+      if (trigger.condition && !trigger.condition(ctx.current, char.name, char)) {
         console.log(`[resolveOffFieldTriggers] ${char.name}: threshold crossed but condition false, skipping`)
         continue
       }
@@ -1053,6 +1146,35 @@ export function resolveOffFieldTriggers(ctx: StepContext): void {
       ctx.current.charactersEnergies = {
         ...ctx.current.charactersEnergies,
         [char.name]: charEnergies,
+      }
+
+      // Restore a specific number of charges for specified action group names
+      if (trigger.chargesRestore && trigger.chargesRestore.length > 0) {
+        const charStacks = { ...(ctx.current.charactersActionStacks?.[char.name] ?? {}) }
+        const charCooldowns = { ...(ctx.current.charactersCooldowns?.[char.name] ?? {}) }
+        const stacksConfig = ctx.current.charactersActionStacksConfig?.[char.name] ?? {}
+        for (const { groupName, amount } of trigger.chargesRestore) {
+          const maxStacks = stacksConfig[groupName]?.max ?? Infinity
+          // Absent entry means already at max; treat as maxStacks for the addition
+          const current = charStacks[groupName] ?? maxStacks
+          const restored = Math.min(current + amount, maxStacks)
+          if (restored >= maxStacks) {
+            // At max: absent entry is the canonical representation; also clear the timer
+            delete charStacks[groupName]
+            delete charCooldowns[groupName]
+          } else {
+            charStacks[groupName] = restored
+          }
+          restoredParts.push(`${groupName} charges +${restored - current}`)
+        }
+        ctx.current.charactersActionStacks = {
+          ...ctx.current.charactersActionStacks,
+          [char.name]: charStacks,
+        }
+        ctx.current.charactersCooldowns = {
+          ...ctx.current.charactersCooldowns,
+          [char.name]: charCooldowns,
+        }
       }
 
       // Record the event so DataOverlay and other readers can surface it with a source label

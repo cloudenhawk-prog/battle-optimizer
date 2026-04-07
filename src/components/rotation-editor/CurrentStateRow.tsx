@@ -134,6 +134,8 @@ function createInitialSnapshot(): Snapshot {
     negativeStatusesTimeLeft: {},
     negativeStatusesMaxStacks: {},
     charactersCooldowns: {},
+    charactersActionStacks: {},
+    charactersActionStacksConfig: {},
     coordinatedAttacks: {},
     coordinatedAttacksTimeLeft: {},
     coordinatedAttacksSwapRequired: {},

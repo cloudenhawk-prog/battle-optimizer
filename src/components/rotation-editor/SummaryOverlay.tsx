@@ -236,7 +236,7 @@ function computeSummaryData(
 
 // ========== Action Breakdown Data ==========================================================================================
 
-type ActionBreakdownEntry = { actionName: string; damage: number }
+type ActionBreakdownEntry = { actionName: string; damage: number; count: number }
 
 /** Per-character: action name → total damage (direct + CA, no passives). */
 function computeActionBreakdowns(
@@ -246,6 +246,7 @@ function computeActionBreakdowns(
   const result = new Map<string, ActionBreakdownEntry[]>()
   for (const char of characters) {
     const byAction = new Map<string, number>()
+    const byActionSnapshots = new Map<string, Set<number>>()
     for (const e of damageEvents) {
       const attributedToChar = e.dealer === char.name || e.dealer.startsWith(char.name + ': ')
       if (!attributedToChar) continue
@@ -254,11 +255,13 @@ function computeActionBreakdowns(
       // skip events where NEGATIVE_STATUS is the sole dmgType.
       if (e.dmgTypes.every(t => t === 'NEGATIVE_STATUS') && e.dealer === char.name) continue
       byAction.set(e.actionName, (byAction.get(e.actionName) ?? 0) + e.average)
+      if (!byActionSnapshots.has(e.actionName)) byActionSnapshots.set(e.actionName, new Set())
+      byActionSnapshots.get(e.actionName)!.add(e.snapshotId)
     }
     result.set(
       char.name,
       Array.from(byAction.entries())
-        .map(([actionName, damage]) => ({ actionName, damage }))
+        .map(([actionName, damage]) => ({ actionName, damage, count: byActionSnapshots.get(actionName)?.size ?? 0 }))
         .sort((a, b) => b.damage - a.damage),
     )
   }
@@ -1274,11 +1277,19 @@ function CharTypeCard({ summary, grandTotal, originEntry, actionBreakdown, role,
           </button>
           {expanded && (
             <div className="summaryActionBreakdown">
+              <div className="summaryActionBreakdownHeader">
+                <span className="summaryActionCount summaryActionHeaderLabel">Casts</span>
+                <span className="summaryActionName summaryActionHeaderLabel">Action</span>
+                <div className="summaryActionBar summaryActionBarSpacer" />
+                <span className="summaryActionValue summaryActionHeaderLabel">Total DMG</span>
+                <span className="summaryActionPct summaryActionHeaderLabel">Share</span>
+              </div>
               {actionBreakdown.map(entry => {
                 const barPct = maxActionDmg > 0 ? (entry.damage / maxActionDmg) * 100 : 0
                 const teamPct = allCharDamage > 0 ? (entry.damage / allCharDamage) * 100 : 0
                 return (
                   <div key={entry.actionName} className="summaryActionRow">
+                    <span className="summaryActionCount">×{entry.count}</span>
                     <span className="summaryActionName">{entry.actionName}</span>
                     <div className="summaryActionBar">
                       <div

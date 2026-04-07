@@ -28,6 +28,7 @@ type ActionState = {
   isUnaffordable: boolean
   isOnCooldown: boolean
   cooldownRemaining: number
+  stacksInfo?: { current: number; max: number; rechargeTime: number }
   missingEnergy: Array<{ type: EnergyType; needed: number; current: number }>
   isWrongPosition: boolean
   isPreviousActionMismatch: boolean
@@ -103,6 +104,7 @@ export function ActionSelect({ value, actions, character, currentEnergies, previ
         isUnaffordable: false,
         isOnCooldown: false,
         cooldownRemaining: 0,
+        stacksInfo: undefined,
         missingEnergy: [],
         isWrongPosition: false,
         isPreviousActionMismatch: false,
@@ -137,10 +139,21 @@ export function ActionSelect({ value, actions, character, currentEnergies, previ
 
     // Check if action is on cooldown
     // Variants (actions with same groupName) share cooldowns
+    let stacksInfo: { current: number; max: number; rechargeTime: number } | undefined
     if (character && previousSnapshot && previousSnapshot.charactersCooldowns) {
       const characterCooldowns = previousSnapshot.charactersCooldowns[character.name] ?? {}
       const cooldownKey = getActionCooldownKey(action)
       cooldownRemaining = characterCooldowns[cooldownKey] ?? 0
+
+      // For stacked actions, castability depends on stack count, not the recharge timer
+      if (action.maxStacks && action.maxStacks > 1) {
+        const storedStacks = previousSnapshot.charactersActionStacks?.[character.name]?.[cooldownKey]
+        const currentStacks = storedStacks ?? action.maxStacks // absent = at max stacks
+        const rechargeTime = cooldownRemaining
+        stacksInfo = { current: currentStacks, max: action.maxStacks, rechargeTime }
+        // Action is blocked only when stacks are empty; the recharge timer does not block it
+        if (currentStacks > 0) cooldownRemaining = 0
+      }
     }
 
     const isOnCooldown = cooldownRemaining > 0
@@ -404,6 +417,7 @@ export function ActionSelect({ value, actions, character, currentEnergies, previ
       isUnaffordable,
       isOnCooldown,
       cooldownRemaining,
+      stacksInfo,
       missingEnergy,
       isWrongPosition,
       isPreviousActionMismatch,
@@ -588,8 +602,17 @@ export function ActionSelect({ value, actions, character, currentEnergies, previ
                               {hasMultipleVariants && <span style={{ marginLeft: '8px', opacity: 0.6 }}>{isExpanded ? '▼' : '▶'}</span>}
                             </div>
                             <div className="actionSelectCell actionCooldownCell">
-                              {/* Show cooldown if all variants have the same cooldown */}
-                              {group.variants.every(v => v.isOnCooldown && v.cooldownRemaining === group.variants[0].cooldownRemaining) && `${group.variants[0].cooldownRemaining.toFixed(2)}s`}
+                              {(() => {
+                                const rep = group.variants[0]
+                                if (rep.stacksInfo) {
+                                  const { current, max, rechargeTime } = rep.stacksInfo
+                                  return `${current}/${max}${rechargeTime > 0 ? ` | ${rechargeTime.toFixed(1)}s` : ''}`
+                                }
+                                if (group.variants.every(v => v.isOnCooldown && v.cooldownRemaining === rep.cooldownRemaining)) {
+                                  return `${rep.cooldownRemaining.toFixed(2)}s`
+                                }
+                                return null
+                              })()}
                             </div>
                             <div className="actionSelectCell actionEnergyCell">
                               {/* Show energy status for the group */}
@@ -640,7 +663,7 @@ export function ActionSelect({ value, actions, character, currentEnergies, previ
 
                     {/* Variant Rows */}
                     {group.variants.map(variant => {
-                      const { action, isCurrent, isUnaffordable, isOnCooldown, cooldownRemaining, missingEnergy, isWrongPosition, isPreviousActionMismatch, isRequiresSwapIn, isWrongForm, isCustomCanCastFailed, isOnSwapCooldown, swapCooldownRemaining, isNoSwapTarget, isNotRequiredFollowUp, isFollowUpNotReady, isMustChainUnsatisfiable, isComboWindowExpired, isComboTagMismatch } = variant
+const { action, isCurrent, isUnaffordable, isOnCooldown, cooldownRemaining, stacksInfo, missingEnergy, isWrongPosition, isPreviousActionMismatch, isRequiresSwapIn, isWrongForm, isCustomCanCastFailed, isOnSwapCooldown, swapCooldownRemaining, isNoSwapTarget, isNotRequiredFollowUp, isFollowUpNotReady, isMustChainUnsatisfiable, isComboWindowExpired, isComboTagMismatch } = variant
 
                       const isDisabled = (isUnaffordable || isOnCooldown || isWrongPosition || isPreviousActionMismatch || isRequiresSwapIn || isWrongForm || isCustomCanCastFailed || isOnSwapCooldown || isNoSwapTarget || isNotRequiredFollowUp || isFollowUpNotReady || isMustChainUnsatisfiable || isComboWindowExpired || isComboTagMismatch) && !isCurrent
                       const canSelect = !isDisabled
@@ -658,7 +681,8 @@ export function ActionSelect({ value, actions, character, currentEnergies, previ
                           <div className="actionSelectVariantCell">
                             <div className="variantName">{action.variantName || action.name}</div>
                             <div className="variantDetails">
-                              {isOnCooldown && <span className="variantCooldown">CD: {cooldownRemaining.toFixed(2)}s</span>}
+                              {stacksInfo && <span className="variantCooldown">{stacksInfo.current}/{stacksInfo.max}{stacksInfo.rechargeTime > 0 ? ` | ${stacksInfo.rechargeTime.toFixed(1)}s` : ''}</span>}
+                              {!stacksInfo && isOnCooldown && <span className="variantCooldown">CD: {cooldownRemaining.toFixed(2)}s</span>}
                               {isOnSwapCooldown && <span className="variantCooldown">Swap CD: {swapCooldownRemaining.toFixed(2)}s</span>}
                               {isComboWindowExpired && <span className="variantBlockedReason">Combo window expired</span>}
                               {isComboTagMismatch && <span className="variantBlockedReason">Wrong combo position</span>}

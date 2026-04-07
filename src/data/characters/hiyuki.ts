@@ -3,13 +3,28 @@ import { all_actions } from '../actions/hiyuki'
 import { form_present_self, form_foreclaimed_self } from '../forms/hiyuki'
 import { hiyuki_cost_1_echo_1, hiyuki_cost_1_echo_2, hiyuki_cost_3_echo_1, hiyuki_cost_3_echo_2, hiyuki_cost_4_echo_1, hiyuki_weapon } from '../gear/hiyuki'
 import { hiyuki_inherentStats, hiyuki_stats } from '../stats/hiyuki'
-import { hiyuki_glacio_chafe_proc } from '../sideEffects/sideEffects'
+import { hiyuki_glacio_chafe_proc, hiyuki_everfrost_dominion_glacio_bite } from '../sideEffects/sideEffects'
+
+const hiyuki_sequence: Character['sequence'] = 6 // TODO
 
 export const hiyuki: Character = {
   name: 'Hiyuki',
   element: 'GLACIO',
   weaponType: 'Sword',
-  maxEnergies: {energy: 0, concerto: 100, dedication: 300, foreclaiming: 1, frostharden_iai: 3, frostheart: 300, whiteout_bitterfrost: 3, snowforged_blade: 3, snow_rust: 3, s1_enhanced_ba: 1 }, // TODO
+  maxEnergies: {energy: 125, concerto: 100, dedication: 300, foreclaiming: 1, frostharden_iai: 3, frostheart: 300, whiteout_bitterfrost: 3, snowforged_blade: 3, snow_rust: 3, s1_enhanced_ba: 1, s2_frostheart_token: 2 }, // TODO
+  energyDescriptions: {
+    energy: 'Used to cast Foreclaimed: Liberation.',
+    concerto: 'Used to cast Outro Skill and trigger Intro Skills',
+    dedication: 'Spent on Enhanced Heavy Attack. Gained from Basic Attacks and Intro.',
+    foreclaiming: 'Required to cast Foreclaiming: Inward Vision (liberation). Gained from Enhanced Heavy Attack.',
+    frostharden_iai: 'Charges used to enhance the next Iai cast: grants 1 Whiteout Bitterfrost and inflicts Glacio Chafe.',
+    frostheart: 'Required to cast Iai. Gained from Foreclaimed: BA, MA and Resonance Skill.',
+    whiteout_bitterfrost: 'Required to cast Foreclaimed: Enhanced Heavy Attack. Gained from empowered Iai.',
+    snowforged_blade: 'Empowers Foreclaiming: Blade Liberation. Gained from Foreclaimed: Enhanced Heavy Attack.',
+    snow_rust: 'Passive amplification resource. Enables Fine Snow procs and buffs when at 1/2/3 stacks.',
+    s1_enhanced_ba: '[S1] Token used to enhance the next BA1 and BA2 after Liberation to inflict Glacio Chafe.',
+    s2_frostheart_token: '[S2] Token granting +50 Frostheart on the next cast of Frostblight: Jade Cleave or Frostblight: Petalfall.',
+  },
   actions: [...all_actions],
   damageModifiers: [
     {
@@ -41,7 +56,7 @@ export const hiyuki: Character = {
       showStats: true,
     },
     {
-      // At 2+ Snow Rust: Hiyuki gains +40% Crit DMG.
+      // S6: At 2+ Snow Rust: Hiyuki gains +40% Crit DMG.
       source: 'Hiyuki: Fine Snow',
       displayName: 'Fine Snow: Crit DMG (Self)',
       type: 'buff',
@@ -49,13 +64,33 @@ export const hiyuki: Character = {
       color: '#dbe9ff',
       characterStats: { critDamage: 0.40 },
       condition: (ctx) => {
+        if (hiyuki_sequence < 6) return 0
         const snowRust = ctx.current.charactersEnergies['Hiyuki']?.snow_rust ?? 0
         return snowRust >= 2 ? 1 : 0
       },
       targetStrategy: 'self',
       durationStrategy: { type: 'permanent' },
       stackingStrategy: { maxStacks: 1, resetTimerOnApplication: false, stacksRemovedEachTime: 1 },
-      description: "2 stacks of Snow Rust: Hiyuki's Crit. DMG is increased by 40%. While Hiyuki is on the field, each time she applies Glacio Chafe, she additionally deals an instance of Glacio Bite DMG equal to 102% of her ATK.",
+      description: "[S6] At 2+ Snow Rust: Hiyuki's Crit. DMG is increased by 40%.",
+      showStats: true,
+    },
+    {
+      // S6: At 2+ Snow Rust: Glacio Bite DMG for all nearby Resonators is increased by 25%.
+      source: 'Hiyuki: Fine Snow',
+      displayName: 'Fine Snow: Glacio Bite (Team)',
+      type: 'buff',
+      ownerCharacter: 'Hiyuki',
+      color: '#dbe9ff',
+      characterStats: { glacioChafeAmplifyDMG: 0.25 },
+      condition: (ctx) => {
+        if (hiyuki_sequence < 6) return 0
+        const snowRust = ctx.current.charactersEnergies['Hiyuki']?.snow_rust ?? 0
+        return snowRust >= 2 ? 1 : 0
+      },
+      targetStrategy: 'all',
+      durationStrategy: { type: 'permanent' },
+      stackingStrategy: { maxStacks: 1, resetTimerOnApplication: false, stacksRemovedEachTime: 1 },
+      description: '[S6] At 2+ Snow Rust: Glacio Bite DMG for all nearby Resonators is increased by 25%.',
       showStats: true,
     },
   ],
@@ -74,22 +109,71 @@ export const hiyuki: Character = {
   },
   defaultForm: 'Present Self',
   forms: [form_present_self, form_foreclaimed_self],
-  sequence: 6, // TODO
+  sequence: hiyuki_sequence,
+  // S3 hack: start at max Snow Rust instead of implementing periodic regen (1 stack every 2s).
+  startingEnergies: (seq) => seq >= 3 ? { snow_rust: 3 } : undefined,
   offFieldTriggers: [
     {
+      // We may want to have names and icons for this and a placeto see actionTriggers and offFieldTriggers in the UI
+      // S6 replaces this with a 3-point restore (see trigger below).
       minOffFieldDuration: 4,
-      condition: (snapshot, charName) => (snapshot.charactersEnergies[charName]?.snowforged_blade ?? 0) < 1,
+      condition: (snapshot, charName, char) => char.sequence < 6 && (snapshot.charactersEnergies[charName]?.snowforged_blade ?? 0) < 1,
       energyRestore: { snowforged_blade: 1 },
       description: 'When Hiyuki stays out of combat for more than 4s and has fewer than 1 point of Snowforged Blade, restore 1 point.',
+    },
+    {
+      // S6: "Inherent Skill Ephemeral Realm's effect is replaced: After staying out of combat
+      // for more than 4s, restore 3 points of Snowforged Blade."
+      minOffFieldDuration: 4,
+      condition: (_snapshot, _charName, char) => char.sequence >= 6,
+      energyRestore: { snowforged_blade: 3 },
+      description: '[S6] Off-field ≥4s: Restore 3 Snowforged Blade.',
+    },
+    {
+      // S2: After staying out of combat for more than 4s:
+      //   1. Restore 3 points of Frostharden Iai.
+      //   2. Reset the Cooldown of 2 charges of Frostblight: Jade Cleave.
+      //   3. Restore 2 s2_frostheart_token tokens (each grants +50 Frostheart on the next
+      //      Frostblight: Jade Cleave or Frostblight: Petalfall cast).
+      minOffFieldDuration: 4,
+      condition: (_snapshot, _charName, char) => char.sequence >= 2,
+      energyRestore: { frostharden_iai: 3, s2_frostheart_token: 2 },
+      chargesRestore: [{ groupName: 'Foreclaimed Resonance Skill', amount: 2 }],
+      description: '[S2] Off-field ≥4s: Restore 3 Frostharden Iai, reset Frostblight charges, restore 2 Frostheart tokens.',
     }
   ],
   actionTriggers: [
     {
-      // At 2+ Snow Rust, while Hiyuki is on-field: every GLACIO_CHAFE_APPLIER cast fires a
+      // We may want to have names and icons for this and a placeto see actionTriggers and offFieldTriggers in the UI
+      // At 2+ Snow Rust and sequence < 6, while Hiyuki is on-field: every GLACIO_CHAFE_APPLIER cast fires a
       // 102% ATK Glacio hit using the full damage pipeline (crit, modifiers, RES, etc.).
+      // At S6 this is superseded by teamActionTriggers (Everfrost Dominion), which covers all team members.
       requiredTags: ['GLACIO_CHAFE_APPLIER'],
-      condition: (ctx) => (ctx.prev.charactersEnergies['Hiyuki']?.snow_rust ?? 0) >= 2,
+      condition: (ctx) => ctx.character.sequence < 6 && (ctx.prev.charactersEnergies['Hiyuki']?.snow_rust ?? 0) >= 2,
       sideEffect: hiyuki_glacio_chafe_proc,
+      // Fire once per application event of Glacio Chafe, not once per action cast.
+      // Actions that aggregate multiple hit events set applicationCount on their
+      // statusModification; single-application actions default to 1.
+      fireCount: (ctx) =>
+        (ctx.action.statusModifications ?? [])
+          .filter(m => m.type === 'negativeStatus' && m.targetName === 'Glacio Chafe')
+          .reduce((sum, m) => sum + (m.applicationCount ?? 1), 0),
+    }
+  ],
+  teamActionTriggers: [
+    {
+      // S6 Everfrost Dominion: every time any Resonator on the team applies Glacio Chafe,
+      // Hiyuki deals a Glacio Chafe negative-status damage hit at the current max stacks.
+      // Fires regardless of whether Hiyuki or a teammate is the active character.
+      // ctx.character is substituted to Hiyuki by the resolver, so dealer = "Hiyuki: ...".
+      requiredTags: ['GLACIO_CHAFE_APPLIER'],
+      condition: (ctx) => ctx.character.sequence >= 6,
+      sideEffect: hiyuki_everfrost_dominion_glacio_bite,
+      // Fire once per application event (same pattern as actionTriggers above).
+      fireCount: (ctx) =>
+        (ctx.action.statusModifications ?? [])
+          .filter(m => m.type === 'negativeStatus' && m.targetName === 'Glacio Chafe')
+          .reduce((sum, m) => sum + (m.applicationCount ?? 1), 0),
     }
   ],
   sequence_nodes: [ // TODO

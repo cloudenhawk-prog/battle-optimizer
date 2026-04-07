@@ -1,5 +1,6 @@
 import { useState } from 'react'
 import type { Character } from '../../types/character'
+import type { EnergyType } from '../../types/baseTypes'
 import type { TableConfig, GlobalColumns } from '../../types/tableDefinitions'
 import type { Snapshot } from '../../types/snapshot'
 import type { Settings } from '../useSettings'
@@ -42,15 +43,20 @@ export function useSnapshots({ charactersInBattle, tableConfig, settings }: UseS
 
 export function createEmptySnapshot(charactersMap: Record<string, Character>, characterColumnsMap: Record<string, string[]>, globalColumns: GlobalColumns, tableConfig: TableConfig, startWithFullEnergy = false): Snapshot {
   const charactersEnergies = Object.fromEntries(
-    Object.keys(charactersMap).map(charName => [
-      charName,
-      Object.fromEntries(
-        characterColumnsMap[charName].map(key => [
-          key,
-          startWithFullEnergy && key === 'energy' ? (charactersMap[charName].maxEnergies.energy ?? 0) : 0,
-        ])
-      ),
-    ])
+    Object.keys(charactersMap).map(charName => {
+      const char = charactersMap[charName]
+      return [
+        charName,
+        Object.fromEntries(
+          characterColumnsMap[charName].map(key => {
+            if (startWithFullEnergy && key === 'energy') return [key, char.maxEnergies.energy ?? 0]
+            const starting = char.startingEnergies?.(char.sequence)?.[key as EnergyType]
+            if (starting !== undefined) return [key, Math.min(starting, char.maxEnergies[key as EnergyType] ?? starting)]
+            return [key, 0]
+          })
+        ),
+      ]
+    })
   )
 
   const basicValues = Object.fromEntries(globalColumns.basic.map(col => [col, 0]))
@@ -93,6 +99,8 @@ export function createEmptySnapshot(charactersMap: Record<string, Character>, ch
     coordinatedAttacksTimeLeft: {},
     coordinatedAttacksSwapRequired: {},
     charactersCooldowns: {},
+    charactersActionStacks: {},
+    charactersActionStacksConfig: {},
     charactersPositions: {},
     charactersPersistentUntil: {},
     charactersLastAction: {},

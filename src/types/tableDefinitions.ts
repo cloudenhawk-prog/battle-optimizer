@@ -40,6 +40,7 @@ export type ColumnDef = {
   key: string
   label: string
   icon: string
+  description?: string
   render: (snapshot: Snapshot) => React.ReactNode
   statusMetadata?: StatusMetadata[] // For grouped status columns (buffs, debuffs, negativeStatuses)
   energyMetadata?: EnergyMetadata[] // For grouped energy columns (mandatory energies in one column)

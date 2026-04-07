@@ -280,7 +280,16 @@ function getActionFailureReason(action: Action, prevSnapshot: Snapshot | undefin
   const cooldownKey = getActionCooldownKey(action)
   const cooldownRemaining = prevSnapshot?.charactersCooldowns?.[charName]?.[cooldownKey] ?? 0
   if (cooldownRemaining > 0) {
-    return `"${action.displayName}" is on cooldown (${cooldownRemaining.toFixed(1)}s remaining)`
+    // For stacked actions, being on the recharge timer doesn't block casting — only empty stacks do
+    if (action.maxStacks && action.maxStacks > 1) {
+      const storedStacks = prevSnapshot?.charactersActionStacks?.[charName]?.[cooldownKey]
+      const currentStacks = storedStacks ?? action.maxStacks
+      if (currentStacks === 0) {
+        return `"${action.displayName}" has no charges left (${cooldownRemaining.toFixed(1)}s until next charge)`
+      }
+    } else {
+      return `"${action.displayName}" is on cooldown (${cooldownRemaining.toFixed(1)}s remaining)`
+    }
   }
 
   if (!ignoreCastConditions) {

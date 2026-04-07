@@ -62,6 +62,11 @@
   --sum-action-name-fs:      13px;
   --sum-action-value-fs:     13px;
   --sum-action-pct-fs:       13px;
+  /* Column widths — adjust these to resize individual columns    */
+  --sum-action-count-w:      36px;  /* Casts                                                  */
+  --sum-action-bar-w:       130px;  /* Progress bar  (was 72px)                               */
+  --sum-action-value-w:      83px;  /* Total DMG     (was 52px)                               */
+  --sum-action-pct-w:        51px;  /* Share         (was 34px)                               */
 
   /* ── DPS Efficiency rows (left panel) ───────────────────────── */
   --sum-eff-dot-size:         8px;
@@ -1537,10 +1542,27 @@
   border-top: 1px solid rgba(255, 255, 255, 0.04);
 }
 
+.summaryActionBreakdownHeader {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 6px 0 4px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+  margin-bottom: 2px;
+}
+
+.summaryActionHeaderLabel {
+  font-family: 'Share Tech Mono', monospace;
+  font-size: 10px !important;
+  color: rgba(255, 255, 255, 0.25) !important;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+}
+
 .summaryActionRow {
   display: flex;
   align-items: center;
-  gap: 8px;
+  gap: 12px;
   padding: 4px 0;
   border-bottom: 1px solid rgba(255, 255, 255, 0.025);
 }
@@ -1561,7 +1583,7 @@
 }
 
 .summaryActionBar {
-  width: 72px;
+  width: var(--sum-action-bar-w);
   flex-shrink: 0;
   height: 5px;
   background: rgba(255, 255, 255, 0.06);
@@ -1580,7 +1602,7 @@
   font-family: 'Share Tech Mono', monospace;
   font-size: var(--sum-action-value-fs);
   color: rgba(255, 255, 255, 0.55);
-  width: 52px;
+  width: var(--sum-action-value-w);
   text-align: right;
   flex-shrink: 0;
 }
@@ -1589,9 +1611,23 @@
   font-family: 'Share Tech Mono', monospace;
   font-size: var(--sum-action-pct-fs);
   color: rgba(255, 255, 255, 0.3);
-  width: 34px;
+  width: var(--sum-action-pct-w);
   text-align: right;
   flex-shrink: 0;
+}
+
+.summaryActionCount {
+  font-family: 'Share Tech Mono', monospace;
+  font-size: var(--sum-action-pct-fs);
+  color: rgba(255, 255, 255, 0.3);
+  width: var(--sum-action-count-w);
+  text-align: right;
+  flex-shrink: 0;
+}
+
+.summaryActionBarSpacer {
+  background: transparent !important;
+  box-shadow: none !important;
 }
 
 /* ═══════════════════════════════════════════════════════════

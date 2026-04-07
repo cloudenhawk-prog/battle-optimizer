@@ -251,7 +251,7 @@ export function CharacterStateTracker({
                     return (
                       <div key={col.key} className="stateTrackerBarRow">
                         <img src={col.icon} alt={col.label} className="stateTrackerEnergyIcon" onClick={() => toggleColumn(col.key)} />
-                        <span className="stateTrackerEnergyLabel">{col.label}</span>
+                        <span className={`stateTrackerEnergyLabel${col.description ? ' stateTrackerEnergyLabel--described' : ''}`} title={col.description}>{col.label}</span>
                         <div className="stateTrackerBarWrapper">
                           <div className="stateTrackerForteSegments">
                             {slots.map(slot => (
@@ -278,7 +278,7 @@ export function CharacterStateTracker({
                   return (
                     <div key={col.key} className="stateTrackerBarRow">
                       <img src={col.icon} alt={col.label} className="stateTrackerEnergyIcon" onClick={() => toggleColumn(col.key)} />
-                      <span className="stateTrackerEnergyLabel">{col.label}</span>
+                      <span className={`stateTrackerEnergyLabel${col.description ? ' stateTrackerEnergyLabel--described' : ''}`} title={col.description}>{col.label}</span>
                       <div className="stateTrackerBarWrapper">
                         <div className="stateTrackerBar" style={{ width: `${percentage}%` }} data-energy-type={energyType.toLowerCase()} />
                         <span className="stateTrackerBarText">
