@@ -1,4 +1,3 @@
-import type { EchoSetBonus } from '../../types/gear'
 import { weaponCatalog, buildWeapon } from './weaponCatalog'
 import { buildEcho } from './echoCatalog'
 
@@ -16,15 +15,6 @@ const mornye_cost_1_echo_1 = buildEcho(SET, 'Geospider S4',      'bonusDEF',    
 const mornye_cost_1_echo_2 = buildEcho(SET, 'Mining Drone',      'bonusDEF',       0.18,  SUBS)
 
 // ========== Set Bonus ========================================================================================================
-// const mornye_set_bonus: EchoSetBonus = {
-//   name: 'Halo of Starry Radiance',
-//   stats: { healingBonus: 0.10 },
-//   info: {
-//     '2-piece': 'Healing Bonus + 10%.',
-//     '5-piece': 'When healing a Resonator in the team, every 1% of Off-Tune Buildup Rate grants a 0.2% ATK increase to all Resonators in the team for 4s, up to 25%. Effects of the same name cannot be stacked.'
-//   },
-//   icon: 'assets/gear/set-bonuses/halo_of_starry_radiance.png'
-// }
 
 export {
   // Weapon
@@ -36,7 +26,4 @@ export {
   mornye_cost_3_echo_2,
   mornye_cost_1_echo_1,
   mornye_cost_1_echo_2,
-
-  // Set Bonus
-  // mornye_set_bonus
 }

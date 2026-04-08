@@ -56,9 +56,27 @@ export const hiyuki: Character = {
       showStats: true,
     },
     {
-      // S6: At 2+ Snow Rust: Hiyuki gains +40% Crit DMG.
+      // At 2+ Snow Rust: Hiyuki gains +40% Crit DMG (all sequences).
       source: 'Hiyuki: Fine Snow',
       displayName: 'Fine Snow: Crit DMG (Self)',
+      type: 'buff',
+      ownerCharacter: 'Hiyuki',
+      color: '#dbe9ff',
+      characterStats: { critDamage: 0.40 },
+      condition: (ctx) => {
+        const snowRust = ctx.current.charactersEnergies['Hiyuki']?.snow_rust ?? 0
+        return snowRust >= 2 ? 1 : 0
+      },
+      targetStrategy: 'self',
+      durationStrategy: { type: 'permanent' },
+      stackingStrategy: { maxStacks: 1, resetTimerOnApplication: false, stacksRemovedEachTime: 1 },
+      description: "At 2+ Snow Rust: Hiyuki's Crit. DMG is increased by 40%.",
+      showStats: true,
+    },
+    {
+      // S6: Additional +40% Crit DMG at 2+ Snow Rust (stacks with the base modifier above for 80% total).
+      source: 'Hiyuki: Fine Snow',
+      displayName: 'Fine Snow: Crit DMG S6 (Self)',
       type: 'buff',
       ownerCharacter: 'Hiyuki',
       color: '#dbe9ff',
@@ -71,7 +89,7 @@ export const hiyuki: Character = {
       targetStrategy: 'self',
       durationStrategy: { type: 'permanent' },
       stackingStrategy: { maxStacks: 1, resetTimerOnApplication: false, stacksRemovedEachTime: 1 },
-      description: "[S6] At 2+ Snow Rust: Hiyuki's Crit. DMG is increased by 40%.",
+      description: "[S6] At 2+ Snow Rust: Hiyuki's Crit. DMG is additionally increased by 40% (80% total with base).",
       showStats: true,
     },
     {
@@ -111,37 +129,13 @@ export const hiyuki: Character = {
   forms: [form_present_self, form_foreclaimed_self],
   sequence: hiyuki_sequence,
   // S3 hack: start at max Snow Rust instead of implementing periodic regen (1 stack every 2s).
-  startingEnergies: (seq) => seq >= 3 ? { snow_rust: 3 } : undefined,
-  offFieldTriggers: [
-    {
-      // We may want to have names and icons for this and a placeto see actionTriggers and offFieldTriggers in the UI
-      // S6 replaces this with a 3-point restore (see trigger below).
-      minOffFieldDuration: 4,
-      condition: (snapshot, charName, char) => char.sequence < 6 && (snapshot.charactersEnergies[charName]?.snowforged_blade ?? 0) < 1,
-      energyRestore: { snowforged_blade: 1 },
-      description: 'When Hiyuki stays out of combat for more than 4s and has fewer than 1 point of Snowforged Blade, restore 1 point.',
-    },
-    {
-      // S6: "Inherent Skill Ephemeral Realm's effect is replaced: After staying out of combat
-      // for more than 4s, restore 3 points of Snowforged Blade."
-      minOffFieldDuration: 4,
-      condition: (_snapshot, _charName, char) => char.sequence >= 6,
-      energyRestore: { snowforged_blade: 3 },
-      description: '[S6] Off-field ≥4s: Restore 3 Snowforged Blade.',
-    },
-    {
-      // S2: After staying out of combat for more than 4s:
-      //   1. Restore 3 points of Frostharden Iai.
-      //   2. Reset the Cooldown of 2 charges of Frostblight: Jade Cleave.
-      //   3. Restore 2 s2_frostheart_token tokens (each grants +50 Frostheart on the next
-      //      Frostblight: Jade Cleave or Frostblight: Petalfall cast).
-      minOffFieldDuration: 4,
-      condition: (_snapshot, _charName, char) => char.sequence >= 2,
-      energyRestore: { frostharden_iai: 3, s2_frostheart_token: 2 },
-      chargesRestore: [{ groupName: 'Foreclaimed Resonance Skill', amount: 2 }],
-      description: '[S2] Off-field ≥4s: Restore 3 Frostharden Iai, reset Frostblight charges, restore 2 Frostheart tokens.',
-    }
-  ],
+  // Snowforged Blade: start with 1 point (S0-S5) or 3 points (S6) instead of using off-field triggers.
+  // S2: start with 3 Frostharden Iai and 2 Frostheart tokens (one-time at battle start).
+  startingEnergies: (seq) => ({
+    ...(seq >= 3 ? { snow_rust: 3 } : {}),
+    snowforged_blade: seq >= 6 ? 3 : 1,
+    ...(seq >= 2 ? { frostharden_iai: 3, s2_frostheart_token: 2 } : {}),
+  }),
   actionTriggers: [
     {
       // We may want to have names and icons for this and a placeto see actionTriggers and offFieldTriggers in the UI

@@ -141,13 +141,13 @@ const foreclaimed_MAP_offtune = (4 * 0.07 + 0.42)
 const hiyuki_s4_skill_buff = {
   source: 'Hiyuki: S4',
   displayName: 'Ephemeral Realm',
-  type: 'buff' as const,
+  type: 'buff',
   ownerCharacter: 'Hiyuki',
   color: '#dbe9ff',
   characterStats: { bonusDMG: 0.20 },
   condition: always(),
-  targetStrategy: 'all' as const,
-  durationStrategy: { type: 'limited' as const, timeDuration: 30 },
+  targetStrategy: 'all',
+  durationStrategy: { type: 'limited', timeDuration: 30 },
   stackingStrategy: { maxStacks: 1, resetTimerOnApplication: true, stacksRemovedEachTime: 1 },
   description: '[S4] Casting Resonance Skill: Present Self, Frostblight: Jade Cleave, or Frostblight: Petalfall increases the damage dealt by all nearby Resonators in the team by 20% for 30s.',
 }

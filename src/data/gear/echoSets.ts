@@ -94,6 +94,130 @@ export const echoSetRegistry: Readonly<Record<string, EchoSet>> = {
       },
     },
   },
+
+  'Wishes of Quiet Snowfall': {
+    name: 'Wishes of Quiet Snowfall',
+    icon: 'assets/gear/set-bonuses/wishes_of_quiet_snowfall.png',
+    info: {
+      '2': 'Glacio DMG + 10%',
+      '5': 'Inflicting Glacio Chafe on enemies increases Glacio DMG dealt by 10% for 15s. The Resonator gains the Snowfall effect, which can be triggered once every 25s. While Snowfall is active: Dealing Resonance Liberation DMG removes Snowfall and increases the Resonator\'s Crit. Rate by 25% for 30s. Casting Outro Skill removes Snowfall and grants 25% Glacio DMG Bonus to the incoming Resonator for 30s. When Snowfall is removed, only one of the effects above can be triggered.',
+    },
+    milestones: {
+      2: { stats: { glacioBonusDMG: 0.10 } },
+      5: {
+        injectedModifiers: [
+          // (1) Applying Glacio Chafe → 10% Glacio DMG Bonus for self (15s, refreshes on re-apply)
+          {
+            targets: [{ tag: 'GLACIO_CHAFE_APPLIER' }],
+            modifiers: [
+              {
+                source: 'Wishes of Quiet Snowfall: Glacio DMG Buff',
+                displayName: 'Wishes of Quiet Snowfall: Glacio Buff',
+                type: 'buff',
+                description: 'Inflicting Glacio Chafe on enemies increases Glacio DMG dealt by 10% for 15s.',
+                ownerCharacter: null,
+                characterStats: { glacioBonusDMG: 0.10 },
+                condition: always(),
+                targetStrategy: 'self',
+                durationStrategy: { type: 'limited', timeDuration: 15 },
+                stackingStrategy: { maxStacks: 1, resetTimerOnApplication: true, stacksRemovedEachTime: 1 },
+              },
+            ],
+          },
+
+          // (2) Applying Glacio Chafe → Snowfall (25s tracker, no stats, can't be refreshed — "once every 25s" cooldown)
+          {
+            targets: [{ tag: 'GLACIO_CHAFE_APPLIER' }],
+            modifiers: [
+              {
+                source: 'Wishes of Quiet Snowfall: Snowfall',
+                displayName: 'Wishes of Quiet Snowfall: Snowfall',
+                type: 'buff',
+                ownerCharacter: null,
+                characterStats: {},
+                condition: always(),
+                targetStrategy: 'self',
+                durationStrategy: { type: 'limited', timeDuration: 25 },
+                stackingStrategy: { maxStacks: 1, resetTimerOnApplication: false, stacksRemovedEachTime: 1 },
+              },
+            ],
+          },
+
+          // (3) Dealing Liberation DMG (if Snowfall is active) → consumes Snowfall, grants 25% Crit Rate for self (30s)
+          {
+            targets: [{ tag: 'LIBERATION' }],
+            modifiers: [
+              {
+                source: 'Wishes of Quiet Snowfall: Crit Rate',
+                displayName: 'Wishes of Quiet Snowfall: Crit Rate',
+                type: 'buff',
+                ownerCharacter: null,
+                characterStats: { critRate: 0.25 },
+                condition: always(),
+                targetStrategy: 'self',
+                durationStrategy: { type: 'limited', timeDuration: 30 },
+                stackingStrategy: { maxStacks: 1, resetTimerOnApplication: true, stacksRemovedEachTime: 1 },
+                activationCondition: (ctx) => ctx.modifiersInAction.some(
+                  mia => mia.modifier.source === 'Wishes of Quiet Snowfall: Snowfall'
+                    && mia.currentStacks > 0
+                    && mia.modifier.ownerCharacter === ctx.character.name
+                ),
+                removesModifierSourceOnActivation: 'Wishes of Quiet Snowfall: Snowfall',
+              },
+            ],
+          },
+
+          // (4) Casting Outro Skill (if Snowfall is active) → consumes Snowfall, grants 25% Glacio DMG Bonus
+          //     to the incoming Resonator (30s, nextSwap). Also removes the Crit Rate buff if active
+          //     from a prior Liberation cycle, since only one Snowfall effect can be active at a time.
+          {
+            targets: [{ tag: 'OUTRO_ACTION' }],
+            modifiers: [
+              // (4a) Apply 25% Glacio DMG Bonus to the incoming resonator; consume Snowfall
+              {
+                source: 'Wishes of Quiet Snowfall: Incoming Glacio',
+                displayName: 'Wishes of Quiet Snowfall: Incoming Glacio Buff',
+                type: 'buff',
+                ownerCharacter: null,
+                characterStats: { glacioBonusDMG: 0.25 },
+                condition: always(),
+                targetStrategy: 'nextSwap',
+                durationStrategy: { type: 'limited', timeDuration: 30 },
+                stackingStrategy: { maxStacks: 1, resetTimerOnApplication: true, stacksRemovedEachTime: 1 },
+                activationCondition: (ctx) => ctx.modifiersInAction.some(
+                  mia => mia.modifier.source === 'Wishes of Quiet Snowfall: Snowfall'
+                    && mia.currentStacks > 0
+                    && mia.modifier.ownerCharacter === ctx.character.name
+                ),
+                removesModifierSourceOnActivation: 'Wishes of Quiet Snowfall: Snowfall',
+              },
+              // (4b) Simultaneously remove the Crit Rate buff (if active from a previous Liberation cycle).
+              //      activationCondition mirrors (4a) — both check Snowfall before triggering.
+              //      timeDuration: 0 means this modifier is ephemeral — it exists solely for its
+              //      removesModifierSourceOnActivation side-effect and expires after the action.
+              {
+                source: 'Wishes of Quiet Snowfall: Crit Rate Cleanup',
+                displayName: 'Wishes of Quiet Snowfall: Crit Rate Cleanup',
+                type: 'buff',
+                ownerCharacter: null,
+                characterStats: {},
+                condition: always(),
+                targetStrategy: 'self',
+                durationStrategy: { type: 'limited', timeDuration: 0 },
+                stackingStrategy: { maxStacks: 1, resetTimerOnApplication: true, stacksRemovedEachTime: 1 },
+                activationCondition: (ctx) => ctx.modifiersInAction.some(
+                  mia => mia.modifier.source === 'Wishes of Quiet Snowfall: Snowfall'
+                    && mia.currentStacks > 0
+                    && mia.modifier.ownerCharacter === ctx.character.name
+                ),
+                removesModifierSourceOnActivation: 'Wishes of Quiet Snowfall: Crit Rate',
+              },
+            ],
+          },
+        ],
+      },
+    },
+  },
 }
 
 // ========== Helper: count echoes per set =====================================================================================

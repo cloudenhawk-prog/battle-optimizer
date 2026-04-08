@@ -139,7 +139,7 @@ export const weaponCatalog: WeaponCatalogEntry[] = [
     weaponType: 'Sword',
     stats: { baseATK: 587, critRate: 0.243 },
     icon: 'assets/gear/weapons/frostburn.png',
-    info: "Increase ATK by 12%. When applying Glacio Chafe, Glacio DMG is Amplified by 28% and Liberation DMG ignore 8% DEF for 6 seconds",
+    info: "Increase ATK by 12/15/18/21/24%. When applying Glacio Chafe, Glacio DMG is Amplified by 28/35/42/49/56% and Liberation DMG ignore 10/12.5/15/17.5/20% DEF for 20 seconds. When the wielder is the active resonator in the team, Glacio Chafe DMG dealt by all resoantors is amplified by 20% for 6s.",
     ranks: {
       1: {
         injectedModifiers: [
@@ -150,6 +150,7 @@ export const weaponCatalog: WeaponCatalogEntry[] = [
                 source: 'Frostburn',
                 displayName: 'Frostburn: Passive ATK',
                 type: 'buff',
+                description: 'Increases ATK by 12%.',
                 ownerCharacter: null,
                 condition: always(),
                 characterStats: { bonusATK: 0.12 },
@@ -164,27 +165,27 @@ export const weaponCatalog: WeaponCatalogEntry[] = [
             modifiers: [
               {
                 source: 'Frostburn',
-                displayName: 'Frostburn: Buff',
+                displayName: 'Frostburn: Glacio Buff',
+                description: 'When applying Glacio Chafe, Glacio DMG is Amplified by 28% for 20 seconds.',
                 type: 'buff',
                 ownerCharacter: null,
                 condition: always(),
                 characterStats: { glacioAmplifyDMG: 0.28 },
                 targetStrategy: 'self',
-                durationStrategy: { type: 'limited', timeDuration: 6 },
-                stackingStrategy: { maxStacks: 1, resetTimerOnApplication: true, stacksRemovedEachTime: 1 },
-                contributionGroup: 'Frostburn: Buff'
+                durationStrategy: { type: 'limited', timeDuration: 20 },
+                stackingStrategy: { maxStacks: 1, resetTimerOnApplication: true, stacksRemovedEachTime: 1 }
               },
               {
                 source: 'Frostburn',
-                displayName: 'Frostburn: Buff',
+                displayName: 'Frostburn: Liberation Buff',
                 type: 'buff',
+                description: 'When applying Glacio Chafe, Liberation DMG ignore 10% DEF for 20 seconds.',
                 ownerCharacter: null,
                 condition: (ctx) => ctx.action.dmgTypes.includes('LIBERATION') ? 1 : 0,
-                characterStats: { defIgnore: 0.08 },
+                characterStats: { defIgnore: 0.10 },
                 targetStrategy: 'self',
-                durationStrategy: { type: 'limited', timeDuration: 6 },
-                stackingStrategy: { maxStacks: 1, resetTimerOnApplication: true, stacksRemovedEachTime: 1 },
-                contributionGroup: 'Frostburn: Buff'
+                durationStrategy: { type: 'limited', timeDuration: 20 },
+                stackingStrategy: { maxStacks: 1, resetTimerOnApplication: true, stacksRemovedEachTime: 1 }
               },
             ],
           }
@@ -199,6 +200,7 @@ export const weaponCatalog: WeaponCatalogEntry[] = [
                 source: 'Frostburn',
                 displayName: 'Frostburn: Passive ATK',
                 type: 'buff',
+                description: 'Increases ATK by 15%.',
                 ownerCharacter: null,
                 condition: always(),
                 characterStats: { bonusATK: 0.15 },
@@ -213,27 +215,27 @@ export const weaponCatalog: WeaponCatalogEntry[] = [
             modifiers: [
               {
                 source: 'Frostburn',
-                displayName: 'Frostburn: Buff',
+                displayName: 'Frostburn: Glacio Buff',
                 type: 'buff',
+                description: 'When applying Glacio Chafe, Glacio DMG is Amplified by 35% for 20 seconds.',
                 ownerCharacter: null,
                 condition: always(),
                 characterStats: { glacioAmplifyDMG: 0.35 },
                 targetStrategy: 'self',
-                durationStrategy: { type: 'limited', timeDuration: 6 },
-                stackingStrategy: { maxStacks: 1, resetTimerOnApplication: true, stacksRemovedEachTime: 1 },
-                contributionGroup: 'Frostburn: Buff'
+                durationStrategy: { type: 'limited', timeDuration: 20 },
+                stackingStrategy: { maxStacks: 1, resetTimerOnApplication: true, stacksRemovedEachTime: 1 }
               },
               {
                 source: 'Frostburn',
-                displayName: 'Frostburn: Buff',
+                displayName: 'Frostburn: Liberation Buff',
                 type: 'buff',
+                description: 'When applying Glacio Chafe, Liberation DMG ignore 12.5% DEF for 20 seconds.',
                 ownerCharacter: null,
                 condition: (ctx) => ctx.action.dmgTypes.includes('LIBERATION') ? 1 : 0,
-                characterStats: { defIgnore: 0.10 },
+                characterStats: { defIgnore: 0.125 },
                 targetStrategy: 'self',
-                durationStrategy: { type: 'limited', timeDuration: 6 },
-                stackingStrategy: { maxStacks: 1, resetTimerOnApplication: true, stacksRemovedEachTime: 1 },
-                contributionGroup: 'Frostburn: Buff'
+                durationStrategy: { type: 'limited', timeDuration: 20 },
+                stackingStrategy: { maxStacks: 1, resetTimerOnApplication: true, stacksRemovedEachTime: 1 }
               },
             ],
           }
@@ -248,6 +250,7 @@ export const weaponCatalog: WeaponCatalogEntry[] = [
                 source: 'Frostburn',
                 displayName: 'Frostburn: Passive ATK',
                 type: 'buff',
+                description: 'Increases ATK by 18%.',
                 ownerCharacter: null,
                 condition: always(),
                 characterStats: { bonusATK: 0.18 },
@@ -262,27 +265,27 @@ export const weaponCatalog: WeaponCatalogEntry[] = [
             modifiers: [
               {
                 source: 'Frostburn',
-                displayName: 'Frostburn: Buff',
+                displayName: 'Frostburn: Glacio Buff',
                 type: 'buff',
+                description: 'When applying Glacio Chafe, Glacio DMG is Amplified by 42% for 20 seconds.',
                 ownerCharacter: null,
                 condition: always(),
                 characterStats: { glacioAmplifyDMG: 0.42 },
                 targetStrategy: 'self',
-                durationStrategy: { type: 'limited', timeDuration: 6 },
-                stackingStrategy: { maxStacks: 1, resetTimerOnApplication: true, stacksRemovedEachTime: 1 },
-                contributionGroup: 'Frostburn: Buff'
+                durationStrategy: { type: 'limited', timeDuration: 20 },
+                stackingStrategy: { maxStacks: 1, resetTimerOnApplication: true, stacksRemovedEachTime: 1 }
               },
               {
                 source: 'Frostburn',
-                displayName: 'Frostburn: Buff',
+                displayName: 'Frostburn: Liberation Buff',
                 type: 'buff',
+                description: 'When applying Glacio Chafe, Liberation DMG ignore 15% DEF for 20 seconds.',
                 ownerCharacter: null,
                 condition: (ctx) => ctx.action.dmgTypes.includes('LIBERATION') ? 1 : 0,
-                characterStats: { defIgnore: 0.12 },
+                characterStats: { defIgnore: 0.15 },
                 targetStrategy: 'self',
-                durationStrategy: { type: 'limited', timeDuration: 6 },
-                stackingStrategy: { maxStacks: 1, resetTimerOnApplication: true, stacksRemovedEachTime: 1 },
-                contributionGroup: 'Frostburn: Buff'
+                durationStrategy: { type: 'limited', timeDuration: 20 },
+                stackingStrategy: { maxStacks: 1, resetTimerOnApplication: true, stacksRemovedEachTime: 1 }
               },
             ],
           }
@@ -297,6 +300,7 @@ export const weaponCatalog: WeaponCatalogEntry[] = [
                 source: 'Frostburn',
                 displayName: 'Frostburn: Passive ATK',
                 type: 'buff',
+                description: 'Increases ATK by 21%.',
                 ownerCharacter: null,
                 condition: always(),
                 characterStats: { bonusATK: 0.21 },
@@ -311,27 +315,27 @@ export const weaponCatalog: WeaponCatalogEntry[] = [
             modifiers: [
               {
                 source: 'Frostburn',
-                displayName: 'Frostburn: Buff',
+                displayName: 'Frostburn: Glacio Buff',
                 type: 'buff',
+                description: 'When applying Glacio Chafe, Glacio DMG is Amplified by 49% for 20 seconds.',
                 ownerCharacter: null,
                 condition: always(),
                 characterStats: { glacioAmplifyDMG: 0.49 },
                 targetStrategy: 'self',
-                durationStrategy: { type: 'limited', timeDuration: 6 },
-                stackingStrategy: { maxStacks: 1, resetTimerOnApplication: true, stacksRemovedEachTime: 1 },
-                contributionGroup: 'Frostburn: Buff'
+                durationStrategy: { type: 'limited', timeDuration: 20 },
+                stackingStrategy: { maxStacks: 1, resetTimerOnApplication: true, stacksRemovedEachTime: 1 }
               },
               {
                 source: 'Frostburn',
-                displayName: 'Frostburn: Buff',
+                displayName: 'Frostburn: Liberation Buff',
                 type: 'buff',
+                description: 'When applying Glacio Chafe, Liberation DMG ignore 17.5% DEF for 20 seconds.',
                 ownerCharacter: null,
                 condition: (ctx) => ctx.action.dmgTypes.includes('LIBERATION') ? 1 : 0,
-                characterStats: { defIgnore: 0.14 },
+                characterStats: { defIgnore: 0.175 },
                 targetStrategy: 'self',
-                durationStrategy: { type: 'limited', timeDuration: 6 },
-                stackingStrategy: { maxStacks: 1, resetTimerOnApplication: true, stacksRemovedEachTime: 1 },
-                contributionGroup: 'Frostburn: Buff'
+                durationStrategy: { type: 'limited', timeDuration: 20 },
+                stackingStrategy: { maxStacks: 1, resetTimerOnApplication: true, stacksRemovedEachTime: 1 }
               },
             ],
           }
@@ -346,6 +350,7 @@ export const weaponCatalog: WeaponCatalogEntry[] = [
                 source: 'Frostburn',
                 displayName: 'Frostburn: Passive ATK',
                 type: 'buff',
+                description: 'Increases ATK by 24%.',
                 ownerCharacter: null,
                 condition: always(),
                 characterStats: { bonusATK: 0.24 },
@@ -360,27 +365,27 @@ export const weaponCatalog: WeaponCatalogEntry[] = [
             modifiers: [
               {
                 source: 'Frostburn',
-                displayName: 'Frostburn: Buff',
+                displayName: 'Frostburn: Glacio Buff',
                 type: 'buff',
+                description: 'When applying Glacio Chafe, Glacio DMG is Amplified by 56% for 20 seconds.',
                 ownerCharacter: null,
                 condition: always(),
                 characterStats: { glacioAmplifyDMG: 0.56 },
                 targetStrategy: 'self',
-                durationStrategy: { type: 'limited', timeDuration: 6 },
-                stackingStrategy: { maxStacks: 1, resetTimerOnApplication: true, stacksRemovedEachTime: 1 },
-                contributionGroup: 'Frostburn: Buff'
+                durationStrategy: { type: 'limited', timeDuration: 20 },
+                stackingStrategy: { maxStacks: 1, resetTimerOnApplication: true, stacksRemovedEachTime: 1 }
               },
               {
                 source: 'Frostburn',
-                displayName: 'Frostburn: Buff',
+                displayName: 'Frostburn: Liberation Buff',
                 type: 'buff',
+                description: 'When applying Glacio Chafe, Liberation DMG ignore 20% DEF for 20 seconds.',
                 ownerCharacter: null,
                 condition: (ctx) => ctx.action.dmgTypes.includes('LIBERATION') ? 1 : 0,
-                characterStats: { defIgnore: 0.16 },
+                characterStats: { defIgnore: 0.20 },
                 targetStrategy: 'self',
-                durationStrategy: { type: 'limited', timeDuration: 6 },
-                stackingStrategy: { maxStacks: 1, resetTimerOnApplication: true, stacksRemovedEachTime: 1 },
-                contributionGroup: 'Frostburn: Buff'
+                durationStrategy: { type: 'limited', timeDuration: 20 },
+                stackingStrategy: { maxStacks: 1, resetTimerOnApplication: true, stacksRemovedEachTime: 1 }
               },
             ],
           }
