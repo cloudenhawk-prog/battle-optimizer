@@ -687,12 +687,12 @@ const hiyuki_foreclaimed_skill_2: Action = {
   },
 }
 
-// Iai can be cast after Iai (as long as frostheart >= 100)
+// Fastest cast is dodge animation cancel
 const hiyuki_foreclaimed_iai: Action = {
   name: 'Foreclaimed: Iai',
   displayName: 'Iai',
   category: 'Skills',
-  castTime: 1.00, // TODO
+  castTime: 0.625,
   multiplier: (243.35 + 4 * 40.56) / 100,
   scaling: 'ATK',
   elements: ['GLACIO'],

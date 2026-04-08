@@ -139,15 +139,28 @@ export const hiyuki: Character = {
   actionTriggers: [
     {
       // We may want to have names and icons for this and a placeto see actionTriggers and offFieldTriggers in the UI
-      // At 2+ Snow Rust and sequence < 6, while Hiyuki is on-field: every GLACIO_CHAFE_APPLIER cast fires a
+      // At 2+ Snow Rust, while Hiyuki is on-field: every GLACIO_CHAFE_APPLIER cast fires a
       // 102% ATK Glacio hit using the full damage pipeline (crit, modifiers, RES, etc.).
-      // At S6 this is superseded by teamActionTriggers (Everfrost Dominion), which covers all team members.
+      // Active at all sequence levels whenever snow_rust >= 2.
       requiredTags: ['GLACIO_CHAFE_APPLIER'],
-      condition: (ctx) => ctx.character.sequence < 6 && (ctx.prev.charactersEnergies['Hiyuki']?.snow_rust ?? 0) >= 2,
+      condition: (ctx) => (ctx.prev.charactersEnergies['Hiyuki']?.snow_rust ?? 0) >= 2,
       sideEffect: hiyuki_glacio_chafe_proc,
       // Fire once per application event of Glacio Chafe, not once per action cast.
       // Actions that aggregate multiple hit events set applicationCount on their
       // statusModification; single-application actions default to 1.
+      fireCount: (ctx) =>
+        (ctx.action.statusModifications ?? [])
+          .filter(m => m.type === 'negativeStatus' && m.targetName === 'Glacio Chafe')
+          .reduce((sum, m) => sum + (m.applicationCount ?? 1), 0),
+    },
+    {
+      // Everfrost Dominion (S0–S5): while Hiyuki is on-field and below S6, every time Hiyuki
+      // applies Glacio Chafe she deals a Glacio Chafe negative-status damage hit.
+      // At S6 this is superseded by teamActionTriggers (Everfrost Dominion), which covers all team members.
+      requiredTags: ['GLACIO_CHAFE_APPLIER'],
+      condition: (ctx) => ctx.character.sequence < 6,
+      sideEffect: hiyuki_everfrost_dominion_glacio_bite,
+      // Fire once per application event (same pattern as above).
       fireCount: (ctx) =>
         (ctx.action.statusModifications ?? [])
           .filter(m => m.type === 'negativeStatus' && m.targetName === 'Glacio Chafe')

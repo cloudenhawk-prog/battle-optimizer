@@ -1,8 +1,8 @@
 import type { StepContext } from '../../types/stepContext'
 import type { DamageEvent } from '../../types/events'
 import { calculateDamageNegativeStatus } from './damageCalculator'
-import { computeEffectiveMaxStacks } from '../hooks/negativeStatusHelpers'
 import { negativeStatuses } from '../../data/negativeStatuses'
+
 
 // ========== Aero Erosion Side Effect =========================================================================================
 
@@ -47,7 +47,6 @@ export function calculateAeroErosionSideEffectDamage(context: StepContext, sideE
  * this function is only called when it is already satisfied.
  */
 export function calculateGlacioChafeProcDamage(context: StepContext, sideEffectName: string, timeStamp: number): DamageEvent {
-  console.log("   ==== Called calculateGlacioChafeProcDamage")
   // S3: DMG Multiplier of Snow Rust: Glacio Bite is increased by 488% (102% + 488% = 590% ATK). TODO: Might be multiplicative
   const multiplier = context.character.sequence >= 3 ? (1.02 + 4.88) : 1.02
   return calculateDamageNegativeStatus(
@@ -83,11 +82,13 @@ export function calculateGlacioChafeProcDamage(context: StepContext, sideEffectN
  *    ensuring correct dealer attribution regardless of who cast the triggering action.
  */
 export function calculateGlacioChafeDominionDamage(context: StepContext, sideEffectName: string, timeStamp: number): DamageEvent {
-  const baseMaxStacks = negativeStatuses['glacioChafe'].maxStacksDefault
-  const maxStacks = computeEffectiveMaxStacks('Glacio Chafe', baseMaxStacks, context)
+  const defaultMaxStacks = negativeStatuses['glacioChafe'].maxStacksDefault
+  const activeGlacioChafe = context.negativeStatusesInAction.find(s => s.negativeStatus.name === 'Glacio Chafe')
+  const rawStacks = activeGlacioChafe?.currentStacks ?? 0
+  const currentStacks = rawStacks > 0 ? rawStacks : defaultMaxStacks
 
   return calculateDamageNegativeStatus(
-    maxStacks,
+    currentStacks,
     'GLACIO',
     context.enemy,
     'Glacio Chafe',
