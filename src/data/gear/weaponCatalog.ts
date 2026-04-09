@@ -89,11 +89,11 @@ export const weaponCatalog: WeaponCatalogEntry[] = [
   },
 
   {
-    name: "Bloodpact's Pledge",
+    name: 'Bloodpact\'s Pledge',
     weaponType: 'Sword',
     stats: { baseATK: 587.50, energyPercent: 0.3888 },
-    icon: "assets/gear/weapons/bloodpact's_pledge.png",
-    info: "Providing Healing increases Resonance Skill DMG by 10%/14%/18%/22%/26% for 6s. When Rover: Aero casts Resonance Skill Unbound Flow, Aero DMG dealt by nearby Resonators on the field is Amplified by 10%/14%/18%/22%/26% for 30s.",
+    icon: 'assets/gear/weapons/bloodpact\'s_pledge.png',
+    info: 'Providing Healing increases Resonance Skill DMG by 10%/14%/18%/22%/26% for 6s. When Rover: Aero casts Resonance Skill Unbound Flow, Aero DMG dealt by nearby Resonators on the field is Amplified by 10%/14%/18%/22%/26% for 30s.',
     ranks: {
       5: {
         injectedModifiers: [
@@ -139,7 +139,7 @@ export const weaponCatalog: WeaponCatalogEntry[] = [
     weaponType: 'Sword',
     stats: { baseATK: 587, critRate: 0.243 },
     icon: 'assets/gear/weapons/frostburn.png',
-    info: "Increase ATK by 12/15/18/21/24%. When applying Glacio Chafe, Glacio DMG is Amplified by 28/35/42/49/56% and Liberation DMG ignore 10/12.5/15/17.5/20% DEF for 20 seconds. When the wielder is the active resonator in the team, Glacio Chafe DMG dealt by all resoantors is amplified by 20% for 6s.",
+    info: 'Increase ATK by 12/15/18/21/24%. When applying Glacio Chafe, Glacio DMG is Amplified by 28/35/42/49/56% and Liberation DMG ignore 10/12.5/15/17.5/20% DEF for 20 seconds. When the wielder is the active resonator in the team, Glacio Chafe DMG dealt by all resoantors is amplified by 20% for 6s.',
     ranks: {
       1: {
         injectedModifiers: [

@@ -534,11 +534,11 @@ function EquipmentOrbit({ weapon, echoSlots, elColor, characterName, onItemHighl
       'radial-gradient(circle at center, black 50%, rgba(0,0,0,0.55) 70%, transparent 90%)',
   }}
   onError={(e) => {
-    const el = e.currentTarget;
-    el.onerror = null;
-    el.src = `/assets/characters/${characterName.toLowerCase()}_shadow.png`
+    const el = e.currentTarget
+    el.onerror = null
+    el.src = `/assets/characters/${characterName.toLowerCase()}_shadow.png`;
   }}
-/> 
+/>
           </div>
 
           {/* SVG: orbit tick marks */}

@@ -1,4 +1,4 @@
-import { useState, useMemo, useRef, useEffect } from 'react'
+import { useState, useMemo, useRef } from 'react'
 import { createPortal } from 'react-dom'
 import '../../styles/rotation-editor/DataOverlay.css'
 import { StatusDetailPanel } from './StatusDetailPanel'
@@ -93,12 +93,10 @@ export default function DataOverlay({ snapshot, previousSnapshot = null, startWi
 
   const [activeSources, setActiveSources] = useState<Set<string>>(() => new Set(sourceNames))
   const prevSourceNamesRef = useRef<string[]>(sourceNames)
-  useEffect(() => {
-    if (prevSourceNamesRef.current !== sourceNames) {
-      prevSourceNamesRef.current = sourceNames
-      setActiveSources(new Set(sourceNames))
-    }
-  }, [sourceNames])
+  if (prevSourceNamesRef.current !== sourceNames) {
+    prevSourceNamesRef.current = sourceNames
+    setActiveSources(new Set(sourceNames))
+  }
   const toggleSource = (name: string) => setActiveSources(prev => {
     const next = new Set(prev)
     if (next.has(name)) next.delete(name); else next.add(name)

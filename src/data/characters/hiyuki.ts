@@ -195,7 +195,7 @@ export const hiyuki: Character = {
     Hiyuki is immune to interruptions while casting Basic Attack - Foreclaimed Self Stage 4 & 5.
     Casting Foreclaiming: Inward Vision enhances the next Basic Attack - Foreclaimed Self Stage 1 & 2, which now inflict 1 stack of Glacio Chafe on hit.`,
 
-    `Iai\'s DMG Multiplier is increased by 140%.
+    `Iai's DMG Multiplier is increased by 140%.
     After staying out of combat for more than 4s, the following effects are triggered:
       1: Restore 3 points of Frostharden Iai.
       2: Reset the Cooldown of 2 charges of Frostblight: Jade Cleave.
@@ -234,8 +234,8 @@ export const hiyuki: Character = {
       "While Hiyuki is on the field, each time a Resonator in the team applies Glacio Chafe, she additionally deals an instance of Glacio Bite DMG."
     At 2 stacks of Snow Rust,
       the total Glacio Bite DMG enemies within a certain range of the active Resonator take is increased by 25%.
-      Hiyuki\'s Crit. DMG is increased by 40%.
-      Inherent Skill Ephemeral Realm\'s effect is replaced: After staying out of combat for more than 4s, restore 3 points of Snowforged Blade.`
+      Hiyuki's Crit. DMG is increased by 40%.
+      Inherent Skill Ephemeral Realm's effect is replaced: After staying out of combat for more than 4s, restore 3 points of Snowforged Blade.`
   ],
   sequence_nodes_icons: [ // TODO
     'assets/characters/sequences/hiyuki_1.png',

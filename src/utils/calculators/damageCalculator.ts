@@ -913,13 +913,13 @@ export function calculateAllContrubutions(action: Action, name: string, stats: C
   // console.log(`[SHAPLEY]   Σ φ_i  sum of Shapley values:       ${_sumSvAvg.toFixed(2)}`)
   // console.log(`[SHAPLEY]   Residual |Σφ_i - attributable|:     ${Math.abs(_sumSvAvg - _attributable).toFixed(2)}  (expect ≈ 0)`)
   // console.log(`[SHAPLEY]   ── Per-group Shapley values (avg damage) ────────`)
-  for (const [groupKey, indices] of groups) {
-    const sv = shapleyAvg.get(groupKey)! / SHAPLEY_SAMPLES
-    const label = damageModifiers[indices[0]].displayName ?? groupKey
-    const pct = average !== 0 ? (sv / average * 100).toFixed(1) : '0'
-    console.log(`[SHAPLEY]     "${label}":  φ = ${sv.toFixed(2)}  (${pct}% of f(N))`)
-  }
-  console.log(``)
+  // for (const [groupKey, indices] of groups) {
+    // const sv = shapleyAvg.get(groupKey)! / SHAPLEY_SAMPLES
+    // const label = damageModifiers[indices[0]].displayName ?? groupKey
+    // const pct = average !== 0 ? (sv / average * 100).toFixed(1) : '0'
+    // console.log(`[SHAPLEY]     "${label}":  φ = ${sv.toFixed(2)}  (${pct}% of f(N))`)
+  // }
+  // console.log(``)
   // ───────────────────────────────────────────────────────────────────────────────────────────────
 
   return results
@@ -1003,24 +1003,24 @@ export function calculateDamageNegativeStatus(currStacks: number, element: Eleme
   const elementalResMultiplier = 1 - elementRES
   const damageRES = resistanceMultiplier * defenseMultiplier * damageReductionMultiplier * elementalResMultiplier
 
-  console.log(`\n[TRACE] ── Resistance Multiplier ──`)
-  console.log(`[TRACE]   attacker level:           ${level}`)
-  console.log(`[TRACE]   enemy level:              ${enemyLevel}`)
-  console.log(`[TRACE]   enemy raw DEF:            ${8 * enemyLevel + 792}`)
-  console.log(`[TRACE]   defIgnore:                0% (not applied to negative status)`)
-  console.log(`[TRACE]   defenseMultiplier:        ${defenseMultiplier.toFixed(4)}`)
-  console.log(`[TRACE]   ---`)
-  console.log(`[TRACE]   enemy resistance:         ${(enemyResistance * 100).toFixed(2)}%`)
-  console.log(`[TRACE]   resistancePEN:            0% (not applied to negative status)`)
-  console.log(`[TRACE]   resistanceMultiplier:     ${resistanceMultiplier.toFixed(4)}`)
-  console.log(`[TRACE]   ---`)
-  console.log(`[TRACE]   enemy ${element} RES:        ${(elementRES * 100).toFixed(2)}%`)
-  console.log(`[TRACE]   elementalResPEN:          0% (not applied to negative status)`)
-  console.log(`[TRACE]   elementalResMultiplier:   ${elementalResMultiplier.toFixed(4)}`)
-  console.log(`[TRACE]   ---`)
-  console.log(`[TRACE]   enemy damageReduction:    ${(enemyDamageReduction * 100).toFixed(2)}%`)
-  console.log(`[TRACE]   dmgReductionMultiplier:   ${damageReductionMultiplier.toFixed(4)}`)
-  console.log(`[TRACE]   RESULT: ${defenseMultiplier.toFixed(4)} × ${resistanceMultiplier.toFixed(4)} × ${elementalResMultiplier.toFixed(4)} × ${damageReductionMultiplier.toFixed(4)} = ${damageRES.toFixed(4)}`)
+  // console.log(`\n[TRACE] ── Resistance Multiplier ──`)
+  // console.log(`[TRACE]   attacker level:           ${level}`)
+  // console.log(`[TRACE]   enemy level:              ${enemyLevel}`)
+  // console.log(`[TRACE]   enemy raw DEF:            ${8 * enemyLevel + 792}`)
+  // console.log(`[TRACE]   defIgnore:                0% (not applied to negative status)`)
+  // console.log(`[TRACE]   defenseMultiplier:        ${defenseMultiplier.toFixed(4)}`)
+  // console.log(`[TRACE]   ---`)
+  // console.log(`[TRACE]   enemy resistance:         ${(enemyResistance * 100).toFixed(2)}%`)
+  // console.log(`[TRACE]   resistancePEN:            0% (not applied to negative status)`)
+  // console.log(`[TRACE]   resistanceMultiplier:     ${resistanceMultiplier.toFixed(4)}`)
+  // console.log(`[TRACE]   ---`)
+  // console.log(`[TRACE]   enemy ${element} RES:        ${(elementRES * 100).toFixed(2)}%`)
+  // console.log(`[TRACE]   elementalResPEN:          0% (not applied to negative status)`)
+  // console.log(`[TRACE]   elementalResMultiplier:   ${elementalResMultiplier.toFixed(4)}`)
+  // console.log(`[TRACE]   ---`)
+  // console.log(`[TRACE]   enemy damageReduction:    ${(enemyDamageReduction * 100).toFixed(2)}%`)
+  // console.log(`[TRACE]   dmgReductionMultiplier:   ${damageReductionMultiplier.toFixed(4)}`)
+  // console.log(`[TRACE]   RESULT: ${defenseMultiplier.toFixed(4)} × ${resistanceMultiplier.toFixed(4)} × ${elementalResMultiplier.toFixed(4)} × ${damageReductionMultiplier.toFixed(4)} = ${damageRES.toFixed(4)}`)
 
   // Apply negative status damage multipliers from merged character stats
   // These are only the status-specific modifiers (e.g., aeroErosionAmplifyDMG)

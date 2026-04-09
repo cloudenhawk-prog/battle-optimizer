@@ -784,7 +784,6 @@ const hiyuki_foreclaimed_liberation: Action = {
   resolveVariant(prevSnapshot, characterName, owner) {
     const energies = prevSnapshot?.charactersEnergies[characterName]
     const snowforged_blade = energies?.snowforged_blade ?? 0
-    console.log("Number of snowforged blade stacks:", snowforged_blade)
     // S6: DMG Multiplier of Foreclaiming: Blade Liberation is increased by 150%.
     const s6Multiplier = owner.sequence >= 6 ? 2.5 : 1
     if (snowforged_blade == 0) {
