@@ -9,6 +9,7 @@ import type { Character } from '../../types/character'
 import type { ElementType } from '../../types/baseTypes'
 import type { CharacterStats } from '../../types/stats'
 import type { DamageModifier } from '../../types/modifiers'
+import { splitEventByCharacter } from '../../utils/calculators/contributionAttribution'
 
 // ========== Element Themes ==================================================================================================
 
@@ -306,15 +307,8 @@ function buildModifierInfoMap(characters: Character[]): Map<string, ModifierDisp
 
 /**
  * Computes per-character attributed damage for the Contribution pie (Pie 2).
- *
- * For each damage event the damage is split between the caster and any external buffers:
- *   - Contributions whose ownerCharacter matches the caster stay with the caster.
- *   - Contributions with a different ownerCharacter are attributed to that buffer character.
- *   - The caster's share = event.average − sum(external contributions), clamped to 0.
- *
- * Because buff contributions are calculated as independent deltas in a multiplicative formula
- * they can sum to more than the event total. In that case the totals are scaled proportionally
- * so the attributed values always sum exactly to event.average.
+ * See splitEventByCharacter (contributionAttribution.ts) for the Shapley algorithm details.
+ * Efficiency: Σ attributedDamage = grandTotal exactly.
  */
 function computeContributionData(
   characters: Character[],
@@ -331,28 +325,10 @@ function computeContributionData(
 
   for (const event of damageEvents) {
     const casterBase = getBaseChar(event.dealer)
-
-    const externalByOwner: Record<string, number> = {}
-    let sumExternal = 0
-
-    for (const contrib of Object.values(event.contributions)) {
-      // isInherent contributions belong to the caster's own action — skip
-      // isSelf contributions (targetStrategy='self') are personal buffs — count as base damage
-      // null/undefined ownerCharacter → unattributable → treat as caster's
-      const owner = contrib.ownerCharacter
-      if (!owner || owner === casterBase || contrib.isInherent || contrib.isSelf) continue
-      externalByOwner[owner] = (externalByOwner[owner] ?? 0) + contrib.average_damage_contributed
-      sumExternal += contrib.average_damage_contributed
-    }
-
-    const casterShare = Math.max(0, event.average - sumExternal)
-    const totalAssigned = casterShare + sumExternal
-    // Scale down if external contributions overcounted (multiplicative interaction surplus)
-    const scale = totalAssigned > event.average ? event.average / totalAssigned : 1
-
-    attribution[casterBase] = (attribution[casterBase] ?? 0) + casterShare * scale
-    for (const [owner, amt] of Object.entries(externalByOwner)) {
-      attribution[owner] = (attribution[owner] ?? 0) + amt * scale
+    const { casterShare, externalByOwner } = splitEventByCharacter(event, casterBase)
+    attribution[casterBase] = (attribution[casterBase] ?? 0) + casterShare
+    for (const [owner, phi] of externalByOwner) {
+      attribution[owner] = (attribution[owner] ?? 0) + phi
     }
   }
 
@@ -514,22 +490,10 @@ function computeContributionOrigin(
     if (!charTotals.has(casterBase)) charTotals.set(casterBase, { self: 0, external: new Map() })
     const entry = charTotals.get(casterBase)!
 
-    const externalByOwner: Record<string, number> = {}
-    let sumExternal = 0
-    for (const contrib of Object.values(event.contributions)) {
-      const owner = contrib.ownerCharacter
-      if (!owner || owner === casterBase || contrib.isInherent || contrib.isSelf) continue
-      externalByOwner[owner] = (externalByOwner[owner] ?? 0) + contrib.average_damage_contributed
-      sumExternal += contrib.average_damage_contributed
-    }
-
-    const casterShare = Math.max(0, event.average - sumExternal)
-    const totalAssigned = casterShare + sumExternal
-    const scale = totalAssigned > event.average ? event.average / totalAssigned : 1
-
-    entry.self += casterShare * scale
-    for (const [owner, amt] of Object.entries(externalByOwner)) {
-      entry.external.set(owner, (entry.external.get(owner) ?? 0) + amt * scale)
+    const { casterShare, externalByOwner } = splitEventByCharacter(event, casterBase)
+    entry.self += casterShare
+    for (const [owner, phi] of externalByOwner) {
+      entry.external.set(owner, (entry.external.get(owner) ?? 0) + phi)
     }
   }
 
@@ -697,67 +661,47 @@ type LeftPanelProps = {
 function LeftPanel({ characterSummaries, charColorMap, energyFlow }: LeftPanelProps) {
   const activeChars = characterSummaries.filter(c => c.fieldTime > 0)
   const totalFieldTime = activeChars.reduce((s, c) => s + c.fieldTime, 0)
-  const maxOnFieldDps = Math.max(
-    ...activeChars.map(c => (c.directDamage + c.caDamage) / c.fieldTime),
-    1,
-  )
+  const maxOnFieldDps = Math.max(...activeChars.map(c => (c.directDamage + c.caDamage) / c.fieldTime), 1)
+  const maxEnergyPerSec = Math.max(...energyFlow.map(e => e.energyGenPerSecond), 1)
 
   return (
     <div className="summaryLeftPanel">
 
-      {/* ── Field Time & on-field DPS ── */}
+      {/* ── Field Time & Field DPS ── */}
       <div className="summaryLeftHalf">
-        <PanelHeader label="FIELD TIME" accent="purple" />
-        <div className="summaryFieldTimeRows">
+        <PanelHeader label="FIELD TIME & DPS" accent="purple" />
+        <div className="summaryStatCards">
           {activeChars.map(c => {
             const pct = totalFieldTime > 0 ? (c.fieldTime / totalFieldTime) * 100 : 0
             const onFieldDps = (c.directDamage + c.caDamage) / c.fieldTime
             const dpsPct = (onFieldDps / maxOnFieldDps) * 100
             const theme = charColorMap.get(c.name) ?? getElementColor(c.element)
             return (
-              <div key={c.name} className="summaryFieldTimeBlock">
-                <span
-                  className="summaryFieldTimeBlockName"
-                  style={{ color: theme.primary, textShadow: `0 0 10px ${theme.glow}` }}
-                >
-                  {c.name}
-                </span>
-                <div className="summaryFieldTimeSubrows">
-                  {/* Field time row */}
-                  <div className="summaryFieldTimeSubrow">
-                    <span className="summaryFieldTimeSubrowLabel">TIME</span>
-                    <div className="summaryFieldTimeBar">
-                      <div
-                        className="summaryFieldTimeBarFill"
-                        style={{ width: `${pct}%`, background: theme.primary, boxShadow: `0 0 6px ${theme.glow}` }}
-                      />
-                    </div>
-                    <span className="summaryFieldTimePct">{pct.toFixed(0)}%</span>
-                    <span className="summaryFieldTimeVal">{formatTime(c.fieldTime)}</span>
+              <div
+                key={c.name}
+                className="summaryStatCard"
+                style={{ '--card-color': theme.primary, '--card-glow': theme.glow } as React.CSSProperties}
+              >
+                <div className="summaryStatCardTop">
+                  <span className="summaryStatCardName">{c.name}</span>
+                  <span className="summaryStatCardPrimary">{formatDamage(onFieldDps)}/s</span>
+                </div>
+                <div className="summaryStatCardBars">
+                  <div className="summaryStatCardBar">
+                    <div className="summaryStatCardBarFill" style={{ width: `${dpsPct}%` }} />
                   </div>
-                  {/* On-field DPS row */}
-                  <div className="summaryFieldTimeSubrow">
-                    <span className="summaryFieldTimeSubrowLabel">DPS</span>
-                    <div className="summaryFieldTimeBar">
-                      <div
-                        className="summaryFieldTimeBarFill summaryFieldTimeDpsFill"
-                        style={{ width: `${dpsPct}%`, background: theme.primary, boxShadow: `0 0 4px ${theme.glow}` }}
-                      />
-                    </div>
-                    <span className="summaryFieldTimeDpsVal">{formatDamage(onFieldDps)}/s</span>
+                  <div className="summaryStatCardBar summaryStatCardBarAlt">
+                    <div className="summaryStatCardBarFill" style={{ width: `${pct}%` }} />
                   </div>
                 </div>
+                <span className="summaryStatCardSecondary">{pct.toFixed(0)}% field · {formatTime(c.fieldTime)}</span>
               </div>
             )
           })}
           {totalFieldTime > 0 && (
-            <div className="summaryFieldTimeRow summaryFieldTimeRowTotal">
-              <span className="summaryFieldTimeName">Total</span>
-              <div className="summaryFieldTimeBar">
-                <div className="summaryFieldTimeBarFill" style={{ width: '100%', background: 'rgba(255,255,255,0.15)' }} />
-              </div>
-              <span className="summaryFieldTimePct" aria-hidden="true" />
-              <span className="summaryFieldTimeVal">{formatTime(totalFieldTime)}</span>
+            <div className="summaryStatCardTotalRow">
+              <span className="summaryStatCardTotalLabel">Total rotation</span>
+              <span className="summaryStatCardTotalValue">{formatTime(totalFieldTime)}</span>
             </div>
           )}
         </div>
@@ -771,32 +715,24 @@ function LeftPanel({ characterSummaries, charColorMap, energyFlow }: LeftPanelPr
         {energyFlow.length === 0 ? (
           <div className="summaryRightEmpty">No energy data available</div>
         ) : (
-          <div className="summaryEnergyRows">
+          <div className="summaryStatCards">
             {energyFlow.map(entry => {
               const theme = charColorMap.get(entry.name) ?? getElementColor(entry.element)
+              const perSecPct = (entry.energyGenPerSecond / maxEnergyPerSec) * 100
               return (
-                <div key={entry.name} className="summaryEnergyBlock">
-                  <div className="summaryEnergyBlockHeader">
-                    <div
-                      className="summaryEnergyDot"
-                      style={{ background: theme.primary, boxShadow: `0 0 5px ${theme.glow}` }}
-                    />
-                    <span className="summaryEnergyName">{entry.name}</span>
+                <div
+                  key={entry.name}
+                  className="summaryStatCard"
+                  style={{ '--card-color': theme.primary, '--card-glow': theme.glow } as React.CSSProperties}
+                >
+                  <div className="summaryStatCardTop">
+                    <span className="summaryStatCardName">{entry.name}</span>
+                    <span className="summaryStatCardPrimary">{entry.energyGenPerSecond.toFixed(1)}/s</span>
                   </div>
-                  <div className="summaryEnergyStatRow">
-                    <div className="summaryEnergyStat">
-                      <span className="summaryEnergyStatLabel" style={{ color: theme.primary, textShadow: `0 0 10px ${theme.glow}` }}>Energy Generated</span>
-                      <span className="summaryEnergyStatValue">
-                        {entry.energyGenerated.toFixed(1)}
-                      </span>
-                    </div>
-                    <div className="summaryEnergyStat">
-                      <span className="summaryEnergyStatLabel" style={{ color: theme.primary, textShadow: `0 0 10px ${theme.glow}` }}>per second on field</span>
-                      <span className="summaryEnergyStatValue">
-                        {entry.energyGenPerSecond.toFixed(1)}/s
-                      </span>
-                    </div>
+                  <div className="summaryStatCardBar">
+                    <div className="summaryStatCardBarFill" style={{ width: `${perSecPct}%` }} />
                   </div>
+                  <span className="summaryStatCardSecondary">{entry.energyGenerated.toFixed(1)} total</span>
                 </div>
               )
             })}

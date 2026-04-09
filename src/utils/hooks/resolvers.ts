@@ -9,7 +9,7 @@ import type { ResolvedCharacter } from '../../types/character'
 import type { Enemy } from '../../types/enemy'
 import type { NegativeStatusInAction } from '../../types/negativeStatus'
 import type { CoordinatedAttackInAction } from '../../types/coordinatedAttack'
-import { calculateDamage } from '../../utils/calculators/damageCalculator'
+import { calculateDamage, evaluateDamageWithGroups } from '../../utils/calculators/damageCalculator'
 import { activateCoordinatedAttacks, processCoordinatedAttacks, updateCoordinatedAttackSnapshot } from './coordinatedAttackHelpers'
 import { getNegativeStatusStacks, processNegativeStatusStacks, updateNegativeStatusStacks } from './negativeStatusHelpers'
 import { getCharacterEnergyState, updateEnergyValue } from './energyHelpers'
@@ -256,7 +256,16 @@ export function resolveDamage(ctx: StepContext, setDamageEvents: Dispatch<SetSta
     }
   }
 
-  setDamageEvents(prevEvents => [...prevEvents, damageEvent])
+  setDamageEvents(prevEvents => {
+    // Attach a re-evaluation closure so DataOverlay can recompute damage with a subset of active buffs
+    damageEvent.calcParams = {
+      reEvaluate: (activeGroupKeys) => evaluateDamageWithGroups(
+        { action, characterName: name, baseStats, damageModifiers, enemy, ctx },
+        snapshotId, ctx.fromTime, activeGroupKeys,
+      ),
+    }
+    return [...prevEvents, damageEvent]
+  })
 
   const cumulativeDamage = prev.damage + average
   const dps = toTime > 0 ? cumulativeDamage / toTime : 0

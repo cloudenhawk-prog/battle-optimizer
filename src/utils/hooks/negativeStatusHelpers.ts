@@ -6,7 +6,7 @@ import type { NegativeStatusInAction } from '../../types/negativeStatus'
 import type { CharacterStats, EnemyStats } from '../../types/stats'
 import type { DamageModifier } from '../../types/modifiers'
 import type { StepContext } from '../../types/stepContext'
-import { calculateDamageNegativeStatus } from '../../utils/calculators/damageCalculator'
+import { calculateDamageNegativeStatus, evaluateNegativeStatusWithGroups } from '../../utils/calculators/damageCalculator'
 
 // ========== Negative Status Helpers ==========================================================================================
 
@@ -131,7 +131,15 @@ export function processNegativeStatusStacks(
           damageEvents[name] = []
         }
 
-        damageEvents[name].push(calculateDamageNegativeStatus(currStacks, element, enemy, name, characterStats, modifierCharacterStats, modifierEnemyStats, damageModifiers, name, snapshotId, lastDamageTime, undefined, ctx)) // DoT: dealer is the status itself
+        const tickTime = lastDamageTime  // capture per-iteration value for closure
+        const event = calculateDamageNegativeStatus(currStacks, element, enemy, name, characterStats, modifierCharacterStats, modifierEnemyStats, damageModifiers, name, snapshotId, tickTime, undefined, ctx) // DoT: dealer is the status itself
+        event.calcParams = {
+          reEvaluate: (activeGroupKeys) => evaluateNegativeStatusWithGroups(
+            { currStacks, element, enemy, negativeStatusName: name, baseStats: characterStats, damageModifiers, ctx },
+            activeGroupKeys,
+          ),
+        }
+        damageEvents[name].push(event)
       }
 
       if (timeLeft <= 0) {
@@ -164,7 +172,16 @@ export function processNegativeStatusStacks(
           damageEvents[name] = []
         }
 
-        damageEvents[name].push(calculateDamageNegativeStatus(currStacks, element, enemy, name, characterStats, modifierCharacterStats, modifierEnemyStats, damageModifiers, name, snapshotId, lastDamageTime, undefined, ctx))
+        const tickTime = lastDamageTime    // capture per-iteration value for closure
+        const tickStacks = currStacks       // capture before potential reduction below
+        const event = calculateDamageNegativeStatus(tickStacks, element, enemy, name, characterStats, modifierCharacterStats, modifierEnemyStats, damageModifiers, name, snapshotId, tickTime, undefined, ctx)
+        event.calcParams = {
+          reEvaluate: (activeGroupKeys) => evaluateNegativeStatusWithGroups(
+            { currStacks: tickStacks, element, enemy, negativeStatusName: name, baseStats: characterStats, damageModifiers, ctx },
+            activeGroupKeys,
+          ),
+        }
+        damageEvents[name].push(event)
 
         if (timeLeft <= 0) {
           currStacks -= stackConsume

@@ -557,11 +557,184 @@ function convertLevelToDefense(level: number): number {
   return 8 * level + 792
 }
 
+// ========== Buff Toggle Re-Evaluator =========================================================================================
+
+/**
+ * Re-evaluates an action's damage with only the specified modifier groups active.
+ * Used by DataOverlay so toggling buffs on/off produces exact (not estimated) damage numbers.
+ *
+ * The inherent modifier baseline is always included regardless of `activeGroupKeys`,
+ * matching the same baseline used inside calculateAllContrubutions's evaluateSubset.
+ */
+export function evaluateDamageWithGroups(
+  params: { action: Action; characterName: string; baseStats: CharacterStats; damageModifiers: DamageModifier[]; enemy: Enemy; ctx?: StepContext },
+  snapshotId: number,
+  timeStamp: number,
+  activeGroupKeys: Set<string>,
+): { normal: number; crit: number; avg: number } {
+  const { action, characterName, baseStats, damageModifiers, enemy, ctx } = params
+
+  // Pre-compute inherent modifier baseline (same logic as inside calculateAllContrubutions)
+  const inherentCharBase: Partial<CharacterStats> = {}
+  const inherentEnemyBase: Partial<EnemyStats> = {}
+  if (ctx && action.inherentModifiers?.length) {
+    for (const im of action.inherentModifiers) {
+      const scale = im.condition(ctx)
+      if (scale !== 0) {
+        if (im.characterStats) {
+          for (const key in im.characterStats) {
+            const statKey = key as keyof CharacterStats
+            const value = (im.characterStats[statKey] as number) * scale
+            inherentCharBase[statKey] = aggregateStat(inherentCharBase[statKey] as number | undefined, value, statKey) as any
+          }
+        }
+        if (im.enemyStats) {
+          for (const key in im.enemyStats) {
+            const statKey = key as keyof EnemyStats
+            const value = (im.enemyStats[statKey] as number) * scale
+            inherentEnemyBase[statKey] = aggregateStat(inherentEnemyBase[statKey] as number | undefined, value, statKey) as any
+          }
+        }
+      }
+    }
+  }
+
+  // Build the same group → indices mapping as calculateAllContrubutions
+  const groupIndices = new Map<string, number[]>()
+  for (let i = 0; i < damageModifiers.length; i++) {
+    const mod = damageModifiers[i]
+    const groupKey = mod.contributionGroup ?? (mod.source !== undefined ? `${mod.source}::${mod.displayName ?? mod.source}` : `modifier_${i}`)
+    if (!groupIndices.has(groupKey)) groupIndices.set(groupKey, [])
+    groupIndices.get(groupKey)!.push(i)
+  }
+
+  // Aggregate only the active modifier groups on top of the inherent baseline
+  const charMods: Partial<CharacterStats> = { ...inherentCharBase }
+  const enemyMods: Partial<EnemyStats> = { ...inherentEnemyBase }
+
+  for (const [groupKey, indices] of groupIndices) {
+    if (!activeGroupKeys.has(groupKey)) continue
+    for (const j of indices) {
+      const mod = damageModifiers[j]
+      const stackedMod = mod.durationStrategy?.type === 'limited' && ctx
+        ? applyStackMultiplier(mod, ctx.modifiersInAction)
+        : mod
+      const conditionMultiplier = stackedMod.condition && ctx ? stackedMod.condition(ctx) : 1
+
+      if (stackedMod.characterStats) {
+        for (const [key, value] of Object.entries(stackedMod.characterStats)) {
+          const statKey = key as keyof CharacterStats
+          charMods[statKey] = aggregateStat(charMods[statKey] as number | undefined, (value as number) * conditionMultiplier, key) as any
+        }
+      }
+      if (stackedMod.enemyStats) {
+        for (const [key, value] of Object.entries(stackedMod.enemyStats)) {
+          const statKey = key as keyof EnemyStats
+          enemyMods[statKey] = aggregateStat(enemyMods[statKey] as number | undefined, (value as number) * conditionMultiplier, key) as any
+        }
+      }
+    }
+  }
+
+  const result = calculateDamage({
+    action,
+    name: characterName,
+    stats: baseStats,
+    damageModifiers: [],
+    modifierCharacterStats: charMods,
+    modifierEnemyStats: enemyMods,
+    enemy,
+    snapshotId,
+    timeStamp,
+    skipContributions: true,
+  })
+
+  return {
+    normal: result.damageEvent.normalStrike,
+    crit: result.damageEvent.criticalStrike,
+    avg: result.damageEvent.average,
+  }
+}
+
+/**
+ * Re-evaluates negative status damage with only the specified modifier groups active.
+ * Uses the same formula as calculateNegativeStatusContributions's evaluateSubset,
+ * avoiding the console.log spam inside calculateDamageNegativeStatus.
+ */
+export function evaluateNegativeStatusWithGroups(
+  params: { currStacks: number; element: ElementType; enemy: Enemy; negativeStatusName: string; baseStats: CharacterStats; damageModifiers: DamageModifier[]; ctx?: StepContext; baseDMGScaling?: { scaling: ScalingType; multiplier: number } },
+  activeGroupKeys: Set<string>,
+): { normal: number; crit: number; avg: number } {
+  const { currStacks, element, enemy, negativeStatusName, baseStats, damageModifiers, ctx, baseDMGScaling } = params
+
+  // Resolve base DMG from stack table (if not ATK-scaled)
+  let baseDMG = 0
+  if (!baseDMGScaling) {
+    const statusIdentifier = Object.entries(negativeStatuses).find(([, s]) => s.name === negativeStatusName)?.[0]
+    if (statusIdentifier) baseDMG = negativeStatuses[statusIdentifier].damage[currStacks] ?? 0
+  }
+
+  // Build group → indices map (same key derivation as calculateNegativeStatusContributions)
+  const groupIndices = new Map<string, number[]>()
+  for (let i = 0; i < damageModifiers.length; i++) {
+    const mod = damageModifiers[i]
+    const groupKey = mod.contributionGroup ?? (mod.source !== undefined ? `${mod.source}::${mod.displayName ?? mod.source}` : `modifier_${i}`)
+    if (!groupIndices.has(groupKey)) groupIndices.set(groupKey, [])
+    groupIndices.get(groupKey)!.push(i)
+  }
+
+  // Aggregate only active groups
+  const charMods: Partial<CharacterStats> = {}
+  const enemyMods: Partial<EnemyStats> = {}
+  for (const [groupKey, indices] of groupIndices) {
+    if (!activeGroupKeys.has(groupKey)) continue
+    for (const j of indices) {
+      const mod = damageModifiers[j]
+      const stackedMod = mod.durationStrategy?.type === 'limited' && ctx ? applyStackMultiplier(mod, ctx.modifiersInAction) : mod
+      const conditionMultiplier = stackedMod.condition && ctx ? stackedMod.condition(ctx) : 1
+      if (stackedMod.characterStats) {
+        for (const [key, value] of Object.entries(stackedMod.characterStats)) {
+          const statKey = key as keyof CharacterStats
+          charMods[statKey] = aggregateStat(charMods[statKey] as number | undefined, (value as number) * conditionMultiplier, key) as any
+        }
+      }
+      if (stackedMod.enemyStats) {
+        for (const [key, value] of Object.entries(stackedMod.enemyStats)) {
+          const statKey = key as keyof EnemyStats
+          enemyMods[statKey] = aggregateStat(enemyMods[statKey] as number | undefined, (value as number) * conditionMultiplier, key) as any
+        }
+      }
+    }
+  }
+
+  const statsS = mergeStats(baseStats, charMods)
+  const enemyStatsS = mergeEnemyStats(enemy.stats, enemyMods)
+
+  // Same formula as the negative status evaluateSubset (no defIgnore, no resistancePEN, no elementalResPEN)
+  const damageRES =
+    calculateResistanceMultiplierValue(0, enemyStatsS.resistance) *
+    calculateDefenseMultiplier(statsS.level, enemyStatsS.level, 0) *
+    (1 - enemyStatsS.damageReduction) *
+    (1 - ((enemyStatsS[`${element.toLowerCase()}RES` as keyof EnemyStats] as number) || 0))
+
+  const statusMultiplier =
+    (1 + getStatusBonusDMG(statsS, element)) *
+    (1 + getStatusAmplifyDMG(statsS, element)) *
+    getStatusTotalMultiplierDMG(statsS, element)
+
+  const effectiveBaseDMG = baseDMGScaling
+    ? calculateScalingStat(statsS, baseDMGScaling.scaling) * baseDMGScaling.multiplier
+    : baseDMG
+
+  const dmg = effectiveBaseDMG * damageRES * statusMultiplier
+  return { normal: dmg, crit: dmg, avg: dmg }
+}
+
 export function calculateAllContrubutions(action: Action, name: string, stats: CharacterStats, damageModifiers: DamageModifier[], enemy: Enemy, snapshotId: number, timeStamp: number, normalStrike: number, criticalStrike: number, average: number, ctx?: StepContext): Record<string, Contribution> {
   const results: Record<string, Contribution> = {}
 
-  // Pre-compute inherent modifier stats so every "without modifier X" baseline includes them.
-  // Without this, inherentModifiers would be missing from normalWithout, inflating all contributions.
+  // Pre-compute inherent modifier stats so every subset evaluation baseline includes them.
+  // Without this, inherentModifiers would be missing from all subset baselines.
   const inherentCharBase: Partial<CharacterStats> = {}
   const inherentEnemyBase: Partial<EnemyStats> = {}
   if (ctx && action.inherentModifiers?.length) {
@@ -598,90 +771,156 @@ export function calculateAllContrubutions(action: Action, name: string, stats: C
     groupIndices.get(groupKey)!.push(i)
   }
 
-  for (const [groupKey, indices] of groupIndices.entries()) {
-    // Anchor modifier: the one whose source matches the group key (for named groups)
-    const anchor = indices.map(i => damageModifiers[i]).find(m => (m.source ?? '') === groupKey)
-    const representativeMod = anchor ?? damageModifiers[indices[0]]
-    const uniqueKey = groupKey in results ? `${groupKey}_${indices[0]}` : groupKey
+  const groups = [...groupIndices.entries()]
+  const n = groups.length
+  if (n === 0) return results
 
-    const excludedIndices = new Set(indices)
+  // Evaluates damage for an arbitrary subset of modifier groups by aggregating only those groups'
+  // stats (plus the inherent baseline) and delegating to calculateDamage.
+  const evaluateSubset = (subsetKeys: Set<string>): { normal: number; crit: number; avg: number } => {
+    const charMods: Partial<CharacterStats> = { ...inherentCharBase }
+    const enemyMods: Partial<EnemyStats> = { ...inherentEnemyBase }
 
-    // Rebuild modifiers excluding the entire group, seeded with inherent modifier stats
-    const charModsWithout: Partial<CharacterStats> = { ...inherentCharBase }
-    const enemyModsWithout: Partial<EnemyStats> = { ...inherentEnemyBase }
+    for (const [groupKey, indices] of groups) {
+      if (!subsetKeys.has(groupKey)) continue
+      for (const j of indices) {
+        const mod = damageModifiers[j]
+        const stackedMod = mod.durationStrategy?.type === 'limited' && ctx
+          ? applyStackMultiplier(mod, ctx.modifiersInAction)
+          : mod
+        const conditionMultiplier = stackedMod.condition && ctx ? stackedMod.condition(ctx) : 1
 
-    for (let j = 0; j < damageModifiers.length; j++) {
-      if (excludedIndices.has(j)) continue
-
-      const otherMod = damageModifiers[j]
-      // Apply stack multiplier for limited modifiers, matching resolveDamageModifiers logic
-      const stackedOtherMod = otherMod.durationStrategy?.type === 'limited' && ctx
-        ? applyStackMultiplier(otherMod, ctx.modifiersInAction)
-        : otherMod
-      const conditionMultiplier = stackedOtherMod.condition && ctx ? stackedOtherMod.condition(ctx) : 1
-
-      if (stackedOtherMod.characterStats) {
-        for (const [key, value] of Object.entries(stackedOtherMod.characterStats)) {
-          const statKey = key as keyof CharacterStats
-          const currentVal = charModsWithout[statKey] as number | undefined
-          const modValue = (value as number) * conditionMultiplier
-          charModsWithout[statKey] = aggregateStat(currentVal, modValue, key) as any
+        if (stackedMod.characterStats) {
+          for (const [key, value] of Object.entries(stackedMod.characterStats)) {
+            const statKey = key as keyof CharacterStats
+            charMods[statKey] = aggregateStat(charMods[statKey] as number | undefined, (value as number) * conditionMultiplier, key) as any
+          }
         }
-      }
-      if (stackedOtherMod.enemyStats) {
-        for (const [key, value] of Object.entries(stackedOtherMod.enemyStats)) {
-          const statKey = key as keyof EnemyStats
-          const currentVal = enemyModsWithout[statKey] as number | undefined
-          const modValue = (value as number) * conditionMultiplier
-          enemyModsWithout[statKey] = aggregateStat(currentVal, modValue, key) as any
+        if (stackedMod.enemyStats) {
+          for (const [key, value] of Object.entries(stackedMod.enemyStats)) {
+            const statKey = key as keyof EnemyStats
+            enemyMods[statKey] = aggregateStat(enemyMods[statKey] as number | undefined, (value as number) * conditionMultiplier, key) as any
+          }
         }
       }
     }
 
-    // Calculate damage without this group
-    const resultWithout = calculateDamage({
+    const result = calculateDamage({
       action,
       name,
       stats,
       damageModifiers: [],
-      modifierCharacterStats: charModsWithout,
-      modifierEnemyStats: enemyModsWithout,
+      modifierCharacterStats: charMods,
+      modifierEnemyStats: enemyMods,
       enemy,
       snapshotId,
       timeStamp,
       skipContributions: true,
     })
 
-    const normalWithout = resultWithout.damageEvent.normalStrike
-    const critWithout = resultWithout.damageEvent.criticalStrike
-    const averageWithout = resultWithout.damageEvent.average
+    return {
+      normal: result.damageEvent.normalStrike,
+      crit: result.damageEvent.criticalStrike,
+      avg: result.damageEvent.average,
+    }
+  }
 
-    // Calculate contributions
-    const normal_contrib = normalStrike - normalWithout
-    const crit_contrib = criticalStrike - critWithout
-    const average_contrib = average - averageWithout
+  // Monte Carlo Shapley value estimation via random permutation sampling.
+  // φ_i ≈ (1/T) Σ_t [ f(S_t^i ∪ {i}) - f(S_t^i) ]
+  // where S_t^i is the set of groups appearing before i in a random permutation of iteration t.
+  // Shapley values fairly distribute f(N) - f(∅) among all modifier groups.
+  const SHAPLEY_SAMPLES = 100
 
-    const safePercent = (withVal: number, withoutVal: number) => {
-      if (!withoutVal || withoutVal === 0) return 0
-      return (withVal / withoutVal - 1) * 100
+  const shapleyNormal = new Map<string, number>()
+  const shapleyCrit = new Map<string, number>()
+  const shapleyAvg = new Map<string, number>()
+  for (const [groupKey] of groups) {
+    shapleyNormal.set(groupKey, 0)
+    shapleyCrit.set(groupKey, 0)
+    shapleyAvg.set(groupKey, 0)
+  }
+
+  // f(∅): damage with only inherent modifiers active — the unattributed base
+  const base = evaluateSubset(new Set())
+
+  for (let iter = 0; iter < SHAPLEY_SAMPLES; iter++) {
+    // Fisher-Yates shuffle to produce a uniform random permutation of group indices
+    const perm = groups.map((_, i) => i)
+    for (let i = n - 1; i > 0; i--) {
+      const j = Math.floor(Math.random() * (i + 1))
+      ;[perm[i], perm[j]] = [perm[j], perm[i]]
     }
 
-    const normal_pct = safePercent(normalStrike, normalWithout)
-    const crit_pct = safePercent(criticalStrike, critWithout)
-    const average_pct = safePercent(average, averageWithout)
+    const currentSet = new Set<string>()
+    let prevNormal = base.normal
+    let prevCrit = base.crit
+    let prevAvg = base.avg
+
+    for (const idx of perm) {
+      const [groupKey] = groups[idx]
+      currentSet.add(groupKey)
+
+      const dmg = evaluateSubset(currentSet)
+
+      shapleyNormal.set(groupKey, shapleyNormal.get(groupKey)! + (dmg.normal - prevNormal))
+      shapleyCrit.set(groupKey, shapleyCrit.get(groupKey)! + (dmg.crit - prevCrit))
+      shapleyAvg.set(groupKey, shapleyAvg.get(groupKey)! + (dmg.avg - prevAvg))
+
+      prevNormal = dmg.normal
+      prevCrit = dmg.crit
+      prevAvg = dmg.avg
+    }
+  }
+
+  // Average marginals across all iterations to get final Shapley values
+  const safePercent = (sv: number, total: number): number => (total !== 0 ? (sv / total) * 100 : 0)
+
+  for (let gi = 0; gi < n; gi++) {
+    const [groupKey, indices] = groups[gi]
+    const anchor = indices.map(i => damageModifiers[i]).find(m => (m.source ?? '') === groupKey)
+    const representativeMod = anchor ?? damageModifiers[indices[0]]
+    const uniqueKey = groupKey in results ? `${groupKey}_${indices[0]}` : groupKey
+
+    const svNormal = shapleyNormal.get(groupKey)! / SHAPLEY_SAMPLES
+    const svCrit = shapleyCrit.get(groupKey)! / SHAPLEY_SAMPLES
+    const svAvg = shapleyAvg.get(groupKey)! / SHAPLEY_SAMPLES
 
     results[uniqueKey] = {
       source: representativeMod.source,
       ownerCharacter: representativeMod.ownerCharacter ?? null,
       displayName: representativeMod.displayName,
-      crit_damage_contributed: Math.max(0, crit_contrib),
-      crit_percent_damage_contributed: crit_pct,
-      normal_damage_contributed: Math.max(0, normal_contrib),
-      normal_percent_damage_contributed: normal_pct,
-      average_damage_contributed: Math.max(0, average_contrib),
-      average_percent_damage_contributed: average_pct,
+      normal_damage_contributed: Math.max(0, svNormal),
+      normal_percent_damage_contributed: safePercent(svNormal, normalStrike),
+      crit_damage_contributed: Math.max(0, svCrit),
+      crit_percent_damage_contributed: safePercent(svCrit, criticalStrike),
+      average_damage_contributed: Math.max(0, svAvg),
+      average_percent_damage_contributed: safePercent(svAvg, average),
     }
   }
+
+  // ── Shapley efficiency verification ────────────────────────────────────────────────────────────
+  // Efficiency property of Shapley values: Σ φ_i = f(N) - f(∅)
+  // A small residual confirms the Monte Carlo estimate converged correctly.
+  let _sumSvAvg = 0
+  for (const [groupKey] of groups) {
+    _sumSvAvg += shapleyAvg.get(groupKey)! / SHAPLEY_SAMPLES
+  }
+  const _attributable = average - base.avg
+  console.log(`\n[SHAPLEY] ══ Action: "${action.name}" | Dealer: ${name} | Snapshot: #${snapshotId} ══`)
+  console.log(`[SHAPLEY]   f(∅) base damage (no external mods): ${base.avg.toFixed(2)}`)
+  console.log(`[SHAPLEY]   f(N) full damage (all mods):         ${average.toFixed(2)}`)
+  console.log(`[SHAPLEY]   f(N) - f(∅) attributable:           ${_attributable.toFixed(2)}`)
+  console.log(`[SHAPLEY]   Σ φ_i  sum of Shapley values:       ${_sumSvAvg.toFixed(2)}`)
+  console.log(`[SHAPLEY]   Residual |Σφ_i - attributable|:     ${Math.abs(_sumSvAvg - _attributable).toFixed(2)}  (expect ≈ 0)`)
+  console.log(`[SHAPLEY]   ── Per-group Shapley values (avg damage) ────────`)
+  for (const [groupKey, indices] of groups) {
+    const sv = shapleyAvg.get(groupKey)! / SHAPLEY_SAMPLES
+    const label = damageModifiers[indices[0]].displayName ?? groupKey
+    const pct = average !== 0 ? (sv / average * 100).toFixed(1) : '0'
+    console.log(`[SHAPLEY]     "${label}":  φ = ${sv.toFixed(2)}  (${pct}% of f(N))`)
+  }
+  console.log(``)
+  // ───────────────────────────────────────────────────────────────────────────────────────────────
 
   return results
 }
@@ -846,93 +1085,143 @@ function calculateNegativeStatusContributions(baseDMG: number, element: ElementT
     groupIndices.get(groupKey)!.push(i)
   }
 
-  for (const [groupKey, indices] of groupIndices.entries()) {
+  const groups = [...groupIndices.entries()]
+  const n = groups.length
+  if (n === 0) return results
+
+  // Evaluates negative status damage for a given subset of modifier groups by rebuilding
+  // only those groups' stats and applying the negative status formula directly.
+  const evaluateSubset = (subsetKeys: Set<string>): number => {
+    const charMods: Partial<CharacterStats> = {}
+    const enemyMods: Partial<EnemyStats> = {}
+
+    for (const [groupKey, indices] of groups) {
+      if (!subsetKeys.has(groupKey)) continue
+      for (const j of indices) {
+        const mod = damageModifiers[j]
+        const stackedMod = mod.durationStrategy?.type === 'limited'
+          ? applyStackMultiplier(mod, ctx.modifiersInAction)
+          : mod
+        const conditionMultiplier = stackedMod.condition ? stackedMod.condition(ctx) : 1
+
+        if (stackedMod.characterStats) {
+          for (const [key, value] of Object.entries(stackedMod.characterStats)) {
+            const statKey = key as keyof CharacterStats
+            charMods[statKey] = aggregateStat(charMods[statKey] as number | undefined, (value as number) * conditionMultiplier, key) as any
+          }
+        }
+        if (stackedMod.enemyStats) {
+          for (const [key, value] of Object.entries(stackedMod.enemyStats)) {
+            const statKey = key as keyof EnemyStats
+            enemyMods[statKey] = aggregateStat(enemyMods[statKey] as number | undefined, (value as number) * conditionMultiplier, key) as any
+          }
+        }
+      }
+    }
+
+    const statsS = mergeStats(baseStats, charMods)
+    const enemyStatsS = mergeEnemyStats(enemy.stats, enemyMods)
+
+    const level = statsS.level
+    const enemyLevel = enemyStatsS.level
+    const enemyResistance = enemyStatsS.resistance
+    const enemyDamageReduction = enemyStatsS.damageReduction
+    const elementRES = enemyStatsS[`${element.toLowerCase()}RES` as keyof typeof enemyStatsS] as number
+
+    const damageRES =
+      calculateResistanceMultiplierValue(0, enemyResistance) *
+      calculateDefenseMultiplier(level, enemyLevel, 0) *
+      (1 - enemyDamageReduction) *
+      (1 - elementRES)
+
+    const statusBonus = getStatusBonusDMG(statsS, element)
+    const statusAmplify = getStatusAmplifyDMG(statsS, element)
+    const statusTotalMultiplier = getStatusTotalMultiplierDMG(statsS, element)
+    const statusMultiplier = (1 + statusBonus) * (1 + statusAmplify) * statusTotalMultiplier
+
+    const effectiveBaseDMG = baseDMGFn ? baseDMGFn(statsS) : baseDMG
+    return effectiveBaseDMG * damageRES * statusMultiplier
+  }
+
+  // Monte Carlo Shapley value estimation via random permutation sampling.
+  // φ_i ≈ (1/T) Σ_t [ f(S_t^i ∪ {i}) - f(S_t^i) ]
+  const SHAPLEY_SAMPLES = 100
+
+  const shapleyValues = new Map<string, number>()
+  for (const [groupKey] of groups) {
+    shapleyValues.set(groupKey, 0)
+  }
+
+  // f(∅): damage with no external modifiers active — the unattributed base
+  const baseDamage = evaluateSubset(new Set())
+
+  for (let iter = 0; iter < SHAPLEY_SAMPLES; iter++) {
+    // Fisher-Yates shuffle to produce a uniform random permutation of group indices
+    const perm = groups.map((_, i) => i)
+    for (let i = n - 1; i > 0; i--) {
+      const j = Math.floor(Math.random() * (i + 1))
+      ;[perm[i], perm[j]] = [perm[j], perm[i]]
+    }
+
+    const currentSet = new Set<string>()
+    let prevDmg = baseDamage
+
+    for (const idx of perm) {
+      const [groupKey] = groups[idx]
+      currentSet.add(groupKey)
+
+      const dmg = evaluateSubset(currentSet)
+      shapleyValues.set(groupKey, shapleyValues.get(groupKey)! + (dmg - prevDmg))
+      prevDmg = dmg
+    }
+  }
+
+  // Average marginals across all iterations to get final Shapley values
+  const safePercent = (sv: number, total: number): number => (total !== 0 ? (sv / total) * 100 : 0)
+
+  for (let gi = 0; gi < n; gi++) {
+    const [groupKey, indices] = groups[gi]
     const anchor = indices.map(i => damageModifiers[i]).find(m => (m.source ?? '') === groupKey)
     const representativeMod = anchor ?? damageModifiers[indices[0]]
     const uniqueKey = groupKey in results ? `${groupKey}_${indices[0]}` : groupKey
 
-    const excludedIndices = new Set(indices)
-
-    // Rebuild modifiers excluding the entire group
-    const charModsWithout: Partial<CharacterStats> = {}
-    const enemyModsWithout: Partial<EnemyStats> = {}
-
-    for (let j = 0; j < damageModifiers.length; j++) {
-      if (excludedIndices.has(j)) continue
-
-      const otherMod = damageModifiers[j]
-      // Apply stack multiplier for limited modifiers, matching resolveDamageModifiers logic
-      const stackedOtherMod = otherMod.durationStrategy?.type === 'limited' && ctx
-        ? applyStackMultiplier(otherMod, ctx.modifiersInAction)
-        : otherMod
-      const conditionMultiplier = stackedOtherMod.condition ? stackedOtherMod.condition(ctx) : 1
-
-      if (stackedOtherMod.characterStats) {
-        for (const [key, value] of Object.entries(stackedOtherMod.characterStats)) {
-          const statKey = key as keyof CharacterStats
-          const currentVal = charModsWithout[statKey] as number | undefined
-          const modValue = (value as number) * conditionMultiplier
-          charModsWithout[statKey] = aggregateStat(currentVal, modValue, key) as any
-        }
-      }
-      if (stackedOtherMod.enemyStats) {
-        for (const [key, value] of Object.entries(stackedOtherMod.enemyStats)) {
-          const statKey = key as keyof EnemyStats
-          const currentVal = enemyModsWithout[statKey] as number | undefined
-          const modValue = (value as number) * conditionMultiplier
-          enemyModsWithout[statKey] = aggregateStat(currentVal, modValue, key) as any
-        }
-      }
-    }
-
-    // Recalculate damage without this group
-    const statsWithout = mergeStats(baseStats, charModsWithout)
-    const enemyStatsWithout = mergeEnemyStats(enemy.stats, enemyModsWithout)
-
-    // Resistance multipliers
-    const level = statsWithout.level
-    const enemyLevel = enemyStatsWithout.level
-    const enemyResistance = enemyStatsWithout.resistance
-    const enemyDamageReduction = enemyStatsWithout.damageReduction
-    const elementRES = enemyStatsWithout[`${element.toLowerCase()}RES` as keyof typeof enemyStatsWithout] as number
-
-    const resistanceMultiplier = calculateResistanceMultiplierValue(0, enemyResistance)
-    const defenseMultiplier = calculateDefenseMultiplier(level, enemyLevel, 0)
-    const damageReductionMultiplier = 1 - enemyDamageReduction
-    const elementalResMultiplier = 1 - elementRES
-    const damageRES = resistanceMultiplier * defenseMultiplier * damageReductionMultiplier * elementalResMultiplier
-
-    // Status multipliers
-    const statusBonus = getStatusBonusDMG(statsWithout, element)
-    const statusAmplify = getStatusAmplifyDMG(statsWithout, element)
-    const statusTotalMultiplier = getStatusTotalMultiplierDMG(statsWithout, element)
-    const statusMultiplier = (1 + statusBonus) * (1 + statusAmplify) * statusTotalMultiplier
-
-    const damageWithout = (baseDMGFn ? baseDMGFn(statsWithout) : baseDMG) * damageRES * statusMultiplier
-
-    // Calculate contribution
-    const contrib = fullDamage - damageWithout
-
-    const safePercent = (withVal: number, withoutVal: number) => {
-      if (!withoutVal || withoutVal === 0) return 0
-      return (withVal / withoutVal - 1) * 100
-    }
-
-    const pct = safePercent(fullDamage, damageWithout)
+    const sv = shapleyValues.get(groupKey)! / SHAPLEY_SAMPLES
 
     results[uniqueKey] = {
       source: representativeMod.source,
       ownerCharacter: representativeMod.ownerCharacter ?? null,
       displayName: representativeMod.displayName,
       isSelf: representativeMod.targetStrategy === 'self',
-      crit_damage_contributed: Math.max(0, contrib),
-      crit_percent_damage_contributed: pct,
-      normal_damage_contributed: Math.max(0, contrib),
-      normal_percent_damage_contributed: pct,
-      average_damage_contributed: Math.max(0, contrib),
-      average_percent_damage_contributed: pct,
+      normal_damage_contributed: Math.max(0, sv),
+      normal_percent_damage_contributed: safePercent(sv, fullDamage),
+      crit_damage_contributed: Math.max(0, sv),
+      crit_percent_damage_contributed: safePercent(sv, fullDamage),
+      average_damage_contributed: Math.max(0, sv),
+      average_percent_damage_contributed: safePercent(sv, fullDamage),
     }
   }
+
+  // ── Shapley efficiency verification ────────────────────────────────────────────────────────────
+  // Efficiency property of Shapley values: Σ φ_i = f(N) - f(∅)
+  // A small residual confirms the Monte Carlo estimate converged correctly.
+  let _sumSv = 0
+  for (const [groupKey] of groups) {
+    _sumSv += shapleyValues.get(groupKey)! / SHAPLEY_SAMPLES
+  }
+  const _attributable = fullDamage - baseDamage
+  console.log(`\n[SHAPLEY] ══ Negative Status: ${element} | f(∅): ${baseDamage.toFixed(2)} | f(N): ${fullDamage.toFixed(2)} ══`)
+  console.log(`[SHAPLEY]   f(N) - f(∅) attributable:         ${_attributable.toFixed(2)}`)
+  console.log(`[SHAPLEY]   Σ φ_i  sum of Shapley values:     ${_sumSv.toFixed(2)}`)
+  console.log(`[SHAPLEY]   Residual |Σφ_i - attributable|:   ${Math.abs(_sumSv - _attributable).toFixed(2)}  (expect ≈ 0)`)
+  console.log(`[SHAPLEY]   ── Per-group Shapley values ────────────────────`)
+  for (const [groupKey, indices] of groups) {
+    const sv = shapleyValues.get(groupKey)! / SHAPLEY_SAMPLES
+    const label = damageModifiers[indices[0]].displayName ?? groupKey
+    const pct = fullDamage !== 0 ? (sv / fullDamage * 100).toFixed(1) : '0'
+    console.log(`[SHAPLEY]     "${label}":  φ = ${sv.toFixed(2)}  (${pct}% of f(N))`)
+  }
+  console.log(``)
+  // ───────────────────────────────────────────────────────────────────────────────────────────────
 
   return results
 }

@@ -1,6 +1,6 @@
 import type { StepContext } from '../../types/stepContext'
 import type { DamageEvent } from '../../types/events'
-import { calculateDamageNegativeStatus } from './damageCalculator'
+import { calculateDamageNegativeStatus, evaluateNegativeStatusWithGroups } from './damageCalculator'
 import { negativeStatuses } from '../../data/negativeStatuses'
 
 
@@ -30,7 +30,14 @@ export function calculateAeroErosionSideEffectDamage(context: StepContext, sideE
     }
   }
 
-  return calculateDamageNegativeStatus(aeroErosionStacks, 'AERO', context.enemy, 'Aero Erosion', context.character.stats, context.aggregatedCharacterModifiers, context.aggregatedEnemyModifiers, context.damageModifiers, `${context.character.name}: ${sideEffectName}`, context.snapshotId, timeStamp, sideEffectName, context)
+  const event = calculateDamageNegativeStatus(aeroErosionStacks, 'AERO', context.enemy, 'Aero Erosion', context.character.stats, context.aggregatedCharacterModifiers, context.aggregatedEnemyModifiers, context.damageModifiers, `${context.character.name}: ${sideEffectName}`, context.snapshotId, timeStamp, sideEffectName, context)
+  event.calcParams = {
+    reEvaluate: (activeGroupKeys) => evaluateNegativeStatusWithGroups(
+      { currStacks: aeroErosionStacks, element: 'AERO', enemy: context.enemy, negativeStatusName: 'Aero Erosion', baseStats: context.character.stats, damageModifiers: context.damageModifiers, ctx: context },
+      activeGroupKeys,
+    ),
+  }
+  return event
 }
 
 // ========== Hiyuki: Fine Snow — Glacio Chafe Proc ===========================================================================
@@ -47,9 +54,8 @@ export function calculateAeroErosionSideEffectDamage(context: StepContext, sideE
  * this function is only called when it is already satisfied.
  */
 export function calculateGlacioChafeProcDamage(context: StepContext, sideEffectName: string, timeStamp: number): DamageEvent {
-  // S3: DMG Multiplier of Snow Rust: Glacio Bite is increased by 488% (102% + 488% = 590% ATK). TODO: Might be multiplicative
   const multiplier = context.character.sequence >= 3 ? (1.02 + 4.88) : 1.02
-  return calculateDamageNegativeStatus(
+  const event = calculateDamageNegativeStatus(
     0,
     'GLACIO',
     context.enemy,
@@ -65,6 +71,13 @@ export function calculateGlacioChafeProcDamage(context: StepContext, sideEffectN
     context,
     { scaling: 'ATK', multiplier },
   )
+  event.calcParams = {
+    reEvaluate: (activeGroupKeys) => evaluateNegativeStatusWithGroups(
+      { currStacks: 0, element: 'GLACIO', enemy: context.enemy, negativeStatusName: 'Glacio Chafe', baseStats: context.character.stats, damageModifiers: context.damageModifiers, ctx: context, baseDMGScaling: { scaling: 'ATK', multiplier } },
+      activeGroupKeys,
+    ),
+  }
+  return event
 }
 
 // ========== Hiyuki: Everfrost Dominion — Glacio Bite at Max Stacks ==========================================================
@@ -87,7 +100,7 @@ export function calculateGlacioChafeDominionDamage(context: StepContext, sideEff
   // Current max stacks might be something like: context.current.negativeStatusesMaxStacks['Glacio Chafe']
   // OR context.prev.negativeStatusesMaxStacks['Glacio Chafe'] depending on which snapshot is the right to use at this point in time
 
-  return calculateDamageNegativeStatus(
+  const event = calculateDamageNegativeStatus(
     defaultMaxStacks,
     'GLACIO',
     context.enemy,
@@ -102,4 +115,11 @@ export function calculateGlacioChafeDominionDamage(context: StepContext, sideEff
     sideEffectName,
     context,
   )
+  event.calcParams = {
+    reEvaluate: (activeGroupKeys) => evaluateNegativeStatusWithGroups(
+      { currStacks: defaultMaxStacks, element: 'GLACIO', enemy: context.enemy, negativeStatusName: 'Glacio Chafe', baseStats: context.character.stats, damageModifiers: context.damageModifiers, ctx: context },
+      activeGroupKeys,
+    ),
+  }
+  return event
 }

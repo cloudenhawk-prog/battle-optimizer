@@ -7,6 +7,8 @@ import type { Snapshot } from '../../types/snapshot'
 import type { DamageEvent } from '../../types/events'
 import type { ResolvedCharacter } from '../../types/character'
 import type { CharacterStats, EnemyStats } from '../../types/stats'
+import { aggregateStat } from '../../utils/hooks/resolvers'
+import { mergeStats, calculateScalingStat } from '../../utils/calculators/damageCalculator'
 
 // Pie chart colors — tuned to match the cyan/amber/purple palette of the SummaryOverlay
 const PIE_CHART_COLORS = [
@@ -79,9 +81,91 @@ export default function DataOverlay({ snapshot, previousSnapshot = null, startWi
   const [pieChartView, setPieChartView] = useState<'events' | 'types'>('events')
   const [highlightedIndex, setHighlightedIndex] = useState<number | null>(null)
 
+  // Unique action names in stable insertion order — used for contribution source toggles
+  const sourceNames = useMemo(() => {
+    const seen = new Set<string>()
+    const result: string[] = []
+    for (const e of damageEvents) {
+      if (!seen.has(e.actionName)) { seen.add(e.actionName); result.push(e.actionName) }
+    }
+    return result
+  }, [damageEvents])
+
+  const [activeSources, setActiveSources] = useState<Set<string>>(() => new Set(sourceNames))
+  const prevSourceNamesRef = useRef<string[]>(sourceNames)
+  if (prevSourceNamesRef.current !== sourceNames) {
+    prevSourceNamesRef.current = sourceNames
+    setActiveSources(new Set(sourceNames))
+  }
+  const toggleSource = (name: string) => setActiveSources(prev => {
+    const next = new Set(prev)
+    if (next.has(name)) next.delete(name); else next.add(name)
+    return next
+  })
+
+  // Unique contribution group keys across all events — used for buff toggles
+  const contribGroupKeys = useMemo(() => {
+    const keys = new Set<string>()
+    for (const e of damageEvents) {
+      for (const key of Object.keys(e.contributions)) keys.add(key)
+    }
+    return keys
+  }, [damageEvents])
+
+  const [activeContribs, setActiveContribs] = useState<Set<string>>(() => new Set(contribGroupKeys))
+  const prevContribKeysRef = useRef(contribGroupKeys)
+  if (prevContribKeysRef.current !== contribGroupKeys) {
+    prevContribKeysRef.current = contribGroupKeys
+    setActiveContribs(new Set(contribGroupKeys))
+  }
+  const toggleContrib = (key: string) => setActiveContribs(prev => {
+    const next = new Set(prev)
+    if (next.has(key)) next.delete(key); else next.add(key)
+    return next
+  })
+  const toggleAllContribs = () => {
+    const allKeys = Array.from(contribGroupKeys)
+    setActiveContribs(prev => {
+      const allActive = allKeys.every(k => prev.has(k))
+      return allActive ? new Set<string>() : new Set(allKeys)
+    })
+  }
+
+  // Unique damage types across all events — used for pie chart type filtering only
+  const typeNames = useMemo(() => {
+    const seen = new Set<string>()
+    for (const e of damageEvents) {
+      for (const t of e.dmgTypes) seen.add(t)
+    }
+    return seen
+  }, [damageEvents])
+
+  const [activeTypes, setActiveTypes] = useState<Set<string>>(() => new Set(typeNames))
+  const prevTypeNamesRef = useRef(typeNames)
+  if (prevTypeNamesRef.current !== typeNames) {
+    prevTypeNamesRef.current = typeNames
+    setActiveTypes(new Set(typeNames))
+  }
+  const toggleType = (type: string) => setActiveTypes(prev => {
+    const next = new Set(prev)
+    if (next.has(type)) next.delete(type); else next.add(type)
+    return next
+  })
+
+  // Re-evaluate each event with only the active modifier groups.
+  // When all contribs are active, pass through the original events unchanged.
+  const adjustedDamageEvents = useMemo(() => {
+    if (activeContribs.size >= contribGroupKeys.size) return damageEvents
+    return damageEvents.map(event => {
+      if (!event.calcParams) return event
+      const { normal, crit, avg } = event.calcParams.reEvaluate(activeContribs)
+      return { ...event, normalStrike: normal, criticalStrike: crit, average: avg }
+    })
+  }, [damageEvents, activeContribs, contribGroupKeys])
+
   if (!open || !snapshot) return null
 
-  const totalDamage = calculateTotalDamage(damageEvents, mode)
+  const totalDamage = calculateTotalDamage(adjustedDamageEvents, mode)
   const duration = calculateDuration(snapshot)
   const showNav = onPrev !== undefined || onNext !== undefined
 
@@ -128,9 +212,10 @@ export default function DataOverlay({ snapshot, previousSnapshot = null, startWi
 
         {/* 3-column body */}
         <div className="dataColumns">
-          {/* Left panel — energy delta */}
+          {/* Left panel — energy delta + active buff stats */}
           <div className="dataLeftPanel">
             <EnergySection snapshot={snapshot} previousSnapshot={previousSnapshot} startWithFullEnergy={startWithFullEnergy} characters={characters} />
+            <ActiveStatsSection damageEvents={adjustedDamageEvents} activeContribs={activeContribs} characters={characters} snapshot={snapshot} />
           </div>
 
           <div className="dataColDivider" />
@@ -138,29 +223,30 @@ export default function DataOverlay({ snapshot, previousSnapshot = null, startWi
           {/* Center — combat metrics + pie chart + damage sources */}
           <div className="dataCenterPanel">
             <div className="dataCenterTopArea">
-              <div className="dataModeBar">
-                <div className="dataModeGroup">
-                  <button className={`dataModeButton${mode === 'average' ? ' active' : ''}`} onClick={() => setMode('average')}>
+              <CombatMetricsSection totalDamage={totalDamage} duration={duration} snapshot={snapshot} />
+            </div>
+            <div className="dataCenterPieArea">
+              <div className="dataPieViewBar">
+                <div className="dataPieToggle">
+                  <button className={`dataPieToggleButton${mode === 'average' ? ' active' : ''}`} onClick={() => setMode('average')}>
                     Average
                   </button>
-                  <button className={`dataModeButton${mode === 'normal' ? ' active' : ''}`} onClick={() => setMode('normal')}>
+                  <button className={`dataPieToggleButton${mode === 'normal' ? ' active' : ''}`} onClick={() => setMode('normal')}>
                     Normal
                   </button>
-                  <button className={`dataModeButton${mode === 'crit' ? ' active' : ''}`} onClick={() => setMode('crit')}>
+                  <button className={`dataPieToggleButton${mode === 'crit' ? ' active' : ''}`} onClick={() => setMode('crit')}>
                     Critical
                   </button>
                 </div>
               </div>
-              <CombatMetricsSection totalDamage={totalDamage} duration={duration} snapshot={snapshot} />
-            </div>
-            <div className="dataCenterPieArea">
               <PieChartCenter
-                damageEvents={damageEvents}
-                totalDamage={totalDamage}
+                damageEvents={adjustedDamageEvents}
                 view={pieChartView}
                 mode={mode}
                 highlightedIndex={highlightedIndex}
                 onSliceHover={setHighlightedIndex}
+                activeSources={activeSources}
+                activeTypes={activeTypes}
               />
               <div className="dataPieViewBar">
                 <div className="dataPieToggle">
@@ -175,12 +261,16 @@ export default function DataOverlay({ snapshot, previousSnapshot = null, startWi
             </div>
             <div className="dataCenterSourcesArea">
               <DamageSourcesSection
-                damageEvents={damageEvents}
+                damageEvents={adjustedDamageEvents}
                 totalDamage={totalDamage}
                 mode={mode}
                 view={pieChartView}
                 externalHighlightedIndex={highlightedIndex}
                 onRowHighlight={setHighlightedIndex}
+                activeSources={activeSources}
+                onToggleSource={toggleSource}
+                activeTypes={activeTypes}
+                onToggleType={toggleType}
               />
             </div>
           </div>
@@ -189,7 +279,7 @@ export default function DataOverlay({ snapshot, previousSnapshot = null, startWi
 
           {/* Right panel — Modifier Contributions */}
           <div className="dataRightPanel">
-            <ContributionsSection damageEvents={damageEvents} mode={mode} characters={characters} snapshot={snapshot} />
+            <ContributionsSection damageEvents={adjustedDamageEvents} mode={mode} characters={characters} snapshot={snapshot} activeSources={activeSources} activeContribs={activeContribs} onToggleContrib={toggleContrib} onToggleAllContribs={toggleAllContribs} contribGroupKeys={contribGroupKeys} />
           </div>
         </div>
       </div>
@@ -219,14 +309,16 @@ function CombatMetricsSection({ totalDamage, duration, snapshot }: { totalDamage
   )
 }
 
-function PieChartCenter({ damageEvents, totalDamage, view, mode, highlightedIndex, onSliceHover }: { damageEvents: DamageEvent[]; totalDamage: number; view: 'events' | 'types'; mode: 'average' | 'normal' | 'crit'; highlightedIndex: number | null; onSliceHover: (index: number | null) => void }) {
+function PieChartCenter({ damageEvents, view, mode, highlightedIndex, onSliceHover, activeSources, activeTypes }: { damageEvents: DamageEvent[]; view: 'events' | 'types'; mode: 'average' | 'normal' | 'crit'; highlightedIndex: number | null; onSliceHover: (index: number | null) => void; activeSources: Set<string>; activeTypes: Set<string> }) {
   if (damageEvents.length === 0) return null
 
-  // Aggregate damage by type if in 'types' view
   const displayData = view === 'types' ? aggregateDamageByType(damageEvents, mode) : aggregateEventsByName(damageEvents, mode)
 
-  // Format total damage for display
-  const formattedDamage = totalDamage >= 1000 ? `${(totalDamage / 1000).toFixed(1)}k` : totalDamage.toFixed(0)
+  // Filter to active items only — preserve original indices for cross-highlight sync with source list
+  const isItemActive = (item: { name: string }) => view === 'events' ? activeSources.has(item.name) : activeTypes.has(item.name)
+  const activePieData = displayData.map((item, idx) => ({ ...item, originalIndex: idx })).filter(isItemActive)
+  const filteredTotal = activePieData.reduce((sum, item) => sum + item.damage, 0)
+  const formattedDamage = filteredTotal >= 1000 ? `${(filteredTotal / 1000).toFixed(1)}k` : filteredTotal.toFixed(0)
 
   return (
     <div className="pieChartCenter">
@@ -253,34 +345,34 @@ function PieChartCenter({ damageEvents, totalDamage, view, mode, highlightedInde
       </div>
 
       {/* Pie chart SVG */}
-      {displayData.length === 1 ? (
+      {activePieData.length === 0 ? null : activePieData.length === 1 ? (
         <svg viewBox="0 0 200 200" className="pieChartSvg" style={{ overflow: 'visible' }}>
           <circle
             cx="100" cy="100" r="90"
-            fill={PIE_CHART_COLORS[0]}
+            fill={PIE_CHART_COLORS[activePieData[0].originalIndex % PIE_CHART_COLORS.length]}
             stroke="rgba(30, 30, 40, 0.95)"
             strokeWidth="2"
-            className={`pieSlice${highlightedIndex === 0 ? ' highlighted' : ''}`}
+            className={`pieSlice${highlightedIndex === activePieData[0].originalIndex ? ' highlighted' : ''}`}
             style={{ cursor: 'pointer' }}
-            onMouseEnter={() => onSliceHover(0)}
+            onMouseEnter={() => onSliceHover(activePieData[0].originalIndex)}
             onMouseLeave={() => onSliceHover(null)}
           />
         </svg>
       ) : (
         <svg viewBox="0 0 200 200" className="pieChartSvg" style={{ overflow: 'visible' }}>
           {calculatePieSlices(
-            displayData.map(d => d.damage),
-            PIE_CHART_COLORS,
-          ).map((slice, index) => (
+            activePieData.map(d => d.damage),
+            activePieData.map(d => PIE_CHART_COLORS[d.originalIndex % PIE_CHART_COLORS.length]),
+          ).map((slice, sliceIdx) => (
             <path
-              key={index}
+              key={sliceIdx}
               d={slice.path}
               fill={slice.color}
               stroke="rgba(30, 30, 40, 0.95)"
               strokeWidth="2"
-              className={`pieSlice${highlightedIndex === index ? ' highlighted' : ''}`}
+              className={`pieSlice${highlightedIndex === activePieData[sliceIdx].originalIndex ? ' highlighted' : ''}`}
               style={{ cursor: 'pointer' }}
-              onMouseEnter={() => onSliceHover(index)}
+              onMouseEnter={() => onSliceHover(activePieData[sliceIdx].originalIndex)}
               onMouseLeave={() => onSliceHover(null)}
             />
           ))}
@@ -324,6 +416,10 @@ function DamageSourcesSection({
   view,
   externalHighlightedIndex,
   onRowHighlight,
+  activeSources,
+  onToggleSource,
+  activeTypes,
+  onToggleType,
 }: {
   damageEvents: DamageEvent[]
   totalDamage: number
@@ -331,6 +427,10 @@ function DamageSourcesSection({
   view: 'events' | 'types'
   externalHighlightedIndex: number | null
   onRowHighlight: (index: number | null) => void
+  activeSources?: Set<string>
+  onToggleSource?: (name: string) => void
+  activeTypes?: Set<string>
+  onToggleType?: (type: string) => void
 }) {
   const [hoveredItem, setHoveredItem] = useState<DisplayItem | null>(null)
   const [showTooltip, setShowTooltip] = useState(false)
@@ -377,6 +477,9 @@ function DamageSourcesSection({
 
   const displayData = view === 'types' ? aggregateDamageByType(damageEvents, mode) : aggregateEventsByName(damageEvents, mode)
 
+  const isItemActive = (name: string) => view === 'events' ? (activeSources?.has(name) ?? true) : (activeTypes?.has(name) ?? true)
+  const displayedTotal = displayData.filter(item => isItemActive(item.name)).reduce((sum, item) => sum + item.damage, 0)
+
   return (
     <div className="dataSectionGroup dataSourcesSection" onClick={handleClickAway}>
       <div className="dataPanelHeader silver">
@@ -390,7 +493,7 @@ function DamageSourcesSection({
           <p className="dataEmptyMsg">No damage sources detected</p>
         ) : (
           displayData.map((item, index) => {
-            const pct = totalDamage > 0 ? (item.damage / totalDamage) * 100 : 0
+            const pct = displayedTotal > 0 ? (item.damage / displayedTotal) * 100 : 0
             const pieColor = PIE_CHART_COLORS[index % PIE_CHART_COLORS.length]
             const isPinned = pinnedItem && pinnedItem.name === item.name && pinnedItem.index === index
             const isExternallyHighlighted = externalHighlightedIndex === index && hoveredItem?.index !== index && pinnedItem?.index !== index
@@ -404,14 +507,32 @@ function DamageSourcesSection({
             return (
               <div
                 key={index}
-                className={`dataSourceRow${isPinned ? ' pinned' : ''}${isExternallyHighlighted ? ' externalHighlight' : ''}`}
+                className={`dataSourceRow${isPinned ? ' pinned' : ''}${isExternallyHighlighted ? ' externalHighlight' : ''}${!isItemActive(item.name) ? ' inactive' : ''}`}
                 onMouseEnter={() => handleMouseEnter({ ...item, index })}
                 onMouseLeave={handleMouseLeave}
                 onClick={e => {
                   e.stopPropagation()
                   handleClick({ ...item, index })
                 }}>
-                <DataRow label={label} value={`${item.damage.toFixed(0)} (${pct.toFixed(1)}%)`} barPct={pct} customColor={pieColor} />
+                <div className="dataSourceRowInner">
+                  <DataRow label={label} value={`${item.damage.toFixed(0)} (${pct.toFixed(1)}%)`} barPct={pct} customColor={pieColor} />
+                  {view === 'events' && activeSources && onToggleSource && (
+                    <button
+                      className={`dataSourceToggle${activeSources.has(item.name) ? ' active' : ''}`}
+                      style={{ '--toggle-color': pieColor } as React.CSSProperties}
+                      title={activeSources.has(item.name) ? 'Exclude from buff contributions' : 'Include in buff contributions'}
+                      onClick={e => { e.stopPropagation(); onToggleSource(item.name) }}
+                    />
+                  )}
+                  {view === 'types' && activeTypes && onToggleType && (
+                    <button
+                      className={`dataSourceToggle${activeTypes.has(item.name) ? ' active' : ''}`}
+                      style={{ '--toggle-color': pieColor } as React.CSSProperties}
+                      title={activeTypes.has(item.name) ? 'Hide this type from pie chart' : 'Show this type in pie chart'}
+                      onClick={e => { e.stopPropagation(); onToggleType(item.name) }}
+                    />
+                  )}
+                </div>
               </div>
             )
           })
@@ -511,60 +632,139 @@ function DamageSourcesSection({
   )
 }
 
-function ContributionsSection({ damageEvents, mode, characters, snapshot }: { damageEvents: DamageEvent[]; mode: 'average' | 'normal' | 'crit'; characters: ResolvedCharacter[]; snapshot: Snapshot | null }) {
+function ContributionsSection({ damageEvents, mode, characters, snapshot, activeSources, activeContribs, onToggleContrib, onToggleAllContribs, contribGroupKeys }: { damageEvents: DamageEvent[]; mode: 'average' | 'normal' | 'crit'; characters: ResolvedCharacter[]; snapshot: Snapshot | null; activeSources: Set<string>; activeContribs: Set<string>; onToggleContrib: (key: string) => void; onToggleAllContribs: () => void; contribGroupKeys: Set<string> }) {
   const [hideInherent, setHideInherent] = useState(false)
   const [hideZero, setHideZero] = useState(false)
   const [tooltipState, setTooltipState] = useState<{ index: number; rect: DOMRect } | null>(null)
 
   const modifierMap = useMemo(() => buildModifierMap(characters), [characters])
 
-  // Total damage across all events for the % impact calculation
-  const totalDamage = damageEvents.reduce((sum, event) => sum + getEventDamage(event, mode), 0)
+  // Only count events whose actionName is currently toggled on
+  const activeEvents = damageEvents.filter(e => activeSources.has(e.actionName))
+  const totalDamage = activeEvents.reduce((sum, event) => sum + getEventDamage(event, mode), 0)
 
-  // Aggregate flat damage contributions from all events
-  const allContributions: Record<string, { source: string; displayName?: string; isInherent?: boolean; average: number; normal: number; crit: number }> = {}
-
-  damageEvents.forEach(event => {
-    Object.entries(event.contributions).forEach(([source, contrib]) => {
-      if (!allContributions[source]) {
-        allContributions[source] = {
-          source: contrib.source,
-          displayName: contrib.displayName,
-          isInherent: contrib.isInherent,
-          average: contrib.average_damage_contributed,
-          normal: contrib.normal_damage_contributed,
-          crit: contrib.crit_damage_contributed,
-        }
-      } else {
-        allContributions[source].average += contrib.average_damage_contributed
-        allContributions[source].normal += contrib.normal_damage_contributed
-        allContributions[source].crit += contrib.crit_damage_contributed
-      }
-    })
-  })
-
-  let contributionsList = Object.values(allContributions)
-
-  // Apply filters
-  if (hideInherent) contributionsList = contributionsList.filter(c => !c.isInherent)
-  if (hideZero) {
-    contributionsList = contributionsList.filter(c => {
-      const val = mode === 'average' ? c.average : mode === 'normal' ? c.normal : c.crit
-      return val > 0
-    })
+  // Aggregate contributions from active events only.
+  // Keep metadata from all events so entries remain stable when sources toggle.
+  const metaMap: Record<string, { source: string; displayName?: string; isInherent?: boolean }> = {}
+  for (const event of damageEvents) {
+    for (const [key, contrib] of Object.entries(event.contributions)) {
+      if (!metaMap[key]) metaMap[key] = { source: contrib.source, displayName: contrib.displayName, isInherent: contrib.isInherent }
+    }
   }
 
-  // Sort by contribution amount descending
-  contributionsList.sort((a, b) => {
-    const aVal = mode === 'average' ? a.average : mode === 'normal' ? a.normal : a.crit
-    const bVal = mode === 'average' ? b.average : mode === 'normal' ? b.normal : b.crit
-    return bVal - aVal
-  })
+  // Helper: re-evaluate total damage for active events over an arbitrary contrib subset.
+  const evaluateDamage = (contribSet: Set<string>): number => {
+    let dmg = 0
+    for (const event of activeEvents) {
+      if (!event.calcParams) {
+        dmg += getEventDamage(event, mode)
+      } else {
+        const r = event.calcParams.reEvaluate(contribSet)
+        dmg += mode === 'average' ? r.avg : mode === 'normal' ? r.normal : r.crit
+      }
+    }
+    return dmg
+  }
 
-  const maxValue = contributionsList.reduce((max, c) => {
-    const val = mode === 'average' ? c.average : mode === 'normal' ? c.normal : c.crit
-    return Math.max(max, val)
-  }, 0)
+  // Separate inherent (always-on) from non-inherent (external, toggleable) active buffs.
+  const inherentOnlySet = new Set(Array.from(activeContribs).filter(k => metaMap[k]?.isInherent))
+  const nonInherentKeys = Object.keys(metaMap).filter(k => activeContribs.has(k) && !metaMap[k]?.isInherent)
+  const n = nonInherentKeys.length
+
+  // v(∅): damage with only inherent buffs — stable base for pct = φ_i / v(∅).
+  const baseDamage = evaluateDamage(inherentOnlySet)
+
+  // Compute Shapley values for non-inherent buffs.
+  // φ_i = Σ_{S ⊆ N\{i}} weight(|S|,n) * [v(S∪{i}) - v(S)]
+  // Shapley efficiency: Σφ_i = v(N) - v(∅)  exactly.
+  const shapleyValues: Record<string, number> = {}
+
+  const MAX_EXACT = 15
+  if (n > 0 && n <= MAX_EXACT) {
+    // Exact: enumerate all 2^n subsets of non-inherent keys once, cache damage values.
+    const subsetDmg = new Float64Array(1 << n)
+    for (let mask = 0; mask < (1 << n); mask++) {
+      const contribSet = new Set<string>(inherentOnlySet)
+      for (let j = 0; j < n; j++) {
+        if (mask & (1 << j)) contribSet.add(nonInherentKeys[j])
+      }
+      subsetDmg[mask] = evaluateDamage(contribSet)
+    }
+    // Precompute factorials (floating point is fine for n ≤ 15).
+    const fact = new Float64Array(n + 1)
+    fact[0] = 1
+    for (let k = 1; k <= n; k++) fact[k] = fact[k - 1] * k
+
+    const popcount = (x: number): number => { let c = 0; let v = x; while (v) { c += v & 1; v >>>= 1 } return c }
+
+    for (let i = 0; i < n; i++) {
+      let shapley = 0
+      const nWithoutI = ((1 << n) - 1) ^ (1 << i)
+      let s = nWithoutI
+      while (true) {
+        const sSize = popcount(s)
+        const weight = (fact[sSize] * fact[n - sSize - 1]) / fact[n]
+        shapley += weight * (subsetDmg[s | (1 << i)] - subsetDmg[s])
+        if (s === 0) break
+        s = (s - 1) & nWithoutI
+      }
+      shapleyValues[nonInherentKeys[i]] = shapley
+    }
+  } else if (n > MAX_EXACT) {
+    // Monte Carlo approximation: average marginal over random permutations.
+    const SAMPLES = 300
+    for (const key of nonInherentKeys) shapleyValues[key] = 0
+    const perm = [...nonInherentKeys]
+    for (let s = 0; s < SAMPLES; s++) {
+      for (let i = perm.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [perm[i], perm[j]] = [perm[j], perm[i]]
+      }
+      const contribSet = new Set<string>(inherentOnlySet)
+      let prevDmg = baseDamage
+      for (const key of perm) {
+        contribSet.add(key)
+        const newDmg = evaluateDamage(contribSet)
+        shapleyValues[key] += newDmg - prevDmg
+        prevDmg = newDmg
+      }
+    }
+    for (const key of nonInherentKeys) shapleyValues[key] /= SAMPLES
+  }
+
+  // Build marginalMap: Shapley rawDamage for non-inherent, last-in marginal for inherent.
+  const marginalMap: Record<string, { rawDamage: number; pct: number }> = {}
+  for (const key of Object.keys(metaMap)) {
+    if (!activeContribs.has(key)) {
+      marginalMap[key] = { rawDamage: 0, pct: 0 }
+    } else if (metaMap[key]?.isInherent) {
+      // Inherent buffs: marginal vs. the full active set (removing one inherent asks "cost of losing this passive").
+      const contribsWithoutKey = new Set(activeContribs)
+      contribsWithoutKey.delete(key)
+      const dmgWithout = evaluateDamage(contribsWithoutKey)
+      const rawDamage = totalDamage - dmgWithout
+      const pct = dmgWithout > 0 ? (rawDamage / dmgWithout) * 100 : 0
+      marginalMap[key] = { rawDamage, pct }
+    } else {
+      const rawDamage = shapleyValues[key] ?? 0
+      const pct = baseDamage > 0 ? (rawDamage / baseDamage) * 100 : 0
+      marginalMap[key] = { rawDamage, pct }
+    }
+  }
+
+  let contributionsList = Object.keys(metaMap).map(key => ({
+    key,
+    ...metaMap[key],
+    rawDamage: marginalMap[key]?.rawDamage ?? 0,
+    pct:       marginalMap[key]?.pct       ?? 0,
+  }))
+
+  if (hideInherent) contributionsList = contributionsList.filter(c => !c.isInherent)
+  if (hideZero) contributionsList = contributionsList.filter(c => c.rawDamage > 0)
+
+  contributionsList.sort((a, b) => b.rawDamage - a.rawDamage)
+
+  const maxValue = contributionsList.reduce((max, c) => Math.max(max, c.rawDamage), 0)
 
   return (
     <div className="dataSectionGroup">
@@ -573,6 +773,7 @@ function ContributionsSection({ damageEvents, mode, characters, snapshot }: { da
         <span className="dataPanelHeaderLabel">Modifier Contributions</span>
         <div className="dataPanelHeaderLine" />
       </div>
+
       <div className="dataContribFilterBar">
         <span className="dataContribFilterLabel">Show:</span>
         <button
@@ -587,6 +788,12 @@ function ContributionsSection({ damageEvents, mode, characters, snapshot }: { da
           title={hideZero ? 'Show zero-contribution modifiers' : 'Hide zero-contribution modifiers'}>
           Zeros
         </button>
+        <button
+          className={`dataContribFilterBtn dataContribToggleAllBtn${activeContribs.size >= contribGroupKeys.size ? ' active' : ''}`}
+          onClick={onToggleAllContribs}
+          title={activeContribs.size >= contribGroupKeys.size ? 'Disable all buffs' : 'Enable all buffs'}>
+          {activeContribs.size >= contribGroupKeys.size ? 'All On' : 'All Off'}
+        </button>
       </div>
 
       {contributionsList.length === 0 ? (
@@ -594,33 +801,41 @@ function ContributionsSection({ damageEvents, mode, characters, snapshot }: { da
       ) : (
         <div className="dataContribList">
           {contributionsList.map((contrib, index) => {
-            const damageValue = mode === 'average' ? contrib.average : mode === 'normal' ? contrib.normal : contrib.crit
-            const damageWithout = totalDamage - damageValue
-            const percentValue = damageWithout > 0 ? (totalDamage / damageWithout - 1) * 100 : 0
+            const damageValue = contrib.rawDamage
+            const percentValue = contrib.pct
             const barPct = maxValue > 0 ? (damageValue / maxValue) * 100 : 0
             const isInherent = !!contrib.isInherent
             const isZero = damageValue === 0 && !isInherent
             const colorClass = isInherent ? ' amber' : isZero ? ' cyan' : ''
+            const contribKey = contrib.key
+            const isActive = activeContribs.has(contribKey)
 
             return (
               <div
                 key={index}
-                className="dataContribRow"
+                className={`dataContribRow${!isActive ? ' inactive' : ''}`}
                 onMouseEnter={e => setTooltipState({ index, rect: (e.currentTarget as HTMLDivElement).getBoundingClientRect() })}
-                onMouseLeave={() => setTooltipState(null)}>
-                <div className="dataContribMeta">
-                  <span className={`dataContribName${colorClass}`}>
-                    {contrib.displayName || contrib.source}
-                  </span>
-                  <span className={`dataContribPct${colorClass}`}>
-                    {percentValue !== 0 ? `+${percentValue.toFixed(1)}%` : '+0.0%'}
-                  </span>
-                </div>
-                <div className="dataContribBarRow">
-                  <div className="dataContribBarTrack">
-                    <div className={`dataContribBarFill${colorClass}`} style={{ width: `${barPct}%` }} />
+                onMouseLeave={() => setTooltipState(null)}
+                onClick={() => onToggleContrib(contribKey)}>
+                <button
+                  className={`dataContribToggle${isActive ? ' active' : ''}${colorClass}`}
+                  title={isActive ? 'Remove this buff from damage calculation' : 'Include this buff in damage calculation'}
+                />
+                <div className="dataContribContent">
+                  <div className="dataContribMeta">
+                    <span className={`dataContribName${colorClass}`}>
+                      {contrib.displayName || contrib.source}
+                    </span>
+                    <span className={`dataContribPct${colorClass}`}>
+                      {percentValue !== 0 ? `+${percentValue.toFixed(1)}%` : '+0.0%'}
+                    </span>
                   </div>
-                  <span className="dataContribValue">{damageValue.toFixed(0)}</span>
+                  <div className="dataContribBarRow">
+                    <div className="dataContribBarTrack">
+                      <div className={`dataContribBarFill${colorClass}`} style={{ width: `${barPct}%` }} />
+                    </div>
+                    <span className="dataContribValue">{damageValue.toFixed(0)}</span>
+                  </div>
                 </div>
               </div>
             )
@@ -810,6 +1025,195 @@ function EnergySection({ snapshot, previousSnapshot, startWithFullEnergy, charac
             </div>
           )
         })
+      )}
+    </div>
+  )
+}
+
+// ========== Final Stats Section ==============================================================================================
+
+// Groups of stats to display as absolute final values.
+// 'ATK', 'HP', 'DEF' are special — they use calculateScalingStat (computed from sub-components).
+const FINAL_STAT_GROUPS: Array<{ label: string; keys: string[] }> = [
+  {
+    label: 'Core',
+    keys: ['ATK', 'HP', 'DEF', 'critRate', 'critDamage', 'bonusDMG', 'amplifyDMG', 'totalMultiplierDMG', 'defIgnore', 'resistancePEN', 'elementalResPEN', 'healingBonus', 'energyPercent', 'tuneBreakBoost', 'offtuneBuildupRate'],
+  },
+  {
+    label: 'Elemental',
+    keys: ['aeroBonusDMG', 'aeroAmplifyDMG', 'spectroBonusDMG', 'spectroAmplifyDMG', 'fusionBonusDMG', 'fusionAmplifyDMG', 'glacioBonusDMG', 'glacioAmplifyDMG', 'electroBonusDMG', 'electroAmplifyDMG', 'havocBonusDMG', 'havocAmplifyDMG'],
+  },
+  {
+    label: 'Skill Types',
+    keys: ['basicBonusDMG', 'basicAmplifyDMG', 'heavyBonusDMG', 'heavyAmplifyDMG', 'skillBonusDMG', 'skillAmplifyDMG', 'liberationBonusDMG', 'liberationAmplifyDMG', 'coordinatedBonusDMG', 'coordinatedAmplifyDMG', 'echoBonusDMG', 'echoAmplifyDMG', 'introBonusDMG', 'introAmplifyDMG', 'outroBonusDMG', 'outroAmplifyDMG'],
+  },
+  {
+    label: 'Negative Status',
+    keys: ['aeroErosionBonusDMG', 'aeroErosionAmplifyDMG', 'spectroFrazzleBonusDMG', 'spectroFrazzleAmplifyDMG', 'havocBaneBonusDMG', 'havocBaneAmplifyDMG', 'glacioChafeBonusDMG', 'glacioChafeAmplifyDMG', 'fusionBurstBonusDMG', 'fusionBurstAmplifyDMG', 'electroFlareBonusDMG', 'electroFlareAmplifyDMG'],
+  },
+]
+
+const ENEMY_DEBUFF_KEYS = ['resistance', 'damageReduction', 'aeroRES', 'spectroRES', 'havocRES', 'glacioRES', 'fusionRES', 'electroRES']
+
+const SCALING_STAT_KEYS = new Set(['ATK', 'HP', 'DEF'])
+
+function formatFinalStatLabel(key: string): string {
+  if (key === 'ATK') return 'ATK'
+  if (key === 'HP')  return 'HP'
+  if (key === 'DEF') return 'DEF'
+  return key
+    .replace(/([a-z])([A-Z])/g, '$1 $2')
+    .replace(/([A-Z]+)([A-Z][a-z])/g, '$1 $2')
+    .replace(/^./, s => s.toUpperCase())
+    .trim()
+}
+
+function formatFinalStatValue(key: string, value: number): string {
+  if (SCALING_STAT_KEYS.has(key)) return Math.round(value).toLocaleString()
+  if (key.toLowerCase().includes('totalmultiplier')) return `×${value.toFixed(3)}`
+  if (/rate|bonus|amplify|pen|percent|boost|ignore|critdamage|damagereduction|res$/i.test(key) || key === 'healingBonus') {
+    return `${(value * 100).toFixed(1)}%`
+  }
+  return Math.round(value).toLocaleString()
+}
+
+function isFinalStatZero(key: string, value: number): boolean {
+  if (SCALING_STAT_KEYS.has(key)) return false
+  if (key.toLowerCase().includes('totalmultiplier')) return value === 1
+  return value === 0
+}
+
+function getFinalStatValue(key: string, finalStats: CharacterStats): number {
+  if (SCALING_STAT_KEYS.has(key)) return calculateScalingStat(finalStats, key as 'ATK' | 'HP' | 'DEF')
+  return (finalStats[key as keyof CharacterStats] as number) ?? 0
+}
+
+function ActiveStatsSection({ damageEvents, activeContribs, characters, snapshot }: {
+  damageEvents: DamageEvent[]
+  activeContribs: Set<string>
+  characters: ResolvedCharacter[]
+  snapshot: Snapshot | null
+}) {
+  const [hideZero, setHideZero] = useState(true)
+
+  const modifierMap = useMemo(() => buildModifierMap(characters), [characters])
+
+  const actingChar = useMemo(
+    () => characters.find(c => c.name === snapshot?.character) ?? null,
+    [characters, snapshot],
+  )
+
+  const metaMap = useMemo(() => {
+    const map: Record<string, { source: string; displayName?: string; isInherent?: boolean }> = {}
+    for (const event of damageEvents) {
+      for (const [key, contrib] of Object.entries(event.contributions)) {
+        if (!map[key]) map[key] = { source: contrib.source, displayName: contrib.displayName, isInherent: contrib.isInherent }
+      }
+    }
+    return map
+  }, [damageEvents])
+
+  // Aggregate active buff character stats into a partial modifier object, then merge with base stats.
+  const { finalStats, enemyDebuffStats } = useMemo(() => {
+    const activeCharMods: Partial<CharacterStats> = {}
+    const enemyDebuffStats: Record<string, number> = {}
+
+    for (const key of activeContribs) {
+      const meta = metaMap[key]
+      if (!meta || meta.isInherent) continue
+      const displayName = meta.displayName ?? meta.source
+      const strippedName = displayName.replace(/\s+/g, '')
+
+      // Prefer activation-time stats (captures snapshot-time multiplied values like Halo 5-piece)
+      const statsSource = snapshot?.buffsActivationStats?.[strippedName] ?? modifierMap.get(displayName)?.characterStats
+      if (statsSource) {
+        for (const [k, v] of Object.entries(statsSource)) {
+          if (v === undefined) continue
+          activeCharMods[k as keyof CharacterStats] = aggregateStat(
+            activeCharMods[k as keyof CharacterStats] as number | undefined,
+            v as number, k,
+          ) as any
+        }
+      }
+
+      const enemyStatsSource = modifierMap.get(displayName)?.enemyStats
+      if (enemyStatsSource) {
+        for (const [k, v] of Object.entries(enemyStatsSource)) {
+          if (v === undefined) continue
+          enemyDebuffStats[k] = aggregateStat(enemyDebuffStats[k], v as number, k)
+        }
+      }
+    }
+
+    const finalStats = actingChar ? mergeStats(actingChar.stats, activeCharMods) : null
+    return { finalStats, enemyDebuffStats }
+  }, [activeContribs, metaMap, modifierMap, snapshot, actingChar])
+
+  const visibleCharGroups = FINAL_STAT_GROUPS.map(group => ({
+    ...group,
+    keys: group.keys.filter(key => {
+      if (!hideZero) return true
+      if (!finalStats) return false
+      return !isFinalStatZero(key, getFinalStatValue(key, finalStats))
+    }),
+  })).filter(g => g.keys.length > 0)
+
+  const visibleEnemyKeys = ENEMY_DEBUFF_KEYS.filter(key => !hideZero || (enemyDebuffStats[key] ?? 0) !== 0)
+
+  return (
+    <div className="dataSectionGroup">
+      <div className="dataPanelHeader silver">
+        <div className="dataPanelHeaderDot silver" />
+        <span className="dataPanelHeaderLabel">
+          {actingChar ? `${actingChar.name} Stats` : 'Final Stats'}
+        </span>
+        <div className="dataPanelHeaderLine" />
+      </div>
+
+      <div className="dataContribFilterBar">
+        <span className="dataContribFilterLabel">Show:</span>
+        <button
+          className={`dataContribFilterBtn${!hideZero ? ' active cyan' : ''}`}
+          onClick={() => setHideZero(p => !p)}
+          title={hideZero ? 'Show zero-value stats' : 'Hide zero-value stats'}>
+          Zeros
+        </button>
+      </div>
+
+      {!finalStats ? (
+        <p className="dataEmptyMsg">No character stats available</p>
+      ) : (
+        <>
+          {visibleCharGroups.map(group => (
+            <div key={group.label} className="dataActiveStatGroup">
+              <div className="dataActiveStatGroupLabel">{group.label}</div>
+              {group.keys.map(key => {
+                const val = getFinalStatValue(key, finalStats)
+                return (
+                  <div key={key} className="dataActiveStatRow">
+                    <span className="dataActiveStatLabel">{formatFinalStatLabel(key)}</span>
+                    <span className="dataActiveStatValue">{formatFinalStatValue(key, val)}</span>
+                  </div>
+                )
+              })}
+            </div>
+          ))}
+
+          {visibleEnemyKeys.length > 0 && (
+            <div className="dataActiveStatGroup">
+              <div className="dataActiveStatGroupLabel">Enemy Debuffs</div>
+              {visibleEnemyKeys.map(key => {
+                const val = enemyDebuffStats[key] ?? 0
+                return (
+                  <div key={key} className="dataActiveStatRow">
+                    <span className="dataActiveStatLabel">{formatFinalStatLabel(key)}</span>
+                    <span className="dataActiveStatValue coral">{(val * 100).toFixed(1)}%</span>
+                  </div>
+                )
+              })}
+            </div>
+          )}
+        </>
       )}
     </div>
   )

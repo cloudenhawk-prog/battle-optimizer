@@ -99,7 +99,7 @@ export const hiyuki: Character = {
       type: 'buff',
       ownerCharacter: 'Hiyuki',
       color: '#dbe9ff',
-      characterStats: { glacioChafeAmplifyDMG: 0.25 },
+      characterStats: { glacioChafeTotalMultiplierDMG: 1.25 },
       condition: (ctx) => {
         if (hiyuki_sequence < 6) return 0
         const snowRust = ctx.current.charactersEnergies['Hiyuki']?.snow_rust ?? 0
