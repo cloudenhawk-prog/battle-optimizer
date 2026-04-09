@@ -83,12 +83,12 @@ export function calculateGlacioChafeProcDamage(context: StepContext, sideEffectN
  */
 export function calculateGlacioChafeDominionDamage(context: StepContext, sideEffectName: string, timeStamp: number): DamageEvent {
   const defaultMaxStacks = negativeStatuses['glacioChafe'].maxStacksDefault
-  const activeGlacioChafe = context.negativeStatusesInAction.find(s => s.negativeStatus.name === 'Glacio Chafe')
-  const rawStacks = activeGlacioChafe?.currentStacks ?? 0
-  const currentStacks = rawStacks > 0 ? rawStacks : defaultMaxStacks
+  // TODO: should use current max stacks, not default max stacks:
+  // Current max stacks might be something like: context.current.negativeStatusesMaxStacks['Glacio Chafe']
+  // OR context.prev.negativeStatusesMaxStacks['Glacio Chafe'] depending on which snapshot is the right to use at this point in time
 
   return calculateDamageNegativeStatus(
-    currentStacks,
+    defaultMaxStacks,
     'GLACIO',
     context.enemy,
     'Glacio Chafe',
