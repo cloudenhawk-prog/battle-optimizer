@@ -11,7 +11,7 @@ export const hiyuki: Character = {
   name: 'Hiyuki',
   element: 'GLACIO',
   weaponType: 'Sword',
-  maxEnergies: {energy: 125, concerto: 100, dedication: 300, foreclaiming: 1, frostharden_iai: 3, frostheart: 300, whiteout_bitterfrost: 3, snowforged_blade: 3, snow_rust: 3, s1_enhanced_ba: 1, s2_frostheart_token: 2 }, // TODO
+  maxEnergies: {energy: 125, concerto: 100, dedication: 300, foreclaiming: 1, frostharden_iai: 3, frostheart: 300, whiteout_bitterfrost: 3, snowforged_blade: 3, snow_rust: 3, s1_enhanced_ba1: 1, s1_enhanced_ba2: 1, s2_frostheart_token: 2 }, // TODO
   energyDescriptions: {
     energy: 'Used to cast Foreclaimed: Liberation.',
     concerto: 'Used to cast Outro Skill and trigger Intro Skills',
@@ -22,7 +22,8 @@ export const hiyuki: Character = {
     whiteout_bitterfrost: 'Required to cast Foreclaimed: Enhanced Heavy Attack. Gained from empowered Iai.',
     snowforged_blade: 'Empowers Foreclaiming: Blade Liberation. Gained from Foreclaimed: Enhanced Heavy Attack.',
     snow_rust: 'Passive amplification resource. Enables Fine Snow procs and buffs when at 1/2/3 stacks.',
-    s1_enhanced_ba: '[S1] Token used to enhance the next BA1 and BA2 after Liberation to inflict Glacio Chafe.',
+    s1_enhanced_ba1: '[S1] Token used to enhance the next BA1 after Liberation to inflict Glacio Chafe.',
+    s1_enhanced_ba2: '[S1] Token used to enhance the next BA2 after Liberation to inflict Glacio Chafe.',
     s2_frostheart_token: '[S2] Token granting +50 Frostheart on the next cast of Frostblight: Jade Cleave or Frostblight: Petalfall.',
   },
   actions: [...all_actions],

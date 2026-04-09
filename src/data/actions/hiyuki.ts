@@ -137,7 +137,7 @@ const foreclaimed_MAP_concerto = (4 * 0.40 + 2.35)
 const foreclaimed_MAP_stack = (1)
 const foreclaimed_MAP_offtune = (4 * 0.07 + 0.42)
 
-// ========== S4 Shared Modifier =====================================================================================================
+// ========== S4 Shared Modifier ===============================================================================================
 const hiyuki_s4_skill_buff = {
   source: 'Hiyuki: S4',
   displayName: 'Ephemeral Realm',
@@ -152,7 +152,8 @@ const hiyuki_s4_skill_buff = {
   description: '[S4] Casting Resonance Skill: Present Self, Frostblight: Jade Cleave, or Frostblight: Petalfall increases the damage dealt by all nearby Resonators in the team by 20% for 30s.',
 }
 
-// ========== Present Self =====================================================================================================
+// ========== Present Self: Resonance Skill ====================================================================================
+// TODO: Try cancel with dodge
 const hiyuki_skill: Action = {
   tags: ['SKILL'],
   name: 'Resonance Skill',
@@ -180,6 +181,8 @@ const hiyuki_skill: Action = {
     requiredForms: ['Present Self']
   },
   offtune: 4 * 0.13 + 0.52,
+  groupName: 'Resonance Skill',
+  variantName: 'Default',
   resolveVariant(_prevSnapshot, _characterName, owner) {
     if (owner.sequence < 4) return { ...this, resolveVariant: undefined }
     // S5: DMG Multiplier increased by 80%.
@@ -193,6 +196,54 @@ const hiyuki_skill: Action = {
   },
 }
 
+const hiyuki_skill_cancel_with_swap: Action = {
+  tags: ['SKILL'],
+  name: 'Resonance Skill (swap cancel)',
+  displayName: 'Frostblight (Swap Cancel)',
+  category: 'Skills',
+  castTime: 1.00, // TODO
+  multiplier: (4 * 22.62 + 90.46) / 100,
+  scaling: 'ATK',
+  elements: ['GLACIO'],
+  dmgTypes: ['SKILL'],
+  cooldown: 20,
+  energyGenerated: [
+    { energyType: 'energy', amount: 4 * 0.49 + 1.95, share: 0.5, scalingStat: 'energyPercent' },
+    { energyType: 'concerto', amount: 4 * 0.74 + 2.93, share: 0 },
+    { energyType: 'dedication', amount: 100, share: 0 }
+  ],
+  energyCost: [],
+  statusModifications: [],
+  damageModifiers: [],
+  sideEffects: [],
+  coordinatedAttacks: [],
+  castConditions: {
+    startState: 'GROUND',
+    swapOutState: 'GROUND',
+    endState: 'GROUND',
+    requiresSwapOut: true,
+    persistenceTime: 1.00, // TODO
+    requiredForms: ['Present Self']
+  },
+  offtune: 4 * 0.13 + 0.52,
+  groupName: 'Resonance Skill',
+  variantName: 'Cancel With Swap',
+  resolveVariant(_prevSnapshot, _characterName, owner) {
+    if (owner.sequence < 4) return { ...this, resolveVariant: undefined }
+    // S5: DMG Multiplier increased by 80%.
+    const s5Multiplier = owner.sequence >= 5 ? 1.8 : 1
+    return {
+      ...this,
+      multiplier: this.multiplier * s5Multiplier,
+      damageModifiers: [...this.damageModifiers, hiyuki_s4_skill_buff],
+      resolveVariant: undefined,
+    }
+  }
+}
+
+// ========== Present Self: Basic Attack 3 =====================================================================================
+// TODO: Is this castable after swapping? If not it should require immediate follow up always!
+// TODO: Try cancel with dodge
 const hiyuki_BA_3_enhanced: Action = {
   tags: ['BASIC_ATTACK', 'GLACIO_CHAFE_APPLIER'],
   name: 'Basic Attack 3',
@@ -268,6 +319,8 @@ const hiyuki_BA_3_enhanced_cancel_with_swap: Action = {
   variantName: 'Cancel With Swap'
 }
 
+// ========== Present Self: Enhanced Heavy Attack ==============================================================================
+// TODO: Try cancel with dodge
 const hiyuki_heavy_attack_enhanced: Action = {
   tags: ['HEAVY_ATTACK', 'GLACIO_CHAFE_APPLIER'],
   name: 'Enhanced Heavy Attack',
@@ -347,6 +400,7 @@ const hiyuki_heavy_attack_enhanced_cancel_with_swap: Action = {
   },
 }
 
+// ========== Present Self: Liberation =========================================================================================
 const hiyuki_liberation: Action = {
   tags: ['LIBERATION', 'GLACIO_CHAFE_APPLIER'],
   name: 'Liberation',
@@ -396,7 +450,21 @@ const hiyuki_liberation: Action = {
   },
 }
 
-// ========== Foreclaimed Self =================================================================================================
+// ========== Foreclaimed Self: Basic Attack 1 =================================================================================
+// TODO: Try cancel with dodge for all Basic Attacks
+
+// const hiyuki_foreclaimed_BA_1
+// const hiyuki_foreclaimed_BA_1_cancel_with_swap
+
+// const hiyuki_foreclaimed_BA_1_2
+// const hiyuki_foreclaimed_BA_1_2_cancel_with_swap
+
+// const hiyuki_foreclaimed_BA_1_3
+// const hiyuki_foreclaimed_BA_1_3_cancel_with_swap
+
+// const hiyuki_foreclaimed_BA_1_4
+// const hiyuki_foreclaimed_BA_1_4_cancel_with_swap
+
 const hiyuki_foreclaimed_BA_1_5: Action = {
   tags: ['BASIC_ATTACK', 'GLACIO_CHAFE_APPLIER'],
   name: 'Foreclaimed: Basic Attack 1-5',
@@ -421,8 +489,10 @@ const hiyuki_foreclaimed_BA_1_5: Action = {
   castConditions: {
     startState: 'GROUND',
     endState: 'GROUND',
-    requiredForms: ['Foreclaimed Self']
+    requiredForms: ['Foreclaimed Self'],
+    blockedComboTags: ['FORECLAIMED_BA1', 'FORECLAIMED_BA2', 'FORECLAIMED_BA3', 'FORECLAIMED_BA4']
   },
+  comboChainTags: ['FORECLAIMED_BA5'],
   offtune: foreclaimed_BA1_offtune + foreclaimed_BA2_offtune + foreclaimed_BA3_offtune + foreclaimed_BA4_offtune + foreclaimed_BA5_offtune,
   hideWhenNotCastable: true,
   groupName: 'Foreclaimed: Basic Attack 1-5',
@@ -432,6 +502,9 @@ const hiyuki_foreclaimed_BA_1_5: Action = {
     // S1: After casting Liberation (Foreclaiming: Inward Vision), the NEXT Basic Attack 1-5
     // has BA1 and BA2 each apply +1 Glacio Chafe, consuming the s1_enhanced_ba token.
     const s1Active = owner.sequence >= 1
+
+    // TODO: Need to check both s1_enhanced_ba1 and s1_enhanced_ba2. Consume the ones present and add them to energy cost.
+    // TODO: each consumed increases statusmodification stackChange +1 and applicationCount +1 (default is +0 and 3 respectively) 
     const s1Enhanced = s1Active && (prevSnapshot?.charactersEnergies[characterName]?.s1_enhanced_ba ?? 0) >= 1
     if (!s1Active) return { ...this, resolveVariant: undefined }
     return {
@@ -448,6 +521,126 @@ const hiyuki_foreclaimed_BA_1_5: Action = {
     }
   },
 }
+
+const hiyuki_foreclaimed_BA_1_5_cancel_with_swap: Action = {
+  tags: ['BASIC_ATTACK', 'GLACIO_CHAFE_APPLIER'],
+  name: 'Foreclaimed: Basic Attack 1-5 (swap cancel)',
+  displayName: 'Foreclaimed: Basic Attack 1-5 (swap cancel)',
+  category: 'Basics',
+  castTime: 1.00, // TODO
+  multiplier: foreclaimed_BA1_multiplier + foreclaimed_BA2_multiplier + foreclaimed_BA3_multiplier + foreclaimed_BA4_multiplier + foreclaimed_BA5_multiplier,
+  scaling: 'ATK',
+  elements: ['GLACIO'],
+  dmgTypes: ['LIBERATION'],
+  cooldown: 0,
+  energyGenerated: [
+    { energyType: 'energy', amount: foreclaimed_BA1_energy + foreclaimed_BA2_energy + foreclaimed_BA3_energy + foreclaimed_BA4_energy + foreclaimed_BA5_energy, share: 0.5, scalingStat: 'energyPercent' },
+    { energyType: 'concerto', amount: foreclaimed_BA1_concerto + foreclaimed_BA2_concerto + foreclaimed_BA3_concerto + foreclaimed_BA4_concerto + foreclaimed_BA5_concerto, share: 0 },
+    { energyType: 'frostheart', amount: 100, share: 0 } // TODO: Amount Uncertain
+  ],
+  energyCost: [],
+  statusModifications: [{ type: 'negativeStatus', targetName: 'Glacio Chafe', stackChange: foreclaimed_BA1_stack + foreclaimed_BA2_stack + foreclaimed_BA3_stack + foreclaimed_BA4_stack + foreclaimed_BA5_stack, applicationCount: 3 }],
+  damageModifiers: [],
+  sideEffects: [],
+  coordinatedAttacks: [],
+  castConditions: {
+    startState: 'GROUND',
+    swapOutState: 'GROUND',
+    endState: 'GROUND',
+    requiresSwapOut: true,
+    persistenceTime: 1.00, // TODO
+    requiredForms: ['Foreclaimed Self'],
+    blockedComboTags: ['FORECLAIMED_BA1', 'FORECLAIMED_BA2', 'FORECLAIMED_BA3', 'FORECLAIMED_BA4']
+  },
+  comboChainTags: ['FORECLAIMED_BA5'],
+  offtune: foreclaimed_BA1_offtune + foreclaimed_BA2_offtune + foreclaimed_BA3_offtune + foreclaimed_BA4_offtune + foreclaimed_BA5_offtune,
+  hideWhenNotCastable: true,
+  groupName: 'Foreclaimed: Basic Attack 1-5 (swap cancel)',
+  variantName: 'Cancel With Swap',
+  resolveVariant(prevSnapshot, characterName, owner) {
+    // S1: DMG Multipliers of Basic Attack - Foreclaimed Self are increased by 120%.
+    // S1: After casting Liberation (Foreclaiming: Inward Vision), the NEXT Basic Attack 1-5
+    // has BA1 and BA2 each apply +1 Glacio Chafe, consuming the s1_enhanced_ba token.
+    const s1Active = owner.sequence >= 1
+
+    // TODO: Need to check both s1_enhanced_ba1 and s1_enhanced_ba2. Consume the ones present and add them to energy cost.
+    // TODO: each consumed increases statusmodification stackChange +1 and applicationCount +1 (default is +0 and 3 respectively) 
+    const s1Enhanced = s1Active && (prevSnapshot?.charactersEnergies[characterName]?.s1_enhanced_ba ?? 0) >= 1
+    if (!s1Active) return { ...this, resolveVariant: undefined }
+    return {
+      ...this,
+      multiplier: this.multiplier * 2.2,
+      ...(s1Enhanced ? {
+        statusModifications: [{ type: 'negativeStatus' as const, targetName: 'Glacio Chafe', stackChange: foreclaimed_BA1_stack + foreclaimed_BA2_stack + foreclaimed_BA3_stack + foreclaimed_BA4_stack + foreclaimed_BA5_stack + 2, applicationCount: 5 }],
+        energyCost: [
+          ...this.energyCost,
+          { energyType: 's1_enhanced_ba' as const, amount: 1 },
+        ],
+      } : {}),
+      resolveVariant: undefined,
+    }
+  },
+}
+
+// ========== Foreclaimed Self: Basic Attack 2 =================================================================================
+
+// const hiyuki_foreclaimed_BA_2
+// const hiyuki_foreclaimed_BA_2_cancel_with_swap
+
+// const hiyuki_foreclaimed_BA_2_3
+// const hiyuki_foreclaimed_BA_2_3_cancel_with_swap
+
+
+// const hiyuki_foreclaimed_BA_2_4
+// const hiyuki_foreclaimed_BA_2_4_cancel_with_swap
+
+// const hiyuki_foreclaimed_BA_2_5
+// const hiyuki_foreclaimed_BA_2_5_cancel_with_swap
+
+
+
+// ========== Foreclaimed Self: Basic Attack 3 =================================================================================
+
+// const hiyuki_foreclaimed_BA_3
+// const hiyuki_foreclaimed_BA_3_cancel_with_swap
+
+// const hiyuki_foreclaimed_BA_3_4
+// const hiyuki_foreclaimed_BA_3_4_cancel_with_swap
+
+// const hiyuki_foreclaimed_BA_3_5
+// const hiyuki_foreclaimed_BA_3_5_cancel_with_swap
+
+
+
+// ========== Foreclaimed Self: Basic Attack 4 =================================================================================
+
+// const hiyuki_foreclaimed_BA_4
+// const hiyuki_foreclaimed_BA_4_cancel_with_swap
+
+// const hiyuki_foreclaimed_BA_4_5
+// const hiyuki_foreclaimed_BA_4_5_cancel_with_swap
+
+
+
+// ========== Foreclaimed Self: Basic Attack 5 =================================================================================
+
+// const hiyuki_foreclaimed_BA_5
+// const hiyuki_foreclaimed_BA_5_cancel_with_swap
+
+
+
+// ========== Foreclaimed Self: Mid Air Attack 1 ===============================================================================
+// TODO: Try cancel with dodge for all Mid-air Attacks
+// TODO: What other actions can be cast in mid-air? Liberation, skills? Enhanced Heavy Attack?
+
+// const hiyuki_foreclaimed_midair_1
+// const hiyuki_foreclaimed_midair_1_cancel_with_swap
+
+// const hiyuki_foreclaimed_midair_1_2
+// const hiyuki_foreclaimed_midair_1_2_cancel_with_swap
+
+// const hiyuki_foreclaimed_midair_1_3
+// const hiyuki_foreclaimed_midair_1_3_cancel_with_swap
 
 const hiyuki_foreclaimed_midair_1_2: Action = {
   tags: ['BASIC_ATTACK', 'GLACIO_CHAFE_APPLIER'],
@@ -489,6 +682,20 @@ const hiyuki_foreclaimed_midair_1_2: Action = {
   },
 }
 
+// ========== Foreclaimed Self: Mid Air Attack 2 ===============================================================================
+
+// const hiyuki_foreclaimed_midair_2
+// const hiyuki_foreclaimed_midair_2_cancel_with_swap
+
+// const hiyuki_foreclaimed_midair_2_3
+// const hiyuki_foreclaimed_midair_2_3_cancel_with_swap
+
+
+
+// ========== Foreclaimed Self: Mid Air Attack 3 ===============================================================================
+
+// const hiyuki_foreclaimed_midair_plunge_cancel_with_swap
+
 const hiyuki_foreclaimed_midair_plunge: Action = {
   tags: ['BASIC_ATTACK', 'GLACIO_CHAFE_APPLIER'],
   name: 'Foreclaimed: Mid-air Plunge',
@@ -525,6 +732,11 @@ const hiyuki_foreclaimed_midair_plunge: Action = {
     return { ...this, multiplier: this.multiplier * 2.2, resolveVariant: undefined }
   },
 }
+
+// ========== Foreclaimed Self: Enhanced Heavy Attack ==========================================================================
+// TODO: Try cancel with dodge
+
+// const hiyuki_foreclaimed_enhanced_heavy_attack_cancel_with_swap
 
 const hiyuki_foreclaimed_enhanced_heavy_attack: Action = {
   tags: ['HEAVY_ATTACK', 'GLACIO_CHAFE_APPLIER'],
@@ -568,6 +780,11 @@ const hiyuki_foreclaimed_enhanced_heavy_attack: Action = {
     }
   },
 }
+
+// ========== Foreclaimed Self: Resonance Skill 1 ==============================================================================
+// TODO: Try cancel with dodge
+
+// const hiyuki_foreclaimed_skill_1_cancel_with_swap
 
 const hiyuki_foreclaimed_skill_1: Action = {
   tags: ['SKILL'],
@@ -628,6 +845,11 @@ const hiyuki_foreclaimed_skill_1: Action = {
   },
 }
 
+// ========== Foreclaimed Self: Resonance Skill 2 ==============================================================================
+// TODO: Try cancel with dodge
+
+// const hiyuki_foreclaimed_skill_2_cancel_with_swap
+
 const hiyuki_foreclaimed_skill_2: Action = {
   tags: ['SKILL'],
   name: 'Foreclaimed: Resonance Skill 2',
@@ -687,7 +909,11 @@ const hiyuki_foreclaimed_skill_2: Action = {
   },
 }
 
-// Fastest cast is dodge animation cancel
+// ========== Foreclaimed Self: Resonance Skill 2 ==============================================================================
+
+// const hiyuki_foreclaimed_iai_cancel_with_swap
+
+// TODO Fastest cast is dodge animation cancel
 const hiyuki_foreclaimed_iai: Action = {
   name: 'Foreclaimed: Iai',
   displayName: 'Iai',
@@ -753,6 +979,7 @@ const hiyuki_foreclaimed_iai: Action = {
   }
 }
 
+// ========== Foreclaimed Self: Liberation =====================================================================================
 const hiyuki_foreclaimed_liberation: Action = {
   tags: ['LIBERATION'],
   name: 'Foreclaimed: Liberation',
@@ -825,15 +1052,6 @@ const hiyuki_foreclaimed_liberation: Action = {
     }
   }
 }
-
-
-
-
-
-
-
-
-
 
 // ========== Intro & Outro ====================================================================================================
 const hiyuki_intro: Action = { // In Foreclainmed self, can follow up with Basic Attack - Foreclaimed Self Stage 2
@@ -1074,12 +1292,15 @@ export const hiyuki_intro_outro_actions = [hiyuki_intro, hiyuki_outro]
 
 export const all_actions = [
   hiyuki_skill,
+  hiyuki_skill_cancel_with_swap,
+
   hiyuki_BA_3_enhanced,
   hiyuki_BA_3_enhanced_cancel_with_swap,
   hiyuki_heavy_attack_enhanced,
   hiyuki_heavy_attack_enhanced_cancel_with_swap,
   hiyuki_liberation,
   hiyuki_foreclaimed_BA_1_5,
+  hiyuki_foreclaimed_BA_1_5_cancel_with_swap,
   hiyuki_foreclaimed_midair_1_2,
   hiyuki_foreclaimed_midair_plunge,
   hiyuki_foreclaimed_enhanced_heavy_attack,

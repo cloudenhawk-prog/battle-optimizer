@@ -136,7 +136,7 @@ const mornye_BA_1_2_cancel_with_swap: Action = {
     persistenceTime: BA2_persistenceTime,
     requiresSwapOut: true,
     requiredForms: ['Baseline Mode'],
-    blockedComboTags: ['BA1', 'BA2', 'BA3'],
+    blockedComboTags: ['BA1', 'BA2', 'BA3']
   },
   offtune: BA1_offtune + BA2_offtune,
   comboChainTags: ['BA2'],
