@@ -905,14 +905,14 @@ export function calculateAllContrubutions(action: Action, name: string, stats: C
   for (const [groupKey] of groups) {
     _sumSvAvg += shapleyAvg.get(groupKey)! / SHAPLEY_SAMPLES
   }
-  const _attributable = average - base.avg
-  console.log(`\n[SHAPLEY] ══ Action: "${action.name}" | Dealer: ${name} | Snapshot: #${snapshotId} ══`)
-  console.log(`[SHAPLEY]   f(∅) base damage (no external mods): ${base.avg.toFixed(2)}`)
-  console.log(`[SHAPLEY]   f(N) full damage (all mods):         ${average.toFixed(2)}`)
-  console.log(`[SHAPLEY]   f(N) - f(∅) attributable:           ${_attributable.toFixed(2)}`)
-  console.log(`[SHAPLEY]   Σ φ_i  sum of Shapley values:       ${_sumSvAvg.toFixed(2)}`)
-  console.log(`[SHAPLEY]   Residual |Σφ_i - attributable|:     ${Math.abs(_sumSvAvg - _attributable).toFixed(2)}  (expect ≈ 0)`)
-  console.log(`[SHAPLEY]   ── Per-group Shapley values (avg damage) ────────`)
+  // const _attributable = average - base.avg
+  // console.log(`\n[SHAPLEY] ══ Action: "${action.name}" | Dealer: ${name} | Snapshot: #${snapshotId} ══`)
+  // console.log(`[SHAPLEY]   f(∅) base damage (no external mods): ${base.avg.toFixed(2)}`)
+  // console.log(`[SHAPLEY]   f(N) full damage (all mods):         ${average.toFixed(2)}`)
+  // console.log(`[SHAPLEY]   f(N) - f(∅) attributable:           ${_attributable.toFixed(2)}`)
+  // console.log(`[SHAPLEY]   Σ φ_i  sum of Shapley values:       ${_sumSvAvg.toFixed(2)}`)
+  // console.log(`[SHAPLEY]   Residual |Σφ_i - attributable|:     ${Math.abs(_sumSvAvg - _attributable).toFixed(2)}  (expect ≈ 0)`)
+  // console.log(`[SHAPLEY]   ── Per-group Shapley values (avg damage) ────────`)
   for (const [groupKey, indices] of groups) {
     const sv = shapleyAvg.get(groupKey)! / SHAPLEY_SAMPLES
     const label = damageModifiers[indices[0]].displayName ?? groupKey
