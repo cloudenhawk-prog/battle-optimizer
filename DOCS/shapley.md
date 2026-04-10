@@ -127,3 +127,6 @@ All causality is defined exclusively through:
 v(S)
 
 No other representation of damage attribution is valid.
+
+
+TLDR: We are not treating each buff as a player in the shapley calculations, but instead each character as a player; that way we will accurately find each player's contributions, and it would require much fewer permutations!

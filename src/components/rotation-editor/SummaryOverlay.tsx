@@ -332,6 +332,18 @@ function computeContributionData(
     }
   }
 
+  // Consolidate all non-character keys (e.g. passive negative status dealers) into a
+  // single '__OTHER__' player so it appears as a first-class Pie 2 slice.
+  const charNames = new Set(characters.map(c => c.name))
+  let otherTotal = 0
+  for (const key of Object.keys(attribution)) {
+    if (!charNames.has(key)) {
+      otherTotal += attribution[key]
+      delete attribution[key]
+    }
+  }
+  if (otherTotal > 0) attribution['__OTHER__'] = otherTotal
+
   return Object.entries(attribution)
     .filter(([, v]) => v > 0)
     .map(([name, attributedDamage]) => {
@@ -994,7 +1006,7 @@ function CenterPanel({ characterSummaries, globalDamage, totalPassiveDamage, gra
   // Pie 2: contribution attribution — damage attributed to each enabler
   const characterNames = new Set(characterSummaries.map(c => c.name))
   const pie2CharEntries = contributionEntries.filter(c => c.attributedDamage > 0 && characterNames.has(c.name))
-  const pie2NsTotal = contributionEntries.filter(c => c.attributedDamage > 0 && !characterNames.has(c.name)).reduce((s, c) => s + c.attributedDamage, 0)
+  const pie2OtherEntry = contributionEntries.find(c => c.name === '__OTHER__')
   const pie2Total = contributionEntries.reduce((s, c) => s + c.attributedDamage, 0)
 
   // Compute role tags
@@ -1021,8 +1033,8 @@ function CenterPanel({ characterSummaries, globalDamage, totalPassiveDamage, gra
       const cc = charColorMap.get(c.name) ?? getElementColor(c.element)
       return { name: c.name, value: c.attributedDamage * dpsScale, color: cc.primary, glow: cc.glow }
     }),
-    ...(pie2NsTotal > 0
-      ? [{ name: 'Other Sources', value: pie2NsTotal * dpsScale, color: 'hsl(220 15% 60%)', glow: 'hsl(220 15% 60% / 0.3)' }]
+    ...(pie2OtherEntry && pie2OtherEntry.attributedDamage > 0
+      ? [{ name: 'Other', value: pie2OtherEntry.attributedDamage * dpsScale, color: 'hsl(220 15% 60%)', glow: 'hsl(220 15% 60% / 0.3)' }]
       : []),
   ]
 
@@ -1060,7 +1072,7 @@ function CenterPanel({ characterSummaries, globalDamage, totalPassiveDamage, gra
           items={pie2Items}
           total={pie2TotalScaled}
           centerLabel={pieCenterLabel}
-          subtitle={isDps ? 'Attributed DPS per resonator (buffs credited to buffer)' : 'Damage attributed to each resonator (buffs credited to buffer)'}
+          subtitle={isDps ? 'Attributed DPS per resonator (buffs credited to buffer)' : 'Damage contribution per Resonator (Shapley-based attribution)'}
         />
       </div>
 

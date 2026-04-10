@@ -1,9 +1,8 @@
 import type { Action } from '../../types/action'
 import { atLeastOneStackOf, always } from '../../utils/conditions/damageModifierConditions'
 
-// When Foreclaiming: Inward Vision or Iai hits a target, if the target has no fewer than 10 stacks of Glacio Bite, consume 10 stacks and trigger Frostbind once.
-// Does Glacio Chafe even exists, isn't it all supposed to be converted to Glacio Bite?
-// on status modification: refreshDuration: true or false?
+// TODO: When Foreclaiming: Inward Vision or Iai hits a target, if the target has no fewer than 10 stacks of Glacio Bite, consume 10 stacks and trigger Frostbind once.
+// TODO: On status modification: refreshDuration: true or false?
 
 // TODO : need a version of Foreclaiming skill and normal skill where you cancel the animation entirely and chain it into the next step (0 dmg, but might save lots of time)
 
@@ -500,22 +499,26 @@ const hiyuki_foreclaimed_BA_1_5: Action = {
   resolveVariant(prevSnapshot, characterName, owner) {
     // S1: DMG Multipliers of Basic Attack - Foreclaimed Self are increased by 120%.
     // S1: After casting Liberation (Foreclaiming: Inward Vision), the NEXT Basic Attack 1-5
-    // has BA1 and BA2 each apply +1 Glacio Chafe, consuming the s1_enhanced_ba token.
+    // has BA1 and BA2 each apply +1 Glacio Chafe, consuming s1_enhanced_ba1 and s1_enhanced_ba2 tokens.
+    // Each token present adds +1 stackChange and +1 applicationCount (base is 3).
     const s1Active = owner.sequence >= 1
-
-    // TODO: Need to check both s1_enhanced_ba1 and s1_enhanced_ba2. Consume the ones present and add them to energy cost.
-    // TODO: each consumed increases statusmodification stackChange +1 and applicationCount +1 (default is +0 and 3 respectively) 
-    const s1Enhanced = s1Active && (prevSnapshot?.charactersEnergies[characterName]?.s1_enhanced_ba ?? 0) >= 1
     if (!s1Active) return { ...this, resolveVariant: undefined }
+
+    const energies = prevSnapshot?.charactersEnergies[characterName]
+    const hasToken1 = s1Active && (energies?.s1_enhanced_ba1 ?? 0) >= 1
+    const hasToken2 = s1Active && (energies?.s1_enhanced_ba2 ?? 0) >= 1
+    const tokenCount = (hasToken1 ? 1 : 0) + (hasToken2 ? 1 : 0)
+    const additionalCosts = [
+      ...(hasToken1 ? [{ energyType: 's1_enhanced_ba1' as const, amount: 1 }] : []),
+      ...(hasToken2 ? [{ energyType: 's1_enhanced_ba2' as const, amount: 1 }] : []),
+    ]
+
     return {
       ...this,
       multiplier: this.multiplier * 2.2,
-      ...(s1Enhanced ? {
-        statusModifications: [{ type: 'negativeStatus' as const, targetName: 'Glacio Chafe', stackChange: foreclaimed_BA1_stack + foreclaimed_BA2_stack + foreclaimed_BA3_stack + foreclaimed_BA4_stack + foreclaimed_BA5_stack + 2, applicationCount: 5 }],
-        energyCost: [
-          ...this.energyCost,
-          { energyType: 's1_enhanced_ba' as const, amount: 1 },
-        ],
+      ...(tokenCount > 0 ? {
+        statusModifications: [{ type: 'negativeStatus' as const, targetName: 'Glacio Chafe', stackChange: foreclaimed_BA1_stack + foreclaimed_BA2_stack + foreclaimed_BA3_stack + foreclaimed_BA4_stack + foreclaimed_BA5_stack + tokenCount, applicationCount: 3 + tokenCount }],
+        energyCost: [...this.energyCost, ...additionalCosts],
       } : {}),
       resolveVariant: undefined,
     }
@@ -560,22 +563,26 @@ const hiyuki_foreclaimed_BA_1_5_cancel_with_swap: Action = {
   resolveVariant(prevSnapshot, characterName, owner) {
     // S1: DMG Multipliers of Basic Attack - Foreclaimed Self are increased by 120%.
     // S1: After casting Liberation (Foreclaiming: Inward Vision), the NEXT Basic Attack 1-5
-    // has BA1 and BA2 each apply +1 Glacio Chafe, consuming the s1_enhanced_ba token.
+    // has BA1 and BA2 each apply +1 Glacio Chafe, consuming s1_enhanced_ba1 and s1_enhanced_ba2 tokens.
+    // Each token present adds +1 stackChange and +1 applicationCount (base is 3).
     const s1Active = owner.sequence >= 1
-
-    // TODO: Need to check both s1_enhanced_ba1 and s1_enhanced_ba2. Consume the ones present and add them to energy cost.
-    // TODO: each consumed increases statusmodification stackChange +1 and applicationCount +1 (default is +0 and 3 respectively) 
-    const s1Enhanced = s1Active && (prevSnapshot?.charactersEnergies[characterName]?.s1_enhanced_ba ?? 0) >= 1
     if (!s1Active) return { ...this, resolveVariant: undefined }
+
+    const energies = prevSnapshot?.charactersEnergies[characterName]
+    const hasToken1 = s1Active && (energies?.s1_enhanced_ba1 ?? 0) >= 1
+    const hasToken2 = s1Active && (energies?.s1_enhanced_ba2 ?? 0) >= 1
+    const tokenCount = (hasToken1 ? 1 : 0) + (hasToken2 ? 1 : 0)
+    const additionalCosts = [
+      ...(hasToken1 ? [{ energyType: 's1_enhanced_ba1' as const, amount: 1 }] : []),
+      ...(hasToken2 ? [{ energyType: 's1_enhanced_ba2' as const, amount: 1 }] : []),
+    ]
+
     return {
       ...this,
       multiplier: this.multiplier * 2.2,
-      ...(s1Enhanced ? {
-        statusModifications: [{ type: 'negativeStatus' as const, targetName: 'Glacio Chafe', stackChange: foreclaimed_BA1_stack + foreclaimed_BA2_stack + foreclaimed_BA3_stack + foreclaimed_BA4_stack + foreclaimed_BA5_stack + 2, applicationCount: 5 }],
-        energyCost: [
-          ...this.energyCost,
-          { energyType: 's1_enhanced_ba' as const, amount: 1 },
-        ],
+      ...(tokenCount > 0 ? {
+        statusModifications: [{ type: 'negativeStatus' as const, targetName: 'Glacio Chafe', stackChange: foreclaimed_BA1_stack + foreclaimed_BA2_stack + foreclaimed_BA3_stack + foreclaimed_BA4_stack + foreclaimed_BA5_stack + tokenCount, applicationCount: 3 + tokenCount }],
+        energyCost: [...this.energyCost, ...additionalCosts],
       } : {}),
       resolveVariant: undefined,
     }

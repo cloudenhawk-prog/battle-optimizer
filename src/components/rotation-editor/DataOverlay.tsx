@@ -639,118 +639,118 @@ function ContributionsSection({ damageEvents, mode, characters, snapshot, active
 
   const modifierMap = useMemo(() => buildModifierMap(characters), [characters])
 
-  // Only count events whose actionName is currently toggled on
-  const activeEvents = damageEvents.filter(e => activeSources.has(e.actionName))
-  const totalDamage = activeEvents.reduce((sum, event) => sum + getEventDamage(event, mode), 0)
+  // Memoize the entire Shapley computation so tooltip hover re-renders (setTooltipState)
+  // don't re-run the calculation — which would produce different Monte Carlo results each time.
+  const { metaMap, marginalMap } = useMemo(() => {
+    const activeEvents = damageEvents.filter(e => activeSources.has(e.actionName))
+    const totalDamage = activeEvents.reduce((sum, event) => sum + getEventDamage(event, mode), 0)
 
-  // Aggregate contributions from active events only.
-  // Keep metadata from all events so entries remain stable when sources toggle.
-  const metaMap: Record<string, { source: string; displayName?: string; isInherent?: boolean }> = {}
-  for (const event of damageEvents) {
-    for (const [key, contrib] of Object.entries(event.contributions)) {
-      if (!metaMap[key]) metaMap[key] = { source: contrib.source, displayName: contrib.displayName, isInherent: contrib.isInherent }
+    // Aggregate contribution metadata from all events so entries stay stable when sources toggle.
+    const metaMap: Record<string, { source: string; displayName?: string; isInherent?: boolean }> = {}
+    for (const event of damageEvents) {
+      for (const [key, contrib] of Object.entries(event.contributions)) {
+        if (!metaMap[key]) metaMap[key] = { source: contrib.source, displayName: contrib.displayName, isInherent: contrib.isInherent }
+      }
     }
-  }
 
-  // Helper: re-evaluate total damage for active events over an arbitrary contrib subset.
-  const evaluateDamage = (contribSet: Set<string>): number => {
-    let dmg = 0
-    for (const event of activeEvents) {
-      if (!event.calcParams) {
-        dmg += getEventDamage(event, mode)
+    const evaluateDamage = (contribSet: Set<string>): number => {
+      let dmg = 0
+      for (const event of activeEvents) {
+        if (!event.calcParams) {
+          dmg += getEventDamage(event, mode)
+        } else {
+          const r = event.calcParams.reEvaluate(contribSet)
+          dmg += mode === 'average' ? r.avg : mode === 'normal' ? r.normal : r.crit
+        }
+      }
+      return dmg
+    }
+
+    const inherentOnlySet = new Set(Array.from(activeContribs).filter(k => metaMap[k]?.isInherent))
+    const baseDamage = evaluateDamage(inherentOnlySet)
+
+    // Filter non-inherent keys to only those that are non-null players:
+    // a modifier is a null player when v(∅ ∪ {i}) = v(∅) — adding it alone changes nothing.
+    // Null players always get φ_i = 0, and removing them from the game doesn't affect
+    // other players' Shapley values, so we can safely exclude them before enumeration.
+    // This keeps n small so the exact algorithm is used more often (threshold: 15).
+    const allNonInherentKeys = Object.keys(metaMap).filter(k => activeContribs.has(k) && !metaMap[k]?.isInherent)
+    const nonNullKeys = allNonInherentKeys.filter(key => {
+      const withKey = evaluateDamage(new Set([...inherentOnlySet, key]))
+      return Math.abs(withKey - baseDamage) > 0.001
+    })
+    const n = nonNullKeys.length
+
+    const shapleyValues: Record<string, number> = {}
+    for (const k of allNonInherentKeys) shapleyValues[k] = 0  // null players default to 0
+
+    const MAX_EXACT = 15
+    if (n > 0 && n <= MAX_EXACT) {
+      const subsetDmg = new Float64Array(1 << n)
+      for (let mask = 0; mask < (1 << n); mask++) {
+        const contribSet = new Set<string>(inherentOnlySet)
+        for (let j = 0; j < n; j++) {
+          if (mask & (1 << j)) contribSet.add(nonNullKeys[j])
+        }
+        subsetDmg[mask] = evaluateDamage(contribSet)
+      }
+      const fact = new Float64Array(n + 1)
+      fact[0] = 1
+      for (let k = 1; k <= n; k++) fact[k] = fact[k - 1] * k
+      const popcount = (x: number): number => { let c = 0; let v = x; while (v) { c += v & 1; v >>>= 1 } return c }
+      for (let i = 0; i < n; i++) {
+        let shapley = 0
+        const nWithoutI = ((1 << n) - 1) ^ (1 << i)
+        let s = nWithoutI
+        while (true) {
+          const sSize = popcount(s)
+          const weight = (fact[sSize] * fact[n - sSize - 1]) / fact[n]
+          shapley += weight * (subsetDmg[s | (1 << i)] - subsetDmg[s])
+          if (s === 0) break
+          s = (s - 1) & nWithoutI
+        }
+        shapleyValues[nonNullKeys[i]] = shapley
+      }
+    } else if (n > MAX_EXACT) {
+      const SAMPLES = 300
+      const perm = [...nonNullKeys]
+      for (let s = 0; s < SAMPLES; s++) {
+        for (let i = perm.length - 1; i > 0; i--) {
+          const j = Math.floor(Math.random() * (i + 1))
+          ;[perm[i], perm[j]] = [perm[j], perm[i]]
+        }
+        const contribSet = new Set<string>(inherentOnlySet)
+        let prevDmg = baseDamage
+        for (const key of perm) {
+          contribSet.add(key)
+          const newDmg = evaluateDamage(contribSet)
+          shapleyValues[key] += newDmg - prevDmg
+          prevDmg = newDmg
+        }
+      }
+      for (const key of nonNullKeys) shapleyValues[key] /= SAMPLES
+    }
+
+    const marginalMap: Record<string, { rawDamage: number; pct: number }> = {}
+    for (const key of Object.keys(metaMap)) {
+      if (!activeContribs.has(key)) {
+        marginalMap[key] = { rawDamage: 0, pct: 0 }
+      } else if (metaMap[key]?.isInherent) {
+        const contribsWithoutKey = new Set(activeContribs)
+        contribsWithoutKey.delete(key)
+        const dmgWithout = evaluateDamage(contribsWithoutKey)
+        const rawDamage = totalDamage - dmgWithout
+        const pct = dmgWithout > 0 ? (rawDamage / dmgWithout) * 100 : 0
+        marginalMap[key] = { rawDamage, pct }
       } else {
-        const r = event.calcParams.reEvaluate(contribSet)
-        dmg += mode === 'average' ? r.avg : mode === 'normal' ? r.normal : r.crit
+        const rawDamage = shapleyValues[key] ?? 0
+        const pct = baseDamage > 0 ? (rawDamage / baseDamage) * 100 : 0
+        marginalMap[key] = { rawDamage, pct }
       }
     }
-    return dmg
-  }
 
-  // Separate inherent (always-on) from non-inherent (external, toggleable) active buffs.
-  const inherentOnlySet = new Set(Array.from(activeContribs).filter(k => metaMap[k]?.isInherent))
-  const nonInherentKeys = Object.keys(metaMap).filter(k => activeContribs.has(k) && !metaMap[k]?.isInherent)
-  const n = nonInherentKeys.length
-
-  // v(∅): damage with only inherent buffs — stable base for pct = φ_i / v(∅).
-  const baseDamage = evaluateDamage(inherentOnlySet)
-
-  // Compute Shapley values for non-inherent buffs.
-  // φ_i = Σ_{S ⊆ N\{i}} weight(|S|,n) * [v(S∪{i}) - v(S)]
-  // Shapley efficiency: Σφ_i = v(N) - v(∅)  exactly.
-  const shapleyValues: Record<string, number> = {}
-
-  const MAX_EXACT = 15
-  if (n > 0 && n <= MAX_EXACT) {
-    // Exact: enumerate all 2^n subsets of non-inherent keys once, cache damage values.
-    const subsetDmg = new Float64Array(1 << n)
-    for (let mask = 0; mask < (1 << n); mask++) {
-      const contribSet = new Set<string>(inherentOnlySet)
-      for (let j = 0; j < n; j++) {
-        if (mask & (1 << j)) contribSet.add(nonInherentKeys[j])
-      }
-      subsetDmg[mask] = evaluateDamage(contribSet)
-    }
-    // Precompute factorials (floating point is fine for n ≤ 15).
-    const fact = new Float64Array(n + 1)
-    fact[0] = 1
-    for (let k = 1; k <= n; k++) fact[k] = fact[k - 1] * k
-
-    const popcount = (x: number): number => { let c = 0; let v = x; while (v) { c += v & 1; v >>>= 1 } return c }
-
-    for (let i = 0; i < n; i++) {
-      let shapley = 0
-      const nWithoutI = ((1 << n) - 1) ^ (1 << i)
-      let s = nWithoutI
-      while (true) {
-        const sSize = popcount(s)
-        const weight = (fact[sSize] * fact[n - sSize - 1]) / fact[n]
-        shapley += weight * (subsetDmg[s | (1 << i)] - subsetDmg[s])
-        if (s === 0) break
-        s = (s - 1) & nWithoutI
-      }
-      shapleyValues[nonInherentKeys[i]] = shapley
-    }
-  } else if (n > MAX_EXACT) {
-    // Monte Carlo approximation: average marginal over random permutations.
-    const SAMPLES = 300
-    for (const key of nonInherentKeys) shapleyValues[key] = 0
-    const perm = [...nonInherentKeys]
-    for (let s = 0; s < SAMPLES; s++) {
-      for (let i = perm.length - 1; i > 0; i--) {
-        const j = Math.floor(Math.random() * (i + 1));
-        [perm[i], perm[j]] = [perm[j], perm[i]]
-      }
-      const contribSet = new Set<string>(inherentOnlySet)
-      let prevDmg = baseDamage
-      for (const key of perm) {
-        contribSet.add(key)
-        const newDmg = evaluateDamage(contribSet)
-        shapleyValues[key] += newDmg - prevDmg
-        prevDmg = newDmg
-      }
-    }
-    for (const key of nonInherentKeys) shapleyValues[key] /= SAMPLES
-  }
-
-  // Build marginalMap: Shapley rawDamage for non-inherent, last-in marginal for inherent.
-  const marginalMap: Record<string, { rawDamage: number; pct: number }> = {}
-  for (const key of Object.keys(metaMap)) {
-    if (!activeContribs.has(key)) {
-      marginalMap[key] = { rawDamage: 0, pct: 0 }
-    } else if (metaMap[key]?.isInherent) {
-      // Inherent buffs: marginal vs. the full active set (removing one inherent asks "cost of losing this passive").
-      const contribsWithoutKey = new Set(activeContribs)
-      contribsWithoutKey.delete(key)
-      const dmgWithout = evaluateDamage(contribsWithoutKey)
-      const rawDamage = totalDamage - dmgWithout
-      const pct = dmgWithout > 0 ? (rawDamage / dmgWithout) * 100 : 0
-      marginalMap[key] = { rawDamage, pct }
-    } else {
-      const rawDamage = shapleyValues[key] ?? 0
-      const pct = baseDamage > 0 ? (rawDamage / baseDamage) * 100 : 0
-      marginalMap[key] = { rawDamage, pct }
-    }
-  }
+    return { metaMap, marginalMap, baseDamage }
+  }, [damageEvents, activeSources, activeContribs, mode])
 
   let contributionsList = Object.keys(metaMap).map(key => ({
     key,
