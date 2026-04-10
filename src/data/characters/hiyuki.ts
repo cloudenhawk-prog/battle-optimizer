@@ -4,8 +4,9 @@ import { form_present_self, form_foreclaimed_self } from '../forms/hiyuki'
 import { hiyuki_cost_1_echo_1, hiyuki_cost_1_echo_2, hiyuki_cost_3_echo_1, hiyuki_cost_3_echo_2, hiyuki_cost_4_echo_1, hiyuki_weapon } from '../gear/hiyuki'
 import { hiyuki_inherentStats, hiyuki_stats } from '../stats/hiyuki'
 import { hiyuki_glacio_chafe_proc, hiyuki_everfrost_dominion_glacio_bite } from '../sideEffects/sideEffects'
+import { snow_rust_1_3, snow_rust_2, snow_rust_2_s6_self, snow_rust_2_s6_team } from '../modifiers/hiyuki'
 
-const hiyuki_sequence: Character['sequence'] = 6 // TODO
+export const hiyuki_sequence: Character['sequence'] = 6 // TODO add to team setup file
 
 export const hiyuki: Character = {
   name: 'Hiyuki',
@@ -28,90 +29,10 @@ export const hiyuki: Character = {
   },
   actions: [...all_actions],
   damageModifiers: [
-    {
-      // At 1+ Snow Rust: Glacio Chafe DMG Amplified by 30%.
-      // At 3 Snow Rust:  Additional +30% (total 60%).
-      // targetStrategy 'all' ensures this applies to Glacio Chafe DoT ticks regardless of
-      // which resonator is active (collectAllModifiers picks up ally permanent 'all' modifiers).
-      source: 'Hiyuki: Fine Snow',
-      displayName: 'Fine Snow: Glacio Chafe',
-      type: 'buff',
-      ownerCharacter: 'Hiyuki',
-      color: '#dbe9ff',
-      characterStats: { glacioChafeAmplifyDMG: 0.30 },
-      condition: (ctx) => {
-        // Use ctx.current so the modifier display updates on the same step the energy is
-        // generated. At damage-calculation time (resolveDamageModifiers) ctx.current still
-        // holds the pre-action value (resolveResources hasn't run yet), so damage is
-        // unaffected; only resolveModifierState (which runs after resolveResources) sees the
-        // new value and correctly marks the buff as active.
-        const snowRust = ctx.current.charactersEnergies['Hiyuki']?.snow_rust ?? 0
-        if (snowRust >= 3) return 2   // 0.30 × 2 = 60%
-        if (snowRust >= 1) return 1   // 0.30 × 1 = 30%
-        return 0
-      },
-      targetStrategy: 'all',
-      durationStrategy: { type: 'permanent' },
-      stackingStrategy: { maxStacks: 1, resetTimerOnApplication: false, stacksRemovedEachTime: 1 },
-      description: '1 stack of Snow Rust: Glacio Bite DMG is Amplified by 30% against targets around the active Resonator. 3 stacks of Snow Rust: Glacio Bite DMG is additionally Amplified by 30% (60% total).',
-      showStats: true,
-    },
-    {
-      // At 2+ Snow Rust: Hiyuki gains +40% Crit DMG (all sequences).
-      source: 'Hiyuki: Fine Snow',
-      displayName: 'Fine Snow: Crit DMG (Self)',
-      type: 'buff',
-      ownerCharacter: 'Hiyuki',
-      color: '#dbe9ff',
-      characterStats: { critDamage: 0.40 },
-      condition: (ctx) => {
-        const snowRust = ctx.current.charactersEnergies['Hiyuki']?.snow_rust ?? 0
-        return snowRust >= 2 ? 1 : 0
-      },
-      targetStrategy: 'self',
-      durationStrategy: { type: 'permanent' },
-      stackingStrategy: { maxStacks: 1, resetTimerOnApplication: false, stacksRemovedEachTime: 1 },
-      description: "At 2+ Snow Rust: Hiyuki's Crit. DMG is increased by 40%.",
-      showStats: true,
-    },
-    {
-      // S6: Additional +40% Crit DMG at 2+ Snow Rust (stacks with the base modifier above for 80% total).
-      source: 'Hiyuki: Fine Snow',
-      displayName: 'Fine Snow: Crit DMG S6 (Self)',
-      type: 'buff',
-      ownerCharacter: 'Hiyuki',
-      color: '#dbe9ff',
-      characterStats: { critDamage: 0.40 },
-      condition: (ctx) => {
-        if (hiyuki_sequence < 6) return 0
-        const snowRust = ctx.current.charactersEnergies['Hiyuki']?.snow_rust ?? 0
-        return snowRust >= 2 ? 1 : 0
-      },
-      targetStrategy: 'self',
-      durationStrategy: { type: 'permanent' },
-      stackingStrategy: { maxStacks: 1, resetTimerOnApplication: false, stacksRemovedEachTime: 1 },
-      description: "[S6] At 2+ Snow Rust: Hiyuki's Crit. DMG is additionally increased by 40% (80% total with base).",
-      showStats: true,
-    },
-    {
-      // S6: At 2+ Snow Rust: Glacio Bite DMG for all nearby Resonators is increased by 25%.
-      source: 'Hiyuki: Fine Snow',
-      displayName: 'Fine Snow: Glacio Bite (Team)',
-      type: 'buff',
-      ownerCharacter: 'Hiyuki',
-      color: '#dbe9ff',
-      characterStats: { glacioChafeTotalMultiplierDMG: 1.25 },
-      condition: (ctx) => {
-        if (hiyuki_sequence < 6) return 0
-        const snowRust = ctx.current.charactersEnergies['Hiyuki']?.snow_rust ?? 0
-        return snowRust >= 2 ? 1 : 0
-      },
-      targetStrategy: 'all',
-      durationStrategy: { type: 'permanent' },
-      stackingStrategy: { maxStacks: 1, resetTimerOnApplication: false, stacksRemovedEachTime: 1 },
-      description: '[S6] At 2+ Snow Rust: Glacio Bite DMG for all nearby Resonators is increased by 25%.',
-      showStats: true,
-    },
+    snow_rust_1_3,
+    snow_rust_2,
+    snow_rust_2_s6_self,
+    snow_rust_2_s6_team
   ],
   stats: hiyuki_stats,
   inherentStats: hiyuki_inherentStats,
@@ -129,7 +50,6 @@ export const hiyuki: Character = {
   defaultForm: 'Present Self',
   forms: [form_present_self, form_foreclaimed_self],
   sequence: hiyuki_sequence,
-  // S3 hack: start at max Snow Rust instead of implementing periodic regen (1 stack every 2s).
   // Snowforged Blade: start with 1 point (S0-S5) or 3 points (S6) instead of using off-field triggers.
   // S2: start with 3 Frostharden Iai and 2 Frostheart tokens (one-time at battle start).
   startingEnergies: (seq) => ({
@@ -184,7 +104,8 @@ export const hiyuki: Character = {
           .reduce((sum, m) => sum + (m.applicationCount ?? 1), 0),
     }
   ],
-  sequence_nodes: [ // TODO
+  sequence_nodes: [
+    // S1
     `The DMG Multipliers of
       Basic Attack - Foreclaimed Self,
       Heavy Attack - Foreclaimed Self,
@@ -196,12 +117,14 @@ export const hiyuki: Character = {
     Hiyuki is immune to interruptions while casting Basic Attack - Foreclaimed Self Stage 4 & 5.
     Casting Foreclaiming: Inward Vision enhances the next Basic Attack - Foreclaimed Self Stage 1 & 2, which now inflict 1 stack of Glacio Chafe on hit.`,
 
+    // S2
     `Iai's DMG Multiplier is increased by 140%.
     After staying out of combat for more than 4s, the following effects are triggered:
       1: Restore 3 points of Frostharden Iai.
       2: Reset the Cooldown of 2 charges of Frostblight: Jade Cleave.
       3: Restore an additional 50 points of Frostheart for the next 2 casts of Frostblight: Jade Cleave or Frostblight: Petalfall.`,
     
+    // S3
     `Every 2s after joining the team, gain 1 stack of Snow Rust.
     The DMG Multipliers of
       Frost Splinter: Present Self,
@@ -212,6 +135,7 @@ export const hiyuki: Character = {
       additionally applied each time she inflicts Glacio Chafe
     is increased by 488%.`,
     
+    // S4
     `Casting
       Resonance Skill: Present Self,
       Frostblight: Jade Cleave,
@@ -219,12 +143,14 @@ export const hiyuki: Character = {
     increases the damage dealt by all nearby Resonators in the team by 20% for 30s.
     Restore 18% of Max HP while casting Frostblight: Jade Cleave or Frostblight: Petalfall.`,
     
+    // S5
     `The DMG Multipliers of
       Resonance Skill - Present Self,
       Frostblight: Jade Cleave,
       Frostblight: Petalfall
     are increased by 80%.`,
     
+    // S6
     `The DMG Multipliers of
       Foreclaiming: Inward Vision,
       Foreclaiming: Blade Liberation
@@ -238,7 +164,7 @@ export const hiyuki: Character = {
       Hiyuki's Crit. DMG is increased by 40%.
       Inherent Skill Ephemeral Realm's effect is replaced: After staying out of combat for more than 4s, restore 3 points of Snowforged Blade.`
   ],
-  sequence_nodes_icons: [ // TODO
+  sequence_nodes_icons: [
     'assets/characters/sequences/hiyuki_1.png',
     'assets/characters/sequences/hiyuki_2.png',
     'assets/characters/sequences/hiyuki_3.png',
@@ -246,5 +172,5 @@ export const hiyuki: Character = {
     'assets/characters/sequences/hiyuki_5.png',
     'assets/characters/sequences/hiyuki_6.png',
   ],
-  image: '/assets/characters/hiyuki.png', // TODO
+  image: '/assets/characters/hiyuki.png',
 }

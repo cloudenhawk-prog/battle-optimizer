@@ -520,25 +520,25 @@ function EquipmentOrbit({ weapon, echoSlots, elColor, characterName, onItemHighl
               pointerEvents: 'none',
             }}>
             <img
-  src={`/assets/characters/${characterName.toLowerCase()}_shadow.gif`}
-  alt=""
-  aria-hidden="true"
-  style={{
-    width: '100%',
-    height: '100%',
-    objectFit: 'contain',
-    filter: 'brightness(0) opacity(0.28)',
-    WebkitMaskImage:
-      'radial-gradient(circle at center, black 50%, rgba(0,0,0,0.55) 70%, transparent 90%)',
-    maskImage:
-      'radial-gradient(circle at center, black 50%, rgba(0,0,0,0.55) 70%, transparent 90%)',
-  }}
-  onError={(e) => {
-    const el = e.currentTarget
-    el.onerror = null
-    el.src = `/assets/characters/${characterName.toLowerCase()}_shadow.png`;
-  }}
-/>
+              src={`/assets/characters/${characterName.toLowerCase()}_shadow.gif`}
+              alt=""
+              aria-hidden="true"
+              style={{
+                width: '100%',
+                height: '100%',
+                objectFit: 'contain',
+                filter: 'brightness(0) opacity(0.28)',
+                WebkitMaskImage:
+                  'radial-gradient(circle at center, black 50%, rgba(0,0,0,0.55) 70%, transparent 90%)',
+                maskImage:
+                  'radial-gradient(circle at center, black 50%, rgba(0,0,0,0.55) 70%, transparent 90%)',
+              }}
+              onError={(e) => {
+                const el = e.currentTarget
+                el.onerror = null
+                el.src = `/assets/characters/${characterName.toLowerCase()}_shadow.png`;
+              }}
+            />
           </div>
 
           {/* SVG: orbit tick marks */}

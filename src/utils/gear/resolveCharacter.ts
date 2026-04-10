@@ -121,7 +121,7 @@ export function resolveCharacter(character: Character, overrideGear?: Gear): Res
   }
 
   // ---- 7: Inject gear modifiers into working copies ----
-  resolveGear(workingActions, workingDamageModifiers, gear, originalToClone)
+  resolveGear(workingActions, workingDamageModifiers, gear, originalToClone, character.name)
 
   // ---- 8: Flatten self/always/permanent modifiers into resolved stats ----
   // Modifiers that are always active for this character and never change can be folded

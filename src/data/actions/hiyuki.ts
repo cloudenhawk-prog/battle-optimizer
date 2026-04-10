@@ -1,5 +1,6 @@
 import type { Action } from '../../types/action'
 import { atLeastOneStackOf, always } from '../../utils/conditions/damageModifierConditions'
+import { outro_buff, s4_skill_buff } from '../modifiers/hiyuki'
 
 // TODO: When Foreclaiming: Inward Vision or Iai hits a target, if the target has no fewer than 10 stacks of Glacio Bite, consume 10 stacks and trigger Frostbind once.
 // TODO: On status modification: refreshDuration: true or false?
@@ -136,21 +137,6 @@ const foreclaimed_MAP_concerto = (4 * 0.40 + 2.35)
 const foreclaimed_MAP_stack = (1)
 const foreclaimed_MAP_offtune = (4 * 0.07 + 0.42)
 
-// ========== S4 Shared Modifier ===============================================================================================
-const hiyuki_s4_skill_buff = {
-  source: 'Hiyuki: S4',
-  displayName: 'Ephemeral Realm',
-  type: 'buff',
-  ownerCharacter: 'Hiyuki',
-  color: '#dbe9ff',
-  characterStats: { bonusDMG: 0.20 },
-  condition: always(),
-  targetStrategy: 'all',
-  durationStrategy: { type: 'limited', timeDuration: 30 },
-  stackingStrategy: { maxStacks: 1, resetTimerOnApplication: true, stacksRemovedEachTime: 1 },
-  description: '[S4] Casting Resonance Skill: Present Self, Frostblight: Jade Cleave, or Frostblight: Petalfall increases the damage dealt by all nearby Resonators in the team by 20% for 30s.',
-}
-
 // ========== Present Self: Resonance Skill ====================================================================================
 // TODO: Try cancel with dodge
 const hiyuki_skill: Action = {
@@ -189,7 +175,7 @@ const hiyuki_skill: Action = {
     return {
       ...this,
       multiplier: this.multiplier * s5Multiplier,
-      damageModifiers: [...this.damageModifiers, hiyuki_s4_skill_buff],
+      damageModifiers: [...this.damageModifiers, s4_skill_buff],
       resolveVariant: undefined,
     }
   },
@@ -234,7 +220,7 @@ const hiyuki_skill_cancel_with_swap: Action = {
     return {
       ...this,
       multiplier: this.multiplier * s5Multiplier,
-      damageModifiers: [...this.damageModifiers, hiyuki_s4_skill_buff],
+      damageModifiers: [...this.damageModifiers, s4_skill_buff],
       resolveVariant: undefined,
     }
   }
@@ -830,7 +816,7 @@ const hiyuki_foreclaimed_skill_1: Action = {
     // S4: +20% DMG for all team for 30s; HEAL_PROC tag.
     const s4Active = owner.sequence >= 4
     const s4Tags = s4Active ? [...(this.tags ?? []), 'HEAL_PROC' as const] : this.tags
-    const s4Modifiers = s4Active ? [...this.damageModifiers, hiyuki_s4_skill_buff] : this.damageModifiers
+    const s4Modifiers = s4Active ? [...this.damageModifiers, s4_skill_buff] : this.damageModifiers
     // S5: DMG Multiplier increased by 80%.
     const s5Multiplier = owner.sequence >= 5 ? 1.8 : 1
     if (!hasToken) return { ...this, tags: s4Tags, damageModifiers: s4Modifiers, multiplier: this.multiplier * s5Multiplier, resolveVariant: undefined }
@@ -894,7 +880,7 @@ const hiyuki_foreclaimed_skill_2: Action = {
     // S4: +20% DMG for all team for 30s; HEAL_PROC tag.
     const s4Active = owner.sequence >= 4
     const s4Tags = s4Active ? [...(this.tags ?? []), 'HEAL_PROC' as const] : this.tags
-    const s4Modifiers = s4Active ? [...this.damageModifiers, hiyuki_s4_skill_buff] : this.damageModifiers
+    const s4Modifiers = s4Active ? [...this.damageModifiers, s4_skill_buff] : this.damageModifiers
     // S5: DMG Multiplier increased by 80%.
     const s5Multiplier = owner.sequence >= 5 ? 1.8 : 1
     if (!hasToken) return { ...this, tags: s4Tags, damageModifiers: s4Modifiers, multiplier: this.multiplier * s5Multiplier, resolveVariant: undefined }
@@ -1123,22 +1109,7 @@ const hiyuki_outro: Action = {
   energyGenerated: [],
   energyCost: [],
   statusModifications: [],
-  damageModifiers: [
-    {
-      source: 'Hiyuki Outro Buff',
-      displayName: 'Snowlight Blessing',
-      type: 'buff',
-      ownerCharacter: 'Hiyuki',
-      characterStats: { glacioAmplifyDMG: 0.20 },
-      condition: ctx => atLeastOneStackOf('Glacio Chafe')(ctx) ? 1 : 0,
-      targetStrategy: 'allExceptSelf',
-      durationStrategy: { type: 'limited', timeDuration: 20 },
-      stackingStrategy: { maxStacks: 1, resetTimerOnApplication: true, stacksRemovedEachTime: 1 },
-      color: '#FFD700',
-      description: 'For 20 seconds: all Resonators except Hiyuki gain 20% Glacio DMG Amplification against targets affected by Glacio Chafe.',
-      showStats: true
-    }
-  ],
+  damageModifiers: [outro_buff],
   sideEffects: [],
   castConditions: {
     startState: 'ANY',
