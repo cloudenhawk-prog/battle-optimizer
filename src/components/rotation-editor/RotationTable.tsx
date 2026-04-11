@@ -63,8 +63,8 @@ export function RotationTable({ snapshots, charactersInBattle, tableConfig, onSe
       <div className="tableWrapper">
         <table className="tableBase">
           <thead className="tableHeader">
-            <HeaderRow tableConfig={tableConfig} columnVisibility={columnVisibility} setColumnVisibility={setColumnVisibility} rowDeletionMode={rowDeletionMode} />
-            <CurrentStateRow snapshot={currentSnapshot || null} firstFromTime={firstFromTime} tableConfig={tableConfig} columnVisibility={columnVisibility} rowDeletionMode={rowDeletionMode} />
+            <HeaderRow tableConfig={tableConfig} columnVisibility={columnVisibility} setColumnVisibility={setColumnVisibility} />
+            <CurrentStateRow snapshot={currentSnapshot || null} firstFromTime={firstFromTime} tableConfig={tableConfig} columnVisibility={columnVisibility} />
           </thead>
           <tbody>
           {snapshots.map((snapshot, idx) => {

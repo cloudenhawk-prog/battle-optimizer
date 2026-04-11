@@ -83,7 +83,20 @@ export function BodyRow({ snapshot, previousSnapshot, charactersInBattle, tableC
         onRowClick?.(snapshot)
       }}>
       {/* Character select */}
-      <td className="tableCellBody">
+      <td className={`tableCellBody${rowDeletionMode ? ' tableCellHasDeleteBtn' : ''}`}>
+        {rowDeletionMode && character && action && (
+          <button
+            type="button"
+            className="deleteRowButton"
+            title="Delete this row and everything after it"
+            onClick={e => {
+              e.stopPropagation()
+              onDeleteRow?.(snapshotId)
+            }}
+          >
+            <img alt="Delete" src="/assets/ui/close.png" />
+          </button>
+        )}
         {isLocked ? (
           <div className="lockedSelectorText">{character}</div>
         ) : (
@@ -133,24 +146,6 @@ export function BodyRow({ snapshot, previousSnapshot, charactersInBattle, tableC
 
       {/* Other columns (coordinated attacks, etc.) */}
       {tableConfig.other && renderBodyColumnsWithTags(tableConfig.other.columns, columnVisibility, snapshot, previousSnapshot, character, action)}
-
-      {/* Delete button — shown only in rowDeletionMode for rows that have an action */}
-      {rowDeletionMode && (
-        <td className="tableCellBody tableCellDeleteRow">
-          {character && action ? (
-            <button
-              className="deleteRowButton"
-              title="Delete this row and everything after it"
-              onClick={e => {
-                e.stopPropagation()
-                onDeleteRow?.(snapshotId)
-              }}
-            >
-              ✕
-            </button>
-          ) : null}
-        </td>
-      )}
     </tr>
   )
 }

@@ -7,10 +7,9 @@ type HeaderRowProps = {
   tableConfig: TableConfig
   columnVisibility: ColumnVisibility
   setColumnVisibility: React.Dispatch<React.SetStateAction<ColumnVisibility>>
-  rowDeletionMode?: boolean
 }
 
-export function HeaderRow({ tableConfig, columnVisibility, setColumnVisibility, rowDeletionMode = false }: HeaderRowProps) {
+export function HeaderRow({ tableConfig, columnVisibility, setColumnVisibility }: HeaderRowProps) {
   const countVisible = (columns: typeof tableConfig.basic.columns) => columns.filter(col => columnVisibility[col.key]).length
 
   function handleGroupClick(groupColumns: typeof tableConfig.basic.columns) {
@@ -90,8 +89,6 @@ export function HeaderRow({ tableConfig, columnVisibility, setColumnVisibility, 
             )
           })()}
 
-        {/* Spacer for delete column */}
-        {rowDeletionMode && <th className="groupHeader groupHeaderStatic" />}
       </tr>
 
       {/* Column labels */}
@@ -132,9 +129,6 @@ export function HeaderRow({ tableConfig, columnVisibility, setColumnVisibility, 
 
         {/* Other Columns (Coordinated Attacks, etc.) */}
         {tableConfig.other && renderColumns(tableConfig.other.columns, columnVisibility, setColumnVisibility)}
-
-        {/* Spacer for delete column */}
-        {rowDeletionMode && <th className="tableCellHeader" />}
       </tr>
     </>
   )
