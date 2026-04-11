@@ -205,6 +205,74 @@ export function useImportExport({
     downloadRotationAsJson({ name, createdAt: new Date().toISOString(), steps })
   }
 
+  function handleDeleteFromSnapshot(snapshotId: number) {
+    const index = snapshots.findIndex(s => Number(s.id) === snapshotId)
+    if (index === -1) return
+
+    // When deleting an autocast follow-up row, we want to replay the triggering user step
+    // but regenerate only the autocasts that came BEFORE the deleted row. Walk back through
+    // the consecutive autocast chain to its start, then count how many hops to allow.
+    // Example: chain [user A → autocast B → autocast C], deleting C → allow 1 hop (keeps B).
+    //          Deleting B → allow 0 hops (no follow-ups replayed at all).
+    // Outro/Intro autocasts are NOT follow-up chains (no charactersAttemptFollowUp on the
+    // row before them), so they fall through to the normal path unchanged.
+    let maxAutocasts: number | undefined = undefined
+    if (snapshots[index].isAutocast) {
+      const charName = snapshots[index].character ?? ''
+      let chainStart = index
+      while (chainStart > 0 && snapshots[chainStart - 1].isAutocast) {
+        chainStart--
+      }
+      const triggerRow = chainStart > 0 ? snapshots[chainStart - 1] : null
+      const isFollowUpChain =
+        !!charName &&
+        triggerRow != null &&
+        !triggerRow.isAutocast &&
+        !!triggerRow.action &&
+        !!triggerRow.charactersAttemptFollowUp?.[charName]
+      if (isFollowUpChain) {
+        // chainStart is the index of the first autocast. index - chainStart equals the
+        // number of autocast rows before the deleted one, i.e. the hops to keep.
+        maxAutocasts = index - chainStart
+      }
+    }
+
+    const stepsToKeep = extractSteps(snapshots.slice(0, index))
+
+    if (stepsToKeep.length === 0) {
+      resetTimeline()
+      setDamageEvents([])
+      negativeStatusesInAction.current = Object.values(negativeStatusesData).map(status => ({
+        negativeStatus: status,
+        applicationTime: -1,
+        timeLeft: 0,
+        currentStacks: 0,
+        lastDamageTime: 0,
+      }))
+      modifiersInAction.current = []
+      coordinatedAttacksInAction.current = []
+      return
+    }
+
+    const result = runImportSteps({
+      steps: stepsToKeep,
+      initialSnapshot: createEmptySnapshot(charactersMap, characterColumnsMap, globalColumns, tableConfig, settings.startWithFullEnergy),
+      charactersMap,
+      characterColumnsMap,
+      globalColumns,
+      enemy,
+      settings,
+      maxAutocasts,
+      ignoreCastConditions: false,
+    })
+
+    setSnapshots(result.snapshots)
+    setDamageEvents(result.damageEvents)
+    negativeStatusesInAction.current = result.finalNegativeStatuses
+    modifiersInAction.current = result.finalModifiers
+    coordinatedAttacksInAction.current = result.finalCoordinatedAttacks
+  }
+
   return {
     savedRotations,
     savedSnippets,
@@ -221,6 +289,7 @@ export function useImportExport({
     handleDownload,
     handleDownloadNamed,
     handleFileUpload,
+    handleDeleteFromSnapshot,
     clearImportStatus: () => { setLastImportError(null); setLastImportCompleted(null) },
   }
 }
@@ -319,6 +388,10 @@ type ImportRunParams = {
   enemy: Enemy
   settings: Settings
   ignoreCastConditions: boolean
+  /** When set, caps how many autocast follow-up hops the LAST replayed step may generate.
+   *  All earlier steps in the replay are unaffected. Used by deletion to stop the chain
+   *  before the deleted row without losing earlier autocasts in the same chain. */
+  maxAutocasts?: number
 }
 
 type FullImportRunResult = ImportRunResult & {
@@ -328,7 +401,7 @@ type FullImportRunResult = ImportRunResult & {
 }
 
 function runImportSteps(params: ImportRunParams): FullImportRunResult {
-  const { steps, initialSnapshot, startingSnapshots, initialNegativeStatuses, initialModifiers, initialCoordinatedAttacks, charactersMap, characterColumnsMap, globalColumns, enemy, settings, ignoreCastConditions } = params
+  const { steps, initialSnapshot, startingSnapshots, initialNegativeStatuses, initialModifiers, initialCoordinatedAttacks, charactersMap, characterColumnsMap, globalColumns, enemy, settings, ignoreCastConditions, maxAutocasts } = params
 
   let snapshots: Snapshot[] = startingSnapshots
     ? [...startingSnapshots]
@@ -446,7 +519,8 @@ function runImportSteps(params: ImportRunParams): FullImportRunResult {
     snapshots = updateSnapshotsWithAction({ ...baseParams, snapshots, snapshotId, actionName: step.action })
 
     if (settings.autocastFollowUps) {
-      snapshots = autocastFollowUpChain({ ...baseParams, snapshots, resolvedSnapshotId: snapshotId })
+      const isLastStep = stepIdx === steps.length - 1
+      snapshots = autocastFollowUpChain({ ...baseParams, snapshots, resolvedSnapshotId: snapshotId, maxDepth: isLastStep ? maxAutocasts : undefined })
     }
 
     completedSteps++

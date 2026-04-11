@@ -43,9 +43,10 @@ type CurrentStateRowProps = {
   firstFromTime: number
   tableConfig: TableConfig
   columnVisibility: ColumnVisibility
+  rowDeletionMode?: boolean
 }
 
-export function CurrentStateRow({ snapshot, firstFromTime, tableConfig, columnVisibility }: CurrentStateRowProps) {
+export function CurrentStateRow({ snapshot, firstFromTime, tableConfig, columnVisibility, rowDeletionMode = false }: CurrentStateRowProps) {
   // Create initial snapshot if none exists or character not selected
   const displaySnapshot = snapshot || createInitialSnapshot()
   const hasCharacter = displaySnapshot.character && displaySnapshot.character !== ''
@@ -106,6 +107,9 @@ export function CurrentStateRow({ snapshot, firstFromTime, tableConfig, columnVi
 
         {/* Other columns (Coordinated Attacks, etc.) */}
         {tableConfig.other && renderStatusColumns(tableConfig.other.columns, columnVisibility, displaySnapshot)}
+
+        {/* Spacer for delete column */}
+        {rowDeletionMode && <td className="currentStateCell" />}
       </tr>
   )
 }

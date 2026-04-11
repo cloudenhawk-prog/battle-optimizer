@@ -269,10 +269,13 @@ export type AutocastParams = {
  * "If possible" follow-ups (must === false) are auto-cast only when the follow-up
  * is actually castable in the current state; otherwise the chain stops.
  */
-export function autocastFollowUpChain(params: AutocastParams): Snapshot[] {
-  let { snapshots, resolvedSnapshotId, ...rest } = params
+export function autocastFollowUpChain(params: AutocastParams & { maxDepth?: number }): Snapshot[] {
+  let { snapshots, resolvedSnapshotId, maxDepth, ...rest } = params
 
+  let depth = 0
   while (true) {
+    if (maxDepth !== undefined && depth >= maxDepth) break
+
     const resolvedIndex = getSnapshotIndex(snapshots, resolvedSnapshotId)
     if (resolvedIndex === -1) break
 
@@ -325,6 +328,7 @@ export function autocastFollowUpChain(params: AutocastParams): Snapshot[] {
     if (castIdx !== -1) snapshots[castIdx] = { ...snapshots[castIdx], isAutocast: true }
 
     resolvedSnapshotId = nextSnapshotId
+    depth++
   }
 
   return snapshots

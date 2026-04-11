@@ -6,6 +6,7 @@ export type Settings = {
   autocastFollowUps: boolean
   startWithFullEnergy: boolean
   sandboxMode: boolean
+  rowDeletionMode: boolean
 }
 
 // ========== Defaults & Persistence ===========================================================================================
@@ -17,6 +18,7 @@ function getDefaultSettings(): Settings {
     autocastFollowUps: false,
     startWithFullEnergy: false,
     sandboxMode: false,
+    rowDeletionMode: false,
   }
 }
 

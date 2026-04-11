@@ -76,3 +76,34 @@ tr.tableBody:hover {
   overflow: hidden;
   text-overflow: ellipsis;
 }
+
+/* -------------- Delete row button ----------- */
+
+.tableCellDeleteRow {
+  width: 28px;
+  padding: 0 4px;
+}
+
+.deleteRowButton {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 22px;
+  height: 22px;
+  padding: 0;
+  margin: auto;
+  background: transparent;
+  border: 1px solid rgba(220, 80, 80, 0.35);
+  border-radius: 4px;
+  color: rgba(220, 80, 80, 0.6);
+  font-size: 11px;
+  line-height: 1;
+  cursor: pointer;
+  transition: background 0.15s, color 0.15s, border-color 0.15s;
+}
+
+.deleteRowButton:hover {
+  background: rgba(220, 80, 80, 0.15);
+  color: rgba(240, 100, 100, 1);
+  border-color: rgba(220, 80, 80, 0.7);
+}

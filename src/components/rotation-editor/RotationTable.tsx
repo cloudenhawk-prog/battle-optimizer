@@ -23,9 +23,11 @@ type RotationTableProps = {
   onGearChange?: (characterName: string, newGear: Gear) => void
   onSequenceChange?: (characterName: string, sequence: 0 | 1 | 2 | 3 | 4 | 5 | 6) => void
   sandboxMode?: boolean
+  rowDeletionMode?: boolean
+  onDeleteRow?: (snapshotId: number) => void
 }
 
-export function RotationTable({ snapshots, charactersInBattle, tableConfig, onSelectCharacter, onSelectAction, columnVisibility, setColumnVisibility, onRowClick, onGearChange, onSequenceChange, sandboxMode = false }: RotationTableProps) {
+export function RotationTable({ snapshots, charactersInBattle, tableConfig, onSelectCharacter, onSelectAction, columnVisibility, setColumnVisibility, onRowClick, onGearChange, onSequenceChange, sandboxMode = false, rowDeletionMode = false, onDeleteRow }: RotationTableProps) {
   const [highlightIds, setHighlightIds] = useState<Set<number>>(new Set())
   const lastMaxId = useRef(0)
 
@@ -61,15 +63,15 @@ export function RotationTable({ snapshots, charactersInBattle, tableConfig, onSe
       <div className="tableWrapper">
         <table className="tableBase">
           <thead className="tableHeader">
-            <HeaderRow tableConfig={tableConfig} columnVisibility={columnVisibility} setColumnVisibility={setColumnVisibility} />
-            <CurrentStateRow snapshot={currentSnapshot || null} firstFromTime={firstFromTime} tableConfig={tableConfig} columnVisibility={columnVisibility} />
+            <HeaderRow tableConfig={tableConfig} columnVisibility={columnVisibility} setColumnVisibility={setColumnVisibility} rowDeletionMode={rowDeletionMode} />
+            <CurrentStateRow snapshot={currentSnapshot || null} firstFromTime={firstFromTime} tableConfig={tableConfig} columnVisibility={columnVisibility} rowDeletionMode={rowDeletionMode} />
           </thead>
           <tbody>
           {snapshots.map((snapshot, idx) => {
             // For statuses, show the state from the PREVIOUS snapshot since statuses
             // are applied AFTER the action completes (not during)
             const previousSnapshot = idx > 0 ? snapshots[idx - 1] : null
-            return <BodyRow key={Number(snapshot.id)} snapshot={snapshot} previousSnapshot={previousSnapshot} charactersInBattle={charactersInBattle} tableConfig={tableConfig} onSelectCharacter={onSelectCharacter} onSelectAction={onSelectAction} onRowClick={onRowClick} isLastRow={idx === snapshots.length - 1} isNewRow={highlightIds.has(Number(snapshot.id))} columnVisibility={columnVisibility} sandboxMode={sandboxMode} />
+            return <BodyRow key={Number(snapshot.id)} snapshot={snapshot} previousSnapshot={previousSnapshot} charactersInBattle={charactersInBattle} tableConfig={tableConfig} onSelectCharacter={onSelectCharacter} onSelectAction={onSelectAction} onRowClick={onRowClick} isLastRow={idx === snapshots.length - 1} isNewRow={highlightIds.has(Number(snapshot.id))} columnVisibility={columnVisibility} sandboxMode={sandboxMode} rowDeletionMode={rowDeletionMode} onDeleteRow={onDeleteRow} />
           })}
           </tbody>
         </table>

@@ -23,9 +23,11 @@ type BodyRowProps = {
   columnVisibility: ColumnVisibility
   onRowClick?: (snapshot: Snapshot) => void
   sandboxMode?: boolean
+  rowDeletionMode?: boolean
+  onDeleteRow?: (snapshotId: number) => void
 }
 
-export function BodyRow({ snapshot, previousSnapshot, charactersInBattle, tableConfig, onSelectCharacter, onSelectAction, isLastRow = false, isNewRow = false, columnVisibility, onRowClick, sandboxMode = false }: BodyRowProps) {
+export function BodyRow({ snapshot, previousSnapshot, charactersInBattle, tableConfig, onSelectCharacter, onSelectAction, isLastRow = false, isNewRow = false, columnVisibility, onRowClick, sandboxMode = false, rowDeletionMode = false, onDeleteRow }: BodyRowProps) {
   const snapshotId = Number(snapshot.id)
   const character = snapshot.character ?? ''
   const action = snapshot.action ?? ''
@@ -131,6 +133,24 @@ export function BodyRow({ snapshot, previousSnapshot, charactersInBattle, tableC
 
       {/* Other columns (coordinated attacks, etc.) */}
       {tableConfig.other && renderBodyColumnsWithTags(tableConfig.other.columns, columnVisibility, snapshot, previousSnapshot, character, action)}
+
+      {/* Delete button — shown only in rowDeletionMode for rows that have an action */}
+      {rowDeletionMode && (
+        <td className="tableCellBody tableCellDeleteRow">
+          {character && action ? (
+            <button
+              className="deleteRowButton"
+              title="Delete this row and everything after it"
+              onClick={e => {
+                e.stopPropagation()
+                onDeleteRow?.(snapshotId)
+              }}
+            >
+              ✕
+            </button>
+          ) : null}
+        </td>
+      )}
     </tr>
   )
 }

@@ -13,12 +13,13 @@ export const hiyuki: Character = {
   element: 'GLACIO',
   weaponType: 'Sword',
   maxEnergies: {energy: 125, concerto: 100, dedication: 300, foreclaiming: 1, frostharden_iai: 3, frostheart: 300, whiteout_bitterfrost: 3, snowforged_blade: 3, snow_rust: 3, s1_enhanced_ba1: 1, s1_enhanced_ba2: 1, s2_frostheart_token: 2 }, // TODO
+  hiddenEnergies: ['foreclaiming', 'snow_rust', 's1_enhanced_ba1', 's1_enhanced_ba2', 's2_frostheart_token'],
   energyDescriptions: {
     energy: 'Used to cast Foreclaimed: Liberation.',
     concerto: 'Used to cast Outro Skill and trigger Intro Skills',
     dedication: 'Spent on Enhanced Heavy Attack. Gained from Basic Attacks and Intro.',
     foreclaiming: 'Required to cast Foreclaiming: Inward Vision (liberation). Gained from Enhanced Heavy Attack.',
-    frostharden_iai: 'Charges used to enhance the next Iai cast: grants 1 Whiteout Bitterfrost and inflicts Glacio Chafe.',
+    frostharden_iai: 'Charges used to empower Iai when cast: grants 1 Whiteout Bitterfrost and inflicts Glacio Chafe.',
     frostheart: 'Required to cast Iai. Gained from Foreclaimed: BA, MA and Resonance Skill.',
     whiteout_bitterfrost: 'Required to cast Foreclaimed: Enhanced Heavy Attack. Gained from empowered Iai.',
     snowforged_blade: 'Empowers Foreclaiming: Blade Liberation. Gained from Foreclaimed: Enhanced Heavy Attack.',

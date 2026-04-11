@@ -64,6 +64,27 @@ export default function SettingsPage() {
                 </div>
               </div>
             </label>
+
+            <div className="settingsRowDivider" />
+
+            <label className="settingsRow">
+              <div className="settingsRowBody">
+                <span className="settingsRowLabel">Row deletion mode</span>
+                <p className="settingsRowDesc">
+                  When enabled, each action row shows a delete button. Clicking it removes that row and all rows after it, then replays the remaining steps from scratch.
+                </p>
+              </div>
+              <div className="settingsToggleWrap">
+                <input
+                  type="checkbox"
+                  checked={settings.rowDeletionMode}
+                  onChange={e => updateSetting('rowDeletionMode', e.target.checked)}
+                />
+                <div className="settingsToggleTrack">
+                  <div className="settingsToggleThumb" />
+                </div>
+              </div>
+            </label>
           </div>
         </section>
 

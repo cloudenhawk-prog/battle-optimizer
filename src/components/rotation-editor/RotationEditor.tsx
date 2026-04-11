@@ -91,7 +91,7 @@ export default function RotationEditor({ charactersInBattle, enemy, tableConfig,
           >✕</button>
         </div>
       )}
-      <RotationTable snapshots={snapshots} charactersInBattle={charactersInBattle} tableConfig={tableConfig} onSelectCharacter={handleCharacterSelect} onSelectAction={handleActionSelect} columnVisibility={columnVisibility} setColumnVisibility={setColumnVisibility} onRowClick={handleRowClick} onGearChange={onGearChange} onSequenceChange={onSequenceChange} sandboxMode={settings.sandboxMode} />
+      <RotationTable snapshots={snapshots} charactersInBattle={charactersInBattle} tableConfig={tableConfig} onSelectCharacter={handleCharacterSelect} onSelectAction={handleActionSelect} columnVisibility={columnVisibility} setColumnVisibility={setColumnVisibility} onRowClick={handleRowClick} onGearChange={onGearChange} onSequenceChange={onSequenceChange} sandboxMode={settings.sandboxMode} rowDeletionMode={settings.rowDeletionMode} onDeleteRow={settings.rowDeletionMode ? importExport.handleDeleteFromSnapshot : undefined} />
       <div className="editorFloatingButtons">
         <button className="summaryOpenButton" onClick={() => setRotationsOpen(true)} title="Save / load rotations">
           ◈ ROTATIONS
