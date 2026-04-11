@@ -14,8 +14,6 @@ import {
 
 // ========== Local Helpers ====================================================================================================
 
-const noopSetDamageEvents = () => {}
-
 /**
  * Builds a minimal StepContext. By default: TestChar active, fromTime=0, toTime=1.
  * Pass prevCharacter to simulate a swap (prev.character !== current character).
@@ -155,7 +153,7 @@ describe('processCoordinatedAttacks — linkedModifiers expiry', () => {
       castTime: 1,
     })
 
-    processCoordinatedAttacks(ctx, noopSetDamageEvents)
+    processCoordinatedAttacks(ctx)
 
     expect(ctx.modifiersInAction).toHaveLength(0)
     expect(activeAttack.applicationTime).toBe(-1)
@@ -182,7 +180,7 @@ describe('processCoordinatedAttacks — linkedModifiers expiry', () => {
       castTime: 1,
     })
 
-    processCoordinatedAttacks(ctx, noopSetDamageEvents)
+    processCoordinatedAttacks(ctx)
 
     expect(ctx.modifiersInAction).toHaveLength(0)
     expect(activeAttack.applicationTime).toBe(-1)
@@ -207,7 +205,7 @@ describe('processCoordinatedAttacks — linkedModifiers expiry', () => {
       castTime: 1,
     })
 
-    processCoordinatedAttacks(ctx, noopSetDamageEvents)
+    processCoordinatedAttacks(ctx)
 
     expect(ctx.modifiersInAction).toHaveLength(1) // still present
     expect(activeAttack.applicationTime).not.toBe(-1)
@@ -244,7 +242,7 @@ describe('processCoordinatedAttacks — per-tick buff/debuff statusModifications
       castTime: 2,
     })
 
-    processCoordinatedAttacks(ctx, noopSetDamageEvents)
+    processCoordinatedAttacks(ctx)
 
     // 2 ticks * stackChange 1 = +2 stacks on top of initial 1
     expect(ctx.modifiersInAction[0].currentStacks).toBe(3)
@@ -277,7 +275,7 @@ describe('processCoordinatedAttacks — per-tick buff/debuff statusModifications
       castTime: 3,
     })
 
-    processCoordinatedAttacks(ctx, noopSetDamageEvents)
+    processCoordinatedAttacks(ctx)
 
     expect(ctx.modifiersInAction[0].currentStacks).toBe(2) // clamped
   })
@@ -309,7 +307,7 @@ describe('processCoordinatedAttacks — per-tick buff/debuff statusModifications
       castTime: 1,
     })
 
-    processCoordinatedAttacks(ctx, noopSetDamageEvents)
+    processCoordinatedAttacks(ctx)
 
     expect(ctx.modifiersInAction).toHaveLength(0)
   })
@@ -340,7 +338,7 @@ describe('processCoordinatedAttacks — per-tick buff/debuff statusModifications
       castTime: 1,
     })
 
-    processCoordinatedAttacks(ctx, noopSetDamageEvents)
+    processCoordinatedAttacks(ctx)
 
     // 1 tick * stackChange 2 = +2 stacks → 3 total
     expect(ctx.modifiersInAction[0].currentStacks).toBe(3)
@@ -373,7 +371,7 @@ describe('processCoordinatedAttacks — per-tick buff/debuff statusModifications
       castTime: 1,
     })
 
-    processCoordinatedAttacks(ctx, noopSetDamageEvents)
+    processCoordinatedAttacks(ctx)
 
     // 1 tick fires, stacks go 1→2, resetTimerOnApplication resets timeLeft to timeDuration
     expect(ctx.modifiersInAction[0].currentStacks).toBe(2)
@@ -407,7 +405,7 @@ describe('processCoordinatedAttacks — per-tick buff/debuff statusModifications
       castTime: 1,
     })
 
-    processCoordinatedAttacks(ctx, noopSetDamageEvents)
+    processCoordinatedAttacks(ctx)
 
     expect(ctx.modifiersInAction[0].currentStacks).toBe(2)
     expect(ctx.modifiersInAction[0].timeLeft).toBe(2) // unchanged
@@ -440,7 +438,7 @@ describe('processCoordinatedAttacks — per-tick buff/debuff statusModifications
       castTime: 1,
     })
 
-    processCoordinatedAttacks(ctx, noopSetDamageEvents)
+    processCoordinatedAttacks(ctx)
 
     expect(ctx.modifiersInAction[0].currentStacks).toBe(2)
     expect(ctx.modifiersInAction[0].timeLeft).toBe(7) // not reset because stacks were removed

@@ -20,8 +20,8 @@ import {
   shouldTriggerOutroIntro,
   handleOutroIntroFlow,
   autocastFollowUpChain,
-  type AutocastParams,
-} from './useCharacterActions'
+  type EngineState,
+} from '../../utils/engine/step'
 import {
   loadSavedRotations,
   saveRotationToStorage,
@@ -408,16 +408,9 @@ function runImportSteps(params: ImportRunParams): FullImportRunResult {
     : [{ ...initialSnapshot! }]
   let localDamageEvents: DamageEvent[] = []
 
-  // Accumulate damage events synchronously (callers use updater form, e.g. prev => [...prev, e])
-  const collectEvents: Dispatch<SetStateAction<DamageEvent[]>> = updater => {
-    localDamageEvents = typeof updater === 'function'
-      ? (updater as (prev: DamageEvent[]) => DamageEvent[])(localDamageEvents)
-      : updater
-  }
-
-  // Fresh state for this import run — isolated from the living refs
-  const localNegativeStatuses: React.MutableRefObject<NegativeStatusInAction[]> = {
-    current: initialNegativeStatuses
+  // Fresh engine state for this import run — isolated from the living refs
+  let engineState: EngineState = {
+    negativeStatusesInAction: initialNegativeStatuses
       ? initialNegativeStatuses.map(s => ({ ...s }))
       : Object.values(negativeStatusesData).map(status => ({
           negativeStatus: status,
@@ -426,19 +419,15 @@ function runImportSteps(params: ImportRunParams): FullImportRunResult {
           currentStacks: 0,
           lastDamageTime: 0,
         })),
+    modifiersInAction: initialModifiers ? [...initialModifiers] : [],
+    coordinatedAttacksInAction: initialCoordinatedAttacks ? initialCoordinatedAttacks.map(ca => ({ ...ca })) : [],
   }
-  const localModifiers: React.MutableRefObject<ModifierInAction[]> = { current: initialModifiers ? [...initialModifiers] : [] }
-  const localCAs: React.MutableRefObject<CoordinatedAttackInAction[]> = { current: initialCoordinatedAttacks ? initialCoordinatedAttacks.map(ca => ({ ...ca })) : [] }
 
-  const baseParams: Omit<AutocastParams, 'snapshots' | 'resolvedSnapshotId'> = {
+  const baseEngineParams = {
     charactersMap,
     characterColumnsMap,
     globalColumns,
     enemy,
-    setDamageEvents: collectEvents,
-    negativeStatusesInAction: localNegativeStatuses,
-    modifiersInAction: localModifiers,
-    coordinatedAttacksInAction: localCAs,
   }
 
   let completedSteps = 0
@@ -454,9 +443,9 @@ function runImportSteps(params: ImportRunParams): FullImportRunResult {
         damageEvents: localDamageEvents,
         completedSteps,
         error: { stepIndex: stepIdx, character: step.character, action: step.action, reason: `Character "${step.character}" is not in the current battle` },
-        finalNegativeStatuses: localNegativeStatuses.current,
-        finalModifiers: localModifiers.current,
-        finalCoordinatedAttacks: localCAs.current,
+        finalNegativeStatuses: engineState.negativeStatusesInAction,
+        finalModifiers: engineState.modifiersInAction,
+        finalCoordinatedAttacks: engineState.coordinatedAttacksInAction,
       }
     }
 
@@ -468,7 +457,14 @@ function runImportSteps(params: ImportRunParams): FullImportRunResult {
     // Handle automatic Outro/Intro if character changed and previous had full concerto
     if (shouldTriggerOutroIntro(snapshots, snapshotId)) {
       try {
-        snapshots = handleOutroIntroFlow({ snapshots, snapshotId, ...baseParams })
+        const outroIntroResult = handleOutroIntroFlow({ snapshots, snapshotId, ...engineState, ...baseEngineParams })
+        snapshots = outroIntroResult.snapshots
+        localDamageEvents = [...localDamageEvents, ...outroIntroResult.damageEvents]
+        engineState = {
+          negativeStatusesInAction: outroIntroResult.negativeStatusesInAction,
+          modifiersInAction: outroIntroResult.modifiersInAction,
+          coordinatedAttacksInAction: outroIntroResult.coordinatedAttacksInAction,
+        }
       } catch (e) {
         const reason = e instanceof Error ? e.message : String(e)
         return {
@@ -476,9 +472,9 @@ function runImportSteps(params: ImportRunParams): FullImportRunResult {
           damageEvents: localDamageEvents,
           completedSteps,
           error: { stepIndex: stepIdx, character: step.character, action: step.action, reason },
-          finalNegativeStatuses: localNegativeStatuses.current,
-          finalModifiers: localModifiers.current,
-          finalCoordinatedAttacks: localCAs.current,
+          finalNegativeStatuses: engineState.negativeStatusesInAction,
+          finalModifiers: engineState.modifiersInAction,
+          finalCoordinatedAttacks: engineState.coordinatedAttacksInAction,
         }
       }
       snapshotId += 2
@@ -495,9 +491,9 @@ function runImportSteps(params: ImportRunParams): FullImportRunResult {
         damageEvents: localDamageEvents,
         completedSteps,
         error: { stepIndex: stepIdx, character: step.character, action: step.action, reason: `Action "${step.action}" not found for ${step.character}` },
-        finalNegativeStatuses: localNegativeStatuses.current,
-        finalModifiers: localModifiers.current,
-        finalCoordinatedAttacks: localCAs.current,
+        finalNegativeStatuses: engineState.negativeStatusesInAction,
+        finalModifiers: engineState.modifiersInAction,
+        finalCoordinatedAttacks: engineState.coordinatedAttacksInAction,
       }
     }
 
@@ -509,18 +505,32 @@ function runImportSteps(params: ImportRunParams): FullImportRunResult {
         damageEvents: localDamageEvents,
         completedSteps,
         error: { stepIndex: stepIdx, character: step.character, action: step.action, reason: failureReason },
-        finalNegativeStatuses: localNegativeStatuses.current,
-        finalModifiers: localModifiers.current,
-        finalCoordinatedAttacks: localCAs.current,
+        finalNegativeStatuses: engineState.negativeStatusesInAction,
+        finalModifiers: engineState.modifiersInAction,
+        finalCoordinatedAttacks: engineState.coordinatedAttacksInAction,
       }
     }
 
     // Apply the action through the full resolver pipeline
-    snapshots = updateSnapshotsWithAction({ ...baseParams, snapshots, snapshotId, actionName: step.action })
+    const actionResult = updateSnapshotsWithAction({ ...baseEngineParams, ...engineState, snapshots, snapshotId, actionName: step.action })
+    snapshots = actionResult.snapshots
+    localDamageEvents = [...localDamageEvents, ...actionResult.damageEvents]
+    engineState = {
+      negativeStatusesInAction: actionResult.negativeStatusesInAction,
+      modifiersInAction: actionResult.modifiersInAction,
+      coordinatedAttacksInAction: actionResult.coordinatedAttacksInAction,
+    }
 
     if (settings.autocastFollowUps) {
       const isLastStep = stepIdx === steps.length - 1
-      snapshots = autocastFollowUpChain({ ...baseParams, snapshots, resolvedSnapshotId: snapshotId, maxDepth: isLastStep ? maxAutocasts : undefined })
+      const autocastResult = autocastFollowUpChain({ ...baseEngineParams, ...engineState, snapshots, resolvedSnapshotId: snapshotId, maxDepth: isLastStep ? maxAutocasts : undefined })
+      snapshots = autocastResult.snapshots
+      localDamageEvents = [...localDamageEvents, ...autocastResult.damageEvents]
+      engineState = {
+        negativeStatusesInAction: autocastResult.negativeStatusesInAction,
+        modifiersInAction: autocastResult.modifiersInAction,
+        coordinatedAttacksInAction: autocastResult.coordinatedAttacksInAction,
+      }
     }
 
     completedSteps++
@@ -531,8 +541,8 @@ function runImportSteps(params: ImportRunParams): FullImportRunResult {
     damageEvents: localDamageEvents,
     completedSteps,
     error: null,
-    finalNegativeStatuses: localNegativeStatuses.current,
-    finalModifiers: localModifiers.current,
-    finalCoordinatedAttacks: localCAs.current,
+    finalNegativeStatuses: engineState.negativeStatusesInAction,
+    finalModifiers: engineState.modifiersInAction,
+    finalCoordinatedAttacks: engineState.coordinatedAttacksInAction,
   }
 }

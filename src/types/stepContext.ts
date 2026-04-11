@@ -6,6 +6,7 @@ import type { CharacterStats, EnemyStats } from './stats'
 import type { NegativeStatusInAction } from './negativeStatus'
 import type { DamageModifier, ModifierInAction } from './modifiers'
 import type { CoordinatedAttackInAction } from './coordinatedAttack'
+import type { DamageEvent } from './events'
 
 // ========== Type: Step Context ===============================================================================================
 
@@ -35,6 +36,9 @@ export type StepContext = {
   damageModifiers: DamageModifier[]
   aggregatedCharacterModifiers: Partial<CharacterStats>
   aggregatedEnemyModifiers: Partial<EnemyStats>
+
+  // Accumulated damage events produced during this step (replaces React Dispatch wiring)
+  damageEvents: DamageEvent[]
 
   // Track the character who was swapped to most recently (for 'nextSwap' target strategy)
   lastSwappedToCharacter?: string

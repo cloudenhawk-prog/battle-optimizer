@@ -33,8 +33,6 @@ function buildCtx(modifiersInAction: ModifierInAction[], statusModifications: Ar
   return buildStepContext(1, current, prev, character, action, createMockEnemy(), [], modifiersInAction, { TestChar: character })
 }
 
-const noopSetDamageEvents = () => {}
-
 // ========== Tests ============================================================================================================
 
 describe('resolveSideEffectsAndStatuses — helpModifierStatusModifications', () => {
@@ -42,7 +40,7 @@ describe('resolveSideEffectsAndStatuses — helpModifierStatusModifications', ()
     it('removes a 1-stack buff from modifiersInAction when stackChange is -1', () => {
       const ctx = buildCtx([makeModifierInAction('Mandate', 1, 1)], [{ type: 'buff', targetName: 'Mandate', stackChange: -1 }])
 
-      resolveSideEffectsAndStatuses(ctx, noopSetDamageEvents)
+      resolveSideEffectsAndStatuses(ctx)
 
       expect(ctx.modifiersInAction).toHaveLength(0)
     })
@@ -50,7 +48,7 @@ describe('resolveSideEffectsAndStatuses — helpModifierStatusModifications', ()
     it('reduces stacks without removing the modifier when remaining stacks > 0', () => {
       const ctx = buildCtx([makeModifierInAction('PowerBuff', 3, 3)], [{ type: 'buff', targetName: 'PowerBuff', stackChange: -2 }])
 
-      resolveSideEffectsAndStatuses(ctx, noopSetDamageEvents)
+      resolveSideEffectsAndStatuses(ctx)
 
       expect(ctx.modifiersInAction).toHaveLength(1)
       expect(ctx.modifiersInAction[0].currentStacks).toBe(1)
@@ -59,7 +57,7 @@ describe('resolveSideEffectsAndStatuses — helpModifierStatusModifications', ()
     it('removes a 1-stack debuff from modifiersInAction when stackChange is -1', () => {
       const ctx = buildCtx([makeModifierInAction('WeaknessDebuff', 1, 1, 'debuff')], [{ type: 'debuff', targetName: 'WeaknessDebuff', stackChange: -1 }])
 
-      resolveSideEffectsAndStatuses(ctx, noopSetDamageEvents)
+      resolveSideEffectsAndStatuses(ctx)
 
       expect(ctx.modifiersInAction).toHaveLength(0)
     })
@@ -69,7 +67,7 @@ describe('resolveSideEffectsAndStatuses — helpModifierStatusModifications', ()
     it('clamps newly added stacks to maxStacks', () => {
       const ctx = buildCtx([makeModifierInAction('CappedBuff', 2, 2)], [{ type: 'buff', targetName: 'CappedBuff', stackChange: +5 }])
 
-      resolveSideEffectsAndStatuses(ctx, noopSetDamageEvents)
+      resolveSideEffectsAndStatuses(ctx)
 
       expect(ctx.modifiersInAction[0].currentStacks).toBe(2)
     })
@@ -77,7 +75,7 @@ describe('resolveSideEffectsAndStatuses — helpModifierStatusModifications', ()
     it('removes modifier when stackChange drives stacks below 0', () => {
       const ctx = buildCtx([makeModifierInAction('WeakBuff', 1, 1)], [{ type: 'buff', targetName: 'WeakBuff', stackChange: -99 }])
 
-      resolveSideEffectsAndStatuses(ctx, noopSetDamageEvents)
+      resolveSideEffectsAndStatuses(ctx)
 
       expect(ctx.modifiersInAction).toHaveLength(0)
     })
@@ -87,7 +85,7 @@ describe('resolveSideEffectsAndStatuses — helpModifierStatusModifications', ()
     it('leaves modifier unchanged when stackChange is 0', () => {
       const ctx = buildCtx([makeModifierInAction('Mandate', 1, 1)], [{ type: 'buff', targetName: 'Mandate', stackChange: 0 }])
 
-      resolveSideEffectsAndStatuses(ctx, noopSetDamageEvents)
+      resolveSideEffectsAndStatuses(ctx)
 
       expect(ctx.modifiersInAction).toHaveLength(1)
       expect(ctx.modifiersInAction[0].currentStacks).toBe(1)
@@ -96,7 +94,7 @@ describe('resolveSideEffectsAndStatuses — helpModifierStatusModifications', ()
     it('leaves modifier unchanged when target name does not match', () => {
       const ctx = buildCtx([makeModifierInAction('Mandate', 1, 1)], [{ type: 'buff', targetName: 'SomeOtherBuff', stackChange: -1 }])
 
-      resolveSideEffectsAndStatuses(ctx, noopSetDamageEvents)
+      resolveSideEffectsAndStatuses(ctx)
 
       expect(ctx.modifiersInAction).toHaveLength(1)
       expect(ctx.modifiersInAction[0].currentStacks).toBe(1)
@@ -105,7 +103,7 @@ describe('resolveSideEffectsAndStatuses — helpModifierStatusModifications', ()
     it('does not remove a buff when the statusModification targets a debuff of the same name', () => {
       const ctx = buildCtx([makeModifierInAction('Mandate', 1, 1, 'buff')], [{ type: 'debuff', targetName: 'Mandate', stackChange: -1 }])
 
-      resolveSideEffectsAndStatuses(ctx, noopSetDamageEvents)
+      resolveSideEffectsAndStatuses(ctx)
 
       expect(ctx.modifiersInAction).toHaveLength(1)
       expect(ctx.modifiersInAction[0].currentStacks).toBe(1)
@@ -117,7 +115,7 @@ describe('resolveSideEffectsAndStatuses — helpModifierStatusModifications', ()
         [{ type: 'buff', targetName: 'Mandate', stackChange: -1 }],
       )
 
-      resolveSideEffectsAndStatuses(ctx, noopSetDamageEvents)
+      resolveSideEffectsAndStatuses(ctx)
 
       expect(ctx.modifiersInAction).toHaveLength(1)
       expect(ctx.modifiersInAction[0].modifier.displayName).toBe('UnrelatedBuff')
@@ -130,7 +128,7 @@ describe('resolveSideEffectsAndStatuses — helpModifierStatusModifications', ()
       const ctx = buildCtx([makeModifierInAction('Mandate', 1, 1)], [{ type: 'buff', targetName: 'Mandate', stackChange: -1 }])
       ctx.permanentModifiers = []
 
-      resolveSideEffectsAndStatuses(ctx, noopSetDamageEvents)
+      resolveSideEffectsAndStatuses(ctx)
       resolveModifierState(ctx)
 
       expect(ctx.current.buffs['Mandate']).toBeUndefined()
@@ -140,7 +138,7 @@ describe('resolveSideEffectsAndStatuses — helpModifierStatusModifications', ()
       const ctx = buildCtx([makeModifierInAction('PowerBuff', 3, 3)], [{ type: 'buff', targetName: 'PowerBuff', stackChange: -2 }])
       ctx.permanentModifiers = []
 
-      resolveSideEffectsAndStatuses(ctx, noopSetDamageEvents)
+      resolveSideEffectsAndStatuses(ctx)
       resolveModifierState(ctx)
 
       expect(ctx.current.buffs['PowerBuff']).toBe(1)
@@ -151,7 +149,7 @@ describe('resolveSideEffectsAndStatuses — helpModifierStatusModifications', ()
     it('logs a warning and does not change stacks when durationChange is non-zero', () => {
       const ctx = buildCtx([makeModifierInAction('Mandate', 1, 1)], [{ type: 'buff', targetName: 'Mandate', stackChange: 0, durationChange: 5 }])
 
-      resolveSideEffectsAndStatuses(ctx, noopSetDamageEvents)
+      resolveSideEffectsAndStatuses(ctx)
 
       const warningLog = ctx.logs.find(l => l.resolver === 'helpModifierStatusModifications' && l.message.includes('not supported'))
       expect(warningLog).toBeDefined()
@@ -162,7 +160,7 @@ describe('resolveSideEffectsAndStatuses — helpModifierStatusModifications', ()
     it('logs a warning and does not change stacks when refreshDuration is true', () => {
       const ctx = buildCtx([makeModifierInAction('Mandate', 1, 1)], [{ type: 'buff', targetName: 'Mandate', stackChange: 0, refreshDuration: true }])
 
-      resolveSideEffectsAndStatuses(ctx, noopSetDamageEvents)
+      resolveSideEffectsAndStatuses(ctx)
 
       const warningLog = ctx.logs.find(l => l.resolver === 'helpModifierStatusModifications' && l.message.includes('not supported'))
       expect(warningLog).toBeDefined()
@@ -171,7 +169,7 @@ describe('resolveSideEffectsAndStatuses — helpModifierStatusModifications', ()
     it('logs the applied stack changes when modifications are made', () => {
       const ctx = buildCtx([makeModifierInAction('Mandate', 1, 1)], [{ type: 'buff', targetName: 'Mandate', stackChange: -1 }])
 
-      resolveSideEffectsAndStatuses(ctx, noopSetDamageEvents)
+      resolveSideEffectsAndStatuses(ctx)
 
       const appliedLog = ctx.logs.find(l => l.resolver === 'helpModifierStatusModifications' && l.message.includes('applied'))
       expect(appliedLog).toBeDefined()

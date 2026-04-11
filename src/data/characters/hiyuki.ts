@@ -1,10 +1,10 @@
 import type { Character } from '../../types/character'
-import { all_actions } from '../actions/hiyuki'
+import { all_actions } from '../actions/hiyuki/actions'
 import { form_present_self, form_foreclaimed_self } from '../forms/hiyuki'
 import { hiyuki_cost_1_echo_1, hiyuki_cost_1_echo_2, hiyuki_cost_3_echo_1, hiyuki_cost_3_echo_2, hiyuki_cost_4_echo_1, hiyuki_weapon } from '../gear/hiyuki'
 import { hiyuki_inherentStats, hiyuki_stats } from '../stats/hiyuki'
 import { hiyuki_glacio_chafe_proc, hiyuki_everfrost_dominion_glacio_bite } from '../sideEffects/sideEffects'
-import { snow_rust_1_3, snow_rust_2, snow_rust_2_s6_self, snow_rust_2_s6_team } from '../modifiers/hiyuki'
+import { snow_rust_1_3, snow_rust_1, snow_rust_2_s6_self, snow_rust_2_s6_team } from '../modifiers/hiyuki'
 
 export const hiyuki_sequence: Character['sequence'] = 6 // TODO add to team setup file
 
@@ -31,7 +31,7 @@ export const hiyuki: Character = {
   actions: [...all_actions],
   damageModifiers: [
     snow_rust_1_3,
-    snow_rust_2,
+    snow_rust_1,
     snow_rust_2_s6_self,
     snow_rust_2_s6_team
   ],

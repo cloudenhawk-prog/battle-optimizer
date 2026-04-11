@@ -1,7 +1,6 @@
 import type { StepContext } from '../../types/stepContext'
 import type { CharacterStats, EnemyStats } from '../../types/stats'
 import type { ModifierInAction } from '../../types/modifiers'
-import type { Dispatch, SetStateAction } from 'react'
 import type { DamageEvent } from '../../types/events'
 import type { Snapshot } from '../../types/snapshot'
 import type { Action } from '../../types/action'
@@ -68,6 +67,8 @@ export function buildStepContext(snapshotId: number, current: Snapshot, prev: Sn
     damageModifiers: [],
     aggregatedCharacterModifiers: {},
     aggregatedEnemyModifiers: {},
+
+    damageEvents: [],
 
     lastSwappedToCharacter,
 
@@ -171,7 +172,7 @@ export function resolveDamageModifiers(ctx: StepContext) {
 
 // ========== Resolver 3: Damage ==============================================================================================
 
-export function resolveDamage(ctx: StepContext, setDamageEvents: Dispatch<SetStateAction<DamageEvent[]>>): void {
+export function resolveDamage(ctx: StepContext): void {
   const action = ctx.action
   const name = ctx.character.name
   const baseStats = ctx.character.stats
@@ -256,16 +257,14 @@ export function resolveDamage(ctx: StepContext, setDamageEvents: Dispatch<SetSta
     }
   }
 
-  setDamageEvents(prevEvents => {
-    // Attach a re-evaluation closure so DataOverlay can recompute damage with a subset of active buffs
-    damageEvent.calcParams = {
-      reEvaluate: (activeGroupKeys) => evaluateDamageWithGroups(
-        { action, characterName: name, baseStats, damageModifiers, enemy, ctx },
-        snapshotId, ctx.fromTime, activeGroupKeys,
-      ),
-    }
-    return [...prevEvents, damageEvent]
-  })
+  // Attach a re-evaluation closure so DataOverlay can recompute damage with a subset of active buffs
+  damageEvent.calcParams = {
+    reEvaluate: (activeGroupKeys) => evaluateDamageWithGroups(
+      { action, characterName: name, baseStats, damageModifiers, enemy, ctx },
+      snapshotId, ctx.fromTime, activeGroupKeys,
+    ),
+  }
+  ctx.damageEvents.push(damageEvent)
 
   const cumulativeDamage = prev.damage + average
   const dps = toTime > 0 ? cumulativeDamage / toTime : 0
@@ -282,15 +281,15 @@ export function resolveDamage(ctx: StepContext, setDamageEvents: Dispatch<SetSta
 
 // ========== Resolver 4: Side Effects And Statuses ===========================================================================
 
-export function resolveSideEffectsAndStatuses(ctx: StepContext, setDamageEvents: Dispatch<SetStateAction<DamageEvent[]>>): void {
+export function resolveSideEffectsAndStatuses(ctx: StepContext): void {
   // Aggregate all status modifications from both action and side effects
   const statusModifications = aggregateStatusModifications(ctx)
 
   // Side Effects Damage
-  helpSideEffectsDamage(ctx, setDamageEvents)
+  helpSideEffectsDamage(ctx)
 
   // Negative Statuses
-  helpNegativeStatuses(ctx, setDamageEvents, statusModifications)
+  helpNegativeStatuses(ctx, statusModifications)
 
   // Buff/Debuff modifier stack modifications (e.g. an action forcefully ending a buff)
   helpModifierStatusModifications(ctx, statusModifications)
@@ -428,7 +427,7 @@ function helpModifierStatusModifications(ctx: StepContext, statusModifications: 
   }
 }
 
-function helpSideEffectsDamage(ctx: StepContext, setDamageEvents: Dispatch<SetStateAction<DamageEvent[]>>): void {
+function helpSideEffectsDamage(ctx: StepContext): void {
   const sideEffects = ctx.action.sideEffects ?? []
 
   // Collect character-level action triggers whose required tags all match and condition passes.
@@ -482,7 +481,7 @@ function helpSideEffectsDamage(ctx: StepContext, setDamageEvents: Dispatch<SetSt
     }
   }
 
-  setDamageEvents(prevEvents => [...prevEvents, ...damageEvents])
+  ctx.damageEvents.push(...damageEvents)
   ctx.current.damage += totalSideEffectDamage
 
   ctx.logs.push({
@@ -492,7 +491,7 @@ function helpSideEffectsDamage(ctx: StepContext, setDamageEvents: Dispatch<SetSt
   })
 }
 
-export function helpNegativeStatuses(ctx: StepContext, setDamageEvents: Dispatch<SetStateAction<DamageEvent[]>>, statusModifications: any): void {
+export function helpNegativeStatuses(ctx: StepContext, statusModifications: any): void {
   const prev = ctx.prev
   const current = ctx.current
   const negativeStatusesInAction = ctx.negativeStatusesInAction
@@ -509,7 +508,7 @@ export function helpNegativeStatuses(ctx: StepContext, setDamageEvents: Dispatch
   const allDamageEvents = Object.values(damageEvents)
     .flat()
     .filter(event => event.average > 0)
-  setDamageEvents(prevEvents => [...prevEvents, ...allDamageEvents])
+  ctx.damageEvents.push(...allDamageEvents)
 
   // Calculate total damage from all events
   const totalDmgNegativeStatuses = allDamageEvents.reduce((sum, event) => sum + event.average, 0)
@@ -589,9 +588,9 @@ function helpHealProcModifiers(ctx: StepContext): void {
  * ctx.aggregatedCharacterModifiers are already populated. Runs before resolveResources so
  * that per-hit energy is stacked on top of the main action energy.
  */
-export function resolveCoordinatedAttacks(ctx: StepContext, setDamageEvents: Dispatch<SetStateAction<DamageEvent[]>>): void {
+export function resolveCoordinatedAttacks(ctx: StepContext): void {
   activateCoordinatedAttacks(ctx)
-  processCoordinatedAttacks(ctx, setDamageEvents)
+  processCoordinatedAttacks(ctx)
   updateCoordinatedAttackSnapshot(ctx)
 
   ctx.logs.push({
@@ -906,7 +905,16 @@ export function resolveCastState(ctx: StepContext): void {
   // Determine the new resolved position for the active character.
   // For swap-cancel variants, swapOutState overrides endState (it's the position the character
   // lands in after being swapped out mid-action). Falls back to endState for all other actions.
-  const prevPosition: 'GROUND' | 'AIR' = ctx.prev.charactersPositions?.[charName] ?? 'GROUND'
+  // If this character has no stored position (no lingering, no persistence), mirror the previous
+  // active character's position — the incoming character inherits where the field left off.
+  const storedPosition = ctx.prev.charactersPositions?.[charName]
+  const prevCharName = ctx.prev.character
+  const prevPosition: 'GROUND' | 'AIR' =
+    storedPosition !== undefined
+      ? storedPosition
+      : prevCharName && prevCharName !== charName
+        ? (ctx.prev.charactersPositions?.[prevCharName] ?? 'GROUND')
+        : 'GROUND'
   const rawEndState = ctx.action.castConditions.swapOutState ?? ctx.action.castConditions.endState
   const newPosition: 'GROUND' | 'AIR' = rawEndState === 'PRESERVE' || rawEndState === 'ANY' ? prevPosition : (rawEndState as 'GROUND' | 'AIR')
 
@@ -974,7 +982,6 @@ export function resolveCastState(ctx: StepContext): void {
 
   // Handle swap cooldown: when a different character takes over, the previous character
   // cannot be swapped back in for 1 second (measured from the start of the current action).
-  const prevCharName = ctx.prev.character
   const swapOccurred = !!prevCharName && prevCharName !== charName
   ctx.current.charactersSwapCooldownUntil = {
     ...(ctx.prev.charactersSwapCooldownUntil ?? {}),

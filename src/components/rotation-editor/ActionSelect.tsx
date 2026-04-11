@@ -161,7 +161,7 @@ export function ActionSelect({ value, actions, character, currentEnergies, previ
     // Determine character's effective position and last action
     // - If same character as previous snapshot: use stored position/lastAction directly
     // - If swapping back: use stored state only when within the persistence window
-    // - Otherwise (outside persistence or no persistence): position resets to GROUND, combo breaks
+    // - Otherwise (outside persistence or no persistence): mirror the active character's position, combo breaks
     let charPosition: 'GROUND' | 'AIR' = 'GROUND'
     let charLastAction: string | undefined = undefined
     let charComboChainTags: string[] = []
@@ -177,6 +177,12 @@ export function ActionSelect({ value, actions, character, currentEnergies, previ
         charPosition = storedPosition
         charLastAction = previousSnapshot.charactersLastAction?.[charName]
         charComboChainTags = previousSnapshot.charactersComboChainTags?.[charName] ?? []
+      } else {
+        // Mirror the active character's position — the incoming character inherits where the field left off
+        const activeCharName = previousSnapshot.character
+        charPosition = activeCharName
+          ? (previousSnapshot.charactersPositions?.[activeCharName] ?? 'GROUND')
+          : 'GROUND'
       }
     }
 
@@ -300,9 +306,18 @@ export function ActionSelect({ value, actions, character, currentEnergies, previ
       const allCharacterNames = Object.keys(previousSnapshot.charactersEnergies || {})
       const otherCharacters = allCharacterNames.filter(name => name !== character.name)
 
-      // Check if at least one other character will be available after this action
+      // When the current character is swapping IN (differs from the previous on-field character),
+      // the character they're replacing will receive a 1-second swap cooldown starting at
+      // previousSnapshot.toTime during resolution. That cooldown doesn't exist in the snapshot
+      // yet, so we must account for it proactively to avoid allowing a chain that deadlocks.
+      const prevOnFieldChar = previousSnapshot.character
+      const swappingIn = !!prevOnFieldChar && prevOnFieldChar !== character.name
+
       const hasAvailableSwapTarget = otherCharacters.some(otherCharName => {
-        const swapCooldownUntil = previousSnapshot.charactersSwapCooldownUntil?.[otherCharName] ?? 0
+        let swapCooldownUntil = previousSnapshot.charactersSwapCooldownUntil?.[otherCharName] ?? 0
+        if (swappingIn && otherCharName === prevOnFieldChar) {
+          swapCooldownUntil = Math.max(swapCooldownUntil, previousSnapshot.toTime + 1)
+        }
         return swapCooldownUntil <= actionEndTime
       })
 
@@ -437,7 +452,7 @@ export function ActionSelect({ value, actions, character, currentEnergies, previ
 
   // Filter out intro/outro actions - they're automatically triggered, not user-selectable
   const selectableActions = actions.filter(action => {
-    const isIntroOutro = action.dmgTypes.includes('INTRO') || action.dmgTypes.includes('OUTRO')
+    const isIntroOutro = action.tags?.includes('INTRO_ACTION') || action.tags?.includes('OUTRO_ACTION')
     return !isIntroOutro
   })
 
