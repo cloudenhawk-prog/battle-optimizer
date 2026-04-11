@@ -509,31 +509,6 @@ function computeContributionOrigin(
     }
   }
 
-  // Debug logging: contribution origin breakdown per character
-  for (const [charName, { self, external }] of charTotals.entries()) {
-    if (!charMap.has(charName)) continue
-    const total = self + Array.from(external.values()).reduce((s, v) => s + v, 0)
-    if (total <= 0) continue
-    const selfPct = (self / total) * 100
-    console.group(`${charName}:`)
-    console.log(`- Self ${selfPct.toFixed(1)}%:`)
-    console.log(`   - Base damage (caster's own share, after scaling): ${self.toFixed(2)}`)
-    console.log(`   - Total attributed damage: ${total.toFixed(2)}`)
-    console.log(`   - Derivation: ${self.toFixed(2)} / ${total.toFixed(2)} = ${selfPct.toFixed(1)}%`)
-    for (const [ownerName, amount] of Array.from(external.entries()).sort((a, b) => b[1] - a[1])) {
-      const pct = (amount / total) * 100
-      const amplification = total / self
-      const pctBoostOnBase = (amount / self) * 100
-      console.log(`- ${pct.toFixed(1)}% from ${ownerName}:`)
-      console.log(`   - ${ownerName}'s attributed contribution: ${amount.toFixed(2)}`)
-      console.log(`   - Total attributed damage: ${total.toFixed(2)}`)
-      console.log(`   - Derivation: ${amount.toFixed(2)} / ${total.toFixed(2)} = ${pct.toFixed(1)}%`)
-      console.log(`   - Amplification factor (total / self): ${total.toFixed(2)} / ${self.toFixed(2)} = ${amplification.toFixed(6)} → ${((amplification - 1) * 100).toFixed(1)}% additional damage on top of base`)
-      console.log(`   - Same result: contribution / self = ${amount.toFixed(2)} / ${self.toFixed(2)} = ${pctBoostOnBase.toFixed(1)}% of base → attributed as ${pct.toFixed(1)}% of total`)
-    }
-    console.groupEnd()
-  }
-
   return Array.from(charTotals.entries())
     .filter(([name]) => charMap.has(name))
     .map(([charName, { self, external }]) => {

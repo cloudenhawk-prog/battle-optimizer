@@ -8,7 +8,6 @@ import type { StepContext } from '../../types/stepContext'
 import { negativeStatuses } from '../../data/negativeStatuses'
 import { aggregateStat } from '../hooks/resolvers'
 import { applyStackMultiplier } from '../hooks/modifierHelpers'
-import { lookUp } from '../debug'
 
 /**
  * Damage Calculator
@@ -52,176 +51,30 @@ type CalculateDamageResult = {
 }
 
 export function calculateDamage({ action, name, stats, damageModifiers, modifierCharacterStats, modifierEnemyStats, enemy, snapshotId, timeStamp, skipContributions = false, ctx }: CalculateDamageParams): CalculateDamageResult {
-  const dbg = lookUp !== null && action.name === lookUp
-
   // Step 1: Extract action properties
   const { scaling, dmgTypes, elements, multiplier: actionMultiplier } = action
-
-  // if (dbg) {
-  //   console.log(`\n════════════════════════════════════════════════════════════`)
-  //   console.log(`[TRACE] Action: "${action.name}" | Character: ${name} | Snapshot: #${ctx?.snapshotId ?? '?'}`)
-  //   console.log(`[TRACE]   elements:   [${elements.join(', ')}]`)
-  //   console.log(`[TRACE]   dmgTypes:   [${dmgTypes.join(', ')}]`)
-  //   console.log(`[TRACE]   scaling:    ${scaling}`)
-  //   console.log(`[TRACE]   multiplier: ${actionMultiplier}`)
-  //   console.log(`════════════════════════════════════════════════════════════`)
-  // }
 
   // Step 2: Merge base stats with modifiers
   const finalStats = mergeStats(stats, modifierCharacterStats)
   const finalEnemyStats = mergeEnemyStats(enemy.stats, modifierEnemyStats)
 
-  // if (dbg) {
-  //   console.log(`\n[TRACE] ── Active Modifiers In Action ──`)
-  //   if (ctx?.modifiersInAction.length) {
-  //     for (const mia of ctx.modifiersInAction) {
-  //       console.log(`[TRACE]   "${mia.modifier.displayName}"  stacks: ${mia.currentStacks}  timeLeft: ${mia.timeLeft === Infinity ? '∞' : mia.timeLeft.toFixed(2) + 's'}`)
-  //     }
-  //   } else {
-  //     console.log(`[TRACE]   (none)`)
-  //   }
-  //   const nonZeroChr = Object.entries(modifierCharacterStats).filter(([, v]) => v !== 0 && v !== undefined)
-  //   const nonZeroEnm = Object.entries(modifierEnemyStats).filter(([, v]) => v !== 0 && v !== undefined)
-  //   console.log(`\n[TRACE] ── Modifier Stats Applied to Character ──`)
-  //   if (nonZeroChr.length) {
-  //     for (const [k, v] of nonZeroChr) console.log(`[TRACE]   ${k}: ${v}`)
-  //   } else {
-  //     console.log(`[TRACE]   (none)`)
-  //   }
-  //   console.log(`[TRACE] ── Modifier Stats Applied to Enemy ──`)
-  //   if (nonZeroEnm.length) {
-  //     for (const [k, v] of nonZeroEnm) console.log(`[TRACE]   ${k}: ${v}`)
-  //   } else {
-  //     console.log(`[TRACE]   (none)`)
-  //   }
-  // }
-
   // Step 3: Calculate base attack/hp/def value
   const baseStat = calculateScalingStat(finalStats, scaling)
-
-  // if (dbg) {
-  //   const base  = finalStats[`base${scaling}`            as keyof CharacterStats] as number
-  //   const flat  = finalStats[`flat${scaling}`            as keyof CharacterStats] as number
-  //   const bonSc = finalStats[`bonus${scaling}`           as keyof CharacterStats] as number
-  //   const ampSc = finalStats[`amplify${scaling}`         as keyof CharacterStats] as number
-  //   const totSc = finalStats[`totalMultiplier${scaling}` as keyof CharacterStats] as number
-  //   console.log(`\n[TRACE] ── Scaling Stat (${scaling}) ──`)
-  //   console.log(`[TRACE]   base${scaling}:             ${base}`)
-  //   console.log(`[TRACE]   bonus${scaling}:            ${(bonSc * 100).toFixed(2)}%`)
-  //   console.log(`[TRACE]   amplify${scaling}:          ${(ampSc * 100).toFixed(2)}%`)
-  //   console.log(`[TRACE]   totalMultiplier${scaling}:  ${totSc}`)
-  //   console.log(`[TRACE]   flat${scaling}:             ${flat}`)
-  //   console.log(`[TRACE]   formula: ${base} × (1 + ${(bonSc * 100).toFixed(2)}%) × (1 + ${(ampSc * 100).toFixed(2)}%) × ${totSc} + ${flat}`)
-  //   console.log(`[TRACE]   baseStat =                 ${baseStat.toFixed(4)}`)
-  // }
 
   // Step 4: Calculate damage bonus multiplier (additive bonuses)
   const bonusMultiplier = calculateBonusMultiplier(finalStats, elements, dmgTypes)
 
-  // if (dbg) {
-  //   console.log(`\n[TRACE] ── Bonus DMG Multiplier ──`)
-  //   console.log(`[TRACE]   bonusDMG (base):      ${(finalStats.bonusDMG * 100).toFixed(2)}%`)
-  //   for (const el of elements) {
-  //     if (!el) continue
-  //     const key = `${el.toLowerCase()}BonusDMG` as keyof CharacterStats
-  //     console.log(`[TRACE]   ${el} bonusDMG:        ${((finalStats[key] as number || 0) * 100).toFixed(2)}%`)
-  //   }
-  //   for (const dt of dmgTypes) {
-  //     if (dt === 'NEGATIVE_STATUS') continue
-  //     const key = `${dt.toLowerCase()}BonusDMG` as keyof CharacterStats
-  //     console.log(`[TRACE]   ${dt} bonusDMG:        ${((finalStats[key] as number || 0) * 100).toFixed(2)}%`)
-  //   }
-  //   console.log(`[TRACE]   bonusMultiplier =     ${bonusMultiplier.toFixed(4)}`)
-  // }
-
   // Step 5: Calculate damage amplification multiplier (additive amplifications)
   const amplifyMultiplier = calculateAmplifyMultiplier(finalStats, elements, dmgTypes)
-
-  // if (dbg) {
-  //   console.log(`\n[TRACE] ── Amplify DMG Multiplier ──`)
-  //   console.log(`[TRACE]   amplifyDMG (base):    ${(finalStats.amplifyDMG * 100).toFixed(2)}%`)
-  //   for (const el of elements) {
-  //     if (!el) continue
-  //     const key = `${el.toLowerCase()}AmplifyDMG` as keyof CharacterStats
-  //     console.log(`[TRACE]   ${el} amplifyDMG:      ${((finalStats[key] as number || 0) * 100).toFixed(2)}%`)
-  //   }
-  //   for (const dt of dmgTypes) {
-  //     if (dt === 'NEGATIVE_STATUS') continue
-  //     const key = `${dt.toLowerCase()}AmplifyDMG` as keyof CharacterStats
-  //     console.log(`[TRACE]   ${dt} amplifyDMG:      ${((finalStats[key] as number || 0) * 100).toFixed(2)}%`)
-  //   }
-  //   console.log(`[TRACE]   amplifyMultiplier =   ${amplifyMultiplier.toFixed(4)}`)
-  // }
 
   // Step 6: Calculate total damage multiplier (multiplicative totals)
   const totalDamageMultiplier = calculateTotalMultiplier(finalStats, elements, dmgTypes)
 
-  // if (dbg) {
-  //   console.log(`\n[TRACE] ── Total DMG Multiplier ──`)
-  //   console.log(`[TRACE]   totalMultiplierDMG:   ${finalStats.totalMultiplierDMG}`)
-  //   for (const el of elements) {
-  //     if (!el) continue
-  //     const key = `${el.toLowerCase()}TotalMultiplierDMG` as keyof CharacterStats
-  //     console.log(`[TRACE]   ${el} totalMultiplier: ${finalStats[key] as number || 1}`)
-  //   }
-  //   for (const dt of dmgTypes) {
-  //     if (dt === 'NEGATIVE_STATUS') continue
-  //     const key = `${dt.toLowerCase()}TotalMultiplierDMG` as keyof CharacterStats
-  //     console.log(`[TRACE]   ${dt} totalMultiplier: ${finalStats[key] as number || 1}`)
-  //   }
-  //   console.log(`[TRACE]   totalDamageMultiplier = ${totalDamageMultiplier.toFixed(4)}`)
-  // }
-
   // Step 7: Calculate resistance multipliers from enemy
   const resistanceMultiplier = calculateResistanceMultiplier(finalStats, finalEnemyStats, elements)
 
-  // if (dbg) {
-  //   const lvl        = finalStats.level
-  //   const eLvl       = finalEnemyStats.level
-  //   const defVal     = 8 * eLvl + 792
-  //   const effDef     = defVal * (1 - finalStats.defIgnore)
-  //   const defMult    = (800 + 8 * lvl) / (800 + 8 * lvl + effDef)
-  //   const effRes     = finalEnemyStats.resistance - finalStats.resistancePEN
-  //   const genRes     = effRes < 0 ? 1 - effRes / 2 : effRes < 0.8 ? 1 - effRes : 1 / (1 + 5 * effRes)
-  //   const chosenEl   = elements.find(e => e !== '') ?? ''
-  //   const elResKey   = `${chosenEl.toLowerCase()}RES` as keyof EnemyStats
-  //   const rawElRes   = chosenEl ? ((finalEnemyStats[elResKey] as number) || 0) : 0
-  //   const elResMult  = chosenEl ? 1 - (rawElRes - finalStats.elementalResPEN) : 1
-  //   const dmgRedMult = 1 - finalEnemyStats.damageReduction
-  //   console.log(`\n[TRACE] ── Resistance Multiplier ──`)
-  //   console.log(`[TRACE]   attacker level:           ${lvl}`)
-  //   console.log(`[TRACE]   enemy level:              ${eLvl}`)
-  //   console.log(`[TRACE]   enemy raw DEF:            ${defVal}`)
-  //   console.log(`[TRACE]   defIgnore:                ${(finalStats.defIgnore * 100).toFixed(2)}%`)
-  //   console.log(`[TRACE]   effective DEF:            ${effDef.toFixed(2)}`)
-  //   console.log(`[TRACE]   defenseMultiplier:        ${defMult.toFixed(4)}`)
-  //   console.log(`[TRACE]   ---`)
-  //   console.log(`[TRACE]   enemy resistance:         ${(finalEnemyStats.resistance * 100).toFixed(2)}%`)
-  //   console.log(`[TRACE]   resistancePEN:            ${(finalStats.resistancePEN * 100).toFixed(2)}%`)
-  //   console.log(`[TRACE]   effective resistance:     ${(effRes * 100).toFixed(2)}%`)
-  //   console.log(`[TRACE]   generalResMultiplier:     ${genRes.toFixed(4)}`)
-  //   console.log(`[TRACE]   ---`)
-  //   console.log(`[TRACE]   chosen element:           ${chosenEl || '(none)'}`)
-  //   if (chosenEl) {
-  //     console.log(`[TRACE]   enemy ${chosenEl} RES:           ${(rawElRes * 100).toFixed(2)}%`)
-  //     console.log(`[TRACE]   elementalResPEN:          ${(finalStats.elementalResPEN * 100).toFixed(2)}%`)
-  //     console.log(`[TRACE]   elementalResMultiplier:   ${elResMult.toFixed(4)}`)
-  //   }
-  //   console.log(`[TRACE]   ---`)
-  //   console.log(`[TRACE]   enemy damageReduction:    ${(finalEnemyStats.damageReduction * 100).toFixed(2)}%`)
-  //   console.log(`[TRACE]   dmgReductionMultiplier:   ${dmgRedMult.toFixed(4)}`)
-  //   console.log(`[TRACE]   RESULT: ${defMult.toFixed(4)} × ${genRes.toFixed(4)} × ${elResMult.toFixed(4)} × ${dmgRedMult.toFixed(4)} = ${resistanceMultiplier.toFixed(4)}`)
-  // }
-
   // Step 8: Calculate crit-adjusted damage
   const critMultiplier = 1 + finalStats.critRate * (finalStats.critDamage - 1)
-
-  // if (dbg) {
-  //   console.log(`\n[TRACE] ── Crit ──`)
-  //   console.log(`[TRACE]   critRate:      ${(finalStats.critRate * 100).toFixed(2)}%`)
-  //   console.log(`[TRACE]   critDamage:    ${(finalStats.critDamage * 100).toFixed(2)}%`)
-  //   console.log(`[TRACE]   critMultiplier = 1 + ${(finalStats.critRate * 100).toFixed(2)}% × (${(finalStats.critDamage * 100).toFixed(2)}% - 1) = ${critMultiplier.toFixed(4)}`)
-  // }
 
   // Step 9: Combine all multipliers for final damage
   const damageMultiplier = bonusMultiplier * amplifyMultiplier * totalDamageMultiplier * resistanceMultiplier
@@ -229,24 +82,6 @@ export function calculateDamage({ action, name, stats, damageModifiers, modifier
   const normalStrike   = actionMultiplier * baseStat * damageMultiplier
   const criticalStrike = normalStrike * finalStats.critDamage
   const average        = normalStrike * critMultiplier
-
-  // if (dbg) {
-  //   console.log(`\n[TRACE] ── Final Calculation ──`)
-  //   console.log(`[TRACE]   actionMultiplier:              ${actionMultiplier}`)
-  //   console.log(`[TRACE]   baseStat:                      ${baseStat.toFixed(4)}`)
-  //   console.log(`[TRACE]   bonusMultiplier:               ${bonusMultiplier.toFixed(4)}`)
-  //   console.log(`[TRACE]   amplifyMultiplier:             ${amplifyMultiplier.toFixed(4)}`)
-  //   console.log(`[TRACE]   totalDamageMultiplier:         ${totalDamageMultiplier.toFixed(4)}`)
-  //   console.log(`[TRACE]   resistanceMultiplier:          ${resistanceMultiplier.toFixed(4)}`)
-  //   console.log(`[TRACE]   damageMultiplier (combined):   ${damageMultiplier.toFixed(4)}`)
-  //   console.log(`[TRACE]   critMultiplier:                ${critMultiplier.toFixed(4)}`)
-  //   console.log(`[TRACE]   ---`)
-  //   console.log(`[TRACE]   normalStrike:    ${normalStrike.toFixed(2)}  (${actionMultiplier} × ${baseStat.toFixed(2)} × ${damageMultiplier.toFixed(4)})`)
-  //   console.log(`[TRACE]   criticalStrike:  ${criticalStrike.toFixed(2)}`)
-  //   console.log(`[TRACE]   average:         ${average.toFixed(2)}`)
-  //   console.log(`[TRACE]   average (ceil):  ${Math.ceil(average)}`)
-  //   console.log(`════════════════════════════════════════════════════════════\n`)
-  // }
 
   const contributions = skipContributions || !damageModifiers.length ? {} : calculateAllContrubutions(action, name, stats, damageModifiers, enemy, snapshotId, timeStamp, normalStrike, criticalStrike, average, ctx)
 
@@ -898,30 +733,6 @@ export function calculateAllContrubutions(action: Action, name: string, stats: C
     }
   }
 
-  // ── Shapley efficiency verification ────────────────────────────────────────────────────────────
-  // Efficiency property of Shapley values: Σ φ_i = f(N) - f(∅)
-  // A small residual confirms the Monte Carlo estimate converged correctly.
-  let _sumSvAvg = 0
-  for (const [groupKey] of groups) {
-    _sumSvAvg += shapleyAvg.get(groupKey)! / SHAPLEY_SAMPLES
-  }
-  // const _attributable = average - base.avg
-  // console.log(`\n[SHAPLEY] ══ Action: "${action.name}" | Dealer: ${name} | Snapshot: #${snapshotId} ══`)
-  // console.log(`[SHAPLEY]   f(∅) base damage (no external mods): ${base.avg.toFixed(2)}`)
-  // console.log(`[SHAPLEY]   f(N) full damage (all mods):         ${average.toFixed(2)}`)
-  // console.log(`[SHAPLEY]   f(N) - f(∅) attributable:           ${_attributable.toFixed(2)}`)
-  // console.log(`[SHAPLEY]   Σ φ_i  sum of Shapley values:       ${_sumSvAvg.toFixed(2)}`)
-  // console.log(`[SHAPLEY]   Residual |Σφ_i - attributable|:     ${Math.abs(_sumSvAvg - _attributable).toFixed(2)}  (expect ≈ 0)`)
-  // console.log(`[SHAPLEY]   ── Per-group Shapley values (avg damage) ────────`)
-  // for (const [groupKey, indices] of groups) {
-    // const sv = shapleyAvg.get(groupKey)! / SHAPLEY_SAMPLES
-    // const label = damageModifiers[indices[0]].displayName ?? groupKey
-    // const pct = average !== 0 ? (sv / average * 100).toFixed(1) : '0'
-    // console.log(`[SHAPLEY]     "${label}":  φ = ${sv.toFixed(2)}  (${pct}% of f(N))`)
-  // }
-  // console.log(``)
-  // ───────────────────────────────────────────────────────────────────────────────────────────────
-
   return results
 }
 
@@ -958,8 +769,6 @@ export function calculateAllContrubutions(action: Action, name: string, stats: C
  * @param ctx - Optional step context (for contributions)
  */
 export function calculateDamageNegativeStatus(currStacks: number, element: ElementType, enemy: Enemy, negativeStatusName: string, baseStats: CharacterStats, modifierCharacterStats: Partial<CharacterStats>, modifierEnemyStats: Partial<EnemyStats>, damageModifiers: DamageModifier[], dealer: string, snapshotId: number, timeStamp: number, actionName?: string, ctx?: StepContext, baseDMGScaling?: { scaling: ScalingType; multiplier: number }): DamageEvent {
-  console.log("Called function calculateDamageNegativeStatus")
-  
   // Merge base stats with modifiers to get final stats (must happen before baseDMG when scaling off merged stats)
   const finalCharacterStats = mergeStats(baseStats, modifierCharacterStats)
   const finalEnemyStats = mergeEnemyStats(enemy.stats, modifierEnemyStats)
@@ -976,20 +785,6 @@ export function calculateDamageNegativeStatus(currStacks: number, element: Eleme
     scalingType = 'FLAT'
   }
 
-  console.log(`\n════════════════════════════════════════════════════════════`)
-  console.log(`[TRACE] Negative Status Damage: "${actionName ?? negativeStatusName}" | Dealer: ${dealer} | Snapshot: #${snapshotId}`)
-  console.log(`[TRACE]   element:    ${element}`)
-  console.log(`[TRACE]   stacks:     ${currStacks}`)
-  if (baseDMGScaling) {
-    const scaledStat = calculateScalingStat(finalCharacterStats, baseDMGScaling.scaling)
-    console.log(`[TRACE]   scaling:    ${baseDMGScaling.scaling} × ${(baseDMGScaling.multiplier * 100).toFixed(2)}%`)
-    console.log(`[TRACE]   ${baseDMGScaling.scaling} (merged):  ${scaledStat.toFixed(2)}`)
-  } else {
-    console.log(`[TRACE]   scaling:    FLAT (stack table)`)
-  }
-  console.log(`[TRACE]   baseDMG:    ${baseDMG.toFixed(4)}`)
-  console.log(`════════════════════════════════════════════════════════════`)
-
   // Calculate resistance multipliers
   const level = finalCharacterStats.level
   const enemyLevel = finalEnemyStats.level
@@ -1003,25 +798,6 @@ export function calculateDamageNegativeStatus(currStacks: number, element: Eleme
   const elementalResMultiplier = 1 - elementRES
   const damageRES = resistanceMultiplier * defenseMultiplier * damageReductionMultiplier * elementalResMultiplier
 
-  // console.log(`\n[TRACE] ── Resistance Multiplier ──`)
-  // console.log(`[TRACE]   attacker level:           ${level}`)
-  // console.log(`[TRACE]   enemy level:              ${enemyLevel}`)
-  // console.log(`[TRACE]   enemy raw DEF:            ${8 * enemyLevel + 792}`)
-  // console.log(`[TRACE]   defIgnore:                0% (not applied to negative status)`)
-  // console.log(`[TRACE]   defenseMultiplier:        ${defenseMultiplier.toFixed(4)}`)
-  // console.log(`[TRACE]   ---`)
-  // console.log(`[TRACE]   enemy resistance:         ${(enemyResistance * 100).toFixed(2)}%`)
-  // console.log(`[TRACE]   resistancePEN:            0% (not applied to negative status)`)
-  // console.log(`[TRACE]   resistanceMultiplier:     ${resistanceMultiplier.toFixed(4)}`)
-  // console.log(`[TRACE]   ---`)
-  // console.log(`[TRACE]   enemy ${element} RES:        ${(elementRES * 100).toFixed(2)}%`)
-  // console.log(`[TRACE]   elementalResPEN:          0% (not applied to negative status)`)
-  // console.log(`[TRACE]   elementalResMultiplier:   ${elementalResMultiplier.toFixed(4)}`)
-  // console.log(`[TRACE]   ---`)
-  // console.log(`[TRACE]   enemy damageReduction:    ${(enemyDamageReduction * 100).toFixed(2)}%`)
-  // console.log(`[TRACE]   dmgReductionMultiplier:   ${damageReductionMultiplier.toFixed(4)}`)
-  // console.log(`[TRACE]   RESULT: ${defenseMultiplier.toFixed(4)} × ${resistanceMultiplier.toFixed(4)} × ${elementalResMultiplier.toFixed(4)} × ${damageReductionMultiplier.toFixed(4)} = ${damageRES.toFixed(4)}`)
-
   // Apply negative status damage multipliers from merged character stats
   // These are only the status-specific modifiers (e.g., aeroErosionAmplifyDMG)
   const statusBonus = getStatusBonusDMG(finalCharacterStats, element)
@@ -1029,21 +805,8 @@ export function calculateDamageNegativeStatus(currStacks: number, element: Eleme
   const statusTotalMultiplier = getStatusTotalMultiplierDMG(finalCharacterStats, element)
   const statusMultiplier = (1 + statusBonus) * (1 + statusAmplify) * statusTotalMultiplier
 
-  console.log(`\n[TRACE] ── Status Multiplier ──`)
-  console.log(`[TRACE]   statusBonus:              ${(statusBonus * 100).toFixed(2)}%`)
-  console.log(`[TRACE]   statusAmplify:            ${(statusAmplify * 100).toFixed(2)}%`)
-  console.log(`[TRACE]   statusTotalMultiplier:    ${statusTotalMultiplier.toFixed(4)}`)
-  console.log(`[TRACE]   statusMultiplier:         (1 + ${(statusBonus * 100).toFixed(2)}%) × (1 + ${(statusAmplify * 100).toFixed(2)}%) × ${statusTotalMultiplier.toFixed(4)} = ${statusMultiplier.toFixed(4)}`)
-
   // Final damage calculation
   const damage = baseDMG * damageRES * statusMultiplier
-
-  console.log(`\n[TRACE] ── Final Calculation ──`)
-  console.log(`[TRACE]   baseDMG:        ${baseDMG.toFixed(4)}`)
-  console.log(`[TRACE]   damageRES:      ${damageRES.toFixed(4)}`)
-  console.log(`[TRACE]   statusMult:     ${statusMultiplier.toFixed(4)}`)
-  console.log(`[TRACE]   damage = ${baseDMG.toFixed(4)} × ${damageRES.toFixed(4)} × ${statusMultiplier.toFixed(4)} = ${damage.toFixed(2)}`)
-  console.log(`════════════════════════════════════════════════════════════\n`)
 
   // Calculate contributions if requested
   const baseDMGFn = baseDMGScaling
@@ -1200,28 +963,6 @@ function calculateNegativeStatusContributions(baseDMG: number, element: ElementT
       average_percent_damage_contributed: safePercent(sv, fullDamage),
     }
   }
-
-  // ── Shapley efficiency verification ────────────────────────────────────────────────────────────
-  // Efficiency property of Shapley values: Σ φ_i = f(N) - f(∅)
-  // A small residual confirms the Monte Carlo estimate converged correctly.
-  let _sumSv = 0
-  for (const [groupKey] of groups) {
-    _sumSv += shapleyValues.get(groupKey)! / SHAPLEY_SAMPLES
-  }
-  const _attributable = fullDamage - baseDamage
-  console.log(`\n[SHAPLEY] ══ Negative Status: ${element} | f(∅): ${baseDamage.toFixed(2)} | f(N): ${fullDamage.toFixed(2)} ══`)
-  console.log(`[SHAPLEY]   f(N) - f(∅) attributable:         ${_attributable.toFixed(2)}`)
-  console.log(`[SHAPLEY]   Σ φ_i  sum of Shapley values:     ${_sumSv.toFixed(2)}`)
-  console.log(`[SHAPLEY]   Residual |Σφ_i - attributable|:   ${Math.abs(_sumSv - _attributable).toFixed(2)}  (expect ≈ 0)`)
-  console.log(`[SHAPLEY]   ── Per-group Shapley values ────────────────────`)
-  for (const [groupKey, indices] of groups) {
-    const sv = shapleyValues.get(groupKey)! / SHAPLEY_SAMPLES
-    const label = damageModifiers[indices[0]].displayName ?? groupKey
-    const pct = fullDamage !== 0 ? (sv / fullDamage * 100).toFixed(1) : '0'
-    console.log(`[SHAPLEY]     "${label}":  φ = ${sv.toFixed(2)}  (${pct}% of f(N))`)
-  }
-  console.log(``)
-  // ───────────────────────────────────────────────────────────────────────────────────────────────
 
   return results
 }

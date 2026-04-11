@@ -1111,7 +1111,6 @@ export function resolveOffFieldTriggers(ctx: StepContext): void {
     // absent + active character = always been on-field, never swapped out → skip
     // absent + ally = never came on-field → treat as off-field since t=0
     if (offFieldSinceRaw === null || (offFieldSinceRaw === undefined && char.name === ctx.character.name)) {
-      console.log(`[resolveOffFieldTriggers] ${char.name}: on-field or never swapped, skipping`)
       continue
     }
     const offFieldSince = offFieldSinceRaw ?? 0
@@ -1119,22 +1118,17 @@ export function resolveOffFieldTriggers(ctx: StepContext): void {
     const prevOffFieldDuration = ctx.fromTime - offFieldSince
     const currOffFieldDuration = ctx.toTime - offFieldSince
 
-    console.log(`[resolveOffFieldTriggers] ${char.name}: offFieldSince=${offFieldSince}, fromTime=${ctx.fromTime}, toTime=${ctx.toTime}, prevDuration=${prevOffFieldDuration.toFixed(2)}s, currDuration=${currOffFieldDuration.toFixed(2)}s`)
-
     for (const trigger of char.offFieldTriggers) {
       const threshold = trigger.minOffFieldDuration
       // Fire once: the first step whose window crosses the threshold
       if (prevOffFieldDuration >= threshold) {
-        console.log(`[resolveOffFieldTriggers] ${char.name}: threshold ${threshold}s already passed (prev=${prevOffFieldDuration.toFixed(2)}s), skipping`)
         continue
       }
       if (currOffFieldDuration < threshold) {
-        console.log(`[resolveOffFieldTriggers] ${char.name}: threshold ${threshold}s not yet reached (curr=${currOffFieldDuration.toFixed(2)}s), skipping`)
         continue
       }
 
       if (trigger.condition && !trigger.condition(ctx.current, char.name, char)) {
-        console.log(`[resolveOffFieldTriggers] ${char.name}: threshold crossed but condition false, skipping`)
         continue
       }
 
@@ -1193,8 +1187,6 @@ export function resolveOffFieldTriggers(ctx: StepContext): void {
         ...(ctx.current.offFieldTriggerEvents[char.name] ?? []),
         description,
       ]
-
-      console.log(`[resolveOffFieldTriggers] FIRED for ${char.name}: ${description}`)
 
       ctx.logs.push({
         resolver: 'resolveOffFieldTriggers',
