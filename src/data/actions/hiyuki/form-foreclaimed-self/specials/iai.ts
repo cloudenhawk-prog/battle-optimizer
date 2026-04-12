@@ -1,15 +1,15 @@
 
-import type { Action } from "../../../../../types/action"
-import * as values from "../../values"
-import { hiyuki_foreclaimed_BA_1_5, hiyuki_foreclaimed_BA_1_5_cancel_with_swap } from "../basics/BA1"
-import { hiyuki_foreclaimed_BA_2_5, hiyuki_foreclaimed_BA_2_5_cancel_with_swap } from "../basics/BA2"
-import { hiyuki_foreclaimed_BA_3_5, hiyuki_foreclaimed_BA_3_5_cancel_with_swap } from "../basics/BA3"
-import { hiyuki_foreclaimed_BA_4_5, hiyuki_foreclaimed_BA_4_5_cancel_with_swap } from "../basics/BA4"
-import { hiyuki_foreclaimed_BA_5, hiyuki_foreclaimed_BA_5_cancel_with_swap } from "../basics/BA5"
-import { hiyuki_foreclaimed_midair_1_3, hiyuki_foreclaimed_midair_1_3_cancel_with_swap } from "../basics/MA1"
-import { hiyuki_foreclaimed_midair_2_3, hiyuki_foreclaimed_midair_2_3_cancel_with_swap } from "../basics/MA2"
-import { hiyuki_foreclaimed_midair_3, hiyuki_foreclaimed_midair_3_cancel_with_swap } from "../basics/MA3"
-import { hiyuki_foreclaimed_skill_1, hiyuki_foreclaimed_skill_1_cancel_with_swap, hiyuki_foreclaimed_skill_2, hiyuki_foreclaimed_skill_2_cancel_with_swap } from "../skills/resonance"
+import type { Action } from '../../../../../types/action'
+import * as values from '../../values'
+import { hiyuki_foreclaimed_BA_1_5, hiyuki_foreclaimed_BA_1_5_cancel_with_swap } from '../basics/BA1'
+import { hiyuki_foreclaimed_BA_2_5, hiyuki_foreclaimed_BA_2_5_cancel_with_swap } from '../basics/BA2'
+import { hiyuki_foreclaimed_BA_3_5, hiyuki_foreclaimed_BA_3_5_cancel_with_swap } from '../basics/BA3'
+import { hiyuki_foreclaimed_BA_4_5, hiyuki_foreclaimed_BA_4_5_cancel_with_swap } from '../basics/BA4'
+import { hiyuki_foreclaimed_BA_5, hiyuki_foreclaimed_BA_5_cancel_with_swap } from '../basics/BA5'
+import { hiyuki_foreclaimed_midair_1_3, hiyuki_foreclaimed_midair_1_3_cancel_with_swap } from '../basics/MA1'
+import { hiyuki_foreclaimed_midair_2_3, hiyuki_foreclaimed_midair_2_3_cancel_with_swap } from '../basics/MA2'
+import { hiyuki_foreclaimed_midair_3, hiyuki_foreclaimed_midair_3_cancel_with_swap } from '../basics/MA3'
+import { hiyuki_foreclaimed_skill_1, hiyuki_foreclaimed_skill_1_cancel_with_swap, hiyuki_foreclaimed_skill_2, hiyuki_foreclaimed_skill_2_cancel_with_swap } from '../skills/resonance'
 
 // Default
 const hiyuki_foreclaimed_iai: Action = {

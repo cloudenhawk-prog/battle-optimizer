@@ -1,5 +1,5 @@
-import type { Action } from "../../../../../types/action"
-import * as values from "../../values"
+import type { Action } from '../../../../../types/action'
+import * as values from '../../values'
 
 // Default
 const hiyuki_foreclaimed_enhanced_heavy_attack: Action = {

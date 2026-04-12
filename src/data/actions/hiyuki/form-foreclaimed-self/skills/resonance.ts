@@ -1,6 +1,6 @@
-import type { Action } from "../../../../../types/action"
-import { s4_skill_buff } from "../../../../modifiers/hiyuki"
-import * as values from "../../values"
+import type { Action } from '../../../../../types/action'
+import { s4_skill_buff } from '../../../../modifiers/hiyuki'
+import * as values from '../../values'
 
 // ========== Resonance 1 ======================================================================================================
 const hiyuki_foreclaimed_skill_1: Action = {

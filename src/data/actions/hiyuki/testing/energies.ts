@@ -1,5 +1,5 @@
-import type { Action } from "../../../../types/action"
-import type { EnergyType } from "../../../../types/baseTypes"
+import type { Action } from '../../../../types/action'
+import type { EnergyType } from '../../../../types/baseTypes'
 
 function makeEnergyUpAction(energyType: EnergyType, displayName: string): Action {
   return {

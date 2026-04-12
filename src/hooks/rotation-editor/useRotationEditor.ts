@@ -6,6 +6,7 @@ import type { TableConfig, GlobalColumns } from '../../types/tableDefinitions'
 import type { Enemy } from '../../types/enemy'
 import type { Settings } from '../useSettings'
 import { useState, useEffect } from 'react'
+import type { DamageEvent } from '../../types/events'
 
 // ========== Hook: useRotationEditor ==========================================================================================
 

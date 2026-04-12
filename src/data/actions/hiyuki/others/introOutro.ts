@@ -1,5 +1,5 @@
-﻿import type { Action } from "../../../../types/action"
-import { outro_buff } from "../../../modifiers/hiyuki"
+﻿import type { Action } from '../../../../types/action'
+import { outro_buff } from '../../../modifiers/hiyuki'
 
 // Intro
 const hiyuki_intro: Action = {

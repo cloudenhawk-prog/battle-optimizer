@@ -19,7 +19,7 @@
  *   --progress N     Print N evenly-spaced progress updates. e.g. 20 → every 5% (default: 10).
  *   --progress N%    Print a progress update every N%. e.g. 7% → at 7%, 14%, 21%, ...
  *   --output path    Save the top-N rotations as a JSON file importable into the rotation editor.
- * 
+ *
  * npm run mcts -- --iterations 1000 --time 30 --topN 5
  * npm run mcts -- --iterations 1000 --time 30 --explore 2.5 --topN 10
  * npm run mcts -- --iterations 3000 --time 30 --explore 2.0 --topN 5 --progress 20
@@ -27,7 +27,6 @@
 
 import * as fs from 'fs'
 import * as path from 'path'
-import { fileURLToPath } from 'url'
 import { characters } from '../src/data/characters'
 import { enemies } from '../src/data/enemies'
 import { runMCTS } from '../src/utils/mcts/search'
@@ -206,13 +205,13 @@ function diagnoseStuck(snapshot: Snapshot, team: ResolvedCharacter[]): void {
     if (followUp) console.log(`      mustFollowUp=${followUp.actionName} (must=${followUp.must})`)
 
     if (available.length === 0) {
-      console.log(`      getAvailableActions: 0 — all actions blocked`)
+      console.log('      getAvailableActions: 0 — all actions blocked')
     } else {
       const names = available.map(a => a.name).join(', ')
       console.log(`      getAvailableActions (${available.length}): ${names}`)
       // These are actions getAvailableActions gives back but getMCTSChoices still filters
       if (swapLocked) {
-        console.log(`      -> stripped by isSwapRequiredLocked`)
+        console.log('      -> stripped by isSwapRequiredLocked')
       }
     }
   }

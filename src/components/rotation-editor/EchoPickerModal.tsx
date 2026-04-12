@@ -838,7 +838,7 @@ export function EchoPickerModal({ slot, currentGear, characterName: _characterNa
                 transition={{ duration: 0.18 }}
                 className="echo-picker-scroll"
               style={{ flex: 1, minHeight: 0, overflowY: 'auto', padding: '18px 22px', scrollbarWidth: 'none' }}>
-              <style>{`.echo-picker-scroll::-webkit-scrollbar { display: none; }`}</style>
+              <style>{'.echo-picker-scroll::-webkit-scrollbar { display: none; }'}</style>
                 {/* Unequip button — shown only when the slot has an echo equipped */}
                 {currentSlotEcho && (
                   <div style={{ display: 'flex', justifyContent: 'flex-end', marginBottom: 18 }}>

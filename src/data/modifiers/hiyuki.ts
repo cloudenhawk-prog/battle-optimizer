@@ -1,6 +1,6 @@
-import type { DamageModifier } from "../../types/modifiers";
-import { always, atLeastOneStackOf } from "../../utils/conditions/damageModifierConditions";
-import { hiyuki_sequence } from "../characters/hiyuki";
+import type { DamageModifier } from '../../types/modifiers'
+import { always, atLeastOneStackOf } from '../../utils/conditions/damageModifierConditions'
+import { hiyuki_sequence } from '../characters/hiyuki'
 
 // ========== Snow Rust ========================================================================================================
 

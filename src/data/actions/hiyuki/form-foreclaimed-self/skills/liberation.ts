@@ -1,4 +1,4 @@
-import type { Action } from "../../../../../types/action"
+import type { Action } from '../../../../../types/action'
 
 const hiyuki_foreclaimed_liberation: Action = {
   tags: ['LIBERATION'],

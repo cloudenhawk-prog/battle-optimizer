@@ -536,7 +536,7 @@ function EquipmentOrbit({ weapon, echoSlots, elColor, characterName, onItemHighl
               onError={(e) => {
                 const el = e.currentTarget
                 el.onerror = null
-                el.src = `/assets/characters/${characterName.toLowerCase()}_shadow.png`;
+                el.src = `/assets/characters/${characterName.toLowerCase()}_shadow.png`
               }}
             />
           </div>

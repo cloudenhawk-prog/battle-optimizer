@@ -50,7 +50,6 @@ export default function RotationEditor({ charactersInBattle, enemy, tableConfig,
       }, 6000)
       return () => clearTimeout(timer)
     }
-  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [lastImportError, lastImportCompleted])
 
   function openOverlayAt(index: number) {

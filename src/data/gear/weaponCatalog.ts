@@ -453,7 +453,7 @@ export const weaponCatalog: WeaponCatalogEntry[] = [
     weaponType: 'Broadblade',
     stats: { baseATK: 412.50, energyPercent: 0.7704 },
     icon: 'assets/gear/weapons/starfield_calibrator.png',
-    info: "Increases DEF by 16%/20%/24%/28%/32%. Casting Resonance Liberation restores 8/10/12/14/16 points of Concerto Energy. This effect can be triggered 1 time every 20s. When the wielder heals Resonators, increases Crit. DMG of all nearby Resonators in the team by 20%/25%/30%/35%/40% for 4s. Effects of the same name cannot be stacked.",
+    info: 'Increases DEF by 16%/20%/24%/28%/32%. Casting Resonance Liberation restores 8/10/12/14/16 points of Concerto Energy. This effect can be triggered 1 time every 20s. When the wielder heals Resonators, increases Crit. DMG of all nearby Resonators in the team by 20%/25%/30%/35%/40% for 4s. Effects of the same name cannot be stacked.',
     ranks: {
       1: {
         injectedModifiers: [

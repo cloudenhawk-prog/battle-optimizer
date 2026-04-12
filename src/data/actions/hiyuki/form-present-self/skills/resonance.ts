@@ -1,6 +1,6 @@
-import type { Action } from "../../../../../types/action"
-import { s4_skill_buff } from "../../../../modifiers/hiyuki"
-import * as values from "../../values"
+import type { Action } from '../../../../../types/action'
+import { s4_skill_buff } from '../../../../modifiers/hiyuki'
+import * as values from '../../values'
 
 // TODO: Try cancel with dodge
 // TODO: use attemptFollowUp, MUST: TRUE if it's not possible to swap in/out quickly with persist time to chain it with BA3 enhanced

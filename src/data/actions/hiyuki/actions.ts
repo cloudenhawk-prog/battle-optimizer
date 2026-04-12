@@ -10,30 +10,30 @@
 // TODO Try dash cancel versions of different actions
 // TODO Try skill cancel versions of different actions
 
-import * as BA1 from "./form-present-self/basics/BA1"
-import * as BA2 from "./form-present-self/basics/BA2"
-import * as BA3 from "./form-present-self/basics/BA3"
-import type { Action } from "../../../types/action"
-import * as resonance from "./form-present-self/skills/resonance"
-import * as liberation from "./form-present-self/skills/liberation"
-import * as heavy from "./form-present-self/specials/heavy"
+import * as BA1 from './form-present-self/basics/BA1'
+import * as BA2 from './form-present-self/basics/BA2'
+import * as BA3 from './form-present-self/basics/BA3'
+import type { Action } from '../../../types/action'
+import * as resonance from './form-present-self/skills/resonance'
+import * as liberation from './form-present-self/skills/liberation'
+import * as heavy from './form-present-self/specials/heavy'
 
-import * as forclaimed_BA1 from "./form-foreclaimed-self/basics/BA1"
-import * as forclaimed_BA2 from "./form-foreclaimed-self/basics/BA2"
-import * as forclaimed_BA3 from "./form-foreclaimed-self/basics/BA3"
-import * as forclaimed_BA4 from "./form-foreclaimed-self/basics/BA4"
-import * as forclaimed_BA5 from "./form-foreclaimed-self/basics/BA5"
-import * as forclaimed_MA1 from "./form-foreclaimed-self/basics/MA1"
-import * as forclaimed_MA2 from "./form-foreclaimed-self/basics/MA2"
-import * as forclaimed_MA3 from "./form-foreclaimed-self/basics/MA3"
-import * as forclaimed_resonance from "./form-foreclaimed-self/skills/resonance"
-import * as forclaimed_liberation from "./form-foreclaimed-self/skills/liberation"
-import * as forclaimed_heavy from "./form-foreclaimed-self/specials/heavy"
-import * as forclaimed_iai from "./form-foreclaimed-self/specials/iai"
+import * as forclaimed_BA1 from './form-foreclaimed-self/basics/BA1'
+import * as forclaimed_BA2 from './form-foreclaimed-self/basics/BA2'
+import * as forclaimed_BA3 from './form-foreclaimed-self/basics/BA3'
+import * as forclaimed_BA4 from './form-foreclaimed-self/basics/BA4'
+import * as forclaimed_BA5 from './form-foreclaimed-self/basics/BA5'
+import * as forclaimed_MA1 from './form-foreclaimed-self/basics/MA1'
+import * as forclaimed_MA2 from './form-foreclaimed-self/basics/MA2'
+import * as forclaimed_MA3 from './form-foreclaimed-self/basics/MA3'
+import * as forclaimed_resonance from './form-foreclaimed-self/skills/resonance'
+import * as forclaimed_liberation from './form-foreclaimed-self/skills/liberation'
+import * as forclaimed_heavy from './form-foreclaimed-self/specials/heavy'
+import * as forclaimed_iai from './form-foreclaimed-self/specials/iai'
 
-import * as introOutro from "./others/introOutro"
-import * as swaps from "./others/swaps"
-import * as energies from "./testing/energies"
+import * as introOutro from './others/introOutro'
+import * as swaps from './others/swaps'
+import * as energies from './testing/energies'
 
 export const intro_outro_actions = [introOutro.hiyuki_intro, introOutro.hiyuki_outro]
 

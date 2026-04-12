@@ -1,6 +1,6 @@
 ﻿
-import type { Action } from "../../../../../types/action"
-import * as values from "../../values"
+import type { Action } from '../../../../../types/action'
+import * as values from '../../values'
 
 // ========== BA5 ==============================================================================================================
 

@@ -1,4 +1,4 @@
-import type { Action } from "../../../../types/action"
+import type { Action } from '../../../../types/action'
 
 // Wait 0.05s
 const hiyuki_wait_005: Action = {

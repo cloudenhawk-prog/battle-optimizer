@@ -1,6 +1,6 @@
 import { createPortal } from 'react-dom'
 import { useState, useId } from 'react'
-import { motion, AnimatePresence } from 'framer-motion'
+import { motion } from 'framer-motion'
 import '../../styles/rotation-editor/SummaryOverlay.css'
 import { negativeStatuses } from '../../data/negativeStatuses'
 import type { Snapshot } from '../../types/snapshot'

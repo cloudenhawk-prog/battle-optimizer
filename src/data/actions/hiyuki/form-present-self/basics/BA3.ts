@@ -1,6 +1,6 @@
-import type { Action } from "../../../../../types/action"
-import * as values from "../../values"
-import { hiyuki_skill, hiyuki_skill_cancel_with_swap } from "../skills/resonance"
+import type { Action } from '../../../../../types/action'
+import * as values from '../../values'
+import { hiyuki_skill, hiyuki_skill_cancel_with_swap } from '../skills/resonance'
 
 // ========== Normal ===========================================================================================================
 // TODO: Try cancel with dodge
