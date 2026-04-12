@@ -7,7 +7,7 @@ import { initEngineState, engineStep } from '../engine/step'
 import { assignCharacterToRow } from '../hooks/snapshotHelpers'
 import { getMCTSChoices, type Choice } from './choices'
 import { createRootNode, createChildNode, cloneSnapshots, cloneEngineState, type Node } from './node'
-import { isTerminal, getScore, type TerminationGoal } from './score'
+import { isTerminal, getScore, getLastResolvedSnapshot, type TerminationGoal } from './score'
 import { type RolloutRecord } from './output'
 
 // ========== Types ============================================================================================================
@@ -22,6 +22,8 @@ export type MCTSConfig = {
   explorationConstant?: number
   /** Called periodically during the search with the current iteration and total. */
   onProgress?: (iteration: number, total: number) => void
+  /** How many iterations between onProgress calls. Default: iterations / 10 (10 calls total). */
+  progressInterval?: number
 }
 
 export type MCTSResult = {
@@ -184,6 +186,38 @@ function expand(
   return createChildNode(node, choice, result.snapshots, result.engineState, nextChoices)
 }
 
+/**
+ * Picks a choice with a gentle bias towards actions that deal damage.
+ * Weights are sqrt(multiplier / castTime), which compresses the spread so that
+ * high-multiplier actions are preferred but support/buff actions remain competitive.
+ * Zero-damage actions receive a floor of 1 (uniform weight) so they are never
+ * strongly suppressed — the search is nudged, not steered.
+ */
+function weightedRandomChoice(choices: Choice[], team: ResolvedCharacter[]): Choice {
+  const FLOOR = 1
+  const weights = choices.map(ch => {
+    const char = team.find(c => c.name === ch.character)
+    const action = char?.actions.find(a => a.name === ch.actionName)
+    if (!action || action.castTime <= 0 || action.multiplier <= 0) return FLOOR
+    return Math.max(Math.sqrt(action.multiplier / action.castTime), FLOOR)
+  })
+  const total = weights.reduce((s, w) => s + w, 0)
+  let r = Math.random() * total
+  for (let i = 0; i < choices.length; i++) {
+    r -= weights[i]
+    if (r <= 0) return choices[i]
+  }
+  return choices[choices.length - 1]
+}
+
+/** Inserts a score into a descending sorted list capped at topN entries. */
+function updateTopNScores(scores: number[], score: number, topN: number | undefined): void {
+  if (!topN) return
+  scores.push(score)
+  scores.sort((a, b) => b - a)
+  if (scores.length > topN) scores.pop()
+}
+
 function rollout(
   node: Node,
   team: ResolvedCharacter[],
@@ -191,14 +225,16 @@ function rollout(
   enemy: Enemy,
   goal: TerminationGoal,
   maxSteps = 500,
-): { score: number; terminalChoices: Choice[] | null } {
+  worstTopNScore?: number,
+): { score: number; damage: number; time: number; terminalChoices: Choice[] | null } {
   let snapshots = cloneSnapshots(node.snapshots)
   let engineState = cloneEngineState(node.engineState)
   const rolledChoices: Choice[] = []
 
   for (let step = 0; step < maxSteps; step++) {
     if (isTerminal(snapshots, goal)) {
-      return { score: getScore(snapshots), terminalChoices: rolledChoices }
+      const last = getLastResolvedSnapshot(snapshots)
+      return { score: getScore(snapshots), damage: last?.damage ?? 0, time: last?.toTime ?? 0, terminalChoices: rolledChoices }
     }
 
     // Use last resolved snapshot for choices; fall back to snapshots[0] before any step
@@ -206,10 +242,19 @@ function rollout(
       ? snapshots[snapshots.length - 2]
       : snapshots[0]
 
+    // Prune early for damage-goal runs: if current time already exceeds what the worst
+    // known top-N solution took, this path cannot produce a better DPS even if it hits
+    // the threshold now (score = damage / time, and time is only going to grow).
+    if (goal.type === 'damage' && worstTopNScore !== undefined && worstTopNScore > 0) {
+      if (currentSnapshot.toTime > goal.amount / worstTopNScore) {
+        return { score: 0, damage: currentSnapshot.damage, time: currentSnapshot.toTime, terminalChoices: null }
+      }
+    }
+
     const choices = getMCTSChoices(currentSnapshot, team)
     if (choices.length === 0) break
 
-    const choice = choices[Math.floor(Math.random() * choices.length)]
+    const choice = weightedRandomChoice(choices, team)
     rolledChoices.push(choice)
     const snapshotId = snapshots.length - 1
     const snapshotsWithChar = [...snapshots]
@@ -231,7 +276,8 @@ function rollout(
     engineState = result.engineState
   }
 
-  return { score: getScore(snapshots), terminalChoices: null }
+  const last = getLastResolvedSnapshot(snapshots)
+  return { score: getScore(snapshots), damage: last?.damage ?? 0, time: last?.toTime ?? 0, terminalChoices: null }
 }
 
 // ========== runMCTS ==========================================================================================================
@@ -252,8 +298,10 @@ export function runMCTS(config: MCTSConfig): MCTSResult {
     enemy,
     goal,
     iterations,
+    topN,
     explorationConstant = Math.SQRT2,
     onProgress,
+    progressInterval: progressIntervalConfig,
   } = config
 
   const charactersMap = Object.fromEntries(team.map(c => [c.name, c]))
@@ -263,8 +311,10 @@ export function runMCTS(config: MCTSConfig): MCTSResult {
   const root = createRootNode([initialSnapshot], initialEngineState, rootChoices)
   const terminalNodes: Node[] = []
   const rolloutRecords: RolloutRecord[] = []
+  // Tracks the worst score among the current top-N complete results, used to prune rollouts.
+  const topNScores: number[] = []
 
-  const progressInterval = Math.max(1, Math.floor(iterations / 10))
+  const progressInterval = progressIntervalConfig ?? Math.max(1, Math.floor(iterations / 10))
 
   for (let i = 0; i < iterations; i++) {
     if (onProgress && i > 0 && i % progressInterval === 0) {
@@ -288,15 +338,21 @@ export function runMCTS(config: MCTSConfig): MCTSResult {
 
     if (isTerminal(child.snapshots, goal)) {
       terminalNodes.push(child)
-      backpropagate(child, getScore(child.snapshots))
+      const terminalScore = getScore(child.snapshots)
+      backpropagate(child, terminalScore)
+      updateTopNScores(topNScores, terminalScore, topN)
     } else {
-      const rolloutResult = rollout(child, team, charactersMap, enemy, goal)
+      const worstTopNScore = (topN && topNScores.length >= topN) ? topNScores[topNScores.length - 1] : undefined
+      const rolloutResult = rollout(child, team, charactersMap, enemy, goal, 500, worstTopNScore)
       backpropagate(child, rolloutResult.score)
       if (rolloutResult.terminalChoices !== null) {
         rolloutRecords.push({
           choices: [...getTreePath(child), ...rolloutResult.terminalChoices],
           score: rolloutResult.score,
+          damage: rolloutResult.damage,
+          time: rolloutResult.time,
         })
+        updateTopNScores(topNScores, rolloutResult.score, topN)
       }
     }
   }

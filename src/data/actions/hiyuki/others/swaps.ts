@@ -4,7 +4,7 @@ import type { Action } from "../../../../types/action"
 const hiyuki_wait_005: Action = {
   name: 'Wait 0.05s',
   displayName: 'Wait 0.05s',
-  category: 'Other',
+  category: 'Testing',
   castTime: 0.05,
   multiplier: 0,
   scaling: 'ATK',
@@ -64,7 +64,41 @@ const hiyuki_wait_for_swap: Action = {
   }
 }
 
+const hiyuki_wait_for_cooldown: Action = {
+  name: 'Wait Until Next Cooldown',
+  displayName: 'Wait Until Next Cooldown',
+  category: 'Other',
+  castTime: 0, // resolved dynamically via resolveVariant
+  multiplier: 0,
+  scaling: 'ATK',
+  elements: [''],
+  dmgTypes: [''],
+  cooldown: 0,
+  energyGenerated: [],
+  energyCost: [],
+  statusModifications: [],
+  damageModifiers: [],
+  sideEffects: [],
+  castConditions: {
+    startState: 'ANY',
+    endState: 'PRESERVE',
+    customCanCast(prevSnapshot, characterName) {
+      if (!prevSnapshot || !characterName) return false
+      const cooldowns = prevSnapshot.charactersCooldowns?.[characterName] ?? {}
+      return Object.values(cooldowns).some(remaining => remaining > 0)
+    },
+  },
+  offtune: 0,
+  resolveVariant(prevSnapshot, characterName) {
+    const cooldowns = prevSnapshot?.charactersCooldowns?.[characterName] ?? {}
+    const remaining = Object.values(cooldowns).filter(r => r > 0)
+    const castTime = remaining.length > 0 ? Math.min(...remaining) : 0
+    return { ...this, castTime, resolveVariant: undefined }
+  }
+}
+
 export {
   hiyuki_wait_005,
   hiyuki_wait_for_swap,
+  hiyuki_wait_for_cooldown
 }

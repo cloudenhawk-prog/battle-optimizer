@@ -16,10 +16,13 @@
  *   --topN N         How many of the best rotations to print (default: 3).
  *   --explore C      UCB1 exploration constant (default: √2). Higher = explore more broadly,
  *                    lower = exploit known-good branches more aggressively.
+ *   --progress N     Print N evenly-spaced progress updates. e.g. 20 → every 5% (default: 10).
+ *   --progress N%    Print a progress update every N%. e.g. 7% → at 7%, 14%, 21%, ...
  *   --output path    Save the top-N rotations as a JSON file importable into the rotation editor.
  * 
  * npm run mcts -- --iterations 1000 --time 30 --topN 5
  * npm run mcts -- --iterations 1000 --time 30 --explore 2.5 --topN 10
+ * npm run mcts -- --iterations 3000 --time 30 --explore 2.0 --topN 5 --progress 20
  */
 
 import * as fs from 'fs'
@@ -32,7 +35,8 @@ import { extractTopRotations } from '../src/utils/mcts/output'
 import type { TerminationGoal } from '../src/utils/mcts/score'
 import { getMCTSChoices } from '../src/utils/mcts/choices'
 import { initEngineState, engineStep } from '../src/utils/engine/step'
-import { assignCharacterToRow } from '../src/utils/hooks/snapshotHelpers'
+import { assignCharacterToRow, isSwapRequiredLocked } from '../src/utils/hooks/snapshotHelpers'
+import { getAvailableActions } from '../src/utils/engine/choices'
 import type { GlobalColumns } from '../src/types/tableDefinitions'
 import type { ResolvedCharacter } from '../src/types/character'
 import type { Enemy } from '../src/types/enemy'
@@ -42,12 +46,21 @@ import type { EnergyType } from '../src/types/baseTypes'
 // ========== CLI Arg Parsing ==================================================================================================
 
 // npm run mcts -- --help
+type ProgressSpec = { type: 'percent'; value: number } | { type: 'count'; value: number }
+
+function computeProgressInterval(spec: ProgressSpec | null, iterations: number): number {
+  if (!spec) return Math.max(1, Math.floor(iterations / 10))
+  if (spec.type === 'percent') return Math.max(1, Math.round(iterations * spec.value / 100))
+  return Math.max(1, Math.round(iterations / spec.value))
+}
+
 function parseArgs(): {
   iterations: number
   goal: TerminationGoal
   topN: number
   output: string | null
   explorationConstant: number
+  progressSpec: ProgressSpec | null
 } {
   const args = process.argv.slice(2)
   let iterations = 200
@@ -55,6 +68,7 @@ function parseArgs(): {
   let output: string | null = null
   let explorationConstant = Math.SQRT2
   let goal: TerminationGoal = { type: 'time', seconds: 20 }
+  let progressSpec: ProgressSpec | null = null
 
   for (let i = 0; i < args.length; i++) {
     switch (args[i]) {
@@ -76,13 +90,22 @@ function parseArgs(): {
       case '--explore':
         explorationConstant = parseFloat(args[++i])
         break
+      case '--progress': {
+        const raw = args[++i]
+        if (raw.endsWith('%')) {
+          progressSpec = { type: 'percent', value: parseFloat(raw) }
+        } else {
+          progressSpec = { type: 'count', value: parseInt(raw, 10) }
+        }
+        break
+      }
       case '--help':
         printHelp()
         process.exit(0)
     }
   }
 
-  return { iterations, goal, topN, output, explorationConstant }
+  return { iterations, goal, topN, output, explorationConstant, progressSpec }
 }
 
 function printHelp(): void {
@@ -95,6 +118,8 @@ Options:
   --damage N         Simulate until N total damage is dealt (overrides --time)
   --topN N           Number of top rotations to return (default: 3)
   --explore C        UCB1 exploration constant (default: √2 ≈ 1.414)
+  --progress N       Print progress every N prints total, e.g. --progress 20 → every 5%
+  --progress N%      Print progress every N%, e.g. --progress 7% → at 7%, 14%, 21%, ...
   --output path      Save results to a JSON file at this path
   --help             Show this help message
 
@@ -135,6 +160,65 @@ function createInitialSnapshot(team: ResolvedCharacter[]): Snapshot {
 }
 
 /**
+ * Called when getMCTSChoices returns empty. Prints a per-character breakdown of why
+ * each character has no castable actions, so it's easy to diagnose the stuck state.
+ */
+function diagnoseStuck(snapshot: Snapshot, team: ResolvedCharacter[]): void {
+  console.log('    Stuck state diagnosis:')
+
+  // Global must-chain lock
+  for (const character of team) {
+    const followUp = snapshot.charactersAttemptFollowUp?.[character.name]
+    if (followUp?.must) {
+      console.log(`    ! Must-chain lock on ${character.name}: must cast "${followUp.actionName}" next, but it is not available`)
+    }
+  }
+
+  // preventsSwapOut lock
+  if (snapshot.character && snapshot.action) {
+    const lastChar = team.find(c => c.name === snapshot.character)
+    const lastAction = lastChar?.actions.find(a => a.name === snapshot.action)
+    if (lastAction?.castConditions.preventsSwapOut) {
+      console.log(`    ! preventsSwapOut active (last: ${snapshot.character} / ${snapshot.action}) — only that character may act`)
+    }
+  }
+
+  for (const character of team) {
+    const name = character.name
+    const position = snapshot.charactersPositions?.[name] ?? 'GROUND'
+    const form = snapshot.charactersForms?.[name] ?? '(default)'
+    const swapLocked = isSwapRequiredLocked(snapshot, name)
+    const followUp = snapshot.charactersAttemptFollowUp?.[name]
+    const lastAction = snapshot.charactersLastAction?.[name] ?? '(none)'
+    const cooldowns = snapshot.charactersCooldowns?.[name] ?? {}
+    const activeCooldowns = Object.entries(cooldowns)
+      .filter(([, v]) => v > 0)
+      .map(([k, v]) => `${k}=${v.toFixed(1)}s`)
+      .join(', ')
+
+    const available = getAvailableActions(snapshot, character)
+      .filter(a => !a.tags?.includes('INTRO_ACTION') && !a.tags?.includes('OUTRO_ACTION') && a.category !== 'Testing')
+
+    console.log(`    ${name}:`)
+    console.log(`      position=${position}  form=${form}  swapLocked=${swapLocked}`)
+    console.log(`      lastAction=${lastAction}`)
+    if (activeCooldowns) console.log(`      cooldowns: ${activeCooldowns}`)
+    if (followUp) console.log(`      mustFollowUp=${followUp.actionName} (must=${followUp.must})`)
+
+    if (available.length === 0) {
+      console.log(`      getAvailableActions: 0 — all actions blocked`)
+    } else {
+      const names = available.map(a => a.name).join(', ')
+      console.log(`      getAvailableActions (${available.length}): ${names}`)
+      // These are actions getAvailableActions gives back but getMCTSChoices still filters
+      if (swapLocked) {
+        console.log(`      -> stripped by isSwapRequiredLocked`)
+      }
+    }
+  }
+}
+
+/**
  * Runs a short manual rollout and prints per-step progress so we can see whether
  * game time is advancing and what choices are being made.
  */
@@ -164,6 +248,7 @@ function runDiagnostics(team: ResolvedCharacter[], enemy: Enemy, steps = 10): vo
     const choices = getMCTSChoices(currentSnapshot, team)
     if (choices.length === 0) {
       console.log(`  Step ${i + 1}: no choices available — rollout stuck`)
+      diagnoseStuck(currentSnapshot, team)
       break
     }
 
@@ -198,7 +283,7 @@ function runDiagnostics(team: ResolvedCharacter[], enemy: Enemy, steps = 10): vo
 // ========== Main =============================================================================================================
 
 function main(): void {
-  const { iterations, goal, topN, output, explorationConstant } = parseArgs()
+  const { iterations, goal, topN, output, explorationConstant, progressSpec } = parseArgs()
   const team = characters
   const enemy = enemies[0]
 
@@ -214,6 +299,9 @@ function main(): void {
   console.log(`  Iterations : ${iterations}`)
   console.log(`  Top N      : ${topN}`)
   console.log(`  Explore C  : ${explorationConstant.toFixed(4)}`)
+  const progressInterval = computeProgressInterval(progressSpec, iterations)
+  const progressPct = (progressInterval / iterations * 100).toFixed(1)
+  console.log(`  Progress   : every ${progressInterval} iterations (~${progressPct}%)`)
   console.log('─'.repeat(50))
   console.log()
 
@@ -224,6 +312,7 @@ function main(): void {
 
   const result = runMCTS({
     team, enemy, goal, iterations, topN, explorationConstant,
+    progressInterval,
     onProgress(iteration, total) {
       const pct = Math.round((iteration / total) * 100)
       const elapsed = ((Date.now() - start) / 1000).toFixed(1)

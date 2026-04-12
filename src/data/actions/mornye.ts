@@ -1021,7 +1021,7 @@ const mornye_outro: Action = {
 const mornye_wait_005: Action = {
   name: 'Wait 0.05s',
   displayName: 'Wait 0.05s',
-  category: 'Other',
+  category: 'Testing',
   castTime: 0.05,
   multiplier: 0,
   scaling: 'HP',
@@ -1078,6 +1078,39 @@ const mornye_wait_for_swap: Action = {
     const castTime = remaining.length > 0 ? Math.min(...remaining) : 0
     return { ...this, castTime, resolveVariant: undefined }
   },
+}
+
+const mornye_wait_for_cooldown: Action = {
+  name: 'Wait Until Next Cooldown',
+  displayName: 'Wait Until Next Cooldown',
+  category: 'Other',
+  castTime: 0, // resolved dynamically via resolveVariant
+  multiplier: 0,
+  scaling: 'DEF',
+  elements: [''],
+  dmgTypes: [''],
+  cooldown: 0,
+  energyGenerated: [],
+  energyCost: [],
+  statusModifications: [],
+  damageModifiers: [],
+  sideEffects: [],
+  castConditions: {
+    startState: 'ANY',
+    endState: 'PRESERVE',
+    customCanCast(prevSnapshot, characterName) {
+      if (!prevSnapshot || !characterName) return false
+      const cooldowns = prevSnapshot.charactersCooldowns?.[characterName] ?? {}
+      return Object.values(cooldowns).some(remaining => remaining > 0)
+    },
+  },
+  offtune: 0,
+  resolveVariant(prevSnapshot, characterName) {
+    const cooldowns = prevSnapshot?.charactersCooldowns?.[characterName] ?? {}
+    const remaining = Object.values(cooldowns).filter(r => r > 0)
+    const castTime = remaining.length > 0 ? Math.min(...remaining) : 0
+    return { ...this, castTime, resolveVariant: undefined }
+  }
 }
 
 // ========== Energies =========================================================================================================
@@ -1193,6 +1226,7 @@ export const all_actions = [
   mornye_wait_005,
   //mornye_wait_1,
   mornye_wait_for_swap,
+  mornye_wait_for_cooldown,
   mornye_energy,
   mornye_concerto,
   mornye_rest_mass_energy,
@@ -1245,6 +1279,7 @@ export {
   mornye_wait_005,
   //mornye_wait_1,
   mornye_wait_for_swap,
+  mornye_wait_for_cooldown,
 
   // Testing
   mornye_energy,

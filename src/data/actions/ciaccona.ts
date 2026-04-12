@@ -397,7 +397,7 @@ const ciaccona_outro: Action = {
 const ciaccona_wait_005: Action = {
   name: 'Wait 0.05s',
   displayName: 'Wait 0.05s',
-  category: 'Other',
+  category: 'Testing',
   castTime: 0.05,
   multiplier: 0,
   scaling: 'HP',

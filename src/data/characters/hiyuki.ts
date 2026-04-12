@@ -13,7 +13,7 @@ export const hiyuki: Character = {
   element: 'GLACIO',
   weaponType: 'Sword',
   maxEnergies: {energy: 125, concerto: 100, dedication: 300, foreclaiming: 1, frostharden_iai: 3, frostheart: 300, whiteout_bitterfrost: 3, snowforged_blade: 3, snow_rust: 3, s1_enhanced_ba1: 1, s1_enhanced_ba2: 1, s2_frostheart_token: 2 }, // TODO
-  hiddenEnergies: ['foreclaiming', 'snow_rust', 's1_enhanced_ba1', 's1_enhanced_ba2', 's2_frostheart_token'],
+  //hiddenEnergies: ['foreclaiming', 'snow_rust', 's1_enhanced_ba1', 's1_enhanced_ba2', 's2_frostheart_token'],
   energyDescriptions: {
     energy: 'Used to cast Foreclaimed: Liberation.',
     concerto: 'Used to cast Outro Skill and trigger Intro Skills',

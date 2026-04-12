@@ -1,5 +1,5 @@
 ﻿import type { SavedRotation } from '../../utils/importExport'
-import { getScore } from './score'
+import { getScore, getLastResolvedSnapshot } from './score'
 import type { Choice } from './choices'
 import type { Node } from './node'
 
@@ -13,6 +13,8 @@ import type { Node } from './node'
 export type RolloutRecord = {
   choices: Choice[]
   score: number
+  damage: number
+  time: number
 }
 
 // ========== Extract Top Rotations ============================================================================================
@@ -31,9 +33,14 @@ export type RolloutRecord = {
  * Returns fewer than topN results if fewer complete rotations were found.
  */
 export function extractTopRotations(terminalNodes: Node[], rolloutRecords: RolloutRecord[], topN: number): SavedRotation[] {
-  type Candidate = { choices: Choice[]; score: number }
+  type Candidate = { choices: Choice[]; score: number; damage: number; time: number }
   const candidates: Candidate[] = [
-    ...terminalNodes.map(n => ({ choices: reconstructPath(n), score: getScore(n.snapshots) })),
+    ...terminalNodes.map(n => ({
+      choices: reconstructPath(n),
+      score: getScore(n.snapshots),
+      damage: getLastResolvedSnapshot(n.snapshots)?.damage ?? 0,
+      time: getLastResolvedSnapshot(n.snapshots)?.toTime ?? 0,
+    })),
     ...rolloutRecords,
   ]
   if (candidates.length === 0) return []
@@ -42,7 +49,8 @@ export function extractTopRotations(terminalNodes: Node[], rolloutRecords: Rollo
   const top = sorted.slice(0, topN)
 
   return top.map((c, rank) => ({
-    name: `MCTS #${rank + 1} — DPS ${c.score.toFixed(0)}`,
+    name: `MCTS #${rank + 1} — DPS ${c.score.toFixed(0)}  |  Total ${c.damage.toLocaleString('en-US', { maximumFractionDigits: 0 })}  |  Time ${c.time.toFixed(1)}s`,
+
     createdAt: new Date().toISOString(),
     steps: c.choices.map(ch => ({ character: ch.character, action: ch.actionName })),
   }))

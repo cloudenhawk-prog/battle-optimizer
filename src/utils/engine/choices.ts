@@ -32,8 +32,18 @@ export function getAvailableActions(
 ): Action[] {
   const charName = character.name
 
-  // Resolve position and form from snapshot
-  const position: 'GROUND' | 'AIR' = snapshot.charactersPositions?.[charName] ?? 'GROUND'
+  // Resolve effective position for this character.
+  // A character's stored position is only used while their persistence window is still active
+  // (i.e. they are lingering on-field after a swap-cancel). Once persistence expires they
+  // inherit the active character's position, the same rule that resolveCastState applies when
+  // writing the position after an action.
+  const activeChar = snapshot.character
+  const isSwappingIn = !!activeChar && activeChar !== charName
+  const persistentUntil = snapshot.charactersPersistentUntil?.[charName] ?? 0
+  const isLingeringActive = isSwappingIn && persistentUntil > snapshot.toTime
+  const position: 'GROUND' | 'AIR' = isLingeringActive || !isSwappingIn
+    ? (snapshot.charactersPositions?.[charName] ?? 'GROUND')
+    : (snapshot.charactersPositions?.[activeChar] ?? 'GROUND')
   const storedForm = snapshot.charactersForms?.[charName] ?? ''
   const form =
     storedForm ||

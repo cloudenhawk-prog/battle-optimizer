@@ -2,6 +2,8 @@ import type { ResolvedCharacter } from '../../types/character'
 import type { Snapshot } from '../../types/snapshot'
 import { getAvailableActions } from '../engine/choices'
 import { isSwapRequiredLocked } from '../hooks/snapshotHelpers'
+import { validateMustChain } from '../conditions/mustChainValidator'
+import { getActionCooldownKey } from '../hooks/cooldownHelpers'
 
 // ========== Type: Choice =====================================================================================================
 
@@ -26,6 +28,16 @@ export type Choice = {
  * preventsSwapOut: if the last cast action has castConditions.preventsSwapOut = true,
  * only choices from the same character are returned. A swap is only valid when the
  * (swap cancel) variant of that action is used instead.
+ *
+ * Must-chain validation (mirrors ActionSelect.tsx Goals 9):
+ *   - Actions with attemptFollowUp.must = true are blocked when the follow-up is still on
+ *     cooldown at the time the action would complete (isFollowUpNotReady), OR when the
+ *     follow-up chain cannot be satisfied given current position/form/energy (isMustChainUnsatisfiable).
+ *   This prevents scheduling actions that instantly produce an unresolvable must-lock.
+ *
+ * requiresSwapOut proactive +1s (mirrors ActionSelect.tsx Goal 7):
+ *   When a character is swapping in, the character being replaced will receive a 1s swap cooldown
+ *   that isn't in the snapshot yet. This is accounted for proactively.
  */
 export function getMCTSChoices(snapshot: Snapshot, team: ResolvedCharacter[]): Choice[] {
   // Global must-chain lock: any must:true follow-up locks out all other choices
@@ -55,15 +67,51 @@ export function getMCTSChoices(snapshot: Snapshot, team: ResolvedCharacter[]): C
         if (!justSwappedIn && !lastActionWasIntro) continue
       }
 
-      // requiresSwapOut: skip if no other character will be available after this action completes
+      // requiresSwapOut: skip if no other character will be available after this action completes.
+      // Use resolveVariant castTime so dynamic-wait actions are evaluated against their actual wait.
+      // Mirrors ActionSelect.tsx Goal 7, including the proactive +1s swap cooldown for the
+      // character being replaced when the current character is swapping in.
       if (action.castConditions.requiresSwapOut) {
-        const actionEndTime = snapshot.toTime + action.castTime
+        const resolvedCastTime = action.resolveVariant
+          ? action.resolveVariant(snapshot, character.name, character).castTime
+          : action.castTime
+        const actionEndTime = snapshot.toTime + resolvedCastTime
+        const prevOnFieldChar = snapshot.character
+        const swappingIn = !!prevOnFieldChar && prevOnFieldChar !== character.name
         const hasSwapTarget = team.some(other => {
           if (other.name === character.name) return false
-          const cooldownUntil = snapshot.charactersSwapCooldownUntil?.[other.name] ?? 0
+          let cooldownUntil = snapshot.charactersSwapCooldownUntil?.[other.name] ?? 0
+          // Proactively account for the 1s swap cooldown that will be applied to the
+          // just-departed character during resolution (not yet written to the snapshot).
+          if (swappingIn && other.name === prevOnFieldChar) {
+            cooldownUntil = Math.max(cooldownUntil, snapshot.toTime + 1)
+          }
           return cooldownUntil <= actionEndTime
         })
         if (!hasSwapTarget) continue
+      }
+
+      // Must-chain validation: mirrors ActionSelect.tsx Goal 9.
+      // If this action sets a must:true follow-up, it is blocked when:
+      //   (a) the follow-up is still on cooldown at the time this action completes, OR
+      //   (b) the follow-up chain cannot be satisfied (position/form/energy simulation).
+      if (action.attemptFollowUp?.must) {
+        const followUpName = action.attemptFollowUp.actionName
+        const followUpAction = character.actions.find(
+          a => a.name === followUpName || a.groupName === followUpName,
+        )
+        if (!followUpAction) continue
+
+        // (a) Cooldown check: follow-up must be off cooldown when this action ends
+        const resolvedCastTime = action.resolveVariant
+          ? action.resolveVariant(snapshot, character.name, character).castTime
+          : action.castTime
+        const cooldownKey = getActionCooldownKey(followUpAction)
+        const followUpCooldownRemaining = snapshot.charactersCooldowns?.[character.name]?.[cooldownKey] ?? 0
+        if (followUpCooldownRemaining > resolvedCastTime) continue
+
+        // (b) Chain validation: simulate position/form/energy through the entire MUST chain
+        if (!validateMustChain(action, snapshot, character, character.actions)) continue
       }
 
       choices.push({ character: character.name, actionName: action.name })
