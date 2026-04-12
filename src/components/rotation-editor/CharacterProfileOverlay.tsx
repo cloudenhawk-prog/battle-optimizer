@@ -1437,9 +1437,10 @@ export function CharacterProfileOverlay({ characterName, character, snapshot, al
         aria-modal="true"
         aria-labelledby="charProfileTitle"
         style={{
+          '--cpo-el-raw': elTheme.primary,
           boxShadow: `var(--table-shadow-inner), var(--table-shadow-main), var(--table-shadow-glow), 0 0 60px hsl(${elTheme.primary} / 0.1)`,
           border: `1px solid hsl(${elTheme.primary} / 0.2)`,
-        }}>
+        } as React.CSSProperties}>
         {/* Top accent line */}
         <div style={{ height: 1, flexShrink: 0, background: `linear-gradient(90deg, transparent, hsl(${elTheme.primary} / 0.6), transparent)` }} />
 

@@ -405,13 +405,28 @@
  * ═════════════════════════════════════════════════════════════ */
 
 .charProfilePanel .charStatBreakdownHeader {
-  background: var(--cpo-breakdown-header-bg);
-  border-bottom-color: var(--cpo-breakdown-border-color);
+  position: relative;
+  background: linear-gradient(90deg, transparent, hsl(var(--cpo-el-raw) / 0.04));
+  border-bottom: 1px solid hsl(var(--cpo-el-raw) / 0.15);
+}
+
+/* Accent line at the top — mirrors the 1px gradient at the very top of the overlay */
+.charProfilePanel .charStatBreakdownHeader::before {
+  content: '';
+  position: absolute;
+  top: 0; left: 0; right: 0;
+  height: 1px;
+  background: linear-gradient(90deg, transparent, hsl(var(--cpo-el-raw) / 0.6), transparent);
+  pointer-events: none;
 }
 
 .charProfilePanel .charStatBreakdownTitle {
   font-size: var(--cpo-breakdown-title-size);
-  color: var(--cpo-breakdown-title-color);
+  color: hsl(var(--cpo-el-raw) / 0.85);
+}
+
+.abp .charStatBreakdownHeader {
+  padding-right: 14px;
 }
 
 .charProfilePanel .overlayCloseButton {
