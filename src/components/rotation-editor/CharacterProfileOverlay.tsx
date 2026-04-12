@@ -72,7 +72,7 @@ const STAT_DISPLAY: StatDisplay[] = [
   { key: 'aeroBonusDMG', label: 'Aero DMG Bonus', format: 'percent', iconPath: '/assets/stat-labels/statLabel_aeroBonusDMG.png', elementClass: 'charStatRow--aero' },
   { key: 'spectroBonusDMG', label: 'Spectro DMG Bonus', format: 'percent', iconPath: '/assets/stat-labels/statLabel_spectroBonusDMG.png', elementClass: 'charStatRow--spectro' },
   { key: 'havocBonusDMG', label: 'Havoc DMG Bonus', format: 'percent', iconPath: '/assets/stat-labels/statLabel_havocBonusDMG.png', elementClass: 'charStatRow--havoc' },
-  { key: 'healingBonus', label: 'Healing Bonus', format: 'percent', iconPath: '/assets/stat-labels/statLabel_healingBonus.png' },
+  //{ key: 'healingBonus', label: 'Healing Bonus', format: 'percent', iconPath: '/assets/stat-labels/statLabel_healingBonus.png' },
   { key: 'tuneBreakBoost', label: 'Tune Break Boost', format: 'percent', iconPath: '/assets/stat-labels/statLabel_tuneBreakBoost.png' },
   { key: 'offtuneBuildupRate', label: 'Off-Tune Buildup Rate', format: 'percent', iconPath: '/assets/stat-labels/statLabel_offtuneBuildupRate.png' },
 ]
@@ -1015,8 +1015,8 @@ function WeaponInfo({ weapon, elColor }: { weapon: Weapon; elColor: string }) {
           }}
         />
         <div>
-          <div style={{ fontWeight: 700, fontSize: '0.85rem', color: 'var(--table-text)' }}>{weapon.name}</div>
-          <div style={{ fontSize: '0.7rem', color: `hsl(${elColor})`, fontWeight: 600 }}>
+          <div style={{ fontWeight: 700, fontSize: 'var(--cpo-scan-name-size)', color: 'var(--table-text)' }}>{weapon.name}</div>
+          <div style={{ fontSize: 'var(--cpo-scan-meta-size)', color: `hsl(${elColor})`, fontWeight: 600 }}>
             R{weapon.rank} · {weapon.weaponType}
           </div>
         </div>
@@ -1025,7 +1025,7 @@ function WeaponInfo({ weapon, elColor }: { weapon: Weapon; elColor: string }) {
         <>
           <div style={{ height: 1, background: `linear-gradient(90deg, transparent, hsl(${elColor} / 0.25), transparent)` }} />
           {stats.map(({ label, value }) => (
-            <div key={label} style={{ display: 'flex', justifyContent: 'space-between', gap: 8, fontSize: '0.73rem' }}>
+            <div key={label} style={{ display: 'flex', justifyContent: 'space-between', gap: 8, fontSize: 'var(--cpo-scan-stat-size)' }}>
               <span style={{ color: 'rgba(150, 165, 195, 0.8)' }}>{label}</span>
               <span style={{ color: `hsl(${elColor} / 0.9)`, fontWeight: 600, fontVariantNumeric: 'tabular-nums' }}>{value}</span>
             </div>
@@ -1035,7 +1035,7 @@ function WeaponInfo({ weapon, elColor }: { weapon: Weapon; elColor: string }) {
       {weapon.info && (
         <>
           <div style={{ height: 1, background: `linear-gradient(90deg, transparent, hsl(${elColor} / 0.25), transparent)` }} />
-          <p style={{ margin: 0, fontSize: '0.74rem', color: 'rgba(175, 185, 210, 0.85)', lineHeight: 1.55 }}>{colorizeText(weapon.info, elColor)}</p>
+          <p style={{ margin: 0, fontSize: 'var(--cpo-scan-desc-size)', color: 'rgba(175, 185, 210, 0.85)', lineHeight: 1.55 }}>{colorizeText(weapon.info, elColor)}</p>
         </>
       )}
     </>
@@ -1059,8 +1059,8 @@ function EchoInfo({ echo, slot, elColor }: { echo: Echo; slot: number; elColor: 
           />
         )}
         <div>
-          <div style={{ fontWeight: 700, fontSize: '0.85rem', color: 'var(--table-text)' }}>{echo.name}</div>
-          <div style={{ fontSize: '0.7rem', color: `hsl(${elColor})`, fontWeight: 600 }}>
+          <div style={{ fontWeight: 700, fontSize: 'var(--cpo-scan-name-size)', color: 'var(--table-text)' }}>{echo.name}</div>
+          <div style={{ fontSize: 'var(--cpo-scan-meta-size)', color: `hsl(${elColor})`, fontWeight: 600 }}>
             {echo.cost} Cost{slot === 1 ? ' · Main Echo' : ''} · {echo.setName}
           </div>
         </div>
@@ -1068,9 +1068,9 @@ function EchoInfo({ echo, slot, elColor }: { echo: Echo; slot: number; elColor: 
       {mainStats.length > 0 && (
         <>
           <div style={{ height: 1, background: `linear-gradient(90deg, transparent, hsl(${elColor} / 0.25), transparent)` }} />
-          <div style={{ fontSize: '0.62rem', textTransform: 'uppercase', letterSpacing: '0.08em', color: 'rgba(130, 145, 175, 0.6)', marginBottom: 2 }}>Main</div>
+          <div style={{ fontSize: 'var(--cpo-scan-section-label-size)', textTransform: 'uppercase', letterSpacing: '0.08em', color: 'rgba(130, 145, 175, 0.6)', marginBottom: 2 }}>Main</div>
           {mainStats.map(({ label, value }) => (
-            <div key={label} style={{ display: 'flex', justifyContent: 'space-between', gap: 8, fontSize: '0.73rem' }}>
+            <div key={label} style={{ display: 'flex', justifyContent: 'space-between', gap: 8, fontSize: 'var(--cpo-scan-stat-size)' }}>
               <span style={{ color: 'rgba(150, 165, 195, 0.8)' }}>{label}</span>
               <span style={{ color: `hsl(${elColor} / 0.9)`, fontWeight: 600, fontVariantNumeric: 'tabular-nums' }}>{value}</span>
             </div>
@@ -1079,9 +1079,9 @@ function EchoInfo({ echo, slot, elColor }: { echo: Echo; slot: number; elColor: 
       )}
       {subStats.length > 0 && (
         <>
-          <div style={{ fontSize: '0.62rem', textTransform: 'uppercase', letterSpacing: '0.08em', color: 'rgba(130, 145, 175, 0.6)', marginTop: 4, marginBottom: 2 }}>Sub</div>
+          <div style={{ fontSize: 'var(--cpo-scan-section-label-size)', textTransform: 'uppercase', letterSpacing: '0.08em', color: 'rgba(130, 145, 175, 0.6)', marginTop: 4, marginBottom: 2 }}>Sub</div>
           {subStats.map(({ label, value }) => (
-            <div key={label} style={{ display: 'flex', justifyContent: 'space-between', gap: 8, fontSize: '0.73rem' }}>
+            <div key={label} style={{ display: 'flex', justifyContent: 'space-between', gap: 8, fontSize: 'var(--cpo-scan-stat-size)' }}>
               <span style={{ color: 'rgba(150, 165, 195, 0.8)' }}>{label}</span>
               <span style={{ color: 'rgba(165, 178, 205, 0.85)', fontVariantNumeric: 'tabular-nums' }}>{value}</span>
             </div>
@@ -1090,7 +1090,7 @@ function EchoInfo({ echo, slot, elColor }: { echo: Echo; slot: number; elColor: 
       )}
       <>
         <div style={{ height: 1, background: `linear-gradient(90deg, transparent, hsl(${elColor} / 0.25), transparent)` }} />
-        <p style={{ margin: 0, fontSize: '0.74rem', color: 'rgba(175, 185, 210, 0.85)', lineHeight: 1.55 }}>{echo.info ? colorizeText(echo.info, elColor) : 'No additional information available.'}</p>
+        <p style={{ margin: 0, fontSize: 'var(--cpo-scan-desc-size)', color: 'rgba(175, 185, 210, 0.85)', lineHeight: 1.55 }}>{echo.info ? colorizeText(echo.info, elColor) : 'No additional information available.'}</p>
       </>
     </>
   )
@@ -1210,11 +1210,11 @@ function ActiveBuffsPanel({ activeBreakdown, finalStats, allCharacters, elColor,
   }
 
   return (
-    <div className="charStatBreakdown abp">
+    <div className="charStatBreakdown abp" style={{ '--cpo-el-raw': elColor } as React.CSSProperties}>
       <div className="charStatBreakdownHeader">
         <span className="charStatBreakdownTitle">Active Buffs &amp; Current Stats</span>
         <button className="cpo-close-btn" onClick={onClose} aria-label="Close active buffs panel">
-          ✕
+          <img src="/assets/ui/close.png" alt="" style={{ width: 'var(--cpo-close-btn-icon-size)', height: 'var(--cpo-close-btn-icon-size)', display: 'block' }} />
         </button>
       </div>
       <div className="abp-body">
@@ -1483,7 +1483,7 @@ export function CharacterProfileOverlay({ characterName, character, snapshot, al
             <div />
           )}
           <button className="cpo-close-btn" onClick={handleClose} aria-label="Close">
-            ✕
+            <img src="/assets/ui/close.png" alt="" style={{ width: 'var(--cpo-close-btn-icon-size)', height: 'var(--cpo-close-btn-icon-size)', display: 'block' }} />
           </button>
         </div>
 
