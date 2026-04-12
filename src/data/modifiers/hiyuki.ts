@@ -112,7 +112,7 @@ export const snow_rust_3_s6_team: DamageModifier = {
 // ========== S4 Shared Modifier ===============================================================================================
 export const s4_skill_buff: DamageModifier = {
   source: 'Hiyuki: S4',
-  displayName: 'Ephemeral Realm',
+  displayName: 'Hiyuki S4 team buff',
   type: 'buff',
   ownerCharacter: 'Hiyuki',
   color: '#dbe9ff',

@@ -137,7 +137,7 @@ const hiyuki_BA_3_enhanced_cancel_with_swap: Action = {
   energyGenerated: [
     { energyType: 'energy', amount: values.BA3_energy, share: 0.5, scalingStat: 'energyPercent' },
     { energyType: 'concerto', amount: values.BA3_concerto, share: 0 },
-    { energyType: 'dedication', amount: values.BA3_dedication + 100, share: 0 } // TODO Might be 0 vs 100, not 100 vs 200
+    { energyType: 'dedication', amount: values.BA3_dedication + 100, share: 0 }
   ],
   energyCost: [],
   statusModifications: [{ type: 'negativeStatus', targetName: 'Glacio Chafe', stackChange: 1 }],

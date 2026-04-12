@@ -130,7 +130,7 @@ export const hiyuki: Character = {
     The DMG Multipliers of
       Frost Splinter: Present Self,
       Bitterfrost: Foreclaimed Self
-    are increased by 120%.
+    are increased by 160%.
     At 2 stacks of Snow Rust, while Hiyuki is on the field,
       the DMG Multiplier of the Glacio Bite DMG
       additionally applied each time she inflicts Glacio Chafe
@@ -155,15 +155,17 @@ export const hiyuki: Character = {
     `The DMG Multipliers of
       Foreclaiming: Inward Vision,
       Foreclaiming: Blade Liberation
-    are increased by 150%.
+    are increased by 30%.
     At 2 stacks of Snow Rust, the effect
       "While Hiyuki is on the field, each time she applies Glacio Chafe, she additionally deals an instance of Glacio Bite DMG"
       changes to
       "While Hiyuki is on the field, each time a Resonator in the team applies Glacio Chafe, she additionally deals an instance of Glacio Bite DMG."
     At 2 stacks of Snow Rust,
-      the total Glacio Bite DMG enemies within a certain range of the active Resonator take is increased by 25%.
-      Hiyuki's Crit. DMG is increased by 40%.
-      Inherent Skill Ephemeral Realm's effect is replaced: After staying out of combat for more than 4s, restore 3 points of Snowforged Blade.`
+      Glacio Bite DMG enemies within a certain range of the active Resonator take is increased by 25%.
+      Hiyuki's Crit. DMG is increased by 25%.
+    At 3 stacks of Snow Rust,
+      total Glacio Bite DMG is increased by 25%.
+    Inherent Skill Ephemeral Realm's effect is replaced: After staying out of combat for more than 4s, restore 3 points of Snowforged Blade.`
   ],
   sequence_nodes_icons: [
     'assets/characters/sequences/hiyuki_1.png',

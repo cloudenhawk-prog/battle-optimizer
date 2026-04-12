@@ -49,20 +49,12 @@ export function useCharacterActions({ setSnapshots, charactersInBattle, enemy, t
     negativeStatuses: negativeStatusesCol?.statusMetadata?.map(meta => meta.key) ?? [],
   }
 
-  // Persistent engine state — survives across action selections
-  const engineStateRef = useRef(initEngineState())
-
-  // Expose refs for useImportExport (it reads/writes .current directly after imports)
-  const negativeStatusesInAction = useRef<NegativeStatusInAction[]>(engineStateRef.current.negativeStatusesInAction)
-  const modifiersInAction = useRef<ModifierInAction[]>(engineStateRef.current.modifiersInAction)
-  const coordinatedAttacksInAction = useRef<CoordinatedAttackInAction[]>(engineStateRef.current.coordinatedAttacksInAction)
-
-  // Keep the three public refs in sync with the internal engineStateRef
-  function syncRefs() {
-    negativeStatusesInAction.current = engineStateRef.current.negativeStatusesInAction
-    modifiersInAction.current = engineStateRef.current.modifiersInAction
-    coordinatedAttacksInAction.current = engineStateRef.current.coordinatedAttacksInAction
-  }
+  // Persistent engine state â€” survives across action selections.
+  // These three refs are the canonical state; useImportExport writes to them directly.
+  const initState = initEngineState()
+  const negativeStatusesInAction = useRef<NegativeStatusInAction[]>(initState.negativeStatusesInAction)
+  const modifiersInAction = useRef<ModifierInAction[]>(initState.modifiersInAction)
+  const coordinatedAttacksInAction = useRef<CoordinatedAttackInAction[]>(initState.coordinatedAttacksInAction)
 
   const handleCharacterSelect = (snapshotId: number, characterName: string) => {
     setSnapshots(prev => {
@@ -85,7 +77,11 @@ export function useCharacterActions({ setSnapshots, charactersInBattle, enemy, t
         snapshots: copySnapshots(prevSnapshots),
         snapshotId,
         actionName,
-        engineState: engineStateRef.current,
+        engineState: {
+          negativeStatusesInAction: negativeStatusesInAction.current,
+          modifiersInAction: modifiersInAction.current,
+          coordinatedAttacksInAction: coordinatedAttacksInAction.current,
+        },
         charactersMap,
         characterColumnsMap,
         globalColumns,
@@ -98,9 +94,10 @@ export function useCharacterActions({ setSnapshots, charactersInBattle, enemy, t
         setDamageEvents(prev => [...prev, ...result.damageEvents])
       }
 
-      // Persist updated engine state
-      engineStateRef.current = result.engineState
-      syncRefs()
+      // Persist updated engine state into the canonical refs
+      negativeStatusesInAction.current = result.engineState.negativeStatusesInAction
+      modifiersInAction.current = result.engineState.modifiersInAction
+      coordinatedAttacksInAction.current = result.engineState.coordinatedAttacksInAction
 
       return result.snapshots
     })

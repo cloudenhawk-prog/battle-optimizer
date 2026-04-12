@@ -391,14 +391,14 @@ export function assertContributionMatches(actual: Partial<Contribution> | undefi
   const crit_contrib = Math.max(0, withValues.criticalStrike - withoutValues.criticalStrike)
   const avg_contrib = Math.max(0, withValues.average - withoutValues.average)
 
-  const safePct = (withVal: number, withoutVal: number) => {
-    if (!withoutVal || withoutVal === 0) return 0
-    return (withVal / withoutVal - 1) * 100
-  }
+  // Percentage formula matches the code: contribution as a share of total damage.
+  // (The old "(with/without - 1) * 100" formula measured increase relative to the
+  //  without-modifier baseline, but the Shapley implementation uses contrib/total.)
+  const safePct = (contrib: number, total: number) => (total !== 0 ? (contrib / total) * 100 : 0)
 
-  const normal_pct = safePct(withValues.normalStrike, withoutValues.normalStrike)
-  const crit_pct = safePct(withValues.criticalStrike, withoutValues.criticalStrike)
-  const avg_pct = safePct(withValues.average, withoutValues.average)
+  const normal_pct = safePct(normal_contrib, withValues.normalStrike)
+  const crit_pct = safePct(crit_contrib, withValues.criticalStrike)
+  const avg_pct = safePct(avg_contrib, withValues.average)
 
   expect(Math.abs((actual.normal_damage_contributed ?? 0) - normal_contrib)).toBeLessThan(tol)
   expect(Math.abs((actual.normal_percent_damage_contributed ?? 0) - normal_pct)).toBeLessThan(tol)

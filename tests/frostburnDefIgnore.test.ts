@@ -36,11 +36,11 @@ describe('Frostburn: modifier injection', () => {
     // The GLACIO_CHAFE_APPLIER action should receive both Frostburn buff modifiers
     expect(chafe.damageModifiers).toHaveLength(2)
     expect(chafe.damageModifiers.map(m => m.displayName)).toEqual(
-      expect.arrayContaining(['Frostburn: Buff', 'Frostburn: Buff']),
+      expect.arrayContaining(['Frostburn: Glacio Buff', 'Frostburn: Liberation Buff']),
     )
     const defIgnoreMod = chafe.damageModifiers.find(m => m.characterStats?.defIgnore !== undefined)
     expect(defIgnoreMod).toBeDefined()
-    expect(defIgnoreMod!.characterStats!.defIgnore).toBe(0.08)
+    expect(defIgnoreMod!.characterStats!.defIgnore).toBe(0.10)
     const glacioMod = chafe.damageModifiers.find(m => m.characterStats?.glacioAmplifyDMG !== undefined)
     expect(glacioMod).toBeDefined()
     expect(glacioMod!.characterStats!.glacioAmplifyDMG).toBe(0.28)
