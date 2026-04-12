@@ -1058,7 +1058,6 @@ function CenterPanel({ characterSummaries, globalDamage, totalPassiveDamage, gra
           <CharTypeCard
             key={char.name}
             summary={char}
-            grandTotal={grandTotal}
             originEntry={originByChar.get(char.name)}
             actionBreakdown={actionBreakdowns.get(char.name)}
             role={roleMap.get(char.name)}
@@ -1073,11 +1072,10 @@ function CenterPanel({ characterSummaries, globalDamage, totalPassiveDamage, gra
   )
 }
 
-function CharTypeCard({ summary, grandTotal, originEntry, actionBreakdown, role, charColorMap }: { summary: CharacterSummary; grandTotal: number; originEntry?: ContributionOriginEntry; actionBreakdown?: ActionBreakdownEntry[]; role?: 'Main Carry' | 'Sub DPS' | 'Buffer'; charColorMap: Map<string, CharColor> }) {
+function CharTypeCard({ summary, originEntry, actionBreakdown, role, charColorMap }: { summary: CharacterSummary; originEntry?: ContributionOriginEntry; actionBreakdown?: ActionBreakdownEntry[]; role?: 'Main Carry' | 'Sub DPS' | 'Buffer'; charColorMap: Map<string, CharColor> }) {
   const [expanded, setExpanded] = useState(false)
   const theme = charColorMap.get(summary.name) ?? getElementColor(summary.element)
   const allCharDamage = summary.directDamage + summary.caDamage + summary.passiveDamage
-  const shareOfTotal = grandTotal > 0 ? (allCharDamage / grandTotal) * 100 : 0
   const maxActionDmg = actionBreakdown && actionBreakdown.length > 0 ? actionBreakdown[0].damage : 1
 
   return (

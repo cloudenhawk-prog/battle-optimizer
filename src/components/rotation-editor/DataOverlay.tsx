@@ -92,9 +92,9 @@ export default function DataOverlay({ snapshot, previousSnapshot = null, startWi
   }, [damageEvents])
 
   const [activeSources, setActiveSources] = useState<Set<string>>(() => new Set(sourceNames))
-  const prevSourceNamesRef = useRef<string[]>(sourceNames)
-  if (prevSourceNamesRef.current !== sourceNames) {
-    prevSourceNamesRef.current = sourceNames
+  const [prevSourceNames, setPrevSourceNames] = useState<string[]>(sourceNames)
+  if (prevSourceNames !== sourceNames) {
+    setPrevSourceNames(sourceNames)
     setActiveSources(new Set(sourceNames))
   }
   const toggleSource = (name: string) => setActiveSources(prev => {
@@ -113,9 +113,9 @@ export default function DataOverlay({ snapshot, previousSnapshot = null, startWi
   }, [damageEvents])
 
   const [activeContribs, setActiveContribs] = useState<Set<string>>(() => new Set(contribGroupKeys))
-  const prevContribKeysRef = useRef(contribGroupKeys)
-  if (prevContribKeysRef.current !== contribGroupKeys) {
-    prevContribKeysRef.current = contribGroupKeys
+  const [prevContribGroupKeys, setPrevContribGroupKeys] = useState(contribGroupKeys)
+  if (prevContribGroupKeys !== contribGroupKeys) {
+    setPrevContribGroupKeys(contribGroupKeys)
     setActiveContribs(new Set(contribGroupKeys))
   }
   const toggleContrib = (key: string) => setActiveContribs(prev => {
@@ -141,9 +141,9 @@ export default function DataOverlay({ snapshot, previousSnapshot = null, startWi
   }, [damageEvents])
 
   const [activeTypes, setActiveTypes] = useState<Set<string>>(() => new Set(typeNames))
-  const prevTypeNamesRef = useRef(typeNames)
-  if (prevTypeNamesRef.current !== typeNames) {
-    prevTypeNamesRef.current = typeNames
+  const [prevTypeNames, setPrevTypeNames] = useState(typeNames)
+  if (prevTypeNames !== typeNames) {
+    setPrevTypeNames(typeNames)
     setActiveTypes(new Set(typeNames))
   }
   const toggleType = (type: string) => setActiveTypes(prev => {
@@ -716,6 +716,7 @@ function ContributionsSection({ damageEvents, mode, characters, snapshot, active
       const perm = [...nonNullKeys]
       for (let s = 0; s < SAMPLES; s++) {
         for (let i = perm.length - 1; i > 0; i--) {
+          // eslint-disable-next-line react-hooks/purity
           const j = Math.floor(Math.random() * (i + 1))
           ;[perm[i], perm[j]] = [perm[j], perm[i]]
         }

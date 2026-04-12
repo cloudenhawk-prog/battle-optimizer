@@ -67,9 +67,9 @@ export function useImportExport({
   tableConfig,
   enemy,
   settings,
-  negativeStatusesInAction,
-  modifiersInAction,
-  coordinatedAttacksInAction,
+  negativeStatusesInAction: negativeStatusesInActionRef,
+  modifiersInAction: modifiersInActionRef,
+  coordinatedAttacksInAction: coordinatedAttacksInActionRef,
 }: UseImportExportProps) {
   const [savedRotations, setSavedRotations] = useState<SavedRotation[]>(() => loadSavedRotations())
   const [savedSnippets, setSavedSnippets] = useState<SavedRotation[]>(() => loadSavedSnippets())
@@ -115,9 +115,9 @@ export function useImportExport({
     const result = runImportSteps({
       steps: snippet.steps,
       startingSnapshots: snapshots,
-      initialNegativeStatuses: negativeStatusesInAction.current,
-      initialModifiers: modifiersInAction.current,
-      initialCoordinatedAttacks: coordinatedAttacksInAction.current,
+      initialNegativeStatuses: negativeStatusesInActionRef.current,
+      initialModifiers: modifiersInActionRef.current,
+      initialCoordinatedAttacks: coordinatedAttacksInActionRef.current,
       charactersMap,
       characterColumnsMap,
       globalColumns,
@@ -136,9 +136,9 @@ export function useImportExport({
 
     setSnapshots(result.snapshots)
     setDamageEvents(prev => [...prev, ...result.damageEvents])
-    negativeStatusesInAction.current = result.finalNegativeStatuses
-    modifiersInAction.current = result.finalModifiers
-    coordinatedAttacksInAction.current = result.finalCoordinatedAttacks
+    negativeStatusesInActionRef.current = result.finalNegativeStatuses
+    modifiersInActionRef.current = result.finalModifiers
+    coordinatedAttacksInActionRef.current = result.finalCoordinatedAttacks
   }
 
   function handleDownload() {
@@ -167,15 +167,15 @@ export function useImportExport({
       // Reset the table to a clean state so the partial import doesn't cause confusion
       resetTimeline()
       setDamageEvents([])
-      negativeStatusesInAction.current = Object.values(negativeStatusesData).map(status => ({
+      negativeStatusesInActionRef.current = Object.values(negativeStatusesData).map(status => ({
         negativeStatus: status,
         applicationTime: -1,
         timeLeft: 0,
         currentStacks: 0,
         lastDamageTime: 0,
       }))
-      modifiersInAction.current = []
-      coordinatedAttacksInAction.current = []
+      modifiersInActionRef.current = []
+      coordinatedAttacksInActionRef.current = []
       return
     }
 
@@ -184,9 +184,9 @@ export function useImportExport({
 
     // Update living refs to reflect the imported state so subsequent user edits
     // continue from the correct modifier/coordinated-attack state.
-    negativeStatusesInAction.current = result.finalNegativeStatuses
-    modifiersInAction.current = result.finalModifiers
-    coordinatedAttacksInAction.current = result.finalCoordinatedAttacks
+    negativeStatusesInActionRef.current = result.finalNegativeStatuses
+    modifiersInActionRef.current = result.finalModifiers
+    coordinatedAttacksInActionRef.current = result.finalCoordinatedAttacks
   }
 
   function handleFileUpload(content: string) {
@@ -242,15 +242,15 @@ export function useImportExport({
     if (stepsToKeep.length === 0) {
       resetTimeline()
       setDamageEvents([])
-      negativeStatusesInAction.current = Object.values(negativeStatusesData).map(status => ({
+      negativeStatusesInActionRef.current = Object.values(negativeStatusesData).map(status => ({
         negativeStatus: status,
         applicationTime: -1,
         timeLeft: 0,
         currentStacks: 0,
         lastDamageTime: 0,
       }))
-      modifiersInAction.current = []
-      coordinatedAttacksInAction.current = []
+      modifiersInActionRef.current = []
+      coordinatedAttacksInActionRef.current = []
       return
     }
 
@@ -268,9 +268,9 @@ export function useImportExport({
 
     setSnapshots(result.snapshots)
     setDamageEvents(result.damageEvents)
-    negativeStatusesInAction.current = result.finalNegativeStatuses
-    modifiersInAction.current = result.finalModifiers
-    coordinatedAttacksInAction.current = result.finalCoordinatedAttacks
+    negativeStatusesInActionRef.current = result.finalNegativeStatuses
+    modifiersInActionRef.current = result.finalModifiers
+    coordinatedAttacksInActionRef.current = result.finalCoordinatedAttacks
   }
 
   return {

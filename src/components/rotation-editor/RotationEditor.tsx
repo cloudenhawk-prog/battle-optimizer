@@ -34,22 +34,19 @@ export default function RotationEditor({ charactersInBattle, enemy, tableConfig,
   const [overlayIndex, setOverlayIndex] = useState<number>(0)
   const [summaryOpen, setSummaryOpen] = useState(false)
   const [rotationsOpen, setRotationsOpen] = useState(false)
-  const [bannerVisible, setBannerVisible] = useState(false)
 
   const { lastImportError, lastImportCompleted } = importExport
+  const hasImportStatus = lastImportError !== null || lastImportCompleted !== null
 
   // Action snapshots are the navigable rows (only rows with an action are shown in the overlay)
   const actionSnapshots = snapshots.filter(s => s.action)
 
   useEffect(() => {
-    if (lastImportError || lastImportCompleted !== null) {
-      setBannerVisible(true)
-      const timer = setTimeout(() => {
-        setBannerVisible(false)
-        importExport.clearImportStatus()
-      }, 6000)
-      return () => clearTimeout(timer)
-    }
+    if (!hasImportStatus) return
+    const timer = setTimeout(() => {
+      importExport.clearImportStatus()
+    }, 6000)
+    return () => clearTimeout(timer)
   }, [lastImportError, lastImportCompleted])
 
   function openOverlayAt(index: number) {
@@ -74,7 +71,7 @@ export default function RotationEditor({ charactersInBattle, enemy, tableConfig,
   return (
     <div className="pageWrapper">
       <h1 className="heading"></h1>
-      {bannerVisible && (lastImportError || lastImportCompleted !== null) && (
+      {hasImportStatus && (
         <div className={`importBanner ${lastImportError ? 'importBannerError' : 'importBannerSuccess'}`}>
           <span className="importBannerIcon">{lastImportError ? '⚠' : '✓'}</span>
           <span className="importBannerText">
@@ -85,7 +82,7 @@ export default function RotationEditor({ charactersInBattle, enemy, tableConfig,
           </span>
           <button
             className="importBannerDismiss"
-            onClick={() => { setBannerVisible(false); importExport.clearImportStatus() }}
+            onClick={() => importExport.clearImportStatus()}
             aria-label="Dismiss"
           >✕</button>
         </div>

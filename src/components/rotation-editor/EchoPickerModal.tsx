@@ -644,7 +644,7 @@ function StatConfigurePanel({
 
 // ========== Main Component: EchoPickerModal ==================================================================================
 
-export function EchoPickerModal({ slot, currentGear, characterName: _characterName, elColor, onConfirm, onCancel }: EchoPickerModalProps) {
+export function EchoPickerModal({ slot, currentGear, elColor, onConfirm, onCancel }: EchoPickerModalProps) {
   const [selectedCatalogEntry, setSelectedCatalogEntry] = useState<EchoCatalogEntry | null>(null)
   const [mainStatKey, setMainStatKey] = useState('')
   const [substats, setSubstats] = useState<SubstatRow[]>(EMPTY_SUBSTATS.map(r => ({ ...r })))
