@@ -84,7 +84,7 @@ const echoSkill_aleph1: Action = {
   name: 'Echo Skill',
   displayName: 'Aleph-1 (Active)',
   category: 'Echo Skill',
-  castTime: 0.05,
+  castTime: 0.09,
   multiplier: (5 * 21.88 + 164.16) / 100,
   scaling: 'ATK',
   elements: ['GLACIO'],
@@ -95,7 +95,13 @@ const echoSkill_aleph1: Action = {
   statusModifications: [],
   damageModifiers: [],
   sideEffects: [],
-  castConditions: { startState: 'ANY', endState: 'PRESERVE' },
+  castConditions: {
+    startState: 'ANY',
+    swapOutState: 'PRESERVE',
+    endState: 'PRESERVE',
+    persistenceTime: 0.09,
+    requiresSwapOut: true
+  },
   offtune: 0,
 }
 
@@ -116,10 +122,10 @@ const echoSkill_reactorHusk: Action = {
   sideEffects: [],
   castConditions: {
     startState: 'ANY',
-    endState: 'GROUND',
     swapOutState: 'PRESERVE',
+    endState: 'GROUND',
     persistenceTime: 0.09,
-    requiresSwapOut: true,
+    requiresSwapOut: true
   },
   offtune: 0,
 }

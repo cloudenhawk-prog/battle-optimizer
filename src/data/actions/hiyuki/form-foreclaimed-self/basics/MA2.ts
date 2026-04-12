@@ -30,6 +30,7 @@ const hiyuki_foreclaimed_midair_2: Action = {
   castConditions: {
     startState: 'AIR',
     endState: 'AIR',
+    preventsSwapOut: true,
     requiredForms: ['Foreclaimed Self'],
     requiredComboTags: ['Foreclaiming MA1'],
     blockedComboTags: ['Foreclaiming MA Block', 'Foreclaiming MA2']
@@ -124,6 +125,7 @@ const hiyuki_foreclaimed_midair_2_3: Action = {
   castConditions: {
     startState: 'AIR',
     endState: 'GROUND',
+    preventsSwapOut: true,
     requiredForms: ['Foreclaimed Self'],
     requiredComboTags: ['Foreclaiming MA1'],
     blockedComboTags: ['Foreclaiming MA Block', 'Foreclaiming MA2']

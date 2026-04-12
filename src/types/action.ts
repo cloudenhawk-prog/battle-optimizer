@@ -139,6 +139,11 @@ export type CastConditions = {
   /** When true, the character must swap out after this action — they will be locked from
    *  being selected as the active character in the immediately following row. */
   requiresSwapOut?: boolean
+  /** When true, the character cannot swap out after this action — the next action must
+   *  also be from this character. Use on non-swap-cancel variants when a swap-cancel
+   *  sibling exists: selecting this variant means the animation completes in full and
+   *  a swap is not involved. A swap would require picking the (swap cancel) variant instead. */
+  preventsSwapOut?: boolean
   /** Forms required to cast this action. If undefined, action is available in all forms.
    *  If empty array, action can't be cast (typically used with customCanCast function). */
   requiredForms?: string[]

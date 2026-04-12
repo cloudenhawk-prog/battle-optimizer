@@ -28,6 +28,7 @@ const hiyuki_foreclaimed_enhanced_heavy_attack: Action = {
   castConditions: {
     startState: 'GROUND',
     endState: 'GROUND',
+    preventsSwapOut: true,
     requiredForms: ['Foreclaimed Self']
   },
   offtune: values.foreclaimed_enhanced_heavy_offtune,

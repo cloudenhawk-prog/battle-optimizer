@@ -25,9 +25,10 @@
  */
 
 import { calculateScalingStat } from '../src/utils/calculators/damageCalculator'
-import { characters } from '../src/data/characters'
+import { cartethyia } from '../src/data/characters/cartethyia'
+import { resolveCharacter } from '../src/utils/gear/resolveCharacter'
 
-const cartethyia = characters.find(c => c.name === 'Cartethyia')
+const resolved = resolveCharacter(cartethyia)
 
 const expectWithin01Percent = (actual: number, expected: number) => {
   const tolerance = expected * 0.001
@@ -36,46 +37,42 @@ const expectWithin01Percent = (actual: number, expected: number) => {
 }
 
 describe('Cartethyia stat resolution', () => {
-  it('should find Cartethyia in the characters list', () => {
-    expect(cartethyia).toBeDefined()
-  })
-
   it('HP should resolve to ~51851 (placeholder subs)', () => {
-    const hp = calculateScalingStat(cartethyia!.stats, 'HP')
+    const hp = calculateScalingStat(resolved.stats, 'HP')
     expectWithin01Percent(hp, 51851.24)
   })
 
   it('ATK should resolve to 1024.5 (placeholder subs)', () => {
-    const atk = calculateScalingStat(cartethyia!.stats, 'ATK')
+    const atk = calculateScalingStat(resolved.stats, 'ATK')
     expectWithin01Percent(atk, 1024.5)
   })
 
   it('DEF should resolve to 611 (base only, no DEF subs yet)', () => {
-    const def = calculateScalingStat(cartethyia!.stats, 'DEF')
+    const def = calculateScalingStat(resolved.stats, 'DEF')
     expectWithin01Percent(def, 611)
   })
 
   it('Energy Regen should resolve to 100% (1.0) — no regen subs yet', () => {
-    expectWithin01Percent(cartethyia!.stats.energyPercent, 1.0)
+    expectWithin01Percent(resolved.stats.energyPercent, 1.0)
   })
 
   it('Crit Rate should resolve to 82.5% (0.825) — includes Windward Pilgrimage flattened passive +10%', () => {
-    expectWithin01Percent(cartethyia!.stats.critRate, 0.825)
+    expectWithin01Percent(resolved.stats.critRate, 0.825)
   })
 
   it('Crit DMG should resolve to 269% (2.69) — placeholder subs all crit DMG', () => {
-    expectWithin01Percent(cartethyia!.stats.critDamage, 2.69)
+    expectWithin01Percent(resolved.stats.critDamage, 2.69)
   })
 
   it('Skill DMG Bonus should resolve to 0 — no skill DMG subs yet', () => {
-    expect(cartethyia!.stats.skillBonusDMG).toBe(0)
+    expect(resolved.stats.skillBonusDMG).toBe(0)
   })
 
   it('Basic ATK DMG Bonus should resolve to 0 — no basic ATK subs yet', () => {
-    expect(cartethyia!.stats.basicBonusDMG).toBe(0)
+    expect(resolved.stats.basicBonusDMG).toBe(0)
   })
 
   it('Aero DMG Bonus should resolve to 60% (0.60) — includes Windward Pilgrimage flattened passive +30%', () => {
-    expectWithin01Percent(cartethyia!.stats.aeroBonusDMG, 0.60)
+    expectWithin01Percent(resolved.stats.aeroBonusDMG, 0.60)
   })
 })

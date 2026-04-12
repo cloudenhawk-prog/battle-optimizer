@@ -12,7 +12,7 @@ import { hiyuki } from './characters/hiyuki'
 // Original unresolved character definitions. Use these as the source of truth when
 // re-resolving a character after a gear change: resolveCharacter(baseCharacters[i], newGear).
 // Safe to use repeatedly since resolveCharacter is non-mutating.
-export const baseCharacters: Character[] = [hiyuki, mornye, cartethyia]
+export const baseCharacters: Character[] = [hiyuki, mornye] // Cartethyia
 
 // Resolve gear contributions (stats, echo skills, injected modifiers) at startup.
 // This must run before verifyData() and before any calculation code accesses character.stats.

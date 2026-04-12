@@ -30,6 +30,7 @@ const hiyuki_skill: Action = {
   castConditions: {
     startState: 'GROUND',
     endState: 'GROUND',
+    preventsSwapOut: true,
     requiredForms: ['Present Self']
   },
   offtune: values.skill_offtune,

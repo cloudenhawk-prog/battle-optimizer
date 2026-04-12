@@ -28,6 +28,7 @@ const hiyuki_BA_1: Action = {
   castConditions: {
     startState: 'GROUND',
     endState: 'GROUND',
+    preventsSwapOut: true,
     blockedComboTags: ['BA Block', 'BA1', 'BA2'],
     requiredForms: ['Present Self']
   },
@@ -103,6 +104,7 @@ const hiyuki_BA_1_2: Action = {
   castConditions: {
     startState: 'GROUND',
     endState: 'GROUND',
+    preventsSwapOut: true,
     blockedComboTags: ['BA Block', 'BA1', 'BA2'],
     requiredForms: ['Present Self']
   },
@@ -178,6 +180,7 @@ const hiyuki_BA_1_3: Action = {
   castConditions: {
     startState: 'GROUND',
     endState: 'GROUND',
+    preventsSwapOut: true,
     blockedComboTags: ['BA Block', 'BA1', 'BA2'],
     requiredForms: ['Present Self']
   },

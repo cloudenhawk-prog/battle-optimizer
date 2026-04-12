@@ -30,6 +30,7 @@ const hiyuki_BA_3: Action = {
   castConditions: {
     startState: 'GROUND',
     endState: 'GROUND',
+    preventsSwapOut: true,
     blockedComboTags: ['BA1', 'BA3'],
     requiredComboTags: ['BA2'],
     requiredForms: ['Present Self']
@@ -108,8 +109,7 @@ const hiyuki_BA_3_enhanced: Action = {
   coordinatedAttacks: [],
   castConditions: {
     startState: 'GROUND',
-    endState: 'GROUND',
-    requiredForms: ['Present Self'],
+    endState: 'GROUND',    preventsSwapOut: true,    requiredForms: ['Present Self'],
     previousActions: [hiyuki_skill, hiyuki_skill_cancel_with_swap], // TODO: if this works after swapping back in, will need a way to persist the "combo"
     customCanCast(prevSnapshot) {
       const dedication = prevSnapshot?.charactersEnergies['Hiyuki']?.dedication ?? 0

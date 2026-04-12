@@ -31,6 +31,7 @@ const hiyuki_foreclaimed_BA_3: Action = {
   castConditions: {
     startState: 'GROUND',
     endState: 'GROUND',
+    preventsSwapOut: true,
     requiredForms: ['Foreclaimed Self'],
     requiredComboTags: ['Foreclaiming BA2'],
     blockedComboTags: ['Foreclaiming BA Block', 'Foreclaiming BA1', 'Foreclaiming BA3', 'Foreclaiming BA4']
@@ -125,6 +126,7 @@ const hiyuki_foreclaimed_BA_3_4: Action = {
   castConditions: {
     startState: 'GROUND',
     endState: 'GROUND',
+    preventsSwapOut: true,
     requiredForms: ['Foreclaimed Self'],
     requiredComboTags: ['Foreclaiming BA2'],
     blockedComboTags: ['Foreclaiming BA Block', 'Foreclaiming BA1', 'Foreclaiming BA3', 'Foreclaiming BA4']
@@ -219,6 +221,7 @@ const hiyuki_foreclaimed_BA_3_5: Action = {
   castConditions: {
     startState: 'GROUND',
     endState: 'GROUND',
+    preventsSwapOut: true,
     requiredForms: ['Foreclaimed Self'],
     requiredComboTags: ['Foreclaiming BA2'],
     blockedComboTags: ['Foreclaiming BA Block', 'Foreclaiming BA1', 'Foreclaiming BA3', 'Foreclaiming BA4']

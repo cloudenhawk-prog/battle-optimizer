@@ -31,6 +31,7 @@ const hiyuki_foreclaimed_BA_5: Action = {
   castConditions: {
     startState: 'GROUND',
     endState: 'GROUND',
+    preventsSwapOut: true,
     requiredForms: ['Foreclaimed Self'],
     requiredComboTags: ['Foreclaiming BA4'],
     blockedComboTags: ['Foreclaiming BA Block', 'Foreclaiming BA1', 'Foreclaiming BA2', 'Foreclaiming BA3', 'Foreclaiming BA5']

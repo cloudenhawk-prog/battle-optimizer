@@ -28,6 +28,7 @@ const hiyuki_heavy_attack_enhanced: Action = {
   castConditions: {
     startState: 'GROUND',
     endState: 'GROUND',
+    preventsSwapOut: true,
     requiredForms: ['Present Self']
   },
   offtune: values.enhanced_heavy_offtune,

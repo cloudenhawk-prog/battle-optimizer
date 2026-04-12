@@ -3,35 +3,49 @@ import { getScore } from './score'
 import type { Choice } from './choices'
 import type { Node } from './node'
 
+// ========== Type: RolloutRecord ==============================================================================================
+
+/**
+ * A complete rotation path discovered during a rollout phase.
+ * Combines the tree-prefix choices (from root to the expanded node) with
+ * the random choices made during the rollout until the termination goal was reached.
+ */
+export type RolloutRecord = {
+  choices: Choice[]
+  score: number
+}
+
 // ========== Extract Top Rotations ============================================================================================
 
 /**
- * Converts the N highest-scoring terminal nodes into SavedRotation objects,
+ * Converts the N highest-scoring complete rotations into SavedRotation objects,
  * directly importable into the rotation editor via runImportSteps.
  *
- * Terminal nodes are those reached during expansion when the simulation state
- * satisfied the termination goal. They store the full path back to root via
- * the parent chain, which is reconstructed here into a RotationStep sequence.
+ * Merges two sources:
+ *  - terminalNodes: nodes in the MCTS tree that directly reached the goal during expansion
+ *  - rolloutRecords: complete paths discovered during rollout phases
  *
- * Returns fewer than topN results if fewer terminal nodes were found
- * (e.g. the search budget was too small to reach the termination goal).
+ * In practice, rolloutRecords dominate at low-to-medium iteration counts because
+ * the tree must be ~goal-depth deep before expansion itself reaches terminal.
+ *
+ * Returns fewer than topN results if fewer complete rotations were found.
  */
-export function extractTopRotations(terminalNodes: Node[], topN: number): SavedRotation[] {
-  if (terminalNodes.length === 0) return []
+export function extractTopRotations(terminalNodes: Node[], rolloutRecords: RolloutRecord[], topN: number): SavedRotation[] {
+  type Candidate = { choices: Choice[]; score: number }
+  const candidates: Candidate[] = [
+    ...terminalNodes.map(n => ({ choices: reconstructPath(n), score: getScore(n.snapshots) })),
+    ...rolloutRecords,
+  ]
+  if (candidates.length === 0) return []
 
-  const sorted = [...terminalNodes].sort((a, b) => getScore(b.snapshots) - getScore(a.snapshots))
+  const sorted = [...candidates].sort((a, b) => b.score - a.score)
   const top = sorted.slice(0, topN)
 
-  return top.map((node, rank) => {
-    const choices = reconstructPath(node)
-    const score = getScore(node.snapshots)
-
-    return {
-      name: `MCTS #${rank + 1} — DPS ${score.toFixed(0)}`,
-      createdAt: new Date().toISOString(),
-      steps: choices.map(c => ({ character: c.character, action: c.actionName })),
-    }
-  })
+  return top.map((c, rank) => ({
+    name: `MCTS #${rank + 1} — DPS ${c.score.toFixed(0)}`,
+    createdAt: new Date().toISOString(),
+    steps: c.choices.map(ch => ({ character: ch.character, action: ch.actionName })),
+  }))
 }
 
 // ========== Internal =========================================================================================================

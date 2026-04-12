@@ -8,6 +8,7 @@ import { assignCharacterToRow } from '../hooks/snapshotHelpers'
 import { getMCTSChoices, type Choice } from './choices'
 import { createRootNode, createChildNode, cloneSnapshots, cloneEngineState, type Node } from './node'
 import { isTerminal, getScore, type TerminationGoal } from './score'
+import { type RolloutRecord } from './output'
 
 // ========== Types ============================================================================================================
 
@@ -19,12 +20,16 @@ export type MCTSConfig = {
   topN?: number
   /** UCB1 exploration constant. Higher = more exploration. Default: Math.SQRT2 */
   explorationConstant?: number
+  /** Called periodically during the search with the current iteration and total. */
+  onProgress?: (iteration: number, total: number) => void
 }
 
 export type MCTSResult = {
   root: Node
-  /** All terminal nodes discovered during expansion, in the order they were found. */
+  /** Terminal nodes discovered during expansion (tree depth reached goal). */
   terminalNodes: Node[]
+  /** Complete rotation paths recorded when rollouts reached the termination goal. */
+  rolloutRecords: RolloutRecord[]
 }
 
 // ========== Empty GlobalColumns ==============================================================================================
@@ -102,6 +107,17 @@ function createMCTSInitialSnapshot(team: ResolvedCharacter[]): Snapshot {
 
 // ========== MCTS: Internal Helpers ===========================================================================================
 
+/** Reconstructs the ordered choice sequence from root down to (and including) node. */
+function getTreePath(node: Node): Choice[] {
+  const choices: Choice[] = []
+  let current: Node | null = node
+  while (current !== null && current.incomingChoice !== null) {
+    choices.unshift(current.incomingChoice)
+    current = current.parent
+  }
+  return choices
+}
+
 function ucb1(node: Node, C: number): number {
   if (node.visits === 0) return Infinity
   return (node.totalScore / node.visits) + C * Math.sqrt(Math.log(node.parent!.visits) / node.visits)
@@ -175,12 +191,15 @@ function rollout(
   enemy: Enemy,
   goal: TerminationGoal,
   maxSteps = 500,
-): number {
+): { score: number; terminalChoices: Choice[] | null } {
   let snapshots = cloneSnapshots(node.snapshots)
   let engineState = cloneEngineState(node.engineState)
+  const rolledChoices: Choice[] = []
 
   for (let step = 0; step < maxSteps; step++) {
-    if (isTerminal(snapshots, goal)) break
+    if (isTerminal(snapshots, goal)) {
+      return { score: getScore(snapshots), terminalChoices: rolledChoices }
+    }
 
     // Use last resolved snapshot for choices; fall back to snapshots[0] before any step
     const currentSnapshot = snapshots.length >= 2
@@ -191,6 +210,7 @@ function rollout(
     if (choices.length === 0) break
 
     const choice = choices[Math.floor(Math.random() * choices.length)]
+    rolledChoices.push(choice)
     const snapshotId = snapshots.length - 1
     const snapshotsWithChar = [...snapshots]
     snapshotsWithChar[snapshotId] = assignCharacterToRow(snapshotsWithChar[snapshotId], choice.character)
@@ -211,7 +231,7 @@ function rollout(
     engineState = result.engineState
   }
 
-  return getScore(snapshots)
+  return { score: getScore(snapshots), terminalChoices: null }
 }
 
 // ========== runMCTS ==========================================================================================================
@@ -233,6 +253,7 @@ export function runMCTS(config: MCTSConfig): MCTSResult {
     goal,
     iterations,
     explorationConstant = Math.SQRT2,
+    onProgress,
   } = config
 
   const charactersMap = Object.fromEntries(team.map(c => [c.name, c]))
@@ -241,8 +262,14 @@ export function runMCTS(config: MCTSConfig): MCTSResult {
   const rootChoices = getMCTSChoices(initialSnapshot, team)
   const root = createRootNode([initialSnapshot], initialEngineState, rootChoices)
   const terminalNodes: Node[] = []
+  const rolloutRecords: RolloutRecord[] = []
+
+  const progressInterval = Math.max(1, Math.floor(iterations / 10))
 
   for (let i = 0; i < iterations; i++) {
+    if (onProgress && i > 0 && i % progressInterval === 0) {
+      onProgress(i, iterations)
+    }
     const node = select(root, explorationConstant, goal)
 
     if (isTerminal(node.snapshots, goal)) {
@@ -263,10 +290,16 @@ export function runMCTS(config: MCTSConfig): MCTSResult {
       terminalNodes.push(child)
       backpropagate(child, getScore(child.snapshots))
     } else {
-      const score = rollout(child, team, charactersMap, enemy, goal)
-      backpropagate(child, score)
+      const rolloutResult = rollout(child, team, charactersMap, enemy, goal)
+      backpropagate(child, rolloutResult.score)
+      if (rolloutResult.terminalChoices !== null) {
+        rolloutRecords.push({
+          choices: [...getTreePath(child), ...rolloutResult.terminalChoices],
+          score: rolloutResult.score,
+        })
+      }
     }
   }
 
-  return { root, terminalNodes }
+  return { root, terminalNodes, rolloutRecords }
 }

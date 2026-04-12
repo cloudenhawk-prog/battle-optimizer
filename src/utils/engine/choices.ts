@@ -17,13 +17,14 @@ import { isActionCastableInState } from '../conditions/mustChainValidator'
  *   - On cooldown (stacked actions: blocked only when stacks = 0)
  *   - Wrong position (startState mismatch)
  *   - Wrong form (requiredForms mismatch)
+ *   - previousActions mismatch (last personal action is not in the allowed set)
+ *   - customCanCast returns false
+ *   - requiredComboTags / blockedComboTags mismatch
+ *   - comboWindow expired, swap-broken, or form-change-broken
  *
  * Must-chain lock:
  *   - If the previous action set a must:true follow-up for this character, only that
  *     specific action is returned.
- *
- * customCanCast is intentionally not evaluated here because it takes a snapshot reference
- * and may encode UI-specific logic. Callers that need it can filter further on their own.
  */
 export function getAvailableActions(
   snapshot: Snapshot,
@@ -52,9 +53,12 @@ export function getAvailableActions(
     return locked ? [locked] : []
   }
 
+  const lastAction = snapshot.charactersLastAction?.[charName]
+  const comboChainTags = snapshot.charactersComboChainTags?.[charName] ?? []
+
   return character.actions.filter(action => {
     // Exclude INTRO / OUTRO — auto-triggered by the engine
-    if ((action.dmgTypes as string[]).includes('INTRO') || (action.dmgTypes as string[]).includes('OUTRO')) {
+    if (action.tags?.includes('INTRO_ACTION') || action.tags?.includes('OUTRO_ACTION')) {
       return false
     }
 
@@ -68,7 +72,49 @@ export function getAvailableActions(
       return false
     }
 
-    // Position and form checks (energy is checked inside isActionCastableInState)
-    return isActionCastableInState(action, state)
+    // Position, form, energy
+    if (!isActionCastableInState(action, state)) return false
+
+    // previousActions: last personal action must be in the allowed set
+    const previousActionsConstraint = action.castConditions.previousActions
+    if (previousActionsConstraint?.length) {
+      if (!previousActionsConstraint.some(pa => pa.name === lastAction)) return false
+    }
+
+    // customCanCast: custom runtime condition
+    if (action.castConditions.customCanCast) {
+      if (!action.castConditions.customCanCast(snapshot, charName)) return false
+    }
+
+    // requiredComboTags: ALL listed tags must be on the character's last personal action
+    if (action.castConditions.requiredComboTags?.length) {
+      if (!action.castConditions.requiredComboTags.every(tag => comboChainTags.includes(tag))) return false
+    }
+
+    // blockedComboTags: NONE of the listed tags may be on the character's last personal action
+    if (action.castConditions.blockedComboTags?.length) {
+      if (action.castConditions.blockedComboTags.some(tag => comboChainTags.includes(tag))) return false
+    }
+
+    // comboWindow: action must be cast within the allowed time window after a combo starter
+    if (action.castConditions.comboWindow) {
+      const comboWindow = action.castConditions.comboWindow
+      const comboTracking = snapshot.charactersComboWindows?.[charName]
+
+      if (!comboTracking) return false
+
+      const matchingAction = comboWindow.previousActions.find(a => a.name === comboTracking.actionName)
+      if (!matchingAction) return false
+
+      let windowStartTime = comboTracking.startTime
+      if (comboWindow.timerStartsAt === 'afterCast') windowStartTime += matchingAction.castTime
+
+      const timeSinceCombo = snapshot.toTime - windowStartTime
+      if (timeSinceCombo > comboWindow.maxTimeSincePrevious) return false
+      if (comboWindow.crashesOnSwap && comboTracking.wasSwapped) return false
+      if (comboWindow.crashesOnFormChange && comboTracking.formChanged) return false
+    }
+
+    return true
   })
 }

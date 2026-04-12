@@ -170,6 +170,7 @@ const mornye_BA_1_3_into_heavy: Action = {
   castConditions: {
     startState: 'GROUND',
     endState: 'GROUND',
+    preventsSwapOut: true,
     requiredForms: ['Baseline Mode'],
     blockedComboTags: ['BA1', 'BA2', 'BA3'],
   },
@@ -242,6 +243,7 @@ const mornye_BA_1_3_cancel_with_skill: Action = {
   castConditions: {
     startState: 'GROUND',
     endState: 'GROUND',
+    preventsSwapOut: true,
     requiredForms: ['Baseline Mode'],
     blockedComboTags: ['BA1', 'BA2', 'BA3'],
   },
@@ -317,6 +319,7 @@ const mornye_BA_2_3_into_heavy: Action = {
   castConditions: {
     startState: 'GROUND',
     endState: 'GROUND',
+    preventsSwapOut: true,
     requiredForms: ['Baseline Mode'],
     requiredComboTags: ['BA1'],
     blockedComboTags: ['BA2', 'BA3']
@@ -391,6 +394,7 @@ const mornye_BA_2_3_cancel_with_skill: Action = {
   castConditions: {
     startState: 'GROUND',
     endState: 'GROUND',
+    preventsSwapOut: true,
     requiredForms: ['Baseline Mode'],
     requiredComboTags: ['BA1'],
     blockedComboTags: ['BA2', 'BA3']
@@ -428,6 +432,7 @@ const mornye_BA_3_into_heavy: Action = {
   castConditions: {
     startState: 'GROUND',
     endState: 'GROUND',
+    preventsSwapOut: true,
     requiredForms: ['Baseline Mode'],
     requiredComboTags: ['BA2'],
     blockedComboTags: ['BA1', 'BA3']
@@ -575,6 +580,7 @@ const mornye_heavy: Action = {
   castConditions: {
     startState: 'GROUND',
     endState: 'AIR',
+    preventsSwapOut: true,
     requiredForms: ['Baseline Mode']
   },
   offtune: heavy_offtune,
@@ -647,6 +653,7 @@ const mornye_heavy_swap_in: Action = {
   castConditions: {
     startState: 'GROUND',
     endState: 'AIR',
+    preventsSwapOut: true,
     requiredForms: ['Baseline Mode'],
   },
   offtune: heavy_offtune,
@@ -675,6 +682,7 @@ const mornye_skill: Action = {
   castConditions: {
     startState: 'GROUND',
     endState: 'GROUND',
+    preventsSwapOut: true,
     requiredForms: ['Baseline Mode'],
     previousActions: [mornye_BA_1_3_cancel_with_skill, mornye_BA_2_3_cancel_with_skill, mornye_BA_3_cancel_with_skill]
   },
@@ -710,9 +718,11 @@ const mode_mornye_BA_1_3: Action = {
   castConditions: {
     startState: 'AIR',
     endState: 'AIR',
+    preventsSwapOut: true,
     requiredForms: ['Wide Field Observation Mode']
   },
   offtune: MODE_BA1_offtune + MODE_BA2_offtune + MODE_BA3_offtune,
+  attemptFollowUp: { actionName: 'Mode: Resonance Skill', must: true },
   resolveVariant(prevSnapshot, characterName) {
     const bonusOnCooldown = (prevSnapshot?.charactersCooldowns?.[characterName]?.['Mode: Basic Attack 1-3'] ?? 0) > 0
     if (bonusOnCooldown) return { ...this, resolveVariant: undefined }
@@ -725,7 +735,7 @@ const mode_mornye_BA_1_3: Action = {
       ],
       resolveVariant: undefined,
     }
-  },
+  }
 }
 
 // ========== Mode: Resonance Skill ============================================================================================
@@ -753,9 +763,11 @@ const mode_mornye_skill: Action = {
   castConditions: {
     startState: 'AIR',
     endState: 'AIR',
+    preventsSwapOut: true,
     requiredForms: ['Wide Field Observation Mode']
   },
   offtune: 4 * 0.20,
+  attemptFollowUp: { actionName: 'Mode: Heavy Attack', must: true },
   resolveVariant(_prevSnapshot, _characterName, owner) {
     if (owner.sequence < 3) return { ...this, resolveVariant: undefined }
     return {
@@ -833,9 +845,11 @@ const mode_mornye_heavy: Action = {
   castConditions: {
     startState: 'AIR',
     endState: 'AIR',
+    preventsSwapOut: true,
     requiredForms: ['Wide Field Observation Mode']
   },
-  offtune: 1.04
+  offtune: 1.04,
+  attemptFollowUp: { actionName: 'Liberation', must: true },
 }
 
 // ========== Mode: Liberation =======================================================================================================
@@ -906,9 +920,11 @@ const mornye_liberation: Action = {
   castConditions: {
     startState: 'ANY',
     endState: 'PRESERVE',
+    previousActions: [mode_mornye_heavy],
     requiredForms: ['Wide Field Observation Mode'] // Technically not true, but practically required
   },
   offtune: 7.20,
+  attemptFollowUp: { actionName: 'Echo Skill', must: true },
   resolveVariant(_prevSnapshot, _characterName, owner) {
     const s5Multiplier = owner.sequence >= 5 ? 1.4 : 1
     const s6Multiplier = owner.sequence >= 6 ? 5 : 1
@@ -1020,28 +1036,7 @@ const mornye_wait_005: Action = {
   castConditions: {
     startState: 'ANY',
     endState: 'PRESERVE',
-  },
-  offtune: 0,
-}
-
-const mornye_wait_1: Action = {
-  name: 'Wait 1s',
-  displayName: 'Wait 1s',
-  category: 'Other',
-  castTime: 1,
-  multiplier: 0,
-  scaling: 'HP',
-  elements: [''],
-  dmgTypes: [''],
-  cooldown: 0,
-  energyGenerated: [],
-  energyCost: [],
-  statusModifications: [],
-  damageModifiers: [],
-  sideEffects: [],
-  castConditions: {
-    startState: 'ANY',
-    endState: 'PRESERVE',
+    preventsSwapOut: true,
   },
   offtune: 0,
 }
@@ -1063,7 +1058,10 @@ const mornye_wait_for_swap: Action = {
   sideEffects: [],
   castConditions: {
     startState: 'ANY',
+    swapOutState: 'PRESERVE',
     endState: 'PRESERVE',
+    requiresSwapOut: true,
+    persistenceTime: 0,
     customCanCast(prevSnapshot) {
       if (!prevSnapshot) return false
       const cooldowns = prevSnapshot.charactersSwapCooldownUntil ?? {}
@@ -1193,7 +1191,7 @@ export const all_actions = [
   mornye_liberation,
   ...mornye_intro_outro_actions,
   mornye_wait_005,
-  mornye_wait_1,
+  //mornye_wait_1,
   mornye_wait_for_swap,
   mornye_energy,
   mornye_concerto,
@@ -1245,7 +1243,7 @@ export {
 
   // Swaps
   mornye_wait_005,
-  mornye_wait_1,
+  //mornye_wait_1,
   mornye_wait_for_swap,
 
   // Testing

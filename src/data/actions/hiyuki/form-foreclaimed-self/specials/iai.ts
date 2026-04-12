@@ -36,6 +36,7 @@ const hiyuki_foreclaimed_iai: Action = {
   castConditions: {
     startState: 'GROUND',
     endState: 'GROUND',
+    preventsSwapOut: true,
     requiredForms: ['Foreclaimed Self'],
     previousActions: [ // TODO Uncertain
       { name: 'Foreclaimed: Iai' } as Action,

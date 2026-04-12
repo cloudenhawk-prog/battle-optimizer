@@ -28,6 +28,7 @@ const hiyuki_foreclaimed_skill_1: Action = {
   castConditions: {
     startState: 'GROUND',
     endState: 'AIR',
+    preventsSwapOut: true,
     requiredForms: ['Foreclaimed Self']
   },
   offtune: values.foreclaimed_skill_1_offtune,
@@ -151,6 +152,7 @@ const hiyuki_foreclaimed_skill_2: Action = {
   castConditions: {
     startState: 'AIR',
     endState: 'GROUND',
+    preventsSwapOut: true,
     requiredForms: ['Foreclaimed Self']
   },
   offtune: values.foreclaimed_skill_2_offtune,

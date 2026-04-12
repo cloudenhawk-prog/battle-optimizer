@@ -30,6 +30,7 @@ const hiyuki_BA_2: Action = {
   castConditions: {
     startState: 'GROUND',
     endState: 'GROUND',
+    preventsSwapOut: true,
     blockedComboTags: ['BA Block', 'BA2', 'BA3'],
     requiredComboTags: ['BA1'],
     requiredForms: ['Present Self']
@@ -107,6 +108,7 @@ const hiyuki_BA_2_3: Action = {
   castConditions: {
     startState: 'GROUND',
     endState: 'GROUND',
+    preventsSwapOut: true,
     blockedComboTags: ['BA Block', 'BA2', 'BA3'],
     requiredComboTags: ['BA1'],
     requiredForms: ['Present Self']
