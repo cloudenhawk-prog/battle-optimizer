@@ -68,9 +68,9 @@ export function hasForteGrant(grantName: string) {
  */
 export function ownerAtLeast(characterName: string, minSequence: number) {
   return (ctx: StepContext): number => {
-    const char = ctx.character.name === characterName
+    const char = ctx.character?.name === characterName
       ? ctx.character
-      : ctx.allies.find(c => c.name === characterName)
+      : ctx.allies?.find(c => c.name === characterName)
     return (char?.sequence ?? 0) >= minSequence ? 1 : 0
   }
 }

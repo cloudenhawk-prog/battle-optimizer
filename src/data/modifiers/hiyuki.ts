@@ -1,6 +1,5 @@
 import type { DamageModifier } from '../../types/modifiers'
-import { always, atLeastOneStackOf } from '../../utils/conditions/damageModifierConditions'
-import { hiyuki_sequence } from '../characters/hiyuki'
+import { always, atLeastOneStackOf, ownerAtLeast } from '../../utils/conditions/damageModifierConditions'
 
 // ========== Snow Rust ========================================================================================================
 
@@ -58,7 +57,7 @@ export const snow_rust_2_s6_self: DamageModifier = {
   color: '#dbe9ff',
   characterStats: { critDamage: 0.25 },
   condition: (ctx) => {
-    if (hiyuki_sequence < 6) return 0
+    if (!ownerAtLeast('Hiyuki', 6)(ctx)) return 0
     const snowRust = ctx.current.charactersEnergies['Hiyuki']?.snow_rust ?? 0
     return snowRust >= 2 ? 1 : 0
   },
@@ -78,7 +77,7 @@ export const snow_rust_2_s6_team: DamageModifier = {
   color: '#dbe9ff',
   characterStats: { glacioChafeBonusDMG: 0.40 },
   condition: (ctx) => {
-    if (hiyuki_sequence < 6) return 0
+    if (!ownerAtLeast('Hiyuki', 6)(ctx)) return 0
     const snowRust = ctx.current.charactersEnergies['Hiyuki']?.snow_rust ?? 0
     return snowRust >= 2 ? 1 : 0
   },
@@ -98,7 +97,7 @@ export const snow_rust_3_s6_team: DamageModifier = {
   color: '#dbe9ff',
   characterStats: { glacioChafeTotalMultiplierDMG: 0.25 },
   condition: (ctx) => {
-    if (hiyuki_sequence < 6) return 0
+    if (!ownerAtLeast('Hiyuki', 6)(ctx)) return 0
     const snowRust = ctx.current.charactersEnergies['Hiyuki']?.snow_rust ?? 0
     return snowRust >= 3 ? 1 : 0
   },
