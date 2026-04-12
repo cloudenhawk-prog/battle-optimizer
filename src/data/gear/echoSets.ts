@@ -158,7 +158,7 @@ export const echoSetRegistry: Readonly<Record<string, EchoSet>> = {
                 characterStats: { critRate: 0.25 },
                 condition: always(),
                 targetStrategy: 'self',
-                durationStrategy: { type: 'limited', timeDuration: 30 },
+                durationStrategy: { type: 'limited', timeDuration: 6 },
                 stackingStrategy: { maxStacks: 1, resetTimerOnApplication: true, stacksRemovedEachTime: 1 },
                 activationCondition: (ctx) => ctx.modifiersInAction.some(
                   mia => mia.modifier.source === 'Wishes of Quiet Snowfall: Snowfall'
@@ -186,7 +186,7 @@ export const echoSetRegistry: Readonly<Record<string, EchoSet>> = {
                 characterStats: { glacioBonusDMG: 0.25 },
                 condition: always(),
                 targetStrategy: 'nextSwap',
-                durationStrategy: { type: 'limited', timeDuration: 30 },
+                durationStrategy: { type: 'limited', timeDuration: 15 },
                 stackingStrategy: { maxStacks: 1, resetTimerOnApplication: true, stacksRemovedEachTime: 1 },
                 activationCondition: (ctx) => ctx.modifiersInAction.some(
                   mia => mia.modifier.source === 'Wishes of Quiet Snowfall: Snowfall'

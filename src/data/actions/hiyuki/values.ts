@@ -123,12 +123,14 @@ const foreclaimed_skill_1_multiplier = (4 * 66.01) / 100
 const foreclaimed_skill_1_energy = 4 * 2.6
 const foreclaimed_skill_1_concerto = 4 * 0.75
 const foreclaimed_skill_1_offtune = 4 * 0.133
+const foreclaimed_skill_1_frostheart = 75
 
 // Foreclaimed Skill 2
 const foreclaimed_skill_2_multiplier = (4 * 64.02 + 64.02) / 100
 const foreclaimed_skill_2_energy = 4 * 2.17 + 2.17
 const foreclaimed_skill_2_concerto = 4 * 0.73 + 0.73
 const foreclaimed_skill_2_offtune = 4 * 0.129 + 0.129
+const foreclaimed_skill_2_frostheart = 75
 
 // Foreclaimed Enhanced Heavy Attack
 const foreclaimed_enhanced_heavy_multiplier = (8 * 15.41 + 493.05) / 100
@@ -171,8 +173,8 @@ export {
   foreclaimed_MA3_multiplier, foreclaimed_MA3_energy, foreclaimed_MA3_concerto, foreclaimed_MA3_stack, foreclaimed_MA3_offtune, foreclaimed_MA3_frostheart,
 
   // Foreclaimed Self: Skills
-  foreclaimed_skill_1_multiplier, foreclaimed_skill_1_energy, foreclaimed_skill_1_concerto, foreclaimed_skill_1_offtune, 
-  foreclaimed_skill_2_multiplier, foreclaimed_skill_2_energy, foreclaimed_skill_2_concerto, foreclaimed_skill_2_offtune,
+  foreclaimed_skill_1_multiplier, foreclaimed_skill_1_energy, foreclaimed_skill_1_concerto, foreclaimed_skill_1_offtune, foreclaimed_skill_1_frostheart,
+  foreclaimed_skill_2_multiplier, foreclaimed_skill_2_energy, foreclaimed_skill_2_concerto, foreclaimed_skill_2_offtune, foreclaimed_skill_2_frostheart,
 
   // Foreclaimed Self: Enhanced Heavy Attack
   foreclaimed_enhanced_heavy_multiplier, foreclaimed_enhanced_heavy_energy, foreclaimed_enhanced_heavy_concerto, foreclaimed_enhanced_heavy_snowforged_blade, foreclaimed_enhanced_heavy_offtune,

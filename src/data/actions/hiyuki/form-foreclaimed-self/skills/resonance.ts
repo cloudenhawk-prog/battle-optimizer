@@ -17,7 +17,8 @@ const hiyuki_foreclaimed_skill_1: Action = {
   maxStacks: 2,
   energyGenerated: [
     { energyType: 'energy', amount: values.foreclaimed_skill_1_energy, share: 0.5, scalingStat: 'energyPercent' },
-    { energyType: 'concerto', amount: values.foreclaimed_skill_1_concerto, share: 0 }
+    { energyType: 'concerto', amount: values.foreclaimed_skill_1_concerto, share: 0 },
+    { energyType: 'frostheart', amount: values.foreclaimed_skill_1_frostheart, share: 0 }
   ],
   energyCost: [],
   statusModifications: [],
@@ -75,7 +76,8 @@ const hiyuki_foreclaimed_skill_1_cancel_with_swap: Action = {
   maxStacks: 2,
   energyGenerated: [
     { energyType: 'energy', amount: values.foreclaimed_skill_1_energy, share: 0.5, scalingStat: 'energyPercent' },
-    { energyType: 'concerto', amount: values.foreclaimed_skill_1_concerto, share: 0 }
+    { energyType: 'concerto', amount: values.foreclaimed_skill_1_concerto, share: 0 },
+    { energyType: 'frostheart', amount: values.foreclaimed_skill_1_frostheart, share: 0 }
   ],
   energyCost: [],
   statusModifications: [],
@@ -138,7 +140,8 @@ const hiyuki_foreclaimed_skill_2: Action = {
   maxStacks: 2,
   energyGenerated: [
     { energyType: 'energy', amount: values.foreclaimed_skill_2_energy, share: 0.5, scalingStat: 'energyPercent' },
-    { energyType: 'concerto', amount: values.foreclaimed_skill_2_concerto, share: 0 }
+    { energyType: 'concerto', amount: values.foreclaimed_skill_2_concerto, share: 0 },
+    { energyType: 'frostheart', amount: values.foreclaimed_skill_2_frostheart, share: 0 }
   ],
   energyCost: [],
   statusModifications: [],
@@ -196,7 +199,8 @@ const hiyuki_foreclaimed_skill_2_cancel_with_swap: Action = {
   maxStacks: 2,
   energyGenerated: [
     { energyType: 'energy', amount: values.foreclaimed_skill_2_energy, share: 0.5, scalingStat: 'energyPercent' },
-    { energyType: 'concerto', amount: values.foreclaimed_skill_2_concerto, share: 0 }
+    { energyType: 'concerto', amount: values.foreclaimed_skill_2_concerto, share: 0 },
+    { energyType: 'frostheart', amount: values.foreclaimed_skill_2_frostheart, share: 0 }
   ],
   energyCost: [],
   statusModifications: [],
