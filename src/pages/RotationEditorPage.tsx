@@ -19,8 +19,6 @@ export default function RotationEditorPage() {
   const allColumns = flattenTableColumns(tableConfig)
   const [columnVisibility, setColumnVisibility] = useState(() => Object.fromEntries(allColumns.map(col => [col.key, true])))
   const [resolvedCharacters, setResolvedCharacters] = useState<ResolvedCharacter[]>(characters)
-  // Incrementing this key forces RotationEditor to remount, resetting all timeline state.
-  const [timelineKey, setTimelineKey] = useState(0)
   const [gearResetKey, setGearResetKey] = useState(0)
   const [topbarVisible, setTopbarVisible] = useState(true)
 
@@ -63,7 +61,7 @@ export default function RotationEditorPage() {
       </button>
       {topbarVisible && <Topbar tableConfig={tableConfig} allColumns={allColumns} columnVisibility={columnVisibility} setColumnVisibility={setColumnVisibility} />}
 
-      <RotationEditor key={timelineKey} gearResetKey={gearResetKey} charactersInBattle={resolvedCharacters} enemy={enemies[0]} tableConfig={tableConfig} columnVisibility={columnVisibility} setColumnVisibility={setColumnVisibility} onGearChange={handleGearChange} onSequenceChange={handleSequenceChange} settings={settings} />
+      <RotationEditor gearResetKey={gearResetKey} charactersInBattle={resolvedCharacters} enemy={enemies[0]} tableConfig={tableConfig} columnVisibility={columnVisibility} setColumnVisibility={setColumnVisibility} onGearChange={handleGearChange} onSequenceChange={handleSequenceChange} settings={settings} />
     </div>
   )
 }

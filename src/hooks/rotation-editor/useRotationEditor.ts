@@ -5,7 +5,7 @@ import type { ResolvedCharacter } from '../../types/character'
 import type { TableConfig, GlobalColumns } from '../../types/tableDefinitions'
 import type { Enemy } from '../../types/enemy'
 import type { Settings } from '../useSettings'
-import { useState, useEffect } from 'react'
+import { useState } from 'react'
 import type { DamageEvent } from '../../types/events'
 
 // ========== Hook: useRotationEditor ==========================================================================================
@@ -22,11 +22,12 @@ export function useRotationEditor({ charactersInBattle, tableConfig, enemy, gear
   const [damageEvents, setDamageEvents] = useState<DamageEvent[]>([])
   const { snapshots, setSnapshots, resetTimeline } = useSnapshots({ charactersInBattle, tableConfig, settings })
 
-  useEffect(() => {
-    if (gearResetKey === 0) return
+  const [prevGearResetKey, setPrevGearResetKey] = useState(gearResetKey)
+  if (prevGearResetKey !== gearResetKey) {
+    setPrevGearResetKey(gearResetKey)
     resetTimeline()
     setDamageEvents([])
-  }, [gearResetKey])
+  }
 
   const charactersMap: Record<string, ResolvedCharacter> = Object.fromEntries(charactersInBattle.map(c => [c.name, c]))
   const characterColumnsMap: Record<string, string[]> = Object.fromEntries(charactersInBattle.map(c => [c.name, Object.keys(c.maxEnergies)]))

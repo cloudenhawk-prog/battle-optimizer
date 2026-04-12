@@ -19,8 +19,6 @@ function makeEvent(
   buffs: { key: string; owner: string; value: number }[],
   baseDmg: number,
 ): DamageEvent {
-  // All buff keys (used to compute full damage with all buffs)
-  const allKeys = new Set(buffs.map(b => b.key))
   const fullDmg = buffs.reduce((acc, b) => acc * (1 + b.value), baseDmg)
 
   const contributions: DamageEvent['contributions'] = {}

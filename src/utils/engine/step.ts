@@ -353,7 +353,8 @@ type AutocastResult = {
  * is actually castable in the current state; otherwise the chain stops.
  */
 export function autocastFollowUpChain(params: AutocastParams): AutocastResult {
-  let { snapshots, resolvedSnapshotId, maxDepth, ...rest } = params
+  let { snapshots, resolvedSnapshotId } = params
+  const { maxDepth, ...rest } = params
   let { negativeStatusesInAction, modifiersInAction, coordinatedAttacksInAction } = rest
   const allDamageEvents: DamageEvent[] = []
 
