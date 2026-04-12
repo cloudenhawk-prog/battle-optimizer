@@ -6,7 +6,7 @@ export const enemies: Enemy[] = [
   {
     name: 'Birdy',
     stats: {
-      level: 85,
+      level: 100, // Bird is level 85
       aeroRES: 0.1,
       spectroRES: 0.1,
       havocRES: 0.4,

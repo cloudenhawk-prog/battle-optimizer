@@ -22,16 +22,19 @@ type BodyRowProps = {
   isNewRow?: boolean
   columnVisibility: ColumnVisibility
   onRowClick?: (snapshot: Snapshot) => void
+  sandboxMode?: boolean
+  rowDeletionMode?: boolean
+  onDeleteRow?: (snapshotId: number) => void
 }
 
-export function BodyRow({ snapshot, previousSnapshot, charactersInBattle, tableConfig, onSelectCharacter, onSelectAction, isLastRow = false, isNewRow = false, columnVisibility, onRowClick }: BodyRowProps) {
+export function BodyRow({ snapshot, previousSnapshot, charactersInBattle, tableConfig, onSelectCharacter, onSelectAction, isLastRow = false, isNewRow = false, columnVisibility, onRowClick, sandboxMode = false, rowDeletionMode = false, onDeleteRow }: BodyRowProps) {
   const snapshotId = Number(snapshot.id)
   const character = snapshot.character ?? ''
   const action = snapshot.action ?? ''
   const isLocked = !isLastRow && !!character && !!action
 
   const lockedCharacters = new Set<string>()
-  if (previousSnapshot) {
+  if (!sandboxMode && previousSnapshot) {
     const prevChar = previousSnapshot.character ?? ''
     if (prevChar && isSwapRequiredLocked(previousSnapshot, prevChar)) {
       lockedCharacters.add(prevChar)
@@ -80,7 +83,20 @@ export function BodyRow({ snapshot, previousSnapshot, charactersInBattle, tableC
         onRowClick?.(snapshot)
       }}>
       {/* Character select */}
-      <td className="tableCellBody">
+      <td className={`tableCellBody${rowDeletionMode ? ' tableCellHasDeleteBtn' : ''}`}>
+        {rowDeletionMode && character && action && (
+          <button
+            type="button"
+            className="deleteRowButton"
+            title="Delete this row and everything after it"
+            onClick={e => {
+              e.stopPropagation()
+              onDeleteRow?.(snapshotId)
+            }}
+          >
+            <img alt="Delete" src="/assets/ui/close.png" />
+          </button>
+        )}
         {isLocked ? (
           <div className="lockedSelectorText">{character}</div>
         ) : (
@@ -110,6 +126,7 @@ export function BodyRow({ snapshot, previousSnapshot, charactersInBattle, tableC
               onSelectAction(snapshotId, actionName)
             }}
             disabled={!character}
+            sandboxMode={sandboxMode}
           />
         )}
       </td>

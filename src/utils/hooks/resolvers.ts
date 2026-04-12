@@ -1,7 +1,6 @@
 import type { StepContext } from '../../types/stepContext'
 import type { CharacterStats, EnemyStats } from '../../types/stats'
 import type { ModifierInAction } from '../../types/modifiers'
-import type { Dispatch, SetStateAction } from 'react'
 import type { DamageEvent } from '../../types/events'
 import type { Snapshot } from '../../types/snapshot'
 import type { Action } from '../../types/action'
@@ -9,14 +8,15 @@ import type { ResolvedCharacter } from '../../types/character'
 import type { Enemy } from '../../types/enemy'
 import type { NegativeStatusInAction } from '../../types/negativeStatus'
 import type { CoordinatedAttackInAction } from '../../types/coordinatedAttack'
-import { calculateDamage } from '../../utils/calculators/damageCalculator'
+import { calculateDamage, evaluateDamageWithGroups } from '../../utils/calculators/damageCalculator'
 import { activateCoordinatedAttacks, processCoordinatedAttacks, updateCoordinatedAttackSnapshot } from './coordinatedAttackHelpers'
 import { getNegativeStatusStacks, processNegativeStatusStacks, updateNegativeStatusStacks } from './negativeStatusHelpers'
 import { getCharacterEnergyState, updateEnergyValue } from './energyHelpers'
 import { getDefaultFormName } from './formHelpers'
 import { updateModifiersForSwap, collectAllModifiers, activateModifiers, filterApplicableModifiers, applyStackMultiplier, updateModifiersForTime } from './modifierHelpers'
 import { updateModifierStacks } from './modifierStateHelpers'
-import { updateAllCharactersCooldowns, setActionOnCooldown, reduceCooldown } from './cooldownHelpers'
+import { updateAllCharactersCooldowns, setActionOnCooldown, reduceCooldown, getActionCooldownKey } from './cooldownHelpers'
+import type { SideEffect } from '../../types/sideEffect'
 
 // ========== Resolver 0: Build Step Context ==================================================================================
 
@@ -68,6 +68,8 @@ export function buildStepContext(snapshotId: number, current: Snapshot, prev: Sn
     aggregatedCharacterModifiers: {},
     aggregatedEnemyModifiers: {},
 
+    damageEvents: [],
+
     lastSwappedToCharacter,
 
     pendingEnergyCooldowns: [],
@@ -108,7 +110,7 @@ export function resolveDamageModifiers(ctx: StepContext) {
   const enemyModifiers = initializeEmptyEnemyStats()
 
   // Step 1: Collect all modifier blueprints from various sources
-  const allModifiers = collectAllModifiers(ctx.character, ctx.action, ctx.negativeStatusesInAction)
+  const allModifiers = collectAllModifiers(ctx.character, ctx.action, ctx.negativeStatusesInAction, ctx.allies)
 
   // Step 2: Activate new modifiers (convert limited ones to ModifierInAction, handle stacking)
   // Pass the cast duration as an offset so that limited modifier timers start from end-of-cast (ctx.toTime)
@@ -170,7 +172,7 @@ export function resolveDamageModifiers(ctx: StepContext) {
 
 // ========== Resolver 3: Damage ==============================================================================================
 
-export function resolveDamage(ctx: StepContext, setDamageEvents: Dispatch<SetStateAction<DamageEvent[]>>): void {
+export function resolveDamage(ctx: StepContext): void {
   const action = ctx.action
   const name = ctx.character.name
   const baseStats = ctx.character.stats
@@ -255,7 +257,14 @@ export function resolveDamage(ctx: StepContext, setDamageEvents: Dispatch<SetSta
     }
   }
 
-  setDamageEvents(prevEvents => [...prevEvents, damageEvent])
+  // Attach a re-evaluation closure so DataOverlay can recompute damage with a subset of active buffs
+  damageEvent.calcParams = {
+    reEvaluate: (activeGroupKeys) => evaluateDamageWithGroups(
+      { action, characterName: name, baseStats, damageModifiers, enemy, ctx },
+      snapshotId, ctx.fromTime, activeGroupKeys,
+    ),
+  }
+  ctx.damageEvents.push(damageEvent)
 
   const cumulativeDamage = prev.damage + average
   const dps = toTime > 0 ? cumulativeDamage / toTime : 0
@@ -272,15 +281,15 @@ export function resolveDamage(ctx: StepContext, setDamageEvents: Dispatch<SetSta
 
 // ========== Resolver 4: Side Effects And Statuses ===========================================================================
 
-export function resolveSideEffectsAndStatuses(ctx: StepContext, setDamageEvents: Dispatch<SetStateAction<DamageEvent[]>>): void {
+export function resolveSideEffectsAndStatuses(ctx: StepContext): void {
   // Aggregate all status modifications from both action and side effects
   const statusModifications = aggregateStatusModifications(ctx)
 
   // Side Effects Damage
-  helpSideEffectsDamage(ctx, setDamageEvents)
+  helpSideEffectsDamage(ctx)
 
   // Negative Statuses
-  helpNegativeStatuses(ctx, setDamageEvents, statusModifications)
+  helpNegativeStatuses(ctx, statusModifications)
 
   // Buff/Debuff modifier stack modifications (e.g. an action forcefully ending a buff)
   helpModifierStatusModifications(ctx, statusModifications)
@@ -418,17 +427,45 @@ function helpModifierStatusModifications(ctx: StepContext, statusModifications: 
   }
 }
 
-function helpSideEffectsDamage(ctx: StepContext, setDamageEvents: Dispatch<SetStateAction<DamageEvent[]>>): void {
-  const sideEffects = ctx.action.sideEffects
+function helpSideEffectsDamage(ctx: StepContext): void {
+  const sideEffects = ctx.action.sideEffects ?? []
 
-  if (!sideEffects || sideEffects.length === 0) {
-    return
+  // Collect character-level action triggers whose required tags all match and condition passes.
+  // Each trigger may fire more than once if fireCount is specified (e.g. once per application event).
+  const triggeredSideEffects: SideEffect[] = (ctx.character.actionTriggers ?? [])
+    .filter(trigger =>
+      trigger.requiredTags.every(tag => ctx.action.tags?.includes(tag)) &&
+      (!trigger.condition || trigger.condition(ctx))
+    )
+    .flatMap(trigger => {
+      const count = trigger.fireCount ? trigger.fireCount(ctx) : 1
+      return Array.from({ length: count }, () => trigger.sideEffect)
+    })
+
+  // Collect team-wide triggers from all characters (active + allies).
+  // Each fires with an owner-substituted context so ctx.character = trigger owner,
+  // ensuring correct dealer attribution and owner stats regardless of who is active.
+  type TeamFiring = { sideEffect: SideEffect; ownerCtx: StepContext }
+  const teamFirings: TeamFiring[] = []
+  for (const teamChar of [ctx.character, ...ctx.allies]) {
+    if (!teamChar.teamActionTriggers?.length) continue
+    const ownerCtx: StepContext = teamChar.name === ctx.character.name ? ctx : { ...ctx, character: teamChar }
+    for (const trigger of teamChar.teamActionTriggers) {
+      if (!trigger.requiredTags.every(tag => ctx.action.tags?.includes(tag))) continue
+      if (trigger.condition && !trigger.condition(ownerCtx)) continue
+      const count = trigger.fireCount ? trigger.fireCount(ownerCtx) : 1
+      for (let i = 0; i < count; i++) {
+        teamFirings.push({ sideEffect: trigger.sideEffect, ownerCtx })
+      }
+    }
   }
+
+  if (sideEffects.length === 0 && triggeredSideEffects.length === 0 && teamFirings.length === 0) return
 
   let totalSideEffectDamage = 0
   const damageEvents: DamageEvent[] = []
 
-  for (const sideEffect of sideEffects) {
+  for (const sideEffect of [...sideEffects, ...triggeredSideEffects]) {
     const damageEvent = sideEffect.damageDealt(ctx, sideEffect.name, ctx.fromTime)
     if (damageEvent.average > 0) {
       damageEvents.push(damageEvent)
@@ -436,17 +473,25 @@ function helpSideEffectsDamage(ctx: StepContext, setDamageEvents: Dispatch<SetSt
     }
   }
 
-  setDamageEvents(prevEvents => [...prevEvents, ...damageEvents])
+  for (const { sideEffect, ownerCtx } of teamFirings) {
+    const damageEvent = sideEffect.damageDealt(ownerCtx, sideEffect.name, ctx.fromTime)
+    if (damageEvent.average > 0) {
+      damageEvents.push(damageEvent)
+      totalSideEffectDamage += damageEvent.average
+    }
+  }
+
+  ctx.damageEvents.push(...damageEvents)
   ctx.current.damage += totalSideEffectDamage
 
   ctx.logs.push({
     resolver: 'resolveSideEffectsDamage',
     message: `Side effects damage resolved: +${totalSideEffectDamage} dmg`,
-    details: { sideEffectsCount: sideEffects.length, totalDamage: totalSideEffectDamage, damageEvents },
+    details: { sideEffectsCount: sideEffects.length + triggeredSideEffects.length + teamFirings.length, totalDamage: totalSideEffectDamage, damageEvents },
   })
 }
 
-export function helpNegativeStatuses(ctx: StepContext, setDamageEvents: Dispatch<SetStateAction<DamageEvent[]>>, statusModifications: any): void {
+export function helpNegativeStatuses(ctx: StepContext, statusModifications: any): void {
   const prev = ctx.prev
   const current = ctx.current
   const negativeStatusesInAction = ctx.negativeStatusesInAction
@@ -463,7 +508,7 @@ export function helpNegativeStatuses(ctx: StepContext, setDamageEvents: Dispatch
   const allDamageEvents = Object.values(damageEvents)
     .flat()
     .filter(event => event.average > 0)
-  setDamageEvents(prevEvents => [...prevEvents, ...allDamageEvents])
+  ctx.damageEvents.push(...allDamageEvents)
 
   // Calculate total damage from all events
   const totalDmgNegativeStatuses = allDamageEvents.reduce((sum, event) => sum + event.average, 0)
@@ -543,9 +588,9 @@ function helpHealProcModifiers(ctx: StepContext): void {
  * ctx.aggregatedCharacterModifiers are already populated. Runs before resolveResources so
  * that per-hit energy is stacked on top of the main action energy.
  */
-export function resolveCoordinatedAttacks(ctx: StepContext, setDamageEvents: Dispatch<SetStateAction<DamageEvent[]>>): void {
+export function resolveCoordinatedAttacks(ctx: StepContext): void {
   activateCoordinatedAttacks(ctx)
-  processCoordinatedAttacks(ctx, setDamageEvents)
+  processCoordinatedAttacks(ctx)
   updateCoordinatedAttackSnapshot(ctx)
 
   ctx.logs.push({
@@ -746,6 +791,68 @@ export function resolveCooldowns(ctx: StepContext): void {
   const allCharacters = [character, ...allies]
   current.charactersCooldowns = updateAllCharactersCooldowns(ctx.prev, allCharacters, elapsedTime)
 
+  // Carry forward stacks data from previous snapshot
+  current.charactersActionStacksConfig = {}
+  current.charactersActionStacks = {}
+  for (const char of allCharacters) {
+    const prevConfig = ctx.prev.charactersActionStacksConfig?.[char.name]
+    if (prevConfig) {
+      current.charactersActionStacksConfig[char.name] = { ...prevConfig }
+    }
+    const prevStacks = ctx.prev.charactersActionStacks?.[char.name]
+    if (prevStacks) {
+      current.charactersActionStacks[char.name] = { ...prevStacks }
+    }
+  }
+
+  // Regenerate stacks for any stacked actions whose timers expired this step
+  for (const char of allCharacters) {
+    const config = current.charactersActionStacksConfig?.[char.name]
+    if (!config) continue
+    for (const [key, stackConfig] of Object.entries(config)) {
+      const wasOnCooldown = (ctx.prev.charactersCooldowns?.[char.name]?.[key] ?? 0) > 0
+      const isNowOnCooldown = (current.charactersCooldowns[char.name]?.[key] ?? 0) > 0
+      if (!wasOnCooldown || isNowOnCooldown) continue // Didn't expire this step
+
+      const prevStackCount = ctx.prev.charactersActionStacks?.[char.name]?.[key] ?? stackConfig.max
+      const newStackCount = Math.min(stackConfig.max, prevStackCount + 1)
+
+      if (newStackCount >= stackConfig.max) {
+        // Reached max stacks: stop the timer, remove tracking entry (absent = max)
+        if (current.charactersActionStacks[char.name]) {
+          delete current.charactersActionStacks[char.name][key]
+        }
+      } else {
+        // Still below max: restart the timer and store the incremented count
+        current.charactersCooldowns[char.name] ??= {}
+        current.charactersCooldowns[char.name][key] = stackConfig.cooldown
+        current.charactersActionStacks[char.name] ??= {}
+        current.charactersActionStacks[char.name][key] = newStackCount
+      }
+    }
+  }
+
+  // If the cast action uses stacks: store its config and consume one stack
+  if (action.maxStacks && action.maxStacks > 1) {
+    const cooldownKey = getActionCooldownKey(action)
+    const charName = character.name
+
+    current.charactersActionStacksConfig[charName] ??= {}
+    current.charactersActionStacksConfig[charName][cooldownKey] = {
+      max: action.maxStacks,
+      cooldown: action.cooldown,
+    }
+
+    // Read stacks from post-regeneration state (current may have been updated above)
+    const stacksAfterRegen = current.charactersActionStacks?.[charName]?.[cooldownKey]
+      ?? ctx.prev.charactersActionStacks?.[charName]?.[cooldownKey]
+      ?? action.maxStacks // absent entry = at max stacks
+    const newStackCount = Math.max(0, stacksAfterRegen - 1)
+
+    current.charactersActionStacks[charName] ??= {}
+    current.charactersActionStacks[charName][cooldownKey] = newStackCount
+  }
+
   // Set the used action on cooldown
   current.charactersCooldowns[character.name] = setActionOnCooldown(current, character.name, action)
 
@@ -798,7 +905,26 @@ export function resolveCastState(ctx: StepContext): void {
   // Determine the new resolved position for the active character.
   // For swap-cancel variants, swapOutState overrides endState (it's the position the character
   // lands in after being swapped out mid-action). Falls back to endState for all other actions.
-  const prevPosition: 'GROUND' | 'AIR' = ctx.prev.charactersPositions?.[charName] ?? 'GROUND'
+  // Position source priority:
+  //   1. Swapping in while own persistence window is still active → use own stored position
+  //      (character lingered on-field after a swap-cancel, their position was preserved)
+  //   2. Swapping in normally → inherit the outgoing character's position
+  //      (incoming character lands wherever the field currently is)
+  //   3. Same character continuing → use own stored position
+  const storedPosition = ctx.prev.charactersPositions?.[charName]
+  const prevCharName = ctx.prev.character
+  const isSwappingIn = !!prevCharName && prevCharName !== charName
+  const persistentUntil = ctx.prev.charactersPersistentUntil?.[charName] ?? 0
+  const isLingeringActive = isSwappingIn && persistentUntil > ctx.fromTime
+
+  // Use this character's own stored position only while their persistence window is still
+  // active (i.e. they lingered on-field after a swap-cancel). In all other cases inherit
+  // from the outgoing character — the incoming character lands wherever the field currently is.
+  const prevPosition: 'GROUND' | 'AIR' = isLingeringActive
+    ? (storedPosition ?? 'GROUND')
+    : isSwappingIn
+      ? (ctx.prev.charactersPositions?.[prevCharName] ?? 'GROUND')
+      : (storedPosition ?? 'GROUND')
   const rawEndState = ctx.action.castConditions.swapOutState ?? ctx.action.castConditions.endState
   const newPosition: 'GROUND' | 'AIR' = rawEndState === 'PRESERVE' || rawEndState === 'ANY' ? prevPosition : (rawEndState as 'GROUND' | 'AIR')
 
@@ -866,11 +992,19 @@ export function resolveCastState(ctx: StepContext): void {
 
   // Handle swap cooldown: when a different character takes over, the previous character
   // cannot be swapped back in for 1 second (measured from the start of the current action).
-  const prevCharName = ctx.prev.character
   const swapOccurred = !!prevCharName && prevCharName !== charName
   ctx.current.charactersSwapCooldownUntil = {
     ...(ctx.prev.charactersSwapCooldownUntil ?? {}),
     ...(swapOccurred ? { [prevCharName!]: ctx.fromTime + 1 } : {}),
+  }
+
+  // Track when each character goes off-field so off-field duration triggers can fire.
+  // On swap: the leaving character records the absolute time they went off-field.
+  // The arriving character is cleared to null (= currently on-field).
+  // null means "on-field / no off-field tracking" — 0 is a valid timestamp (start of rotation).
+  ctx.current.charactersOffFieldSince = {
+    ...(ctx.prev.charactersOffFieldSince ?? {}),
+    ...(swapOccurred ? { [prevCharName!]: ctx.fromTime, [charName]: null } : {}),
   }
 
   const swapCooldownUntil = swapOccurred && prevCharName ? ctx.current.charactersSwapCooldownUntil[prevCharName] : undefined
@@ -964,6 +1098,120 @@ export function resolveCastState(ctx: StepContext): void {
     message: `Cast state resolved for ${charName}: position=${newPosition}, persistentUntil=${ctx.current.charactersPersistentUntil[charName]}`,
     details: { prevPosition, rawEndState, newPosition, persistenceTime, swapOccurred, swapCooldownUntil },
   })
+}
+
+// ========== Resolver: Off-Field Triggers ====================================================================================
+
+/**
+ * Fires once-per-off-field-stretch when a character's continuous off-field duration crosses
+ * the threshold declared on `Character.offFieldTriggers`.
+ *
+ * Detection mirrors `resolveResourceMilestones`: the trigger fires exactly when
+ *   prevOffFieldDuration < threshold ≤ currOffFieldDuration
+ * so it fires at most once per continuous off-field stretch regardless of step length.
+ *
+ * Must run AFTER `resolveResources` (so energies are already written to `ctx.current`)
+ * and BEFORE `resolveCastState` (which updates `charactersOffFieldSince` for the NEXT step).
+ * The off-field-since timestamps used here come from `ctx.prev`.
+ *
+ * `null` in `charactersOffFieldSince` means the character is currently on-field or was never
+ * swapped out — NOT "went off-field at t=0". Use null as the sentinel, not 0.
+ */
+export function resolveOffFieldTriggers(ctx: StepContext): void {
+  const allCharacters = [ctx.character, ...ctx.allies]
+
+  for (const char of allCharacters) {
+    if (!char.offFieldTriggers || char.offFieldTriggers.length === 0) continue
+
+    const offFieldSinceRaw = ctx.prev.charactersOffFieldSince?.[char.name]
+    // null  = explicitly on-field (resolveCastState writes null when a character swaps in)
+    // absent + active character = always been on-field, never swapped out → skip
+    // absent + ally = never came on-field → treat as off-field since t=0
+    if (offFieldSinceRaw === null || (offFieldSinceRaw === undefined && char.name === ctx.character.name)) {
+      continue
+    }
+    const offFieldSince = offFieldSinceRaw ?? 0
+
+    const prevOffFieldDuration = ctx.fromTime - offFieldSince
+    const currOffFieldDuration = ctx.toTime - offFieldSince
+
+    for (const trigger of char.offFieldTriggers) {
+      const threshold = trigger.minOffFieldDuration
+      // Fire once: the first step whose window crosses the threshold
+      if (prevOffFieldDuration >= threshold) {
+        continue
+      }
+      if (currOffFieldDuration < threshold) {
+        continue
+      }
+
+      if (trigger.condition && !trigger.condition(ctx.current, char.name, char)) {
+        continue
+      }
+
+      const charEnergies = { ...(ctx.current.charactersEnergies?.[char.name] ?? {}) }
+      const maxEnergies = char.maxEnergies
+
+      const restoredParts: string[] = []
+      for (const [energyType, amount] of Object.entries(trigger.energyRestore) as [keyof typeof trigger.energyRestore, number][]) {
+        const maxValue = maxEnergies[energyType] ?? Infinity
+        const prev = charEnergies[energyType] ?? 0
+        const next = Math.min(prev + amount, maxValue)
+        charEnergies[energyType] = next
+        if (next > prev) {
+          restoredParts.push(`${energyType} +${next - prev}`)
+        }
+      }
+
+      ctx.current.charactersEnergies = {
+        ...ctx.current.charactersEnergies,
+        [char.name]: charEnergies,
+      }
+
+      // Restore a specific number of charges for specified action group names
+      if (trigger.chargesRestore && trigger.chargesRestore.length > 0) {
+        const charStacks = { ...(ctx.current.charactersActionStacks?.[char.name] ?? {}) }
+        const charCooldowns = { ...(ctx.current.charactersCooldowns?.[char.name] ?? {}) }
+        const stacksConfig = ctx.current.charactersActionStacksConfig?.[char.name] ?? {}
+        for (const { groupName, amount } of trigger.chargesRestore) {
+          const maxStacks = stacksConfig[groupName]?.max ?? Infinity
+          // Absent entry means already at max; treat as maxStacks for the addition
+          const current = charStacks[groupName] ?? maxStacks
+          const restored = Math.min(current + amount, maxStacks)
+          if (restored >= maxStacks) {
+            // At max: absent entry is the canonical representation; also clear the timer
+            delete charStacks[groupName]
+            delete charCooldowns[groupName]
+          } else {
+            charStacks[groupName] = restored
+          }
+          restoredParts.push(`${groupName} charges +${restored - current}`)
+        }
+        ctx.current.charactersActionStacks = {
+          ...ctx.current.charactersActionStacks,
+          [char.name]: charStacks,
+        }
+        ctx.current.charactersCooldowns = {
+          ...ctx.current.charactersCooldowns,
+          [char.name]: charCooldowns,
+        }
+      }
+
+      // Record the event so DataOverlay and other readers can surface it with a source label
+      const description = trigger.description ?? `Off-field ≥${threshold}s: ${restoredParts.join(', ')}`
+      if (!ctx.current.offFieldTriggerEvents) ctx.current.offFieldTriggerEvents = {}
+      ctx.current.offFieldTriggerEvents[char.name] = [
+        ...(ctx.current.offFieldTriggerEvents[char.name] ?? []),
+        description,
+      ]
+
+      ctx.logs.push({
+        resolver: 'resolveOffFieldTriggers',
+        message: `[${char.name}] Off-field trigger fired: off-field for ${currOffFieldDuration.toFixed(2)}s >= ${threshold}s`,
+        details: { description, energyRestore: trigger.energyRestore, offFieldSince, fromTime: ctx.fromTime, toTime: ctx.toTime, restoredParts },
+      })
+    }
+  }
 }
 
 // ========== Internal Helpers ================================================================================================

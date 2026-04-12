@@ -1,6 +1,6 @@
 import { createPortal } from 'react-dom'
 import { useState, useId } from 'react'
-import { motion, AnimatePresence } from 'framer-motion'
+import { motion } from 'framer-motion'
 import '../../styles/rotation-editor/SummaryOverlay.css'
 import { negativeStatuses } from '../../data/negativeStatuses'
 import type { Snapshot } from '../../types/snapshot'
@@ -9,6 +9,7 @@ import type { Character } from '../../types/character'
 import type { ElementType } from '../../types/baseTypes'
 import type { CharacterStats } from '../../types/stats'
 import type { DamageModifier } from '../../types/modifiers'
+import { splitEventByCharacter } from '../../utils/calculators/contributionAttribution'
 
 // ========== Element Themes ==================================================================================================
 
@@ -236,7 +237,7 @@ function computeSummaryData(
 
 // ========== Action Breakdown Data ==========================================================================================
 
-type ActionBreakdownEntry = { actionName: string; damage: number }
+type ActionBreakdownEntry = { actionName: string; damage: number; count: number }
 
 /** Per-character: action name → total damage (direct + CA, no passives). */
 function computeActionBreakdowns(
@@ -246,6 +247,7 @@ function computeActionBreakdowns(
   const result = new Map<string, ActionBreakdownEntry[]>()
   for (const char of characters) {
     const byAction = new Map<string, number>()
+    const byActionSnapshots = new Map<string, Set<number>>()
     for (const e of damageEvents) {
       const attributedToChar = e.dealer === char.name || e.dealer.startsWith(char.name + ': ')
       if (!attributedToChar) continue
@@ -254,11 +256,13 @@ function computeActionBreakdowns(
       // skip events where NEGATIVE_STATUS is the sole dmgType.
       if (e.dmgTypes.every(t => t === 'NEGATIVE_STATUS') && e.dealer === char.name) continue
       byAction.set(e.actionName, (byAction.get(e.actionName) ?? 0) + e.average)
+      if (!byActionSnapshots.has(e.actionName)) byActionSnapshots.set(e.actionName, new Set())
+      byActionSnapshots.get(e.actionName)!.add(e.snapshotId)
     }
     result.set(
       char.name,
       Array.from(byAction.entries())
-        .map(([actionName, damage]) => ({ actionName, damage }))
+        .map(([actionName, damage]) => ({ actionName, damage, count: byActionSnapshots.get(actionName)?.size ?? 0 }))
         .sort((a, b) => b.damage - a.damage),
     )
   }
@@ -303,15 +307,8 @@ function buildModifierInfoMap(characters: Character[]): Map<string, ModifierDisp
 
 /**
  * Computes per-character attributed damage for the Contribution pie (Pie 2).
- *
- * For each damage event the damage is split between the caster and any external buffers:
- *   - Contributions whose ownerCharacter matches the caster stay with the caster.
- *   - Contributions with a different ownerCharacter are attributed to that buffer character.
- *   - The caster's share = event.average − sum(external contributions), clamped to 0.
- *
- * Because buff contributions are calculated as independent deltas in a multiplicative formula
- * they can sum to more than the event total. In that case the totals are scaled proportionally
- * so the attributed values always sum exactly to event.average.
+ * See splitEventByCharacter (contributionAttribution.ts) for the Shapley algorithm details.
+ * Efficiency: Σ attributedDamage = grandTotal exactly.
  */
 function computeContributionData(
   characters: Character[],
@@ -328,30 +325,24 @@ function computeContributionData(
 
   for (const event of damageEvents) {
     const casterBase = getBaseChar(event.dealer)
-
-    const externalByOwner: Record<string, number> = {}
-    let sumExternal = 0
-
-    for (const contrib of Object.values(event.contributions)) {
-      // isInherent contributions belong to the caster's own action — skip
-      // isSelf contributions (targetStrategy='self') are personal buffs — count as base damage
-      // null/undefined ownerCharacter → unattributable → treat as caster's
-      const owner = contrib.ownerCharacter
-      if (!owner || owner === casterBase || contrib.isInherent || contrib.isSelf) continue
-      externalByOwner[owner] = (externalByOwner[owner] ?? 0) + contrib.average_damage_contributed
-      sumExternal += contrib.average_damage_contributed
-    }
-
-    const casterShare = Math.max(0, event.average - sumExternal)
-    const totalAssigned = casterShare + sumExternal
-    // Scale down if external contributions overcounted (multiplicative interaction surplus)
-    const scale = totalAssigned > event.average ? event.average / totalAssigned : 1
-
-    attribution[casterBase] = (attribution[casterBase] ?? 0) + casterShare * scale
-    for (const [owner, amt] of Object.entries(externalByOwner)) {
-      attribution[owner] = (attribution[owner] ?? 0) + amt * scale
+    const { casterShare, externalByOwner } = splitEventByCharacter(event, casterBase)
+    attribution[casterBase] = (attribution[casterBase] ?? 0) + casterShare
+    for (const [owner, phi] of externalByOwner) {
+      attribution[owner] = (attribution[owner] ?? 0) + phi
     }
   }
+
+  // Consolidate all non-character keys (e.g. passive negative status dealers) into a
+  // single '__OTHER__' player so it appears as a first-class Pie 2 slice.
+  const charNames = new Set(characters.map(c => c.name))
+  let otherTotal = 0
+  for (const key of Object.keys(attribution)) {
+    if (!charNames.has(key)) {
+      otherTotal += attribution[key]
+      delete attribution[key]
+    }
+  }
+  if (otherTotal > 0) attribution['__OTHER__'] = otherTotal
 
   return Object.entries(attribution)
     .filter(([, v]) => v > 0)
@@ -511,48 +502,11 @@ function computeContributionOrigin(
     if (!charTotals.has(casterBase)) charTotals.set(casterBase, { self: 0, external: new Map() })
     const entry = charTotals.get(casterBase)!
 
-    const externalByOwner: Record<string, number> = {}
-    let sumExternal = 0
-    for (const contrib of Object.values(event.contributions)) {
-      const owner = contrib.ownerCharacter
-      if (!owner || owner === casterBase || contrib.isInherent || contrib.isSelf) continue
-      externalByOwner[owner] = (externalByOwner[owner] ?? 0) + contrib.average_damage_contributed
-      sumExternal += contrib.average_damage_contributed
+    const { casterShare, externalByOwner } = splitEventByCharacter(event, casterBase)
+    entry.self += casterShare
+    for (const [owner, phi] of externalByOwner) {
+      entry.external.set(owner, (entry.external.get(owner) ?? 0) + phi)
     }
-
-    const casterShare = Math.max(0, event.average - sumExternal)
-    const totalAssigned = casterShare + sumExternal
-    const scale = totalAssigned > event.average ? event.average / totalAssigned : 1
-
-    entry.self += casterShare * scale
-    for (const [owner, amt] of Object.entries(externalByOwner)) {
-      entry.external.set(owner, (entry.external.get(owner) ?? 0) + amt * scale)
-    }
-  }
-
-  // Debug logging: contribution origin breakdown per character
-  for (const [charName, { self, external }] of charTotals.entries()) {
-    if (!charMap.has(charName)) continue
-    const total = self + Array.from(external.values()).reduce((s, v) => s + v, 0)
-    if (total <= 0) continue
-    const selfPct = (self / total) * 100
-    console.group(`${charName}:`)
-    console.log(`- Self ${selfPct.toFixed(1)}%:`)
-    console.log(`   - Base damage (caster's own share, after scaling): ${self.toFixed(2)}`)
-    console.log(`   - Total attributed damage: ${total.toFixed(2)}`)
-    console.log(`   - Derivation: ${self.toFixed(2)} / ${total.toFixed(2)} = ${selfPct.toFixed(1)}%`)
-    for (const [ownerName, amount] of Array.from(external.entries()).sort((a, b) => b[1] - a[1])) {
-      const pct = (amount / total) * 100
-      const amplification = total / self
-      const pctBoostOnBase = (amount / self) * 100
-      console.log(`- ${pct.toFixed(1)}% from ${ownerName}:`)
-      console.log(`   - ${ownerName}'s attributed contribution: ${amount.toFixed(2)}`)
-      console.log(`   - Total attributed damage: ${total.toFixed(2)}`)
-      console.log(`   - Derivation: ${amount.toFixed(2)} / ${total.toFixed(2)} = ${pct.toFixed(1)}%`)
-      console.log(`   - Amplification factor (total / self): ${total.toFixed(2)} / ${self.toFixed(2)} = ${amplification.toFixed(6)} → ${((amplification - 1) * 100).toFixed(1)}% additional damage on top of base`)
-      console.log(`   - Same result: contribution / self = ${amount.toFixed(2)} / ${self.toFixed(2)} = ${pctBoostOnBase.toFixed(1)}% of base → attributed as ${pct.toFixed(1)}% of total`)
-    }
-    console.groupEnd()
   }
 
   return Array.from(charTotals.entries())
@@ -694,67 +648,47 @@ type LeftPanelProps = {
 function LeftPanel({ characterSummaries, charColorMap, energyFlow }: LeftPanelProps) {
   const activeChars = characterSummaries.filter(c => c.fieldTime > 0)
   const totalFieldTime = activeChars.reduce((s, c) => s + c.fieldTime, 0)
-  const maxOnFieldDps = Math.max(
-    ...activeChars.map(c => (c.directDamage + c.caDamage) / c.fieldTime),
-    1,
-  )
+  const maxOnFieldDps = Math.max(...activeChars.map(c => (c.directDamage + c.caDamage) / c.fieldTime), 1)
+  const maxEnergyPerSec = Math.max(...energyFlow.map(e => e.energyGenPerSecond), 1)
 
   return (
     <div className="summaryLeftPanel">
 
-      {/* ── Field Time & on-field DPS ── */}
+      {/* ── Field Time & Field DPS ── */}
       <div className="summaryLeftHalf">
-        <PanelHeader label="FIELD TIME" accent="purple" />
-        <div className="summaryFieldTimeRows">
+        <PanelHeader label="FIELD TIME & DPS" accent="purple" />
+        <div className="summaryStatCards">
           {activeChars.map(c => {
             const pct = totalFieldTime > 0 ? (c.fieldTime / totalFieldTime) * 100 : 0
             const onFieldDps = (c.directDamage + c.caDamage) / c.fieldTime
             const dpsPct = (onFieldDps / maxOnFieldDps) * 100
             const theme = charColorMap.get(c.name) ?? getElementColor(c.element)
             return (
-              <div key={c.name} className="summaryFieldTimeBlock">
-                <span
-                  className="summaryFieldTimeBlockName"
-                  style={{ color: theme.primary, textShadow: `0 0 10px ${theme.glow}` }}
-                >
-                  {c.name}
-                </span>
-                <div className="summaryFieldTimeSubrows">
-                  {/* Field time row */}
-                  <div className="summaryFieldTimeSubrow">
-                    <span className="summaryFieldTimeSubrowLabel">TIME</span>
-                    <div className="summaryFieldTimeBar">
-                      <div
-                        className="summaryFieldTimeBarFill"
-                        style={{ width: `${pct}%`, background: theme.primary, boxShadow: `0 0 6px ${theme.glow}` }}
-                      />
-                    </div>
-                    <span className="summaryFieldTimePct">{pct.toFixed(0)}%</span>
-                    <span className="summaryFieldTimeVal">{formatTime(c.fieldTime)}</span>
+              <div
+                key={c.name}
+                className="summaryStatCard"
+                style={{ '--card-color': theme.primary, '--card-glow': theme.glow } as React.CSSProperties}
+              >
+                <div className="summaryStatCardTop">
+                  <span className="summaryStatCardName">{c.name}</span>
+                  <span className="summaryStatCardPrimary">{formatDamage(onFieldDps)}/s</span>
+                </div>
+                <div className="summaryStatCardBars">
+                  <div className="summaryStatCardBar">
+                    <div className="summaryStatCardBarFill" style={{ width: `${dpsPct}%` }} />
                   </div>
-                  {/* On-field DPS row */}
-                  <div className="summaryFieldTimeSubrow">
-                    <span className="summaryFieldTimeSubrowLabel">DPS</span>
-                    <div className="summaryFieldTimeBar">
-                      <div
-                        className="summaryFieldTimeBarFill summaryFieldTimeDpsFill"
-                        style={{ width: `${dpsPct}%`, background: theme.primary, boxShadow: `0 0 4px ${theme.glow}` }}
-                      />
-                    </div>
-                    <span className="summaryFieldTimeDpsVal">{formatDamage(onFieldDps)}/s</span>
+                  <div className="summaryStatCardBar summaryStatCardBarAlt">
+                    <div className="summaryStatCardBarFill" style={{ width: `${pct}%` }} />
                   </div>
                 </div>
+                <span className="summaryStatCardSecondary">{pct.toFixed(0)}% field · {formatTime(c.fieldTime)}</span>
               </div>
             )
           })}
           {totalFieldTime > 0 && (
-            <div className="summaryFieldTimeRow summaryFieldTimeRowTotal">
-              <span className="summaryFieldTimeName">Total</span>
-              <div className="summaryFieldTimeBar">
-                <div className="summaryFieldTimeBarFill" style={{ width: '100%', background: 'rgba(255,255,255,0.15)' }} />
-              </div>
-              <span className="summaryFieldTimePct" aria-hidden="true" />
-              <span className="summaryFieldTimeVal">{formatTime(totalFieldTime)}</span>
+            <div className="summaryStatCardTotalRow">
+              <span className="summaryStatCardTotalLabel">Total rotation</span>
+              <span className="summaryStatCardTotalValue">{formatTime(totalFieldTime)}</span>
             </div>
           )}
         </div>
@@ -768,32 +702,24 @@ function LeftPanel({ characterSummaries, charColorMap, energyFlow }: LeftPanelPr
         {energyFlow.length === 0 ? (
           <div className="summaryRightEmpty">No energy data available</div>
         ) : (
-          <div className="summaryEnergyRows">
+          <div className="summaryStatCards">
             {energyFlow.map(entry => {
               const theme = charColorMap.get(entry.name) ?? getElementColor(entry.element)
+              const perSecPct = (entry.energyGenPerSecond / maxEnergyPerSec) * 100
               return (
-                <div key={entry.name} className="summaryEnergyBlock">
-                  <div className="summaryEnergyBlockHeader">
-                    <div
-                      className="summaryEnergyDot"
-                      style={{ background: theme.primary, boxShadow: `0 0 5px ${theme.glow}` }}
-                    />
-                    <span className="summaryEnergyName">{entry.name}</span>
+                <div
+                  key={entry.name}
+                  className="summaryStatCard"
+                  style={{ '--card-color': theme.primary, '--card-glow': theme.glow } as React.CSSProperties}
+                >
+                  <div className="summaryStatCardTop">
+                    <span className="summaryStatCardName">{entry.name}</span>
+                    <span className="summaryStatCardPrimary">{entry.energyGenPerSecond.toFixed(1)}/s</span>
                   </div>
-                  <div className="summaryEnergyStatRow">
-                    <div className="summaryEnergyStat">
-                      <span className="summaryEnergyStatLabel" style={{ color: theme.primary, textShadow: `0 0 10px ${theme.glow}` }}>Energy Generated</span>
-                      <span className="summaryEnergyStatValue">
-                        {entry.energyGenerated.toFixed(1)}
-                      </span>
-                    </div>
-                    <div className="summaryEnergyStat">
-                      <span className="summaryEnergyStatLabel" style={{ color: theme.primary, textShadow: `0 0 10px ${theme.glow}` }}>per second on field</span>
-                      <span className="summaryEnergyStatValue">
-                        {entry.energyGenPerSecond.toFixed(1)}/s
-                      </span>
-                    </div>
+                  <div className="summaryStatCardBar">
+                    <div className="summaryStatCardBarFill" style={{ width: `${perSecPct}%` }} />
                   </div>
+                  <span className="summaryStatCardSecondary">{entry.energyGenerated.toFixed(1)} total</span>
                 </div>
               )
             })}
@@ -1055,7 +981,7 @@ function CenterPanel({ characterSummaries, globalDamage, totalPassiveDamage, gra
   // Pie 2: contribution attribution — damage attributed to each enabler
   const characterNames = new Set(characterSummaries.map(c => c.name))
   const pie2CharEntries = contributionEntries.filter(c => c.attributedDamage > 0 && characterNames.has(c.name))
-  const pie2NsTotal = contributionEntries.filter(c => c.attributedDamage > 0 && !characterNames.has(c.name)).reduce((s, c) => s + c.attributedDamage, 0)
+  const pie2OtherEntry = contributionEntries.find(c => c.name === '__OTHER__')
   const pie2Total = contributionEntries.reduce((s, c) => s + c.attributedDamage, 0)
 
   // Compute role tags
@@ -1082,8 +1008,8 @@ function CenterPanel({ characterSummaries, globalDamage, totalPassiveDamage, gra
       const cc = charColorMap.get(c.name) ?? getElementColor(c.element)
       return { name: c.name, value: c.attributedDamage * dpsScale, color: cc.primary, glow: cc.glow }
     }),
-    ...(pie2NsTotal > 0
-      ? [{ name: 'Other Sources', value: pie2NsTotal * dpsScale, color: 'hsl(220 15% 60%)', glow: 'hsl(220 15% 60% / 0.3)' }]
+    ...(pie2OtherEntry && pie2OtherEntry.attributedDamage > 0
+      ? [{ name: 'Other', value: pie2OtherEntry.attributedDamage * dpsScale, color: 'hsl(220 15% 60%)', glow: 'hsl(220 15% 60% / 0.3)' }]
       : []),
   ]
 
@@ -1121,7 +1047,7 @@ function CenterPanel({ characterSummaries, globalDamage, totalPassiveDamage, gra
           items={pie2Items}
           total={pie2TotalScaled}
           centerLabel={pieCenterLabel}
-          subtitle={isDps ? 'Attributed DPS per resonator (buffs credited to buffer)' : 'Damage attributed to each resonator (buffs credited to buffer)'}
+          subtitle={isDps ? 'Attributed DPS per resonator (buffs credited to buffer)' : 'Damage contribution per Resonator (Shapley-based attribution)'}
         />
       </div>
 
@@ -1132,7 +1058,6 @@ function CenterPanel({ characterSummaries, globalDamage, totalPassiveDamage, gra
           <CharTypeCard
             key={char.name}
             summary={char}
-            grandTotal={grandTotal}
             originEntry={originByChar.get(char.name)}
             actionBreakdown={actionBreakdowns.get(char.name)}
             role={roleMap.get(char.name)}
@@ -1147,11 +1072,10 @@ function CenterPanel({ characterSummaries, globalDamage, totalPassiveDamage, gra
   )
 }
 
-function CharTypeCard({ summary, grandTotal, originEntry, actionBreakdown, role, charColorMap }: { summary: CharacterSummary; grandTotal: number; originEntry?: ContributionOriginEntry; actionBreakdown?: ActionBreakdownEntry[]; role?: 'Main Carry' | 'Sub DPS' | 'Buffer'; charColorMap: Map<string, CharColor> }) {
+function CharTypeCard({ summary, originEntry, actionBreakdown, role, charColorMap }: { summary: CharacterSummary; originEntry?: ContributionOriginEntry; actionBreakdown?: ActionBreakdownEntry[]; role?: 'Main Carry' | 'Sub DPS' | 'Buffer'; charColorMap: Map<string, CharColor> }) {
   const [expanded, setExpanded] = useState(false)
   const theme = charColorMap.get(summary.name) ?? getElementColor(summary.element)
   const allCharDamage = summary.directDamage + summary.caDamage + summary.passiveDamage
-  const shareOfTotal = grandTotal > 0 ? (allCharDamage / grandTotal) * 100 : 0
   const maxActionDmg = actionBreakdown && actionBreakdown.length > 0 ? actionBreakdown[0].damage : 1
 
   return (
@@ -1274,11 +1198,19 @@ function CharTypeCard({ summary, grandTotal, originEntry, actionBreakdown, role,
           </button>
           {expanded && (
             <div className="summaryActionBreakdown">
+              <div className="summaryActionBreakdownHeader">
+                <span className="summaryActionCount summaryActionHeaderLabel">Casts</span>
+                <span className="summaryActionName summaryActionHeaderLabel">Action</span>
+                <div className="summaryActionBar summaryActionBarSpacer" />
+                <span className="summaryActionValue summaryActionHeaderLabel">Total DMG</span>
+                <span className="summaryActionPct summaryActionHeaderLabel">Share</span>
+              </div>
               {actionBreakdown.map(entry => {
                 const barPct = maxActionDmg > 0 ? (entry.damage / maxActionDmg) * 100 : 0
                 const teamPct = allCharDamage > 0 ? (entry.damage / allCharDamage) * 100 : 0
                 return (
                   <div key={entry.actionName} className="summaryActionRow">
+                    <span className="summaryActionCount">×{entry.count}</span>
                     <span className="summaryActionName">{entry.actionName}</span>
                     <div className="summaryActionBar">
                       <div

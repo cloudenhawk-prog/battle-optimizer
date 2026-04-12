@@ -1,4 +1,3 @@
-import type { Dispatch, SetStateAction } from 'react'
 import type { CoordinatedAttack } from '../../types/coordinatedAttack'
 import type { DamageEvent } from '../../types/events'
 import type { StepContext } from '../../types/stepContext'
@@ -173,7 +172,7 @@ function makeActionFromCoordinatedAttack(ca: CoordinatedAttack): Action {
  *  - For swap-required attacks: if the owner character just became active again
  *    (ctx.lastSwappedToCharacter === ownerCharacter), ticks only up to fromTime then deactivates.
  */
-export function processCoordinatedAttacks(ctx: StepContext, setDamageEvents: Dispatch<SetStateAction<DamageEvent[]>>): void {
+export function processCoordinatedAttacks(ctx: StepContext): void {
   if (ctx.coordinatedAttacksInAction.length === 0) return
 
   const allCharacters = [ctx.character, ...ctx.allies]
@@ -322,7 +321,7 @@ export function processCoordinatedAttacks(ctx: StepContext, setDamageEvents: Dis
 
   // Flush damage events and accumulate into snapshot
   if (allDamageEvents.length > 0) {
-    setDamageEvents(prev => [...prev, ...allDamageEvents])
+    ctx.damageEvents.push(...allDamageEvents)
     ctx.current.damage += totalCoordDamage
   }
 

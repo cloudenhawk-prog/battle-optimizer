@@ -36,6 +36,14 @@ export interface Snapshot {
   coordinatedAttacksTimeLeft: Record<string, number>
   coordinatedAttacksSwapRequired: Record<string, boolean>
   charactersCooldowns: Record<string, Record<string, number>>
+  /** Current stack counts for actions that use the stacks/charges system (maxStacks > 1).
+   *  Keyed by [characterName][cooldownKey]. Absent entry means the action is at max stacks.
+   *  An entry with value 0 means no stacks left (action is blocked). */
+  charactersActionStacks: Record<string, Record<string, number>>
+  /** Config for actions using the stacks system, stored on first use so regeneration logic
+   *  can restart the timer without access to the original Action objects.
+   *  Keyed by [characterName][cooldownKey]. Written once and never deleted. */
+  charactersActionStacksConfig: Record<string, Record<string, { max: number; cooldown: number }>>
   /** Resolved position (GROUND or AIR) for each character after their last action. */
   charactersPositions: Record<string, 'GROUND' | 'AIR'>
   /** Absolute time until which each character's persistence is active (0 = no persistence). */
@@ -81,6 +89,15 @@ export interface Snapshot {
    *  Set from `Action.comboChainTags` at cast time. Read by `castConditions.requiredComboTags`
    *  checks (honoring the persistence window) to enforce sequential combo ordering. */
   charactersComboChainTags: Record<string, string[]>
+  /** Absolute time at which each character most recently went off-field (i.e. was swapped out).
+   *  `null` (or absent key) means on-field / never swapped out.
+   *  A numeric value (including 0) is the exact timestamp when they went off-field.
+   *  Used by `resolveOffFieldTriggers` to fire duration-threshold effects (e.g. "after 4s off-field, restore X"). */
+  charactersOffFieldSince: Record<string, number | null>
+  /** Off-field trigger events that fired during this step, keyed by character name.
+   *  Each entry is an array of human-readable descriptions of what was restored.
+   *  Used by DataOverlay to annotate energy changes with their source. */
+  offFieldTriggerEvents: Record<string, string[]>
   /** When true, this row was automatically inserted by the engine (Outro/Intro swap or
    *  auto-cast follow-up). Autocast rows are excluded from exports so they are not
    *  replayed manually on import (the engine re-generates them from the user-defined steps). */

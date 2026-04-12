@@ -20,8 +20,8 @@ import {
   shouldTriggerOutroIntro,
   handleOutroIntroFlow,
   autocastFollowUpChain,
-  type AutocastParams,
-} from './useCharacterActions'
+  type EngineState,
+} from '../../utils/engine/step'
 import {
   loadSavedRotations,
   saveRotationToStorage,
@@ -67,9 +67,9 @@ export function useImportExport({
   tableConfig,
   enemy,
   settings,
-  negativeStatusesInAction,
-  modifiersInAction,
-  coordinatedAttacksInAction,
+  negativeStatusesInAction: negativeStatusesInActionRef,
+  modifiersInAction: modifiersInActionRef,
+  coordinatedAttacksInAction: coordinatedAttacksInActionRef,
 }: UseImportExportProps) {
   const [savedRotations, setSavedRotations] = useState<SavedRotation[]>(() => loadSavedRotations())
   const [savedSnippets, setSavedSnippets] = useState<SavedRotation[]>(() => loadSavedSnippets())
@@ -115,9 +115,9 @@ export function useImportExport({
     const result = runImportSteps({
       steps: snippet.steps,
       startingSnapshots: snapshots,
-      initialNegativeStatuses: negativeStatusesInAction.current,
-      initialModifiers: modifiersInAction.current,
-      initialCoordinatedAttacks: coordinatedAttacksInAction.current,
+      initialNegativeStatuses: negativeStatusesInActionRef.current,
+      initialModifiers: modifiersInActionRef.current,
+      initialCoordinatedAttacks: coordinatedAttacksInActionRef.current,
       charactersMap,
       characterColumnsMap,
       globalColumns,
@@ -136,9 +136,9 @@ export function useImportExport({
 
     setSnapshots(result.snapshots)
     setDamageEvents(prev => [...prev, ...result.damageEvents])
-    negativeStatusesInAction.current = result.finalNegativeStatuses
-    modifiersInAction.current = result.finalModifiers
-    coordinatedAttacksInAction.current = result.finalCoordinatedAttacks
+    negativeStatusesInActionRef.current = result.finalNegativeStatuses
+    modifiersInActionRef.current = result.finalModifiers
+    coordinatedAttacksInActionRef.current = result.finalCoordinatedAttacks
   }
 
   function handleDownload() {
@@ -167,15 +167,15 @@ export function useImportExport({
       // Reset the table to a clean state so the partial import doesn't cause confusion
       resetTimeline()
       setDamageEvents([])
-      negativeStatusesInAction.current = Object.values(negativeStatusesData).map(status => ({
+      negativeStatusesInActionRef.current = Object.values(negativeStatusesData).map(status => ({
         negativeStatus: status,
         applicationTime: -1,
         timeLeft: 0,
         currentStacks: 0,
         lastDamageTime: 0,
       }))
-      modifiersInAction.current = []
-      coordinatedAttacksInAction.current = []
+      modifiersInActionRef.current = []
+      coordinatedAttacksInActionRef.current = []
       return
     }
 
@@ -184,9 +184,9 @@ export function useImportExport({
 
     // Update living refs to reflect the imported state so subsequent user edits
     // continue from the correct modifier/coordinated-attack state.
-    negativeStatusesInAction.current = result.finalNegativeStatuses
-    modifiersInAction.current = result.finalModifiers
-    coordinatedAttacksInAction.current = result.finalCoordinatedAttacks
+    negativeStatusesInActionRef.current = result.finalNegativeStatuses
+    modifiersInActionRef.current = result.finalModifiers
+    coordinatedAttacksInActionRef.current = result.finalCoordinatedAttacks
   }
 
   function handleFileUpload(content: string) {
@@ -205,6 +205,74 @@ export function useImportExport({
     downloadRotationAsJson({ name, createdAt: new Date().toISOString(), steps })
   }
 
+  function handleDeleteFromSnapshot(snapshotId: number) {
+    const index = snapshots.findIndex(s => Number(s.id) === snapshotId)
+    if (index === -1) return
+
+    // When deleting an autocast follow-up row, we want to replay the triggering user step
+    // but regenerate only the autocasts that came BEFORE the deleted row. Walk back through
+    // the consecutive autocast chain to its start, then count how many hops to allow.
+    // Example: chain [user A → autocast B → autocast C], deleting C → allow 1 hop (keeps B).
+    //          Deleting B → allow 0 hops (no follow-ups replayed at all).
+    // Outro/Intro autocasts are NOT follow-up chains (no charactersAttemptFollowUp on the
+    // row before them), so they fall through to the normal path unchanged.
+    let maxAutocasts: number | undefined = undefined
+    if (snapshots[index].isAutocast) {
+      const charName = snapshots[index].character ?? ''
+      let chainStart = index
+      while (chainStart > 0 && snapshots[chainStart - 1].isAutocast) {
+        chainStart--
+      }
+      const triggerRow = chainStart > 0 ? snapshots[chainStart - 1] : null
+      const isFollowUpChain =
+        !!charName &&
+        triggerRow != null &&
+        !triggerRow.isAutocast &&
+        !!triggerRow.action &&
+        !!triggerRow.charactersAttemptFollowUp?.[charName]
+      if (isFollowUpChain) {
+        // chainStart is the index of the first autocast. index - chainStart equals the
+        // number of autocast rows before the deleted one, i.e. the hops to keep.
+        maxAutocasts = index - chainStart
+      }
+    }
+
+    const stepsToKeep = extractSteps(snapshots.slice(0, index))
+
+    if (stepsToKeep.length === 0) {
+      resetTimeline()
+      setDamageEvents([])
+      negativeStatusesInActionRef.current = Object.values(negativeStatusesData).map(status => ({
+        negativeStatus: status,
+        applicationTime: -1,
+        timeLeft: 0,
+        currentStacks: 0,
+        lastDamageTime: 0,
+      }))
+      modifiersInActionRef.current = []
+      coordinatedAttacksInActionRef.current = []
+      return
+    }
+
+    const result = runImportSteps({
+      steps: stepsToKeep,
+      initialSnapshot: createEmptySnapshot(charactersMap, characterColumnsMap, globalColumns, tableConfig, settings.startWithFullEnergy),
+      charactersMap,
+      characterColumnsMap,
+      globalColumns,
+      enemy,
+      settings,
+      maxAutocasts,
+      ignoreCastConditions: false,
+    })
+
+    setSnapshots(result.snapshots)
+    setDamageEvents(result.damageEvents)
+    negativeStatusesInActionRef.current = result.finalNegativeStatuses
+    modifiersInActionRef.current = result.finalModifiers
+    coordinatedAttacksInActionRef.current = result.finalCoordinatedAttacks
+  }
+
   return {
     savedRotations,
     savedSnippets,
@@ -221,13 +289,16 @@ export function useImportExport({
     handleDownload,
     handleDownloadNamed,
     handleFileUpload,
+    handleDeleteFromSnapshot,
     clearImportStatus: () => { setLastImportError(null); setLastImportCompleted(null) },
   }
 }
 
 // ========== Failure Reason Detection =========================================================================================
 
-function getActionFailureReason(action: Action, prevSnapshot: Snapshot | undefined, character: ResolvedCharacter, ignoreCastConditions: boolean): string | null {
+function getActionFailureReason(action: Action, prevSnapshot: Snapshot | undefined, character: ResolvedCharacter, ignoreCastConditions: boolean, skipAllChecks = false): string | null {
+  if (skipAllChecks) return null
+
   const charName = character.name
 
   // Must follow-up check (the action is locked until a specific follow-up is cast)
@@ -278,7 +349,16 @@ function getActionFailureReason(action: Action, prevSnapshot: Snapshot | undefin
   const cooldownKey = getActionCooldownKey(action)
   const cooldownRemaining = prevSnapshot?.charactersCooldowns?.[charName]?.[cooldownKey] ?? 0
   if (cooldownRemaining > 0) {
-    return `"${action.displayName}" is on cooldown (${cooldownRemaining.toFixed(1)}s remaining)`
+    // For stacked actions, being on the recharge timer doesn't block casting — only empty stacks do
+    if (action.maxStacks && action.maxStacks > 1) {
+      const storedStacks = prevSnapshot?.charactersActionStacks?.[charName]?.[cooldownKey]
+      const currentStacks = storedStacks ?? action.maxStacks
+      if (currentStacks === 0) {
+        return `"${action.displayName}" has no charges left (${cooldownRemaining.toFixed(1)}s until next charge)`
+      }
+    } else {
+      return `"${action.displayName}" is on cooldown (${cooldownRemaining.toFixed(1)}s remaining)`
+    }
   }
 
   if (!ignoreCastConditions) {
@@ -308,6 +388,10 @@ type ImportRunParams = {
   enemy: Enemy
   settings: Settings
   ignoreCastConditions: boolean
+  /** When set, caps how many autocast follow-up hops the LAST replayed step may generate.
+   *  All earlier steps in the replay are unaffected. Used by deletion to stop the chain
+   *  before the deleted row without losing earlier autocasts in the same chain. */
+  maxAutocasts?: number
 }
 
 type FullImportRunResult = ImportRunResult & {
@@ -317,23 +401,16 @@ type FullImportRunResult = ImportRunResult & {
 }
 
 function runImportSteps(params: ImportRunParams): FullImportRunResult {
-  const { steps, initialSnapshot, startingSnapshots, initialNegativeStatuses, initialModifiers, initialCoordinatedAttacks, charactersMap, characterColumnsMap, globalColumns, enemy, settings, ignoreCastConditions } = params
+  const { steps, initialSnapshot, startingSnapshots, initialNegativeStatuses, initialModifiers, initialCoordinatedAttacks, charactersMap, characterColumnsMap, globalColumns, enemy, settings, ignoreCastConditions, maxAutocasts } = params
 
   let snapshots: Snapshot[] = startingSnapshots
     ? [...startingSnapshots]
     : [{ ...initialSnapshot! }]
   let localDamageEvents: DamageEvent[] = []
 
-  // Accumulate damage events synchronously (callers use updater form, e.g. prev => [...prev, e])
-  const collectEvents: Dispatch<SetStateAction<DamageEvent[]>> = updater => {
-    localDamageEvents = typeof updater === 'function'
-      ? (updater as (prev: DamageEvent[]) => DamageEvent[])(localDamageEvents)
-      : updater
-  }
-
-  // Fresh state for this import run — isolated from the living refs
-  const localNegativeStatuses: React.MutableRefObject<NegativeStatusInAction[]> = {
-    current: initialNegativeStatuses
+  // Fresh engine state for this import run — isolated from the living refs
+  let engineState: EngineState = {
+    negativeStatusesInAction: initialNegativeStatuses
       ? initialNegativeStatuses.map(s => ({ ...s }))
       : Object.values(negativeStatusesData).map(status => ({
           negativeStatus: status,
@@ -342,19 +419,15 @@ function runImportSteps(params: ImportRunParams): FullImportRunResult {
           currentStacks: 0,
           lastDamageTime: 0,
         })),
+    modifiersInAction: initialModifiers ? [...initialModifiers] : [],
+    coordinatedAttacksInAction: initialCoordinatedAttacks ? initialCoordinatedAttacks.map(ca => ({ ...ca })) : [],
   }
-  const localModifiers: React.MutableRefObject<ModifierInAction[]> = { current: initialModifiers ? [...initialModifiers] : [] }
-  const localCAs: React.MutableRefObject<CoordinatedAttackInAction[]> = { current: initialCoordinatedAttacks ? initialCoordinatedAttacks.map(ca => ({ ...ca })) : [] }
 
-  const baseParams: Omit<AutocastParams, 'snapshots' | 'resolvedSnapshotId'> = {
+  const baseEngineParams = {
     charactersMap,
     characterColumnsMap,
     globalColumns,
     enemy,
-    setDamageEvents: collectEvents,
-    negativeStatusesInAction: localNegativeStatuses,
-    modifiersInAction: localModifiers,
-    coordinatedAttacksInAction: localCAs,
   }
 
   let completedSteps = 0
@@ -370,9 +443,9 @@ function runImportSteps(params: ImportRunParams): FullImportRunResult {
         damageEvents: localDamageEvents,
         completedSteps,
         error: { stepIndex: stepIdx, character: step.character, action: step.action, reason: `Character "${step.character}" is not in the current battle` },
-        finalNegativeStatuses: localNegativeStatuses.current,
-        finalModifiers: localModifiers.current,
-        finalCoordinatedAttacks: localCAs.current,
+        finalNegativeStatuses: engineState.negativeStatusesInAction,
+        finalModifiers: engineState.modifiersInAction,
+        finalCoordinatedAttacks: engineState.coordinatedAttacksInAction,
       }
     }
 
@@ -384,7 +457,14 @@ function runImportSteps(params: ImportRunParams): FullImportRunResult {
     // Handle automatic Outro/Intro if character changed and previous had full concerto
     if (shouldTriggerOutroIntro(snapshots, snapshotId)) {
       try {
-        snapshots = handleOutroIntroFlow({ snapshots, snapshotId, ...baseParams })
+        const outroIntroResult = handleOutroIntroFlow({ snapshots, snapshotId, ...engineState, ...baseEngineParams })
+        snapshots = outroIntroResult.snapshots
+        localDamageEvents = [...localDamageEvents, ...outroIntroResult.damageEvents]
+        engineState = {
+          negativeStatusesInAction: outroIntroResult.negativeStatusesInAction,
+          modifiersInAction: outroIntroResult.modifiersInAction,
+          coordinatedAttacksInAction: outroIntroResult.coordinatedAttacksInAction,
+        }
       } catch (e) {
         const reason = e instanceof Error ? e.message : String(e)
         return {
@@ -392,9 +472,9 @@ function runImportSteps(params: ImportRunParams): FullImportRunResult {
           damageEvents: localDamageEvents,
           completedSteps,
           error: { stepIndex: stepIdx, character: step.character, action: step.action, reason },
-          finalNegativeStatuses: localNegativeStatuses.current,
-          finalModifiers: localModifiers.current,
-          finalCoordinatedAttacks: localCAs.current,
+          finalNegativeStatuses: engineState.negativeStatusesInAction,
+          finalModifiers: engineState.modifiersInAction,
+          finalCoordinatedAttacks: engineState.coordinatedAttacksInAction,
         }
       }
       snapshotId += 2
@@ -411,31 +491,46 @@ function runImportSteps(params: ImportRunParams): FullImportRunResult {
         damageEvents: localDamageEvents,
         completedSteps,
         error: { stepIndex: stepIdx, character: step.character, action: step.action, reason: `Action "${step.action}" not found for ${step.character}` },
-        finalNegativeStatuses: localNegativeStatuses.current,
-        finalModifiers: localModifiers.current,
-        finalCoordinatedAttacks: localCAs.current,
+        finalNegativeStatuses: engineState.negativeStatusesInAction,
+        finalModifiers: engineState.modifiersInAction,
+        finalCoordinatedAttacks: engineState.coordinatedAttacksInAction,
       }
     }
 
     // Check if the action is castable in the current state
-    const failureReason = getActionFailureReason(resolvedAction, prevSnapshot, character, ignoreCastConditions)
+    const failureReason = getActionFailureReason(resolvedAction, prevSnapshot, character, ignoreCastConditions, settings.sandboxMode)
     if (failureReason) {
       return {
         snapshots,
         damageEvents: localDamageEvents,
         completedSteps,
         error: { stepIndex: stepIdx, character: step.character, action: step.action, reason: failureReason },
-        finalNegativeStatuses: localNegativeStatuses.current,
-        finalModifiers: localModifiers.current,
-        finalCoordinatedAttacks: localCAs.current,
+        finalNegativeStatuses: engineState.negativeStatusesInAction,
+        finalModifiers: engineState.modifiersInAction,
+        finalCoordinatedAttacks: engineState.coordinatedAttacksInAction,
       }
     }
 
     // Apply the action through the full resolver pipeline
-    snapshots = updateSnapshotsWithAction({ ...baseParams, snapshots, snapshotId, actionName: step.action })
+    const actionResult = updateSnapshotsWithAction({ ...baseEngineParams, ...engineState, snapshots, snapshotId, actionName: step.action })
+    snapshots = actionResult.snapshots
+    localDamageEvents = [...localDamageEvents, ...actionResult.damageEvents]
+    engineState = {
+      negativeStatusesInAction: actionResult.negativeStatusesInAction,
+      modifiersInAction: actionResult.modifiersInAction,
+      coordinatedAttacksInAction: actionResult.coordinatedAttacksInAction,
+    }
 
     if (settings.autocastFollowUps) {
-      snapshots = autocastFollowUpChain({ ...baseParams, snapshots, resolvedSnapshotId: snapshotId })
+      const isLastStep = stepIdx === steps.length - 1
+      const autocastResult = autocastFollowUpChain({ ...baseEngineParams, ...engineState, snapshots, resolvedSnapshotId: snapshotId, maxDepth: isLastStep ? maxAutocasts : undefined })
+      snapshots = autocastResult.snapshots
+      localDamageEvents = [...localDamageEvents, ...autocastResult.damageEvents]
+      engineState = {
+        negativeStatusesInAction: autocastResult.negativeStatusesInAction,
+        modifiersInAction: autocastResult.modifiersInAction,
+        coordinatedAttacksInAction: autocastResult.coordinatedAttacksInAction,
+      }
     }
 
     completedSteps++
@@ -446,8 +541,8 @@ function runImportSteps(params: ImportRunParams): FullImportRunResult {
     damageEvents: localDamageEvents,
     completedSteps,
     error: null,
-    finalNegativeStatuses: localNegativeStatuses.current,
-    finalModifiers: localModifiers.current,
-    finalCoordinatedAttacks: localCAs.current,
+    finalNegativeStatuses: engineState.negativeStatusesInAction,
+    finalModifiers: engineState.modifiersInAction,
+    finalCoordinatedAttacks: engineState.coordinatedAttacksInAction,
   }
 }

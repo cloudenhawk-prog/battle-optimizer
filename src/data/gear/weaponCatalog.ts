@@ -89,11 +89,11 @@ export const weaponCatalog: WeaponCatalogEntry[] = [
   },
 
   {
-    name: "Bloodpact's Pledge",
+    name: 'Bloodpact\'s Pledge',
     weaponType: 'Sword',
     stats: { baseATK: 587.50, energyPercent: 0.3888 },
-    icon: "assets/gear/weapons/bloodpact's_pledge.png",
-    info: "Providing Healing increases Resonance Skill DMG by 10%/14%/18%/22%/26% for 6s. When Rover: Aero casts Resonance Skill Unbound Flow, Aero DMG dealt by nearby Resonators on the field is Amplified by 10%/14%/18%/22%/26% for 30s.",
+    icon: 'assets/gear/weapons/bloodpact\'s_pledge.png',
+    info: 'Providing Healing increases Resonance Skill DMG by 10%/14%/18%/22%/26% for 6s. When Rover: Aero casts Resonance Skill Unbound Flow, Aero DMG dealt by nearby Resonators on the field is Amplified by 10%/14%/18%/22%/26% for 30s.',
     ranks: {
       5: {
         injectedModifiers: [
@@ -135,11 +135,11 @@ export const weaponCatalog: WeaponCatalogEntry[] = [
   },
 
   {
-    name: 'Hiyuki Weapon Name',
+    name: 'Frostburn',
     weaponType: 'Sword',
     stats: { baseATK: 587, critRate: 0.243 },
-    icon: 'assets/gear/weapons/unknown.png',
-    info: "Increase ATK by 12%. When applying Glacio Chafe, Glacio DMG is Amplified by 28% and Liberation DMG ignore 8% DEF for 6 seconds",
+    icon: 'assets/gear/weapons/frostburn.png',
+    info: 'Increase ATK by 12/15/18/21/24%. When applying Glacio Chafe, Glacio DMG is Amplified by 28/35/42/49/56% and Liberation DMG ignore 10/12.5/15/17.5/20% DEF for 20 seconds. When the wielder is the active resonator in the team, Glacio Chafe DMG dealt by all resoantors is amplified by 20% for 6s.',
     ranks: {
       1: {
         injectedModifiers: [
@@ -147,9 +147,10 @@ export const weaponCatalog: WeaponCatalogEntry[] = [
             targets: ['character'],
             modifiers: [
               {
-                source: 'Hiyuki Weapon name',
-                displayName: 'Hiyuki Weapon name: Passive ATK',
+                source: 'Frostburn',
+                displayName: 'Frostburn: Passive ATK',
                 type: 'buff',
+                description: 'Increases ATK by 12%.',
                 ownerCharacter: null,
                 condition: always(),
                 characterStats: { bonusATK: 0.12 },
@@ -160,31 +161,31 @@ export const weaponCatalog: WeaponCatalogEntry[] = [
             ],
           },
           {
-            targets: [{ tag: 'GLACIO_CHAFE_APPLIER' }, { tag: 'GLACIO_BITE_APPLIER' }],
+            targets: [{ tag: 'GLACIO_CHAFE_APPLIER' }],
             modifiers: [
               {
-                source: 'Hiyuki Weapon name',
-                displayName: 'Hiyuki Weapon name: Buff',
+                source: 'Frostburn',
+                displayName: 'Frostburn: Glacio Buff',
+                description: 'When applying Glacio Chafe, Glacio DMG is Amplified by 28% for 20 seconds.',
                 type: 'buff',
                 ownerCharacter: null,
                 condition: always(),
                 characterStats: { glacioAmplifyDMG: 0.28 },
                 targetStrategy: 'self',
-                durationStrategy: { type: 'limited', timeDuration: 6 },
-                stackingStrategy: { maxStacks: 1, resetTimerOnApplication: true, stacksRemovedEachTime: 1 },
-                contributionGroup: 'Hiyuki Weapon name: Buff'
+                durationStrategy: { type: 'limited', timeDuration: 20 },
+                stackingStrategy: { maxStacks: 1, resetTimerOnApplication: true, stacksRemovedEachTime: 1 }
               },
               {
-                source: 'Hiyuki Weapon name',
-                displayName: 'Hiyuki Weapon name: Buff',
+                source: 'Frostburn',
+                displayName: 'Frostburn: Liberation Buff',
                 type: 'buff',
+                description: 'When applying Glacio Chafe, Liberation DMG ignore 10% DEF for 20 seconds.',
                 ownerCharacter: null,
                 condition: (ctx) => ctx.action.dmgTypes.includes('LIBERATION') ? 1 : 0,
-                characterStats: { defIgnore: 0.08 },
+                characterStats: { defIgnore: 0.10 },
                 targetStrategy: 'self',
-                durationStrategy: { type: 'limited', timeDuration: 6 },
-                stackingStrategy: { maxStacks: 1, resetTimerOnApplication: true, stacksRemovedEachTime: 1 },
-                contributionGroup: 'Hiyuki Weapon name: Buff'
+                durationStrategy: { type: 'limited', timeDuration: 20 },
+                stackingStrategy: { maxStacks: 1, resetTimerOnApplication: true, stacksRemovedEachTime: 1 }
               },
             ],
           }
@@ -196,9 +197,10 @@ export const weaponCatalog: WeaponCatalogEntry[] = [
             targets: ['character'],
             modifiers: [
               {
-                source: 'Hiyuki Weapon name',
-                displayName: 'Hiyuki Weapon name: Passive ATK',
+                source: 'Frostburn',
+                displayName: 'Frostburn: Passive ATK',
                 type: 'buff',
+                description: 'Increases ATK by 15%.',
                 ownerCharacter: null,
                 condition: always(),
                 characterStats: { bonusATK: 0.15 },
@@ -209,31 +211,31 @@ export const weaponCatalog: WeaponCatalogEntry[] = [
             ],
           },
           {
-            targets: [{ tag: 'GLACIO_CHAFE_APPLIER' }, { tag: 'GLACIO_BITE_APPLIER' }],
+            targets: [{ tag: 'GLACIO_CHAFE_APPLIER' }],
             modifiers: [
               {
-                source: 'Hiyuki Weapon name',
-                displayName: 'Hiyuki Weapon name: Buff',
+                source: 'Frostburn',
+                displayName: 'Frostburn: Glacio Buff',
                 type: 'buff',
+                description: 'When applying Glacio Chafe, Glacio DMG is Amplified by 35% for 20 seconds.',
                 ownerCharacter: null,
                 condition: always(),
                 characterStats: { glacioAmplifyDMG: 0.35 },
                 targetStrategy: 'self',
-                durationStrategy: { type: 'limited', timeDuration: 6 },
-                stackingStrategy: { maxStacks: 1, resetTimerOnApplication: true, stacksRemovedEachTime: 1 },
-                contributionGroup: 'Hiyuki Weapon name: Buff'
+                durationStrategy: { type: 'limited', timeDuration: 20 },
+                stackingStrategy: { maxStacks: 1, resetTimerOnApplication: true, stacksRemovedEachTime: 1 }
               },
               {
-                source: 'Hiyuki Weapon name',
-                displayName: 'Hiyuki Weapon name: Buff',
+                source: 'Frostburn',
+                displayName: 'Frostburn: Liberation Buff',
                 type: 'buff',
+                description: 'When applying Glacio Chafe, Liberation DMG ignore 12.5% DEF for 20 seconds.',
                 ownerCharacter: null,
                 condition: (ctx) => ctx.action.dmgTypes.includes('LIBERATION') ? 1 : 0,
-                characterStats: { defIgnore: 0.10 },
+                characterStats: { defIgnore: 0.125 },
                 targetStrategy: 'self',
-                durationStrategy: { type: 'limited', timeDuration: 6 },
-                stackingStrategy: { maxStacks: 1, resetTimerOnApplication: true, stacksRemovedEachTime: 1 },
-                contributionGroup: 'Hiyuki Weapon name: Buff'
+                durationStrategy: { type: 'limited', timeDuration: 20 },
+                stackingStrategy: { maxStacks: 1, resetTimerOnApplication: true, stacksRemovedEachTime: 1 }
               },
             ],
           }
@@ -245,9 +247,10 @@ export const weaponCatalog: WeaponCatalogEntry[] = [
             targets: ['character'],
             modifiers: [
               {
-                source: 'Hiyuki Weapon name',
-                displayName: 'Hiyuki Weapon name: Passive ATK',
+                source: 'Frostburn',
+                displayName: 'Frostburn: Passive ATK',
                 type: 'buff',
+                description: 'Increases ATK by 18%.',
                 ownerCharacter: null,
                 condition: always(),
                 characterStats: { bonusATK: 0.18 },
@@ -258,31 +261,31 @@ export const weaponCatalog: WeaponCatalogEntry[] = [
             ],
           },
           {
-            targets: [{ tag: 'GLACIO_CHAFE_APPLIER' }, { tag: 'GLACIO_BITE_APPLIER' }],
+            targets: [{ tag: 'GLACIO_CHAFE_APPLIER' }],
             modifiers: [
               {
-                source: 'Hiyuki Weapon name',
-                displayName: 'Hiyuki Weapon name: Buff',
+                source: 'Frostburn',
+                displayName: 'Frostburn: Glacio Buff',
                 type: 'buff',
+                description: 'When applying Glacio Chafe, Glacio DMG is Amplified by 42% for 20 seconds.',
                 ownerCharacter: null,
                 condition: always(),
                 characterStats: { glacioAmplifyDMG: 0.42 },
                 targetStrategy: 'self',
-                durationStrategy: { type: 'limited', timeDuration: 6 },
-                stackingStrategy: { maxStacks: 1, resetTimerOnApplication: true, stacksRemovedEachTime: 1 },
-                contributionGroup: 'Hiyuki Weapon name: Buff'
+                durationStrategy: { type: 'limited', timeDuration: 20 },
+                stackingStrategy: { maxStacks: 1, resetTimerOnApplication: true, stacksRemovedEachTime: 1 }
               },
               {
-                source: 'Hiyuki Weapon name',
-                displayName: 'Hiyuki Weapon name: Buff',
+                source: 'Frostburn',
+                displayName: 'Frostburn: Liberation Buff',
                 type: 'buff',
+                description: 'When applying Glacio Chafe, Liberation DMG ignore 15% DEF for 20 seconds.',
                 ownerCharacter: null,
                 condition: (ctx) => ctx.action.dmgTypes.includes('LIBERATION') ? 1 : 0,
-                characterStats: { defIgnore: 0.12 },
+                characterStats: { defIgnore: 0.15 },
                 targetStrategy: 'self',
-                durationStrategy: { type: 'limited', timeDuration: 6 },
-                stackingStrategy: { maxStacks: 1, resetTimerOnApplication: true, stacksRemovedEachTime: 1 },
-                contributionGroup: 'Hiyuki Weapon name: Buff'
+                durationStrategy: { type: 'limited', timeDuration: 20 },
+                stackingStrategy: { maxStacks: 1, resetTimerOnApplication: true, stacksRemovedEachTime: 1 }
               },
             ],
           }
@@ -294,9 +297,10 @@ export const weaponCatalog: WeaponCatalogEntry[] = [
             targets: ['character'],
             modifiers: [
               {
-                source: 'Hiyuki Weapon name',
-                displayName: 'Hiyuki Weapon name: Passive ATK',
+                source: 'Frostburn',
+                displayName: 'Frostburn: Passive ATK',
                 type: 'buff',
+                description: 'Increases ATK by 21%.',
                 ownerCharacter: null,
                 condition: always(),
                 characterStats: { bonusATK: 0.21 },
@@ -307,31 +311,31 @@ export const weaponCatalog: WeaponCatalogEntry[] = [
             ],
           },
           {
-            targets: [{ tag: 'GLACIO_CHAFE_APPLIER' }, { tag: 'GLACIO_BITE_APPLIER' }],
+            targets: [{ tag: 'GLACIO_CHAFE_APPLIER' }],
             modifiers: [
               {
-                source: 'Hiyuki Weapon name',
-                displayName: 'Hiyuki Weapon name: Buff',
+                source: 'Frostburn',
+                displayName: 'Frostburn: Glacio Buff',
                 type: 'buff',
+                description: 'When applying Glacio Chafe, Glacio DMG is Amplified by 49% for 20 seconds.',
                 ownerCharacter: null,
                 condition: always(),
                 characterStats: { glacioAmplifyDMG: 0.49 },
                 targetStrategy: 'self',
-                durationStrategy: { type: 'limited', timeDuration: 6 },
-                stackingStrategy: { maxStacks: 1, resetTimerOnApplication: true, stacksRemovedEachTime: 1 },
-                contributionGroup: 'Hiyuki Weapon name: Buff'
+                durationStrategy: { type: 'limited', timeDuration: 20 },
+                stackingStrategy: { maxStacks: 1, resetTimerOnApplication: true, stacksRemovedEachTime: 1 }
               },
               {
-                source: 'Hiyuki Weapon name',
-                displayName: 'Hiyuki Weapon name: Buff',
+                source: 'Frostburn',
+                displayName: 'Frostburn: Liberation Buff',
                 type: 'buff',
+                description: 'When applying Glacio Chafe, Liberation DMG ignore 17.5% DEF for 20 seconds.',
                 ownerCharacter: null,
                 condition: (ctx) => ctx.action.dmgTypes.includes('LIBERATION') ? 1 : 0,
-                characterStats: { defIgnore: 0.14 },
+                characterStats: { defIgnore: 0.175 },
                 targetStrategy: 'self',
-                durationStrategy: { type: 'limited', timeDuration: 6 },
-                stackingStrategy: { maxStacks: 1, resetTimerOnApplication: true, stacksRemovedEachTime: 1 },
-                contributionGroup: 'Hiyuki Weapon name: Buff'
+                durationStrategy: { type: 'limited', timeDuration: 20 },
+                stackingStrategy: { maxStacks: 1, resetTimerOnApplication: true, stacksRemovedEachTime: 1 }
               },
             ],
           }
@@ -343,9 +347,10 @@ export const weaponCatalog: WeaponCatalogEntry[] = [
             targets: ['character'],
             modifiers: [
               {
-                source: 'Hiyuki Weapon name',
-                displayName: 'Hiyuki Weapon name: Passive ATK',
+                source: 'Frostburn',
+                displayName: 'Frostburn: Passive ATK',
                 type: 'buff',
+                description: 'Increases ATK by 24%.',
                 ownerCharacter: null,
                 condition: always(),
                 characterStats: { bonusATK: 0.24 },
@@ -356,31 +361,31 @@ export const weaponCatalog: WeaponCatalogEntry[] = [
             ],
           },
           {
-            targets: [{ tag: 'GLACIO_CHAFE_APPLIER' }, { tag: 'GLACIO_BITE_APPLIER' }],
+            targets: [{ tag: 'GLACIO_CHAFE_APPLIER' }],
             modifiers: [
               {
-                source: 'Hiyuki Weapon name',
-                displayName: 'Hiyuki Weapon name: Buff',
+                source: 'Frostburn',
+                displayName: 'Frostburn: Glacio Buff',
                 type: 'buff',
+                description: 'When applying Glacio Chafe, Glacio DMG is Amplified by 56% for 20 seconds.',
                 ownerCharacter: null,
                 condition: always(),
                 characterStats: { glacioAmplifyDMG: 0.56 },
                 targetStrategy: 'self',
-                durationStrategy: { type: 'limited', timeDuration: 6 },
-                stackingStrategy: { maxStacks: 1, resetTimerOnApplication: true, stacksRemovedEachTime: 1 },
-                contributionGroup: 'Hiyuki Weapon name: Buff'
+                durationStrategy: { type: 'limited', timeDuration: 20 },
+                stackingStrategy: { maxStacks: 1, resetTimerOnApplication: true, stacksRemovedEachTime: 1 }
               },
               {
-                source: 'Hiyuki Weapon name',
-                displayName: 'Hiyuki Weapon name: Buff',
+                source: 'Frostburn',
+                displayName: 'Frostburn: Liberation Buff',
                 type: 'buff',
+                description: 'When applying Glacio Chafe, Liberation DMG ignore 20% DEF for 20 seconds.',
                 ownerCharacter: null,
                 condition: (ctx) => ctx.action.dmgTypes.includes('LIBERATION') ? 1 : 0,
-                characterStats: { defIgnore: 0.16 },
+                characterStats: { defIgnore: 0.20 },
                 targetStrategy: 'self',
-                durationStrategy: { type: 'limited', timeDuration: 6 },
-                stackingStrategy: { maxStacks: 1, resetTimerOnApplication: true, stacksRemovedEachTime: 1 },
-                contributionGroup: 'Hiyuki Weapon name: Buff'
+                durationStrategy: { type: 'limited', timeDuration: 20 },
+                stackingStrategy: { maxStacks: 1, resetTimerOnApplication: true, stacksRemovedEachTime: 1 }
               },
             ],
           }
@@ -448,7 +453,7 @@ export const weaponCatalog: WeaponCatalogEntry[] = [
     weaponType: 'Broadblade',
     stats: { baseATK: 412.50, energyPercent: 0.7704 },
     icon: 'assets/gear/weapons/starfield_calibrator.png',
-    info: "Increases DEF by 16%/20%/24%/28%/32%. Casting Resonance Liberation restores 8/10/12/14/16 points of Concerto Energy. This effect can be triggered 1 time every 20s. When the wielder heals Resonators, increases Crit. DMG of all nearby Resonators in the team by 20%/25%/30%/35%/40% for 4s. Effects of the same name cannot be stacked.",
+    info: 'Increases DEF by 16%/20%/24%/28%/32%. Casting Resonance Liberation restores 8/10/12/14/16 points of Concerto Energy. This effect can be triggered 1 time every 20s. When the wielder heals Resonators, increases Crit. DMG of all nearby Resonators in the team by 20%/25%/30%/35%/40% for 4s. Effects of the same name cannot be stacked.',
     ranks: {
       1: {
         injectedModifiers: [

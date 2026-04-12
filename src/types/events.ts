@@ -1,5 +1,13 @@
 import type { DamageType, ScalingType, ElementType } from './baseTypes'
 
+// ========== Type: Damage Event Calc Params ===================================================================================
+
+/** Closure-based re-evaluator stored on a DamageEvent so DataOverlay can re-evaluate
+ *  damage with any subset of modifier groups active (buff toggle feature). */
+export type DamageEventCalcParams = {
+  reEvaluate: (activeGroupKeys: Set<string>) => { normal: number; crit: number; avg: number }
+}
+
 // ========== Type: Damage Event ===============================================================================================
 
 export type DamageEvent = {
@@ -15,6 +23,8 @@ export type DamageEvent = {
   average: number
   contributions: Record<string, Contribution>
   timeStamp: number
+  /** Populated at creation time; used by DataOverlay buff-toggle re-evaluation. Non-serializable. */
+  calcParams?: DamageEventCalcParams
 }
 
 // ========== Type: Contribution ===============================================================================================

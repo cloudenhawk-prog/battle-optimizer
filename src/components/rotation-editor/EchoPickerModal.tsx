@@ -644,7 +644,7 @@ function StatConfigurePanel({
 
 // ========== Main Component: EchoPickerModal ==================================================================================
 
-export function EchoPickerModal({ slot, currentGear, characterName: _characterName, elColor, onConfirm, onCancel }: EchoPickerModalProps) {
+export function EchoPickerModal({ slot, currentGear, elColor, onConfirm, onCancel }: EchoPickerModalProps) {
   const [selectedCatalogEntry, setSelectedCatalogEntry] = useState<EchoCatalogEntry | null>(null)
   const [mainStatKey, setMainStatKey] = useState('')
   const [substats, setSubstats] = useState<SubstatRow[]>(EMPTY_SUBSTATS.map(r => ({ ...r })))
@@ -838,7 +838,7 @@ export function EchoPickerModal({ slot, currentGear, characterName: _characterNa
                 transition={{ duration: 0.18 }}
                 className="echo-picker-scroll"
               style={{ flex: 1, minHeight: 0, overflowY: 'auto', padding: '18px 22px', scrollbarWidth: 'none' }}>
-              <style>{`.echo-picker-scroll::-webkit-scrollbar { display: none; }`}</style>
+              <style>{'.echo-picker-scroll::-webkit-scrollbar { display: none; }'}</style>
                 {/* Unequip button — shown only when the slot has an echo equipped */}
                 {currentSlotEcho && (
                   <div style={{ display: 'flex', justifyContent: 'flex-end', marginBottom: 18 }}>

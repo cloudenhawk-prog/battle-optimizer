@@ -8,15 +8,18 @@ import type { ModifierInAction } from '../../types/modifiers'
 import type { CoordinatedAttackInAction } from '../../types/coordinatedAttack'
 import type { GlobalColumns, TableConfig } from '../../types/tableDefinitions'
 import { useRef } from 'react'
-import { getCharacter, getPrevCharacter } from '../../utils/hooks/characterHelpers'
-import { getConcertoValue } from '../../utils/hooks/energyHelpers'
-import { getActionFromCharacter, getActionNameByDmgType } from '../../utils/hooks/actionHelpers'
-import { getSnapshotIndex, getPrevSnapshot, copySnapshots, getSnapshotById, assignCharacterToRow } from '../../utils/hooks/snapshotHelpers'
+import { copySnapshots } from '../../utils/hooks/snapshotHelpers'
 import type { Settings } from '../useSettings'
-import { isFollowUpCastableNow, validateMustChain } from '../../utils/conditions/mustChainValidator'
-import { buildStepContext, resolveTime, resolveDamageModifiers, resolveDamage, resolveSideEffectsAndStatuses, resolveModifierState, resolveResources, resolveCooldowns, resolveCoordinatedAttacks, resolveCastState, resolveResourceMilestones } from '../../utils/hooks/resolvers'
-import { negativeStatuses as negativeStatusesData } from '../../data/negativeStatuses'
-import { createSnapshot } from '../../utils/hooks/snapshotHelpers'
+import { engineStep, initEngineState } from '../../utils/engine/step'
+
+// Re-export pure engine functions for callers that imported them from here
+export {
+  updateSnapshotsWithAction,
+  shouldTriggerOutroIntro,
+  handleOutroIntroFlow,
+  autocastFollowUpChain,
+  type EngineState,
+} from '../../utils/engine/step'
 
 // ========== Hook: useCharacterActions ========================================================================================
 
@@ -46,22 +49,12 @@ export function useCharacterActions({ setSnapshots, charactersInBattle, enemy, t
     negativeStatuses: negativeStatusesCol?.statusMetadata?.map(meta => meta.key) ?? [],
   }
 
-  const negativeStatusesInAction = useRef<NegativeStatusInAction[]>(
-    Object.values(negativeStatusesData).map(status => ({
-      negativeStatus: status,
-      applicationTime: -1,
-      timeLeft: 0,
-      currentStacks: 0,
-      lastDamageTime: 0,
-    })),
-  )
-
-  // Track active modifiers (buffs/debuffs) during the rotation
-  // Initially empty - modifiers are activated when applied by actions/characters
-  const modifiersInAction = useRef<ModifierInAction[]>([])
-
-  // Track active coordinated attacks during the rotation
-  const coordinatedAttacksInAction = useRef<CoordinatedAttackInAction[]>([])
+  // Persistent engine state — survives across action selections.
+  // These three refs are the canonical state; useImportExport writes to them directly.
+  const initState = initEngineState()
+  const negativeStatusesInAction = useRef<NegativeStatusInAction[]>(initState.negativeStatusesInAction)
+  const modifiersInAction = useRef<ModifierInAction[]>(initState.modifiersInAction)
+  const coordinatedAttacksInAction = useRef<CoordinatedAttackInAction[]>(initState.coordinatedAttacksInAction)
 
   const handleCharacterSelect = (snapshotId: number, characterName: string) => {
     setSnapshots(prev => {
@@ -80,250 +73,35 @@ export function useCharacterActions({ setSnapshots, charactersInBattle, enemy, t
 
   const handleActionSelect = (snapshotId: number, actionName: string) => {
     setSnapshots(prevSnapshots => {
-      let updated = copySnapshots(prevSnapshots)
+      const result = engineStep({
+        snapshots: copySnapshots(prevSnapshots),
+        snapshotId,
+        actionName,
+        engineState: {
+          negativeStatusesInAction: negativeStatusesInAction.current,
+          modifiersInAction: modifiersInAction.current,
+          coordinatedAttacksInAction: coordinatedAttacksInAction.current,
+        },
+        charactersMap,
+        characterColumnsMap,
+        globalColumns,
+        enemy,
+        autocastFollowUps: settings.autocastFollowUps,
+      })
 
-      if (shouldTriggerOutroIntro(updated, snapshotId)) {
-        updated = handleOutroIntroFlow({ snapshots: updated, snapshotId, charactersMap, characterColumnsMap, globalColumns, enemy, setDamageEvents, negativeStatusesInAction, modifiersInAction, coordinatedAttacksInAction })
-        snapshotId += 2
+      // Dispatch damage events to React state
+      if (result.damageEvents.length > 0) {
+        setDamageEvents(prev => [...prev, ...result.damageEvents])
       }
 
-      updated = updateSnapshotsWithAction({ snapshots: updated, snapshotId, actionName, charactersMap, characterColumnsMap, globalColumns, enemy, setDamageEvents, negativeStatusesInAction, modifiersInAction, coordinatedAttacksInAction })
+      // Persist updated engine state into the canonical refs
+      negativeStatusesInAction.current = result.engineState.negativeStatusesInAction
+      modifiersInAction.current = result.engineState.modifiersInAction
+      coordinatedAttacksInAction.current = result.engineState.coordinatedAttacksInAction
 
-      if (settings.autocastFollowUps) {
-        updated = autocastFollowUpChain({ snapshots: updated, resolvedSnapshotId: snapshotId, charactersMap, characterColumnsMap, globalColumns, enemy, setDamageEvents, negativeStatusesInAction, modifiersInAction, coordinatedAttacksInAction })
-      }
-
-      return updated
+      return result.snapshots
     })
   }
 
   return { handleCharacterSelect, handleActionSelect, coordinatedAttacksInAction, negativeStatusesInAction, modifiersInAction }
-}
-
-// ========== Internal Helpers =================================================================================================
-
-export function updateSnapshotsWithAction(params: { snapshots: Snapshot[]; snapshotId: number; actionName: string; charactersMap: Record<string, ResolvedCharacter>; characterColumnsMap: Record<string, string[]>; globalColumns: GlobalColumns; enemy: Enemy; setDamageEvents: Dispatch<SetStateAction<DamageEvent[]>>; negativeStatusesInAction: React.MutableRefObject<NegativeStatusInAction[]>; modifiersInAction: React.MutableRefObject<ModifierInAction[]>; coordinatedAttacksInAction: React.MutableRefObject<CoordinatedAttackInAction[]> }): Snapshot[] {
-  // -------- Validate Input --------------------
-  const validated = validateActionInputs(params)
-  if (!validated) {
-    return params.snapshots
-  }
-
-  const { index, character, action, snapshots, prev, enemy, negativeStatusesInAction, modifiersInAction, coordinatedAttacksInAction, charactersMap, characterColumnsMap, globalColumns, setDamageEvents } = validated
-  const updatedSnapshots = copySnapshots(snapshots)
-
-  // Get the current snapshot from the COPIED array, not the original
-  const current = updatedSnapshots[index]
-
-  // -------- Resolvers -------------------------
-  const context = buildStepContext(index, current, prev, character, action, enemy, negativeStatusesInAction.current, modifiersInAction.current, charactersMap, coordinatedAttacksInAction.current)
-
-  resolveTime(context)
-
-  resolveDamageModifiers(context)
-
-  resolveDamage(context, setDamageEvents)
-
-  resolveSideEffectsAndStatuses(context, setDamageEvents)
-
-  resolveCoordinatedAttacks(context, setDamageEvents)
-
-  resolveResources(context)
-
-  resolveResourceMilestones(context)
-
-  resolveModifierState(context)
-
-  resolveCooldowns(context)
-
-  resolveCastState(context)
-
-  // -------- Update modifiersInAction ref ------
-  modifiersInAction.current = context.modifiersInAction
-
-  // -------- Update snapshot -------------------
-  updatedSnapshots[index] = { ...context.current }
-
-  // -------- Create Next Blank Snapshot --------
-  if (index === updatedSnapshots.length - 1) {
-    updatedSnapshots.push(createSnapshot(updatedSnapshots[updatedSnapshots.length - 1], charactersMap, characterColumnsMap, globalColumns))
-  }
-
-  return updatedSnapshots
-}
-
-// =============================================================================================================================
-
-export function shouldTriggerOutroIntro(snapshots: Snapshot[], snapshotId: number): boolean {
-  if (snapshotId === 0) return false
-
-  const prevChar = getPrevCharacter(snapshots, snapshotId)
-  const currChar = getSnapshotById(snapshots, snapshotId)?.character ?? null
-
-  if (!prevChar || !currChar || prevChar === currChar) return false
-
-  const prevSnapshot = getPrevSnapshot(snapshots, snapshotId)
-  const prevConcerto = getConcertoValue(prevSnapshot, prevChar)
-
-  return prevConcerto === 100
-}
-
-// =============================================================================================================================
-
-export function handleOutroIntroFlow(params: { snapshots: Snapshot[]; snapshotId: number; charactersMap: Record<string, ResolvedCharacter>; characterColumnsMap: Record<string, string[]>; globalColumns: GlobalColumns; enemy: Enemy; setDamageEvents: Dispatch<SetStateAction<DamageEvent[]>>; negativeStatusesInAction: React.MutableRefObject<NegativeStatusInAction[]>; modifiersInAction: React.MutableRefObject<ModifierInAction[]>; coordinatedAttacksInAction: React.MutableRefObject<CoordinatedAttackInAction[]> }): Snapshot[] {
-  const { snapshots, snapshotId, charactersMap, characterColumnsMap, globalColumns, enemy, setDamageEvents, negativeStatusesInAction, modifiersInAction, coordinatedAttacksInAction } = params
-
-  let updated = copySnapshots(snapshots)
-
-  const prevChar = getPrevCharacter(updated, snapshotId)!
-  const currChar = getSnapshotById(updated, snapshotId)!.character!
-
-  const prevCharObj = charactersMap[prevChar]
-  const currCharObj = charactersMap[currChar]
-
-  if (!prevCharObj) throw new Error(`handleOutroIntroFlow: character '${prevChar}' not found in charactersMap`)
-  if (!currCharObj) throw new Error(`handleOutroIntroFlow: character '${currChar}' not found in charactersMap`)
-
-  // Get current forms for both characters
-  const prevSnapshot = getPrevSnapshot(updated, snapshotId)
-  const prevCharForm = prevSnapshot?.charactersForms?.[prevChar] ?? ''
-  const currCharForm = prevSnapshot?.charactersForms?.[currChar] ?? ''
-
-  const outroActionName = getActionNameByDmgType(prevCharObj, 'OUTRO', prevCharForm)
-  const introActionName = getActionNameByDmgType(currCharObj, 'INTRO', currCharForm)
-
-  if (!outroActionName) throw new Error(`handleOutroIntroFlow: character '${prevChar}' has no OUTRO action — every character must define one`)
-  if (!introActionName) throw new Error(`handleOutroIntroFlow: character '${currChar}' has no INTRO action — every character must define one`)
-
-  // Force Outro row
-  updated[snapshotId] = assignCharacterToRow(updated[snapshotId], prevChar)
-  updated = updateSnapshotsWithAction({ snapshots: updated, snapshotId, actionName: outroActionName, charactersMap, characterColumnsMap, globalColumns, enemy, setDamageEvents, negativeStatusesInAction, modifiersInAction, coordinatedAttacksInAction })
-  updated[snapshotId] = { ...updated[snapshotId], isAutocast: true }
-
-  // Insert Intro row
-  const introId = snapshotId + 1
-  updated[introId] = assignCharacterToRow(updated[introId], currChar)
-  updated = updateSnapshotsWithAction({ snapshots: updated, snapshotId: introId, actionName: introActionName, charactersMap, characterColumnsMap, globalColumns, enemy, setDamageEvents, negativeStatusesInAction, modifiersInAction, coordinatedAttacksInAction })
-  updated[introId] = { ...updated[introId], isAutocast: true }
-
-  // Prepare the next blank row for the real action
-  const nextId = introId + 1
-  updated[nextId] = assignCharacterToRow(updated[nextId], currChar)
-
-  return updated
-}
-
-// =============================================================================================================================
-
-function validateActionInputs(params: { snapshots: Snapshot[]; snapshotId: number; actionName: string; charactersMap: Record<string, ResolvedCharacter>; characterColumnsMap: Record<string, string[]>; globalColumns: GlobalColumns; enemy: Enemy; negativeStatusesInAction: React.MutableRefObject<NegativeStatusInAction[]>; modifiersInAction: React.MutableRefObject<ModifierInAction[]>; coordinatedAttacksInAction: React.MutableRefObject<CoordinatedAttackInAction[]>; setDamageEvents: Dispatch<SetStateAction<DamageEvent[]>> }) {
-  const { snapshots, snapshotId, actionName, enemy, negativeStatusesInAction, modifiersInAction, coordinatedAttacksInAction, charactersMap, characterColumnsMap, globalColumns, setDamageEvents } = params
-
-  const index = getSnapshotIndex(snapshots, snapshotId)
-  if (index === -1) {
-    return null
-  }
-
-  const current = snapshots[index]
-  if (!current.character) {
-    return null
-  }
-
-  const character = getCharacter(charactersMap, current.character)
-  if (!character) {
-    return null
-  }
-
-  const prev = getPrevSnapshot(snapshots, index)
-
-  const action = getActionFromCharacter(charactersMap, current.character, actionName, prev)
-  if (!action) {
-    return null
-  }
-
-  return { index, character, action, snapshots, current, prev, enemy, negativeStatusesInAction, modifiersInAction, coordinatedAttacksInAction, charactersMap, characterColumnsMap, globalColumns, setDamageEvents }
-}
-
-// =============================================================================================================================
-
-export type AutocastParams = {
-  snapshots: Snapshot[]
-  resolvedSnapshotId: number
-  charactersMap: Record<string, ResolvedCharacter>
-  characterColumnsMap: Record<string, string[]>
-  globalColumns: GlobalColumns
-  enemy: Enemy
-  setDamageEvents: Dispatch<SetStateAction<DamageEvent[]>>
-  negativeStatusesInAction: React.MutableRefObject<NegativeStatusInAction[]>
-  modifiersInAction: React.MutableRefObject<ModifierInAction[]>
-  coordinatedAttacksInAction: React.MutableRefObject<CoordinatedAttackInAction[]>
-}
-
-/**
- * Walks the attemptFollowUp chain from the resolved snapshot and automatically
- * casts each follow-up action in sequence, stopping when there is no further
- * follow-up or when a follow-up cannot be resolved.
- *
- * MUST follow-ups are always auto-cast.
- * "If possible" follow-ups (must === false) are auto-cast only when the follow-up
- * is actually castable in the current state; otherwise the chain stops.
- */
-export function autocastFollowUpChain(params: AutocastParams): Snapshot[] {
-  let { snapshots, resolvedSnapshotId, ...rest } = params
-
-  while (true) {
-    const resolvedIndex = getSnapshotIndex(snapshots, resolvedSnapshotId)
-    if (resolvedIndex === -1) break
-
-    const resolvedSnapshot = snapshots[resolvedIndex]
-    const characterName = resolvedSnapshot.character
-    if (!characterName) break
-
-    const followUpEntry = resolvedSnapshot.charactersAttemptFollowUp?.[characterName]
-    if (!followUpEntry) break
-
-    const { actionName: followUpActionName, must } = followUpEntry
-
-    // Always check immediate castability (position, form, energy, cooldown)
-    const character = rest.charactersMap[characterName]
-    const followUpAction = character?.actions.find(
-      a => a.name === followUpActionName || a.groupName === followUpActionName,
-    )
-    if (!character || !followUpAction || !isFollowUpCastableNow(followUpAction, resolvedSnapshot, character)) {
-      break
-    }
-
-    // For "if possible" follow-ups, also validate that the follow-up's own MUST chain
-    // is satisfiable before committing to autocasting it — prevents autocasting into
-    // an action whose forced chain (e.g. Liberation) can't complete
-    if (!must) {
-      if (!validateMustChain(followUpAction, resolvedSnapshot, character, character.actions)) {
-        break
-      }
-    }
-
-    // The next blank row must exist (created by updateSnapshotsWithAction)
-    const nextBlankIndex = resolvedIndex + 1
-    if (nextBlankIndex >= snapshots.length) break
-
-    // Ensure the character is assigned to the next row (createSnapshot usually carries it
-    // forward, but guard against edge cases such as requiresSwapOut actions)
-    if (!snapshots[nextBlankIndex].character) {
-      snapshots = snapshots.map((s, i) => (i === nextBlankIndex ? assignCharacterToRow(s, characterName) : s))
-    }
-
-    const nextSnapshotId = Number(snapshots[nextBlankIndex].id)
-
-    snapshots = updateSnapshotsWithAction({
-      ...rest,
-      snapshots,
-      snapshotId: nextSnapshotId,
-      actionName: followUpActionName,
-    })
-    const castIdx = snapshots.findIndex(s => Number(s.id) === nextSnapshotId)
-    if (castIdx !== -1) snapshots[castIdx] = { ...snapshots[castIdx], isAutocast: true }
-
-    resolvedSnapshotId = nextSnapshotId
-  }
-
-  return snapshots
 }

@@ -75,7 +75,7 @@ function verifyCharacter(character: Character, negativeStatusNames: Set<string>)
   if (forms && forms.length > 0) {
     const baseFormName = defaultForm ?? forms[0].name
     const baseForm = forms.find(f => f.name === baseFormName)
-    check(`Base form "${baseFormName}": exactly 1 Intro and 1 Outro (correct dmgTypes, present in character.actions)`, () => {
+    check(`Base form "${baseFormName}": exactly 1 Intro and 1 Outro (correct tags, present in character.actions)`, () => {
       const errors: string[] = []
       if (!baseForm) {
         errors.push(`form "${baseFormName}" not found in forms array`)
@@ -87,14 +87,14 @@ function verifyCharacter(character: Character, negativeStatusNames: Set<string>)
         if (!intro) {
           errors.push('missing introAction')
         } else {
-          if (!intro.dmgTypes.includes('INTRO')) errors.push(`introAction "${intro.name}" missing dmgType INTRO (got [${intro.dmgTypes.join(', ')}])`)
+          if (!intro.tags?.includes('INTRO_ACTION')) errors.push(`introAction "${intro.name}" missing tag INTRO_ACTION (got [${(intro.tags ?? []).join(', ')}])`)
           if (!actionNames.has(intro.name)) errors.push(`introAction "${intro.name}" not found in character.actions`)
         }
 
         if (!outro) {
           errors.push('missing outroAction')
         } else {
-          if (!outro.dmgTypes.includes('OUTRO')) errors.push(`outroAction "${outro.name}" missing dmgType OUTRO (got [${outro.dmgTypes.join(', ')}])`)
+          if (!outro.tags?.includes('OUTRO_ACTION')) errors.push(`outroAction "${outro.name}" missing tag OUTRO_ACTION (got [${(outro.tags ?? []).join(', ')}])`)
           if (!actionNames.has(outro.name)) errors.push(`outroAction "${outro.name}" not found in character.actions`)
         }
 
@@ -103,13 +103,13 @@ function verifyCharacter(character: Character, negativeStatusNames: Set<string>)
       if (errors.length) throw new Error(errors.join('; '))
     })
   } else {
-    // No forms — check character.actions for exactly 1 Intro and 1 Outro by name convention.
+    // No forms — check character.actions for exactly 1 INTRO_ACTION and 1 OUTRO_ACTION by tag.
     check('Required actions (Intro / Outro)', () => {
       const errors: string[] = []
-      const introCount = actions.filter(a => a.name.includes('Intro')).length
-      const outroCount = actions.filter(a => a.name.includes('Outro')).length
-      if (introCount !== 1) errors.push(`expected exactly 1 Intro, found ${introCount}`)
-      if (outroCount !== 1) errors.push(`expected exactly 1 Outro, found ${outroCount}`)
+      const introCount = actions.filter(a => a.tags?.includes('INTRO_ACTION')).length
+      const outroCount = actions.filter(a => a.tags?.includes('OUTRO_ACTION')).length
+      if (introCount !== 1) errors.push(`expected exactly 1 action with tag INTRO_ACTION, found ${introCount}`)
+      if (outroCount !== 1) errors.push(`expected exactly 1 action with tag OUTRO_ACTION, found ${outroCount}`)
       if (errors.length) throw new Error(errors.join('; '))
     })
   }
@@ -168,11 +168,11 @@ function verifyCharacter(character: Character, negativeStatusNames: Set<string>)
   }
 
   // --- maxEnergies ---
-  check('Max energies (required: energy / concerto / forte or forte sub-energies; all values non-null and non-negative)', () => {
+  check('Max energies (required: energy / concerto / at least one custom gauge; all values non-null and non-negative)', () => {
     const errors: string[] = []
     for (const key of ['energy', 'concerto'] as const) if (!(key in maxEnergies)) errors.push(`missing required key "${key}"`)
-    const hasForteLike = ('forte' in maxEnergies) || (['forte_divinity', 'forte_discord', 'forte_virtue'] as const).some(k => k in maxEnergies)
-    if (!hasForteLike) errors.push('missing forte energy (requires "forte" or at least one of forte_divinity, forte_discord, forte_virtue)')
+    const hasForteLike = Object.keys(maxEnergies).some(k => k !== 'energy' && k !== 'concerto')
+    if (!hasForteLike) errors.push('missing forte energy (requires at least one energy type besides "energy" and "concerto")')
     for (const [key, value] of Object.entries(maxEnergies)) {
       if (value == null) errors.push(`"${key}" is null/undefined`)
       else if (value < 0) errors.push(`"${key}" is ${value}`)

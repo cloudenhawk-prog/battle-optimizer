@@ -42,7 +42,6 @@ export function StatusTag({ icon, label, value, maxStacks, type, color, statusKe
     stats,
   }
 
-  const displayValue = maxStacks && maxStacks > 1 ? value : undefined
   const typeClass = type ? `statusTag-${type}` : ''
 
   // If a custom color is provided, use inline styles to override

@@ -6,7 +6,7 @@ import { getActionCooldownKey } from '../hooks/cooldownHelpers'
 
 // ========== Simulated State ==================================================================================================
 
-type SimulatedState = {
+export type SimulatedState = {
   position: 'GROUND' | 'AIR'
   form: string
   energies: Partial<Record<EnergyType, number>>
@@ -54,7 +54,7 @@ function projectEnergiesAfterAction(
 
 // ========== Castability in a Simulated State =================================================================================
 
-function isActionCastableInState(action: Action, state: SimulatedState): boolean {
+export function isActionCastableInState(action: Action, state: SimulatedState): boolean {
   // Position
   const startState = action.castConditions.startState
   if (startState !== 'ANY' && startState !== state.position) return false

@@ -1233,7 +1233,7 @@ const fleurdelys_intro: Action = {
 const cartethyia_wait_005: Action = {
   name: 'Wait 0.05s',
   displayName: 'Wait 0.05s',
-  category: 'Other',
+  category: 'Testing',
   castTime: 0.05,
   multiplier: 0,
   scaling: 'HP',
@@ -1318,7 +1318,7 @@ const cartethyia_wait_for_cooldown: Action = {
     const remaining = Object.values(cooldowns).filter(r => r > 0)
     const castTime = remaining.length > 0 ? Math.min(...remaining) : 0
     return { ...this, castTime, resolveVariant: undefined }
-  },
+  }
 }
 
 // ========== Energies =========================================================================================================

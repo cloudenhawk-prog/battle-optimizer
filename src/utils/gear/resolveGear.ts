@@ -24,16 +24,16 @@ import { computeEchoSetCounts, echoSetRegistry } from '../../data/gear/echoSets'
  * Each InjectedModifier target can be `'character'` or an Action/CoordinatedAttack reference.
  * Each InjectedSideEffect target is an Action reference (actions only).
  */
-export function resolveGear(characterActions: Action[], characterDamageModifiers: DamageModifier[], gear: Gear, originalToClone: Map<Action | CoordinatedAttack, Action | CoordinatedAttack>): void {
+export function resolveGear(characterActions: Action[], characterDamageModifiers: DamageModifier[], gear: Gear, originalToClone: Map<Action | CoordinatedAttack, Action | CoordinatedAttack>, characterName: string): void {
   // Weapon modifier injection
   if (gear.weapon.injectedModifiers?.length) {
-    applyInjectedModifiers(gear.weapon.injectedModifiers, characterActions, characterDamageModifiers, originalToClone)
+    applyInjectedModifiers(gear.weapon.injectedModifiers, characterActions, characterDamageModifiers, originalToClone, characterName)
   }
 
   // Slot-1 echo modifier and side-effect injection
   const slot1Echo = gear.echoSlots[1]
   if (slot1Echo?.injectedModifiers?.length) {
-    applyInjectedModifiers(slot1Echo.injectedModifiers, characterActions, characterDamageModifiers, originalToClone)
+    applyInjectedModifiers(slot1Echo.injectedModifiers, characterActions, characterDamageModifiers, originalToClone, characterName)
   }
   if (slot1Echo?.injectedSideEffects?.length) {
     applyInjectedSideEffects(slot1Echo.injectedSideEffects, characterActions, originalToClone)
@@ -46,7 +46,7 @@ export function resolveGear(characterActions: Action[], characterDamageModifiers
   if (gear.setBonus?.name && gear.setBonus.injectedModifiers?.length) {
     const setCounts = computeEchoSetCounts(slots)
     if ((setCounts[gear.setBonus.name] ?? 0) >= 5) {
-      applyInjectedModifiers(gear.setBonus.injectedModifiers, characterActions, characterDamageModifiers, originalToClone)
+      applyInjectedModifiers(gear.setBonus.injectedModifiers, characterActions, characterDamageModifiers, originalToClone, characterName)
     }
   }
 
@@ -58,7 +58,7 @@ export function resolveGear(characterActions: Action[], characterDamageModifiers
     if (!echoSet) continue
     for (const [milestoneStr, milestone] of Object.entries(echoSet.milestones)) {
       if (count >= Number(milestoneStr) && milestone.injectedModifiers?.length) {
-        applyInjectedModifiers(milestone.injectedModifiers, characterActions, characterDamageModifiers, originalToClone)
+        applyInjectedModifiers(milestone.injectedModifiers, characterActions, characterDamageModifiers, originalToClone, characterName)
       }
     }
   }
@@ -69,23 +69,29 @@ function applyInjectedModifiers(
   characterActions: Action[],
   characterDamageModifiers: DamageModifier[],
   originalToClone: Map<Action | CoordinatedAttack, Action | CoordinatedAttack>,
+  characterName: string,
 ): void {
   for (const { targets, modifiers, energyGeneration } of injectedModifiers) {
+    // Stamp ownerCharacter on each modifier using the equipping character's name as the fallback.
+    // Spread to avoid mutating shared registry/catalog objects.
+    const ownedModifiers = modifiers.map(m =>
+      m.ownerCharacter != null ? m : { ...m, ownerCharacter: characterName }
+    )
     for (const target of targets) {
       if (target === 'character') {
-        characterDamageModifiers.push(...modifiers)
+        characterDamageModifiers.push(...ownedModifiers)
         // energyGeneration is not applicable to 'character' targets
       } else if (isTagTarget(target)) {
         // Tag-based: iterate working actions (and their CAs) directly — no clone map needed
         for (const action of characterActions) {
           if (hasMatchingTags(action, target)) {
-            action.damageModifiers.push(...modifiers)
+            action.damageModifiers.push(...ownedModifiers)
             if (energyGeneration?.length) action.energyGenerated.push(...energyGeneration)
           }
           for (const ca of action.coordinatedAttacks ?? []) {
             if (hasMatchingTags(ca, target)) {
               ca.damageModifiers ??= []
-              ca.damageModifiers.push(...modifiers)
+              ca.damageModifiers.push(...ownedModifiers)
             }
           }
           // Inject into procModifiers of any heal-proc modifier whose procTag matches the target tag.
@@ -93,26 +99,26 @@ function applyInjectedModifiers(
           // from a modifier-based periodic heal field (e.g. Syntony Field).
           for (const mod of action.damageModifiers) {
             if (mod.healProc && matchesProcTag(mod.healProc.procTag, target)) {
-              mod.healProc.procModifiers.push(...modifiers)
+              mod.healProc.procModifiers.push(...ownedModifiers)
             }
           }
         }
         // Character-level heal-proc modifiers (rare, but handled for completeness)
         for (const mod of characterDamageModifiers) {
           if (mod.healProc && matchesProcTag(mod.healProc.procTag, target)) {
-            mod.healProc.procModifiers.push(...modifiers)
+            mod.healProc.procModifiers.push(...ownedModifiers)
           }
         }
       } else if (isCoordinatedAttack(target)) {
         const clone = originalToClone.get(target) as CoordinatedAttack | undefined
         if (clone) {
           clone.damageModifiers ??= []
-          clone.damageModifiers.push(...modifiers)
+          clone.damageModifiers.push(...ownedModifiers)
         }
       } else {
         const clone = originalToClone.get(target) as Action | undefined
         if (clone) {
-          clone.damageModifiers.push(...modifiers)
+          clone.damageModifiers.push(...ownedModifiers)
           if (energyGeneration?.length) clone.energyGenerated.push(...energyGeneration)
         }
       }

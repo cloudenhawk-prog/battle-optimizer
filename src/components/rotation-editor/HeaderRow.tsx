@@ -88,6 +88,7 @@ export function HeaderRow({ tableConfig, columnVisibility, setColumnVisibility }
               </th>
             )
           })()}
+
       </tr>
 
       {/* Column labels */}

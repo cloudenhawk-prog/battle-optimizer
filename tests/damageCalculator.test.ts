@@ -820,16 +820,20 @@ describe('damageCalculator', () => {
 
       const action = createMockAction('Test', { multiplier: 1, scaling: 'ATK', elements: ['GLACIO'], dmgTypes: ['BASIC'] })
       const full = calculateDamage({ action, name: 'X', stats: baseStats, damageModifiers: mods, modifierCharacterStats: aggregated, modifierEnemyStats: {}, enemy, snapshotId: 1, timeStamp: 0 })
+      const base = calculateDamage({ action, name: 'X', stats: baseStats, damageModifiers: [], modifierCharacterStats: {}, modifierEnemyStats: {}, enemy, snapshotId: 1, timeStamp: 0 })
 
-      // amp
-      const withoutAmp: any = buildAggregatedWithoutModifier(m1, aggregated)
-      const resWithoutAmp = calculateDamage({ action, name: 'X', stats: baseStats, damageModifiers: [], modifierCharacterStats: withoutAmp, modifierEnemyStats: {}, enemy, snapshotId: 1, timeStamp: 0 })
-      assertContribution(full.damageEvent.contributions['amp::amp'], full.damageEvent, resWithoutAmp.damageEvent)
-
-      // total
-      const withoutTotal: any = buildAggregatedWithoutModifier(m2, aggregated)
-      const resWithoutTotal = calculateDamage({ action, name: 'X', stats: baseStats, damageModifiers: [], modifierCharacterStats: withoutTotal, modifierEnemyStats: {}, enemy, snapshotId: 1, timeStamp: 0 })
-      assertContribution(full.damageEvent.contributions['total::total'], full.damageEvent, resWithoutTotal.damageEvent)
+      // Shapley distributes the interaction term between multiplicative modifiers, so
+      // individual contributions won't match simple marginals. Verify Shapley efficiency:
+      // sum of contributions ≈ f(N) - f(∅) (total attributable damage).
+      const ampContrib = full.damageEvent.contributions['amp::amp']
+      const totalContrib = full.damageEvent.contributions['total::total']
+      expect(ampContrib).toBeDefined()
+      expect(totalContrib).toBeDefined()
+      expect(ampContrib.average_damage_contributed).toBeGreaterThanOrEqual(0)
+      expect(totalContrib.average_damage_contributed).toBeGreaterThanOrEqual(0)
+      const shapleySum = ampContrib.average_damage_contributed + totalContrib.average_damage_contributed
+      const attributable = full.damageEvent.average - base.damageEvent.average
+      expect(Math.abs(shapleySum - attributable)).toBeLessThan(attributable * 0.05 + 0.01) // within 5% + 0.01
     })
 
     it('elemental and crit stats numeric match removal', () => {
@@ -841,17 +845,20 @@ describe('damageCalculator', () => {
 
       const action = createMockAction('Test', { multiplier: 1, scaling: 'ATK', elements: ['GLACIO'], dmgTypes: ['BASIC'] })
       const full = calculateDamage({ action, name: 'X', stats: baseStats, damageModifiers: mods, modifierCharacterStats: aggregated, modifierEnemyStats: {}, enemy, snapshotId: 1, timeStamp: 0 })
+      const base = calculateDamage({ action, name: 'X', stats: baseStats, damageModifiers: [], modifierCharacterStats: {}, modifierEnemyStats: {}, enemy, snapshotId: 1, timeStamp: 0 })
 
-      const withoutG: any = buildAggregatedWithoutModifier(m1, aggregated)
-      const resWithoutG = calculateDamage({ action, name: 'X', stats: baseStats, damageModifiers: [], modifierCharacterStats: withoutG, modifierEnemyStats: {}, enemy, snapshotId: 1, timeStamp: 0 })
-      assertContribution(full.damageEvent.contributions['glacioBonus::glacioBonus'], full.damageEvent, resWithoutG.damageEvent)
-
-      // critStuff
-      const withoutC: any = buildAggregatedWithoutModifier(m2, aggregated)
-      const resWithoutC = calculateDamage({ action, name: 'X', stats: baseStats, damageModifiers: [], modifierCharacterStats: withoutC, modifierEnemyStats: {}, enemy, snapshotId: 1, timeStamp: 0 })
-      assertContribution(full.damageEvent.contributions['critStuff::critStuff'], full.damageEvent, resWithoutC.damageEvent)
-      // crit contribution should be present
-      expect(full.damageEvent.contributions['critStuff::critStuff'].crit_damage_contributed).toBeGreaterThanOrEqual(0)
+      // Bonus DMG and crit stats interact through the critical multiplier, so Shapley
+      // distributes the interaction term. Verify each modifier has a non-negative contribution
+      // and together they account for the total attributable damage.
+      const glacioContrib = full.damageEvent.contributions['glacioBonus::glacioBonus']
+      const critContrib = full.damageEvent.contributions['critStuff::critStuff']
+      expect(glacioContrib).toBeDefined()
+      expect(critContrib).toBeDefined()
+      expect(glacioContrib.average_damage_contributed).toBeGreaterThanOrEqual(0)
+      expect(critContrib.crit_damage_contributed).toBeGreaterThanOrEqual(0)
+      const shapleySum = glacioContrib.average_damage_contributed + critContrib.average_damage_contributed
+      const attributable = full.damageEvent.average - base.damageEvent.average
+      expect(Math.abs(shapleySum - attributable)).toBeLessThan(attributable * 0.05 + 0.01)
     })
 
     it('flat ATK numeric match removal', () => {
@@ -874,14 +881,19 @@ describe('damageCalculator', () => {
 
       const action = createMockAction('Test', { multiplier: 1, scaling: 'ATK', elements: ['GLACIO'], dmgTypes: ['BASIC'] })
       const full = calculateDamage({ action, name: 'X', stats: baseStats, damageModifiers: mods, modifierCharacterStats: aggregated, modifierEnemyStats: {}, enemy, snapshotId: 1, timeStamp: 0 })
+      const base = calculateDamage({ action, name: 'X', stats: baseStats, damageModifiers: [], modifierCharacterStats: {}, modifierEnemyStats: {}, enemy, snapshotId: 1, timeStamp: 0 })
 
+      let shapleySum = 0
       for (const m of mods) {
-        const withoutAgg: any = buildAggregatedWithoutModifier(m, aggregated)
-        const resWithout = calculateDamage({ action, name: 'X', stats: baseStats, damageModifiers: [], modifierCharacterStats: withoutAgg, modifierEnemyStats: {}, enemy, snapshotId: 1, timeStamp: 0 })
         const contribKey = `${m.source}::${m.displayName ?? m.source}`
         expect(full.damageEvent.contributions).toHaveProperty(contribKey)
-        assertContribution(full.damageEvent.contributions[contribKey], full.damageEvent, resWithout.damageEvent)
+        const contrib = full.damageEvent.contributions[contribKey]
+        expect(contrib.average_damage_contributed).toBeGreaterThanOrEqual(0)
+        shapleySum += contrib.average_damage_contributed
       }
+      // Shapley efficiency: sum of contributions ≈ total attributable damage
+      const attributable = full.damageEvent.average - base.damageEvent.average
+      expect(Math.abs(shapleySum - attributable)).toBeLessThan(attributable * 0.05 + 0.01)
     })
   })
 

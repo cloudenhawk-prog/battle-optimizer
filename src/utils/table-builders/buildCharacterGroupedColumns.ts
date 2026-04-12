@@ -16,6 +16,7 @@ export function buildCharacterGroupsColumns(selectedCharacters: Character[]): Co
     }
 
     const allEnergyKeys = (Object.keys(c.maxEnergies) as EnergyType[])
+      .filter(key => !(c.hiddenEnergies ?? []).includes(key))
       .sort((a, b) => energyOrder(a) - energyOrder(b))
 
     // Group multiple forte_* sub-keys into a single combined column
@@ -32,6 +33,7 @@ export function buildCharacterGroupsColumns(selectedCharacters: Character[]): Co
             key: `${c.name}_forte`,
             label: 'Forte',
             icon: '/assets/energy/forte.png',
+            description: c.energyDescriptions?.['forte'],
             render: (snapshot: Snapshot) => {
               const energies = snapshot.charactersEnergies[c.name] ?? {}
               const filled = forteSubKeys.filter(k => (energies[k] ?? 0) >= 1).length
@@ -49,6 +51,7 @@ export function buildCharacterGroupsColumns(selectedCharacters: Character[]): Co
             key: `${c.name}_${key}`,
             label: key.split('_').map(w => w.charAt(0).toUpperCase() + w.slice(1)).join(' '),
             icon: `/assets/energy/${key}.png`,
+            description: c.energyDescriptions?.[key as EnergyType],
             render: (snapshot: Snapshot) => {
               const energy = snapshot.charactersEnergies[c.name]?.[key]
               return energy != null ? Math.floor(energy) : energy
@@ -62,6 +65,7 @@ export function buildCharacterGroupsColumns(selectedCharacters: Character[]): Co
         key: `${c.name}_${key}`,
         label: key.split('_').map(w => w.charAt(0).toUpperCase() + w.slice(1)).join(' '),
         icon: `/assets/energy/${key}.png`,
+        description: c.energyDescriptions?.[key as EnergyType],
         render: (snapshot: Snapshot) => {
           const energy = snapshot.charactersEnergies[c.name]?.[key]
           return energy != null ? Math.floor(energy) : energy

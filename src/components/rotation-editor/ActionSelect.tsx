@@ -18,6 +18,7 @@ type ActionSelectProps = {
   previousSnapshot?: Snapshot | null
   onChange: (actionName: string) => void
   disabled?: boolean
+  sandboxMode?: boolean
 }
 
 type ActionState = {
@@ -27,6 +28,7 @@ type ActionState = {
   isUnaffordable: boolean
   isOnCooldown: boolean
   cooldownRemaining: number
+  stacksInfo?: { current: number; max: number; rechargeTime: number }
   missingEnergy: Array<{ type: EnergyType; needed: number; current: number }>
   isWrongPosition: boolean
   isPreviousActionMismatch: boolean
@@ -43,7 +45,7 @@ type ActionState = {
   isComboTagMismatch: boolean
 }
 
-export function ActionSelect({ value, actions, character, currentEnergies, previousSnapshot, onChange, disabled = false }: ActionSelectProps) {
+export function ActionSelect({ value, actions, character, currentEnergies, previousSnapshot, onChange, disabled = false, sandboxMode = false }: ActionSelectProps) {
   const [isOpen, setIsOpen] = useState(false)
   const [expandedGroup, setExpandedGroup] = useState<string | null>(null)
   const [variantPopupPosition, setVariantPopupPosition] = useState({ top: 0, left: 0 })
@@ -94,6 +96,32 @@ export function ActionSelect({ value, actions, character, currentEnergies, previ
     const isSpecial = action.name === 'Intro' || action.name === 'Outro'
     const isCurrent = action.name === value
 
+    if (sandboxMode) {
+      return {
+        action,
+        isSpecial,
+        isCurrent,
+        isUnaffordable: false,
+        isOnCooldown: false,
+        cooldownRemaining: 0,
+        stacksInfo: undefined,
+        missingEnergy: [],
+        isWrongPosition: false,
+        isPreviousActionMismatch: false,
+        isRequiresSwapIn: false,
+        isWrongForm: false,
+        isCustomCanCastFailed: false,
+        isOnSwapCooldown: false,
+        swapCooldownRemaining: 0,
+        isNoSwapTarget: false,
+        isNotRequiredFollowUp: false,
+        isFollowUpNotReady: false,
+        isMustChainUnsatisfiable: false,
+        isComboWindowExpired: false,
+        isComboTagMismatch: false,
+      }
+    }
+
     let isUnaffordable = false
     let cooldownRemaining = 0
     const missingEnergy: Array<{ type: EnergyType; needed: number; current: number }> = []
@@ -111,10 +139,21 @@ export function ActionSelect({ value, actions, character, currentEnergies, previ
 
     // Check if action is on cooldown
     // Variants (actions with same groupName) share cooldowns
+    let stacksInfo: { current: number; max: number; rechargeTime: number } | undefined
     if (character && previousSnapshot && previousSnapshot.charactersCooldowns) {
       const characterCooldowns = previousSnapshot.charactersCooldowns[character.name] ?? {}
       const cooldownKey = getActionCooldownKey(action)
       cooldownRemaining = characterCooldowns[cooldownKey] ?? 0
+
+      // For stacked actions, castability depends on stack count, not the recharge timer
+      if (action.maxStacks && action.maxStacks > 1) {
+        const storedStacks = previousSnapshot.charactersActionStacks?.[character.name]?.[cooldownKey]
+        const currentStacks = storedStacks ?? action.maxStacks // absent = at max stacks
+        const rechargeTime = cooldownRemaining
+        stacksInfo = { current: currentStacks, max: action.maxStacks, rechargeTime }
+        // Action is blocked only when stacks are empty; the recharge timer does not block it
+        if (currentStacks > 0) cooldownRemaining = 0
+      }
     }
 
     const isOnCooldown = cooldownRemaining > 0
@@ -122,7 +161,7 @@ export function ActionSelect({ value, actions, character, currentEnergies, previ
     // Determine character's effective position and last action
     // - If same character as previous snapshot: use stored position/lastAction directly
     // - If swapping back: use stored state only when within the persistence window
-    // - Otherwise (outside persistence or no persistence): position resets to GROUND, combo breaks
+    // - Otherwise (outside persistence or no persistence): mirror the active character's position, combo breaks
     let charPosition: 'GROUND' | 'AIR' = 'GROUND'
     let charLastAction: string | undefined = undefined
     let charComboChainTags: string[] = []
@@ -138,6 +177,12 @@ export function ActionSelect({ value, actions, character, currentEnergies, previ
         charPosition = storedPosition
         charLastAction = previousSnapshot.charactersLastAction?.[charName]
         charComboChainTags = previousSnapshot.charactersComboChainTags?.[charName] ?? []
+      } else {
+        // Mirror the active character's position — the incoming character inherits where the field left off
+        const activeCharName = previousSnapshot.character
+        charPosition = activeCharName
+          ? (previousSnapshot.charactersPositions?.[activeCharName] ?? 'GROUND')
+          : 'GROUND'
       }
     }
 
@@ -261,9 +306,18 @@ export function ActionSelect({ value, actions, character, currentEnergies, previ
       const allCharacterNames = Object.keys(previousSnapshot.charactersEnergies || {})
       const otherCharacters = allCharacterNames.filter(name => name !== character.name)
 
-      // Check if at least one other character will be available after this action
+      // When the current character is swapping IN (differs from the previous on-field character),
+      // the character they're replacing will receive a 1-second swap cooldown starting at
+      // previousSnapshot.toTime during resolution. That cooldown doesn't exist in the snapshot
+      // yet, so we must account for it proactively to avoid allowing a chain that deadlocks.
+      const prevOnFieldChar = previousSnapshot.character
+      const swappingIn = !!prevOnFieldChar && prevOnFieldChar !== character.name
+
       const hasAvailableSwapTarget = otherCharacters.some(otherCharName => {
-        const swapCooldownUntil = previousSnapshot.charactersSwapCooldownUntil?.[otherCharName] ?? 0
+        let swapCooldownUntil = previousSnapshot.charactersSwapCooldownUntil?.[otherCharName] ?? 0
+        if (swappingIn && otherCharName === prevOnFieldChar) {
+          swapCooldownUntil = Math.max(swapCooldownUntil, previousSnapshot.toTime + 1)
+        }
         return swapCooldownUntil <= actionEndTime
       })
 
@@ -378,6 +432,7 @@ export function ActionSelect({ value, actions, character, currentEnergies, previ
       isUnaffordable,
       isOnCooldown,
       cooldownRemaining,
+      stacksInfo,
       missingEnergy,
       isWrongPosition,
       isPreviousActionMismatch,
@@ -397,7 +452,7 @@ export function ActionSelect({ value, actions, character, currentEnergies, previ
 
   // Filter out intro/outro actions - they're automatically triggered, not user-selectable
   const selectableActions = actions.filter(action => {
-    const isIntroOutro = action.dmgTypes.includes('INTRO') || action.dmgTypes.includes('OUTRO')
+    const isIntroOutro = action.tags?.includes('INTRO_ACTION') || action.tags?.includes('OUTRO_ACTION')
     return !isIntroOutro
   })
 
@@ -562,8 +617,17 @@ export function ActionSelect({ value, actions, character, currentEnergies, previ
                               {hasMultipleVariants && <span style={{ marginLeft: '8px', opacity: 0.6 }}>{isExpanded ? '▼' : '▶'}</span>}
                             </div>
                             <div className="actionSelectCell actionCooldownCell">
-                              {/* Show cooldown if all variants have the same cooldown */}
-                              {group.variants.every(v => v.isOnCooldown && v.cooldownRemaining === group.variants[0].cooldownRemaining) && `${group.variants[0].cooldownRemaining.toFixed(2)}s`}
+                              {(() => {
+                                const rep = group.variants[0]
+                                if (rep.stacksInfo) {
+                                  const { current, max, rechargeTime } = rep.stacksInfo
+                                  return `${current}/${max}${rechargeTime > 0 ? ` | ${rechargeTime.toFixed(1)}s` : ''}`
+                                }
+                                if (group.variants.every(v => v.isOnCooldown && v.cooldownRemaining === rep.cooldownRemaining)) {
+                                  return `${rep.cooldownRemaining.toFixed(2)}s`
+                                }
+                                return null
+                              })()}
                             </div>
                             <div className="actionSelectCell actionEnergyCell">
                               {/* Show energy status for the group */}
@@ -614,7 +678,7 @@ export function ActionSelect({ value, actions, character, currentEnergies, previ
 
                     {/* Variant Rows */}
                     {group.variants.map(variant => {
-                      const { action, isCurrent, isUnaffordable, isOnCooldown, cooldownRemaining, missingEnergy, isWrongPosition, isPreviousActionMismatch, isRequiresSwapIn, isWrongForm, isCustomCanCastFailed, isOnSwapCooldown, swapCooldownRemaining, isNoSwapTarget, isNotRequiredFollowUp, isFollowUpNotReady, isMustChainUnsatisfiable, isComboWindowExpired, isComboTagMismatch } = variant
+const { action, isCurrent, isUnaffordable, isOnCooldown, cooldownRemaining, stacksInfo, missingEnergy, isWrongPosition, isPreviousActionMismatch, isRequiresSwapIn, isWrongForm, isCustomCanCastFailed, isOnSwapCooldown, swapCooldownRemaining, isNoSwapTarget, isNotRequiredFollowUp, isFollowUpNotReady, isMustChainUnsatisfiable, isComboWindowExpired, isComboTagMismatch } = variant
 
                       const isDisabled = (isUnaffordable || isOnCooldown || isWrongPosition || isPreviousActionMismatch || isRequiresSwapIn || isWrongForm || isCustomCanCastFailed || isOnSwapCooldown || isNoSwapTarget || isNotRequiredFollowUp || isFollowUpNotReady || isMustChainUnsatisfiable || isComboWindowExpired || isComboTagMismatch) && !isCurrent
                       const canSelect = !isDisabled
@@ -632,7 +696,8 @@ export function ActionSelect({ value, actions, character, currentEnergies, previ
                           <div className="actionSelectVariantCell">
                             <div className="variantName">{action.variantName || action.name}</div>
                             <div className="variantDetails">
-                              {isOnCooldown && <span className="variantCooldown">CD: {cooldownRemaining.toFixed(2)}s</span>}
+                              {stacksInfo && <span className="variantCooldown">{stacksInfo.current}/{stacksInfo.max}{stacksInfo.rechargeTime > 0 ? ` | ${stacksInfo.rechargeTime.toFixed(1)}s` : ''}</span>}
+                              {!stacksInfo && isOnCooldown && <span className="variantCooldown">CD: {cooldownRemaining.toFixed(2)}s</span>}
                               {isOnSwapCooldown && <span className="variantCooldown">Swap CD: {swapCooldownRemaining.toFixed(2)}s</span>}
                               {isComboWindowExpired && <span className="variantBlockedReason">Combo window expired</span>}
                               {isComboTagMismatch && <span className="variantBlockedReason">Wrong combo position</span>}

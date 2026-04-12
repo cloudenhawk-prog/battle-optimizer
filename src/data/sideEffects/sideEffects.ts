@@ -1,5 +1,5 @@
 import type { SideEffect } from '../../types/sideEffect'
-import { calculateAeroErosionSideEffectDamage } from '../../utils/calculators/sideEffectCalculators'
+import { calculateAeroErosionSideEffectDamage, calculateGlacioChafeProcDamage, calculateGlacioChafeDominionDamage } from '../../utils/calculators/sideEffectCalculators'
 import { removeNegativeStatusStacks } from '../../utils/modifications/statusModificationHelpers'
 
 // ========== Side Effects =====================================================================================================
@@ -15,4 +15,27 @@ export const nightmareKelpieOutroTrigger: SideEffect = {
   damageDealt: calculateAeroErosionSideEffectDamage, // TODO: Any way to simply make it a damage event that scales with the character's stats? This is almost like an action: 405.00 % multiplier, aero element, echo dmg type, generates 2.81 energy with 0.50 share, 0 cast time (it's simply a side effect that happens outside of the characters acting so it doesnt take up field time)
   // https://encore.moe/echo/6000113?lang=en
   statusModifications: []
+}
+
+// ========== Hiyuki ==========================================================================================================
+
+// Glacio Bite proc triggered by Hiyuki's Fine Snow passive at 2+ Snow Rust.
+// Fires via actionTriggers (see hiyuki.ts) on every GLACIO_CHAFE_APPLIER cast — no need to
+// attach it to individual actions. The trigger condition gates it on snow_rust >= 2.
+// Damage type LIBERATION and element GLACIO; scales with 102% ATK + all active modifiers.
+export const hiyuki_glacio_chafe_proc: SideEffect = {
+  name: 'Snow Rust 2: Glacio Bite',
+  damageDealt: calculateGlacioChafeProcDamage,
+  statusModifications: [],
+}
+
+// Hiyuki S6 Everfrost Dominion — Glacio Bite damage at max stacks, fired on every
+// Glacio Chafe application by any Resonator on the team.
+// Fires via teamActionTriggers (see hiyuki.ts); ctx.character is always Hiyuki regardless
+// of who cast the triggering action, ensuring correct dealer attribution.
+// Damage uses the Glacio Chafe negative-status pipeline (not ATK-scaled).
+export const hiyuki_everfrost_dominion_glacio_bite: SideEffect = {
+  name: 'Everfrost Dominion: Glacio Bite',
+  damageDealt: calculateGlacioChafeDominionDamage,
+  statusModifications: [],
 }

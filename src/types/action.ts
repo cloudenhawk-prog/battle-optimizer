@@ -30,7 +30,6 @@ export type ActionTag =
   | 'AERO_EROSION_APPLIER'     // Action applies Aero Erosion stacks
   | 'SPECTRO_FRAZZLE_APPLIER'  // Action applies Spectro Frazzle stacks
   | 'GLACIO_CHAFE_APPLIER'     // Action applies Glacio Chafe stacks
-  | 'GLACIO_BITE_APPLIER'      // Action applies Glacio Bite stacks
 
 /**
  * Minimal character view passed to resolveVariant. Deliberately kept separate from the full
@@ -57,6 +56,13 @@ export type Action = {
   elements: ElementType[]
   dmgTypes: DamageType[]
   cooldown: number
+  /** When set, this action uses a charges/stacks system instead of a single-use cooldown.
+   *  All variants sharing the same groupName share both the cooldown timer and the stack pool.
+   *  - An action is castable as long as stacks > 0 (the timer does not block it).
+   *  - Each use consumes 1 stack and (re)starts the cooldown timer for regeneration.
+   *  - Each time the timer expires a stack is restored; the timer restarts unless stacks reach maxStacks.
+   *  - When stacks reach maxStacks the timer stops (no cooldown entry in the snapshot). */
+  maxStacks?: number
 
   energyGenerated: EnergyGeneration[]
   energyCost: EnergyCost[]
@@ -133,6 +139,11 @@ export type CastConditions = {
   /** When true, the character must swap out after this action — they will be locked from
    *  being selected as the active character in the immediately following row. */
   requiresSwapOut?: boolean
+  /** When true, the character cannot swap out after this action — the next action must
+   *  also be from this character. Use on non-swap-cancel variants when a swap-cancel
+   *  sibling exists: selecting this variant means the animation completes in full and
+   *  a swap is not involved. A swap would require picking the (swap cancel) variant instead. */
+  preventsSwapOut?: boolean
   /** Forms required to cast this action. If undefined, action is available in all forms.
    *  If empty array, action can't be cast (typically used with customCanCast function). */
   requiredForms?: string[]

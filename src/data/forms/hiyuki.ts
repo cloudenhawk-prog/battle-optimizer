@@ -1,15 +1,15 @@
 import type { Form } from '../../types/form'
-import { hiyuki_intro_outro_actions } from '../actions/hiyuki'
+import { intro_outro_actions } from '../actions/hiyuki/actions'
 
-export const form_default: Form = { // TODO
-  name: 'Default',
-  displayName: 'Default',
-  introAction: hiyuki_intro_outro_actions.find(a => a.dmgTypes.includes('INTRO')),
-  outroAction: hiyuki_intro_outro_actions.find(a => a.dmgTypes.includes('OUTRO')),
+export const form_present_self: Form = { // TODO
+  name: 'Present Self',
+  displayName: 'Present Self',
+  introAction: intro_outro_actions.find(a => a.tags?.includes('INTRO_ACTION')),
+  outroAction: intro_outro_actions.find(a => a.tags?.includes('OUTRO_ACTION')),
 }
 
-export const form_sakura: Form = { // TODO
-  name: 'Sakura Blossom',
-  displayName: 'Sakura Blossom',
+export const form_foreclaimed_self: Form = { // TODO
+  name: 'Foreclaimed Self',
+  displayName: 'Foreclaimed Self',
   resetFormOnSwapOut: false
 }

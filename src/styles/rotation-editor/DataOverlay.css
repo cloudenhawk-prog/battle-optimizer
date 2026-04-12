@@ -421,9 +421,49 @@
   transform: translateX(2px);
 }
 
+.dataSourceRow.inactive {
+  opacity: 0.38;
+}
+
 .dataSourceRow.pinned {
   background: rgba(100, 180, 255, 0.07);
   box-shadow: inset 2px 0 0 rgba(100, 200, 255, 0.4);
+}
+
+/* Wrapper that puts the DataRow content and toggle button side-by-side */
+.dataSourceRowInner {
+  display: flex;
+  align-items: flex-start;
+  gap: 8px;
+}
+
+.dataSourceRowInner > .dataRow {
+  flex: 1;
+  min-width: 0;
+}
+
+/* Small circular toggle button — lit when source is included in buff contributions */
+.dataSourceToggle {
+  flex-shrink: 0;
+  width: 13px;
+  height: 13px;
+  border-radius: 50%;
+  border: 1.5px solid rgba(255, 255, 255, 0.18);
+  background: transparent;
+  cursor: pointer;
+  padding: 0;
+  margin-top: 1px;
+  transition: background 0.15s, border-color 0.15s, box-shadow 0.15s;
+}
+
+.dataSourceToggle:hover {
+  border-color: var(--toggle-color, rgba(180, 120, 255, 0.65));
+}
+
+.dataSourceToggle.active {
+  background: var(--toggle-color, rgba(180, 120, 255, 0.7));
+  border-color: var(--toggle-color, rgba(180, 120, 255, 0.9));
+  box-shadow: 0 0 6px var(--toggle-color, rgba(180, 120, 255, 0.5));
 }
 
 @keyframes dataRowBeacon {
@@ -504,6 +544,7 @@
   background: rgba(100, 220, 255, 0.14);
   color: rgba(100, 220, 255, 0.95);
 }
+
 
 /* ── Contribution Filter Bar ─────────────────────────────────── */
 .dataContribFilterBar {
@@ -812,16 +853,91 @@
 .dataContribRow {
   position: relative;
   display: flex;
-  flex-direction: column;
-  gap: 4px;
-  padding: 5px 4px;
+  flex-direction: row;
+  align-items: center;
+  gap: 6px;
+  padding: 5px 4px 5px 0;
   border-radius: 4px;
-  cursor: default;
-  transition: background 0.15s;
+  cursor: pointer;
+  transition: background 0.15s, opacity 0.15s;
+}
+
+.dataContribRow.inactive {
+  opacity: 0.4;
 }
 
 .dataContribRow:hover {
   background: rgba(255, 255, 255, 0.03);
+}
+
+/* Toggle dot on the left of each contribution row */
+.dataContribToggle {
+  flex-shrink: 0;
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  border: 1.5px solid rgba(180, 120, 255, 0.3);
+  background: transparent;
+  cursor: pointer;
+  padding: 0;
+  align-self: flex-start;
+  margin-top: 3px;
+  transition: background 0.15s, border-color 0.15s, box-shadow 0.15s;
+}
+
+.dataContribToggle:hover {
+  border-color: rgba(180, 120, 255, 0.65);
+}
+
+.dataContribToggle.active {
+  background: rgba(180, 120, 255, 0.7);
+  border-color: rgba(180, 120, 255, 0.9);
+  box-shadow: 0 0 5px rgba(180, 120, 255, 0.5);
+}
+
+/* Amber (inherent) toggle */
+.dataContribToggle.amber {
+  border-color: rgba(255, 190, 60, 0.35);
+}
+.dataContribToggle.amber:hover {
+  border-color: rgba(255, 190, 60, 0.7);
+}
+.dataContribToggle.amber.active {
+  background: rgba(255, 190, 60, 0.65);
+  border-color: rgba(255, 190, 60, 0.9);
+  box-shadow: 0 0 5px rgba(255, 190, 60, 0.45);
+}
+
+/* Cyan (zero-contribution) toggle */
+.dataContribToggle.cyan {
+  border-color: rgba(100, 220, 255, 0.3);
+}
+.dataContribToggle.cyan:hover {
+  border-color: rgba(100, 220, 255, 0.6);
+}
+.dataContribToggle.cyan.active {
+  background: rgba(100, 220, 255, 0.55);
+  border-color: rgba(100, 220, 255, 0.85);
+  box-shadow: 0 0 5px rgba(100, 220, 255, 0.4);
+}
+
+/* Toggle-all button — rightmost in the filter bar, green-ish accent */
+.dataContribToggleAllBtn {
+  margin-left: auto;
+}
+.dataContribToggleAllBtn.active {
+  background: rgba(100, 220, 140, 0.12);
+  border-color: rgba(100, 220, 140, 0.3);
+  color: rgba(100, 220, 140, 0.9);
+}
+
+/* Wrapper for the name+bar content — flex 1 so it fills remaining width */
+.dataContribContent {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
 }
 
 /* Name + +% row */
@@ -1210,4 +1326,64 @@
 .dataEnergyDelta.cost {
   color: rgba(255, 130, 100, 0.9);
   text-shadow: 0 0 6px rgba(255, 130, 100, 0.3);
+}
+
+.dataEnergyTriggerNote {
+  font-family: 'Share Tech Mono', 'Courier New', monospace;
+  font-size: 9px;
+  letter-spacing: 0.05em;
+  color: rgba(180, 230, 255, 0.55);
+  border-top: 1px solid rgba(100, 220, 255, 0.08);
+  margin-top: 4px;
+  padding-top: 3px;
+  white-space: normal;
+  line-height: 1.4;
+}
+
+/* ── Active Buff Stats Section ───────────────────────────────── */
+.dataActiveStatGroup {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.dataActiveStatGroupLabel {
+  font-family: 'Share Tech Mono', 'Courier New', monospace;
+  font-size: 9px;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: rgba(255, 255, 255, 0.22);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+  padding-bottom: 3px;
+  margin-bottom: 2px;
+}
+
+.dataActiveStatRow {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  gap: 6px;
+  padding: 1px 0;
+}
+
+.dataActiveStatLabel {
+  font-family: 'Share Tech Mono', 'Courier New', monospace;
+  font-size: 12px;
+  color: rgba(255, 255, 255, 0.42);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  min-width: 0;
+}
+
+.dataActiveStatValue {
+  font-family: 'Share Tech Mono', 'Courier New', monospace;
+  font-size: 13px;
+  font-weight: 600;
+  color: rgba(180, 200, 220, 0.85);
+  flex-shrink: 0;
+}
+
+.dataActiveStatValue.coral {
+  color: rgba(255, 160, 120, 0.85);
 }

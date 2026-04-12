@@ -76,3 +76,59 @@ tr.tableBody:hover {
   overflow: hidden;
   text-overflow: ellipsis;
 }
+
+/* -------------- Delete row button ----------- */
+
+.tableCellHasDeleteBtn {
+  position: relative;
+}
+
+.deleteRowButton {
+  position: absolute;
+  left: 14px;
+  top: 50%;
+  transform: translateY(-50%);
+  z-index: 5;
+  background: var(--table-icon-bg);
+  border: 1px solid var(--table-border);
+  border-radius: 50%;
+  width: 20px;
+  height: 20px;
+  padding: 3px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  opacity: var(--table-icon-opacity);
+  box-shadow:
+    0 3px 8px rgba(0, 0, 0, 0.2),
+    inset 0 1px 0 rgba(255, 255, 255, var(--table-icon-box-strength));
+  transition:
+    transform var(--table-icon-animation-speed) ease,
+    box-shadow var(--table-icon-animation-speed) ease,
+    opacity var(--table-icon-animation-speed) ease;
+}
+
+.deleteRowButton img {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+}
+
+.deleteRowButton:hover,
+.deleteRowButton:focus-visible {
+  transform: translateY(calc(-50% + var(--table-icon-hover-y-jump))) scale(var(--table-icon-hover-size));
+  box-shadow:
+    0 6px 14px rgba(0, 0, 0, 0.32),
+    inset 0 1px 0 rgba(255, 255, 255, var(--table-icon-hover-box-strength));
+  opacity: var(--table-icon-hover-opacity);
+}
+
+.deleteRowButton:focus-visible {
+  outline: 2px solid var(--table-text);
+  outline-offset: 2px;
+}
+
+.deleteRowButton:active {
+  transform: translateY(-50%) scale(var(--table-icon-clicked-size));
+}

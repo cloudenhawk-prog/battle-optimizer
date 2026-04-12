@@ -134,6 +134,8 @@ function createInitialSnapshot(): Snapshot {
     negativeStatusesTimeLeft: {},
     negativeStatusesMaxStacks: {},
     charactersCooldowns: {},
+    charactersActionStacks: {},
+    charactersActionStacksConfig: {},
     coordinatedAttacks: {},
     coordinatedAttacksTimeLeft: {},
     coordinatedAttacksSwapRequired: {},
@@ -147,6 +149,8 @@ function createInitialSnapshot(): Snapshot {
     charactersComboWindows: {},
     charactersForteGrants: {},
     charactersComboChainTags: {},
+    charactersOffFieldSince: {},
+    offFieldTriggerEvents: {},
   }
 }
 

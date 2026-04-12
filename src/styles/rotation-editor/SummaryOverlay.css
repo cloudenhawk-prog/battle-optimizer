@@ -62,6 +62,11 @@
   --sum-action-name-fs:      13px;
   --sum-action-value-fs:     13px;
   --sum-action-pct-fs:       13px;
+  /* Column widths — adjust these to resize individual columns    */
+  --sum-action-count-w:      36px;  /* Casts                                                  */
+  --sum-action-bar-w:       130px;  /* Progress bar  (was 72px)                               */
+  --sum-action-value-w:      83px;  /* Total DMG     (was 52px)                               */
+  --sum-action-pct-w:        51px;  /* Share         (was 34px)                               */
 
   /* ── DPS Efficiency rows (left panel) ───────────────────────── */
   --sum-eff-dot-size:         8px;
@@ -674,129 +679,105 @@
 }
 
 /* ── Field time bars ─────────────────────────────────────── */
-.summaryFieldTimeRows {
+
+/* ── Shared stat-card layout (Field Time + Energy Generation) ── */
+.summaryStatCards {
   display: flex;
   flex-direction: column;
-  gap: 8px;
-  flex-shrink: 0;
+  gap: 12px;
 }
 
-.summaryFieldTimeRow {
+.summaryStatCard {
   display: flex;
-  align-items: center;
-  gap: 10px;
+  flex-direction: column;
+  gap: 5px;
+  padding-left: 10px;
+  border-left: 2px solid var(--card-color, rgba(100, 200, 255, 0.5));
 }
 
-.summaryFieldTimeName {
+.summaryStatCardTop {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 8px;
+}
+
+.summaryStatCardName {
   font-family: 'Rajdhani', sans-serif;
   font-size: var(--sum-field-name-fs);
-  font-weight: 500;
-  color: rgba(255, 255, 255, 0.55);
-  width: 80px;
-  flex-shrink: 0;
+  font-weight: 600;
+  color: var(--card-color, rgba(255, 255, 255, 0.75));
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
+  flex: 1;
+  min-width: 0;
 }
 
-.summaryFieldTimeBar {
-  flex: 1;
-  height: 7px;
-  background: rgba(255, 255, 255, 0.06);
-  border-radius: 3px;
+.summaryStatCardPrimary {
+  font-family: 'Share Tech Mono', monospace;
+  font-size: var(--sum-field-val-fs);
+  font-weight: 700;
+  color: rgba(255, 255, 255, 0.88);
+  flex-shrink: 0;
+  letter-spacing: 0.02em;
+}
+
+.summaryStatCardBars {
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+}
+
+.summaryStatCardBar {
+  height: 3px;
+  background: rgba(255, 255, 255, 0.07);
+  border-radius: 2px;
   overflow: hidden;
 }
 
-.summaryFieldTimeBarFill {
+.summaryStatCardBarAlt .summaryStatCardBarFill {
+  opacity: 0.3;
+  box-shadow: none;
+}
+
+.summaryStatCardBarFill {
   height: 100%;
-  border-radius: 3px;
+  border-radius: 2px;
+  background: var(--card-color, rgba(100, 200, 255, 0.6));
+  box-shadow: 0 0 6px var(--card-glow, rgba(100, 200, 255, 0.3));
   transition: width 0.4s ease-out;
   min-width: 2px;
 }
 
-.summaryFieldTimePct {
+.summaryStatCardSecondary {
   font-family: 'Share Tech Mono', monospace;
-  font-size: var(--sum-field-pct-fs);
-  color: rgba(255, 255, 255, 0.28);
-  flex-shrink: 0;
-  width: var(--sum-field-pct-w);
-  text-align: left;
-}
-
-.summaryFieldTimeVal {
-  font-family: 'Share Tech Mono', monospace;
-  font-size: var(--sum-field-val-fs);
-  color: rgba(255, 255, 255, 0.4);
-  flex-shrink: 0;
-  width: var(--sum-field-val-w);
-  text-align: right;
-}
-
-.summaryFieldTimeRowTotal {
-  margin-top: 4px;
-  padding-top: 6px;
-  border-top: 1px solid rgba(255, 255, 255, 0.08);
-}
-
-.summaryFieldTimeRowTotal .summaryFieldTimeName {
-  color: rgba(180, 120, 255, 0.55);
-  font-size: var(--sum-field-total-fs);
-}
-
-.summaryFieldTimeRowTotal .summaryFieldTimeVal {
+  font-size: 15px;
   color: rgba(255, 255, 255, 0.35);
+  letter-spacing: 0.03em;
 }
 
-/* ── Per-character block (name + two sub-rows) ───────────── */
-.summaryFieldTimeBlock {
-  display: flex;
-  flex-direction: column;
-  gap: 3px;
-}
-
-.summaryFieldTimeBlockName {
-  font-family: 'Rajdhani', sans-serif;
-  font-size: var(--sum-field-name-fs);
-  font-weight: 600;
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
-}
-
-.summaryFieldTimeSubrows {
-  display: flex;
-  flex-direction: column;
-  gap: 3px;
-}
-
-.summaryFieldTimeSubrow {
+.summaryStatCardTotalRow {
   display: flex;
   align-items: center;
-  gap: var(--sum-field-col-gap);
+  justify-content: space-between;
+  padding: 7px 0 0 10px;
+  border-top: 1px solid rgba(255, 255, 255, 0.06);
+  margin-top: 2px;
 }
 
-.summaryFieldTimeSubrowLabel {
+.summaryStatCardTotalLabel {
   font-family: 'Share Tech Mono', monospace;
-  font-size: var(--sum-field-subrow-label-fs);
-  letter-spacing: 0.08em;
+  font-size: 11px;
+  letter-spacing: 0.07em;
+  text-transform: uppercase;
   color: rgba(255, 255, 255, 0.22);
-  width: var(--sum-field-tag-w);
-  flex-shrink: 0;
-  text-align: left;
 }
 
-.summaryFieldTimeDpsFill {
-  opacity: 0.5;
-}
-
-/* spans pct-col + gap + val-col so the value sits left-aligned under the % */
-.summaryFieldTimeDpsVal {
+.summaryStatCardTotalValue {
   font-family: 'Share Tech Mono', monospace;
-  font-size: var(--sum-field-dps-val-fs);
-  color: rgba(255, 255, 255, 0.35);
-  flex-shrink: 0;
-  width: calc(var(--sum-field-pct-w) + var(--sum-field-col-gap) + var(--sum-field-val-w));
-  text-align: right;
+  font-size: 13px;
+  color: rgba(255, 255, 255, 0.45);
 }
 
 /* ═══════════════════════════════════════════════════════════
@@ -920,7 +901,6 @@
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
-  max-width: 150px;
   font-weight: normal;
 }
 
@@ -1451,61 +1431,6 @@
 }
 
 /* ═══════════════════════════════════════════════════════════
-   RIGHT PANEL — ENERGY GENERATION (stat blocks, no bars)
-   ═══════════════════════════════════════════════════════════ */
-
-.summaryEnergyRows {
-  display: flex;
-  flex-direction: column;
-  gap: 16px;
-}
-
-.summaryEnergyBlock {
-  display: flex;
-  flex-direction: column;
-  gap: 8px;
-}
-
-.summaryEnergyBlockHeader {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-}
-
-.summaryEnergyDot {
-  width: var(--sum-energy-dot-size);
-  height: var(--sum-energy-dot-size);
-  border-radius: 50%;
-  flex-shrink: 0;
-}
-
-/* Two stat chips side by side: Generated | per second */
-.summaryEnergyStatRow {
-  display: flex;
-  gap: 8px;
-}
-
-.summaryEnergyStat {
-  flex: 1;
-  background: rgba(255, 255, 255, 0.03);
-  border: 1px solid rgba(255, 255, 255, 0.07);
-  border-radius: 7px;
-  padding: 7px 10px;
-  display: flex;
-  flex-direction: column;
-  gap: 3px;
-}
-
-.summaryEnergyStatLabel {
-  font-family: 'Share Tech Mono', monospace;
-  font-size: var(--sum-energy-stat-label-fs);
-  letter-spacing: 0.1em;
-  text-transform: uppercase;
-  color: rgba(255, 255, 255, 0.25);
-  line-height: 1;
-}
-
-/* ═══════════════════════════════════════════════════════════
    CHARACTER CARD — ACTION BREAKDOWN EXPAND
    ═══════════════════════════════════════════════════════════ */
 
@@ -1537,10 +1462,27 @@
   border-top: 1px solid rgba(255, 255, 255, 0.04);
 }
 
+.summaryActionBreakdownHeader {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 6px 0 4px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+  margin-bottom: 2px;
+}
+
+.summaryActionHeaderLabel {
+  font-family: 'Share Tech Mono', monospace;
+  font-size: 10px !important;
+  color: rgba(255, 255, 255, 0.25) !important;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+}
+
 .summaryActionRow {
   display: flex;
   align-items: center;
-  gap: 8px;
+  gap: 12px;
   padding: 4px 0;
   border-bottom: 1px solid rgba(255, 255, 255, 0.025);
 }
@@ -1561,7 +1503,7 @@
 }
 
 .summaryActionBar {
-  width: 72px;
+  width: var(--sum-action-bar-w);
   flex-shrink: 0;
   height: 5px;
   background: rgba(255, 255, 255, 0.06);
@@ -1580,7 +1522,7 @@
   font-family: 'Share Tech Mono', monospace;
   font-size: var(--sum-action-value-fs);
   color: rgba(255, 255, 255, 0.55);
-  width: 52px;
+  width: var(--sum-action-value-w);
   text-align: right;
   flex-shrink: 0;
 }
@@ -1589,9 +1531,23 @@
   font-family: 'Share Tech Mono', monospace;
   font-size: var(--sum-action-pct-fs);
   color: rgba(255, 255, 255, 0.3);
-  width: 34px;
+  width: var(--sum-action-pct-w);
   text-align: right;
   flex-shrink: 0;
+}
+
+.summaryActionCount {
+  font-family: 'Share Tech Mono', monospace;
+  font-size: var(--sum-action-pct-fs);
+  color: rgba(255, 255, 255, 0.3);
+  width: var(--sum-action-count-w);
+  text-align: right;
+  flex-shrink: 0;
+}
+
+.summaryActionBarSpacer {
+  background: transparent !important;
+  box-shadow: none !important;
 }
 
 /* ═══════════════════════════════════════════════════════════
@@ -1823,79 +1779,6 @@
   justify-content: center;
   flex-shrink: 0;
   line-height: 1;
-}
-
-.summaryEnergyStatValue {
-  font-family: 'Orbitron', monospace;
-  font-size: var(--sum-energy-stat-value-fs);
-  font-weight: 700;
-  color: rgba(255, 255, 255, 0.82);
-  letter-spacing: 0.03em;
-  line-height: 1;
-}
-
-.summaryEnergyName {
-  flex: 1;
-  font-family: 'Rajdhani', sans-serif;
-  font-size: var(--sum-energy-name-fs);
-  font-weight: 600;
-  color: rgba(255, 255, 255, 0.75);
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
-}
-
-.summaryEnergyLibBadge {
-  font-family: 'Share Tech Mono', monospace;
-  font-size: 11px;
-  letter-spacing: 0.06em;
-  color: rgba(255, 190, 60, 0.85);
-  background: rgba(255, 190, 60, 0.08);
-  border: 1px solid rgba(255, 190, 60, 0.22);
-  border-radius: 4px;
-  padding: 2px 7px;
-  flex-shrink: 0;
-}
-
-.summaryEnergyBarRow {
-  display: flex;
-  align-items: center;
-  gap: 7px;
-  padding-left: 14px;
-}
-
-.summaryEnergyBarLabel {
-  font-family: 'Share Tech Mono', monospace;
-  font-size: 9px;
-  letter-spacing: 0.05em;
-  text-transform: uppercase;
-  color: rgba(255, 255, 255, 0.28);
-  width: 56px;
-  flex-shrink: 0;
-}
-
-.summaryEnergyBarTrack {
-  flex: 1;
-  height: 5px;
-  background: rgba(255, 255, 255, 0.06);
-  border-radius: 3px;
-  overflow: hidden;
-}
-
-.summaryEnergyBarFill {
-  height: 100%;
-  border-radius: 3px;
-  transition: width 0.45s ease-out;
-  min-width: 0;
-}
-
-.summaryEnergyBarValue {
-  font-family: 'Share Tech Mono', monospace;
-  font-size: 10px;
-  color: rgba(255, 255, 255, 0.35);
-  flex-shrink: 0;
-  width: 52px;
-  text-align: right;
 }
 
 

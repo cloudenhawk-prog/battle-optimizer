@@ -520,7 +520,7 @@ function EquipmentOrbit({ weapon, echoSlots, elColor, characterName, onItemHighl
               pointerEvents: 'none',
             }}>
             <img
-              src={`/assets/characters/${characterName.toLowerCase()}_shadow.png`}
+              src={`/assets/characters/${characterName.toLowerCase()}_shadow.gif`}
               alt=""
               aria-hidden="true"
               style={{
@@ -528,11 +528,15 @@ function EquipmentOrbit({ weapon, echoSlots, elColor, characterName, onItemHighl
                 height: '100%',
                 objectFit: 'contain',
                 filter: 'brightness(0) opacity(0.28)',
-                WebkitMaskImage: 'radial-gradient(circle at center, black 50%, rgba(0,0,0,0.55) 70%, transparent 90%)',
-                maskImage: 'radial-gradient(circle at center, black 50%, rgba(0,0,0,0.55) 70%, transparent 90%)',
+                WebkitMaskImage:
+                  'radial-gradient(circle at center, black 50%, rgba(0,0,0,0.55) 70%, transparent 90%)',
+                maskImage:
+                  'radial-gradient(circle at center, black 50%, rgba(0,0,0,0.55) 70%, transparent 90%)',
               }}
-              onError={e => {
-                ;(e.target as HTMLImageElement).style.display = 'none'
+              onError={(e) => {
+                const el = e.currentTarget
+                el.onerror = null
+                el.src = `/assets/characters/${characterName.toLowerCase()}_shadow.png`
               }}
             />
           </div>
@@ -1092,37 +1096,111 @@ function EchoInfo({ echo, slot, elColor }: { echo: Echo; slot: number; elColor: 
   )
 }
 
-// ========== Sub-component: Active Buffs Panel ===============================================================================
+// ========== Stat Groups for the Active Buffs Panel ==========================================================================
 
-function ActiveBuffsPanel({ activeBreakdown, baseStat, elColor, onClose }: { activeBreakdown: ActiveModifierBreakdown; baseStat: CharacterStats; elColor: string; onClose: () => void }) {
+const STAT_GROUPS: Array<{ label: string; keys: (keyof import('./../../types/stats').CharacterStats)[] }> = [
+  {
+    label: 'Base Stats',
+    keys: ['level', 'baseATK', 'flatATK', 'bonusATK', 'amplifyATK', 'totalMultiplierATK', 'baseHP', 'flatHP', 'bonusHP', 'amplifyHP', 'totalMultiplierHP', 'baseDEF', 'flatDEF', 'bonusDEF', 'amplifyDEF', 'totalMultiplierDEF'],
+  },
+  {
+    label: 'Combat',
+    keys: ['critRate', 'critDamage', 'bonusDMG', 'amplifyDMG', 'totalMultiplierDMG', 'defIgnore', 'elementalResPEN', 'resistancePEN', 'healingBonus', 'energyPercent', 'tuneBreakBoost', 'offtuneBuildupRate'],
+  },
+  {
+    label: 'Skill Types',
+    keys: ['basicBonusDMG', 'basicAmplifyDMG', 'basicTotalMultiplierDMG', 'heavyBonusDMG', 'heavyAmplifyDMG', 'heavyTotalMultiplierDMG', 'skillBonusDMG', 'skillAmplifyDMG', 'skillTotalMultiplierDMG', 'liberationBonusDMG', 'liberationAmplifyDMG', 'liberationTotalMultiplierDMG', 'coordinatedBonusDMG', 'coordinatedAmplifyDMG', 'coordinatedTotalMultiplierDMG', 'echoBonusDMG', 'echoAmplifyDMG', 'echoTotalMultiplierDMG', 'introBonusDMG', 'introAmplifyDMG', 'introTotalMultiplierDMG', 'outroBonusDMG', 'outroAmplifyDMG', 'outroTotalMultiplierDMG'],
+  },
+  {
+    label: 'Negative Status',
+    keys: ['aeroErosionBonusDMG', 'aeroErosionAmplifyDMG', 'aeroErosionTotalMultiplierDMG', 'spectroFrazzleBonusDMG', 'spectroFrazzleAmplifyDMG', 'spectroFrazzleTotalMultiplierDMG', 'havocBaneBonusDMG', 'havocBaneAmplifyDMG', 'havocBaneTotalMultiplierDMG', 'glacioChafeBonusDMG', 'glacioChafeAmplifyDMG', 'glacioChafeTotalMultiplierDMG', 'fusionBurstBonusDMG', 'fusionBurstAmplifyDMG', 'fusionBurstTotalMultiplierDMG', 'electroFlareBonusDMG', 'electroFlareAmplifyDMG', 'electroFlareTotalMultiplierDMG'],
+  },
+  {
+    label: 'Elemental',
+    keys: ['aeroBonusDMG', 'aeroAmplifyDMG', 'aeroTotalMultiplierDMG', 'spectroBonusDMG', 'spectroAmplifyDMG', 'spectroTotalMultiplierDMG', 'fusionBonusDMG', 'fusionAmplifyDMG', 'fusionTotalMultiplierDMG', 'glacioBonusDMG', 'glacioAmplifyDMG', 'glacioTotalMultiplierDMG', 'electroBonusDMG', 'electroAmplifyDMG', 'electroTotalMultiplierDMG', 'havocBonusDMG', 'havocAmplifyDMG', 'havocTotalMultiplierDMG'],
+  },
+]
+
+
+function formatFinalStat(key: string, value: number): string {
+  if (/Rate|Bonus|Amplify|PEN|Percent|Boost|Ignore|critDamage/i.test(key)) {
+    return (value * 100).toFixed(1) + '%'
+  }
+  return formatFlat(value)
+}
+
+// Converts camelCase stat keys to readable labels, preserving acronyms (ATK, HP, DEF, DMG, etc.)
+function formatStatKeyLabel(key: string): string {
+  return key
+    .replace(/([a-z])([A-Z])/g, '$1 $2')
+    .replace(/([A-Z]+)([A-Z][a-z])/g, '$1 $2')
+    .replace(/^./, s => s.toUpperCase())
+    .trim()
+}
+
+function ActiveBuffsPanel({ activeBreakdown, finalStats, allCharacters, elColor, onClose }: { activeBreakdown: ActiveModifierBreakdown; finalStats: CharacterStats; allCharacters: Character[]; elColor: string; onClose: () => void }) {
   const selfItems = activeBreakdown.selfBuffs.items
   const teamItems = activeBreakdown.teamBuffs.items
+  const [hideZero, setHideZero] = useState(true)
 
-  function renderBuffEntry(item: NamedStatContribution, category: 'Self' | 'Team') {
-    const iconPath = `/assets/modifiers/${item.name.toLowerCase().replace(/:/g, '').replace(/\s+/g, '_')}.png`
-    const stats = formatGearStats(item.stats)
+  function isZeroValue(key: string, value: number): boolean {
+    return /TotalMultiplier/i.test(key) ? value === 1 : value === 0
+  }
+
+  // Build a map keyed by the space-stripped display name (as stored in snapshot.buffs)
+  // → original display name with spaces, plus optional description.
+  // Space-stripped key lets us match item.name back to the original name for icon paths.
+  const modInfoMap = new Map<string, { originalName: string; description?: string }>()
+  for (const char of allCharacters) {
+    const registerMod = (mod: { displayName: string; description?: string }) => {
+      const stripped = mod.displayName.replace(/\s+/g, '')
+      if (!modInfoMap.has(stripped)) {
+        modInfoMap.set(stripped, { originalName: mod.displayName, description: mod.description })
+      }
+    }
+    for (const mod of char.flattenedPassiveModifiers ?? []) registerMod(mod)
+    for (const mod of char.damageModifiers ?? []) registerMod(mod)
+    for (const milestone of char.resourceMilestones ?? []) registerMod(milestone.modifier)
+    for (const action of char.actions ?? []) {
+      for (const mod of action.damageModifiers ?? []) registerMod(mod)
+      for (const ca of action.coordinatedAttacks ?? []) {
+        for (const mod of ca.damageModifiers ?? []) registerMod(mod)
+      }
+    }
+  }
+
+  function renderBuffEntry(item: NamedStatContribution) {
+    const info = modInfoMap.get(item.name)
+    const displayName = info?.originalName ?? item.name
+    const iconPath = `/assets/modifiers/${displayName.toLowerCase().replace(/:/g, '').replace(/\s+/g, '_')}.png`
+    const stats = (Object.entries(item.stats) as [string, number][]).filter(([, v]) => v !== 0).map(([k, v]) => ({ label: formatStatKeyLabel(k), value: formatFinalStat(k, v) }))
+    const description = info?.description
     return (
-      <div key={item.name} style={{ display: 'flex', flexDirection: 'column', gap: 6, background: `hsl(${elColor} / 0.05)`, border: `1px solid hsl(${elColor} / 0.14)`, borderRadius: 8, padding: '10px 12px' }}>
-        <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
+      <div key={item.name} className="abp-buff-card" style={{ background: `hsl(${elColor} / 0.05)`, border: `1px solid hsl(${elColor} / 0.14)` }}>
+        <div className="abp-buff-header">
           <img
             src={iconPath}
             alt=""
-            style={{ width: 32, height: 32, objectFit: 'contain', flexShrink: 0 }}
+            className="abp-buff-icon"
             onError={e => {
               ;(e.target as HTMLImageElement).style.display = 'none'
             }}
           />
-          <div style={{ display: 'flex', flexDirection: 'column', gap: 2 }}>
-            <span style={{ fontFamily: FONT_BODY, fontSize: '0.88rem', fontWeight: 700, color: `hsl(${elColor})` }}>{item.name}</span>
-            <span style={{ fontFamily: FONT_MONO, fontSize: '0.62rem', color: MUTED, textTransform: 'uppercase', letterSpacing: '0.08em' }}>{category} Buff</span>
+          <div className="abp-buff-text">
+            <span className="abp-buff-name" style={{ color: `hsl(${elColor})` }}>{displayName}</span>
+            {description && (
+              <p className="abp-buff-desc">
+                {colorizeText(description, elColor)}
+              </p>
+            )}
           </div>
         </div>
         {stats.length > 0 && (
-          <div style={{ display: 'flex', flexDirection: 'column', gap: 3, paddingTop: 4, borderTop: `1px solid hsl(${elColor} / 0.1)` }}>
+          <div className="abp-buff-stats" style={{ borderTop: `1px solid hsl(${elColor} / 0.1)` }}>
             {stats.map(({ label, value }) => (
-              <div key={label} style={{ display: 'flex', justifyContent: 'space-between', gap: 8, fontSize: '0.8rem' }}>
-                <span style={{ color: 'rgba(150, 165, 195, 0.8)' }}>{label}</span>
-                <span style={{ color: `hsl(${elColor} / 0.9)`, fontWeight: 600, fontVariantNumeric: 'tabular-nums' }}>{value}</span>
+              <div key={label} className="abp-buff-stat-row">
+                <span className="abp-buff-stat-label">{label}</span>
+                <span className="abp-buff-stat-value" style={{ color: `hsl(${elColor} / 0.9)` }}>{value}</span>
               </div>
             ))}
           </div>
@@ -1132,67 +1210,82 @@ function ActiveBuffsPanel({ activeBreakdown, baseStat, elColor, onClose }: { act
   }
 
   return (
-    <div className="charStatBreakdown">
+    <div className="charStatBreakdown abp">
       <div className="charStatBreakdownHeader">
-        <span className="charStatBreakdownTitle">Active Buffs</span>
+        <span className="charStatBreakdownTitle">Active Buffs &amp; Current Stats</span>
         <button className="cpo-close-btn" onClick={onClose} aria-label="Close active buffs panel">
           ✕
         </button>
       </div>
-      <div className="charStatBreakdownBody">
-        {/* Self Buffs */}
-        <div>
-          <SectionHeader label="Self Buffs" elColor={elColor} />
-          {selfItems.length === 0 ? (
-            <div style={{ color: MUTED, fontSize: '0.78rem', fontFamily: FONT_MONO, padding: '4px 0' }}>None</div>
-          ) : (
-            <div style={{ display: 'flex', flexDirection: 'column', gap: 8 }}>{selfItems.map(item => renderBuffEntry(item, 'Self'))}</div>
-          )}
-        </div>
-
-        {/* Team Buffs */}
-        <div>
-          <SectionHeader label="Team Buffs" elColor={elColor} />
-          {teamItems.length === 0 ? (
-            <div style={{ color: MUTED, fontSize: '0.78rem', fontFamily: FONT_MONO, padding: '4px 0' }}>None</div>
-          ) : (
-            <div style={{ display: 'flex', flexDirection: 'column', gap: 8 }}>{teamItems.map(item => renderBuffEntry(item, 'Team'))}</div>
-          )}
-        </div>
-
-        {/* Divider */}
-        <div style={{ height: 1, background: `linear-gradient(90deg, transparent, hsl(${elColor} / 0.2), transparent)`, flexShrink: 0 }} />
-
-        {/* Base Stats */}
-        <div>
-          <SectionHeader label="Base Stats" elColor={elColor} />
-          <div style={{ display: 'flex', flexDirection: 'column' }}>
-            {STAT_DISPLAY.map(stat => {
-              let value: number
-              if (SCALING_STAT_KEYS.has(stat.key)) {
-                value = calculateScalingStat(baseStat, stat.key as 'ATK' | 'HP' | 'DEF')
-              } else {
-                value = (baseStat[stat.key as keyof CharacterStats] as number) ?? 0
-              }
-              return (
-                <div key={stat.key} style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '5px 0', borderBottom: '1px solid rgba(50, 70, 100, 0.2)', gap: 4 }}>
-                  <div style={{ display: 'flex', alignItems: 'center', gap: 6 }}>
-                    {stat.iconPath && (
-                      <img
-                        src={stat.iconPath}
-                        alt=""
-                        style={{ width: 18, height: 18, objectFit: 'contain', flexShrink: 0, filter: stat.elementClass ? undefined : 'brightness(0) invert(1) brightness(0.77)' }}
-                        onError={e => {
-                          ;(e.target as HTMLImageElement).style.display = 'none'
-                        }}
-                      />
-                    )}
-                    <span style={{ fontFamily: FONT_BODY, fontSize: '0.84rem', color: 'rgba(150, 165, 195, 0.85)' }}>{stat.label}</span>
-                  </div>
-                  <span style={{ fontFamily: 'system-ui, -apple-system, "Segoe UI", sans-serif', fontSize: '0.88rem', fontWeight: 650, color: `hsl(${elColor} / 0.9)`, fontVariantNumeric: 'tabular-nums' }}>{formatStatValue(stat.key, value, stat.format)}</span>
+      <div className="abp-body">
+        {/* Left: Current Stats */}
+        <div className="abp-left" style={{ borderRight: `1px solid hsl(${elColor} / 0.12)` }}>
+          <div className="abp-stats-header">
+            <span className="cpo-section-header-label" style={{ color: `hsl(${elColor} / 0.6)`, letterSpacing: '0.2em' }}>CURRENT STATS</span>
+            <button
+              className="abp-toggle-btn"
+              onClick={() => setHideZero(p => !p)}
+              style={{
+                background: hideZero ? `hsl(${elColor} / 0.15)` : 'transparent',
+                border: `1px solid hsl(${elColor} / ${hideZero ? 0.4 : 0.18})`,
+                color: hideZero ? `hsl(${elColor})` : 'rgba(140, 155, 190, 0.55)',
+              }}>
+              Hide Zeros
+            </button>
+          </div>
+          {STAT_GROUPS.map(group => {
+            const visibleKeys = hideZero
+              ? group.keys.filter(key => !isZeroValue(key, finalStats[key] as number))
+              : group.keys
+            if (visibleKeys.length === 0) return null
+            return (
+              <div key={group.label} className="abp-group">
+                <div className="abp-group-label" style={{ color: `hsl(${elColor} / 0.55)`, borderBottom: `1px solid hsl(${elColor} / 0.15)` }}>
+                  {group.label}
                 </div>
-              )
-            })}
+                <div className="abp-grid">
+                  {visibleKeys.map((key, i) => {
+                    const value = finalStats[key] as number
+                    const isOdd = i % 2 === 0
+                    const isLastAlone = i === visibleKeys.length - 1 && visibleKeys.length % 2 !== 0
+                    if (isLastAlone) {
+                      return (
+                        <div key={key} className="abp-stat-row--lone">
+                          <span className="abp-stat-label">{formatStatKeyLabel(key)}</span>
+                          <span className="abp-stat-value" style={{ color: `hsl(${elColor} / 0.9)` }}>{formatFinalStat(key, value)}</span>
+                        </div>
+                      )
+                    }
+                    return (
+                      <Fragment key={key}>
+                        <span className={`abp-stat-label${isOdd ? '' : ' abp-stat-label--right'}`}>{formatStatKeyLabel(key)}</span>
+                        <span className={`abp-stat-value${isOdd ? ' abp-stat-value--left' : ''}`} style={{ color: `hsl(${elColor} / 0.9)` }}>{formatFinalStat(key, value)}</span>
+                      </Fragment>
+                    )
+                  })}
+                </div>
+              </div>
+            )
+          })}
+        </div>
+
+        {/* Right: Active Buffs */}
+        <div className="abp-right">
+          <div>
+            <SectionHeader label="Self Buffs" elColor={elColor} />
+            {selfItems.length === 0 ? (
+              <div style={{ color: MUTED, fontSize: '0.78rem', fontFamily: FONT_MONO, padding: '4px 0' }}>None</div>
+            ) : (
+              <div style={{ display: 'flex', flexDirection: 'column', gap: 8 }}>{selfItems.map(item => renderBuffEntry(item))}</div>
+            )}
+          </div>
+          <div>
+            <SectionHeader label="Team Buffs" elColor={elColor} />
+            {teamItems.length === 0 ? (
+              <div style={{ color: MUTED, fontSize: '0.78rem', fontFamily: FONT_MONO, padding: '4px 0' }}>None</div>
+            ) : (
+              <div style={{ display: 'flex', flexDirection: 'column', gap: 8 }}>{teamItems.map(item => renderBuffEntry(item))}</div>
+            )}
           </div>
         </div>
       </div>
@@ -1577,7 +1670,7 @@ export function CharacterProfileOverlay({ characterName, character, snapshot, al
             {/* Active buffs panel — covers entire body */}
             {activeBuffsPanelOpen && (
               <div className="cpo-breakdown-overlay">
-                <ActiveBuffsPanel activeBreakdown={activeBreakdown} baseStat={baseStat} elColor={elTheme.primary} onClose={() => setActiveBuffsPanelOpen(false)} />
+                <ActiveBuffsPanel activeBreakdown={activeBreakdown} finalStats={finalStats} allCharacters={allCharacters} elColor={elTheme.primary} onClose={() => setActiveBuffsPanelOpen(false)} />
               </div>
             )}
           </div>

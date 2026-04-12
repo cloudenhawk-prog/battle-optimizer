@@ -421,6 +421,233 @@
   filter: brightness(0) invert(1) brightness(0.77);
 }
 
+/* ═════════════════════════════════════════════════════════════
+ *  ACTIVE BUFFS & CURRENT STATS PANEL  (.abp)
+ *
+ *  Quick-find: change...
+ *    Panel title size           → --abp-header-font-size
+ *    "Self/Team Buffs" header   → --abp-subheader-font-size
+ *    Toggle button text         → --abp-toggle-font-size
+ *    Toggle button padding      → --abp-toggle-padding
+ *    Stat category label size   → --abp-group-label-font-size
+ *    Stat row label size        → --abp-stat-label-font-size
+ *    Stat row value size        → --abp-stat-value-font-size
+ *    Left column width          → --abp-left-width
+ *    Buff name size             → --abp-buff-name-font-size
+ *    Buff icon size             → --abp-buff-icon-size
+ *    Buff description size      → --abp-buff-desc-font-size
+ *    Buff stat label/value size → --abp-buff-stat-font-size
+ * ═════════════════════════════════════════════════════════════ */
+
+.abp {
+  --abp-left-width:             480px;     /* Left column (current stats) width */
+  --abp-header-font-size:       0.95rem;   /* Panel title "Active Buffs & Current Stats" */
+  --abp-subheader-font-size:    0.6rem;    /* Section headers "Self Buffs" / "Team Buffs" */
+  --abp-toggle-font-size:       0.5rem;    /* "Hide Zeros" toggle button text */
+  --abp-toggle-padding:         3px 8px;   /* "Hide Zeros" toggle button padding */
+  --abp-group-label-font-size:  0.55rem;   /* Stat category headings (Base Stats, Combat…) */
+  --abp-stat-label-font-size:   0.76rem;   /* Stat row key label */
+  --abp-stat-value-font-size:   0.80rem;   /* Stat row value */
+  --abp-buff-name-font-size:    0.9rem;    /* Buff card name */
+  --abp-buff-icon-size:         36px;      /* Buff card icon width & height */
+  --abp-buff-desc-font-size:    0.76rem;   /* Buff description text */
+  --abp-buff-stat-font-size:    0.78rem;   /* Buff stat label and value */
+
+  background: hsl(222 25% 9%);  /* Opaque panel background */
+}
+
+/* Allow the panel title size to be driven by the variable above */
+.abp .charStatBreakdownTitle { font-size: var(--abp-header-font-size); }
+
+/* Allow "Self Buffs" / "Team Buffs" section header size to be driven by the variable above */
+.abp .cpo-section-header-label { font-size: var(--abp-subheader-font-size); }
+
+/* ── Main layout: left stats col + right buffs col ── */
+
+.abp-body {
+  flex: 1;
+  min-height: 0;
+  display: flex;
+  overflow: hidden;
+}
+
+.abp-left {
+  flex: 0 0 var(--abp-left-width);
+  overflow-y: auto;
+  overflow-x: hidden;
+  padding: 16px 20px;
+  scrollbar-width: thin;
+  scrollbar-color: rgba(80, 100, 130, 0.3) transparent;
+}
+
+.abp-right {
+  flex: 1;
+  min-width: 0;
+  overflow-y: auto;
+  overflow-x: hidden;
+  padding: 16px 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  scrollbar-width: thin;
+  scrollbar-color: rgba(80, 100, 130, 0.3) transparent;
+}
+
+/* ── "CURRENT STATS" label + toggle button row ── */
+
+.abp-stats-header {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 12px;
+}
+
+/* ── Hide Zeros toggle ── */
+
+.abp-toggle-btn {
+  font-family: 'Orbitron', sans-serif;
+  font-size: var(--abp-toggle-font-size);    /* toggle text size */
+  font-weight: 700;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  padding: var(--abp-toggle-padding);        /* toggle button padding */
+  border-radius: 4px;
+  cursor: pointer;
+  transition: all 0.15s;
+  flex-shrink: 0;
+}
+
+/* ── Stat category block ── */
+
+.abp-group { margin-bottom: 18px; }
+
+.abp-group-label {
+  font-family: 'Orbitron', sans-serif;
+  font-size: var(--abp-group-label-font-size);   /* category heading size */
+  font-weight: 700;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  margin-bottom: 6px;
+  padding-bottom: 3px;
+}
+
+/* 4-column grid: label | value | label | value */
+.abp-grid {
+  display: grid;
+  grid-template-columns: 1fr auto 1fr auto;
+  column-gap: 10px;
+}
+
+.abp-stat-label,
+.abp-stat-value,
+.abp-stat-empty {
+  padding: 3px 0;
+  border-bottom: 1px solid rgba(50, 70, 100, 0.18);
+}
+
+/* Lone item: spans all 4 columns so col-width instability can't affect value position */
+.abp-stat-row--lone {
+  grid-column: 1 / -1;
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  padding: 3px 0;
+  border-bottom: 1px solid rgba(50, 70, 100, 0.18);
+}
+.abp-stat-row--lone .abp-stat-label,
+.abp-stat-row--lone .abp-stat-value {
+  padding: 0;
+  border-bottom: none;
+}
+
+.abp-stat-label {
+  font-family: 'Rajdhani', 'Segoe UI', sans-serif;
+  font-size: var(--abp-stat-label-font-size);    /* stat key label size */
+  color: rgba(140, 155, 190, 0.85);
+}
+
+.abp-stat-label--right { padding-left: 8px; }   /* visual gap between left/right pairs */
+
+.abp-stat-value {
+  font-family: system-ui, -apple-system, 'Segoe UI', sans-serif;
+  font-size: var(--abp-stat-value-font-size);    /* stat value size */
+  font-weight: 650;
+  font-variant-numeric: tabular-nums;
+  text-align: right;
+}
+
+.abp-stat-value--left { padding-right: 8px; }   /* gap between left-pair value and right-pair label */
+
+/* ── Buff cards ── */
+
+.abp-buff-card {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  border-radius: 8px;
+  padding: 10px 12px;
+}
+
+.abp-buff-header {
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+}
+
+.abp-buff-icon {
+  width:  var(--abp-buff-icon-size);    /* icon width */
+  height: var(--abp-buff-icon-size);    /* icon height */
+  object-fit: contain;
+  flex-shrink: 0;
+  border-radius: 4px;
+}
+
+.abp-buff-text {
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+  flex: 1;
+  min-width: 0;
+}
+
+.abp-buff-name {
+  font-family: 'Rajdhani', 'Segoe UI', sans-serif;
+  font-size: var(--abp-buff-name-font-size);    /* buff card name size */
+  font-weight: 700;
+}
+
+.abp-buff-desc {
+  margin: 0;
+  font-family: 'Rajdhani', 'Segoe UI', sans-serif;
+  font-size: var(--abp-buff-desc-font-size);    /* buff description size */
+  color: rgba(160, 172, 200, 0.8);
+  line-height: 1.5;
+}
+
+.abp-buff-stats {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  padding-top: 6px;
+}
+
+.abp-buff-stat-row {
+  display: flex;
+  gap: 8px;
+  align-items: baseline;
+}
+
+.abp-buff-stat-label {
+  font-size: var(--abp-buff-stat-font-size);    /* buff stat label size */
+  color: rgba(150, 165, 195, 0.8);
+}
+
+.abp-buff-stat-value {
+  font-size: var(--abp-buff-stat-font-size);    /* buff stat value size */
+  font-weight: 600;
+  font-variant-numeric: tabular-nums;
+}
+
 /* Elemental icon variant — full brightness; element-specific animation handles everything */
 .cpo-stat-icon--element {
   opacity: 1;

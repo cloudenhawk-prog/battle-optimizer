@@ -1,8 +1,10 @@
 import { useState } from 'react'
 import type { Character } from '../../types/character'
+import type { EnergyType } from '../../types/baseTypes'
 import type { TableConfig, GlobalColumns } from '../../types/tableDefinitions'
 import type { Snapshot } from '../../types/snapshot'
 import type { Settings } from '../useSettings'
+import type { CharacterStats } from '../../types/stats'
 
 // ========== Hook: useSnapshots ===============================================================================================
 
@@ -42,15 +44,20 @@ export function useSnapshots({ charactersInBattle, tableConfig, settings }: UseS
 
 export function createEmptySnapshot(charactersMap: Record<string, Character>, characterColumnsMap: Record<string, string[]>, globalColumns: GlobalColumns, tableConfig: TableConfig, startWithFullEnergy = false): Snapshot {
   const charactersEnergies = Object.fromEntries(
-    Object.keys(charactersMap).map(charName => [
-      charName,
-      Object.fromEntries(
-        characterColumnsMap[charName].map(key => [
-          key,
-          startWithFullEnergy && key === 'energy' ? (charactersMap[charName].maxEnergies.energy ?? 0) : 0,
-        ])
-      ),
-    ])
+    Object.keys(charactersMap).map(charName => {
+      const char = charactersMap[charName]
+      return [
+        charName,
+        Object.fromEntries(
+          characterColumnsMap[charName].map(key => {
+            if (startWithFullEnergy && key === 'energy') return [key, char.maxEnergies.energy ?? 0]
+            const starting = char.startingEnergies?.(char.sequence)?.[key as EnergyType]
+            if (starting !== undefined) return [key, Math.min(starting, char.maxEnergies[key as EnergyType] ?? starting)]
+            return [key, 0]
+          })
+        ),
+      ]
+    })
   )
 
   const basicValues = Object.fromEntries(globalColumns.basic.map(col => [col, 0]))
@@ -66,7 +73,7 @@ export function createEmptySnapshot(charactersMap: Record<string, Character>, ch
   const buffsMaxStacks = Object.fromEntries((buffsCol?.statusMetadata || []).map(meta => [meta.key, meta.maxStacks || 1]))
   const debuffsMaxStacks = Object.fromEntries((debuffsCol?.statusMetadata || []).map(meta => [meta.key, meta.maxStacks || 1]))
 
-  return {
+  const snapshot: Snapshot = {
     id: '0',
     character: '',
     action: '',
@@ -93,6 +100,8 @@ export function createEmptySnapshot(charactersMap: Record<string, Character>, ch
     coordinatedAttacksTimeLeft: {},
     coordinatedAttacksSwapRequired: {},
     charactersCooldowns: {},
+    charactersActionStacks: {},
+    charactersActionStacksConfig: {},
     charactersPositions: {},
     charactersPersistentUntil: {},
     charactersLastAction: {},
@@ -103,5 +112,39 @@ export function createEmptySnapshot(charactersMap: Record<string, Character>, ch
     charactersComboWindows: {},
     charactersForteGrants: {},
     charactersComboChainTags: {},
+    charactersOffFieldSince: {},
+    offFieldTriggerEvents: {},
   }
+
+  // Pre-evaluate permanent modifier conditions using starting energies so that buff
+  // display is correct from the very first row, before any action is resolved.
+  const minimalCtx = { current: snapshot, negativeStatusesInAction: [] } as any
+  for (const char of Object.values(charactersMap)) {
+    for (const modifier of char.damageModifiers ?? []) {
+      if (modifier.durationStrategy && modifier.durationStrategy.type !== 'permanent') continue
+      const key = modifier.displayName.replace(/\s+/g, '')
+      const conditionValue = modifier.condition(minimalCtx)
+      if (conditionValue <= 0) continue
+      if (modifier.type === 'buff') {
+        snapshot.buffs[key] = 1
+        snapshot.buffsTimeLeft[key] = Infinity
+        snapshot.buffsSwapsLeft[key] = Infinity
+        snapshot.buffsMaxStacks[key] = modifier.stackingStrategy.maxStacks
+        if (modifier.characterStats) {
+          const scaled: Partial<CharacterStats> = {}
+          for (const [stat, val] of Object.entries(modifier.characterStats) as [keyof CharacterStats, number][]) {
+            scaled[stat] = val * conditionValue
+          }
+          snapshot.buffsActivationStats[key] = scaled
+        }
+      } else if (modifier.type === 'debuff') {
+        snapshot.debuffs[key] = 1
+        snapshot.debuffsTimeLeft[key] = Infinity
+        snapshot.debuffsSwapsLeft[key] = Infinity
+        snapshot.debuffsMaxStacks[key] = modifier.stackingStrategy.maxStacks
+      }
+    }
+  }
+
+  return snapshot
 }

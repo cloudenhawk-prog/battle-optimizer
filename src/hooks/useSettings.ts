@@ -5,6 +5,8 @@ import { useState } from 'react'
 export type Settings = {
   autocastFollowUps: boolean
   startWithFullEnergy: boolean
+  sandboxMode: boolean
+  rowDeletionMode: boolean
 }
 
 // ========== Defaults & Persistence ===========================================================================================
@@ -15,6 +17,8 @@ function getDefaultSettings(): Settings {
   return {
     autocastFollowUps: false,
     startWithFullEnergy: false,
+    sandboxMode: false,
+    rowDeletionMode: false,
   }
 }
 
