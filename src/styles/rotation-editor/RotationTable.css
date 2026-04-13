@@ -2,7 +2,7 @@
 
 .tableWrapper {
   position: relative;
-  overflow-x: visible;
+  overflow-x: auto;
   overflow-y: auto;
   min-height: 0;
   flex: 1;
@@ -28,8 +28,7 @@
 
 .tableBase {
   width: 100%;
-  min-width: 0;
-  table-layout: fixed;
+  table-layout: auto;
   border-collapse: collapse;
   background: transparent;
   overflow: visible;

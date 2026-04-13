@@ -2,13 +2,15 @@
 
 /**
  * A required-action constraint: the named action (or groupName) must appear
- * at least `minCount` times in the generated sequence.
+ * at least `minCount` times and at most `maxCount` times in the generated sequence.
  */
 export type RequiredAction = {
   /** Raw action name or groupName as used in the engine. */
   action: string
   /** Minimum number of times this action must appear. */
   minCount: number
+  /** Maximum number of times this action may appear. Undefined means no upper limit. */
+  maxCount?: number
 }
 
 /**

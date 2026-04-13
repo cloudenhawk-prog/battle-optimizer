@@ -1,5 +1,6 @@
 import type { Action } from '../../types/action'
 import type { ActionTag } from '../../types/action'
+import type { DamageType } from '../../types/baseTypes'
 import type { CoordinatedAttack } from '../../types/coordinatedAttack'
 import type { DamageModifier } from '../../types/modifiers'
 import type { InjectedModifier, InjectedSideEffect, InjectedTarget, Gear } from '../../types/gear'
@@ -109,6 +110,22 @@ function applyInjectedModifiers(
             mod.healProc.procModifiers.push(...ownedModifiers)
           }
         }
+      } else if (isDmgTypeTarget(target)) {
+        // DmgType-based: inject into all actions/CAs whose dmgTypes includes the specified type(s).
+        // Use this when a game effect says "dealing X DMG" — it refers to the action's damage type,
+        // not the action category (use tags for that, e.g. "casting Liberation").
+        for (const action of characterActions) {
+          if (hasMatchingDmgTypes(action, target)) {
+            action.damageModifiers.push(...ownedModifiers)
+            if (energyGeneration?.length) action.energyGenerated.push(...energyGeneration)
+          }
+          for (const ca of action.coordinatedAttacks ?? []) {
+            if (hasMatchingDmgTypes(ca, target)) {
+              ca.damageModifiers ??= []
+              ca.damageModifiers.push(...ownedModifiers)
+            }
+          }
+        }
       } else if (isCoordinatedAttack(target)) {
         const clone = originalToClone.get(target) as CoordinatedAttack | undefined
         if (clone) {
@@ -157,11 +174,16 @@ function matchesProcTag(procTag: string, target: { tag: ActionTag } | { tags: Ac
     : target.tags.every(t => t === procTag)
 }
 
-/** Returns true when a target is a tag-based descriptor (not 'character', Action, or CoordinatedAttack). */
+/** Returns true when a target is a tag-based descriptor `{ tag }` or `{ tags }`. */
 function isTagTarget(target: InjectedTarget | Action): target is { tag: ActionTag } | { tags: ActionTag[]; match: 'any' | 'all' } {
-  // Action and CoordinatedAttack always have a 'name' string property; tag descriptors do not.
   if (typeof target !== 'object' || target === null) return false
-  return !('name' in target)
+  return 'tag' in target || ('tags' in target && !('dmgType' in target) && !('dmgTypes' in target))
+}
+
+/** Returns true when a target is a dmgType-based descriptor `{ dmgType }` or `{ dmgTypes }`. */
+function isDmgTypeTarget(target: InjectedTarget | Action): target is { dmgType: DamageType } | { dmgTypes: DamageType[]; match: 'any' | 'all' } {
+  if (typeof target !== 'object' || target === null) return false
+  return 'dmgType' in target || 'dmgTypes' in target
 }
 
 /** Returns true when an action or coordinated attack carries all/any of the requested tags. */
@@ -176,6 +198,20 @@ function hasMatchingTags(
   return target.match === 'any'
     ? target.tags.some(t => subjectTags.includes(t))
     : target.tags.every(t => subjectTags.includes(t))
+}
+
+/** Returns true when an action or coordinated attack's dmgTypes includes all/any of the requested types. */
+function hasMatchingDmgTypes(
+  subject: { dmgTypes?: DamageType[] },
+  target: { dmgType: DamageType } | { dmgTypes: DamageType[]; match: 'any' | 'all' },
+): boolean {
+  const subjectTypes = subject.dmgTypes ?? []
+  if ('dmgType' in target) {
+    return subjectTypes.includes(target.dmgType)
+  }
+  return target.match === 'any'
+    ? target.dmgTypes.some(t => subjectTypes.includes(t))
+    : target.dmgTypes.every(t => subjectTypes.includes(t))
 }
 
 /** Type guard distinguishing a CoordinatedAttack from an Action (by presence of `frequency`). */

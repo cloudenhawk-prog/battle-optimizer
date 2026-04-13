@@ -4,6 +4,7 @@ import type { DamageModifier } from './modifiers'
 import type { SideEffect } from './sideEffect'
 import type { CharacterStats } from './stats'
 import type { ActionTag } from './action'
+import type { DamageType } from './baseTypes'
 import type { EnergyGeneration } from './energy'
 
 // ========== Type: WeaponType =================================================================================================
@@ -99,6 +100,8 @@ export type EchoSetBonus = {
  *  - `Action` / `CoordinatedAttack`       — direct object-reference injection (requires original reference)
  *  - `{ tag: ActionTag }`                 — inject into all actions/CAs that carry the given tag
  *  - `{ tags: ActionTag[]; match }`       — inject into all actions/CAs matching any/all of the given tags
+ *  - `{ dmgType: DamageType }`            — inject into all actions/CAs whose dmgTypes includes the given type
+ *  - `{ dmgTypes: DamageType[]; match }`  — inject into all actions/CAs matching any/all of the given damage types
  */
 export type InjectedTarget =
   | 'character'
@@ -106,6 +109,8 @@ export type InjectedTarget =
   | CoordinatedAttack
   | { tag: ActionTag }
   | { tags: ActionTag[]; match: 'any' | 'all' }
+  | { dmgType: DamageType }
+  | { dmgTypes: DamageType[]; match: 'any' | 'all' }
 
 export type InjectedModifier = {
   targets: Array<InjectedTarget>

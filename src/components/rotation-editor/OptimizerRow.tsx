@@ -23,7 +23,10 @@ export function OptimizerRow({ block, onConfigure, onRemove }: OptimizerRowProps
             {block.minDuration}s – {block.maxDuration}s
           </span>
           {requiredCount > 0 && (
-            <span className="optimizerRowTag optimizerRowTagRequired" title={`Required: ${block.requiredActions.map(r => r.minCount > 1 ? `${r.action} ×${r.minCount}` : r.action).join(', ')}`}>
+            <span className="optimizerRowTag optimizerRowTagRequired" title={`Required: ${block.requiredActions.map(r => {
+              const max = r.maxCount !== undefined ? `–${r.maxCount}` : '+'
+              return `${r.action} ×${r.minCount}${max}`
+            }).join(', ')}`}>
               {requiredCount} required
             </span>
           )}

@@ -438,6 +438,7 @@ export function evaluateDamageWithGroups(
   const groupIndices = new Map<string, number[]>()
   for (let i = 0; i < damageModifiers.length; i++) {
     const mod = damageModifiers[i]
+    if (mod.trackerOnly) continue
     const groupKey = mod.contributionGroup ?? (mod.source !== undefined ? `${mod.source}::${mod.displayName ?? mod.source}` : `modifier_${i}`)
     if (!groupIndices.has(groupKey)) groupIndices.set(groupKey, [])
     groupIndices.get(groupKey)!.push(i)
@@ -598,9 +599,11 @@ export function calculateAllContrubutions(action: Action, name: string, stats: C
   // Using source::displayName (not just source) ensures that two modifiers sharing the same source
   // but representing distinct effects (e.g. S1 base vs S2 enhancement) are reported separately.
   // Modifiers that should be reported as one combined entry must explicitly set contributionGroup.
+  // Tracker-only modifiers are excluded: they carry no stats and exist only to track state.
   const groupIndices = new Map<string, number[]>()
   for (let i = 0; i < damageModifiers.length; i++) {
     const mod = damageModifiers[i]
+    if (mod.trackerOnly) continue
     const groupKey = mod.contributionGroup ?? (mod.source !== undefined ? `${mod.source}::${mod.displayName ?? mod.source}` : `modifier_${i}`)
     if (!groupIndices.has(groupKey)) groupIndices.set(groupKey, [])
     groupIndices.get(groupKey)!.push(i)
@@ -840,9 +843,11 @@ function calculateNegativeStatusContributions(baseDMG: number, element: ElementT
   const results: Record<string, Contribution> = {}
 
   // Group modifiers by contributionGroup (explicit opt-in), or by unique `source::displayName` key.
+  // Tracker-only modifiers are excluded: they carry no stats and exist only to track state.
   const groupIndices = new Map<string, number[]>()
   for (let i = 0; i < damageModifiers.length; i++) {
     const mod = damageModifiers[i]
+    if (mod.trackerOnly) continue
     const groupKey = mod.contributionGroup ?? (mod.source !== undefined ? `${mod.source}::${mod.displayName ?? mod.source}` : `modifier_${i}`)
     if (!groupIndices.has(groupKey)) groupIndices.set(groupKey, [])
     groupIndices.get(groupKey)!.push(i)

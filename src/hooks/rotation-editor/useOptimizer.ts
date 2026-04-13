@@ -62,12 +62,6 @@ export function useOptimizer({
     setLastBlockId(blockId)
 
     const t0 = performance.now()
-    console.log(
-      `[Optimizer] Run — block: ${blockId}` +
-      `, character: ${block.character}` +
-      `, insertAfterStepCount: ${block.insertAfterStepCount}` +
-      `, duration: ${block.minDuration}s–${block.maxDuration}s`,
-    )
 
     const baseParams = { charactersMap, characterColumnsMap, globalColumns, enemy }
 
@@ -75,8 +69,6 @@ export function useOptimizer({
     const allSteps = extractSteps(snapshots)
     const preBlockSteps = allSteps.slice(0, block.insertAfterStepCount)
     const postBlockSteps = allSteps.slice(block.insertAfterStepCount)
-
-    console.log(`[Optimizer]   Pre-block steps: ${preBlockSteps.length}, post-block steps: ${postBlockSteps.length}`)
 
     // Derive pre-block state: replay from scratch using the initial blank snapshot
     const initialSnapshot = { ...snapshots[0] }
@@ -88,7 +80,7 @@ export function useOptimizer({
     if (preBlockSteps.length === 0) {
       preBlockSnapshots = startingSnapshots
       preBlockEngineState = initEngineState()
-      console.log('[Optimizer]   Pre-block: starting from scratch (no prior steps)')
+      console.log(`Pre-block: none  |  Post-block: ${postBlockSteps.length} step(s)`)
     } else {
       const preReplay = replaySteps({
         steps: preBlockSteps,
@@ -97,15 +89,14 @@ export function useOptimizer({
         autocastFollowUps: settings.autocastFollowUps,
       })
       if (!preReplay.valid) {
-        // Pre-block replay failed — nothing to enumerate
-        console.warn('[Optimizer]   Pre-block replay failed — aborting')
+        console.warn('[Optimizer] Pre-block replay failed — aborting')
         setIsRunning(false)
         setProgress({ done: 0, total: 0 })
         return
       }
       preBlockSnapshots = preReplay.snapshots
       preBlockEngineState = preReplay.engineState
-      console.log(`[Optimizer]   Pre-block replay OK — ${preReplay.snapshots.length} snapshots`)
+      console.log(`Pre-block: ${preBlockSteps.length} step(s)  |  Post-block: ${postBlockSteps.length} step(s)`)
     }
 
     // Enumerate all legal candidate sequences
@@ -118,14 +109,12 @@ export function useOptimizer({
       autocastFollowUps: settings.autocastFollowUps,
     })
 
-    console.log(`[Optimizer]   Scoring ${candidates.length} candidates…`)
     setProgress({ done: 0, total: candidates.length })
 
     // Score all candidates synchronously (typical count: < 5,000 — fast enough without batching)
     // NOTE: because this is synchronous, React cannot re-render during this loop, so the
     // progress counter in the UI will not visually update until the run completes.
     const scored: ScoredCandidate[] = []
-    const logEvery = Math.max(1, Math.floor(candidates.length / 4))
     for (let i = 0; i < candidates.length; i++) {
       const s = scoreCandidate({
         candidate: candidates[i],
@@ -134,10 +123,6 @@ export function useOptimizer({
         autocastFollowUps: settings.autocastFollowUps,
       })
       scored.push(s)
-      if ((i + 1) % logEvery === 0 || i === candidates.length - 1) {
-        const pct = (((i + 1) / candidates.length) * 100).toFixed(0)
-        console.log(`[Optimizer]   Scored ${i + 1} / ${candidates.length} (${pct}%)`)
-      }
     }
 
     const validResults = scored
@@ -148,8 +133,7 @@ export function useOptimizer({
     const elapsed = (performance.now() - t0).toFixed(0)
     console.log(
       `[Optimizer] Done — ${validResults.length} valid, ${invalidCount} invalid` +
-      `, best DPS: ${validResults[0]?.score.toFixed(0) ?? 'n/a'}` +
-      `, total: ${elapsed}ms`,
+      `, best: ${validResults[0]?.score.toFixed(0) ?? 'n/a'} DPS, ${elapsed}ms total`,
     )
 
     setResults(validResults)

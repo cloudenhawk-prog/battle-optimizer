@@ -139,6 +139,7 @@ export const echoSetRegistry: Readonly<Record<string, EchoSet>> = {
                 characterStats: {},
                 condition: always(),
                 targetStrategy: 'self',
+                trackerOnly: true,
                 durationStrategy: { type: 'limited', timeDuration: 25 },
                 stackingStrategy: { maxStacks: 1, resetTimerOnApplication: false, stacksRemovedEachTime: 1 },
               },
@@ -147,18 +148,19 @@ export const echoSetRegistry: Readonly<Record<string, EchoSet>> = {
 
           // (3) Dealing Liberation DMG (if Snowfall is active) → consumes Snowfall, grants 25% Crit Rate for self (30s)
           {
-            targets: [{ tag: 'LIBERATION' }],
+            targets: [{ dmgType: 'LIBERATION' }],
             modifiers: [
               {
                 source: 'Wishes of Quiet Snowfall: Crit Rate',
                 displayName: 'Wishes of Quiet Snowfall: Crit Rate',
                 type: 'buff',
                 color: '#6EC1F2',
+                description: 'Dealing Resonance Liberation DMG removes Snowfall and increases the Resonator\'s Crit. Rate by 25% for 6s',
                 ownerCharacter: null,
                 characterStats: { critRate: 0.25 },
                 condition: always(),
                 targetStrategy: 'self',
-                durationStrategy: { type: 'limited', timeDuration: 6 },
+                durationStrategy: { type: 'limited', timeDuration: 30 },
                 stackingStrategy: { maxStacks: 1, resetTimerOnApplication: true, stacksRemovedEachTime: 1 },
                 activationCondition: (ctx) => ctx.modifiersInAction.some(
                   mia => mia.modifier.source === 'Wishes of Quiet Snowfall: Snowfall'

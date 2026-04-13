@@ -1140,7 +1140,18 @@ const cartethyia_weapon: Weapon = {
 }
 ```
 
-The `targets` array accepts `'character'`, `Action` objects, or `CoordinatedAttack` objects. When targeting an action, the modifier is added to `action.damageModifiers` at startup.
+The full set of valid `targets` entries:
+
+| Target form | Matches |
+|---|---|
+| `'character'` | Character's global modifier list |
+| `Action` / `CoordinatedAttack` (object ref) | Exactly that action/CA |
+| `{ tag: ActionTag }` | All actions/CAs whose `tags` array includes the given tag |
+| `{ tags: ActionTag[]; match: 'any' \| 'all' }` | All actions/CAs matching any or all of the tag list |
+| `{ dmgType: DamageType }` | All actions/CAs whose `dmgTypes` includes the given type |
+| `{ dmgTypes: DamageType[]; match: 'any' \| 'all' }` | All actions/CAs matching any or all of the damage types |
+
+**Tag vs. dmgType distinction:** game text like *"Casting Resonance Liberation"* refers to the action category → use `{ tag: 'LIBERATION' }`. Text like *"Dealing Resonance Liberation DMG"* refers to the damage type → use `{ dmgType: 'LIBERATION' }`. An action can carry the `LIBERATION` tag without dealing Liberation-typed damage (e.g. a buff-only Liberation), and vice versa.
 
 ---
 

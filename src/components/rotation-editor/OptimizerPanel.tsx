@@ -33,6 +33,9 @@ function getUniqueActionNames(character: ResolvedCharacter): string[] {
   const seen = new Set<string>()
   const result: string[] = []
   for (const action of character.actions) {
+    if (action.category === 'Testing') continue
+    if (action.tags?.includes('INTRO_ACTION') || action.tags?.includes('OUTRO_ACTION')) continue
+
     const key = action.groupName ?? action.name
     if (!seen.has(key)) {
       seen.add(key)
@@ -83,7 +86,18 @@ export function OptimizerPanel({
     const rawName = getRawActionName(character, displayName)
     onUpdateBlock({
       requiredActions: block.requiredActions.map(r =>
-        r.action === rawName ? { ...r, minCount: Math.max(1, count) } : r,
+        r.action === rawName ? { ...r, minCount: Math.max(0, count) } : r,
+      ),
+    })
+  }
+
+  function handleRequiredMaxCountChange(displayName: string, value: string) {
+    if (!character) return
+    const rawName = getRawActionName(character, displayName)
+    const maxCount = value === '' ? undefined : Math.max(1, Number(value))
+    onUpdateBlock({
+      requiredActions: block.requiredActions.map(r =>
+        r.action === rawName ? { ...r, maxCount } : r,
       ),
     })
   }
@@ -112,6 +126,25 @@ export function OptimizerPanel({
   function isBanned(displayName: string): boolean {
     if (!character) return false
     return block.bannedActions.includes(getRawActionName(character, displayName))
+  }
+
+  function handleBanAll() {
+    if (!character) return
+    const rawNames = actionDisplayNames.map(d => getRawActionName(character, d))
+    onUpdateBlock({ bannedActions: rawNames, requiredActions: [] })
+  }
+
+  function handleRequireAll() {
+    if (!character) return
+    const rawNames = actionDisplayNames.map(d => getRawActionName(character, d))
+    onUpdateBlock({
+      requiredActions: rawNames.map(name => ({ action: name, minCount: 1 })),
+      bannedActions: [],
+    })
+  }
+
+  function handleClearAll() {
+    onUpdateBlock({ requiredActions: [], bannedActions: [] })
   }
 
   const topResults = results.slice(0, 20)
@@ -186,7 +219,14 @@ export function OptimizerPanel({
 
             {character && actionDisplayNames.length > 0 && (
               <div className="optimizerConfigSection">
-                <label className="optimizerConfigLabel">Actions</label>
+                <div className="optimizerConfigLabelRow">
+                  <label className="optimizerConfigLabel">Actions</label>
+                  <div className="optimizerBulkButtons">
+                    <button type="button" className="optimizerBulkBtn" title="Require all actions" onClick={handleRequireAll}>✓ all</button>
+                    <button type="button" className="optimizerBulkBtn" title="Ban all actions" onClick={handleBanAll}>✕ all</button>
+                    <button type="button" className="optimizerBulkBtn" title="Clear all constraints" onClick={handleClearAll}>clear</button>
+                  </div>
+                </div>
                 <div className="optimizerActionGrid">
                   {actionDisplayNames.map(displayName => {
                     const req = isRequired(displayName)
@@ -205,16 +245,30 @@ export function OptimizerPanel({
                             ✓
                           </button>
                           {req && (
-                            <input
-                              type="number"
-                              className="optimizerActionCount"
-                              min={1}
-                              max={99}
-                              value={reqEntry?.minCount ?? 1}
-                              title="Minimum times this action must appear"
-                              onClick={e => e.stopPropagation()}
-                              onChange={e => handleRequiredCountChange(displayName, Number(e.target.value))}
-                            />
+                            <>
+                              <input
+                                type="number"
+                                className="optimizerActionCount"
+                                min={0}
+                                max={99}
+                                value={reqEntry?.minCount ?? 1}
+                                title="Minimum times this action must appear"
+                                onClick={e => e.stopPropagation()}
+                                onChange={e => handleRequiredCountChange(displayName, Number(e.target.value))}
+                              />
+                              <span className="optimizerConfigNote" style={{ margin: '0 1px' }}>–</span>
+                              <input
+                                type="number"
+                                className="optimizerActionCount"
+                                min={reqEntry?.minCount ?? 1}
+                                max={99}
+                                placeholder="∞"
+                                value={reqEntry?.maxCount ?? ''}
+                                title="Maximum times this action may appear (leave empty for no limit)"
+                                onClick={e => e.stopPropagation()}
+                                onChange={e => handleRequiredMaxCountChange(displayName, e.target.value)}
+                              />
+                            </>
                           )}
                           <button
                             type="button"

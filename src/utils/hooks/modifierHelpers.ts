@@ -85,6 +85,19 @@ export function activateModifiers(modifiers: DamageModifier[], existingModifiers
 
       const newSwapsLeft = stacking.resetTimerOnApplication ? (modifier.durationStrategy.type === 'limited' ? (modifier.durationStrategy.numberOfSwaps ?? Infinity) : Infinity) : existing.swapsLeft
 
+      // Remove any existing modifiers whose source matches the removal target (refresh case).
+      // This fires on every re-activation, not just on first creation, because the
+      // activationCondition already guarantees the prerequisite is present.
+      if (modifier.removesModifierSourceOnActivation) {
+        const removeSource = modifier.removesModifierSourceOnActivation
+        for (let i = result.length - 1; i >= 0; i--) {
+          if (result[i].modifier.source === removeSource) {
+            result.splice(i, 1)
+            break
+          }
+        }
+      }
+
       result[existingIndex] = {
         ...existing,
         currentStacks: newStacks,
