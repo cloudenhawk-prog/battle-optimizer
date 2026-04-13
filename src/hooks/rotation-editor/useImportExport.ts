@@ -10,6 +10,7 @@ import type { ModifierInAction } from '../../types/modifiers'
 import type { CoordinatedAttackInAction } from '../../types/coordinatedAttack'
 import type { Action } from '../../types/action'
 import type { Settings } from '../useSettings'
+import type { OptimizerBlock } from '../../types/optimizerBlock'
 import { negativeStatuses as negativeStatusesData } from '../../data/negativeStatuses'
 import { getActionFromCharacter } from '../../utils/hooks/actionHelpers'
 import { assignCharacterToRow } from '../../utils/hooks/snapshotHelpers'
@@ -54,6 +55,8 @@ type UseImportExportProps = {
   negativeStatusesInAction: React.MutableRefObject<NegativeStatusInAction[]>
   modifiersInAction: React.MutableRefObject<ModifierInAction[]>
   coordinatedAttacksInAction: React.MutableRefObject<CoordinatedAttackInAction[]>
+  optimizerBlocks: OptimizerBlock[]
+  setOptimizerBlocks: Dispatch<SetStateAction<OptimizerBlock[]>>
 }
 
 export function useImportExport({
@@ -70,6 +73,8 @@ export function useImportExport({
   negativeStatusesInAction: negativeStatusesInActionRef,
   modifiersInAction: modifiersInActionRef,
   coordinatedAttacksInAction: coordinatedAttacksInActionRef,
+  optimizerBlocks,
+  setOptimizerBlocks,
 }: UseImportExportProps) {
   const [savedRotations, setSavedRotations] = useState<SavedRotation[]>(() => loadSavedRotations())
   const [savedSnippets, setSavedSnippets] = useState<SavedRotation[]>(() => loadSavedSnippets())
@@ -88,7 +93,12 @@ export function useImportExport({
   function handleSave(name: string) {
     const steps = extractSteps(snapshots)
     if (steps.length === 0) return
-    const rotation: SavedRotation = { name: name.trim(), createdAt: new Date().toISOString(), steps }
+    const rotation: SavedRotation = {
+      name: name.trim(),
+      createdAt: new Date().toISOString(),
+      steps,
+      optimizerBlocks: optimizerBlocks.length > 0 ? optimizerBlocks : undefined,
+    }
     saveRotationToStorage(rotation)
     refreshSaved()
   }
@@ -182,6 +192,9 @@ export function useImportExport({
     setSnapshots(result.snapshots)
     setDamageEvents(result.damageEvents)
 
+    // Restore optimizer blocks from the loaded rotation (if any)
+    setOptimizerBlocks(rotation.optimizerBlocks ?? [])
+
     // Update living refs to reflect the imported state so subsequent user edits
     // continue from the correct modifier/coordinated-attack state.
     negativeStatusesInActionRef.current = result.finalNegativeStatuses
@@ -202,7 +215,50 @@ export function useImportExport({
   function handleDownloadNamed(name: string) {
     const steps = extractSteps(snapshots)
     if (steps.length === 0) return
-    downloadRotationAsJson({ name, createdAt: new Date().toISOString(), steps })
+    downloadRotationAsJson({
+      name,
+      createdAt: new Date().toISOString(),
+      steps,
+      optimizerBlocks: optimizerBlocks.length > 0 ? optimizerBlocks : undefined,
+    })
+  }
+
+  /**
+   * Applies a winning optimizer candidate to the rotation:
+   * removes the optimizer block, splices its steps into the rotation at the correct
+   * position, then re-simulates the full timeline.
+   */
+  function applyOptimizerResult(blockId: string, candidateSteps: RotationStep[]) {
+    const block = optimizerBlocks.find(b => b.id === blockId)
+    if (!block) return
+
+    const allSteps = extractSteps(snapshots)
+    const before = allSteps.slice(0, block.insertAfterStepCount)
+    const after = allSteps.slice(block.insertAfterStepCount)
+    const merged = [...before, ...candidateSteps, ...after]
+
+    // Remove the block
+    setOptimizerBlocks(prev => prev.filter(b => b.id !== blockId))
+
+    const result = runImportSteps({
+      steps: merged,
+      initialSnapshot: createEmptySnapshot(charactersMap, characterColumnsMap, globalColumns, tableConfig, settings.startWithFullEnergy),
+      charactersMap,
+      characterColumnsMap,
+      globalColumns,
+      enemy,
+      settings,
+      ignoreCastConditions: false,
+    })
+
+    setLastImportError(result.error)
+    setLastImportCompleted(result.completedSteps)
+
+    setSnapshots(result.snapshots)
+    setDamageEvents(result.damageEvents)
+    negativeStatusesInActionRef.current = result.finalNegativeStatuses
+    modifiersInActionRef.current = result.finalModifiers
+    coordinatedAttacksInActionRef.current = result.finalCoordinatedAttacks
   }
 
   function handleDeleteFromSnapshot(snapshotId: number) {
@@ -290,6 +346,7 @@ export function useImportExport({
     handleDownloadNamed,
     handleFileUpload,
     handleDeleteFromSnapshot,
+    applyOptimizerResult,
     clearImportStatus: () => { setLastImportError(null); setLastImportCompleted(null) },
   }
 }

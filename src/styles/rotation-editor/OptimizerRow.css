@@ -1,0 +1,124 @@
+/* ========== Optimizer Row ========================================================================== */
+
+.optimizerRow {
+  background: linear-gradient(90deg, hsla(195, 80%, 30%, 0.15) 0%, hsla(195, 80%, 20%, 0.08) 100%);
+  border-top: 1px solid hsla(195, 80%, 60%, 0.3);
+  border-bottom: 1px solid hsla(195, 80%, 60%, 0.3);
+}
+
+.optimizerRow td {
+  padding: 0;
+}
+
+.optimizerRowContent {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 6px 12px;
+  min-height: 36px;
+}
+
+.optimizerRowLabel {
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  color: hsl(195, 80%, 60%);
+  text-transform: uppercase;
+  white-space: nowrap;
+}
+
+.optimizerRowCharacter {
+  font-size: 12px;
+  font-weight: 600;
+  color: hsl(0, 0%, 85%);
+  white-space: nowrap;
+}
+
+.optimizerRowDuration {
+  font-size: 11px;
+  color: hsl(0, 0%, 60%);
+  white-space: nowrap;
+}
+
+.optimizerRowTag {
+  font-size: 10px;
+  font-weight: 600;
+  padding: 2px 7px;
+  border-radius: 10px;
+  white-space: nowrap;
+}
+
+.optimizerRowTagRequired {
+  background: hsla(140, 60%, 40%, 0.25);
+  color: hsl(140, 60%, 60%);
+  border: 1px solid hsla(140, 60%, 50%, 0.3);
+}
+
+.optimizerRowTagBanned {
+  background: hsla(0, 70%, 40%, 0.2);
+  color: hsl(0, 70%, 65%);
+  border: 1px solid hsla(0, 70%, 50%, 0.3);
+}
+
+.optimizerRowSpacer {
+  flex: 1;
+}
+
+.optimizerRowBtn {
+  font-size: 11px;
+  font-weight: 600;
+  padding: 4px 12px;
+  border-radius: 4px;
+  border: none;
+  cursor: pointer;
+  white-space: nowrap;
+  transition: opacity 0.15s;
+}
+
+.optimizerRowBtn:hover {
+  opacity: 0.8;
+}
+
+.optimizerRowBtnRun {
+  background: hsl(195, 80%, 30%);
+  color: hsl(195, 80%, 90%);
+  letter-spacing: 0.04em;
+}
+
+.optimizerRowBtnDelete {
+  background: transparent;
+  color: hsl(0, 0%, 45%);
+  font-size: 13px;
+  padding: 4px 8px;
+}
+
+.optimizerRowBtnDelete:hover {
+  color: hsl(0, 70%, 65%);
+}
+
+/* ========== Add Optimizer Block Row ================================================================ */
+
+.optimizerAddRow td {
+  padding: 0;
+}
+
+.optimizerAddBtn {
+  display: block;
+  width: 100%;
+  padding: 5px 12px;
+  background: transparent;
+  border: none;
+  border-top: 1px dashed hsla(195, 80%, 50%, 0.2);
+  cursor: pointer;
+  font-size: 10px;
+  font-weight: 600;
+  letter-spacing: 0.06em;
+  color: hsla(195, 80%, 60%, 0.5);
+  text-align: left;
+  transition: color 0.15s, background 0.15s;
+}
+
+.optimizerAddBtn:hover {
+  color: hsl(195, 80%, 70%);
+  background: hsla(195, 80%, 50%, 0.05);
+}

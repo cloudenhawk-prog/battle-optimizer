@@ -4,10 +4,12 @@ import { HeaderRow } from './HeaderRow'
 import { BodyRow } from './BodyRows'
 import { CurrentStateRow } from './CurrentStateRow'
 import { CharacterStateTracker } from './CharacterStateTracker'
+import { OptimizerRow } from './OptimizerRow'
 import type { TableConfig, ColumnVisibility } from '../../types/tableDefinitions'
 import type { Character } from '../../types/character'
 import type { Snapshot } from '../../types/snapshot'
 import type { Gear } from '../../types/gear'
+import type { OptimizerBlock } from '../../types/optimizerBlock'
 
 // ========== Component: Rotation Table ========================================================================================
 
@@ -25,9 +27,13 @@ type RotationTableProps = {
   sandboxMode?: boolean
   rowDeletionMode?: boolean
   onDeleteRow?: (snapshotId: number) => void
+  optimizerBlocks?: OptimizerBlock[]
+  onOptimizerBlockConfigure?: (blockId: string) => void
+  onOptimizerBlockRemove?: (blockId: string) => void
+  onAddOptimizerBlock?: (insertAfterStepCount: number) => void
 }
 
-export function RotationTable({ snapshots, charactersInBattle, tableConfig, onSelectCharacter, onSelectAction, columnVisibility, setColumnVisibility, onRowClick, onGearChange, onSequenceChange, sandboxMode = false, rowDeletionMode = false, onDeleteRow }: RotationTableProps) {
+export function RotationTable({ snapshots, charactersInBattle, tableConfig, onSelectCharacter, onSelectAction, columnVisibility, setColumnVisibility, onRowClick, onGearChange, onSequenceChange, sandboxMode = false, rowDeletionMode = false, onDeleteRow, optimizerBlocks = [], onOptimizerBlockConfigure, onOptimizerBlockRemove, onAddOptimizerBlock }: RotationTableProps) {
   const [highlightIds, setHighlightIds] = useState<Set<number>>(new Set())
   const lastMaxId = useRef(0)
 
@@ -67,12 +73,73 @@ export function RotationTable({ snapshots, charactersInBattle, tableConfig, onSe
             <CurrentStateRow snapshot={currentSnapshot || null} firstFromTime={firstFromTime} tableConfig={tableConfig} columnVisibility={columnVisibility} />
           </thead>
           <tbody>
-          {snapshots.map((snapshot, idx) => {
-            // For statuses, show the state from the PREVIOUS snapshot since statuses
-            // are applied AFTER the action completes (not during)
-            const previousSnapshot = idx > 0 ? snapshots[idx - 1] : null
-            return <BodyRow key={Number(snapshot.id)} snapshot={snapshot} previousSnapshot={previousSnapshot} charactersInBattle={charactersInBattle} tableConfig={tableConfig} onSelectCharacter={onSelectCharacter} onSelectAction={onSelectAction} onRowClick={onRowClick} isLastRow={idx === snapshots.length - 1} isNewRow={highlightIds.has(Number(snapshot.id))} columnVisibility={columnVisibility} sandboxMode={sandboxMode} rowDeletionMode={rowDeletionMode} onDeleteRow={onDeleteRow} />
-          })}
+          {(() => {
+            const rows: React.ReactNode[] = []
+            let stepCount = 0
+
+            // Optimizer blocks at step 0 (before any user steps)
+            optimizerBlocks
+              .filter(b => b.insertAfterStepCount === 0)
+              .map(b => (
+                <OptimizerRow key={`opt-${b.id}`} block={b} onConfigure={onOptimizerBlockConfigure ?? (() => {})} onRemove={onOptimizerBlockRemove ?? (() => {})} />
+              ))
+              .forEach(r => rows.push(r))
+
+            for (let idx = 0; idx < snapshots.length; idx++) {
+              const snapshot = snapshots[idx]
+              const previousSnapshot = idx > 0 ? snapshots[idx - 1] : null
+              rows.push(
+                <BodyRow
+                  key={Number(snapshot.id)}
+                  snapshot={snapshot}
+                  previousSnapshot={previousSnapshot}
+                  charactersInBattle={charactersInBattle}
+                  tableConfig={tableConfig}
+                  onSelectCharacter={onSelectCharacter}
+                  onSelectAction={onSelectAction}
+                  onRowClick={onRowClick}
+                  isLastRow={idx === snapshots.length - 1}
+                  isNewRow={highlightIds.has(Number(snapshot.id))}
+                  columnVisibility={columnVisibility}
+                  sandboxMode={sandboxMode}
+                  rowDeletionMode={rowDeletionMode}
+                  onDeleteRow={onDeleteRow}
+                />
+              )
+
+              // Count user-visible steps (non-autocast rows with an action)
+              if (snapshot.action && snapshot.action !== '' && snapshot.character && !snapshot.isAutocast) {
+                stepCount++
+                // Insert any optimizer blocks that belong after this step
+                optimizerBlocks
+                  .filter(b => b.insertAfterStepCount === stepCount)
+                  .forEach(b => {
+                    rows.push(
+                      <OptimizerRow key={`opt-${b.id}`} block={b} onConfigure={onOptimizerBlockConfigure ?? (() => {})} onRemove={onOptimizerBlockRemove ?? (() => {})} />
+                    )
+                  })
+              }
+            }
+
+            return rows
+          })()}
+          {onAddOptimizerBlock && (
+            <tr className="optimizerAddRow">
+              <td colSpan={999}>
+                <button
+                  type="button"
+                  className="optimizerAddBtn"
+                  onClick={() => {
+                    const userStepCount = snapshots.filter(s => s.action && s.action !== '' && s.character && !s.isAutocast).length
+                    onAddOptimizerBlock(userStepCount)
+                  }}
+                  title="Add an optimizer block at the end of the current rotation"
+                >
+                  + Add Optimizer Block
+                </button>
+              </td>
+            </tr>
+          )}
           </tbody>
         </table>
       </div>

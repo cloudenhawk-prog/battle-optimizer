@@ -5,6 +5,7 @@ import type { TableConfig, GlobalColumns } from '../../types/tableDefinitions'
 import type { Snapshot } from '../../types/snapshot'
 import type { Settings } from '../useSettings'
 import type { CharacterStats } from '../../types/stats'
+import type { OptimizerBlock } from '../../types/optimizerBlock'
 
 // ========== Hook: useSnapshots ===============================================================================================
 
@@ -32,12 +33,26 @@ export function useSnapshots({ charactersInBattle, tableConfig, settings }: UseS
   }
 
   const [snapshots, setSnapshots] = useState<Snapshot[]>([createEmptySnapshot(charactersMap, characterColumnsMap, globalColumns, tableConfig, settings.startWithFullEnergy)])
+  const [optimizerBlocks, setOptimizerBlocks] = useState<OptimizerBlock[]>([])
 
   function resetTimeline() {
     setSnapshots([createEmptySnapshot(charactersMap, characterColumnsMap, globalColumns, tableConfig, settings.startWithFullEnergy)])
+    setOptimizerBlocks([])
   }
 
-  return { snapshots, setSnapshots, resetTimeline, createEmptySnapshot }
+  function addOptimizerBlock(block: OptimizerBlock) {
+    setOptimizerBlocks(prev => [...prev, block])
+  }
+
+  function removeOptimizerBlock(blockId: string) {
+    setOptimizerBlocks(prev => prev.filter(b => b.id !== blockId))
+  }
+
+  function updateOptimizerBlock(blockId: string, updates: Partial<Omit<OptimizerBlock, 'id'>>) {
+    setOptimizerBlocks(prev => prev.map(b => b.id === blockId ? { ...b, ...updates } : b))
+  }
+
+  return { snapshots, setSnapshots, resetTimeline, createEmptySnapshot, optimizerBlocks, setOptimizerBlocks, addOptimizerBlock, removeOptimizerBlock, updateOptimizerBlock }
 }
 
 // ========== Internal Helpers =================================================================================================
