@@ -13,7 +13,7 @@
 }
 
 .currentStateRow .currentStateCell {
-  background-color: var(--table-bg);
+  background-color: var(--table-bg-solid);
   /* Specular top shine — inside the cell, always visible */
   background-image:
     linear-gradient(180deg,

@@ -37,7 +37,7 @@ tr.lastRowClass td {
   position: sticky;
   bottom: 0;
   z-index: 2;
-  background-color: var(--table-bg);
+  background-color: var(--table-bg-solid);
   /* Specular bottom shine — light source from below */
   background-image:
     linear-gradient(0deg,
