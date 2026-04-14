@@ -5,18 +5,17 @@ import type { Enemy } from '../../types/enemy'
 import type { GlobalColumns } from '../../types/tableDefinitions'
 import type { OptimizerBlock } from '../../types/optimizerBlock'
 import type { Settings } from '../useSettings'
-import type { ScoredCandidate } from '../../utils/optimizer/score'
 import { extractSteps } from '../../utils/importExport'
 import { replaySteps } from '../../utils/engine/replaySteps'
-import { initEngineState } from '../../utils/engine/step'
-import { enumerate } from '../../utils/optimizer/enumerate'
-import { scoreCandidate } from '../../utils/optimizer/score'
 
 // ========== Types ============================================================================================================
 
-export type OptimizerProgress = {
-  done: number
-  total: number
+export type AttemptResult = {
+  valid: boolean
+  /** Overall DPS of the full rotation after the draft is applied. Present when valid=true. */
+  dps?: number
+  /** Human-readable failure reason. Present when valid=false. */
+  reason?: string
 }
 
 type UseOptimizerProps = {
@@ -32,8 +31,9 @@ type UseOptimizerProps = {
 // ========== Hook: useOptimizer ===============================================================================================
 
 /**
- * Orchestrates the sequence optimizer: given optimizer blocks embedded in the rotation,
- * enumerates all legal candidate sequences and scores them by overall DPS.
+ * Validates a flex block's draft sequence against the full rotation.
+ * Replays pre-block steps, then the draft steps, then post-block steps, and reports
+ * whether the combined rotation is valid and what the overall DPS is.
  */
 export function useOptimizer({
   snapshots,
@@ -44,108 +44,94 @@ export function useOptimizer({
   enemy,
   settings,
 }: UseOptimizerProps) {
-  const [results, setResults] = useState<ScoredCandidate[]>([])
+  const [result, setResult] = useState<AttemptResult | null>(null)
   const [isRunning, setIsRunning] = useState(false)
-  const [progress, setProgress] = useState<OptimizerProgress | null>(null)
   const [lastBlockId, setLastBlockId] = useState<string | null>(null)
 
   const run = useCallback((blockId: string) => {
     const block = optimizerBlocks.find(b => b.id === blockId)
-    if (!block) return
-
-    const character = charactersMap[block.character]
-    if (!character) return
+    if (!block || block.draftSteps.length === 0) {
+      setResult({ valid: false, reason: 'Add at least one step before attempting.' })
+      setLastBlockId(blockId)
+      return
+    }
 
     setIsRunning(true)
-    setResults([])
-    setProgress(null)
+    setResult(null)
     setLastBlockId(blockId)
 
-    const t0 = performance.now()
+    const baseParams = {
+      charactersMap,
+      characterColumnsMap,
+      globalColumns,
+      enemy,
+      autocastFollowUps: settings.autocastFollowUps,
+    }
 
-    const baseParams = { charactersMap, characterColumnsMap, globalColumns, enemy }
-
-    // Extract all user-visible steps from the current timeline
     const allSteps = extractSteps(snapshots)
     const preBlockSteps = allSteps.slice(0, block.insertAfterStepCount)
     const postBlockSteps = allSteps.slice(block.insertAfterStepCount)
-
-    // Derive pre-block state: replay from scratch using the initial blank snapshot
     const initialSnapshot = { ...snapshots[0] }
-    const startingSnapshots: Snapshot[] = [initialSnapshot]
 
-    let preBlockSnapshots: Snapshot[]
-    let preBlockEngineState
+    // Replay pre-block steps to reach the state at the insertion point
+    let preSnapshots: Snapshot[] = [initialSnapshot]
+    let preEngineState = undefined
 
-    if (preBlockSteps.length === 0) {
-      preBlockSnapshots = startingSnapshots
-      preBlockEngineState = initEngineState()
-      console.log(`Pre-block: none  |  Post-block: ${postBlockSteps.length} step(s)`)
-    } else {
+    if (preBlockSteps.length > 0) {
       const preReplay = replaySteps({
         steps: preBlockSteps,
-        startingSnapshots,
+        startingSnapshots: [initialSnapshot],
         ...baseParams,
-        autocastFollowUps: settings.autocastFollowUps,
       })
       if (!preReplay.valid) {
-        console.warn('[Optimizer] Pre-block replay failed — aborting')
+        setResult({ valid: false, reason: 'Could not replay the steps before this block (internal error).' })
         setIsRunning(false)
-        setProgress({ done: 0, total: 0 })
         return
       }
-      preBlockSnapshots = preReplay.snapshots
-      preBlockEngineState = preReplay.engineState
-      console.log(`Pre-block: ${preBlockSteps.length} step(s)  |  Post-block: ${postBlockSteps.length} step(s)`)
+      preSnapshots = preReplay.snapshots
+      preEngineState = preReplay.engineState
     }
 
-    // Enumerate all legal candidate sequences
-    const candidates = enumerate({
-      preBlockSnapshots,
-      preBlockEngineState,
-      character,
-      config: block,
+    // Replay draft steps
+    const draftReplay = replaySteps({
+      steps: block.draftSteps,
+      startingSnapshots: preSnapshots,
+      startingEngineState: preEngineState,
       ...baseParams,
-      autocastFollowUps: settings.autocastFollowUps,
     })
 
-    setProgress({ done: 0, total: candidates.length })
-
-    // Score all candidates synchronously (typical count: < 5,000 — fast enough without batching)
-    // NOTE: because this is synchronous, React cannot re-render during this loop, so the
-    // progress counter in the UI will not visually update until the run completes.
-    const scored: ScoredCandidate[] = []
-    for (let i = 0; i < candidates.length; i++) {
-      const s = scoreCandidate({
-        candidate: candidates[i],
-        postBlockSteps,
-        ...baseParams,
-        autocastFollowUps: settings.autocastFollowUps,
-      })
-      scored.push(s)
+    if (!draftReplay.valid) {
+      setResult({ valid: false, reason: 'One or more draft steps could not be applied (character or action not available).' })
+      setIsRunning(false)
+      return
     }
 
-    const validResults = scored
-      .filter(c => c.valid)
-      .sort((a, b) => b.score - a.score)
+    // Replay post-block steps on top of the draft result
+    if (postBlockSteps.length === 0) {
+      const lastSnap = draftReplay.snapshots[draftReplay.snapshots.length - 2] ?? draftReplay.snapshots[draftReplay.snapshots.length - 1]
+      setResult({ valid: true, dps: lastSnap?.dps ?? 0 })
+    } else {
+      const postReplay = replaySteps({
+        steps: postBlockSteps,
+        startingSnapshots: draftReplay.snapshots,
+        startingEngineState: draftReplay.engineState,
+        ...baseParams,
+      })
+      if (!postReplay.valid) {
+        setResult({ valid: false, reason: 'The rotation breaks after these draft steps are inserted.' })
+      } else {
+        const lastSnap = postReplay.snapshots[postReplay.snapshots.length - 2] ?? postReplay.snapshots[postReplay.snapshots.length - 1]
+        setResult({ valid: true, dps: lastSnap?.dps ?? 0 })
+      }
+    }
 
-    const invalidCount = scored.length - validResults.length
-    const elapsed = (performance.now() - t0).toFixed(0)
-    console.log(
-      `[Optimizer] Done — ${validResults.length} valid, ${invalidCount} invalid` +
-      `, best: ${validResults[0]?.score.toFixed(0) ?? 'n/a'} DPS, ${elapsed}ms total`,
-    )
-
-    setResults(validResults)
-    setProgress({ done: candidates.length, total: candidates.length })
     setIsRunning(false)
   }, [snapshots, optimizerBlocks, charactersMap, characterColumnsMap, globalColumns, enemy, settings])
 
   function reset() {
-    setResults([])
-    setProgress(null)
+    setResult(null)
     setLastBlockId(null)
   }
 
-  return { run, results, isRunning, progress, lastBlockId, reset }
+  return { run, result, isRunning, lastBlockId, reset }
 }

@@ -1,359 +1,172 @@
 import '../../styles/rotation-editor/OptimizerPanel.css'
 import { createPortal } from 'react-dom'
-import type { OptimizerBlock, RequiredAction } from '../../types/optimizerBlock'
+import type { OptimizerBlock, DraftStep } from '../../types/optimizerBlock'
 import type { ResolvedCharacter } from '../../types/character'
-import type { ScoredCandidate } from '../../utils/optimizer/score'
-import type { OptimizerProgress } from '../../hooks/rotation-editor/useOptimizer'
-import type { RotationStep } from '../../utils/importExport'
+import type { AttemptResult } from '../../hooks/rotation-editor/useOptimizer'
 
 // ========== Types ============================================================================================================
 
 type OptimizerPanelProps = {
   block: OptimizerBlock
   charactersMap: Record<string, ResolvedCharacter>
-  totalStepCount: number
-  results: ScoredCandidate[]
+  result: AttemptResult | null
   isRunning: boolean
-  progress: OptimizerProgress | null
   onUpdateBlock: (updates: Partial<Omit<OptimizerBlock, 'id'>>) => void
   onRun: (blockId: string) => void
-  onApply: (blockId: string, steps: RotationStep[]) => void
-  onSave: (blockId: string, steps: RotationStep[], name: string) => void
-  onExport: (steps: RotationStep[], name: string) => void
+  onApply: (blockId: string) => void
   onClose: () => void
 }
 
 // ========== Helpers ==========================================================================================================
 
-function formatTime(seconds: number): string {
-  return `${seconds.toFixed(1)}s`
-}
-
-function getUniqueActionNames(character: ResolvedCharacter): string[] {
+function getUniqueActionNames(character: ResolvedCharacter): Array<{ display: string; raw: string }> {
   const seen = new Set<string>()
-  const result: string[] = []
+  const result: Array<{ display: string; raw: string }> = []
   for (const action of character.actions) {
     if (action.category === 'Testing') continue
     if (action.tags?.includes('INTRO_ACTION') || action.tags?.includes('OUTRO_ACTION')) continue
-
-    const key = action.groupName ?? action.name
-    if (!seen.has(key)) {
-      seen.add(key)
-      result.push(action.displayName || action.name)
+    const raw = action.groupName ?? action.name
+    if (!seen.has(raw)) {
+      seen.add(raw)
+      result.push({ display: action.displayName || action.name, raw })
     }
   }
   return result
 }
 
-function getRawActionName(character: ResolvedCharacter, displayName: string): string {
-  const found = character.actions.find(a => (a.displayName || a.name) === displayName)
-  return found?.groupName ?? found?.name ?? displayName
-}
-
-// ========== Component: Optimizer Panel =======================================================================================
+// ========== Component: Flex Block Panel ======================================================================================
 
 export function OptimizerPanel({
   block,
   charactersMap,
-  totalStepCount,
-  results,
+  result,
   isRunning,
-  progress,
   onUpdateBlock,
   onRun,
   onApply,
-  onSave,
-  onExport,
   onClose,
 }: OptimizerPanelProps) {
-  const character = charactersMap[block.character]
   const allCharacterNames = Object.keys(charactersMap)
-  const actionDisplayNames = character ? getUniqueActionNames(character) : []
 
-  function handleRequiredToggle(displayName: string) {
-    if (!character) return
-    const rawName = getRawActionName(character, displayName)
-    const exists = block.requiredActions.some(r => r.action === rawName)
-    if (exists) {
-      onUpdateBlock({ requiredActions: block.requiredActions.filter(r => r.action !== rawName) })
-    } else {
-      onUpdateBlock({ requiredActions: [...block.requiredActions, { action: rawName, minCount: 1 }] })
-    }
+  function addDraftStep() {
+    const defaultChar = allCharacterNames[0] ?? ''
+    const newStep: DraftStep = { character: defaultChar, action: '' }
+    onUpdateBlock({ draftSteps: [...block.draftSteps, newStep] })
   }
 
-  function handleRequiredCountChange(displayName: string, count: number) {
-    if (!character) return
-    const rawName = getRawActionName(character, displayName)
-    onUpdateBlock({
-      requiredActions: block.requiredActions.map(r =>
-        r.action === rawName ? { ...r, minCount: Math.max(0, count) } : r,
-      ),
+  function removeDraftStep(index: number) {
+    const updated = block.draftSteps.filter((_, i) => i !== index)
+    onUpdateBlock({ draftSteps: updated })
+  }
+
+  function updateDraftStep(index: number, field: keyof DraftStep, value: string) {
+    const updated = block.draftSteps.map((s, i) => {
+      if (i !== index) return s
+      if (field === 'character') return { character: value, action: '' }
+      return { ...s, [field]: value }
     })
+    onUpdateBlock({ draftSteps: updated })
   }
-
-  function handleRequiredMaxCountChange(displayName: string, value: string) {
-    if (!character) return
-    const rawName = getRawActionName(character, displayName)
-    const maxCount = value === '' ? undefined : Math.max(1, Number(value))
-    onUpdateBlock({
-      requiredActions: block.requiredActions.map(r =>
-        r.action === rawName ? { ...r, maxCount } : r,
-      ),
-    })
-  }
-
-  function handleBannedToggle(displayName: string) {
-    if (!character) return
-    const rawName = getRawActionName(character, displayName)
-    const current = new Set(block.bannedActions)
-    if (current.has(rawName)) current.delete(rawName)
-    else current.add(rawName)
-    onUpdateBlock({ bannedActions: [...current] })
-  }
-
-  function isRequired(displayName: string): boolean {
-    if (!character) return false
-    const rawName = getRawActionName(character, displayName)
-    return block.requiredActions.some(r => r.action === rawName)
-  }
-
-  function getRequiredEntry(displayName: string): RequiredAction | undefined {
-    if (!character) return undefined
-    const rawName = getRawActionName(character, displayName)
-    return block.requiredActions.find(r => r.action === rawName)
-  }
-
-  function isBanned(displayName: string): boolean {
-    if (!character) return false
-    return block.bannedActions.includes(getRawActionName(character, displayName))
-  }
-
-  function handleBanAll() {
-    if (!character) return
-    const rawNames = actionDisplayNames.map(d => getRawActionName(character, d))
-    onUpdateBlock({ bannedActions: rawNames, requiredActions: [] })
-  }
-
-  function handleRequireAll() {
-    if (!character) return
-    const rawNames = actionDisplayNames.map(d => getRawActionName(character, d))
-    onUpdateBlock({
-      requiredActions: rawNames.map(name => ({ action: name, minCount: 1 })),
-      bannedActions: [],
-    })
-  }
-
-  function handleClearAll() {
-    onUpdateBlock({ requiredActions: [], bannedActions: [] })
-  }
-
-  const topResults = results.slice(0, 20)
 
   return createPortal(
     <div className="optimizerPanelOverlay" onClick={onClose}>
       <div className="optimizerPanel" onClick={e => e.stopPropagation()}>
         {/* Header */}
         <div className="optimizerPanelHeader">
-          <span className="optimizerPanelTitle">◈ SEQUENCE OPTIMIZER</span>
+          <span className="optimizerPanelTitle">◈ FLEX BLOCK</span>
           <button type="button" className="optimizerPanelClose" onClick={onClose}>✕</button>
         </div>
 
-        <div className="optimizerPanelBody">
-          {/* Left: Config */}
-          <div className="optimizerPanelConfig">
-            <div className="optimizerConfigSection">
-              <label className="optimizerConfigLabel">Character</label>
-              <select
-                className="optimizerConfigSelect"
-                value={block.character}
-                onChange={e => onUpdateBlock({ character: e.target.value, requiredActions: [], bannedActions: [] })}
-              >
-                <option value="">— select —</option>
-                {allCharacterNames.map(name => (
-                  <option key={name} value={name}>{name}</option>
-                ))}
-              </select>
-            </div>
+        <div className="flexPanelBody">
+          {/* Draft steps editor */}
+          <div className="flexDraftSection">
+            <div className="flexDraftLabel">Draft Sequence</div>
 
-            <div className="optimizerConfigSection">
-              <label className="optimizerConfigLabel">Block position</label>
-              <div className="optimizerConfigRow">
-                <span className="optimizerConfigNote">After step</span>
-                <input
-                  type="number"
-                  className="optimizerConfigInput"
-                  min={0}
-                  max={totalStepCount}
-                  value={block.insertAfterStepCount}
-                  onChange={e => onUpdateBlock({ insertAfterStepCount: Math.max(0, Math.min(totalStepCount, Number(e.target.value))) })}
-                />
-                <span className="optimizerConfigNote">of {totalStepCount}</span>
-              </div>
-            </div>
+            {block.draftSteps.length === 0 && (
+              <div className="flexDraftEmpty">No steps yet. Add steps below to attempt.</div>
+            )}
 
-            <div className="optimizerConfigSection">
-              <label className="optimizerConfigLabel">Duration</label>
-              <div className="optimizerConfigRow">
-                <input
-                  type="number"
-                  className="optimizerConfigInput"
-                  min={0}
-                  max={block.maxDuration}
-                  step={0.5}
-                  value={block.minDuration}
-                  onChange={e => onUpdateBlock({ minDuration: Math.max(0, Number(e.target.value)) })}
-                />
-                <span className="optimizerConfigNote">s min</span>
-                <input
-                  type="number"
-                  className="optimizerConfigInput"
-                  min={block.minDuration}
-                  max={120}
-                  step={0.5}
-                  value={block.maxDuration}
-                  onChange={e => onUpdateBlock({ maxDuration: Math.max(block.minDuration, Number(e.target.value)) })}
-                />
-                <span className="optimizerConfigNote">s max</span>
-              </div>
-            </div>
-
-            {character && actionDisplayNames.length > 0 && (
-              <div className="optimizerConfigSection">
-                <div className="optimizerConfigLabelRow">
-                  <label className="optimizerConfigLabel">Actions</label>
-                  <div className="optimizerBulkButtons">
-                    <button type="button" className="optimizerBulkBtn" title="Require all actions" onClick={handleRequireAll}>✓ all</button>
-                    <button type="button" className="optimizerBulkBtn" title="Ban all actions" onClick={handleBanAll}>✕ all</button>
-                    <button type="button" className="optimizerBulkBtn" title="Clear all constraints" onClick={handleClearAll}>clear</button>
+            <div className="flexDraftList">
+              {block.draftSteps.map((step, idx) => {
+                const character = charactersMap[step.character]
+                const actions = character ? getUniqueActionNames(character) : []
+                return (
+                  <div key={idx} className="flexDraftRow">
+                    <span className="flexDraftIndex">{idx + 1}</span>
+                    <select
+                      className="flexDraftSelect"
+                      value={step.character}
+                      onChange={e => updateDraftStep(idx, 'character', e.target.value)}
+                    >
+                      <option value="">— character —</option>
+                      {allCharacterNames.map(name => (
+                        <option key={name} value={name}>{name}</option>
+                      ))}
+                    </select>
+                    <select
+                      className="flexDraftSelect"
+                      value={step.action}
+                      onChange={e => updateDraftStep(idx, 'action', e.target.value)}
+                      disabled={!step.character}
+                    >
+                      <option value="">— action —</option>
+                      {actions.map(a => (
+                        <option key={a.raw} value={a.raw}>{a.display}</option>
+                      ))}
+                    </select>
+                    <button
+                      type="button"
+                      className="flexDraftRemoveBtn"
+                      onClick={() => removeDraftStep(idx)}
+                      title="Remove this step"
+                    >
+                      ✕
+                    </button>
                   </div>
-                </div>
-                <div className="optimizerActionGrid">
-                  {actionDisplayNames.map(displayName => {
-                    const req = isRequired(displayName)
-                    const banned = isBanned(displayName)
-                    const reqEntry = getRequiredEntry(displayName)
-                    return (
-                      <div key={displayName} className={`optimizerActionItem ${req ? 'optimizerActionRequired' : banned ? 'optimizerActionBanned' : ''}`}>
-                        <span className="optimizerActionName">{displayName}</span>
-                        <div className="optimizerActionButtons">
-                          <button
-                            type="button"
-                            className={`optimizerActionBtn ${req ? 'active' : ''}`}
-                            title="Require this action"
-                            onClick={() => { if (banned) handleBannedToggle(displayName); handleRequiredToggle(displayName) }}
-                          >
-                            ✓
-                          </button>
-                          {req && (
-                            <>
-                              <input
-                                type="number"
-                                className="optimizerActionCount"
-                                min={0}
-                                max={99}
-                                value={reqEntry?.minCount ?? 1}
-                                title="Minimum times this action must appear"
-                                onClick={e => e.stopPropagation()}
-                                onChange={e => handleRequiredCountChange(displayName, Number(e.target.value))}
-                              />
-                              <span className="optimizerConfigNote" style={{ margin: '0 1px' }}>–</span>
-                              <input
-                                type="number"
-                                className="optimizerActionCount"
-                                min={reqEntry?.minCount ?? 1}
-                                max={99}
-                                placeholder="∞"
-                                value={reqEntry?.maxCount ?? ''}
-                                title="Maximum times this action may appear (leave empty for no limit)"
-                                onClick={e => e.stopPropagation()}
-                                onChange={e => handleRequiredMaxCountChange(displayName, e.target.value)}
-                              />
-                            </>
-                          )}
-                          <button
-                            type="button"
-                            className={`optimizerActionBtn ${banned ? 'activeBanned' : ''}`}
-                            title="Ban this action"
-                            onClick={() => { if (req) handleRequiredToggle(displayName); handleBannedToggle(displayName) }}
-                          >
-                            ✕
-                          </button>
-                        </div>
-                      </div>
-                    )
-                  })}
-                </div>
-              </div>
-            )}
+                )
+              })}
+            </div>
 
-            <button
-              type="button"
-              className="optimizerRunBtn"
-              disabled={isRunning || !block.character}
-              onClick={() => onRun(block.id)}
-            >
-              {isRunning ? 'Running…' : 'Run'}
-            </button>
-
-            {progress !== null && (
-              <div className="optimizerProgress">
-                {isRunning
-                  ? `Scoring ${progress.done} / ${progress.total}…`
-                  : `Found ${results.length} valid sequences (from ${progress.total} candidates)`
-                }
-              </div>
-            )}
+            <div className="flexDraftActions">
+              <button type="button" className="flexAddStepBtn" onClick={addDraftStep}>
+                + Add Step
+              </button>
+              <button
+                type="button"
+                className="flexAttemptBtn"
+                disabled={isRunning || block.draftSteps.length === 0}
+                onClick={() => onRun(block.id)}
+              >
+                {isRunning ? 'Checking…' : 'Attempt…'}
+              </button>
+            </div>
           </div>
 
-          {/* Right: Results */}
-          <div className="optimizerPanelResults">
-            {topResults.length === 0 && !isRunning && progress !== null && (
-              <div className="optimizerNoResults">No valid sequences found with these constraints.</div>
-            )}
-            {topResults.length === 0 && progress === null && (
-              <div className="optimizerNoResults">Configure constraints and hit Run to enumerate sequences.</div>
-            )}
-            {topResults.map((result, i) => (
-              <div key={i} className="optimizerResultCard">
-                <div className="optimizerResultHeader">
-                  <span className="optimizerResultRank">#{i + 1}</span>
-                  <span className="optimizerResultDps">{result.score.toFixed(0)} DPS</span>
-                  <span className="optimizerResultDuration">{formatTime(result.blockDuration)}</span>
-                </div>
-                <div className="optimizerResultSteps">
-                  {result.steps.map((step, j) => (
-                    <span key={j} className="optimizerResultStep">{step.action}</span>
-                  ))}
-                </div>
-                <div className="optimizerResultActions">
+          {/* Result */}
+          {result !== null && (
+            <div className={`flexResult ${result.valid ? 'flexResultValid' : 'flexResultInvalid'}`}>
+              {result.valid ? (
+                <>
+                  <span className="flexResultIcon">✓</span>
+                  <span className="flexResultText">
+                    Rotation is valid — {result.dps !== undefined ? `${result.dps.toFixed(0)} DPS` : ''}
+                  </span>
                   <button
                     type="button"
-                    className="optimizerResultBtn"
-                    onClick={() => onApply(block.id, result.steps)}
-                    title="Replace optimizer block with this sequence"
+                    className="flexApplyBtn"
+                    onClick={() => onApply(block.id)}
                   >
                     Apply
                   </button>
-                  <button
-                    type="button"
-                    className="optimizerResultBtn"
-                    onClick={() => onSave(block.id, result.steps, `Optimizer result #${i + 1}`)}
-                    title="Save as a named rotation"
-                  >
-                    Save
-                  </button>
-                  <button
-                    type="button"
-                    className="optimizerResultBtn"
-                    onClick={() => onExport(result.steps, `Optimizer result #${i + 1}`)}
-                    title="Download as JSON"
-                  >
-                    Export
-                  </button>
-                </div>
-              </div>
-            ))}
-          </div>
+                </>
+              ) : (
+                <>
+                  <span className="flexResultIcon">✗</span>
+                  <span className="flexResultText">{result.reason ?? 'Invalid sequence.'}</span>
+                </>
+              )}
+            </div>
+          )}
         </div>
       </div>
     </div>,

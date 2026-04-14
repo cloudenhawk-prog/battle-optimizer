@@ -14,8 +14,6 @@ import type { Settings } from '../../hooks/useSettings'
 import type { Snapshot } from '../../types/snapshot'
 import type { DamageEvent } from '../../types/events'
 import type { OptimizerBlock } from '../../types/optimizerBlock'
-import type { RotationStep } from '../../utils/importExport'
-import { extractSteps, saveRotationToStorage, downloadRotationAsJson } from '../../utils/importExport'
 
 // ========== Component: Rotation Editor =======================================================================================
 
@@ -48,7 +46,6 @@ export default function RotationEditor({ charactersInBattle, enemy, tableConfig,
 
   const activeOptimizerBlock = optimizerBlocks.find(b => b.id === activeOptimizerBlockId) ?? null
   const charactersMap = Object.fromEntries(charactersInBattle.map(c => [c.name, c]))
-  const totalUserStepCount = snapshots.filter(s => s.action && s.action !== '' && s.character && !s.isAutocast).length
 
   // Action snapshots are the navigable rows (only rows with an action are shown in the overlay)
   const actionSnapshots = snapshots.filter(s => s.action)
@@ -79,43 +76,21 @@ export default function RotationEditor({ charactersInBattle, enemy, tableConfig,
   }
 
   function handleAddOptimizerBlock(insertAfterStepCount: number) {
-    const id = `opt-${Date.now()}`
+    const id = `flex-${Date.now()}`
     const newBlock: OptimizerBlock = {
       id,
-      character: charactersInBattle[0]?.name ?? '',
-      minDuration: 10,
-      maxDuration: 20,
-      requiredActions: [],
-      bannedActions: [],
       insertAfterStepCount,
+      draftSteps: [],
     }
     addOptimizerBlock(newBlock)
-    setActiveOptimizerBlockId(id)
   }
 
-  function handleOptimizerApply(blockId: string, steps: RotationStep[]) {
-    importExport.applyOptimizerResult(blockId, steps)
-    setActiveOptimizerBlockId(null)
-  }
-
-  function handleOptimizerSave(blockId: string, steps: RotationStep[], name: string) {
+  function handleOptimizerApply(blockId: string) {
     const block = optimizerBlocks.find(b => b.id === blockId)
     if (!block) return
-    const allSteps = extractSteps(snapshots)
-    const before = allSteps.slice(0, block.insertAfterStepCount)
-    const after = allSteps.slice(block.insertAfterStepCount)
-    const merged = [...before, ...steps, ...after]
-    saveRotationToStorage({ name, createdAt: new Date().toISOString(), steps: merged })
-    importExport.clearImportStatus()
-  }
-
-  function handleOptimizerExport(steps: RotationStep[], name: string) {
-    const block = optimizerBlocks.find(b => b.id === activeOptimizerBlockId)
-    if (!block) return
-    const allSteps = extractSteps(snapshots)
-    const before = allSteps.slice(0, block.insertAfterStepCount)
-    const after = allSteps.slice(block.insertAfterStepCount)
-    downloadRotationAsJson({ name, createdAt: new Date().toISOString(), steps: [...before, ...steps, ...after] })
+    importExport.applyOptimizerResult(blockId, block.draftSteps)
+    setActiveOptimizerBlockId(null)
+    optimizer.reset()
   }
 
   const hasData = snapshots.some(s => s.action)
@@ -183,15 +158,11 @@ export default function RotationEditor({ charactersInBattle, enemy, tableConfig,
         <OptimizerPanel
           block={activeOptimizerBlock}
           charactersMap={charactersMap}
-          totalStepCount={totalUserStepCount}
-          results={optimizer.lastBlockId === activeOptimizerBlockId ? optimizer.results : []}
+          result={optimizer.lastBlockId === activeOptimizerBlockId ? optimizer.result : null}
           isRunning={optimizer.isRunning}
-          progress={optimizer.lastBlockId === activeOptimizerBlockId ? optimizer.progress : null}
           onUpdateBlock={updates => updateOptimizerBlock(activeOptimizerBlock.id, updates)}
           onRun={optimizer.run}
           onApply={handleOptimizerApply}
-          onSave={handleOptimizerSave}
-          onExport={handleOptimizerExport}
           onClose={() => setActiveOptimizerBlockId(null)}
         />
       )}

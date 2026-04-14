@@ -144,30 +144,3 @@ thead.tableHeader::after {
   border-left: 1px solid var(--tbl-group-border);
 }
 
-
-/* ─── Add optimizer block row ─────────────────────────────────── */
-
-.optimizerAddRow td {
-  padding: 0;
-}
-
-.optimizerAddBtn {
-  display: block;
-  width: 100%;
-  padding: 5px 14px;
-  background: transparent;
-  border: none;
-  border-top: 1px dashed hsla(195, 80%, 50%, 0.18);
-  cursor: pointer;
-  font-size: 0.7rem;
-  font-weight: 600;
-  letter-spacing: 0.06em;
-  color: hsla(195, 80%, 60%, 0.45);
-  text-align: left;
-  transition: color 0.15s, background 0.15s;
-}
-
-.optimizerAddBtn:hover {
-  color: hsl(195, 80%, 65%);
-  background: hsla(195, 80%, 30%, 0.08);
-}

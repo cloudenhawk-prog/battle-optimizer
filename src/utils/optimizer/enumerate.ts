@@ -2,7 +2,6 @@ import type { Snapshot } from '../../types/snapshot'
 import type { ResolvedCharacter } from '../../types/character'
 import type { Enemy } from '../../types/enemy'
 import type { GlobalColumns } from '../../types/tableDefinitions'
-import type { OptimizerBlock, RequiredAction } from '../../types/optimizerBlock'
 import type { RotationStep } from '../importExport'
 import type { EngineState } from '../engine/step'
 import { engineStep } from '../engine/step'
@@ -11,6 +10,23 @@ import { assignCharacterToRow } from '../hooks/snapshotHelpers'
 import { cloneSnapshots, cloneEngineState } from '../mcts/node'
 
 // ========== Types ============================================================================================================
+
+/** Local config type for the enumerate utility — preserved for potential future use. */
+type RequiredAction = {
+  action: string
+  minCount: number
+  maxCount?: number
+}
+
+type EnumerateConfig = {
+  id: string
+  character: string
+  minDuration: number
+  maxDuration: number
+  requiredActions: RequiredAction[]
+  bannedActions: string[]
+  insertAfterStepCount: number
+}
 
 export type CandidateSequence = {
   /** The (character, action) pairs that make up this candidate block. */
@@ -27,7 +43,7 @@ type EnumerateParams = {
   preBlockSnapshots: Snapshot[]
   preBlockEngineState: EngineState
   character: ResolvedCharacter
-  config: OptimizerBlock
+  config: EnumerateConfig
   charactersMap: Record<string, ResolvedCharacter>
   characterColumnsMap: Record<string, string[]>
   globalColumns: GlobalColumns

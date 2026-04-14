@@ -1,41 +1,31 @@
 // ========== Types ===========================================================================================================
 
 /**
- * A required-action constraint: the named action (or groupName) must appear
- * at least `minCount` times and at most `maxCount` times in the generated sequence.
+ * A draft step inside a flex block — one (character, action) pair the user wants to test.
  */
-export type RequiredAction = {
-  /** Raw action name or groupName as used in the engine. */
+export type DraftStep = {
+  character: string
   action: string
-  /** Minimum number of times this action must appear. */
-  minCount: number
-  /** Maximum number of times this action may appear. Undefined means no upper limit. */
-  maxCount?: number
 }
 
 /**
- * Configuration for an optimization block in the rotation timeline.
- * An optimizer block sits at a specific position in the rotation and enumerates all legal
- * action sequences for one character within the given constraints.
+ * A flex block is a placeholder slot in the rotation.
+ * The block itself takes 0 time and has no effect on the simulation.
+ * The user populates `draftSteps` manually, then clicks "Attempt" to validate whether
+ * the full rotation still works with those steps inserted. If valid, they can apply the
+ * draft to permanently replace the block with real steps.
  */
-export type OptimizerBlock = {
+export type FlexBlock = {
   /** Unique identifier for this block within the rotation. */
   id: string
-  /** The character whose actions are being optimized. */
-  character: string
-  /** Minimum total duration (seconds) the block's action sequence must fill. */
-  minDuration: number
-  /** Maximum total duration (seconds) the block's action sequence may fill. */
-  maxDuration: number
-  /** Actions that MUST appear a minimum number of times in the sequence. */
-  requiredActions: RequiredAction[]
-  /** Action names (or groupNames) that MUST NOT appear in the sequence. */
-  bannedActions: string[]
   /**
    * How many user-visible (non-autocast) steps precede this block in the rotation.
    * 0 means the block appears before any actions; N means after the Nth user action.
-   * Used to find the correct insertion point in the rendered table and to derive the
-   * pre-block engine state by replaying those steps.
    */
   insertAfterStepCount: number
+  /** The draft (character, action) pairs the user wants to attempt. */
+  draftSteps: DraftStep[]
 }
+
+/** Alias kept for backward-compat with serialised rotation data. */
+export type OptimizerBlock = FlexBlock

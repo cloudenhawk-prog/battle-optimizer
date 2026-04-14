@@ -10,6 +10,7 @@ import type { Character } from '../../types/character'
 import type { Snapshot } from '../../types/snapshot'
 import type { Gear } from '../../types/gear'
 import type { OptimizerBlock } from '../../types/optimizerBlock'
+import { InsertRow } from './InsertRow'
 
 // ========== Component: Rotation Table ========================================================================================
 
@@ -76,14 +77,20 @@ export function RotationTable({ snapshots, charactersInBattle, tableConfig, onSe
           {(() => {
             const rows: React.ReactNode[] = []
             let stepCount = 0
+            const addInsert = onAddOptimizerBlock
 
-            // Optimizer blocks at step 0 (before any user steps)
+            // Insert slot at position 0 (before any user steps)
+            if (addInsert) rows.push(<InsertRow key="insert-0" onInsert={() => addInsert(0)} />)
+
+            // Flex blocks at step 0 (before any user steps)
             optimizerBlocks
               .filter(b => b.insertAfterStepCount === 0)
-              .map(b => (
-                <OptimizerRow key={`opt-${b.id}`} block={b} onConfigure={onOptimizerBlockConfigure ?? (() => {})} onRemove={onOptimizerBlockRemove ?? (() => {})} />
-              ))
-              .forEach(r => rows.push(r))
+              .forEach(b => {
+                rows.push(
+                  <OptimizerRow key={`opt-${b.id}`} block={b} onConfigure={onOptimizerBlockConfigure ?? (() => {})} onRemove={onOptimizerBlockRemove ?? (() => {})} />
+                )
+                if (addInsert) rows.push(<InsertRow key={`insert-0-after-${b.id}`} onInsert={() => addInsert(0)} />)
+              })
 
             for (let idx = 0; idx < snapshots.length; idx++) {
               const snapshot = snapshots[idx]
@@ -110,36 +117,23 @@ export function RotationTable({ snapshots, charactersInBattle, tableConfig, onSe
               // Count user-visible steps (non-autocast rows with an action)
               if (snapshot.action && snapshot.action !== '' && snapshot.character && !snapshot.isAutocast) {
                 stepCount++
-                // Insert any optimizer blocks that belong after this step
+                const capturedStep = stepCount
+                // Insert any flex blocks that belong after this step
                 optimizerBlocks
-                  .filter(b => b.insertAfterStepCount === stepCount)
+                  .filter(b => b.insertAfterStepCount === capturedStep)
                   .forEach(b => {
                     rows.push(
                       <OptimizerRow key={`opt-${b.id}`} block={b} onConfigure={onOptimizerBlockConfigure ?? (() => {})} onRemove={onOptimizerBlockRemove ?? (() => {})} />
                     )
+                    if (addInsert) rows.push(<InsertRow key={`insert-${capturedStep}-after-${b.id}`} onInsert={() => addInsert(capturedStep)} />)
                   })
+                // Insert slot after this step (when no flex blocks, this is the only slot)
+                if (addInsert) rows.push(<InsertRow key={`insert-${capturedStep}`} onInsert={() => addInsert(capturedStep)} />)
               }
             }
 
             return rows
           })()}
-          {onAddOptimizerBlock && (
-            <tr className="optimizerAddRow">
-              <td colSpan={999}>
-                <button
-                  type="button"
-                  className="optimizerAddBtn"
-                  onClick={() => {
-                    const userStepCount = snapshots.filter(s => s.action && s.action !== '' && s.character && !s.isAutocast).length
-                    onAddOptimizerBlock(userStepCount)
-                  }}
-                  title="Add an optimizer block at the end of the current rotation"
-                >
-                  + Add Optimizer Block
-                </button>
-              </td>
-            </tr>
-          )}
           </tbody>
         </table>
       </div>
