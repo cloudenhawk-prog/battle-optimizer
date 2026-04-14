@@ -131,78 +131,7 @@
   }
 }
 
-/* Scanning line effect */
-.sidebar::before {
-  content: '';
-  position: absolute;
-  top: 0;
-  left: 0;
-  right: 0;
-  height: 2px;
-  background: linear-gradient(to bottom, transparent, var(--sidebar-glow), transparent);
-  box-shadow: 0 0 10px var(--sidebar-glow);
-  animation: sidebarScan 8s ease-in-out infinite;
-  pointer-events: none;
-  opacity: 0;
-  z-index: 100;
-}
 
-.sidebar.expanded::before {
-  opacity: 1;
-}
-
-@keyframes sidebarScan {
-  0% {
-    top: 0;
-    opacity: 0;
-  }
-  5% {
-    opacity: 0.6;
-  }
-  45% {
-    opacity: 0.6;
-  }
-  50% {
-    top: 100%;
-    opacity: 0;
-  }
-  100% {
-    top: 100%;
-    opacity: 0;
-  }
-}
-
-/* Corner brackets for HUD aesthetic */
-.sidebar::after {
-  content: '';
-  position: absolute;
-  top: 12px;
-  right: 12px;
-  width: 24px;
-  height: 24px;
-  border-top: 2px solid var(--sidebar-accent-cyan);
-  border-right: 2px solid var(--sidebar-accent-cyan);
-  opacity: 0;
-  transition: opacity var(--animation-duration) ease;
-  pointer-events: none;
-  animation: cornerPulse 4s ease-in-out infinite;
-}
-
-.sidebar.expanded::after {
-  opacity: 0.5;
-}
-
-@keyframes cornerPulse {
-  0%,
-  100% {
-    border-color: var(--sidebar-accent-cyan);
-    opacity: 0.5;
-  }
-  50% {
-    border-color: var(--sidebar-accent-purple);
-    opacity: 0.7;
-  }
-}
 
 /* -------------- nav Items ----------------- */
 
@@ -212,17 +141,6 @@
   gap: 8px;
   padding: var(--nav-y) 12px 12px 12px;
   position: relative;
-}
-
-.nav::before {
-  content: '';
-  position: absolute;
-  top: -20px;
-  left: 20px;
-  right: 20px;
-  height: 1px;
-  background: linear-gradient(to right, transparent, var(--sidebar-border), transparent);
-  opacity: 0.4;
 }
 
 .nav a {
@@ -324,6 +242,134 @@
   pointer-events: none;
 }
 
+/* -------------- Sections -------------------------- */
+
+.sidebar-section {
+  display: flex;
+  flex-direction: column;
+  padding: 0 0 4px;
+  position: relative;
+}
+
+/* Navigation label floats just above the nav items (which are pushed down by .nav's padding-top) */
+.sidebar-section:first-of-type .sidebar-section-label {
+  position: absolute;
+  top: calc(var(--nav-y) - 20px);
+  left: 14px;
+}
+
+.sidebar-section + .sidebar-section {
+  margin-top: 6px;
+  padding-top: 14px;
+}
+
+.sidebar-section + .sidebar-section::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 20px;
+  right: 20px;
+  height: 1px;
+  background: linear-gradient(to right, transparent, var(--sidebar-border), transparent);
+  opacity: 0.5;
+}
+
+.sidebar-section-label {
+  font-size: 9px;
+  font-weight: 700;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--sidebar-text-dim);
+  opacity: 0.5;
+  padding: 0 14px 4px;
+  white-space: nowrap;
+  pointer-events: none;
+  user-select: none;
+}
+
+/* -------------- Sidebar Actions (rotation page) --- */
+
+.sidebar-actions {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  padding: 0 0 0;
+}
+
+.sidebar-action-btn {
+  background: none;
+  border: none;
+  border-radius: 6px;
+  color: var(--sidebar-text-dim);
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  padding: 10px 14px;
+  width: 100%;
+  box-sizing: border-box;
+  position: relative;
+  overflow: hidden;
+  font-family: system-ui, -apple-system, sans-serif;
+  font-size: 14px;
+  letter-spacing: 0.02em;
+  text-align: left;
+  transition:
+    background 0.3s ease,
+    box-shadow 0.3s ease,
+    transform 0.3s cubic-bezier(0.34, 1.56, 0.64, 1),
+    color 0.3s ease;
+}
+
+.sidebar-action-btn::before {
+  content: '';
+  position: absolute;
+  left: 0;
+  top: 0;
+  bottom: 0;
+  width: 3px;
+  background: var(--sidebar-accent-cyan);
+  opacity: 0;
+  transform: scaleY(0);
+  transition: all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+.sidebar-action-btn:hover:not(:disabled) {
+  background: rgba(100, 150, 255, 0.08);
+  box-shadow:
+    0 0 12px rgba(100, 150, 255, 0.3),
+    inset 0 0 20px rgba(100, 150, 255, 0.05);
+  transform: translateX(4px);
+  color: var(--sidebar-text);
+}
+
+.sidebar-action-btn:hover:not(:disabled)::before {
+  opacity: 1;
+  transform: scaleY(1);
+}
+
+.sidebar-action-btn:disabled,
+.sidebar-action-btn.disabled {
+  cursor: not-allowed;
+}
+
+.sidebar-action-btn:disabled .sidebar-action-label,
+.sidebar-action-btn.disabled .sidebar-action-label {
+  opacity: 0.25;
+}
+
+.sidebar-action-label {
+  white-space: nowrap;
+  transition:
+    opacity 200ms ease,
+    transform 200ms ease;
+}
+
+.sidebar.collapsed .sidebar-action-label {
+  opacity: 0;
+  transform: translateX(-6px);
+  pointer-events: none;
+}
+
 /* -------------- Footer -------------------- */
 
 .sidebar-footer {
@@ -393,24 +439,7 @@
   margin-left: calc(32px + 15px);
 }
 
-/* Additional corner bracket (bottom-left) */
-.sidebar .corner-bracket {
-  position: absolute;
-  bottom: 12px;
-  left: 12px;
-  width: 24px;
-  height: 24px;
-  border-bottom: 2px solid var(--sidebar-accent-purple);
-  border-left: 2px solid var(--sidebar-accent-purple);
-  opacity: 0;
-  transition: opacity var(--animation-duration) ease;
-  pointer-events: none;
-  animation: cornerPulse 4s ease-in-out infinite 2s;
-}
 
-.sidebar.expanded .corner-bracket {
-  opacity: 0.5;
-}
 
 /* -------------- NO CLUE ------------------- */
 

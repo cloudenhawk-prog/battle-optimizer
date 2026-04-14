@@ -29,15 +29,18 @@ type RotationEditorProps = {
   onSequenceChange?: (characterName: string, sequence: 0 | 1 | 2 | 3 | 4 | 5 | 6) => void
   gearResetKey?: number
   settings: Settings
+  rotationsOpen: boolean
+  setRotationsOpen: React.Dispatch<React.SetStateAction<boolean>>
+  summaryOpen: boolean
+  setSummaryOpen: React.Dispatch<React.SetStateAction<boolean>>
+  onHasDataChange?: (hasData: boolean) => void
 }
 
-export default function RotationEditor({ charactersInBattle, enemy, tableConfig, columnVisibility, setColumnVisibility, onGearChange, onSequenceChange, gearResetKey, settings }: RotationEditorProps) {
+export default function RotationEditor({ charactersInBattle, enemy, tableConfig, columnVisibility, setColumnVisibility, onGearChange, onSequenceChange, gearResetKey, settings, rotationsOpen, setRotationsOpen, summaryOpen, setSummaryOpen, onHasDataChange }: RotationEditorProps) {
   const { snapshots, damageEvents, handleCharacterSelect, handleActionSelect, importExport, optimizerBlocks, addOptimizerBlock, removeOptimizerBlock, updateOptimizerBlock, optimizer } = useRotationEditor({ charactersInBattle, tableConfig, enemy, gearResetKey, settings })
   const [overlayOpen, setOverlayOpen] = useState(false)
   const [overlayData, setOverlayData] = useState<null | { snapshot: Snapshot; previousSnapshot: Snapshot | null; damageEvents: DamageEvent[] }>(null)
   const [overlayIndex, setOverlayIndex] = useState<number>(0)
-  const [summaryOpen, setSummaryOpen] = useState(false)
-  const [rotationsOpen, setRotationsOpen] = useState(false)
   const [activeOptimizerBlockId, setActiveOptimizerBlockId] = useState<string | null>(null)
 
   const { lastImportError, lastImportCompleted } = importExport
@@ -117,9 +120,12 @@ export default function RotationEditor({ charactersInBattle, enemy, tableConfig,
 
   const hasData = snapshots.some(s => s.action)
 
+  useEffect(() => {
+    onHasDataChange?.(hasData)
+  }, [hasData])
+
   return (
     <div className="pageWrapper">
-      <h1 className="heading"></h1>
       {hasImportStatus && (
         <div className={`importBanner ${lastImportError ? 'importBannerError' : 'importBannerSuccess'}`}>
           <span className="importBannerIcon">{lastImportError ? '⚠' : '✓'}</span>
@@ -155,16 +161,6 @@ export default function RotationEditor({ charactersInBattle, enemy, tableConfig,
         onOptimizerBlockRemove={removeOptimizerBlock}
         onAddOptimizerBlock={handleAddOptimizerBlock}
       />
-      <div className="editorFloatingButtons">
-        <button className="summaryOpenButton" onClick={() => setRotationsOpen(true)} title="Save / load rotations">
-          ◈ ROTATIONS
-        </button>
-        {hasData && (
-          <button className="summaryOpenButton" onClick={() => setSummaryOpen(true)} title="Open full team summary">
-            ◈ FIELD REPORT
-          </button>
-        )}
-      </div>
       <ImportExportPanel
         open={rotationsOpen}
         onClose={() => setRotationsOpen(false)}

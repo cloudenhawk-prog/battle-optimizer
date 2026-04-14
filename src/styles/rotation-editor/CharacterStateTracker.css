@@ -45,7 +45,7 @@
 .stateTracker {
   display: flex;
   gap: 12px;
-  margin-bottom: 12px;
+  margin-bottom: var(--content-column-width-free-space);
   flex-wrap: wrap;
 }
 
