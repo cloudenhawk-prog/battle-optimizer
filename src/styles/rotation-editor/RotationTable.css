@@ -1,39 +1,105 @@
-/* -------------- Table Wrappers ------------ */
+/* ===== Rotation Table ============================================================
+ *
+ *   ┌──────────────────────────────────────────────────────┐
+ *   │  tableWrapper  (scroll container · glass card)       │
+ *   │  ┌────────────────────────────────────────────────┐  │
+ *   │  │  tableBase                                     │  │
+ *   │  │  ┌──────────────────────────────────────────┐  │  │
+ *   │  │  │  thead.tableHeader  (sticky)             │  │  │
+ *   │  │  │  ├─ HeaderRow                            │  │  │
+ *   │  │  │  └─ CurrentStateRow                      │  │  │
+ *   │  │  ├──────────────────────────────────────────┤  │  │
+ *   │  │  │  tbody                                   │  │  │
+ *   │  │  │  ├─ BodyRow (×n)                         │  │  │
+ *   │  │  │  └─ OptimizerRow (×m)                    │  │  │
+ *   │  │  └──────────────────────────────────────────┘  │  │
+ *   │  └────────────────────────────────────────────────┘  │
+ *   └──────────────────────────────────────────────────────┘
+ *
+ * ========================================================================== */
+
+/* ═══════════════════════════════════════════════════════════════
+ *  CONTROLLER
+ * ═══════════════════════════════════════════════════════════════ */
 
 .tableWrapper {
+
+  /* ══ CARD (matches stateTrackerCard) ══════════════════════════ */
+  --tbl-bg:                   var(--table-bg);
+  --tbl-blur:                 var(--table-blur);
+  --tbl-border:               var(--table-border);
+  --tbl-radius:               var(--table-corner-radius);
+  --tbl-shadow:               var(--table-shadow-inner), var(--table-shadow-main), var(--table-shadow-glow);
+
+  /* ══ STATIC LAYER BACKGROUNDS (header · state row · last row) ═ */
+  /* Same semi-transparent overlay as stateTrackerHeader — composites over the                  */
+  /* tableWrapper's glass base so the result is identical to the tracker card header             */
+  --tbl-header-bg:            var(--table-header-bg);     /* rgba(255,255,255,0.08) — glass overlay */
+  --tbl-state-bg:             rgba(255, 255, 255, 0.05);  /* slightly dimmer band — current state row */
+  --tbl-last-row-bg:          rgba(255, 255, 255, 0.04);  /* faintest lift — sticky selector row */
+
+  /* ══ HEADER ═══════════════════════════════════════════════════ */
+  --tbl-header-pad:           10px 12px;
+  --tbl-header-label-size:    0.75rem;
+  --tbl-header-label-spacing: 0.06em;
+  --tbl-header-label-weight:  600;
+  --tbl-header-label-color:   var(--table-text-dim);
+
+  /* ══ ROWS ══════════════════════════════════════════════════════ */
+  --tbl-cell-pad:             8px 12px;
+  --tbl-cell-size:            0.875rem;
+  --tbl-cell-color:           var(--table-text);
+  --tbl-row-hover-bg:         var(--table-hover-bg);
+  --tbl-highlight-speed:      1s;
+
+  /* ══ SELECTORS ════════════════════════════════════════════════ */
+  --tbl-sel-bg:               var(--table-select-bg);
+  --tbl-sel-border:           var(--table-border);
+  --tbl-sel-radius:           6px;
+  --tbl-sel-pad:              4px 6px;
+  --tbl-sel-size:             0.8rem;
+
+  /* ══ CURRENT STATE ROW ════════════════════════════════════════ */
+  --tbl-state-pad:            5px 12px;
+  --tbl-state-val-size:       0.9rem;
+  --tbl-state-val-weight:     600;
+
+  /* ══ GROUP SEPARATORS ═════════════════════════════════════════ */
+  --tbl-group-border:         var(--table-border);
+
+  /* ══ OPTIMIZER ROW ════════════════════════════════════════════ */
+  --tbl-opt-bg:               hsla(195, 80%, 30%, 0.12);
+  --tbl-opt-border:           hsla(195, 80%, 60%, 0.25);
+  --tbl-opt-label-color:      hsl(195, 80%, 60%);
+  --tbl-opt-pad:              6px 14px;
+
+  /* ════════════════════════════════════════════════════════════ */
+
   position: relative;
   overflow-x: auto;
   overflow-y: auto;
   min-height: 0;
   flex: 1;
-  border-radius: var(--table-corner-radius);
-  background: var(--table-bg);
-  backdrop-filter: var(--table-blur);
-  box-shadow: var(--table-shadow-inner), var(--table-shadow-main), var(--table-shadow-glow);
-  border: 1px solid var(--table-border);
+
+  border-radius: var(--tbl-radius);
+  background: var(--tbl-bg);
+  backdrop-filter: var(--tbl-blur);
+  border: 1px solid var(--tbl-border);
+  box-shadow: var(--tbl-shadow);
 }
 
-.tableWrapper::before {
-  content: '';
-  position: absolute;
-  inset: 0;
-  border-radius: inherit;
-  pointer-events: none;
-  box-shadow:
-    inset 0 0 0 1px var(--table-border),
-    var(--table-shadow-inner-glow);
-}
 
-/* -------------- Table Behaviour ----------- */
+/* ─── Table base ──────────────────────────────────────────────── */
 
 .tableBase {
   width: 100%;
   table-layout: auto;
   border-collapse: collapse;
   background: transparent;
-  overflow: visible;
-  border-radius: inherit;
 }
+
+
+/* ─── Sticky header ───────────────────────────────────────────── */
 
 thead.tableHeader {
   position: sticky;
@@ -43,13 +109,43 @@ thead.tableHeader {
 
 thead.tableHeader th,
 thead.tableHeader td {
-  background: rgb(30, 30, 40);
+  background: var(--tbl-header-bg);
+  box-shadow: var(--table-header-inset);
 }
 
-/* -------------- Table Column Seperators --- */
+
+/* ─── Group separators (left border on first col of each group) ── */
 
 .charGroupHeader,
 .charGroupBody,
-.groupHeader {
-  border-left: 1px solid var(--table-border);
+.charGroupCell {
+  border-left: 1px solid var(--tbl-group-border);
+}
+
+
+/* ─── Add optimizer block row ─────────────────────────────────── */
+
+.optimizerAddRow td {
+  padding: 0;
+}
+
+.optimizerAddBtn {
+  display: block;
+  width: 100%;
+  padding: 5px 14px;
+  background: transparent;
+  border: none;
+  border-top: 1px dashed hsla(195, 80%, 50%, 0.18);
+  cursor: pointer;
+  font-size: 0.7rem;
+  font-weight: 600;
+  letter-spacing: 0.06em;
+  color: hsla(195, 80%, 60%, 0.45);
+  text-align: left;
+  transition: color 0.15s, background 0.15s;
+}
+
+.optimizerAddBtn:hover {
+  color: hsl(195, 80%, 65%);
+  background: hsla(195, 80%, 30%, 0.08);
 }

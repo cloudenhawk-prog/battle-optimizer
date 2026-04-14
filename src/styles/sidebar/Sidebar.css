@@ -17,12 +17,12 @@
 
   --nav-y: calc(var(--icon-y) - 10px);
 
-  /* HUD Theme Colors */
-  --sidebar-accent-cyan: rgba(100, 150, 255, 0.6);
-  --sidebar-accent-purple: rgba(150, 100, 255, 0.5);
-  --sidebar-glow: rgba(100, 200, 255, 0.4);
-  --sidebar-border: rgba(255, 255, 255, 0.15);
-  --sidebar-bg: rgba(25, 30, 40, 0.55);
+  /* HUD Theme Colors — sourced from shared --panel-* variables */
+  --sidebar-accent-cyan: var(--panel-accent-cyan);
+  --sidebar-accent-purple: var(--panel-accent-purple);
+  --sidebar-glow: var(--panel-glow);
+  --sidebar-border: var(--panel-border-base);
+  --sidebar-bg: var(--panel-bg);
   --sidebar-text: rgba(243, 244, 246, 0.9);
   --sidebar-text-dim: rgba(203, 213, 225, 0.7);
 }

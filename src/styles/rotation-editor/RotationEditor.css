@@ -4,9 +4,10 @@
   /* ===== SIMPLIFIED COLOR SYSTEM (Maintains glass-morphism effect) ===== */
 
   /* Base Colors */
-  --table-bg: rgba(30, 30, 40, 0.9);
+  --table-bg: rgba(30, 30, 40, 1);
   --table-border: rgba(255, 255, 255, 0.08);
   --table-header-bg: rgba(255, 255, 255, 0.08);
+  --table-header-inset: inset 0 1px 0 rgba(255, 255, 255, 0.09);
   --table-text: rgb(243, 244, 246);
   --table-text-dim: rgba(255, 255, 255, 0.75);
   --table-text-subtle: rgba(243, 244, 246, 0.5);

@@ -1,175 +1,26 @@
-/* Current State Row - inline with table */
+/* ─── Row ─────────────────────────────────────────────────────── */
+
 .currentStateRow {
-  background: var(--table-header-bg);
-  border-top: 1px solid var(--table-border);
-  border-bottom: 2px solid var(--table-border);
+  background: var(--tbl-state-bg);
+  border-top: 1px solid var(--tbl-border);
+  border-bottom: 2px solid var(--tbl-border);
 }
+
+
+/* ─── Cell ─────────────────────────────────────────────────────── */
 
 .currentStateCell {
-  padding: 4px 6px !important;
+  padding: var(--tbl-state-pad);
   text-align: center;
   vertical-align: middle;
-  font-size: 11px;
 }
 
-.currentStateCell.charGroupCell {
-  border-left: 1px solid var(--table-border);
-}
+
+/* ─── Value ────────────────────────────────────────────────────── */
 
 .currentStateValue {
-  font-weight: 600;
-  color: var(--table-text);
+  font-size: var(--tbl-state-val-size);
+  font-weight: var(--tbl-state-val-weight);
+  color: var(--tbl-cell-color);
   white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  font-size: 16px;
-}
-
-/* Energy display in cells - Grouped (stacked) */
-.energyGroupDisplay {
-  display: flex;
-  flex-direction: column;
-  gap: 3px;
-  width: 100%;
-}
-
-.energyStackedItem {
-  position: relative;
-  width: 100%;
-  height: 18px;
-  background: var(--table-bg);
-  border: 1px solid var(--table-border);
-  border-radius: 2px;
-  overflow: hidden;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-}
-
-.energyStackedBar {
-  position: absolute;
-  left: 0;
-  top: 0;
-  height: 100%;
-  background: linear-gradient(90deg, rgba(100, 200, 255, 0.5), rgba(100, 200, 255, 0.8));
-  transition: width 0.3s ease;
-  border-radius: 1px;
-}
-
-.energyStackedBar[data-energy-type='concerto'] {
-  background: linear-gradient(90deg, rgba(255, 215, 0, 0.5), rgba(255, 215, 0, 0.8));
-}
-
-.energyStackedBar[data-energy-type='forte'] {
-  background: linear-gradient(90deg, rgba(50, 205, 50, 0.5), rgba(50, 205, 50, 0.8));
-}
-
-.energyStackedBar[data-energy-type='resonance'] {
-  background: linear-gradient(90deg, rgba(138, 43, 226, 0.5), rgba(138, 43, 226, 0.8));
-}
-
-.energyStackedBar[data-energy-type='rage'] {
-  background: linear-gradient(90deg, rgba(255, 69, 0, 0.5), rgba(255, 69, 0, 0.8));
-}
-
-.energyStackedBar[data-energy-type='conviction'] {
-  background: linear-gradient(90deg, rgba(255, 165, 0, 0.5), rgba(255, 165, 0, 0.8));
-}
-
-.energyStackedText {
-  position: relative;
-  z-index: 1;
-  font-family: monospace;
-  font-size: 11px;
-  color: var(--table-text);
-  font-weight: 600;
-  text-shadow: 0 0 2px rgba(0, 0, 0, 0.5);
-  white-space: nowrap;
-}
-
-/* Energy display in cells - Individual */
-.energyStateDisplay {
-  position: relative;
-  width: 100%;
-  height: 20px;
-  background: var(--table-bg);
-  border: 1px solid var(--table-border);
-  border-radius: 3px;
-  overflow: hidden;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-}
-
-.energyStateBar {
-  position: absolute;
-  left: 0;
-  top: 0;
-  height: 100%;
-  background: linear-gradient(90deg, rgba(100, 200, 255, 0.5), rgba(100, 200, 255, 0.8));
-  transition: width 0.3s ease;
-  border-radius: 2px;
-}
-
-.energyStateBar[data-energy-type='concerto'] {
-  background: linear-gradient(90deg, rgba(255, 215, 0, 0.5), rgba(255, 215, 0, 0.8));
-}
-
-.energyStateBar[data-energy-type='resonance'] {
-  background: linear-gradient(90deg, rgba(138, 43, 226, 0.5), rgba(138, 43, 226, 0.8));
-}
-
-.energyStateBar[data-energy-type='forte'] {
-  background: linear-gradient(90deg, rgba(50, 205, 50, 0.5), rgba(50, 205, 50, 0.8));
-}
-
-.energyStateBar[data-energy-type='rage'] {
-  background: linear-gradient(90deg, rgba(255, 69, 0, 0.5), rgba(255, 69, 0, 0.8));
-}
-
-.energyStateBar[data-energy-type='conviction'] {
-  background: linear-gradient(90deg, rgba(255, 165, 0, 0.5), rgba(255, 165, 0, 0.8));
-}
-
-.energyStateText {
-  position: relative;
-  z-index: 1;
-  font-family: monospace;
-  font-size: 10px;
-  color: var(--table-text);
-  font-weight: 600;
-  text-shadow: 0 0 2px rgba(0, 0, 0, 0.5);
-}
-
-/* Status display in cells */
-.statusStateDisplay {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  min-height: 25px;
-  padding: 2px 0;
-}
-
-.statusStateContent {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  gap: 0px;
-}
-
-.statusStateStacks {
-  font-family: monospace;
-  font-size: 10px;
-  font-weight: 600;
-  color: var(--table-text);
-  line-height: 1.1;
-}
-
-.statusStateTime {
-  font-family: monospace;
-  font-size: 9px;
-  font-weight: 500;
-  color: var(--table-text-secondary, #888);
-  line-height: 1.1;
 }

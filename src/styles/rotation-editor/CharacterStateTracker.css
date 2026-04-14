@@ -106,6 +106,7 @@
   align-items: center;
   gap: 8px;
   background: var(--table-header-bg);
+  box-shadow: var(--table-header-inset);
   border-bottom: 1px solid var(--table-border);
   overflow: hidden;
 }
