@@ -186,7 +186,7 @@ export const echoSetRegistry: Readonly<Record<string, EchoSet>> = {
                 characterStats: { critRate: 0.25 },
                 condition: always(),
                 targetStrategy: 'self',
-                durationStrategy: { type: 'limited', timeDuration: 6 },
+                durationStrategy: { type: 'limited', timeDuration: 30 }, // TODO: technically false, but needs more logic to solve it
                 stackingStrategy: { maxStacks: 1, resetTimerOnApplication: true, stacksRemovedEachTime: 1 },
                 activationCondition: (ctx) => !ctx.modifiersInAction.some(
                   mia => mia.modifier.source === 'Wishes of Quiet Snowfall: Snowfall'
