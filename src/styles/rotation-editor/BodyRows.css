@@ -9,7 +9,11 @@ tr.lastRowClass td {
   position: sticky;
   bottom: 0;
   z-index: 2;
-  background: var(--tbl-last-row-bg);
+  /* Opaque layered background — same pattern as thead cells */
+  background-color: var(--table-bg);
+  background-image: linear-gradient(var(--tbl-last-row-bg), var(--tbl-last-row-bg));
+  /* Upward shadow cues that rows are scrollable above this bar */
+  box-shadow: 0 -6px 18px rgba(0, 0, 0, 0.45);
 }
 
 

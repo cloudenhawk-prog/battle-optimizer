@@ -109,7 +109,10 @@ thead.tableHeader {
 
 thead.tableHeader th,
 thead.tableHeader td {
-  background: var(--tbl-header-bg);
+  /* Layer the semi-transparent overlay on top of the opaque card base so that    */
+  /* body rows scrolling behind the sticky header are fully occluded.             */
+  background-color: var(--table-bg);
+  background-image: linear-gradient(var(--tbl-header-bg), var(--tbl-header-bg));
   box-shadow: var(--table-header-inset);
 }
 

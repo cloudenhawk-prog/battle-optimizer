@@ -1,9 +1,6 @@
 /* ─── Row ─────────────────────────────────────────────────────── */
 
 .currentStateRow {
-  background: var(--tbl-state-bg);
-  border-top: 1px solid var(--tbl-border);
-  border-bottom: 2px solid var(--tbl-border);
 }
 
 
@@ -13,6 +10,15 @@
   padding: var(--tbl-state-pad);
   text-align: center;
   vertical-align: middle;
+}
+
+/* Override the thead-level background so the state row gets its own tint.
+   The inset top shadow replaces the tr-level border-top, avoiding the
+   border-collapse + sticky subpixel gap where body rows bleed through. */
+.currentStateRow .currentStateCell {
+  background-color: var(--table-bg);
+  background-image: linear-gradient(var(--tbl-state-bg), var(--tbl-state-bg));
+  box-shadow: inset 0 1px 0 var(--tbl-border);
 }
 
 
