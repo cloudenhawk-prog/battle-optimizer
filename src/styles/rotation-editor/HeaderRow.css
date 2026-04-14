@@ -7,8 +7,17 @@
   letter-spacing: var(--tbl-header-label-spacing);
   font-weight: var(--tbl-header-label-weight);
   color: var(--tbl-header-label-color);
-  background: var(--tbl-header-bg);
   white-space: nowrap;
+  background-color: var(--table-bg);
+  /* Specular top-edge highlight — renders inside the cell so it's never clipped */
+  background-image:
+    linear-gradient(180deg,
+      rgba(255,255,255, 0.10) 0%,
+      rgba(255,255,255, 0.04) 50%,
+      transparent 100%
+    ),
+    linear-gradient(var(--tbl-header-bg), var(--tbl-header-bg));
+  box-shadow: inset 0 1px 0 rgba(255,255,255, 0.18);
 }
 
 .header-cell-content {

@@ -72,31 +72,23 @@
     box-shadow:
       var(--table-shadow-inner),
       var(--table-shadow-main),
-      0 0 0 1px rgba(80, 220, 255, 0.45),
-      0 0 18px rgba(80, 220, 255, 0.22),
-      0 0 40px rgba(80, 220, 255, 0.1);
+      0 0 0 1px hsl(var(--el-primary, 200 100% 70%) / 0.45),
+      0 0 18px hsl(var(--el-primary, 200 100% 70%) / 0.22),
+      0 0 40px hsl(var(--el-primary, 200 100% 70%) / 0.1);
   }
   50% {
     box-shadow:
       var(--table-shadow-inner),
       var(--table-shadow-main),
-      0 0 0 1px rgba(80, 220, 255, 0.75),
-      0 0 28px rgba(80, 220, 255, 0.38),
-      0 0 60px rgba(80, 220, 255, 0.18);
+      0 0 0 1px hsl(var(--el-primary, 200 100% 70%) / 0.75),
+      0 0 28px hsl(var(--el-primary, 200 100% 70%) / 0.38),
+      0 0 60px hsl(var(--el-primary, 200 100% 70%) / 0.18);
   }
 }
 
 .stateTrackerCard--active {
-  border-color: rgba(80, 220, 255, 0.55);
+  border-color: hsl(var(--el-primary, 200 100% 70%) / 0.55);
   animation: activeCardPulse 3.2s ease-in-out infinite;
-}
-
-.stateTrackerCard--active .stateTrackerHeader {
-  background: linear-gradient(to right, rgba(80, 220, 255, 0.1), rgba(80, 220, 255, 0.05) 60%, transparent);
-  border-bottom-color: rgba(80, 220, 255, 0.2);
-  transition:
-    background 0.35s ease,
-    border-bottom-color 0.35s ease;
 }
 
 /* ===== Card Header ===== */

@@ -54,7 +54,7 @@ export default function RotationEditorPage() {
   }, [])
 
   return (
-    <div style={{ display: 'flex', flexDirection: 'column', flex: 1, minHeight: 0, gap: 'var(--content-column-width-free-space)' }}>
+    <div style={{ display: 'flex', flexDirection: 'column', flex: 1, minHeight: 0 }}>
       {topbarVisible && <Topbar tableConfig={tableConfig} allColumns={allColumns} columnVisibility={columnVisibility} setColumnVisibility={setColumnVisibility} />}
 
       <RotationEditor gearResetKey={gearResetKey} charactersInBattle={resolvedCharacters} enemy={enemies[0]} tableConfig={tableConfig} columnVisibility={columnVisibility} setColumnVisibility={setColumnVisibility} onGearChange={handleGearChange} onSequenceChange={handleSequenceChange} settings={settings} rotationsOpen={rotationsOpen} setRotationsOpen={setRotationsOpen} summaryOpen={summaryOpen} setSummaryOpen={setSummaryOpen} onHasDataChange={onHasDataChange} />

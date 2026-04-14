@@ -116,6 +116,25 @@ thead.tableHeader td {
   box-shadow: var(--table-header-inset);
 }
 
+/* Shadow strip hanging below the sticky thead — the gradient div sits at the
+   bottom edge of the thead and paints into the scrollable tbody area.         */
+thead.tableHeader::after {
+  content: '';
+  display: block;
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: -24px;
+  height: 24px;
+  background: linear-gradient(180deg,
+    rgba(0,0,0, 0.55) 0%,
+    rgba(0,0,0, 0.20) 60%,
+    transparent 100%
+  );
+  pointer-events: none;
+  z-index: 3;
+}
+
 
 /* ─── Group separators (left border on first col of each group) ── */
 

@@ -12,13 +12,19 @@
   vertical-align: middle;
 }
 
-/* Override the thead-level background so the state row gets its own tint.
-   The inset top shadow replaces the tr-level border-top, avoiding the
-   border-collapse + sticky subpixel gap where body rows bleed through. */
 .currentStateRow .currentStateCell {
   background-color: var(--table-bg);
-  background-image: linear-gradient(var(--tbl-state-bg), var(--tbl-state-bg));
-  box-shadow: inset 0 1px 0 var(--tbl-border);
+  /* Specular top shine — inside the cell, always visible */
+  background-image:
+    linear-gradient(180deg,
+      rgba(255,255,255, 0.09) 0%,
+      rgba(255,255,255, 0.03) 50%,
+      transparent 100%
+    ),
+    linear-gradient(var(--tbl-state-bg), var(--tbl-state-bg));
+  box-shadow:
+    inset 0  1px 0 rgba(255,255,255, 0.16),
+    inset 0 -1px 0 var(--tbl-border);
 }
 
 

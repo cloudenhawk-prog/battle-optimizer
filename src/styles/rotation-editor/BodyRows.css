@@ -1,5 +1,33 @@
 /* ─── Row ─────────────────────────────────────────────────────── */
 
+/* Per-row elemental tint. Only on locked (non-last) rows.
+   Layered gradients:
+   1. left-edge accent — a narrow vivid streak on the far left
+   2. left-fade       — elemental color bleeds in ~30% then vanishes
+   3. top-shine       — very faint white highlight on the top edge (depth)
+   4. flat base tint  — uniform low-alpha backdrop */
+tr.tableBody:not(.lastRowClass) {
+  background-image:
+    linear-gradient(90deg,
+      hsl(var(--el-primary, 0 0% 0%) / 0.30) 0px,
+      hsl(var(--el-primary, 0 0% 0%) / 0.30) 2px,
+      transparent 2px
+    ),
+    linear-gradient(90deg,
+      hsl(var(--el-primary, 0 0% 0%) / 0.13) 0%,
+      hsl(var(--el-primary, 0 0% 0%) / 0.06) 35%,
+      transparent 65%
+    ),
+    linear-gradient(180deg,
+      rgba(255,255,255, 0.025) 0%,
+      transparent 60%
+    ),
+    linear-gradient(
+      hsl(var(--el-primary, 0 0% 0%) / 0.06),
+      hsl(var(--el-primary, 0 0% 0%) / 0.06)
+    );
+}
+
 tr.tableBody:hover {
   background: var(--tbl-row-hover-bg);
   cursor: pointer;
@@ -9,11 +37,18 @@ tr.lastRowClass td {
   position: sticky;
   bottom: 0;
   z-index: 2;
-  /* Opaque layered background — same pattern as thead cells */
   background-color: var(--table-bg);
-  background-image: linear-gradient(var(--tbl-last-row-bg), var(--tbl-last-row-bg));
-  /* Upward shadow cues that rows are scrollable above this bar */
-  box-shadow: 0 -6px 18px rgba(0, 0, 0, 0.45);
+  /* Specular bottom shine — light source from below */
+  background-image:
+    linear-gradient(0deg,
+      rgba(255,255,255, 0.09) 0%,
+      rgba(255,255,255, 0.03) 50%,
+      transparent 100%
+    ),
+    linear-gradient(var(--tbl-last-row-bg), var(--tbl-last-row-bg));
+  box-shadow:
+    inset 0 -1px 0 rgba(255,255,255, 0.16),
+    inset 0  1px 0 var(--tbl-border);
 }
 
 
@@ -71,6 +106,8 @@ tr.lastRowClass td {
 
 .tableCellHasDeleteBtn {
   position: relative;
+  z-index: 1; /* forms a stacking context so the button's z-index is contained within the cell,
+                 keeping it below the sticky header (z-index: 4) when rows scroll under it */
 }
 
 .deleteRowButton {
