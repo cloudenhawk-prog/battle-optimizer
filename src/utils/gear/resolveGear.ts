@@ -27,7 +27,7 @@ import { computeEchoSetCounts, echoSetRegistry } from '../../data/gear/echoSets'
  */
 export function resolveGear(characterActions: Action[], characterDamageModifiers: DamageModifier[], gear: Gear, originalToClone: Map<Action | CoordinatedAttack, Action | CoordinatedAttack>, characterName: string): void {
   // Weapon modifier injection
-  if (gear.weapon.injectedModifiers?.length) {
+  if (gear.weapon?.injectedModifiers?.length) {
     applyInjectedModifiers(gear.weapon.injectedModifiers, characterActions, characterDamageModifiers, originalToClone, characterName)
   }
 

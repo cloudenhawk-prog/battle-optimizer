@@ -146,7 +146,7 @@ export const echoSetRegistry: Readonly<Record<string, EchoSet>> = {
             ],
           },
 
-          // (3) Dealing Liberation DMG (if Snowfall is active) → consumes Snowfall, grants 25% Crit Rate for self (30s)
+          // (3a) Dealing Liberation DMG while Snowfall is active → consume Snowfall, grant Crit Rate (both buffs can coexist)
           {
             targets: [{ dmgType: 'LIBERATION' }],
             modifiers: [
@@ -160,7 +160,7 @@ export const echoSetRegistry: Readonly<Record<string, EchoSet>> = {
                 characterStats: { critRate: 0.25 },
                 condition: always(),
                 targetStrategy: 'self',
-                durationStrategy: { type: 'limited', timeDuration: 30 },
+                durationStrategy: { type: 'limited', timeDuration: 6 },
                 stackingStrategy: { maxStacks: 1, resetTimerOnApplication: true, stacksRemovedEachTime: 1 },
                 activationCondition: (ctx) => ctx.modifiersInAction.some(
                   mia => mia.modifier.source === 'Wishes of Quiet Snowfall: Snowfall'
@@ -172,13 +172,36 @@ export const echoSetRegistry: Readonly<Record<string, EchoSet>> = {
             ],
           },
 
-          // (4) Casting Outro Skill (if Snowfall is active) → consumes Snowfall, grants 25% Glacio DMG Bonus
-          //     to the incoming Resonator (30s, nextSwap). Also removes the Crit Rate buff if active
-          //     from a prior Liberation cycle, since only one Snowfall effect can be active at a time.
+          // (3b) Dealing Liberation DMG while Snowfall is NOT active → grant Crit Rate, remove Incoming Glacio Buff (mutual exclusion)
+          {
+            targets: [{ dmgType: 'LIBERATION' }],
+            modifiers: [
+              {
+                source: 'Wishes of Quiet Snowfall: Crit Rate',
+                displayName: 'Wishes of Quiet Snowfall: Crit Rate',
+                type: 'buff',
+                color: '#6EC1F2',
+                description: 'Dealing Resonance Liberation DMG removes Snowfall and increases the Resonator\'s Crit. Rate by 25% for 6s',
+                ownerCharacter: null,
+                characterStats: { critRate: 0.25 },
+                condition: always(),
+                targetStrategy: 'self',
+                durationStrategy: { type: 'limited', timeDuration: 6 },
+                stackingStrategy: { maxStacks: 1, resetTimerOnApplication: true, stacksRemovedEachTime: 1 },
+                activationCondition: (ctx) => !ctx.modifiersInAction.some(
+                  mia => mia.modifier.source === 'Wishes of Quiet Snowfall: Snowfall'
+                    && mia.currentStacks > 0
+                    && mia.modifier.ownerCharacter === ctx.character.name
+                ),
+                removesModifierSourceOnActivation: 'Wishes of Quiet Snowfall: Incoming Glacio',
+              },
+            ],
+          },
+
+          // (4a) Casting Outro Skill while Snowfall is active → consume Snowfall, grant Glacio Buff to incoming (both buffs can coexist)
           {
             targets: [{ tag: 'OUTRO_ACTION' }],
             modifiers: [
-              // (4a) Apply 25% Glacio DMG Bonus to the incoming resonator; consume Snowfall
               {
                 source: 'Wishes of Quiet Snowfall: Incoming Glacio',
                 displayName: 'Wishes of Quiet Snowfall: Incoming Glacio Buff',
@@ -197,22 +220,25 @@ export const echoSetRegistry: Readonly<Record<string, EchoSet>> = {
                 ),
                 removesModifierSourceOnActivation: 'Wishes of Quiet Snowfall: Snowfall',
               },
-              // (4b) Simultaneously remove the Crit Rate buff (if active from a previous Liberation cycle).
-              //      activationCondition mirrors (4a) — both check Snowfall before triggering.
-              //      timeDuration: 0 means this modifier is ephemeral — it exists solely for its
-              //      removesModifierSourceOnActivation side-effect and expires after the action.
+            ],
+          },
+
+          // (4b) Casting Outro Skill while Snowfall is NOT active → grant Glacio Buff to incoming, remove Crit Rate buff (mutual exclusion)
+          {
+            targets: [{ tag: 'OUTRO_ACTION' }],
+            modifiers: [
               {
-                source: 'Wishes of Quiet Snowfall: Crit Rate Cleanup',
-                displayName: 'Wishes of Quiet Snowfall: Crit Rate Cleanup',
+                source: 'Wishes of Quiet Snowfall: Incoming Glacio',
+                displayName: 'Wishes of Quiet Snowfall: Incoming Glacio Buff',
                 type: 'buff',
                 color: '#6EC1F2',
                 ownerCharacter: null,
-                characterStats: {},
+                characterStats: { glacioBonusDMG: 0.25 },
                 condition: always(),
-                targetStrategy: 'self',
-                durationStrategy: { type: 'limited', timeDuration: 0 },
+                targetStrategy: 'nextSwap',
+                durationStrategy: { type: 'limited', timeDuration: 15 },
                 stackingStrategy: { maxStacks: 1, resetTimerOnApplication: true, stacksRemovedEachTime: 1 },
-                activationCondition: (ctx) => ctx.modifiersInAction.some(
+                activationCondition: (ctx) => !ctx.modifiersInAction.some(
                   mia => mia.modifier.source === 'Wishes of Quiet Snowfall: Snowfall'
                     && mia.currentStacks > 0
                     && mia.modifier.ownerCharacter === ctx.character.name

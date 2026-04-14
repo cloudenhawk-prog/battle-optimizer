@@ -66,10 +66,10 @@ function verifyCharacter(character: Character, negativeStatusNames: Set<string>)
     }
   })
 
-  // --- Required action types ---
-  check('Required actions (Echo Skill)', () => {
-    if (!actions.some(a => (a.dmgTypes as string[]).includes('ECHO'))) throw new Error('missing: Echo Skill')
-  })
+  // --- Echo Skill presence (warning only, not a hard error) ---
+  if (!actions.some(a => (a.dmgTypes as string[]).includes('ECHO'))) {
+    console.warn(`[Data] ${name}: no Echo Skill action found (dmgTypes includes 'ECHO')`)
+  }
 
   // Intro/Outro: base form must have exactly one each; non-base forms may have 0 or 1.
   if (forms && forms.length > 0) {

@@ -123,8 +123,8 @@ type CharacterSummary = {
   fieldTime: number
   libCount: number
   sequence: 0 | 1 | 2 | 3 | 4 | 5 | 6
-  weaponRank: 1 | 2 | 3 | 4 | 5
-  weaponName: string
+  weaponRank: 1 | 2 | 3 | 4 | 5 | null
+  weaponName: string | null
 }
 
 type GlobalDamageEntry = { name: string; damage: number; element: string }
@@ -207,8 +207,8 @@ function computeSummaryData(
       fieldTime: fieldTimeMap[char.name] ?? 0,
       libCount: libCountMap[char.name] ?? 0,
       sequence: char.sequence,
-      weaponRank: char.gear.weapon.rank,
-      weaponName: char.gear.weapon.name,
+      weaponRank: char.gear.weapon?.rank ?? null,
+      weaponName: char.gear.weapon?.name ?? null,
     }
   })
 
@@ -1099,7 +1099,7 @@ function CharTypeCard({ summary, originEntry, actionBreakdown, role, charColorMa
           <div className="summaryCharCardName">{summary.name}</div>
           <div className="summaryCharCardGearTags">
             <span className="summaryCharCardGearTag">S{summary.sequence}</span>
-            <span className="summaryCharCardGearTag">R{summary.weaponRank} {summary.weaponName}</span>
+            {summary.weaponName != null && <span className="summaryCharCardGearTag">R{summary.weaponRank} {summary.weaponName}</span>}
           </div>
         </div>
         <div className="summaryCharCardChips">

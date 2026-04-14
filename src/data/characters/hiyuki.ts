@@ -6,13 +6,11 @@ import { hiyuki_inherentStats, hiyuki_stats } from '../stats/hiyuki'
 import { hiyuki_glacio_chafe_proc, hiyuki_everfrost_dominion_glacio_bite } from '../sideEffects/sideEffects'
 import { snow_rust_1_3, snow_rust_1, snow_rust_2_s6_self, snow_rust_2_s6_team } from '../modifiers/hiyuki'
 
-export const hiyuki_sequence: Character['sequence'] = 6 // TODO add to team setup file
-
 export const hiyuki: Character = {
   name: 'Hiyuki',
   element: 'GLACIO',
   weaponType: 'Sword',
-  maxEnergies: {energy: 125, concerto: 100, dedication: 300, foreclaiming: 1, frostharden_iai: 3, frostheart: 300, whiteout_bitterfrost: 3, snowforged_blade: 3, snow_rust: 3, s1_enhanced_ba1: 1, s1_enhanced_ba2: 1, s2_frostheart_token: 2 }, // TODO
+  maxEnergies: {energy: 125, concerto: 100, dedication: 300, foreclaiming: 1, frostharden_iai: 3, frostheart: 300, whiteout_bitterfrost: 3, snowforged_blade: 3, snow_rust: 3, s1_enhanced_ba1: 1, s1_enhanced_ba2: 1, s2_frostheart_token: 2 },
   hiddenEnergies: ['foreclaiming', 'snow_rust', 's1_enhanced_ba1', 's1_enhanced_ba2', 's2_frostheart_token'],
   energyDescriptions: {
     energy: 'Used to cast Foreclaimed: Liberation.',
@@ -50,7 +48,7 @@ export const hiyuki: Character = {
   },
   defaultForm: 'Present Self',
   forms: [form_present_self, form_foreclaimed_self],
-  sequence: hiyuki_sequence,
+  sequence: 6, // TODO add to team setup file
   // Snowforged Blade: start with 1 point (S0-S5) or 3 points (S6) instead of using off-field triggers.
   // S2: start with 3 Frostharden Iai and 2 Frostheart tokens (one-time at battle start).
   startingEnergies: (seq) => ({

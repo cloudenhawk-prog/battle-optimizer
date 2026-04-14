@@ -13,7 +13,7 @@ export type WeaponType = 'Sword' | 'Broadblade' | 'Pistol' | 'Gauntlets' | 'Rect
 
 // ========== Type: Gear =======================================================================================================
 export type Gear = {
-  weapon: Weapon
+  weapon: Weapon | null
   echoSlots: EchoSlots
   /** Character-specific injected modifiers for set effects (e.g. 5-piece). Stats come from the global EchoSet registry. */
   setBonus?: EchoSetBonus
