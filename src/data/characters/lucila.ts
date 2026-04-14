@@ -30,22 +30,22 @@ export const lucila: Character = {
   sequence: 0,
   sequence_nodes: [
     // S1
-    ``,
+    '',
 
     // S2
-    ``,
+    '',
     
     // S3
-    ``,
+    '',
     
     // S4
-    ``,
+    '',
     
     // S5
-    ``,
+    '',
     
     // S6
-    ``
+    ''
   ],
   sequence_nodes_icons: [
     'assets/characters/sequences/lucila_1.png',

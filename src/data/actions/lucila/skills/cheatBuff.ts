@@ -1,5 +1,5 @@
-import type { Action } from "../../../../types/action"
-import { always } from "../../../../utils/conditions/damageModifierConditions"
+import type { Action } from '../../../../types/action'
+import { always } from '../../../../utils/conditions/damageModifierConditions'
 
 const lucila_cheat_buff: Action = {
   tags: ['SKILL'],
