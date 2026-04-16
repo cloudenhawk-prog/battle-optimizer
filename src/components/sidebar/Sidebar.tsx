@@ -51,7 +51,8 @@ export default function Sidebar({ collapsed }: SidebarProps) {
       <span className="line line-right" />
 
       {/* Navigation Items */}
-      <div className="sidebar-section">
+      <div className="sidebar-section sidebar-section--nav">
+        <span className="sidebar-section-label">Navigation</span>
         <nav className="nav">
           {navItems.map(item => (
             <NavItem key={item.path} path={item.path} label={item.label} isActive={location.pathname === item.path} collapsed={collapsed} />
@@ -62,6 +63,7 @@ export default function Sidebar({ collapsed }: SidebarProps) {
       {/* Topbar toggle */}
       {isRotationPage && rotationCtx && (
         <div className="sidebar-section">
+          <span className="sidebar-section-label">View</span>
           <div className="sidebar-actions">
             <button
               className="sidebar-action-btn"
@@ -77,6 +79,7 @@ export default function Sidebar({ collapsed }: SidebarProps) {
       {/* Rotation page actions */}
       {isRotationPage && rotationCtx && (
         <div className="sidebar-section">
+          <span className="sidebar-section-label">Tools</span>
           <div className="sidebar-actions">
             <button
               className="sidebar-action-btn"

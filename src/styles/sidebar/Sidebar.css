@@ -4,18 +4,20 @@
   --sidebar-width: 260px;
   --sidebar-padding: 16px;
 
+  --sidebar-offset-y: -60px; /* move entire sidebar content up/down */
+
   --img-x: -70px;
-  --img-y: -15px;
+  --img-y: calc(var(--sidebar-offset-y));
   --img-width: 400px;
   --img-height: auto;
 
   --animation-duration: 500ms;
 
   --icon-size: 55px;
-  --icon-y: 495px;
+  --icon-y: calc(510px + var(--sidebar-offset-y));
   --icon-x: 10px;
 
-  --nav-y: calc(var(--icon-y) - 10px);
+  --nav-y: calc(var(--icon-y) + 20px);
 
   /* HUD Theme Colors — sourced from shared --panel-* variables */
   --sidebar-accent-cyan: var(--panel-accent-cyan);
@@ -243,11 +245,12 @@
   position: relative;
 }
 
-/* Navigation label floats just above the nav items (which are pushed down by .nav's padding-top) */
-.sidebar-section:first-of-type .sidebar-section-label {
+/* Nav section: label floats just above the nav items pushed down by .nav's padding-top */
+.sidebar-section--nav .sidebar-section-label {
   position: absolute;
   top: calc(var(--nav-y) - 20px);
   left: 14px;
+  padding: 0;
 }
 
 .sidebar-section + .sidebar-section {
