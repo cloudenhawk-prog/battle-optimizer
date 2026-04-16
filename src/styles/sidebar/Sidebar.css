@@ -349,6 +349,16 @@
   opacity: 0.25;
 }
 
+.sidebar-action-btn.active {
+  background: rgba(60, 160, 180, 0.1);
+  color: hsl(195, 70%, 70%);
+}
+
+.sidebar-action-btn.active::before {
+  opacity: 1;
+  transform: scaleY(1);
+}
+
 .sidebar-action-label {
   white-space: nowrap;
   transition:

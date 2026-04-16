@@ -4,11 +4,12 @@ import '../../styles/rotation-editor/InsertRow.css'
 
 type InsertRowProps = {
   onInsert: () => void
+  alwaysVisible?: boolean
 }
 
-export function InsertRow({ onInsert }: InsertRowProps) {
+export function InsertRow({ onInsert, alwaysVisible = false }: InsertRowProps) {
   return (
-    <tr className="insertRow">
+    <tr className={`insertRow${alwaysVisible ? ' insertRowAlwaysVisible' : ''}`}>
       <td colSpan={999}>
         <button
           type="button"

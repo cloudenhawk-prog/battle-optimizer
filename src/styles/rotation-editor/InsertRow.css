@@ -43,3 +43,13 @@
   background: hsla(195, 60%, 30%, 0.16);
   color: hsl(195, 80%, 75%);
 }
+
+/* ─── Always-visible state (optimizer edit mode) ───────────────── */
+
+.insertRowAlwaysVisible td {
+  height: 28px;
+}
+
+.insertRowAlwaysVisible .insertRowBtn {
+  display: flex;
+}

@@ -83,7 +83,7 @@ export default function Sidebar({ collapsed }: SidebarProps) {
               onClick={rotationCtx.openRotations}
               title="Save / load rotations"
             >
-              <span className="sidebar-action-label">Rotations</span>
+              <span className="sidebar-action-label">Rotation Library</span>
             </button>
             <button
               className={`sidebar-action-btn ${!rotationCtx.hasData ? 'disabled' : ''}`}
@@ -91,7 +91,14 @@ export default function Sidebar({ collapsed }: SidebarProps) {
               disabled={!rotationCtx.hasData}
               title={rotationCtx.hasData ? 'Open full team summary' : 'No rotation data yet'}
             >
-              <span className="sidebar-action-label">Field Report</span>
+              <span className="sidebar-action-label">Rotation Stats</span>
+            </button>
+            <button
+              className={`sidebar-action-btn${rotationCtx.optimizerEditMode ? ' active' : ''}`}
+              onClick={rotationCtx.toggleOptimizerEditMode}
+              title={rotationCtx.optimizerEditMode ? 'Exit rotation edit mode' : 'Edit rotation structure'}
+            >
+              <span className="sidebar-action-label">{rotationCtx.optimizerEditMode ? 'Exit Edit Mode' : 'Edit Rotation'}</span>
             </button>
           </div>
         </div>

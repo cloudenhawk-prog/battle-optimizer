@@ -33,9 +33,10 @@ type RotationTableProps = {
   onOptimizerBlockConfigure?: (blockId: string) => void
   onOptimizerBlockRemove?: (blockId: string) => void
   onAddOptimizerBlock?: (insertAfterStepCount: number) => void
+  optimizerEditMode?: boolean
 }
 
-export function RotationTable({ snapshots, charactersInBattle, tableConfig, onSelectCharacter, onSelectAction, columnVisibility, setColumnVisibility, onRowClick, onGearChange, onSequenceChange, sandboxMode = false, rowDeletionMode = false, onDeleteRow, optimizerBlocks = [], onOptimizerBlockConfigure, onOptimizerBlockRemove, onAddOptimizerBlock }: RotationTableProps) {
+export function RotationTable({ snapshots, charactersInBattle, tableConfig, onSelectCharacter, onSelectAction, columnVisibility, setColumnVisibility, onRowClick, onGearChange, onSequenceChange, sandboxMode = false, rowDeletionMode = false, onDeleteRow, optimizerBlocks = [], onOptimizerBlockConfigure, onOptimizerBlockRemove, onAddOptimizerBlock, optimizerEditMode = false }: RotationTableProps) {
   const [highlightIds, setHighlightIds] = useState<Set<number>>(new Set())
   const lastMaxId = useRef(0)
   const rotationCtx = useRotationPageContext()
@@ -83,10 +84,9 @@ export function RotationTable({ snapshots, charactersInBattle, tableConfig, onSe
           {(() => {
             const rows: React.ReactNode[] = []
             let stepCount = 0
-            const addInsert = onAddOptimizerBlock
 
-            // Insert slot at position 0 (before any user steps)
-            if (addInsert) rows.push(<InsertRow key="insert-0" onInsert={() => addInsert(0)} />)
+            // Insert slot at position 0 (before any user steps) - only in edit mode
+            if (optimizerEditMode && onAddOptimizerBlock) rows.push(<InsertRow key="insert-0" onInsert={() => onAddOptimizerBlock(0)} alwaysVisible />)
 
             // Flex blocks at step 0 (before any user steps)
             optimizerBlocks
@@ -95,7 +95,7 @@ export function RotationTable({ snapshots, charactersInBattle, tableConfig, onSe
                 rows.push(
                   <OptimizerRow key={`opt-${b.id}`} block={b} onConfigure={onOptimizerBlockConfigure ?? (() => {})} onRemove={onOptimizerBlockRemove ?? (() => {})} />
                 )
-                if (addInsert) rows.push(<InsertRow key={`insert-0-after-${b.id}`} onInsert={() => addInsert(0)} />)
+                if (optimizerEditMode && onAddOptimizerBlock) rows.push(<InsertRow key={`insert-0-after-${b.id}`} onInsert={() => onAddOptimizerBlock(0)} alwaysVisible />)
               })
 
             for (let idx = 0; idx < snapshots.length; idx++) {
@@ -131,10 +131,14 @@ export function RotationTable({ snapshots, charactersInBattle, tableConfig, onSe
                     rows.push(
                       <OptimizerRow key={`opt-${b.id}`} block={b} onConfigure={onOptimizerBlockConfigure ?? (() => {})} onRemove={onOptimizerBlockRemove ?? (() => {})} />
                     )
-                    if (addInsert) rows.push(<InsertRow key={`insert-${capturedStep}-after-${b.id}`} onInsert={() => addInsert(capturedStep)} />)
+                    if (optimizerEditMode && onAddOptimizerBlock) rows.push(<InsertRow key={`insert-${capturedStep}-after-${b.id}`} onInsert={() => onAddOptimizerBlock(capturedStep)} alwaysVisible />)
                   })
-                // Insert slot after this step (when no flex blocks, this is the only slot)
-                if (addInsert) rows.push(<InsertRow key={`insert-${capturedStep}`} onInsert={() => addInsert(capturedStep)} />)
+                // Insert slot after this non-autocast step
+                if (optimizerEditMode && onAddOptimizerBlock) rows.push(<InsertRow key={`insert-${capturedStep}`} onInsert={() => onAddOptimizerBlock(capturedStep)} alwaysVisible />)
+              } else if (optimizerEditMode && onAddOptimizerBlock && snapshot.action && snapshot.action !== '') {
+                // Autocast rows also get an insert slot in edit mode
+                const capturedStep = stepCount
+                rows.push(<InsertRow key={`insert-ac-${idx}`} onInsert={() => onAddOptimizerBlock(capturedStep)} alwaysVisible />)
               }
             }
 

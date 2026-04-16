@@ -7,7 +7,7 @@ const lucila_cheat_buff: Action = {
   displayName: 'Cheat Buff',
   category: 'Skills',
   castTime: 0,
-  multiplier: 0.00,
+  multiplier: 0.0001,
   scaling: 'ATK',
   elements: ['GLACIO'],
   dmgTypes: ['SKILL'],

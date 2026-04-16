@@ -12,6 +12,8 @@ export interface RotationPageContextValue {
   openRotations: () => void
   openFieldReport: () => void
   hasData: boolean
+  optimizerEditMode: boolean
+  toggleOptimizerEditMode: () => void
   // Panel state consumed by RotationEditorPage
   rotationsOpen: boolean
   setRotationsOpen: React.Dispatch<React.SetStateAction<boolean>>

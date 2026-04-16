@@ -16,13 +16,15 @@ export default function App() {
   const [summaryOpen, setSummaryOpen] = useState(false)
   const [hasData, setHasData] = useState(false)
   const [selectedCharacterName, setSelectedCharacterName] = useState<string | null>(null)
+  const [optimizerEditMode, setOptimizerEditMode] = useState(false)
 
   const toggleTopbar = useCallback(() => setTopbarVisible(v => !v), [])
   const openRotations = useCallback(() => setRotationsOpen(true), [])
   const openFieldReport = useCallback(() => { if (hasData) setSummaryOpen(true) }, [hasData])
+  const toggleOptimizerEditMode = useCallback(() => setOptimizerEditMode(v => !v), [])
 
   return (
-    <RotationPageContext.Provider value={{ topbarVisible, toggleTopbar, openRotations, openFieldReport, hasData, rotationsOpen, setRotationsOpen, summaryOpen, setSummaryOpen, onHasDataChange: setHasData, selectedCharacterName, setSelectedCharacterName }}>
+    <RotationPageContext.Provider value={{ topbarVisible, toggleTopbar, openRotations, openFieldReport, hasData, optimizerEditMode, toggleOptimizerEditMode, rotationsOpen, setRotationsOpen, summaryOpen, setSummaryOpen, onHasDataChange: setHasData, selectedCharacterName, setSelectedCharacterName }}>
       <AppLayout>
         <AppRoutes />
       </AppLayout>

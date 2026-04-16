@@ -14,6 +14,7 @@ import type { Settings } from '../../hooks/useSettings'
 import type { Snapshot } from '../../types/snapshot'
 import type { DamageEvent } from '../../types/events'
 import type { OptimizerBlock } from '../../types/optimizerBlock'
+import { useRotationPageContext } from '../../contexts/RotationPageContext'
 
 // ========== Component: Rotation Editor =======================================================================================
 
@@ -40,6 +41,8 @@ export default function RotationEditor({ charactersInBattle, enemy, tableConfig,
   const [overlayData, setOverlayData] = useState<null | { snapshot: Snapshot; previousSnapshot: Snapshot | null; damageEvents: DamageEvent[] }>(null)
   const [overlayIndex, setOverlayIndex] = useState<number>(0)
   const [activeOptimizerBlockId, setActiveOptimizerBlockId] = useState<string | null>(null)
+  const rotationCtx = useRotationPageContext()
+  const optimizerEditMode = rotationCtx?.optimizerEditMode ?? false
 
   const { lastImportError, lastImportCompleted } = importExport
   const hasImportStatus = lastImportError !== null || lastImportCompleted !== null
@@ -135,6 +138,7 @@ export default function RotationEditor({ charactersInBattle, enemy, tableConfig,
         onOptimizerBlockConfigure={setActiveOptimizerBlockId}
         onOptimizerBlockRemove={removeOptimizerBlock}
         onAddOptimizerBlock={handleAddOptimizerBlock}
+        optimizerEditMode={optimizerEditMode}
       />
       <ImportExportPanel
         open={rotationsOpen}
