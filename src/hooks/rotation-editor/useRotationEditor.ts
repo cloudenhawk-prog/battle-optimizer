@@ -1,7 +1,6 @@
 import { useSnapshots } from './useSnapshots'
 import { useCharacterActions } from './useCharacterActions'
 import { useImportExport } from './useImportExport'
-import { useOptimizer } from './useOptimizer'
 import type { ResolvedCharacter } from '../../types/character'
 import type { TableConfig, GlobalColumns } from '../../types/tableDefinitions'
 import type { Enemy } from '../../types/enemy'
@@ -21,7 +20,7 @@ type UseRotationEditorProps = {
 
 export function useRotationEditor({ charactersInBattle, tableConfig, enemy, gearResetKey = 0, settings }: UseRotationEditorProps) {
   const [damageEvents, setDamageEvents] = useState<DamageEvent[]>([])
-  const { snapshots, setSnapshots, resetTimeline, optimizerBlocks, setOptimizerBlocks, addOptimizerBlock, removeOptimizerBlock, updateOptimizerBlock } = useSnapshots({ charactersInBattle, tableConfig, settings })
+  const { snapshots, setSnapshots, resetTimeline, editModeEntries, addEditModeEntry, removeEditModeEntry, updateEditModeEntry, clearEditModeEntries } = useSnapshots({ charactersInBattle, tableConfig, settings })
 
   const [prevGearResetKey, setPrevGearResetKey] = useState(gearResetKey)
   if (prevGearResetKey !== gearResetKey) {
@@ -68,18 +67,6 @@ export function useRotationEditor({ charactersInBattle, tableConfig, enemy, gear
     negativeStatusesInAction,
     modifiersInAction,
     coordinatedAttacksInAction,
-    optimizerBlocks,
-    setOptimizerBlocks,
-  })
-
-  const optimizer = useOptimizer({
-    snapshots,
-    optimizerBlocks,
-    charactersMap,
-    characterColumnsMap,
-    globalColumns,
-    enemy,
-    settings,
   })
 
   return {
@@ -89,10 +76,10 @@ export function useRotationEditor({ charactersInBattle, tableConfig, enemy, gear
     handleActionSelect,
     tableConfig,
     importExport,
-    optimizerBlocks,
-    addOptimizerBlock,
-    removeOptimizerBlock,
-    updateOptimizerBlock,
-    optimizer,
+    editModeEntries,
+    addEditModeEntry,
+    removeEditModeEntry,
+    updateEditModeEntry,
+    clearEditModeEntries,
   }
 }

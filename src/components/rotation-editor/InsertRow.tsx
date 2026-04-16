@@ -15,9 +15,9 @@ export function InsertRow({ onInsert, alwaysVisible = false }: InsertRowProps) {
           type="button"
           className="insertRowBtn"
           onClick={onInsert}
-          title="Insert a flex block here"
+          title="Insert a step here"
         >
-          + Insert Flex Block
+          + Insert Step
         </button>
       </td>
     </tr>

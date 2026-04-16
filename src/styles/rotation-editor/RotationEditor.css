@@ -143,3 +143,103 @@
   padding-top: var(--content-column-width-free-space);
   padding-bottom: var(--content-column-width-free-space);
 }
+
+/* ── Edit Mode Bar ────────────────────────────────────── */
+.editModeBar {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 8px 12px;
+  padding: 8px 18px;
+  background: hsla(215, 50%, 10%, 0.88);
+  border-bottom: 1px solid hsla(210, 70%, 45%, 0.3);
+  backdrop-filter: blur(6px);
+  z-index: 10;
+  flex-shrink: 0;
+}
+
+.editModeBarLabel {
+  font-size: 0.6rem;
+  font-weight: 700;
+  letter-spacing: 0.12em;
+  color: hsl(210, 80%, 65%);
+  text-transform: uppercase;
+  white-space: nowrap;
+  margin-right: 4px;
+}
+
+.editModeBarActions {
+  display: flex;
+  gap: 6px;
+  align-items: center;
+}
+
+.editModeBarBtn {
+  font-size: 0.75rem;
+  font-weight: 600;
+  padding: 5px 14px;
+  border-radius: 5px;
+  border: 1px solid transparent;
+  cursor: pointer;
+  white-space: nowrap;
+  transition: opacity 0.15s, background 0.15s;
+  background: hsla(210, 40%, 22%, 0.9);
+  border-color: hsla(210, 60%, 45%, 0.4);
+  color: hsl(210, 80%, 80%);
+}
+
+.editModeBarBtn:hover:not(:disabled) {
+  background: hsla(210, 40%, 28%, 0.9);
+}
+
+.editModeBarBtn:disabled {
+  opacity: 0.35;
+  cursor: default;
+}
+
+.editModeBarBtnConfirm {
+  background: hsla(140, 50%, 16%, 0.9);
+  border-color: hsla(140, 60%, 38%, 0.5);
+  color: hsl(140, 70%, 72%);
+}
+
+.editModeBarBtnConfirm:hover:not(:disabled) {
+  background: hsla(140, 50%, 22%, 0.9);
+}
+
+.editModeBarBtnDiscard {
+  background: hsla(0, 40%, 16%, 0.9);
+  border-color: hsla(0, 60%, 42%, 0.4);
+  color: hsl(0, 70%, 70%);
+}
+
+.editModeBarBtnDiscard:hover:not(:disabled) {
+  background: hsla(0, 40%, 22%, 0.9);
+}
+
+.editModeBarResult {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 0.75rem;
+  padding: 4px 10px;
+  border-radius: 5px;
+  border: 1px solid transparent;
+}
+
+.editModeBarResultValid {
+  background: hsla(140, 50%, 10%, 0.7);
+  border-color: hsla(140, 60%, 38%, 0.4);
+  color: hsl(140, 65%, 68%);
+}
+
+.editModeBarResultInvalid {
+  background: hsla(0, 50%, 10%, 0.7);
+  border-color: hsla(0, 60%, 42%, 0.4);
+  color: hsl(0, 65%, 68%);
+}
+
+.editModeBarResultIcon {
+  font-size: 0.85rem;
+  flex-shrink: 0;
+}

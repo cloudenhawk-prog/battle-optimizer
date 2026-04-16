@@ -10,7 +10,7 @@ import type { ModifierInAction } from '../../types/modifiers'
 import type { CoordinatedAttackInAction } from '../../types/coordinatedAttack'
 import type { Action } from '../../types/action'
 import type { Settings } from '../useSettings'
-import type { OptimizerBlock } from '../../types/optimizerBlock'
+import type { EditModeEntry } from '../../types/editMode'
 import { negativeStatuses as negativeStatusesData } from '../../data/negativeStatuses'
 import { getActionFromCharacter } from '../../utils/hooks/actionHelpers'
 import { assignCharacterToRow } from '../../utils/hooks/snapshotHelpers'
@@ -55,8 +55,6 @@ type UseImportExportProps = {
   negativeStatusesInAction: React.MutableRefObject<NegativeStatusInAction[]>
   modifiersInAction: React.MutableRefObject<ModifierInAction[]>
   coordinatedAttacksInAction: React.MutableRefObject<CoordinatedAttackInAction[]>
-  optimizerBlocks: OptimizerBlock[]
-  setOptimizerBlocks: Dispatch<SetStateAction<OptimizerBlock[]>>
 }
 
 export function useImportExport({
@@ -73,8 +71,6 @@ export function useImportExport({
   negativeStatusesInAction: negativeStatusesInActionRef,
   modifiersInAction: modifiersInActionRef,
   coordinatedAttacksInAction: coordinatedAttacksInActionRef,
-  optimizerBlocks,
-  setOptimizerBlocks,
 }: UseImportExportProps) {
   const [savedRotations, setSavedRotations] = useState<SavedRotation[]>(() => loadSavedRotations())
   const [savedSnippets, setSavedSnippets] = useState<SavedRotation[]>(() => loadSavedSnippets())
@@ -97,7 +93,6 @@ export function useImportExport({
       name: name.trim(),
       createdAt: new Date().toISOString(),
       steps,
-      optimizerBlocks: optimizerBlocks.length > 0 ? optimizerBlocks : undefined,
     }
     saveRotationToStorage(rotation)
     refreshSaved()
@@ -192,9 +187,6 @@ export function useImportExport({
     setSnapshots(result.snapshots)
     setDamageEvents(result.damageEvents)
 
-    // Restore optimizer blocks from the loaded rotation (if any)
-    setOptimizerBlocks(rotation.optimizerBlocks ?? [])
-
     // Update living refs to reflect the imported state so subsequent user edits
     // continue from the correct modifier/coordinated-attack state.
     negativeStatusesInActionRef.current = result.finalNegativeStatuses
@@ -219,29 +211,17 @@ export function useImportExport({
       name,
       createdAt: new Date().toISOString(),
       steps,
-      optimizerBlocks: optimizerBlocks.length > 0 ? optimizerBlocks : undefined,
     })
   }
 
   /**
-   * Applies a winning optimizer candidate to the rotation:
-   * removes the optimizer block, splices its steps into the rotation at the correct
-   * position, then re-simulates the full timeline.
+   * Validates the rotation with the given edit-mode entries merged in.
+   * Does NOT modify any state. Returns the result of the validation.
    */
-  function applyOptimizerResult(blockId: string, candidateSteps: RotationStep[]) {
-    const block = optimizerBlocks.find(b => b.id === blockId)
-    if (!block) return
-
-    const allSteps = extractSteps(snapshots)
-    const before = allSteps.slice(0, block.insertAfterStepCount)
-    const after = allSteps.slice(block.insertAfterStepCount)
-    const merged = [...before, ...candidateSteps, ...after]
-
-    // Remove the block
-    setOptimizerBlocks(prev => prev.filter(b => b.id !== blockId))
-
+  function checkEditModeEntries(entries: EditModeEntry[]): { valid: boolean; reason?: string; dps?: number } {
+    const mergedSteps = buildMergedSteps(entries)
     const result = runImportSteps({
-      steps: merged,
+      steps: mergedSteps,
       initialSnapshot: createEmptySnapshot(charactersMap, characterColumnsMap, globalColumns, tableConfig, settings.startWithFullEnergy),
       charactersMap,
       characterColumnsMap,
@@ -250,15 +230,51 @@ export function useImportExport({
       settings,
       ignoreCastConditions: false,
     })
+    if (result.error) {
+      return { valid: false, reason: `Step ${result.error.stepIndex + 1} (${result.error.character} / ${result.error.action}): ${result.error.reason}` }
+    }
+    const lastSnap = result.snapshots[result.snapshots.length - 2] ?? result.snapshots[result.snapshots.length - 1]
+    return { valid: true, dps: lastSnap?.dps ?? 0 }
+  }
 
-    setLastImportError(result.error)
-    setLastImportCompleted(result.completedSteps)
-
+  /**
+   * Applies edit-mode entries into the rotation: merges them in, re-simulates the
+   * full timeline, and updates state. Returns whether the rotation is valid.
+   */
+  function applyEditModeEntries(entries: EditModeEntry[]): { valid: boolean; reason?: string } {
+    const mergedSteps = buildMergedSteps(entries)
+    const result = runImportSteps({
+      steps: mergedSteps,
+      initialSnapshot: createEmptySnapshot(charactersMap, characterColumnsMap, globalColumns, tableConfig, settings.startWithFullEnergy),
+      charactersMap,
+      characterColumnsMap,
+      globalColumns,
+      enemy,
+      settings,
+      ignoreCastConditions: false,
+    })
+    if (result.error) {
+      return { valid: false, reason: `Step ${result.error.stepIndex + 1} (${result.error.character} / ${result.error.action}): ${result.error.reason}` }
+    }
     setSnapshots(result.snapshots)
     setDamageEvents(result.damageEvents)
     negativeStatusesInActionRef.current = result.finalNegativeStatuses
     modifiersInActionRef.current = result.finalModifiers
     coordinatedAttacksInActionRef.current = result.finalCoordinatedAttacks
+    return { valid: true }
+  }
+
+  /** Merges edit-mode entries into the current step list in insertion-order. */
+  function buildMergedSteps(entries: EditModeEntry[]): RotationStep[] {
+    const allSteps = extractSteps(snapshots)
+    const sorted = [...entries].sort((a, b) => a.insertAfterStepCount - b.insertAfterStepCount)
+    const merged = [...allSteps]
+    let offset = 0
+    for (const entry of sorted) {
+      merged.splice(entry.insertAfterStepCount + offset, 0, { character: entry.character, action: entry.action })
+      offset++
+    }
+    return merged
   }
 
   function handleDeleteFromSnapshot(snapshotId: number) {
@@ -346,7 +362,8 @@ export function useImportExport({
     handleDownloadNamed,
     handleFileUpload,
     handleDeleteFromSnapshot,
-    applyOptimizerResult,
+    checkEditModeEntries,
+    applyEditModeEntries,
     clearImportStatus: () => { setLastImportError(null); setLastImportCompleted(null) },
   }
 }

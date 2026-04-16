@@ -4,12 +4,12 @@ import { HeaderRow } from './HeaderRow'
 import { BodyRow } from './BodyRows'
 import { CurrentStateRow } from './CurrentStateRow'
 import { CharacterStateTracker } from './CharacterStateTracker'
-import { OptimizerRow } from './OptimizerRow'
+import { EditModeRow } from './EditModeRow'
 import type { TableConfig, ColumnVisibility } from '../../types/tableDefinitions'
-import type { Character } from '../../types/character'
+import type { Character, ResolvedCharacter } from '../../types/character'
 import type { Snapshot } from '../../types/snapshot'
 import type { Gear } from '../../types/gear'
-import type { OptimizerBlock } from '../../types/optimizerBlock'
+import type { EditModeEntry } from '../../types/editMode'
 import { InsertRow } from './InsertRow'
 import { useRotationPageContext } from '../../contexts/RotationPageContext'
 
@@ -18,6 +18,7 @@ import { useRotationPageContext } from '../../contexts/RotationPageContext'
 type RotationTableProps = {
   snapshots: Array<Snapshot>
   charactersInBattle: Character[]
+  charactersMap?: Record<string, ResolvedCharacter>
   tableConfig: TableConfig
   onSelectCharacter: (snapshotId: number, characterName: string) => void
   onSelectAction: (snapshotId: number, actionName: string) => void
@@ -29,14 +30,14 @@ type RotationTableProps = {
   sandboxMode?: boolean
   rowDeletionMode?: boolean
   onDeleteRow?: (snapshotId: number) => void
-  optimizerBlocks?: OptimizerBlock[]
-  onOptimizerBlockConfigure?: (blockId: string) => void
-  onOptimizerBlockRemove?: (blockId: string) => void
-  onAddOptimizerBlock?: (insertAfterStepCount: number) => void
+  editModeEntries?: EditModeEntry[]
+  onUpdateEditModeEntry?: (id: string, updates: Partial<{ character: string; action: string }>) => void
+  onRemoveEditModeEntry?: (id: string) => void
+  onInsertEditModeEntry?: (insertAfterStepCount: number) => void
   optimizerEditMode?: boolean
 }
 
-export function RotationTable({ snapshots, charactersInBattle, tableConfig, onSelectCharacter, onSelectAction, columnVisibility, setColumnVisibility, onRowClick, onGearChange, onSequenceChange, sandboxMode = false, rowDeletionMode = false, onDeleteRow, optimizerBlocks = [], onOptimizerBlockConfigure, onOptimizerBlockRemove, onAddOptimizerBlock, optimizerEditMode = false }: RotationTableProps) {
+export function RotationTable({ snapshots, charactersInBattle, charactersMap = {}, tableConfig, onSelectCharacter, onSelectAction, columnVisibility, setColumnVisibility, onRowClick, onGearChange, onSequenceChange, sandboxMode = false, rowDeletionMode = false, onDeleteRow, editModeEntries = [], onUpdateEditModeEntry, onRemoveEditModeEntry, onInsertEditModeEntry, optimizerEditMode = false }: RotationTableProps) {
   const [highlightIds, setHighlightIds] = useState<Set<number>>(new Set())
   const lastMaxId = useRef(0)
   const rotationCtx = useRotationPageContext()
@@ -86,16 +87,16 @@ export function RotationTable({ snapshots, charactersInBattle, tableConfig, onSe
             let stepCount = 0
 
             // Insert slot at position 0 (before any user steps) - only in edit mode
-            if (optimizerEditMode && onAddOptimizerBlock) rows.push(<InsertRow key="insert-0" onInsert={() => onAddOptimizerBlock(0)} alwaysVisible />)
+            if (optimizerEditMode && onInsertEditModeEntry) rows.push(<InsertRow key="insert-0" onInsert={() => onInsertEditModeEntry(0)} alwaysVisible />)
 
-            // Flex blocks at step 0 (before any user steps)
-            optimizerBlocks
-              .filter(b => b.insertAfterStepCount === 0)
-              .forEach(b => {
+            // Edit mode entries at step 0 (before any user steps)
+            editModeEntries
+              .filter(e => e.insertAfterStepCount === 0)
+              .forEach(e => {
                 rows.push(
-                  <OptimizerRow key={`opt-${b.id}`} block={b} onConfigure={onOptimizerBlockConfigure ?? (() => {})} onRemove={onOptimizerBlockRemove ?? (() => {})} />
+                  <EditModeRow key={`edit-${e.id}`} entry={e} charactersMap={charactersMap} onUpdate={onUpdateEditModeEntry ?? (() => {})} onRemove={onRemoveEditModeEntry ?? (() => {})} />
                 )
-                if (optimizerEditMode && onAddOptimizerBlock) rows.push(<InsertRow key={`insert-0-after-${b.id}`} onInsert={() => onAddOptimizerBlock(0)} alwaysVisible />)
+                if (optimizerEditMode && onInsertEditModeEntry) rows.push(<InsertRow key={`insert-0-after-${e.id}`} onInsert={() => onInsertEditModeEntry(0)} alwaysVisible />)
               })
 
             for (let idx = 0; idx < snapshots.length; idx++) {
@@ -124,21 +125,21 @@ export function RotationTable({ snapshots, charactersInBattle, tableConfig, onSe
               if (snapshot.action && snapshot.action !== '' && snapshot.character && !snapshot.isAutocast) {
                 stepCount++
                 const capturedStep = stepCount
-                // Insert any flex blocks that belong after this step
-                optimizerBlocks
-                  .filter(b => b.insertAfterStepCount === capturedStep)
-                  .forEach(b => {
+                // Insert slot before any entries at this step
+                if (optimizerEditMode && onInsertEditModeEntry) rows.push(<InsertRow key={`insert-${capturedStep}`} onInsert={() => onInsertEditModeEntry(capturedStep)} alwaysVisible />)
+                // Insert any edit mode entries that belong after this step
+                editModeEntries
+                  .filter(e => e.insertAfterStepCount === capturedStep)
+                  .forEach(e => {
                     rows.push(
-                      <OptimizerRow key={`opt-${b.id}`} block={b} onConfigure={onOptimizerBlockConfigure ?? (() => {})} onRemove={onOptimizerBlockRemove ?? (() => {})} />
+                      <EditModeRow key={`edit-${e.id}`} entry={e} charactersMap={charactersMap} onUpdate={onUpdateEditModeEntry ?? (() => {})} onRemove={onRemoveEditModeEntry ?? (() => {})} />
                     )
-                    if (optimizerEditMode && onAddOptimizerBlock) rows.push(<InsertRow key={`insert-${capturedStep}-after-${b.id}`} onInsert={() => onAddOptimizerBlock(capturedStep)} alwaysVisible />)
+                    if (optimizerEditMode && onInsertEditModeEntry) rows.push(<InsertRow key={`insert-${capturedStep}-after-${e.id}`} onInsert={() => onInsertEditModeEntry(capturedStep)} alwaysVisible />)
                   })
-                // Insert slot after this non-autocast step
-                if (optimizerEditMode && onAddOptimizerBlock) rows.push(<InsertRow key={`insert-${capturedStep}`} onInsert={() => onAddOptimizerBlock(capturedStep)} alwaysVisible />)
-              } else if (optimizerEditMode && onAddOptimizerBlock && snapshot.action && snapshot.action !== '') {
+              } else if (optimizerEditMode && onInsertEditModeEntry && snapshot.action && snapshot.action !== '') {
                 // Autocast rows also get an insert slot in edit mode
                 const capturedStep = stepCount
-                rows.push(<InsertRow key={`insert-ac-${idx}`} onInsert={() => onAddOptimizerBlock(capturedStep)} alwaysVisible />)
+                rows.push(<InsertRow key={`insert-ac-${idx}`} onInsert={() => onInsertEditModeEntry(capturedStep)} alwaysVisible />)
               }
             }
 

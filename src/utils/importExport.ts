@@ -1,6 +1,5 @@
 import type { Snapshot } from '../types/snapshot'
 import type { DamageEvent } from '../types/events'
-import type { OptimizerBlock } from '../types/optimizerBlock'
 
 // ========== Types ============================================================================================================
 
@@ -13,8 +12,6 @@ export type SavedRotation = {
   name: string
   createdAt: string // ISO date string
   steps: RotationStep[]
-  /** Optimizer blocks embedded in this rotation, if any. */
-  optimizerBlocks?: OptimizerBlock[]
 }
 
 export type ImportError = {
@@ -116,7 +113,6 @@ export function parseRotationFromJson(content: string): SavedRotation | null {
     const parsed = JSON.parse(content)
     if (typeof parsed.name !== 'string' || !Array.isArray(parsed.steps)) return null
     if (!parsed.steps.every((s: unknown) => typeof (s as RotationStep).character === 'string' && typeof (s as RotationStep).action === 'string')) return null
-    // optimizerBlocks is optional — present only in rotations saved with blocks
     return parsed as SavedRotation
   } catch {
     return null
