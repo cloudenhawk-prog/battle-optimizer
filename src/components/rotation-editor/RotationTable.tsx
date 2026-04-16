@@ -11,6 +11,7 @@ import type { Snapshot } from '../../types/snapshot'
 import type { Gear } from '../../types/gear'
 import type { OptimizerBlock } from '../../types/optimizerBlock'
 import { InsertRow } from './InsertRow'
+import { useRotationPageContext } from '../../contexts/RotationPageContext'
 
 // ========== Component: Rotation Table ========================================================================================
 
@@ -37,6 +38,7 @@ type RotationTableProps = {
 export function RotationTable({ snapshots, charactersInBattle, tableConfig, onSelectCharacter, onSelectAction, columnVisibility, setColumnVisibility, onRowClick, onGearChange, onSequenceChange, sandboxMode = false, rowDeletionMode = false, onDeleteRow, optimizerBlocks = [], onOptimizerBlockConfigure, onOptimizerBlockRemove, onAddOptimizerBlock }: RotationTableProps) {
   const [highlightIds, setHighlightIds] = useState<Set<number>>(new Set())
   const lastMaxId = useRef(0)
+  const rotationCtx = useRotationPageContext()
 
   useEffect(() => {
     const idsToHighlight = getHighlightIds(snapshots, lastMaxId)
@@ -63,6 +65,10 @@ export function RotationTable({ snapshots, charactersInBattle, tableConfig, onSe
   // The active character is whoever is selected in the last (current) row
   const lastSnapshot = snapshots.length > 0 ? snapshots[snapshots.length - 1] : null
   const activeCharacterName = lastSnapshot?.character || null
+
+  useEffect(() => {
+    rotationCtx?.setSelectedCharacterName(activeCharacterName)
+  }, [activeCharacterName])
 
   return (
     <>

@@ -4,6 +4,9 @@ import SidebarButton from './sidebar/SidebarButton'
 import TetherBackground from './TetherBackground'
 import '../styles/AppLayout.css'
 
+// Toggle: set to true to preview the background image, false for the animated background
+const USE_IMAGE_BG = true
+
 // ========== Component: App Layout ============================================================================================
 
 interface AppLayoutProps {
@@ -16,15 +19,21 @@ export default function AppLayout({ children }: AppLayoutProps) {
 
   return (
     <div className="app-container">
-      {/* Animated Background */}
+      {/* Background: toggle USE_IMAGE_BG at the top of this file to switch */}
       <div className="background-container">
-        <div className="gradient-background" />
-        <div className="floating-orbs">
-          <div className="orb orb-1" />
-          <div className="orb orb-2" />
-          <div className="orb orb-3" />
-        </div>
-        <TetherBackground />
+        {USE_IMAGE_BG ? (
+          <div className="image-background" />
+        ) : (
+          <>
+            <div className="gradient-background" />
+            <div className="floating-orbs">
+              <div className="orb orb-1" />
+              <div className="orb orb-2" />
+              <div className="orb orb-3" />
+            </div>
+            <TetherBackground />
+          </>
+        )}
       </div>
 
       {/* Sidebar */}

@@ -25,7 +25,8 @@ const lucila_cheat_buff: Action = {
       characterStats: {
         glacioBonusDMG: 0.25,
         liberationAmplifyDMG: 0.25,
-        glacioAmplifyDMG: 0.15,
+        glacioAmplifyDMG: 0.20,
+        bonusDMG: 0.10
       },
       condition: always(),
       targetStrategy: 'all',

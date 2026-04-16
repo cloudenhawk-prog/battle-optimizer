@@ -2,6 +2,7 @@ import { useLocation } from 'react-router-dom'
 import NavItem from './NavItem'
 import '../../styles/sidebar/Sidebar.css'
 import { useRotationPageContext } from '../../contexts/RotationPageContext'
+import { sidebarCharacterConfig } from './sidebarCharacterConfig'
 
 // ========== Component: Sidebar ===============================================================================================
 
@@ -21,8 +22,27 @@ export default function Sidebar({ collapsed }: SidebarProps) {
   const rotationCtx = useRotationPageContext()
   const isRotationPage = location.pathname === '/rotations'
 
+  const selectedCharacterName = rotationCtx?.selectedCharacterName ?? null
+  const FALLBACK_IMAGE = '/assets/ui/phrolova.png'
+
+  // A character has a sidebar image only if they appear in sidebarCharacterConfig.
+  // Characters not in the config fall back to phrolova.
+  const charConfig = selectedCharacterName ? (sidebarCharacterConfig[selectedCharacterName] ?? null) : null
+  const hasCharacterImage = charConfig !== null
+
+  const imageUrl = hasCharacterImage
+    ? `/assets/ui/${selectedCharacterName!.toLowerCase()}.png`
+    : FALLBACK_IMAGE
+
+  const bgStyle: React.CSSProperties = {
+    backgroundImage: `url('${imageUrl}')`,
+    backgroundSize: `${charConfig?.width ?? 'var(--img-width)'} var(--img-height)`,
+    backgroundPosition: `${charConfig?.x ?? 'var(--img-x)'} ${charConfig?.y ?? 'var(--img-y)'}`,
+    backgroundRepeat: 'no-repeat',
+  }
+
   return (
-    <aside className={`sidebar ${collapsed ? 'collapsed' : 'expanded'}`}>
+    <aside className={`sidebar ${collapsed ? 'collapsed' : 'expanded'}`} style={bgStyle}>
       {/* Top Image */}
       <div className="sidebar-top" />
 

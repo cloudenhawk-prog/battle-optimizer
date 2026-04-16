@@ -42,6 +42,12 @@ body,
   z-index: 0;
 }
 
+.image-background {
+  position: fixed;
+  inset: 0;
+  background: url('/assets/backgrounds/background.png') center center / cover no-repeat;
+}
+
 .gradient-background {
   position: fixed;
   inset: 0;

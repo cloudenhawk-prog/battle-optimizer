@@ -18,6 +18,9 @@ export interface RotationPageContextValue {
   summaryOpen: boolean
   setSummaryOpen: React.Dispatch<React.SetStateAction<boolean>>
   onHasDataChange: (value: boolean) => void
+  // Active character for sidebar image
+  selectedCharacterName: string | null
+  setSelectedCharacterName: React.Dispatch<React.SetStateAction<string | null>>
 }
 
 export const RotationPageContext = createContext<RotationPageContextValue | null>(null)
