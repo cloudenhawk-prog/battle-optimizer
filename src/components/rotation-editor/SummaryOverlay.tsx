@@ -388,8 +388,27 @@ function computeBuffUptime(
     ? lastActionSnap.toTime - firstActionSnap.fromTime
     : 0
 
-  // Build display-name lookup from contributions: stripped key → original name + owner
+  // Build display-name lookup: stripped key → original name + owner.
+  // Seed from character/action modifiers first so trackerOnly buffs (which never appear in
+  // event.contributions because they have no stats) still resolve their display name.
   const displayNameMap = new Map<string, { displayName: string; ownerCharacter: string | null }>()
+  for (const char of characters) {
+    const allMods = [
+      ...char.damageModifiers,
+      ...char.actions.flatMap(a => a.damageModifiers),
+    ]
+    for (const mod of allMods) {
+      const stripped = mod.displayName.replace(/\s+/g, '')
+      if (!displayNameMap.has(stripped)) {
+        displayNameMap.set(stripped, {
+          displayName: mod.displayName,
+          ownerCharacter: mod.ownerCharacter ?? null,
+        })
+      }
+    }
+  }
+  // Contributions may carry more accurate ownerCharacter data (stamped at runtime), so let them
+  // overwrite the seeded entries when present.
   for (const event of damageEvents) {
     for (const contrib of Object.values(event.contributions)) {
       if (!contrib.displayName) continue
