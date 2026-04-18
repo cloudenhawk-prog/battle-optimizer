@@ -1,5 +1,6 @@
 import type { Action } from '../../types/action'
 import { always, ownerAtLeast } from '../../utils/conditions/damageModifierConditions'
+import { syntony_field, syntony_field_s2 } from '../modifiers/mornye'
 
 // TODO: Make sure all sequence/echo/gear specific things in her kit are defined in one data folder and referenced/rebuilt rather than hardcoding it in every action
 // Path: src/data/modifiers/<single mega file, one file per category/character, or what> and similar if we need for sideEffects and other properties with heavy building
@@ -537,42 +538,7 @@ const mornye_heavy: Action = {
   ],
   energyCost: [{ energyType: 'rest_mass_energy', amount: heavy_rest_mass_energy_cost }],
   statusModifications: [],
-  damageModifiers: [
-    {
-      source: 'Mornye: Syntony Field',
-      displayName: 'Syntony Field',
-      type: 'buff',
-      color: '#FFC247',
-      ownerCharacter: 'Mornye',
-      characterStats: { offtuneBuildupRate: 0.5 },
-      condition: always(),
-      targetStrategy: 'all',
-      durationStrategy: { type: 'limited', timeDuration: 25 },
-      stackingStrategy: { maxStacks: 1, resetTimerOnApplication: true, stacksRemovedEachTime: 1 },
-      healProc: {
-        frequency: 3,
-        procTag: 'HEAL_PROC',
-        procModifiers: [],
-      },
-      description: 'For 25 seconds: increases the Offtune Buildup Rate of all Resonators by 50%. Every 3 seconds, heals the active resonator.',
-      showStats: true
-    },
-    {
-      source: 'Mornye: Syntony Field',
-      displayName: 'Syntony Field (S2)',
-      type: 'buff',
-      color: '#FFC247',
-      ownerCharacter: 'Mornye',
-      characterStats: { offtuneBuildupRate: 0.2 },
-      condition: ownerAtLeast('Mornye', 2),
-      targetStrategy: 'all',
-      durationStrategy: { type: 'limited', timeDuration: 25 },
-      stackingStrategy: { maxStacks: 1, resetTimerOnApplication: true, stacksRemovedEachTime: 1 },
-      contributionGroup: 'Mornye: Syntony Field',
-      description: 'Syntony Field grants an additional 20% Offtune Buildup Rate to all Resonators',
-      showStats: true
-    },
-  ],
+  damageModifiers: [syntony_field, syntony_field_s2],
   sideEffects: [
     // TODO: 39.77%*5 FUSION DMG considered LIBERATION DMG (upon entering Wide Field Observation Mode)
   ],
@@ -605,47 +571,7 @@ const mornye_heavy_swap_in: Action = {
   ],
   energyCost: [{ energyType: 'rest_mass_energy', amount: heavy_rest_mass_energy_cost }],
   statusModifications: [],
-  damageModifiers: [
-    {
-      // Syntony Field: 25 seconds.
-      // Triggers heal every 3 seconds (including on cast), activating echo 5-set effects.
-      // Off-tune Buildup Rate for all resonators: +50% base (+20% additionally at S2)
-      source: 'Mornye: Syntony Field',
-      displayName: 'Syntony Field',
-      type: 'buff',
-      color: '#FFC247',
-      ownerCharacter: 'Mornye',
-      characterStats: { offtuneBuildupRate: 0.5 },
-      condition: always(),
-      targetStrategy: 'all',
-      durationStrategy: { type: 'limited', timeDuration: 25 },
-      stackingStrategy: { maxStacks: 1, resetTimerOnApplication: true, stacksRemovedEachTime: 1 },
-      healProc: {
-        frequency: 3,
-        procTag: 'HEAL_PROC',
-        procModifiers: [],
-      },
-      description: 'For 25 seconds: increases the Offtune Buildup Rate of all Resonators by 50%. Every 3 seconds, heals the active resonator.',
-      showStats: true
-    },
-    {
-      // S2 bonus: +20% Off-tune Buildup Rate, active only when Mornye's sequence >= 2.
-      // Shares source with the base so Liberation's removesModifierSourceOnActivation clears both.
-      source: 'Mornye: Syntony Field',
-      displayName: 'Syntony Field (S2)',
-      type: 'buff',
-      color: '#FFC247',
-      ownerCharacter: 'Mornye',
-      characterStats: { offtuneBuildupRate: 0.2 },
-      condition: ownerAtLeast('Mornye', 2),
-      targetStrategy: 'all',
-      durationStrategy: { type: 'limited', timeDuration: 25 },
-      stackingStrategy: { maxStacks: 1, resetTimerOnApplication: true, stacksRemovedEachTime: 1 },
-      contributionGroup: 'Mornye: Syntony Field',
-      description: 'Syntony Field grants an additional 20% Offtune Buildup Rate to all Resonators',
-      showStats: true
-    },
-  ],
+  damageModifiers: [syntony_field, syntony_field_s2],
   sideEffects: [
     // TODO: 39.77%*5 FUSION DMG considered LIBERATION DMG (upon entering Wide Field Observation Mode)
   ],
@@ -940,7 +866,7 @@ const mornye_liberation: Action = {
 
 // ========== Intro & Outro ====================================================================================================
 const mornye_intro: Action = {
-  tags: ['INTRO_ACTION'],
+  tags: ['INTRO_ACTION', 'HEAL_PROC'],
   name: 'Mornye Intro',
   displayName: 'Convergence',
   category: 'Other',
@@ -956,7 +882,7 @@ const mornye_intro: Action = {
   ],
   energyCost: [],
   statusModifications: [],
-  damageModifiers: [],
+  damageModifiers: [syntony_field, syntony_field_s2],
   sideEffects: [],
   castConditions: {
     startState: 'ANY',

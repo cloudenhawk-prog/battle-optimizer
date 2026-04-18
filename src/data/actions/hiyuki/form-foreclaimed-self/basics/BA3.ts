@@ -1,6 +1,7 @@
 ﻿
 import type { Action } from '../../../../../types/action'
 import * as values from '../../values'
+import { s1_foreclaimed_basic_multiplier } from '../../../../modifiers/hiyuki'
 
 // ========== BA3 ==============================================================================================================
 
@@ -26,6 +27,7 @@ const hiyuki_foreclaimed_BA_3: Action = {
     { type: 'negativeStatus', targetName: 'Glacio Chafe', stackChange: values.foreclaimed_BA3_stack, applicationCount: 1 }
   ],
   damageModifiers: [],
+  inherentModifiers: [s1_foreclaimed_basic_multiplier],
   sideEffects: [],
   coordinatedAttacks: [],
   castConditions: {
@@ -41,12 +43,6 @@ const hiyuki_foreclaimed_BA_3: Action = {
   hideWhenNotCastable: true,
   groupName: 'Foreclaimed: Basic Attack 3',
   variantName: 'Default',
-  resolveVariant(_prevSnapshot, _characterName, owner) {
-    // S1: DMG Multipliers of Basic Attack - Foreclaimed Self are increased by 120%.
-    const s1Active = owner.sequence >= 1
-    if (!s1Active) return { ...this, resolveVariant: undefined }
-    return { ...this, multiplier: this.multiplier * 2.2, resolveVariant: undefined }
-  }
 }
 
 // Cancel With Swap
@@ -71,6 +67,7 @@ const hiyuki_foreclaimed_BA_3_cancel_with_swap: Action = {
     { type: 'negativeStatus', targetName: 'Glacio Chafe', stackChange: values.foreclaimed_BA3_stack, applicationCount: 1 }
   ],
   damageModifiers: [],
+  inherentModifiers: [s1_foreclaimed_basic_multiplier],
   sideEffects: [],
   coordinatedAttacks: [],
   castConditions: {
@@ -88,12 +85,6 @@ const hiyuki_foreclaimed_BA_3_cancel_with_swap: Action = {
   hideWhenNotCastable: true,
   groupName: 'Foreclaimed: Basic Attack 3',
   variantName: 'Cancel With Swap',
-  resolveVariant(_prevSnapshot, _characterName, owner) {
-    // S1: DMG Multipliers of Basic Attack - Foreclaimed Self are increased by 120%.
-    const s1Active = owner.sequence >= 1
-    if (!s1Active) return { ...this, resolveVariant: undefined }
-    return { ...this, multiplier: this.multiplier * 2.2, resolveVariant: undefined }
-  }
 }
 
 
@@ -121,6 +112,7 @@ const hiyuki_foreclaimed_BA_3_4: Action = {
     { type: 'negativeStatus', targetName: 'Glacio Chafe', stackChange: values.foreclaimed_BA3_stack + values.foreclaimed_BA4_stack, applicationCount: 2 }
   ],
   damageModifiers: [],
+  inherentModifiers: [s1_foreclaimed_basic_multiplier],
   sideEffects: [],
   coordinatedAttacks: [],
   castConditions: {
@@ -136,12 +128,6 @@ const hiyuki_foreclaimed_BA_3_4: Action = {
   hideWhenNotCastable: true,
   groupName: 'Foreclaimed: Basic Attack 3-4',
   variantName: 'Default',
-  resolveVariant(_prevSnapshot, _characterName, owner) {
-    // S1: DMG Multipliers of Basic Attack - Foreclaimed Self are increased by 120%.
-    const s1Active = owner.sequence >= 1
-    if (!s1Active) return { ...this, resolveVariant: undefined }
-    return { ...this, multiplier: this.multiplier * 2.2, resolveVariant: undefined }
-  }
 }
 
 // Cancel With Swap
@@ -166,6 +152,7 @@ const hiyuki_foreclaimed_BA_3_4_cancel_with_swap: Action = {
     { type: 'negativeStatus', targetName: 'Glacio Chafe', stackChange: values.foreclaimed_BA3_stack + values.foreclaimed_BA4_stack, applicationCount: 2 }
   ],
   damageModifiers: [],
+  inherentModifiers: [s1_foreclaimed_basic_multiplier],
   sideEffects: [],
   coordinatedAttacks: [],
   castConditions: {
@@ -183,12 +170,6 @@ const hiyuki_foreclaimed_BA_3_4_cancel_with_swap: Action = {
   hideWhenNotCastable: true,
   groupName: 'Foreclaimed: Basic Attack 3-4',
   variantName: 'Cancel With Swap',
-  resolveVariant(_prevSnapshot, _characterName, owner) {
-    // S1: DMG Multipliers of Basic Attack - Foreclaimed Self are increased by 120%.
-    const s1Active = owner.sequence >= 1
-    if (!s1Active) return { ...this, resolveVariant: undefined }
-    return { ...this, multiplier: this.multiplier * 2.2, resolveVariant: undefined }
-  }
 }
 
 
@@ -216,6 +197,7 @@ const hiyuki_foreclaimed_BA_3_5: Action = {
     { type: 'negativeStatus', targetName: 'Glacio Chafe', stackChange: values.foreclaimed_BA3_stack + values.foreclaimed_BA4_stack + values.foreclaimed_BA5_stack, applicationCount: 3 }
   ],
   damageModifiers: [],
+  inherentModifiers: [s1_foreclaimed_basic_multiplier],
   sideEffects: [],
   coordinatedAttacks: [],
   castConditions: {
@@ -231,12 +213,6 @@ const hiyuki_foreclaimed_BA_3_5: Action = {
   hideWhenNotCastable: true,
   groupName: 'Foreclaimed: Basic Attack 3-5',
   variantName: 'Default',
-  resolveVariant(_prevSnapshot, _characterName, owner) {
-    // S1: DMG Multipliers of Basic Attack - Foreclaimed Self are increased by 120%.
-    const s1Active = owner.sequence >= 1
-    if (!s1Active) return { ...this, resolveVariant: undefined }
-    return { ...this, multiplier: this.multiplier * 2.2, resolveVariant: undefined }
-  }
 }
 
 // Cancel With Swap
@@ -261,6 +237,7 @@ const hiyuki_foreclaimed_BA_3_5_cancel_with_swap: Action = {
     { type: 'negativeStatus', targetName: 'Glacio Chafe', stackChange: values.foreclaimed_BA3_stack + values.foreclaimed_BA4_stack + values.foreclaimed_BA5_stack, applicationCount: 3 }
   ],
   damageModifiers: [],
+  inherentModifiers: [s1_foreclaimed_basic_multiplier],
   sideEffects: [],
   coordinatedAttacks: [],
   castConditions: {
@@ -278,12 +255,6 @@ const hiyuki_foreclaimed_BA_3_5_cancel_with_swap: Action = {
   hideWhenNotCastable: true,
   groupName: 'Foreclaimed: Basic Attack 3-5',
   variantName: 'Cancel With Swap',
-  resolveVariant(_prevSnapshot, _characterName, owner) {
-    // S1: DMG Multipliers of Basic Attack - Foreclaimed Self are increased by 120%.
-    const s1Active = owner.sequence >= 1
-    if (!s1Active) return { ...this, resolveVariant: undefined }
-    return { ...this, multiplier: this.multiplier * 2.2, resolveVariant: undefined }
-  }
 }
 
 export {

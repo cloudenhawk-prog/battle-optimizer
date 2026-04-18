@@ -30,7 +30,7 @@ const lucila_cheat_buff: Action = {
       },
       condition: always(),
       targetStrategy: 'all',
-      durationStrategy: { type: 'limited', timeDuration: 25 },
+      durationStrategy: { type: 'limited', timeDuration: 1000 },
       stackingStrategy: { maxStacks: 1, resetTimerOnApplication: true, stacksRemovedEachTime: 1 },
     },
   ],

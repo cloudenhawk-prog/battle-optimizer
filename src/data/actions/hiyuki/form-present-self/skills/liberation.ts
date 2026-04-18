@@ -1,5 +1,6 @@
 import type { Action } from '../../../../../types/action'
 import * as values from '../../values'
+import { liberation_s6_crit_dmg } from '../../../../modifiers/hiyuki'
 
 // Default
 const hiyuki_liberation: Action = {
@@ -15,13 +16,15 @@ const hiyuki_liberation: Action = {
   cooldown: values.liberation_cooldown,
   energyGenerated: [
     { energyType: 'concerto', amount: values.liberation_concerto, share: 0 },
-    { energyType: 'frostharden_iai', amount: values.liberation_frostharden_iai, share: 0 }
+    { energyType: 'frostharden_iai', amount: values.liberation_frostharden_iai, share: 0 },
+    { energyType: 'frostheart', amount: values.liberation_frostheart, share: 0 }
   ],
   energyCost: [
     { energyType: 'foreclaiming', amount: values.liberation_cost_foreclaiming }
   ],
   statusModifications: [{ type: 'negativeStatus', targetName: 'Glacio Chafe', stackChange: values.liberation_glacio_chafe_stacks }],
   damageModifiers: [],
+  inherentModifiers: [liberation_s6_crit_dmg],
   sideEffects: [],
   coordinatedAttacks: [],
   castConditions: {

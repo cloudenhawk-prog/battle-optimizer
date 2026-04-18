@@ -1,4 +1,5 @@
 import type { Action } from '../../../../../types/action'
+import { liberation_s6_crit_dmg } from '../../../../modifiers/hiyuki'
 
 const hiyuki_foreclaimed_liberation: Action = {
   tags: ['LIBERATION'],
@@ -19,6 +20,7 @@ const hiyuki_foreclaimed_liberation: Action = {
   ],
   statusModifications: [],
   damageModifiers: [],
+  inherentModifiers: [liberation_s6_crit_dmg],
   sideEffects: [],
   coordinatedAttacks: [],
   castConditions: {
@@ -28,15 +30,13 @@ const hiyuki_foreclaimed_liberation: Action = {
   },
   offtune: 0, // TODO data claimed it was 0
   formChange: 'Present Self',
-  resolveVariant(prevSnapshot, characterName, owner) {
+  resolveVariant(prevSnapshot, characterName) {
     const energies = prevSnapshot?.charactersEnergies[characterName]
     const snowforged_blade = energies?.snowforged_blade ?? 0
-    // S6: DMG Multiplier of Foreclaiming: Blade Liberation is increased by 30%.
-    const s6Multiplier = owner.sequence >= 6 ? 1.3 : 1
 
     return {
       ...this,
-      multiplier: (this.multiplier + snowforged_blade * (795.24 / 100)) * s6Multiplier,
+      multiplier: this.multiplier + snowforged_blade * (795.24 / 100),
       energyCost: [
         { energyType: 'energy', amount: 125 },
         { energyType: 'snowforged_blade', amount: snowforged_blade }

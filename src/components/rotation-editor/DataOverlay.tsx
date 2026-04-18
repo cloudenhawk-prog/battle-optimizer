@@ -643,7 +643,6 @@ function ContributionsSection({ damageEvents, mode, characters, snapshot, active
   // don't re-run the calculation — which would produce different Monte Carlo results each time.
   const { metaMap, marginalMap } = useMemo(() => {
     const activeEvents = damageEvents.filter(e => activeSources.has(e.actionName))
-    const totalDamage = activeEvents.reduce((sum, event) => sum + getEventDamage(event, mode), 0)
 
     // Aggregate contribution metadata from all events so entries stay stable when sources toggle.
     const metaMap: Record<string, { source: string; displayName?: string; isInherent?: boolean }> = {}
@@ -666,29 +665,28 @@ function ContributionsSection({ damageEvents, mode, characters, snapshot, active
       return dmg
     }
 
-    const inherentOnlySet = new Set(Array.from(activeContribs).filter(k => metaMap[k]?.isInherent))
-    const baseDamage = evaluateDamage(inherentOnlySet)
+    const baseDamage = evaluateDamage(new Set<string>())
 
-    // Filter non-inherent keys to only those that are non-null players:
-    // a modifier is a null player when v(∅ ∪ {i}) = v(∅) — adding it alone changes nothing.
-    // Null players always get φ_i = 0, and removing them from the game doesn't affect
-    // other players' Shapley values, so we can safely exclude them before enumeration.
-    // This keeps n small so the exact algorithm is used more often (threshold: 15).
-    const allNonInherentKeys = Object.keys(metaMap).filter(k => activeContribs.has(k) && !metaMap[k]?.isInherent)
-    const nonNullKeys = allNonInherentKeys.filter(key => {
-      const withKey = evaluateDamage(new Set([...inherentOnlySet, key]))
+    // All active modifier keys (inherent and non-inherent) are players in the same Shapley game.
+    // Filter to non-null players only: a modifier is a null player when v({i}) = v(∅) —
+    // adding it alone to the empty coalition changes nothing. Null players always get φ_i = 0
+    // and can be excluded without affecting other players' values. This keeps n small so the
+    // exact algorithm is used more often (threshold: 15).
+    const allActiveKeys = Object.keys(metaMap).filter(k => activeContribs.has(k))
+    const nonNullKeys = allActiveKeys.filter(key => {
+      const withKey = evaluateDamage(new Set([key]))
       return Math.abs(withKey - baseDamage) > 0.001
     })
     const n = nonNullKeys.length
 
     const shapleyValues: Record<string, number> = {}
-    for (const k of allNonInherentKeys) shapleyValues[k] = 0  // null players default to 0
+    for (const k of allActiveKeys) shapleyValues[k] = 0  // null players default to 0
 
     const MAX_EXACT = 15
     if (n > 0 && n <= MAX_EXACT) {
       const subsetDmg = new Float64Array(1 << n)
       for (let mask = 0; mask < (1 << n); mask++) {
-        const contribSet = new Set<string>(inherentOnlySet)
+        const contribSet = new Set<string>()
         for (let j = 0; j < n; j++) {
           if (mask & (1 << j)) contribSet.add(nonNullKeys[j])
         }
@@ -720,7 +718,7 @@ function ContributionsSection({ damageEvents, mode, characters, snapshot, active
           const j = Math.floor(Math.random() * (i + 1))
           ;[perm[i], perm[j]] = [perm[j], perm[i]]
         }
-        const contribSet = new Set<string>(inherentOnlySet)
+        const contribSet = new Set<string>()
         let prevDmg = baseDamage
         for (const key of perm) {
           contribSet.add(key)
@@ -736,13 +734,6 @@ function ContributionsSection({ damageEvents, mode, characters, snapshot, active
     for (const key of Object.keys(metaMap)) {
       if (!activeContribs.has(key)) {
         marginalMap[key] = { rawDamage: 0, pct: 0 }
-      } else if (metaMap[key]?.isInherent) {
-        const contribsWithoutKey = new Set(activeContribs)
-        contribsWithoutKey.delete(key)
-        const dmgWithout = evaluateDamage(contribsWithoutKey)
-        const rawDamage = totalDamage - dmgWithout
-        const pct = dmgWithout > 0 ? (rawDamage / dmgWithout) * 100 : 0
-        marginalMap[key] = { rawDamage, pct }
       } else {
         const rawDamage = shapleyValues[key] ?? 0
         const pct = baseDamage > 0 ? (rawDamage / baseDamage) * 100 : 0
@@ -1125,8 +1116,11 @@ function ActiveStatsSection({ damageEvents, activeContribs, characters, snapshot
       const displayName = meta.displayName ?? meta.source
       const strippedName = displayName.replace(/\s+/g, '')
 
-      // Prefer activation-time stats (captures snapshot-time multiplied values like Halo 5-piece)
-      const statsSource = snapshot?.buffsActivationStats?.[strippedName] ?? modifierMap.get(displayName)?.characterStats
+      // Only use activation-time stats from the snapshot. buffsActivationStats is only populated
+      // for modifiers whose condition > 0 at step time, so missing entries mean condition = 0
+      // and the modifier contributes nothing. Falling back to modifierMap would use raw unscaled
+      // stats and incorrectly add the modifier's full value even when its condition is inactive.
+      const statsSource = snapshot?.buffsActivationStats?.[strippedName]
       if (statsSource) {
         for (const [k, v] of Object.entries(statsSource)) {
           if (v === undefined) continue

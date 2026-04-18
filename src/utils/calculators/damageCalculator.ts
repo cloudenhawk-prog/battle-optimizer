@@ -398,8 +398,8 @@ function convertLevelToDefense(level: number): number {
  * Re-evaluates an action's damage with only the specified modifier groups active.
  * Used by DataOverlay so toggling buffs on/off produces exact (not estimated) damage numbers.
  *
- * The inherent modifier baseline is always included regardless of `activeGroupKeys`,
- * matching the same baseline used inside calculateAllContrubutions's evaluateSubset.
+ * Inherent modifiers are controlled via their `inherent_${im.displayName}` key, just like
+ * regular modifier groups, so they participate correctly in Shapley value calculations.
  */
 export function evaluateDamageWithGroups(
   params: { action: Action; characterName: string; baseStats: CharacterStats; damageModifiers: DamageModifier[]; enemy: Enemy; ctx?: StepContext },
@@ -409,11 +409,12 @@ export function evaluateDamageWithGroups(
 ): { normal: number; crit: number; avg: number } {
   const { action, characterName, baseStats, damageModifiers, enemy, ctx } = params
 
-  // Pre-compute inherent modifier baseline (same logic as inside calculateAllContrubutions)
+  // Accumulate inherent modifier stats for only those whose key is active.
   const inherentCharBase: Partial<CharacterStats> = {}
   const inherentEnemyBase: Partial<EnemyStats> = {}
   if (ctx && action.inherentModifiers?.length) {
     for (const im of action.inherentModifiers) {
+      if (!activeGroupKeys.has(`inherent_${im.displayName}`)) continue
       const scale = im.condition(ctx)
       if (scale !== 0) {
         if (im.characterStats) {

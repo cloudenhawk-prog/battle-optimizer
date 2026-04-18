@@ -68,8 +68,8 @@ const hiyuki_foreclaimed_iai: Action = {
   resolveVariant(prevSnapshot, characterName, owner) {
     const energies = prevSnapshot?.charactersEnergies[characterName]
     const frosthardenIai = energies?.frostharden_iai ?? 0
-    // S2: Iai's DMG Multiplier is increased by 140%.
-    const s2Multiplier = owner.sequence >= 2 ? 2.4 : 1
+    // S2: Iai's DMG Multiplier is increased by 125%.
+    const s2Multiplier = owner.sequence >= 2 ? 2.25 : 1
 
     if (frosthardenIai > 0) {
       return {
@@ -155,8 +155,8 @@ const hiyuki_foreclaimed_iai_cancel_with_swap: Action = {
   resolveVariant(prevSnapshot, characterName, owner) {
     const energies = prevSnapshot?.charactersEnergies[characterName]
     const frosthardenIai = energies?.frostharden_iai ?? 0
-    // S2: Iai's DMG Multiplier is increased by 140%.
-    const s2Multiplier = owner.sequence >= 2 ? 2.4 : 1
+    // S2: Iai's DMG Multiplier is increased by 125%.
+    const s2Multiplier = owner.sequence >= 2 ? 2.25 : 1
 
     if (frosthardenIai > 0) {
       return {
