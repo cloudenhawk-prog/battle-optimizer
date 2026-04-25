@@ -69,7 +69,7 @@ export function resolveCharacter(character: Character, overrideGear?: Gear): Res
   resolved = mergeStats(resolved, inherentStats)
 
   // ---- 3: Weapon stats ----
-  resolved = mergeStats(resolved, gear.weapon.stats)
+  if (gear.weapon) resolved = mergeStats(resolved, gear.weapon.stats)
 
   // ---- 4: Echo stats per slot ----
   for (const slotNum of [1, 2, 3, 4, 5] as const) {

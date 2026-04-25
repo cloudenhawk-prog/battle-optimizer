@@ -2,6 +2,7 @@ import '../../styles/rotation-editor/BodyRows.css'
 import type { Character } from '../../types/character'
 import type { ColumnDef, TableConfig, ColumnVisibility } from '../../types/tableDefinitions'
 import type { Snapshot } from '../../types/snapshot'
+import { getElementPrimary } from '../../utils/elementColors'
 import { CharacterSelect } from './CharacterSelect'
 import { ActionSelect } from './ActionSelect'
 import { StatusTagGroup } from './StatusTagGroup'
@@ -32,6 +33,16 @@ export function BodyRow({ snapshot, previousSnapshot, charactersInBattle, tableC
   const character = snapshot.character ?? ''
   const action = snapshot.action ?? ''
   const isLocked = !isLastRow && !!character && !!action
+
+  // Elemental theming: derive the character's element and slot index, expose as CSS custom props
+  const charElement = character
+    ? charactersInBattle.find(c => c.name === character)?.element ?? null
+    : null
+  const charSlotIdx = character ? charactersInBattle.findIndex(c => c.name === character) : 0
+  const elPrimary = getElementPrimary(charElement, charSlotIdx)
+  const elStyle = charElement
+    ? ({ '--el-primary': elPrimary } as React.CSSProperties)
+    : undefined
 
   const lockedCharacters = new Set<string>()
   if (!sandboxMode && previousSnapshot) {
@@ -72,6 +83,7 @@ export function BodyRow({ snapshot, previousSnapshot, charactersInBattle, tableC
   return (
     <tr
       className={`tableBody ${isLastRow ? 'lastRowClass' : ''} ${isNewRow ? 'rowHighlight' : ''}`}
+      style={elStyle}
       role="button"
       tabIndex={0}
       onClick={e => {

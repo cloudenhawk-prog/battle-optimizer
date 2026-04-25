@@ -123,8 +123,8 @@ type CharacterSummary = {
   fieldTime: number
   libCount: number
   sequence: 0 | 1 | 2 | 3 | 4 | 5 | 6
-  weaponRank: 1 | 2 | 3 | 4 | 5
-  weaponName: string
+  weaponRank: 1 | 2 | 3 | 4 | 5 | null
+  weaponName: string | null
 }
 
 type GlobalDamageEntry = { name: string; damage: number; element: string }
@@ -207,8 +207,8 @@ function computeSummaryData(
       fieldTime: fieldTimeMap[char.name] ?? 0,
       libCount: libCountMap[char.name] ?? 0,
       sequence: char.sequence,
-      weaponRank: char.gear.weapon.rank,
-      weaponName: char.gear.weapon.name,
+      weaponRank: char.gear.weapon?.rank ?? null,
+      weaponName: char.gear.weapon?.name ?? null,
     }
   })
 
@@ -388,8 +388,27 @@ function computeBuffUptime(
     ? lastActionSnap.toTime - firstActionSnap.fromTime
     : 0
 
-  // Build display-name lookup from contributions: stripped key → original name + owner
+  // Build display-name lookup: stripped key → original name + owner.
+  // Seed from character/action modifiers first so trackerOnly buffs (which never appear in
+  // event.contributions because they have no stats) still resolve their display name.
   const displayNameMap = new Map<string, { displayName: string; ownerCharacter: string | null }>()
+  for (const char of characters) {
+    const allMods = [
+      ...char.damageModifiers,
+      ...char.actions.flatMap(a => a.damageModifiers),
+    ]
+    for (const mod of allMods) {
+      const stripped = mod.displayName.replace(/\s+/g, '')
+      if (!displayNameMap.has(stripped)) {
+        displayNameMap.set(stripped, {
+          displayName: mod.displayName,
+          ownerCharacter: mod.ownerCharacter ?? null,
+        })
+      }
+    }
+  }
+  // Contributions may carry more accurate ownerCharacter data (stamped at runtime), so let them
+  // overwrite the seeded entries when present.
   for (const event of damageEvents) {
     for (const contrib of Object.values(event.contributions)) {
       if (!contrib.displayName) continue
@@ -1099,7 +1118,7 @@ function CharTypeCard({ summary, originEntry, actionBreakdown, role, charColorMa
           <div className="summaryCharCardName">{summary.name}</div>
           <div className="summaryCharCardGearTags">
             <span className="summaryCharCardGearTag">S{summary.sequence}</span>
-            <span className="summaryCharCardGearTag">R{summary.weaponRank} {summary.weaponName}</span>
+            {summary.weaponName != null && <span className="summaryCharCardGearTag">R{summary.weaponRank} {summary.weaponName}</span>}
           </div>
         </div>
         <div className="summaryCharCardChips">

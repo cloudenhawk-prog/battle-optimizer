@@ -1,0 +1,266 @@
+/* ========== Overlay ================================================================================ */
+
+.optimizerPanelOverlay {
+  position: fixed;
+  inset: 0;
+  z-index: 1000;
+  background: rgba(0, 0, 0, 0.6);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* ========== Panel ================================================================================== */
+
+.optimizerPanel {
+  background: rgb(28, 30, 35);
+  border: 1px solid hsla(195, 60%, 50%, 0.3);
+  border-radius: 8px;
+  width: min(520px, 95vw);
+  max-height: 85vh;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  box-shadow: 0 16px 48px rgba(0, 0, 0, 0.7);
+}
+
+.optimizerPanelHeader {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 12px 16px;
+  border-bottom: 1px solid hsla(195, 60%, 50%, 0.2);
+  background: hsla(195, 60%, 20%, 0.1);
+  flex-shrink: 0;
+}
+
+.optimizerPanelTitle {
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  color: hsl(195, 80%, 65%);
+  text-transform: uppercase;
+}
+
+.optimizerPanelClose {
+  background: transparent;
+  border: none;
+  color: hsl(0, 0%, 50%);
+  font-size: 16px;
+  cursor: pointer;
+  padding: 2px 6px;
+  line-height: 1;
+  transition: color 0.15s;
+}
+
+.optimizerPanelClose:hover {
+  color: hsl(0, 0%, 80%);
+}
+
+/* ========== Body =================================================================================== */
+
+.flexPanelBody {
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+  overflow-y: auto;
+  padding: 16px;
+  gap: 16px;
+}
+
+/* ========== Draft Section ========================================================================== */
+
+.flexDraftSection {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.flexDraftLabel {
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  color: hsl(0, 0%, 50%);
+  text-transform: uppercase;
+}
+
+.flexDraftEmpty {
+  font-size: 12px;
+  color: hsl(0, 0%, 40%);
+  font-style: italic;
+  padding: 8px 0;
+}
+
+.flexDraftList {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.flexDraftRow {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.flexDraftIndex {
+  font-size: 10px;
+  font-weight: 700;
+  color: hsl(0, 0%, 40%);
+  width: 16px;
+  text-align: right;
+  flex-shrink: 0;
+}
+
+.flexDraftSelect {
+  flex: 1;
+  min-width: 0;
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid hsla(195, 60%, 50%, 0.2);
+  border-radius: 4px;
+  color: hsl(0, 0%, 80%);
+  font-size: 12px;
+  padding: 5px 8px;
+  outline: none;
+  cursor: pointer;
+}
+
+.flexDraftSelect:focus {
+  border-color: hsla(195, 80%, 60%, 0.5);
+}
+
+.flexDraftSelect:disabled {
+  opacity: 0.4;
+  cursor: not-allowed;
+}
+
+.flexDraftRemoveBtn {
+  background: transparent;
+  border: none;
+  color: hsl(0, 0%, 40%);
+  font-size: 12px;
+  cursor: pointer;
+  padding: 4px 6px;
+  border-radius: 3px;
+  flex-shrink: 0;
+  transition: color 0.15s, background 0.15s;
+}
+
+.flexDraftRemoveBtn:hover {
+  color: hsl(0, 70%, 65%);
+  background: hsla(0, 70%, 50%, 0.1);
+}
+
+/* ========== Draft Actions Row ====================================================================== */
+
+.flexDraftActions {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding-top: 4px;
+}
+
+.flexAddStepBtn {
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  border-radius: 4px;
+  color: hsl(0, 0%, 65%);
+  font-size: 12px;
+  padding: 6px 12px;
+  cursor: pointer;
+  transition: background 0.15s, color 0.15s;
+}
+
+.flexAddStepBtn:hover {
+  background: rgba(255, 255, 255, 0.1);
+  color: hsl(0, 0%, 85%);
+}
+
+.flexAttemptBtn {
+  margin-left: auto;
+  padding: 7px 20px;
+  background: hsl(195, 70%, 28%);
+  border: 1px solid hsl(195, 70%, 45%);
+  border-radius: 5px;
+  color: hsl(195, 80%, 90%);
+  font-size: 13px;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  cursor: pointer;
+  transition: background 0.15s, opacity 0.15s;
+}
+
+.flexAttemptBtn:hover:not(:disabled) {
+  background: hsl(195, 70%, 34%);
+}
+
+.flexAttemptBtn:disabled {
+  opacity: 0.4;
+  cursor: not-allowed;
+}
+
+/* ========== Result ================================================================================= */
+
+.flexResult {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 10px 14px;
+  border-radius: 6px;
+  border: 1px solid transparent;
+  font-size: 12px;
+}
+
+.flexResultValid {
+  background: hsla(140, 60%, 40%, 0.12);
+  border-color: hsla(140, 60%, 50%, 0.3);
+}
+
+.flexResultInvalid {
+  background: hsla(0, 70%, 40%, 0.1);
+  border-color: hsla(0, 70%, 50%, 0.25);
+}
+
+.flexResultIcon {
+  font-size: 14px;
+  font-weight: 700;
+  flex-shrink: 0;
+}
+
+.flexResultValid .flexResultIcon {
+  color: hsl(140, 60%, 60%);
+}
+
+.flexResultInvalid .flexResultIcon {
+  color: hsl(0, 70%, 65%);
+}
+
+.flexResultText {
+  flex: 1;
+  color: hsl(0, 0%, 75%);
+}
+
+.flexResultValid .flexResultText {
+  color: hsl(140, 40%, 75%);
+}
+
+.flexResultInvalid .flexResultText {
+  color: hsl(0, 0%, 65%);
+}
+
+.flexApplyBtn {
+  flex-shrink: 0;
+  padding: 5px 14px;
+  background: hsl(140, 60%, 26%);
+  border: 1px solid hsl(140, 60%, 42%);
+  border-radius: 4px;
+  color: hsl(140, 60%, 85%);
+  font-size: 12px;
+  font-weight: 700;
+  cursor: pointer;
+  transition: background 0.15s;
+}
+
+.flexApplyBtn:hover {
+  background: hsl(140, 60%, 32%);
+}

@@ -1,139 +1,114 @@
 /* ===== Character Profile Overlay ===================================================================
  *
- *  QUICK-FIND INDEX — "what do I change to..."
- *  ─────────────────────────────────────────────────────────────────────────────────────────────────
- *
- *  Make the whole overlay larger / add more margin around it
- *    → CharacterStateTracker.css  .charProfilePanel  top/left/right/bottom
- *      (16 px on mobile, 40 px on ≥1024 px screens)
- *
- *  Change left column width  (portrait + stats)
- *    → --cpo-left-width  (below)
- *
- *  Change right column width  (set bonus)
- *    → --cpo-right-width  (below)
- *
- *  Change portrait circle size
- *    → --cpo-portrait-size  (below)
- *
- *  Change space between portrait and stat list
- *    → --cpo-portrait-gap  (below)
- *
- *  Change resonance-chain strip height
- *    → --cpo-chain-height  (below)
- *
- *  Change column padding
- *    → --cpo-col-padding-x / --cpo-col-padding-y  (below)
- *
- *  ─── Stats list  —  left column attribute rows ────────────────────────────────────────────────
- *
- *  Change stat icon size (small icon left of each stat name)
- *    → .cpo-stat-icon  width / height  (below)
- *
- *  Change stat name label size / font
- *    → .cpo-stat-label  font-size  (below)
- *
- *  Change stat value size (the clickable number on the right)
- *    → .cpo-stat-value-btn  font-size  (below)
- *
- *  Change row padding / divider
- *    → .cpo-stat-row  padding / border-bottom  (below)
- *
- *  Change section header label size ("Attributes", "Set Bonus" text)
- *    → .cpo-section-header-label  font-size  (below)
- *
- *  ─── Gear orbit — all in CharacterProfileOverlay.tsx  EquipmentOrbit() ────────────────────────
- *
- *  Make the gear orbit circle larger / smaller
- *    → `const radius = Math.max(60, containerSize / 2 - 48)`
- *      Decrease the  48  →  larger orbit ring
- *      Increase the  48  →  smaller orbit ring
- *      The orbit fills the center column automatically; to give it more room
- *      shrink --cpo-left-width and --cpo-right-width.
- *
- *  Change weapon / echo icon slot sizes
- *    → `const largeSlot = Math.max(60, Math.min(92, Math.round(radius * 0.36)))`  ← weapon + 4-cost echoes
- *    → `const baseSlot  = Math.max(52, Math.min(80, Math.round(radius * 0.32)))`  ← smaller echoes
- *      Adjust the multipliers (0.36 / 0.32) or the min/max clamp values.
- *
- *  Change the central emblem circle sizes
- *    → outer container:  width/height  64  in the "Central element emblem" block
- *    → inner glowing dot: width/height 32  just below it
- *
- *  Change the breathing/pulsing glow animation speed on the central emblem
- *    → `transition={{ duration: 4, repeat: Infinity, ease: 'easeInOut' }}`  on the breathing glow
- *
- *  Change orbiting particle sizes & speeds
- *    Particle 1 (clockwise, rides the main orbit ring):
- *      size    → `width: 6, height: 6`
- *      speed   → `transition={{ duration: 20, ... }}`
- *    Particle 2 (counter-clockwise, rides the inner smooth ring):
- *      size    → `width: 4, height: 4`
- *      speed   → `transition={{ duration: 32, ... }}`
- *
- *  Change rotating ring speeds
- *    Outer dashed ring (clockwise)       → `transition={{ duration: 60, ... }}`
- *    Inner dashed ring (counter-clockwise) → `transition={{ duration: 45, ... }}`
- *
- *  Change the gap between the main orbit ring and the outer/inner decorative rings
- *    Outer ring drawn at  radius + 20   ← change the  20
- *    Inner dashed ring at radius - 20   ← change the  20
- *    Inner smooth ring at radius - 15   ← change the  15
- *    Particle 2 also follows radius - 15
- *
- *  Change the resonance chain node size / connector length
- *    → HorizontalSequenceChain()  — node div  width: 32, height: 32
- *    → connector div  width: 24
- *
- *  ─── Tooltip ──────────────────────────────────────────────────────────────────────────────────
- *
- *  Change tooltip width / style
- *    → tooltipStyle()  near the top of CharacterProfileOverlay.tsx
- *      const W = 340    ← max width in pixels
- *
- *  ─── Layout diagram ───────────────────────────────────────────────────────────────────────────
- *
- *    ┌──────────────┬─────────────────────────┬──────────────┐  ← overlay inset: CharacterStateTracker.css
+ *    ┌──────────────┬──────────────────────────┬──────────────┐
  *    │  LEFT COL    │      CENTER (gear)       │  RIGHT COL   │
  *    │  (portrait   │      orbit fills         │  (set bonus) │
  *    │   + stats)   │      all space here      │              │
- *    │              ├─────────────────────────┤              │
+ *    │              ├──────────────────────────┤              │
  *    │              │    CHAIN STRIP (bottom)  │              │
- *    └──────────────┴─────────────────────────┴──────────────┘
+ *    └──────────────┴──────────────────────────┴──────────────┘
  *
  * ================================================================================================= */
 
+/* ═════════════════════════════════════════════════════════════
+ *  CONTROLLER
+ * ═════════════════════════════════════════════════════════════ */
+
 .charProfilePanel {
 
-  /* ══ COLUMN WIDTHS ════════════════════════════════════════════ */
-  --cpo-left-width:   375px;   /* Left column  — portrait + stats */
-  --cpo-right-width:  375px;   /* Right column — set bonus        */
-  /* Center column takes all remaining space automatically (flex: 1) */
+  /* ══ COLUMNS ══════════════════════════════════════════════════ */
+  --cpo-left-width:              415px;
+  --cpo-right-width:             415px;
+  --cpo-col-pad-x:                22px;
+  --cpo-col-pad-y:                35px;
 
-  /* ══ PORTRAIT ════════════════════════════════════════════════ */
-  --cpo-portrait-size:  250px;   /* Circle diameter */
-  --cpo-portrait-gap:    75px;   /* Space below portrait before the stats list */
+  /* ══ PORTRAIT ═════════════════════════════════════════════════ */
+  --cpo-portrait-size:           250px;   /* circle diameter */
+  --cpo-portrait-gap:             70px;   /* gap below portrait */
+  --cpo-identity-margin:          60px;   /* gap below identity block */
+  --cpo-title-offset:             -6px;   /* vertical nudge on the character name (negative = up) */
 
-  /* ══ RESONANCE CHAIN STRIP ═══════════════════════════════════ */
-  --cpo-chain-height:   68px;   /* Height of the bottom strip inside the center column */
+  /* ══ CHAIN STRIP ══════════════════════════════════════════════ */
+  --cpo-chain-height:             68px; /* doesnt seem to do anything! */
 
-  /* ══ COLUMN PADDING ══════════════════════════════════════════ */
-  --cpo-col-padding-x: 18px;   /* Horizontal padding inside left & right columns */
-  --cpo-col-padding-y: 35px;   /* Vertical padding inside left & right columns   */
+  /* ══ CLOSE BUTTON ═════════════════════════════════════════════ */
+  --cpo-close-btn-icon-size:      22px;
+  --cpo-close-btn-padding:    4px 10px;
+  --cpo-close-btn-radius:          4px; /* doesnt seem to do anything! */
+  --cpo-close-btn-time:           0.2s;
+
+  /* ══ NAV BUTTONS ══════════════════════════════════════════════ */
+  --cpo-nav-btn-size:             20px;
+  --cpo-nav-btn-padding:       5px 7px;
+  --cpo-nav-btn-radius:            4px; /* doesnt seem to do anything! */
+  --cpo-nav-btn-time:             0.2s;
+  --cpo-nav-btn-color:   rgba(255, 255, 255, 0.35);
+  --cpo-nav-btn-hover-bg: rgba(255, 255, 255, 0.07);
+
+  /* ══ STAT ROWS ════════════════════════════════════════════════ */
+  --cpo-stat-icon-size:           25px;
+  --cpo-stat-label-size:        1.05rem;
+  --cpo-stat-value-size:       1.05rem;
+
+  /* ══ SECTION HEADERS ══════════════════════════════════════════ */
+  --cpo-section-header-size:    0.9rem;   /* TOTAL STATS / SET BONUS / ORBITAL SCAN */
+
+  /* ══ ELEMENT ICON TARGETS ═════════════════════════════════════ */
+  /* Glacio ~#3FD1C2  ·  Fusion ~#FF7A3C  ·  Electro ~#9B6BFF    */
+  /* Aero ~#58D68D    ·  Spectro ~#FFD84D  ·  Havoc ~#C14B8A      */
+  /* Tune per-element: hue-rotate (hue), saturate (vivid), brightness (lightness) */
+
+  /* ══ SET BONUS CARDS ══════════════════════════════════════════ */
+  --cpo-set-name-size:         1.30rem;
+  --cpo-set-key-size:          0.90rem;
+  --cpo-set-desc-size:         1.00rem;
+  --cpo-set-padding:              13px;
+
+  /* ══ BREAKDOWN HEADER ═════════════════════════════════════════ */
+  --cpo-breakdown-header-bg:     var(--table-header-bg);
+  --cpo-breakdown-border-color:  var(--table-border);
+  --cpo-breakdown-title-size:    0.95rem;
+  --cpo-breakdown-title-color:   var(--table-text);
+
+  /* ══ ORBITAL SCAN BOX ═════════════════════════════════════════ */
+  --cpo-scan-name-size:          1.15rem;   /* item name */
+  --cpo-scan-meta-size:          0.90rem;   /* rank / type / set subheading */
+  --cpo-scan-stat-size:          0.90rem;   /* stat rows */
+  --cpo-scan-section-label-size: 0.95rem;   /* "Main" / "Sub" labels */
+  --cpo-scan-desc-size:          0.90rem;   /* description text */
+
+  /* ══ ABP PANEL ════════════════════════════════════════════════ */
+  --abp-left-width:              600px;
+  --abp-header-size:           1.25rem;   /* panel title */
+  --abp-subheader-size:         1.00rem;   /* "Self Buffs" / "Team Buffs" headers */
+  --abp-toggle-size:            0.6rem;   /* "Hide Zeros" toggle */
+  --abp-toggle-padding:        5px 10px;
+  --abp-group-label-size:      0.80rem;   /* stat category headings */
+  --abp-stat-label-size:       1.00rem;
+  --abp-stat-value-size:       1.00rem;
+  --abp-buff-name-size:         1.15rem;
+  --abp-buff-icon-size:           45px;
+  --abp-buff-desc-size:        1.00rem;
+  --abp-buff-stat-size:        0.95rem;
+  --abp-buff-card-time:             0.35s;            /* glow fade in / out */
+  --abp-buff-card-orbit-speed:      7.0s;             /* one full orbit rotation */
+  --abp-buff-card-glow-blur:          7px;            /* edge glow softness */
+  --abp-buff-card-glow-opacity:       1.0;            /* peak glow intensity (rotating spots) */
+  --abp-buff-card-base-opacity:       0.25;           /* static base glow always visible on hover */
+
 }
 
-/* ── Close Button ── */
+/* ═════════════════════════════════════════════════════════════
+ *  CLOSE BUTTON
+ * ═════════════════════════════════════════════════════════════ */
 
 .cpo-close-btn {
   background: transparent;
   border: none;
   cursor: pointer;
-  font-size: 20px;
-  font-weight: 400;
-  color: var(--table-text-dim);
-  padding: 4px 12px;
-  transition: all 0.2s;
-  border-radius: 4px;
+  padding: var(--cpo-close-btn-padding);
+  transition: all var(--cpo-close-btn-time);
+  border-radius: var(--cpo-close-btn-radius);
 }
 
 .cpo-close-btn:hover {
@@ -141,22 +116,24 @@
   background: var(--table-select-bg);
 }
 
-/* ── Character Navigation Buttons ── */
+/* ═════════════════════════════════════════════════════════════
+ *  NAV BUTTONS
+ * ═════════════════════════════════════════════════════════════ */
 
 .cpo-nav-btn {
   background: transparent;
   border: none;
   cursor: pointer;
-  font-size: 12px;
-  padding: 5px 9px;
-  border-radius: 4px;
-  transition: all 0.2s;
-  color: rgba(255, 255, 255, 0.35);
+  font-size: var(--cpo-nav-btn-size);
+  padding: var(--cpo-nav-btn-padding);
+  border-radius: var(--cpo-nav-btn-radius);
+  transition: all var(--cpo-nav-btn-time);
+  color: var(--cpo-nav-btn-color);
   line-height: 1;
 }
 
 .cpo-nav-btn:hover:not(:disabled) {
-  background: rgba(255, 255, 255, 0.07);
+  background: var(--cpo-nav-btn-hover-bg);
   color: inherit;
   filter: brightness(1.4);
 }
@@ -197,20 +174,26 @@
   flex-direction: column;
   overflow-y: auto;
   overflow-x: hidden;
-  padding: 10px var(--cpo-col-padding-x) var(--cpo-col-padding-y);
+  padding: 10px var(--cpo-col-pad-x) var(--cpo-col-pad-y);
   scrollbar-width: thin;
   scrollbar-color: rgba(80, 100, 130, 0.3) transparent;
 }
 
-/* Identity block — name, level, element badge above the portrait */
+/* ═════════════════════════════════════════════════════════════
+ *  IDENTITY
+ * ═════════════════════════════════════════════════════════════ */
 
 .cpo-identity-block {
-  margin-bottom: 70px;
+  margin-bottom: var(--cpo-identity-margin);
   text-align: center;
   flex-shrink: 0;
 }
 
-/* Portrait */
+.cpo-identity-block h2 { position: relative; top: var(--cpo-title-offset); }
+
+/* ═════════════════════════════════════════════════════════════
+ *  PORTRAIT
+ * ═════════════════════════════════════════════════════════════ */
 
 .cpo-portrait-wrap {
   position: relative;
@@ -229,13 +212,15 @@
   box-sizing: border-box;
 }
 
-/* Section header (shared, used in left + right cols) */
+/* ═════════════════════════════════════════════════════════════
+ *  SECTION HEADER
+ * ═════════════════════════════════════════════════════════════ */
 
 .cpo-section-header {
   display: flex;
   align-items: center;
   gap: 12px;
-  margin-bottom: 16px;   /* ← gap below the section header label */
+  margin-bottom: 16px;
   flex-shrink: 0;
 }
 
@@ -243,14 +228,56 @@
 
 .cpo-section-header-label {
   font-family: 'Orbitron', sans-serif;
-  font-size: 0.6rem;     /* ← section header label size */
+  font-size: var(--cpo-section-header-size);
   font-weight: 700;
   text-transform: uppercase;
   letter-spacing: 0.2em;
   color: hsl(210 15% 50%);
 }
 
-/* Stat rows */
+/* ═════════════════════════════════════════════════════════════
+ *  STAT ROWS
+ * ═════════════════════════════════════════════════════════════ */
+
+.cpo-stat-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 5px 0;
+  border-bottom: 1px solid rgba(50, 70, 100, 0.2);
+}
+
+.cpo-stat-label-group {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  min-width: 0;
+}
+
+.cpo-stat-icon {
+  width:  var(--cpo-stat-icon-size);
+  height: var(--cpo-stat-icon-size);
+  object-fit: contain;
+  flex-shrink: 0;
+}
+
+.cpo-stat-icon:not(.cpo-stat-icon--element) {
+  filter: brightness(0) invert(1) brightness(0.77);
+}
+
+.cpo-stat-icon--element { opacity: 1; }
+
+.cpo-stat-label {
+  font-family: 'Rajdhani', 'Segoe UI', sans-serif;
+  font-size: var(--cpo-stat-label-size);
+  font-weight: 500;
+  color: hsl(210 15% 50%);
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
 
 .cpo-stat-value-btn {
   background: transparent;
@@ -259,7 +286,7 @@
   padding: 1px 0;
   flex-shrink: 0;
   font-family: system-ui, -apple-system, 'Segoe UI', sans-serif;
-  font-size: 1.00rem;
+  font-size: var(--cpo-stat-value-size);
   font-weight: 650;
   font-variant-numeric: tabular-nums;
   letter-spacing: 0.01em;
@@ -278,13 +305,11 @@
   overflow: hidden;
 }
 
-/* Orbit fills all center space above the chain strip */
 .cpo-orbit-wrap {
   flex: 1;
   position: relative;
 }
 
-/* ResizeObserver target — always fills its parent */
 .cpo-orbit-container {
   position: absolute;
   inset: 0;
@@ -294,7 +319,7 @@
 }
 
 /* ═════════════════════════════════════════════════════════════
- *  CHAIN STRIP  —  resonance chain, bottom of center col
+ *  CHAIN STRIP
  * ═════════════════════════════════════════════════════════════ */
 
 .cpo-chain-strip {
@@ -316,16 +341,17 @@
   display: flex;
   flex-direction: column;
   overflow: hidden;
-  padding: var(--cpo-col-padding-y) var(--cpo-col-padding-x) 0;
+  padding: var(--cpo-col-pad-y) var(--cpo-col-pad-x) 0;
 }
 
-/* Each half scrolls independently */
 .cpo-right-col > div {
   scrollbar-width: thin;
   scrollbar-color: rgba(80, 100, 130, 0.3) transparent;
 }
 
-/* Set bonus cards */
+/* ═════════════════════════════════════════════════════════════
+ *  SET BONUS CARDS
+ * ═════════════════════════════════════════════════════════════ */
 
 .cpo-set-bonus-name-row {
   display: flex;
@@ -336,20 +362,20 @@
 
 .cpo-set-bonus-name-text {
   font-family: 'Rajdhani', 'Segoe UI', sans-serif;
-  font-size: 1.00rem;
+  font-size: var(--cpo-set-name-size);
   font-weight: 700;
   letter-spacing: 0.03em;
 }
 
 .cpo-set-bonus-entry {
-  padding: 10px 10px;
+  padding: var(--cpo-set-padding);
   border-radius: 8px;
   flex-shrink: 0;
 }
 
 .cpo-set-bonus-entry-key {
   font-family: 'Orbitron', sans-serif;
-  font-size: 0.70rem;
+  font-size: var(--cpo-set-key-size);
   font-weight: 650;
   text-transform: uppercase;
   letter-spacing: 0.06em;
@@ -359,7 +385,7 @@
 .cpo-set-bonus-entry-desc {
   margin: 0;
   font-family: 'Rajdhani', 'Segoe UI', sans-serif;
-  font-size: 0.86rem;
+  font-size: var(--cpo-set-desc-size);
   color: hsl(210 15% 50%);
   line-height: 1.5;
 }
@@ -375,94 +401,72 @@
 }
 
 /* ═════════════════════════════════════════════════════════════
- *  STATS LIST  —  attribute rows in the left column
- *
- *  Change stat icon size
- *    → .cpo-stat-icon  width / height  (below)
- *
- *  Change stat name label size / font
- *    → .cpo-stat-label  font-size  (below)
- *
- *  Change stat value button size  (clickable number on the right)
- *    → .cpo-stat-value-btn  font-size  (above)
- *
- *  Change row spacing / divider line
- *    → .cpo-stat-row  padding / border-bottom  (below)
+ *  BREAKDOWN HEADER
  * ═════════════════════════════════════════════════════════════ */
 
-/* Stat row container */
-.cpo-stat-row {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  padding: 6px 0;               /* ← vertical spacing between rows */
-  border-bottom: 1px solid rgba(50, 70, 100, 0.2);
-  gap: 4px;
+.charProfilePanel .charStatBreakdownHeader {
+  position: relative;
+  background: linear-gradient(90deg, transparent, hsl(var(--cpo-el-raw) / 0.04));
+  border-bottom: 1px solid hsl(var(--cpo-el-raw) / 0.15);
 }
 
-/* Left side: icon + label */
-.cpo-stat-label-group {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  min-width: 0;
+/* Accent line at the top — mirrors the 1px gradient at the very top of the overlay */
+.charProfilePanel .charStatBreakdownHeader::before {
+  content: '';
+  position: absolute;
+  top: 0; left: 0; right: 0;
+  height: 1px;
+  background: linear-gradient(90deg, transparent, hsl(var(--cpo-el-raw) / 0.6), transparent);
+  pointer-events: none;
 }
 
-/* Stat icon (small image to the left of the label) */
-.cpo-stat-icon {
-  width: 25px;            /* ← stat icon width  */
-  height: 25px;           /* ← stat icon height */
-  object-fit: contain;
-  flex-shrink: 0;
+.charProfilePanel .charStatBreakdownTitle {
+  font-size: var(--cpo-breakdown-title-size);
+  color: hsl(var(--cpo-el-raw) / 0.85);
 }
 
-/* Non-elemental icons: rendered as near-white (no color, no glow). */
-.cpo-stat-icon:not(.cpo-stat-icon--element) {
-  filter: brightness(0) invert(1) brightness(0.77);
+.abp .charStatBreakdownHeader {
+  padding-right: 14px;
+}
+
+.charProfilePanel .overlayCloseButton {
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  font-size: var(--cpo-close-btn-icon-size);
+  padding: var(--cpo-close-btn-padding);
+  transition: all var(--cpo-close-btn-time);
+  border-radius: var(--cpo-close-btn-radius);
+}
+
+.charProfilePanel .overlayCloseButton:hover {
+  color: var(--table-text);
+  background: var(--table-select-bg);
 }
 
 /* ═════════════════════════════════════════════════════════════
- *  ACTIVE BUFFS & CURRENT STATS PANEL  (.abp)
- *
- *  Quick-find: change...
- *    Panel title size           → --abp-header-font-size
- *    "Self/Team Buffs" header   → --abp-subheader-font-size
- *    Toggle button text         → --abp-toggle-font-size
- *    Toggle button padding      → --abp-toggle-padding
- *    Stat category label size   → --abp-group-label-font-size
- *    Stat row label size        → --abp-stat-label-font-size
- *    Stat row value size        → --abp-stat-value-font-size
- *    Left column width          → --abp-left-width
- *    Buff name size             → --abp-buff-name-font-size
- *    Buff icon size             → --abp-buff-icon-size
- *    Buff description size      → --abp-buff-desc-font-size
- *    Buff stat label/value size → --abp-buff-stat-font-size
+ *  ELEMENT STAT ICONS
  * ═════════════════════════════════════════════════════════════ */
 
-.abp {
-  --abp-left-width:             480px;     /* Left column (current stats) width */
-  --abp-header-font-size:       0.95rem;   /* Panel title "Active Buffs & Current Stats" */
-  --abp-subheader-font-size:    0.6rem;    /* Section headers "Self Buffs" / "Team Buffs" */
-  --abp-toggle-font-size:       0.5rem;    /* "Hide Zeros" toggle button text */
-  --abp-toggle-padding:         3px 8px;   /* "Hide Zeros" toggle button padding */
-  --abp-group-label-font-size:  0.55rem;   /* Stat category headings (Base Stats, Combat…) */
-  --abp-stat-label-font-size:   0.76rem;   /* Stat row key label */
-  --abp-stat-value-font-size:   0.80rem;   /* Stat row value */
-  --abp-buff-name-font-size:    0.9rem;    /* Buff card name */
-  --abp-buff-icon-size:         36px;      /* Buff card icon width & height */
-  --abp-buff-desc-font-size:    0.76rem;   /* Buff description text */
-  --abp-buff-stat-font-size:    0.78rem;   /* Buff stat label and value */
+.cpo-stat-icon--glacio  { filter: brightness(0) invert(1) brightness(0.6) sepia(1) hue-rotate(138deg) saturate(300%) brightness(0.85); }
+.cpo-stat-icon--fusion  { filter: brightness(0) invert(1) brightness(0.6) sepia(1) hue-rotate(342deg) saturate(500%) brightness(1.0);  }
+.cpo-stat-icon--electro { filter: brightness(0) invert(1) brightness(0.6) sepia(1) hue-rotate(226deg) saturate(300%) brightness(1.05); }
+.cpo-stat-icon--aero    { filter: brightness(0) invert(1) brightness(0.6) sepia(1) hue-rotate(107deg) saturate(300%) brightness(0.95); }
+.cpo-stat-icon--spectro { filter: brightness(0) invert(1) brightness(0.6) sepia(1) hue-rotate(9deg)   saturate(500%) brightness(1.15); }
+.cpo-stat-icon--havoc   { filter: brightness(0) invert(1) brightness(0.6) sepia(1) hue-rotate(287deg) saturate(400%) brightness(0.9);  }
 
-  background: hsl(222 25% 9%);  /* Opaque panel background */
-}
+/* ═════════════════════════════════════════════════════════════
+ *  ABP — ACTIVE BUFFS & CURRENT STATS PANEL
+ * ═════════════════════════════════════════════════════════════ */
 
-/* Allow the panel title size to be driven by the variable above */
-.abp .charStatBreakdownTitle { font-size: var(--abp-header-font-size); }
+.abp { background: hsl(222 25% 9%); }
 
-/* Allow "Self Buffs" / "Team Buffs" section header size to be driven by the variable above */
-.abp .cpo-section-header-label { font-size: var(--abp-subheader-font-size); }
+.abp .charStatBreakdownTitle   { font-size: var(--abp-header-size); }
+.abp .cpo-section-header-label { font-size: var(--abp-subheader-size); }
 
-/* ── Main layout: left stats col + right buffs col ── */
+/* ═════════════════════════════════════════════════════════════
+ *  ABP — LAYOUT
+ * ═════════════════════════════════════════════════════════════ */
 
 .abp-body {
   flex: 1;
@@ -493,7 +497,9 @@
   scrollbar-color: rgba(80, 100, 130, 0.3) transparent;
 }
 
-/* ── "CURRENT STATS" label + toggle button row ── */
+/* ═════════════════════════════════════════════════════════════
+ *  ABP — STATS HEADER & TOGGLE
+ * ═════════════════════════════════════════════════════════════ */
 
 .abp-stats-header {
   display: flex;
@@ -502,28 +508,28 @@
   margin-bottom: 12px;
 }
 
-/* ── Hide Zeros toggle ── */
-
 .abp-toggle-btn {
   font-family: 'Orbitron', sans-serif;
-  font-size: var(--abp-toggle-font-size);    /* toggle text size */
+  font-size: var(--abp-toggle-size);
   font-weight: 700;
   letter-spacing: 0.12em;
   text-transform: uppercase;
-  padding: var(--abp-toggle-padding);        /* toggle button padding */
+  padding: var(--abp-toggle-padding);
   border-radius: 4px;
   cursor: pointer;
   transition: all 0.15s;
   flex-shrink: 0;
 }
 
-/* ── Stat category block ── */
+/* ═════════════════════════════════════════════════════════════
+ *  ABP — STAT GROUPS
+ * ═════════════════════════════════════════════════════════════ */
 
 .abp-group { margin-bottom: 18px; }
 
 .abp-group-label {
   font-family: 'Orbitron', sans-serif;
-  font-size: var(--abp-group-label-font-size);   /* category heading size */
+  font-size: var(--abp-group-label-size);
   font-weight: 700;
   letter-spacing: 0.18em;
   text-transform: uppercase;
@@ -531,7 +537,6 @@
   padding-bottom: 3px;
 }
 
-/* 4-column grid: label | value | label | value */
 .abp-grid {
   display: grid;
   grid-template-columns: 1fr auto 1fr auto;
@@ -545,7 +550,6 @@
   border-bottom: 1px solid rgba(50, 70, 100, 0.18);
 }
 
-/* Lone item: spans all 4 columns so col-width instability can't affect value position */
 .abp-stat-row--lone {
   grid-column: 1 / -1;
   display: flex;
@@ -562,23 +566,36 @@
 
 .abp-stat-label {
   font-family: 'Rajdhani', 'Segoe UI', sans-serif;
-  font-size: var(--abp-stat-label-font-size);    /* stat key label size */
+  font-size: var(--abp-stat-label-size);
   color: rgba(140, 155, 190, 0.85);
 }
 
-.abp-stat-label--right { padding-left: 8px; }   /* visual gap between left/right pairs */
+.abp-stat-label--right { padding-left: 8px; }
 
 .abp-stat-value {
   font-family: system-ui, -apple-system, 'Segoe UI', sans-serif;
-  font-size: var(--abp-stat-value-font-size);    /* stat value size */
+  font-size: var(--abp-stat-value-size);
   font-weight: 650;
   font-variant-numeric: tabular-nums;
   text-align: right;
 }
 
-.abp-stat-value--left { padding-right: 8px; }   /* gap between left-pair value and right-pair label */
+.abp-stat-value--left { padding-right: 8px; }
 
-/* ── Buff cards ── */
+/* ═════════════════════════════════════════════════════════════
+ *  ABP — BUFF CARDS
+ * ═════════════════════════════════════════════════════════════ */
+
+/* Animatable custom property for the conic gradient rotation */
+@property --abp-glow-angle {
+  syntax: '<angle>';
+  inherits: false;
+  initial-value: 0deg;
+}
+
+@keyframes abp-card-orbit {
+  to { --abp-glow-angle: 360deg; }
+}
 
 .abp-buff-card {
   display: flex;
@@ -586,6 +603,87 @@
   gap: 6px;
   border-radius: 8px;
   padding: 10px 12px;
+  position: relative;
+  transition: background var(--abp-buff-card-time);
+}
+
+/* Static base border glow — always visible on hover, fills the dead zones between hot-spots */
+.abp-buff-card::after {
+  content: '';
+  position: absolute;
+  inset: -3px;
+  border-radius: 11px;
+  padding: 3px;
+  background: hsl(var(--cpo-el-raw) / 1);
+  -webkit-mask:
+    linear-gradient(#fff 0 0) content-box,
+    linear-gradient(#fff 0 0);
+  -webkit-mask-composite: destination-out;
+  mask:
+    linear-gradient(#fff 0 0) content-box,
+    linear-gradient(#fff 0 0);
+  mask-composite: exclude;
+  filter: blur(var(--abp-buff-card-glow-blur));
+  opacity: 0;
+  transition: opacity var(--abp-buff-card-time);
+  pointer-events: none;
+}
+
+/*
+ * Rotating orbit glow — conic gradient shaped into a border ring via mask-composite.
+ * The interior is punched out entirely, so the conic fill never bleeds inside the card
+ * regardless of what background the card itself has.
+ * Two irregular hot-spots give an uneven, sparking feel as they orbit.
+ * --cpo-el-raw must be set on a parent element (done in ActiveBuffsPanel TSX).
+ */
+.abp-buff-card::before {
+  content: '';
+  position: absolute;
+  inset: -3px;
+  border-radius: 11px;
+  padding: 3px;                          /* defines the visible ring width */
+  background: conic-gradient(
+    from var(--abp-glow-angle),
+    transparent                     0deg,
+    hsl(var(--cpo-el-raw) / 0.15)  32deg,
+    hsl(var(--cpo-el-raw) / 0.90)  58deg,   /* primary hot-spot */
+    hsl(var(--cpo-el-raw) / 0.15)  84deg,
+    transparent                   108deg,
+    transparent                   178deg,
+    hsl(var(--cpo-el-raw) / 0.10) 200deg,
+    hsl(var(--cpo-el-raw) / 0.50) 228deg,   /* secondary — dimmer, slightly wider */
+    hsl(var(--cpo-el-raw) / 0.10) 256deg,
+    transparent                   280deg,
+    transparent                   360deg
+  );
+  /* Punch out the interior — only the border ring remains.
+   * content-box here equals exactly the card's interior because the element has
+   * inset: -3px (so it starts 3px outside the card) + padding: 3px (pushes content
+   * edge back inward by 3px), netting zero offset = card boundary = the hole to remove.
+   * NOTE: padding-box == border-box when there is no border, so it must be content-box. */
+  -webkit-mask:
+    linear-gradient(#fff 0 0) content-box,
+    linear-gradient(#fff 0 0);
+  -webkit-mask-composite: destination-out;
+  mask:
+    linear-gradient(#fff 0 0) content-box,
+    linear-gradient(#fff 0 0);
+  mask-composite: exclude;
+  filter: blur(var(--abp-buff-card-glow-blur));
+  opacity: 0;
+  transition: opacity var(--abp-buff-card-time);
+  animation: abp-card-orbit var(--abp-buff-card-orbit-speed) linear infinite;
+  animation-play-state: paused;
+  pointer-events: none;
+}
+
+.abp-buff-card:hover::before {
+  opacity: var(--abp-buff-card-glow-opacity);
+  animation-play-state: running;
+}
+
+.abp-buff-card:hover::after {
+  opacity: var(--abp-buff-card-base-opacity);
 }
 
 .abp-buff-header {
@@ -595,8 +693,8 @@
 }
 
 .abp-buff-icon {
-  width:  var(--abp-buff-icon-size);    /* icon width */
-  height: var(--abp-buff-icon-size);    /* icon height */
+  width:  var(--abp-buff-icon-size);
+  height: var(--abp-buff-icon-size);
   object-fit: contain;
   flex-shrink: 0;
   border-radius: 4px;
@@ -612,14 +710,14 @@
 
 .abp-buff-name {
   font-family: 'Rajdhani', 'Segoe UI', sans-serif;
-  font-size: var(--abp-buff-name-font-size);    /* buff card name size */
+  font-size: var(--abp-buff-name-size);
   font-weight: 700;
 }
 
 .abp-buff-desc {
   margin: 0;
   font-family: 'Rajdhani', 'Segoe UI', sans-serif;
-  font-size: var(--abp-buff-desc-font-size);    /* buff description size */
+  font-size: var(--abp-buff-desc-size);
   color: rgba(160, 172, 200, 0.8);
   line-height: 1.5;
 }
@@ -638,72 +736,13 @@
 }
 
 .abp-buff-stat-label {
-  font-size: var(--abp-buff-stat-font-size);    /* buff stat label size */
+  font-size: var(--abp-buff-stat-size);
   color: rgba(150, 165, 195, 0.8);
 }
 
 .abp-buff-stat-value {
-  font-size: var(--abp-buff-stat-font-size);    /* buff stat value size */
+  font-size: var(--abp-buff-stat-size);
   font-weight: 600;
   font-variant-numeric: tabular-nums;
-}
-
-/* Elemental icon variant — full brightness; element-specific animation handles everything */
-.cpo-stat-icon--element {
-  opacity: 1;
-}
-
-/* Stat name label */
-.cpo-stat-label {
-  font-family: 'Rajdhani', 'Segoe UI', sans-serif;
-  font-size: 0.9rem;     /* ← stat label size */
-  font-weight: 500;
-  color: hsl(210 15% 50%);
-  text-transform: uppercase;
-  letter-spacing: 0.04em;
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
-}
-
-/* ═════════════════════════════════════════════════════════════
- *  ELEMENT STAT ICONS  —  painted in each element's color
- *
- *  Technique: normalize the white PNG to a mid-gray, apply
- *  sepia(1) to introduce chroma, then hue-rotate + saturate
- *  to land on the element color. Fine-tune with brightness.
- *
- *  To adjust a color: tweak hue-rotate (hue), saturate (vividness),
- *  or the final brightness (lightness).
- * ═════════════════════════════════════════════════════════════ */
-
-/* —— Glacio: teal / icy cyan  ~#3FD1C2 —— */
-.cpo-stat-icon--glacio {
-  filter: brightness(0) invert(1) brightness(0.6) sepia(1) hue-rotate(138deg) saturate(300%) brightness(0.85);
-}
-
-/* —— Fusion: orange / red  ~#FF7A3C —— */
-.cpo-stat-icon--fusion {
-  filter: brightness(0) invert(1) brightness(0.6) sepia(1) hue-rotate(342deg) saturate(500%) brightness(1.0);
-}
-
-/* —— Electro: purple  ~#9B6BFF —— */
-.cpo-stat-icon--electro {
-  filter: brightness(0) invert(1) brightness(0.6) sepia(1) hue-rotate(226deg) saturate(300%) brightness(1.05);
-}
-
-/* —— Aero: light green  ~#58D68D —— */
-.cpo-stat-icon--aero {
-  filter: brightness(0) invert(1) brightness(0.6) sepia(1) hue-rotate(107deg) saturate(300%) brightness(0.95);
-}
-
-/* —— Spectro: yellow / soft gold  ~#FFD84D —— */
-.cpo-stat-icon--spectro {
-  filter: brightness(0) invert(1) brightness(0.6) sepia(1) hue-rotate(9deg) saturate(500%) brightness(1.15);
-}
-
-/* —— Havoc: magenta / red-purple  ~#C14B8A —— */
-.cpo-stat-icon--havoc {
-  filter: brightness(0) invert(1) brightness(0.6) sepia(1) hue-rotate(287deg) saturate(400%) brightness(0.9);
 }
 

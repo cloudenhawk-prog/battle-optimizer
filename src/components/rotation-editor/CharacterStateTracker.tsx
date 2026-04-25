@@ -1,6 +1,7 @@
 import { useState } from 'react'
 import '../../styles/rotation-editor/CharacterStateTracker.css'
 import { CharacterProfileOverlay } from './CharacterProfileOverlay'
+import { getElementPrimary } from '../../utils/elementColors'
 import type { Snapshot } from '../../types/snapshot'
 import type { Character } from '../../types/character'
 import type { TableConfig, ColumnVisibility } from '../../types/tableDefinitions'
@@ -113,11 +114,12 @@ export function CharacterStateTracker({
   return (
     <>
       <div className="stateTracker">
-        {tableConfig.characters.map(group => {
+        {tableConfig.characters.map((group, charIdx) => {
           const character = charactersInBattle.find(c => c.name === group.label)
           if (!character) return null
 
           const visibleColumns = group.columns.filter(col => columnVisibility[col.key])
+          const elPrimary = getElementPrimary(character.element, charIdx)
 
           // ========== Derived Data ===========================================================================================
 
@@ -143,7 +145,7 @@ export function CharacterStateTracker({
           // ========== Render ================================================================================================
 
           return (
-            <div key={group.label} className={`stateTrackerCard${isActive ? ' stateTrackerCard--active' : ''}`}>
+            <div key={group.label} className={`stateTrackerCard${isActive ? ' stateTrackerCard--active' : ''}`} style={{ '--el-primary': elPrimary } as React.CSSProperties}>
 
               {/* Profile Button */}
               {visibleColumns.length > 0 && (

@@ -38,15 +38,9 @@ const hiyuki_foreclaimed_enhanced_heavy_attack: Action = {
   resolveVariant(_prevSnapshot, _characterName, owner) {
     // S3: Additional +160%
     if (owner.sequence < 3) return { ...this, resolveVariant: undefined }
-    const energyGenerated = owner.sequence >= 6
-      ? this.energyGenerated.map(e =>
-          e.energyType === 'snowforged_blade' ? { ...e, amount: e.amount + 2 } : e
-        )
-      : this.energyGenerated
     return {
       ...this,
       multiplier: this.multiplier * 2.6,
-      energyGenerated,
       resolveVariant: undefined,
     }
   }
@@ -91,15 +85,9 @@ const hiyuki_foreclaimed_enhanced_heavy_attack_cancel_with_swap: Action = {
   resolveVariant(_prevSnapshot, _characterName, owner) {
     // S3: Additional +160%
     if (owner.sequence < 3) return { ...this, resolveVariant: undefined }
-    const energyGenerated = owner.sequence >= 6
-      ? this.energyGenerated.map(e =>
-          e.energyType === 'snowforged_blade' ? { ...e, amount: e.amount + 2 } : e
-        )
-      : this.energyGenerated
     return {
       ...this,
       multiplier: this.multiplier * 2.6,
-      energyGenerated,
       resolveVariant: undefined,
     }
   }

@@ -48,6 +48,7 @@ const liberation_multiplier = (397.62) / 100
 const liberation_cooldown = 25
 const liberation_concerto = 20
 const liberation_frostharden_iai = 3
+const liberation_frostheart = 50
 const liberation_cost_foreclaiming = 1
 const liberation_glacio_chafe_stacks = 4
 const liberation_offtune = 8.4
@@ -95,25 +96,25 @@ const foreclaimed_BA5_offtune = (0.07 + 0.629)
 const foreclaimed_BA5_frostheart = (4 + 31)
 
 // Foreclaimed MA1
-const foreclaimed_MA1_multiplier = (2 * 32.03 + 42.70) / 100
-const foreclaimed_MA1_energy = (2 * 0.70 + 0.93)
-const foreclaimed_MA1_concerto = (2 * 1.04 + 1.39)
+const foreclaimed_MA1_multiplier = (2 * 28.83 + 38.43) / 100
+const foreclaimed_MA1_energy = (2 * 0.49 + 0.65)
+const foreclaimed_MA1_concerto = (2 * 0.94 + 1.25)
 const foreclaimed_MA1_stack = (0)
-const foreclaimed_MA1_offtune = (2 * 0.18 + 0.25)
+const foreclaimed_MA1_offtune = (2 * 0.184 + 0.246)
 const foreclaimed_MA1_frostheart = (2 * 10 + 13)
 
 // Foreclaimed MA2
-const foreclaimed_MA2_multiplier = (4 * 28.99) / 100
-const foreclaimed_MA2_energy = (4 * 0.63)
-const foreclaimed_MA2_concerto = (4 * 0.94)
+const foreclaimed_MA2_multiplier = (4 * 26.09) / 100
+const foreclaimed_MA2_energy = (4 * 0.45)
+const foreclaimed_MA2_concerto = (4 * 0.85)
 const foreclaimed_MA2_stack = (1)
 const foreclaimed_MA2_offtune = (4 * 0.17)
 const foreclaimed_MA2_frostheart = (4 * 9)
 
 // Foreclaimed MA3
-const foreclaimed_MA3_multiplier = (124.00) / 100
-const foreclaimed_MA3_energy = (2.68)
-const foreclaimed_MA3_concerto = (4.01)
+const foreclaimed_MA3_multiplier = (111.60) / 100
+const foreclaimed_MA3_energy = (1.89)
+const foreclaimed_MA3_concerto = (3.61)
 const foreclaimed_MA3_stack = (1)
 const foreclaimed_MA3_offtune = (0.713)
 const foreclaimed_MA3_frostheart = (35)
@@ -141,7 +142,7 @@ const foreclaimed_enhanced_heavy_offtune = 8 * 0.21 + 6.72
 
 // Foreclaimed Iai
 const foreclaimed_iai_multiplier = (283.82 + 4 * 47.31) / 100
-const foreclaimed_iai_energy = 1.43 + 4 * 0.24
+const foreclaimed_iai_energy = 1.12 + 4 * 0.19
 const foreclaimed_iai_concerto = 2.15 + 4 * 0.36
 const foreclaimed_iai_offtune = 0.381 + 4 * 0.064
 
@@ -158,7 +159,7 @@ export {
   enhanced_heavy_multiplier, enhanced_heavy_energy, enhanced_heavy_concerto, enhanced_heavy_foreclaiming, enhanced_heavy_cost_dedication, enhanced_heavy_glacio_chafe_stacks, enhanced_heavy_offtune, enhanced_heavy_persistence_time,
   
   // Liberation
-  liberation_multiplier, liberation_cooldown, liberation_concerto, liberation_frostharden_iai, liberation_cost_foreclaiming, liberation_glacio_chafe_stacks, liberation_offtune,
+  liberation_multiplier, liberation_cooldown, liberation_concerto, liberation_frostharden_iai, liberation_frostheart,liberation_cost_foreclaiming, liberation_glacio_chafe_stacks, liberation_offtune,
 
   // Foreclaimed Self: Basic Attacks
   foreclaimed_BA1_multiplier, foreclaimed_BA1_energy, foreclaimed_BA1_concerto, foreclaimed_BA1_stack, foreclaimed_BA1_offtune, foreclaimed_BA1_frostheart,

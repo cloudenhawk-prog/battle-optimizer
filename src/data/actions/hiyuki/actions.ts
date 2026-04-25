@@ -10,10 +10,11 @@
 // TODO Try dash cancel versions of different actions
 // TODO Try skill cancel versions of different actions
 
+import type { Action } from '../../../types/action'
+
 import * as BA1 from './form-present-self/basics/BA1'
 import * as BA2 from './form-present-self/basics/BA2'
 import * as BA3 from './form-present-self/basics/BA3'
-import type { Action } from '../../../types/action'
 import * as resonance from './form-present-self/skills/resonance'
 import * as liberation from './form-present-self/skills/liberation'
 import * as heavy from './form-present-self/specials/heavy'

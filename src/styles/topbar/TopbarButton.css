@@ -1,0 +1,90 @@
+/* -------------- Topbar Ghost Button ----------------------- */
+/* Mirrors SidebarButton.css — floats outside the layout flow */
+
+:root {
+  --topbar-button-size: 55px;
+}
+
+.topbar-ghost {
+  position: fixed;
+  z-index: 9999;
+  background: none;
+  border: none;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition:
+    transform var(--animation-duration) cubic-bezier(0.2, 0.9, 0.2, 1),
+    top var(--animation-duration) cubic-bezier(0.2, 0.9, 0.2, 1),
+    right var(--animation-duration) cubic-bezier(0.2, 0.9, 0.2, 1),
+    filter var(--animation-duration) ease;
+  filter: drop-shadow(0 0 12px rgba(100, 150, 255, 0.3));
+}
+
+.topbar-ghost::before {
+  content: '';
+  position: absolute;
+  inset: -8px;
+  border-radius: 50%;
+  border: 2px solid transparent;
+  opacity: 0;
+  transition: all var(--animation-duration) ease;
+  pointer-events: none;
+}
+
+.topbar-ghost:hover::before {
+  border-color: rgba(100, 150, 255, 0.5);
+  opacity: 1;
+  animation: topbarRingPulse 2s ease-in-out infinite;
+}
+
+@keyframes topbarRingPulse {
+  0%,
+  100% {
+    transform: scale(1);
+    opacity: 0.5;
+  }
+  50% {
+    transform: scale(1.1);
+    opacity: 0.8;
+  }
+}
+
+.topbar-ghost img {
+  width: var(--topbar-button-size);
+  height: var(--topbar-button-size);
+  pointer-events: none;
+  image-rendering: -webkit-optimize-contrast;
+  image-rendering: crisp-edges;
+  backface-visibility: hidden;
+  transform: translateZ(0);
+  will-change: transform;
+  transition:
+    transform var(--animation-duration) cubic-bezier(0.2, 0.9, 0.2, 1),
+    filter var(--animation-duration) ease;
+}
+
+/* Topbar visible: sits centered on the bottom edge of the topbar */
+.topbar-ghost.visible {
+  top: calc(var(--topbar-height) - var(--topbar-button-size) / 2);
+  right: 30px;
+  transform: scale(1);
+  filter: drop-shadow(0 0 10px rgba(100, 150, 255, 0.25));
+}
+
+.topbar-ghost.visible:hover {
+  transform: scale(0.88);
+}
+
+/* Topbar hidden: peeks from the top-right corner */
+.topbar-ghost.hidden {
+  top: calc(-1 * var(--topbar-button-size) / 2 + 1px);
+  right: calc(-1 * var(--topbar-button-size) / 2 - 3px);
+  transform: scale(1.2);
+  filter: drop-shadow(0 0 16px rgba(100, 150, 255, 0.4));
+}
+
+.topbar-ghost.hidden:hover {
+  transform: scale(1.085);
+}

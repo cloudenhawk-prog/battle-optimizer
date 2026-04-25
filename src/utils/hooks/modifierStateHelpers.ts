@@ -53,8 +53,19 @@ export function updateModifierStacks(snapshot: Snapshot, modifiersInAction: Modi
       buffsTimeLeft[key] = timeLeft
       buffsSwapsLeft[key] = swapsLeft
       buffsMaxStacks[key] = maxStacks
-      if (mia.activationStats) buffsActivationStats[key] = mia.activationStats
-      else if (mia.modifier.characterStats) buffsActivationStats[key] = mia.modifier.characterStats
+      const rawStats = mia.activationStats ?? mia.modifier.characterStats
+      if (rawStats) {
+        const conditionValue = mia.modifier.condition(ctx)
+        if (conditionValue === 1) {
+          buffsActivationStats[key] = rawStats
+        } else {
+          const scaled: Partial<CharacterStats> = {}
+          for (const [stat, val] of Object.entries(rawStats) as [keyof CharacterStats, number][]) {
+            scaled[stat] = (val as number) * conditionValue
+          }
+          buffsActivationStats[key] = scaled
+        }
+      }
       if (mia.modifier.targetStrategy === 'nextSwap') buffsTargetCharacter[key] = mia.targetCharacter
     } else if (type === 'debuff') {
       debuffs[key] = stacks

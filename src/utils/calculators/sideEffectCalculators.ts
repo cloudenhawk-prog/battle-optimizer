@@ -1,6 +1,7 @@
 import type { StepContext } from '../../types/stepContext'
 import type { DamageEvent } from '../../types/events'
-import { calculateDamageNegativeStatus, evaluateNegativeStatusWithGroups } from './damageCalculator'
+import type { Action } from '../../types/action'
+import { calculateDamage, calculateDamageNegativeStatus, evaluateDamageWithGroups, evaluateNegativeStatusWithGroups } from './damageCalculator'
 import { negativeStatuses } from '../../data/negativeStatuses'
 
 
@@ -78,6 +79,63 @@ export function calculateGlacioChafeProcDamage(context: StepContext, sideEffectN
     ),
   }
   return event
+}
+
+/**
+ * Hiyuki Fine Snow (2 stacks) — Glacio Bite proc (action pipeline variant).
+ *
+ * Fires through the normal action damage pipeline (crit, bonusDMG, RES, defIgnore, etc.)
+ * with a 102% ATK multiplier (590% at S3+, where S3 adds +488% to the DMG Multiplier).
+ *
+ * elements: ['GLACIO'] + dmgTypes: ['NEGATIVE_STATUS'] so the calculator applies
+ * Glacio Chafe-specific stat bonuses (glacioChafeBonusDMG, glacioChafeAmplifyDMG,
+ * glacioChafeTotalMultiplierDMG) as well as standard Glacio resistance and RES PEN.
+ */
+export function calculateGlacioChafeProcActionDamage(context: StepContext, sideEffectName: string, timeStamp: number): DamageEvent {
+  const multiplier = context.character.sequence >= 3 ? 1.02 + 4.88 : 1.02
+  const syntheticAction = {
+    name: sideEffectName,
+    displayName: sideEffectName,
+    category: 'Other',
+    castTime: 0,
+    multiplier,
+
+    scaling: 'ATK',
+    elements: ['GLACIO'],
+    dmgTypes: ['NEGATIVE_STATUS'],
+    cooldown: 0,
+    energyGenerated: [],
+    energyCost: [],
+    statusModifications: [],
+    damageModifiers: [],
+    sideEffects: [],
+    castConditions: { startState: 'GROUND', endState: 'GROUND' },
+    offtune: 0,
+  } as unknown as Action
+
+  const { damageEvent } = calculateDamage({
+    action: syntheticAction,
+    name: `${context.character.name}: ${sideEffectName}`,
+    stats: context.character.stats,
+    damageModifiers: context.damageModifiers,
+    modifierCharacterStats: context.aggregatedCharacterModifiers,
+    modifierEnemyStats: context.aggregatedEnemyModifiers,
+    enemy: context.enemy,
+    snapshotId: context.snapshotId,
+    timeStamp,
+    ctx: context,
+  })
+
+  damageEvent.calcParams = {
+    reEvaluate: (activeGroupKeys) => evaluateDamageWithGroups(
+      { action: syntheticAction, characterName: context.character.name, baseStats: context.character.stats, damageModifiers: context.damageModifiers, enemy: context.enemy, ctx: context },
+      context.snapshotId,
+      timeStamp,
+      activeGroupKeys,
+    ),
+  }
+
+  return damageEvent
 }
 
 // ========== Hiyuki: Everfrost Dominion — Glacio Bite at Max Stacks ==========================================================

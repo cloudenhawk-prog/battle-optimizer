@@ -9,6 +9,7 @@ import type { ResolvedCharacter } from '../types/character'
 import type { Gear } from '../types/gear'
 import { resolveCharacter } from '../utils/gear/resolveCharacter'
 import { useSettings } from '../hooks/useSettings'
+import { useRotationPageContext } from '../contexts/RotationPageContext'
 
 // ========== Main Rotation Editor Page ========================================================================================
 
@@ -20,7 +21,9 @@ export default function RotationEditorPage() {
   const [columnVisibility, setColumnVisibility] = useState(() => Object.fromEntries(allColumns.map(col => [col.key, true])))
   const [resolvedCharacters, setResolvedCharacters] = useState<ResolvedCharacter[]>(characters)
   const [gearResetKey, setGearResetKey] = useState(0)
-  const [topbarVisible, setTopbarVisible] = useState(true)
+
+  const rotationCtx = useRotationPageContext()!
+  const { topbarVisible, rotationsOpen, setRotationsOpen, summaryOpen, setSummaryOpen, onHasDataChange } = rotationCtx
 
   /**
    * Called when the player swaps weapon or echoes on a character.
@@ -52,16 +55,9 @@ export default function RotationEditorPage() {
 
   return (
     <div style={{ display: 'flex', flexDirection: 'column', flex: 1, minHeight: 0 }}>
-      <button
-        type="button"
-        className="topbarToggleButton"
-        onClick={() => setTopbarVisible(v => !v)}
-      >
-        {topbarVisible ? '▲ Hide Bar' : '▼ Show Bar'}
-      </button>
       {topbarVisible && <Topbar tableConfig={tableConfig} allColumns={allColumns} columnVisibility={columnVisibility} setColumnVisibility={setColumnVisibility} />}
 
-      <RotationEditor gearResetKey={gearResetKey} charactersInBattle={resolvedCharacters} enemy={enemies[0]} tableConfig={tableConfig} columnVisibility={columnVisibility} setColumnVisibility={setColumnVisibility} onGearChange={handleGearChange} onSequenceChange={handleSequenceChange} settings={settings} />
+      <RotationEditor gearResetKey={gearResetKey} charactersInBattle={resolvedCharacters} enemy={enemies[0]} tableConfig={tableConfig} columnVisibility={columnVisibility} setColumnVisibility={setColumnVisibility} onGearChange={handleGearChange} onSequenceChange={handleSequenceChange} settings={settings} rotationsOpen={rotationsOpen} setRotationsOpen={setRotationsOpen} summaryOpen={summaryOpen} setSummaryOpen={setSummaryOpen} onHasDataChange={onHasDataChange} />
     </div>
   )
 }

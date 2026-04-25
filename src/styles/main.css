@@ -1,3 +1,14 @@
+/* -------------- Shared Panel Theme ----------- */
+
+:root {
+  --panel-bg: rgba(25, 30, 40, 0.55);
+  --panel-blur: blur(12px);
+  --panel-accent-cyan: rgba(100, 150, 255, 0.6);
+  --panel-accent-purple: rgba(150, 100, 255, 0.5);
+  --panel-glow: rgba(100, 200, 255, 0.4);
+  --panel-border-base: rgba(255, 255, 255, 0.15);
+}
+
 /* -------------- Main Wrapper -------------- */
 
 html,
@@ -29,6 +40,12 @@ body,
   inset: 0;
   overflow: hidden;
   z-index: 0;
+}
+
+.image-background {
+  position: fixed;
+  inset: 0;
+  background: url('/assets/backgrounds/background.png') center center / cover no-repeat;
 }
 
 .gradient-background {

@@ -74,6 +74,16 @@ export type DamageModifier = {
    *  is reported as a single contribution. */
   contributionGroup?: string
   /**
+   * When true, this modifier carries no stat contribution and exists only to track
+   * state (e.g. a cooldown sentinel or an activation flag used by other modifiers
+   * via `activationCondition` / `removesModifierSourceOnActivation`).
+   *
+   * Tracker-only modifiers are excluded from:
+   *  - `event.contributions` (never appear in the damage breakdown)
+   *  - DataOverlay Modifier Contributions and Shapley calculations
+   */
+  trackerOnly?: true
+  /**
    * When present, this modifier emits periodic heal procs and accepts gear injection
    * targeting `{ tag: 'HEAL_PROC' }`. The procs fire on cast and then every `frequency` seconds.
    * See HealProc type for details.

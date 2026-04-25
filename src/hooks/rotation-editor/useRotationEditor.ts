@@ -20,7 +20,7 @@ type UseRotationEditorProps = {
 
 export function useRotationEditor({ charactersInBattle, tableConfig, enemy, gearResetKey = 0, settings }: UseRotationEditorProps) {
   const [damageEvents, setDamageEvents] = useState<DamageEvent[]>([])
-  const { snapshots, setSnapshots, resetTimeline } = useSnapshots({ charactersInBattle, tableConfig, settings })
+  const { snapshots, setSnapshots, resetTimeline, editModeEntries, addEditModeEntry, removeEditModeEntry, updateEditModeEntry, clearEditModeEntries } = useSnapshots({ charactersInBattle, tableConfig, settings })
 
   const [prevGearResetKey, setPrevGearResetKey] = useState(gearResetKey)
   if (prevGearResetKey !== gearResetKey) {
@@ -76,5 +76,10 @@ export function useRotationEditor({ charactersInBattle, tableConfig, enemy, gear
     handleActionSelect,
     tableConfig,
     importExport,
+    editModeEntries,
+    addEditModeEntry,
+    removeEditModeEntry,
+    updateEditModeEntry,
+    clearEditModeEntries,
   }
 }

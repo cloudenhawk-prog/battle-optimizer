@@ -16,11 +16,16 @@
   height: var(--topbar-height);
   padding-left: var(--topbar-left-margin);
   padding-right: var(--topbar-left-margin);
-  background: linear-gradient(to bottom, var(--table-border), transparent), var(--table-bg);
-  backdrop-filter: var(--table-blur);
-  border: 1px solid var(--table-border);
+  background: var(--panel-bg);
+  backdrop-filter: var(--panel-blur);
+  border: 1px solid var(--panel-accent-cyan);
   border-radius: 0 0 var(--table-corner-radius) var(--table-corner-radius);
-  box-shadow: var(--table-shadow-inner), var(--table-shadow-main), var(--table-shadow-glow);
+  box-shadow:
+    inset 1px 0 1px rgba(255, 255, 255, 0.1),
+    inset 0 0 60px rgba(100, 150, 255, 0.08),
+    0 8px 40px rgba(0, 0, 0, 0.6),
+    0 0 30px rgba(100, 150, 255, 0.15);
+  animation: topbarBorderGlow 6s ease-in-out infinite;
 }
 
 .topbarGroup {
@@ -140,6 +145,28 @@
   height: 70%;
   background: rgba(85, 85, 85, 0.85);
   flex-shrink: 0;
+}
+
+@keyframes topbarBorderGlow {
+  0%,
+  100% {
+    border-color: var(--panel-accent-cyan);
+    box-shadow:
+      inset 1px 0 1px rgba(255, 255, 255, 0.1),
+      inset 0 0 60px rgba(100, 150, 255, 0.08),
+      0 8px 40px rgba(0, 0, 0, 0.6),
+      0 0 30px rgba(100, 150, 255, 0.15),
+      0 0 20px rgba(100, 150, 255, 0.3);
+  }
+  50% {
+    border-color: var(--panel-accent-purple);
+    box-shadow:
+      inset 1px 0 1px rgba(255, 255, 255, 0.1),
+      inset 0 0 60px rgba(150, 100, 255, 0.08),
+      0 8px 40px rgba(0, 0, 0, 0.6),
+      0 0 30px rgba(150, 100, 255, 0.15),
+      0 0 25px rgba(150, 100, 255, 0.4);
+  }
 }
 
 

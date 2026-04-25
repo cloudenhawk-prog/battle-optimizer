@@ -4,16 +4,14 @@ import { form_present_self, form_foreclaimed_self } from '../forms/hiyuki'
 import { hiyuki_cost_1_echo_1, hiyuki_cost_1_echo_2, hiyuki_cost_3_echo_1, hiyuki_cost_3_echo_2, hiyuki_cost_4_echo_1, hiyuki_weapon } from '../gear/hiyuki'
 import { hiyuki_inherentStats, hiyuki_stats } from '../stats/hiyuki'
 import { hiyuki_glacio_chafe_proc, hiyuki_everfrost_dominion_glacio_bite } from '../sideEffects/sideEffects'
-import { snow_rust_1_3, snow_rust_1, snow_rust_2_s6_self, snow_rust_2_s6_team } from '../modifiers/hiyuki'
-
-export const hiyuki_sequence: Character['sequence'] = 6 // TODO add to team setup file
+import { snow_rust_1_3, snow_rust_1, snow_rust_2_s6_self } from '../modifiers/hiyuki'
 
 export const hiyuki: Character = {
   name: 'Hiyuki',
   element: 'GLACIO',
   weaponType: 'Sword',
-  maxEnergies: {energy: 125, concerto: 100, dedication: 300, foreclaiming: 1, frostharden_iai: 3, frostheart: 300, whiteout_bitterfrost: 3, snowforged_blade: 3, snow_rust: 3, s1_enhanced_ba1: 1, s1_enhanced_ba2: 1, s2_frostheart_token: 2 }, // TODO
-  hiddenEnergies: ['foreclaiming', 'snow_rust', 's1_enhanced_ba1', 's1_enhanced_ba2', 's2_frostheart_token'],
+  maxEnergies: {energy: 125, concerto: 100, dedication: 300, foreclaiming: 1, frostharden_iai: 3, frostheart: 300, whiteout_bitterfrost: 3, snowforged_blade: 3, snow_rust: 3, s1_enhanced_ba1: 1, s1_enhanced_ba2: 1, s2_frostheart_token: 2 },
+  hiddenEnergies: ['foreclaiming', 's1_enhanced_ba1', 's1_enhanced_ba2', 's2_frostheart_token'],
   energyDescriptions: {
     energy: 'Used to cast Foreclaimed: Liberation.',
     concerto: 'Used to cast Outro Skill and trigger Intro Skills',
@@ -32,8 +30,7 @@ export const hiyuki: Character = {
   damageModifiers: [
     snow_rust_1_3,
     snow_rust_1,
-    snow_rust_2_s6_self,
-    snow_rust_2_s6_team
+    snow_rust_2_s6_self
   ],
   stats: hiyuki_stats,
   inherentStats: hiyuki_inherentStats,
@@ -50,12 +47,13 @@ export const hiyuki: Character = {
   },
   defaultForm: 'Present Self',
   forms: [form_present_self, form_foreclaimed_self],
-  sequence: hiyuki_sequence,
+  sequence: 6, // TODO add to team setup file
   // Snowforged Blade: start with 1 point (S0-S5) or 3 points (S6) instead of using off-field triggers.
   // S2: start with 3 Frostharden Iai and 2 Frostheart tokens (one-time at battle start).
   startingEnergies: (seq) => ({
-    ...(seq >= 3 ? { snow_rust: 3 } : {}),
-    snowforged_blade: seq >= 6 ? 3 : 1,
+    // Ephemeral Realm
+    ...(seq >= 3 ? { snow_rust: 2 } : { snow_rust: 1 }),
+    snowforged_blade: seq >= 2 ? 3 : 1,
     ...(seq >= 2 ? { frostharden_iai: 3, s2_frostheart_token: 2 } : {}),
   }),
   actionTriggers: [
@@ -76,6 +74,8 @@ export const hiyuki: Character = {
           .reduce((sum, m) => sum + (m.applicationCount ?? 1), 0),
     },
     {
+      // TODO: Uncertain if this is the 102% Glacio hit or the everfrost dominion hit
+
       // Everfrost Dominion (S0–S5): while Hiyuki is on-field and below S6, every time Hiyuki
       // applies Glacio Chafe she deals a Glacio Chafe negative-status damage hit.
       // At S6 this is superseded by teamActionTriggers (Everfrost Dominion), which covers all team members.

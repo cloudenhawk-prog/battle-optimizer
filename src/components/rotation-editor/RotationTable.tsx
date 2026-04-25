@@ -4,16 +4,21 @@ import { HeaderRow } from './HeaderRow'
 import { BodyRow } from './BodyRows'
 import { CurrentStateRow } from './CurrentStateRow'
 import { CharacterStateTracker } from './CharacterStateTracker'
+import { EditModeRow } from './EditModeRow'
 import type { TableConfig, ColumnVisibility } from '../../types/tableDefinitions'
-import type { Character } from '../../types/character'
+import type { Character, ResolvedCharacter } from '../../types/character'
 import type { Snapshot } from '../../types/snapshot'
 import type { Gear } from '../../types/gear'
+import type { EditModeEntry } from '../../types/editMode'
+import { InsertRow } from './InsertRow'
+import { useRotationPageContext } from '../../contexts/RotationPageContext'
 
 // ========== Component: Rotation Table ========================================================================================
 
 type RotationTableProps = {
   snapshots: Array<Snapshot>
   charactersInBattle: Character[]
+  charactersMap?: Record<string, ResolvedCharacter>
   tableConfig: TableConfig
   onSelectCharacter: (snapshotId: number, characterName: string) => void
   onSelectAction: (snapshotId: number, actionName: string) => void
@@ -25,11 +30,17 @@ type RotationTableProps = {
   sandboxMode?: boolean
   rowDeletionMode?: boolean
   onDeleteRow?: (snapshotId: number) => void
+  editModeEntries?: EditModeEntry[]
+  onUpdateEditModeEntry?: (id: string, updates: Partial<{ character: string; action: string }>) => void
+  onRemoveEditModeEntry?: (id: string) => void
+  onInsertEditModeEntry?: (insertAfterStepCount: number) => void
+  optimizerEditMode?: boolean
 }
 
-export function RotationTable({ snapshots, charactersInBattle, tableConfig, onSelectCharacter, onSelectAction, columnVisibility, setColumnVisibility, onRowClick, onGearChange, onSequenceChange, sandboxMode = false, rowDeletionMode = false, onDeleteRow }: RotationTableProps) {
+export function RotationTable({ snapshots, charactersInBattle, charactersMap = {}, tableConfig, onSelectCharacter, onSelectAction, columnVisibility, setColumnVisibility, onRowClick, onGearChange, onSequenceChange, sandboxMode = false, rowDeletionMode = false, onDeleteRow, editModeEntries = [], onUpdateEditModeEntry, onRemoveEditModeEntry, onInsertEditModeEntry, optimizerEditMode = false }: RotationTableProps) {
   const [highlightIds, setHighlightIds] = useState<Set<number>>(new Set())
   const lastMaxId = useRef(0)
+  const rotationCtx = useRotationPageContext()
 
   useEffect(() => {
     const idsToHighlight = getHighlightIds(snapshots, lastMaxId)
@@ -57,6 +68,10 @@ export function RotationTable({ snapshots, charactersInBattle, tableConfig, onSe
   const lastSnapshot = snapshots.length > 0 ? snapshots[snapshots.length - 1] : null
   const activeCharacterName = lastSnapshot?.character || null
 
+  useEffect(() => {
+    rotationCtx?.setSelectedCharacterName(activeCharacterName)
+  }, [activeCharacterName])
+
   return (
     <>
       <CharacterStateTracker snapshot={currentSnapshot || null} charactersInBattle={charactersInBattle} tableConfig={tableConfig} columnVisibility={columnVisibility} setColumnVisibility={setColumnVisibility} activeCharacterName={activeCharacterName} onGearChange={onGearChange} onSequenceChange={onSequenceChange} />
@@ -67,12 +82,69 @@ export function RotationTable({ snapshots, charactersInBattle, tableConfig, onSe
             <CurrentStateRow snapshot={currentSnapshot || null} firstFromTime={firstFromTime} tableConfig={tableConfig} columnVisibility={columnVisibility} />
           </thead>
           <tbody>
-          {snapshots.map((snapshot, idx) => {
-            // For statuses, show the state from the PREVIOUS snapshot since statuses
-            // are applied AFTER the action completes (not during)
-            const previousSnapshot = idx > 0 ? snapshots[idx - 1] : null
-            return <BodyRow key={Number(snapshot.id)} snapshot={snapshot} previousSnapshot={previousSnapshot} charactersInBattle={charactersInBattle} tableConfig={tableConfig} onSelectCharacter={onSelectCharacter} onSelectAction={onSelectAction} onRowClick={onRowClick} isLastRow={idx === snapshots.length - 1} isNewRow={highlightIds.has(Number(snapshot.id))} columnVisibility={columnVisibility} sandboxMode={sandboxMode} rowDeletionMode={rowDeletionMode} onDeleteRow={onDeleteRow} />
-          })}
+          {(() => {
+            const rows: React.ReactNode[] = []
+            let stepCount = 0
+
+            // Insert slot at position 0 (before any user steps) - only in edit mode
+            if (optimizerEditMode && onInsertEditModeEntry) rows.push(<InsertRow key="insert-0" onInsert={() => onInsertEditModeEntry(0)} alwaysVisible />)
+
+            // Edit mode entries at step 0 (before any user steps)
+            editModeEntries
+              .filter(e => e.insertAfterStepCount === 0)
+              .forEach(e => {
+                rows.push(
+                  <EditModeRow key={`edit-${e.id}`} entry={e} charactersMap={charactersMap} onUpdate={onUpdateEditModeEntry ?? (() => {})} onRemove={onRemoveEditModeEntry ?? (() => {})} />
+                )
+                if (optimizerEditMode && onInsertEditModeEntry) rows.push(<InsertRow key={`insert-0-after-${e.id}`} onInsert={() => onInsertEditModeEntry(0)} alwaysVisible />)
+              })
+
+            for (let idx = 0; idx < snapshots.length; idx++) {
+              const snapshot = snapshots[idx]
+              const previousSnapshot = idx > 0 ? snapshots[idx - 1] : null
+              rows.push(
+                <BodyRow
+                  key={Number(snapshot.id)}
+                  snapshot={snapshot}
+                  previousSnapshot={previousSnapshot}
+                  charactersInBattle={charactersInBattle}
+                  tableConfig={tableConfig}
+                  onSelectCharacter={onSelectCharacter}
+                  onSelectAction={onSelectAction}
+                  onRowClick={onRowClick}
+                  isLastRow={idx === snapshots.length - 1}
+                  isNewRow={highlightIds.has(Number(snapshot.id))}
+                  columnVisibility={columnVisibility}
+                  sandboxMode={sandboxMode}
+                  rowDeletionMode={rowDeletionMode}
+                  onDeleteRow={onDeleteRow}
+                />
+              )
+
+              // Count user-visible steps (non-autocast rows with an action)
+              if (snapshot.action && snapshot.action !== '' && snapshot.character && !snapshot.isAutocast) {
+                stepCount++
+                const capturedStep = stepCount
+                // Insert slot before any entries at this step
+                if (optimizerEditMode && onInsertEditModeEntry) rows.push(<InsertRow key={`insert-${capturedStep}`} onInsert={() => onInsertEditModeEntry(capturedStep)} alwaysVisible />)
+                // Insert any edit mode entries that belong after this step
+                editModeEntries
+                  .filter(e => e.insertAfterStepCount === capturedStep)
+                  .forEach(e => {
+                    rows.push(
+                      <EditModeRow key={`edit-${e.id}`} entry={e} charactersMap={charactersMap} onUpdate={onUpdateEditModeEntry ?? (() => {})} onRemove={onRemoveEditModeEntry ?? (() => {})} />
+                    )
+                    if (optimizerEditMode && onInsertEditModeEntry) rows.push(<InsertRow key={`insert-${capturedStep}-after-${e.id}`} onInsert={() => onInsertEditModeEntry(capturedStep)} alwaysVisible />)
+                  })
+              } else if (optimizerEditMode && onInsertEditModeEntry && snapshot.action && snapshot.action !== '') {
+                // Autocast rows also get an insert slot in edit mode
+                const capturedStep = stepCount
+                rows.push(<InsertRow key={`insert-ac-${idx}`} onInsert={() => onInsertEditModeEntry(capturedStep)} alwaysVisible />)
+              }
+            }
+
+            return rows
+          })()}
           </tbody>
         </table>
       </div>

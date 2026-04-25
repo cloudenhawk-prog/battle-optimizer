@@ -1,0 +1,78 @@
+/* ─── Edit Mode Row ─────────────────────────────────────────────── */
+
+.editModeRow {
+  background: var(--tbl-edit-bg, hsla(210, 60%, 15%, 0.7));
+  border-top: 1px solid var(--tbl-edit-border, hsla(210, 70%, 45%, 0.3));
+  border-bottom: 1px solid var(--tbl-edit-border, hsla(210, 70%, 45%, 0.3));
+  box-shadow: 0 4px 0 0 var(--table-bg-solid), 0 -4px 0 0 var(--table-bg-solid);
+}
+
+.editModeRow td {
+  padding: 0;
+}
+
+.editModeRowContent {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 6px 14px;
+  min-height: 38px;
+}
+
+
+/* ─── Label ─────────────────────────────────────────────────────── */
+
+.editModeRowLabel {
+  font-size: 0.62rem;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  color: hsl(210, 80%, 70%);
+  text-transform: uppercase;
+  white-space: nowrap;
+  margin-right: 4px;
+}
+
+
+/* ─── Selects ───────────────────────────────────────────────────── */
+
+.editModeRowSelect {
+  height: 28px;
+  min-width: 110px;
+  max-width: 180px;
+  font-size: 0.78rem;
+  padding: 0 8px;
+  border-radius: 5px;
+  border: 1px solid hsla(210, 60%, 50%, 0.35);
+  background: hsla(210, 40%, 12%, 0.85);
+  color: var(--table-text);
+  cursor: pointer;
+  appearance: auto;
+}
+
+.editModeRowSelect:disabled {
+  opacity: 0.4;
+  cursor: default;
+}
+
+.editModeRowSelect:focus {
+  outline: 1px solid hsla(210, 70%, 55%, 0.6);
+}
+
+
+/* ─── Remove button ─────────────────────────────────────────────── */
+
+.editModeRowRemoveBtn {
+  margin-left: auto;
+  background: transparent;
+  border: none;
+  color: var(--table-text-subtle);
+  font-size: 0.85rem;
+  padding: 3px 7px;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: color 0.12s;
+}
+
+.editModeRowRemoveBtn:hover {
+  color: hsl(0, 70%, 65%);
+}

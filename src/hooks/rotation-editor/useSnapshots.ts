@@ -5,6 +5,7 @@ import type { TableConfig, GlobalColumns } from '../../types/tableDefinitions'
 import type { Snapshot } from '../../types/snapshot'
 import type { Settings } from '../useSettings'
 import type { CharacterStats } from '../../types/stats'
+import type { EditModeEntry } from '../../types/editMode'
 
 // ========== Hook: useSnapshots ===============================================================================================
 
@@ -32,12 +33,30 @@ export function useSnapshots({ charactersInBattle, tableConfig, settings }: UseS
   }
 
   const [snapshots, setSnapshots] = useState<Snapshot[]>([createEmptySnapshot(charactersMap, characterColumnsMap, globalColumns, tableConfig, settings.startWithFullEnergy)])
+  const [editModeEntries, setEditModeEntries] = useState<EditModeEntry[]>([])
 
   function resetTimeline() {
     setSnapshots([createEmptySnapshot(charactersMap, characterColumnsMap, globalColumns, tableConfig, settings.startWithFullEnergy)])
+    setEditModeEntries([])
   }
 
-  return { snapshots, setSnapshots, resetTimeline, createEmptySnapshot }
+  function addEditModeEntry(entry: EditModeEntry) {
+    setEditModeEntries(prev => [...prev, entry])
+  }
+
+  function removeEditModeEntry(id: string) {
+    setEditModeEntries(prev => prev.filter(e => e.id !== id))
+  }
+
+  function updateEditModeEntry(id: string, updates: Partial<Omit<EditModeEntry, 'id'>>) {
+    setEditModeEntries(prev => prev.map(e => e.id === id ? { ...e, ...updates } : e))
+  }
+
+  function clearEditModeEntries() {
+    setEditModeEntries([])
+  }
+
+  return { snapshots, setSnapshots, resetTimeline, createEmptySnapshot, editModeEntries, setEditModeEntries, addEditModeEntry, removeEditModeEntry, updateEditModeEntry, clearEditModeEntries }
 }
 
 // ========== Internal Helpers =================================================================================================

@@ -1,5 +1,6 @@
 ﻿import type { Action } from '../../../../../types/action'
 import * as values from '../../values'
+import { s1_foreclaimed_basic_multiplier } from '../../../../modifiers/hiyuki'
 
 // ========== BA2 ==============================================================================================================
 
@@ -23,6 +24,7 @@ const hiyuki_foreclaimed_BA_2: Action = {
   energyCost: [],
   statusModifications: [],
   damageModifiers: [],
+  inherentModifiers: [s1_foreclaimed_basic_multiplier],
   sideEffects: [],
   coordinatedAttacks: [],
   castConditions: {
@@ -55,7 +57,6 @@ const hiyuki_foreclaimed_BA_2: Action = {
 
     return {
       ...this,
-      multiplier: this.multiplier * 2.2,
       ...(tokenCount > 0 ? {
         tags: [...this.tags, 'GLACIO_CHAFE_APPLIER'],
         statusModifications: [{ type: 'negativeStatus' as const, targetName: 'Glacio Chafe', stackChange: values.foreclaimed_BA2_stack + tokenCount, applicationCount: tokenCount }],
@@ -86,6 +87,7 @@ const hiyuki_foreclaimed_BA_2_cancel_with_swap: Action = {
   energyCost: [],
   statusModifications: [],
   damageModifiers: [],
+  inherentModifiers: [s1_foreclaimed_basic_multiplier],
   sideEffects: [],
   coordinatedAttacks: [],
   castConditions: {
@@ -120,7 +122,6 @@ const hiyuki_foreclaimed_BA_2_cancel_with_swap: Action = {
 
     return {
       ...this,
-      multiplier: this.multiplier * 2.2,
       ...(tokenCount > 0 ? {
         tags: [...this.tags, 'GLACIO_CHAFE_APPLIER'],
         statusModifications: [{ type: 'negativeStatus' as const, targetName: 'Glacio Chafe', stackChange: values.foreclaimed_BA2_stack + tokenCount, applicationCount: tokenCount }],
@@ -161,6 +162,7 @@ const hiyuki_foreclaimed_BA_2_3: Action = {
     }
   ],
   damageModifiers: [],
+  inherentModifiers: [s1_foreclaimed_basic_multiplier],
   sideEffects: [],
   coordinatedAttacks: [],
   castConditions: {
@@ -193,7 +195,6 @@ const hiyuki_foreclaimed_BA_2_3: Action = {
 
     return {
       ...this,
-      multiplier: this.multiplier * 2.2,
       ...(tokenCount > 0 ? {
         statusModifications: [{ type: 'negativeStatus' as const, targetName: 'Glacio Chafe', stackChange: values.foreclaimed_BA2_stack + values.foreclaimed_BA3_stack + tokenCount, applicationCount: 1 + tokenCount }],
         energyCost: [...this.energyCost, ...additionalCosts],
@@ -230,6 +231,7 @@ const hiyuki_foreclaimed_BA_2_3_cancel_with_swap: Action = {
     }
   ],
   damageModifiers: [],
+  inherentModifiers: [s1_foreclaimed_basic_multiplier],
   sideEffects: [],
   coordinatedAttacks: [],
   castConditions: {
@@ -264,7 +266,6 @@ const hiyuki_foreclaimed_BA_2_3_cancel_with_swap: Action = {
 
     return {
       ...this,
-      multiplier: this.multiplier * 2.2,
       ...(tokenCount > 0 ? {
         statusModifications: [{ type: 'negativeStatus' as const, targetName: 'Glacio Chafe', stackChange: values.foreclaimed_BA2_stack + values.foreclaimed_BA3_stack + tokenCount, applicationCount: 1 + tokenCount }],
         energyCost: [...this.energyCost, ...additionalCosts],
@@ -304,6 +305,7 @@ const hiyuki_foreclaimed_BA_2_4: Action = {
     }
   ],
   damageModifiers: [],
+  inherentModifiers: [s1_foreclaimed_basic_multiplier],
   sideEffects: [],
   coordinatedAttacks: [],
   castConditions: {
@@ -336,7 +338,6 @@ const hiyuki_foreclaimed_BA_2_4: Action = {
 
     return {
       ...this,
-      multiplier: this.multiplier * 2.2,
       ...(tokenCount > 0 ? {
         statusModifications: [{ type: 'negativeStatus' as const, targetName: 'Glacio Chafe', stackChange: values.foreclaimed_BA2_stack + values.foreclaimed_BA3_stack + values.foreclaimed_BA4_stack + tokenCount, applicationCount: 2 + tokenCount }],
         energyCost: [...this.energyCost, ...additionalCosts],
@@ -373,6 +374,7 @@ const hiyuki_foreclaimed_BA_2_4_cancel_with_swap: Action = {
     }
   ],
   damageModifiers: [],
+  inherentModifiers: [s1_foreclaimed_basic_multiplier],
   sideEffects: [],
   coordinatedAttacks: [],
   castConditions: {
@@ -407,7 +409,6 @@ const hiyuki_foreclaimed_BA_2_4_cancel_with_swap: Action = {
 
     return {
       ...this,
-      multiplier: this.multiplier * 2.2,
       ...(tokenCount > 0 ? {
         statusModifications: [{ type: 'negativeStatus' as const, targetName: 'Glacio Chafe', stackChange: values.foreclaimed_BA2_stack + values.foreclaimed_BA3_stack + values.foreclaimed_BA4_stack + tokenCount, applicationCount: 2 + tokenCount }],
         energyCost: [...this.energyCost, ...additionalCosts],
@@ -447,6 +448,7 @@ const hiyuki_foreclaimed_BA_2_5: Action = {
     }
   ],
   damageModifiers: [],
+  inherentModifiers: [s1_foreclaimed_basic_multiplier],
   sideEffects: [],
   coordinatedAttacks: [],
   castConditions: {
@@ -479,7 +481,6 @@ const hiyuki_foreclaimed_BA_2_5: Action = {
 
     return {
       ...this,
-      multiplier: this.multiplier * 2.2,
       ...(tokenCount > 0 ? {
         statusModifications: [{ type: 'negativeStatus' as const, targetName: 'Glacio Chafe', stackChange: values.foreclaimed_BA2_stack + values.foreclaimed_BA3_stack + values.foreclaimed_BA4_stack + values.foreclaimed_BA5_stack + tokenCount, applicationCount: 3 + tokenCount }],
         energyCost: [...this.energyCost, ...additionalCosts],
@@ -509,6 +510,7 @@ const hiyuki_foreclaimed_BA_2_5_cancel_with_swap: Action = {
   energyCost: [],
   statusModifications: [{ type: 'negativeStatus', targetName: 'Glacio Chafe', stackChange: values.foreclaimed_BA2_stack + values.foreclaimed_BA3_stack + values.foreclaimed_BA4_stack + values.foreclaimed_BA5_stack, applicationCount: 3 }],
   damageModifiers: [],
+  inherentModifiers: [s1_foreclaimed_basic_multiplier],
   sideEffects: [],
   coordinatedAttacks: [],
   castConditions: {
@@ -543,7 +545,6 @@ const hiyuki_foreclaimed_BA_2_5_cancel_with_swap: Action = {
 
     return {
       ...this,
-      multiplier: this.multiplier * 2.2,
       ...(tokenCount > 0 ? {
         statusModifications: [{ type: 'negativeStatus' as const, targetName: 'Glacio Chafe', stackChange: values.foreclaimed_BA2_stack + values.foreclaimed_BA3_stack + values.foreclaimed_BA4_stack + values.foreclaimed_BA5_stack + tokenCount, applicationCount: 3 + tokenCount }],
         energyCost: [...this.energyCost, ...additionalCosts],

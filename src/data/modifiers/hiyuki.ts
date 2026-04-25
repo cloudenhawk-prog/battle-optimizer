@@ -1,5 +1,24 @@
-import type { DamageModifier } from '../../types/modifiers'
+import type { DamageModifier, InherentModifier } from '../../types/modifiers'
 import { always, atLeastOneStackOf, ownerAtLeast } from '../../utils/conditions/damageModifierConditions'
+
+// ========== S6 Liberation Inherent Modifier =================================================================================
+
+// S6: Both liberations (Foreclaiming: Inward Vision and Foreclaiming: Blade Liberation) gain +500% Crit. DMG.
+export const liberation_s6_crit_dmg: InherentModifier = {
+  displayName: 'Liberation: S6 Crit DMG',
+  characterStats: { critDamage: 5.00 },
+  condition: (ctx) => ctx.character.sequence >= 6 ? 1 : 0,
+}
+
+// ========== S1 Basic Attack Multiplier ======================================================================================
+
+// S1: DMG Multipliers of Basic Attack - Foreclaimed Self are increased by 120%.
+// Modelled as a ×1.2 total multiplier since all Foreclaimed Self basic attacks
+export const s1_foreclaimed_basic_multiplier: InherentModifier = {
+  displayName: 'Foreclaimed BA: S1 Multiplier',
+  characterStats: { totalMultiplierDMG: 2.2 },
+  condition: (ctx) => ctx.character.sequence >= 1 ? 1 : 0,
+}
 
 // ========== Snow Rust ========================================================================================================
 
@@ -27,7 +46,7 @@ export const snow_rust_1_3: DamageModifier = {
   showStats: true,
 }
 
-// At 2+ Snow Rust: Hiyuki gains +40% Crit DMG (all sequences).
+// At 1+ Snow Rust: Hiyuki gains +40% Crit DMG (all sequences).
 export const snow_rust_1: DamageModifier = {
   source: 'Hiyuki: Fine Snow',
   displayName: 'Fine Snow: Crit DMG (Self)',
@@ -55,7 +74,7 @@ export const snow_rust_2_s6_self: DamageModifier = {
   type: 'buff',
   ownerCharacter: 'Hiyuki',
   color: '#dbe9ff',
-  characterStats: { critDamage: 0.25 },
+  characterStats: { critDamage: 0.40 },
   condition: (ctx) => {
     if (!ownerAtLeast('Hiyuki', 6)(ctx)) return 0
     const snowRust = ctx.current.charactersEnergies['Hiyuki']?.snow_rust ?? 0
@@ -64,27 +83,7 @@ export const snow_rust_2_s6_self: DamageModifier = {
   targetStrategy: 'self',
   durationStrategy: { type: 'permanent' },
   stackingStrategy: { maxStacks: 1, resetTimerOnApplication: false, stacksRemovedEachTime: 1 },
-  description: "[S6] At 2+ Snow Rust: Hiyuki's Crit. DMG is additionally increased by 40% (80% total with base).",
-  showStats: true,
-}
-
-// S6: At 2+ Snow Rust: Glacio Bite DMG for all nearby Resonators is increased by 40%.
-export const snow_rust_2_s6_team: DamageModifier = {
-  source: 'Hiyuki: Fine Snow',
-  displayName: 'Fine Snow: Glacio Bite (Team)',
-  type: 'buff',
-  ownerCharacter: 'Hiyuki',
-  color: '#dbe9ff',
-  characterStats: { glacioChafeBonusDMG: 0.40 },
-  condition: (ctx) => {
-    if (!ownerAtLeast('Hiyuki', 6)(ctx)) return 0
-    const snowRust = ctx.current.charactersEnergies['Hiyuki']?.snow_rust ?? 0
-    return snowRust >= 2 ? 1 : 0
-  },
-  targetStrategy: 'all',
-  durationStrategy: { type: 'permanent' },
-  stackingStrategy: { maxStacks: 1, resetTimerOnApplication: false, stacksRemovedEachTime: 1 },
-  description: '[S6] At 2+ Snow Rust: Glacio Bite DMG for all nearby Resonators is increased by 40%.',
+  description: "[S6] At 2+ Snow Rust: Hiyuki's Crit. DMG is additionally increased by 40%.",
   showStats: true,
 }
 

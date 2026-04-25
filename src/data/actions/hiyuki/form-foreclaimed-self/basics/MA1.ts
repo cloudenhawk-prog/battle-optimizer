@@ -1,5 +1,6 @@
 ﻿import type { Action } from '../../../../../types/action'
 import * as values from '../../values'
+import { s1_foreclaimed_basic_multiplier } from '../../../../modifiers/hiyuki'
 
 // ========== MA1 ==============================================================================================================
 
@@ -23,6 +24,7 @@ const hiyuki_foreclaimed_midair_1: Action = {
   energyCost: [],
   statusModifications: [],
   damageModifiers: [],
+  inherentModifiers: [s1_foreclaimed_basic_multiplier],
   sideEffects: [],
   coordinatedAttacks: [],
   castConditions: {
@@ -37,12 +39,6 @@ const hiyuki_foreclaimed_midair_1: Action = {
   hideWhenNotCastable: true,
   groupName: 'Foreclaimed: Mid-air Attack 1',
   variantName: 'Default',
-  resolveVariant(_prevSnapshot, _characterName, owner) {
-    // S1: DMG Multipliers of Mid-air Attack - Foreclaimed Self are increased by 120%.
-    const s1Active = owner.sequence >= 1
-    if (!s1Active) return { ...this, resolveVariant: undefined }
-    return { ...this, multiplier: this.multiplier * 2.2, resolveVariant: undefined }
-  }
 }
 
 // Cancel With Swap
@@ -65,6 +61,7 @@ const hiyuki_foreclaimed_midair_1_cancel_with_swap: Action = {
   energyCost: [],
   statusModifications: [],
   damageModifiers: [],
+  inherentModifiers: [s1_foreclaimed_basic_multiplier],
   sideEffects: [],
   coordinatedAttacks: [],
   castConditions: {
@@ -81,12 +78,6 @@ const hiyuki_foreclaimed_midair_1_cancel_with_swap: Action = {
   hideWhenNotCastable: true,
   groupName: 'Foreclaimed: Mid-air Attack 1',
   variantName: 'Cancel With Swap',
-  resolveVariant(_prevSnapshot, _characterName, owner) {
-    // S1: DMG Multipliers of Mid-air Attack - Foreclaimed Self are increased by 120%.
-    const s1Active = owner.sequence >= 1
-    if (!s1Active) return { ...this, resolveVariant: undefined }
-    return { ...this, multiplier: this.multiplier * 2.2, resolveVariant: undefined }
-  }
 }
 
 // ========== MA1-2 ============================================================================================================
@@ -118,6 +109,7 @@ const hiyuki_foreclaimed_midair_1_2: Action = {
     }
   ],
   damageModifiers: [],
+  inherentModifiers: [s1_foreclaimed_basic_multiplier],
   sideEffects: [],
   coordinatedAttacks: [],
   castConditions: {
@@ -132,12 +124,6 @@ const hiyuki_foreclaimed_midair_1_2: Action = {
   hideWhenNotCastable: true,
   groupName: 'Foreclaimed: Mid-air Attack 1-2',
   variantName: 'Default',
-  resolveVariant(_prevSnapshot, _characterName, owner) {
-    // S1: DMG Multipliers of Mid-air Attack - Foreclaimed Self are increased by 120%.
-    const s1Active = owner.sequence >= 1
-    if (!s1Active) return { ...this, resolveVariant: undefined }
-    return { ...this, multiplier: this.multiplier * 2.2, resolveVariant: undefined }
-  }
 }
 
 // Cancel With Swap
@@ -167,6 +153,7 @@ const hiyuki_foreclaimed_midair_1_2_cancel_with_swap: Action = {
     }
   ],
   damageModifiers: [],
+  inherentModifiers: [s1_foreclaimed_basic_multiplier],
   sideEffects: [],
   coordinatedAttacks: [],
   castConditions: {
@@ -183,12 +170,6 @@ const hiyuki_foreclaimed_midair_1_2_cancel_with_swap: Action = {
   hideWhenNotCastable: true,
   groupName: 'Foreclaimed: Mid-air Attack 1-2',
   variantName: 'Cancel With Swap',
-  resolveVariant(_prevSnapshot, _characterName, owner) {
-    // S1: DMG Multipliers of Mid-air Attack - Foreclaimed Self are increased by 120%.
-    const s1Active = owner.sequence >= 1
-    if (!s1Active) return { ...this, resolveVariant: undefined }
-    return { ...this, multiplier: this.multiplier * 2.2, resolveVariant: undefined }
-  }
 }
 
 // ========== MA1-3 ============================================================================================================
@@ -220,6 +201,7 @@ const hiyuki_foreclaimed_midair_1_3: Action = {
     }
   ],
   damageModifiers: [],
+  inherentModifiers: [s1_foreclaimed_basic_multiplier],
   sideEffects: [],
   coordinatedAttacks: [],
   castConditions: {
@@ -234,12 +216,6 @@ const hiyuki_foreclaimed_midair_1_3: Action = {
   hideWhenNotCastable: true,
   groupName: 'Foreclaimed: Mid-air Attack 1-3',
   variantName: 'Default',
-  resolveVariant(_prevSnapshot, _characterName, owner) {
-    // S1: DMG Multipliers of Mid-air Attack - Foreclaimed Self are increased by 120%.
-    const s1Active = owner.sequence >= 1
-    if (!s1Active) return { ...this, resolveVariant: undefined }
-    return { ...this, multiplier: this.multiplier * 2.2, resolveVariant: undefined }
-  }
 }
 
 // Cancel With Swap
@@ -269,6 +245,7 @@ const hiyuki_foreclaimed_midair_1_3_cancel_with_swap: Action = {
     }
   ],
   damageModifiers: [],
+  inherentModifiers: [s1_foreclaimed_basic_multiplier],
   sideEffects: [],
   coordinatedAttacks: [],
   castConditions: {
@@ -285,12 +262,6 @@ const hiyuki_foreclaimed_midair_1_3_cancel_with_swap: Action = {
   hideWhenNotCastable: true,
   groupName: 'Foreclaimed: Mid-air Attack 1-3',
   variantName: 'Cancel With Swap',
-  resolveVariant(_prevSnapshot, _characterName, owner) {
-    // S1: DMG Multipliers of Mid-air Attack - Foreclaimed Self are increased by 120%.
-    const s1Active = owner.sequence >= 1
-    if (!s1Active) return { ...this, resolveVariant: undefined }
-    return { ...this, multiplier: this.multiplier * 2.2, resolveVariant: undefined }
-  }
 }
 
 export {
