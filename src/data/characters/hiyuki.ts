@@ -52,7 +52,7 @@ export const hiyuki: Character = {
   // S2: start with 3 Frostharden Iai and 2 Frostheart tokens (one-time at battle start).
   startingEnergies: (seq) => ({
     // Ephemeral Realm
-    ...(seq >= 3 ? { snow_rust: 1 } : { snow_rust: 0 }),
+    ...(seq >= 3 ? { snow_rust: 2 } : { snow_rust: 1 }),
     snowforged_blade: seq >= 2 ? 3 : 1,
     ...(seq >= 2 ? { frostharden_iai: 3, s2_frostheart_token: 2 } : {}),
   }),

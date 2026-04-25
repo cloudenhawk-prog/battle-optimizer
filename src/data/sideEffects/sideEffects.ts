@@ -22,11 +22,11 @@ export const nightmareKelpieOutroTrigger: SideEffect = {
 // Glacio Bite proc triggered by Hiyuki's Fine Snow passive at 2+ Snow Rust.
 // Fires via actionTriggers (see hiyuki.ts) on every GLACIO_CHAFE_APPLIER cast — no need to
 // attach it to individual actions. The trigger condition gates it on snow_rust >= 2.
-// Uses the normal action pipeline (crit, bonusDMG, RES, defIgnore, etc.); dmgTypes
+// Uses the negative status damage pipeline (not the action pipeline); dmgTypes
 // includes GLACIO_CHAFE so that Glacio Chafe-specific stat bonuses apply.
 export const hiyuki_glacio_chafe_proc: SideEffect = {
   name: 'Snow Rust 2: Glacio Bite',
-  damageDealt: calculateGlacioChafeProcActionDamage,
+  damageDealt: calculateGlacioChafeProcDamage,
   statusModifications: [],
 }
 
