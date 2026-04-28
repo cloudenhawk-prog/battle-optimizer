@@ -8,7 +8,7 @@ import type { ResolvedCharacter } from '../../types/character'
 import type { Enemy } from '../../types/enemy'
 import type { NegativeStatusInAction } from '../../types/negativeStatus'
 import type { CoordinatedAttackInAction } from '../../types/coordinatedAttack'
-import { calculateDamage, evaluateDamageWithGroups } from '../../utils/calculators/damageCalculator'
+import { calculateDamage, evaluateDamageWithGroups, mergeStats } from '../../utils/calculators/damageCalculator'
 import { activateCoordinatedAttacks, processCoordinatedAttacks, updateCoordinatedAttackSnapshot } from './coordinatedAttackHelpers'
 import { getNegativeStatusStacks, processNegativeStatusStacks, updateNegativeStatusStacks } from './negativeStatusHelpers'
 import { getCharacterEnergyState, updateEnergyValue } from './energyHelpers'
@@ -258,11 +258,14 @@ export function resolveDamage(ctx: StepContext): void {
   }
 
   // Attach a re-evaluation closure so DataOverlay can recompute damage with a subset of active buffs
+  const _calcFinalStats = mergeStats(baseStats, modifierCharacterStats)
+  _calcFinalStats.critRate = Math.min(_calcFinalStats.critRate, 1.0)
   damageEvent.calcParams = {
     reEvaluate: (activeGroupKeys) => evaluateDamageWithGroups(
       { action, characterName: name, baseStats, damageModifiers, enemy, ctx },
       snapshotId, ctx.fromTime, activeGroupKeys,
     ),
+    finalCharacterStats: _calcFinalStats,
   }
   ctx.damageEvents.push(damageEvent)
 

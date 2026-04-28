@@ -1,7 +1,7 @@
 import type { StepContext } from '../../types/stepContext'
 import type { DamageEvent } from '../../types/events'
 import type { Action } from '../../types/action'
-import { calculateDamage, calculateDamageNegativeStatus, evaluateDamageWithGroups, evaluateNegativeStatusWithGroups } from './damageCalculator'
+import { calculateDamage, calculateDamageNegativeStatus, evaluateDamageWithGroups, evaluateNegativeStatusWithGroups, mergeStats } from './damageCalculator'
 import { negativeStatuses } from '../../data/negativeStatuses'
 
 
@@ -32,11 +32,14 @@ export function calculateAeroErosionSideEffectDamage(context: StepContext, sideE
   }
 
   const event = calculateDamageNegativeStatus(aeroErosionStacks, 'AERO', context.enemy, 'Aero Erosion', context.character.stats, context.aggregatedCharacterModifiers, context.aggregatedEnemyModifiers, context.damageModifiers, `${context.character.name}: ${sideEffectName}`, context.snapshotId, timeStamp, sideEffectName, context)
+  const _aeroFinalStats = mergeStats(context.character.stats, context.aggregatedCharacterModifiers)
+  _aeroFinalStats.critRate = Math.min(_aeroFinalStats.critRate, 1.0)
   event.calcParams = {
     reEvaluate: (activeGroupKeys) => evaluateNegativeStatusWithGroups(
       { currStacks: aeroErosionStacks, element: 'AERO', enemy: context.enemy, negativeStatusName: 'Aero Erosion', baseStats: context.character.stats, damageModifiers: context.damageModifiers, ctx: context },
       activeGroupKeys,
     ),
+    finalCharacterStats: _aeroFinalStats,
   }
   return event
 }
@@ -72,11 +75,14 @@ export function calculateGlacioChafeProcDamage(context: StepContext, sideEffectN
     context,
     { scaling: 'ATK', multiplier },
   )
+  const _chafeProcFinalStats = mergeStats(context.character.stats, context.aggregatedCharacterModifiers)
+  _chafeProcFinalStats.critRate = Math.min(_chafeProcFinalStats.critRate, 1.0)
   event.calcParams = {
     reEvaluate: (activeGroupKeys) => evaluateNegativeStatusWithGroups(
       { currStacks: 0, element: 'GLACIO', enemy: context.enemy, negativeStatusName: 'Glacio Chafe', baseStats: context.character.stats, damageModifiers: context.damageModifiers, ctx: context, baseDMGScaling: { scaling: 'ATK', multiplier } },
       activeGroupKeys,
     ),
+    finalCharacterStats: _chafeProcFinalStats,
   }
   return event
 }
@@ -126,6 +132,8 @@ export function calculateGlacioChafeProcActionDamage(context: StepContext, sideE
     ctx: context,
   })
 
+  const _actionProcFinalStats = mergeStats(context.character.stats, context.aggregatedCharacterModifiers)
+  _actionProcFinalStats.critRate = Math.min(_actionProcFinalStats.critRate, 1.0)
   damageEvent.calcParams = {
     reEvaluate: (activeGroupKeys) => evaluateDamageWithGroups(
       { action: syntheticAction, characterName: context.character.name, baseStats: context.character.stats, damageModifiers: context.damageModifiers, enemy: context.enemy, ctx: context },
@@ -133,6 +141,7 @@ export function calculateGlacioChafeProcActionDamage(context: StepContext, sideE
       timeStamp,
       activeGroupKeys,
     ),
+    finalCharacterStats: _actionProcFinalStats,
   }
 
   return damageEvent
@@ -173,11 +182,14 @@ export function calculateGlacioChafeDominionDamage(context: StepContext, sideEff
     sideEffectName,
     context,
   )
+  const _dominionFinalStats = mergeStats(context.character.stats, context.aggregatedCharacterModifiers)
+  _dominionFinalStats.critRate = Math.min(_dominionFinalStats.critRate, 1.0)
   event.calcParams = {
     reEvaluate: (activeGroupKeys) => evaluateNegativeStatusWithGroups(
       { currStacks: defaultMaxStacks, element: 'GLACIO', enemy: context.enemy, negativeStatusName: 'Glacio Chafe', baseStats: context.character.stats, damageModifiers: context.damageModifiers, ctx: context },
       activeGroupKeys,
     ),
+    finalCharacterStats: _dominionFinalStats,
   }
   return event
 }

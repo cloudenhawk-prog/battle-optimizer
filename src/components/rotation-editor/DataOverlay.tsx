@@ -163,6 +163,43 @@ export default function DataOverlay({ snapshot, previousSnapshot = null, startWi
     })
   }, [damageEvents, activeContribs, contribGroupKeys])
 
+  // ── DEBUG: dump event diagnostics when overlay opens ─────────────────────────────────────────────
+  const _dbgPrevOpen = useRef(false)
+  if (open !== _dbgPrevOpen.current) {
+    _dbgPrevOpen.current = open
+    if (open && damageEvents.length > 0) {
+      console.group(`[DEBUG DataOverlay] opened — ${snapshot?.character ?? '?'} / ${snapshot?.action ?? '?'} (snap ${snapshot?.id})`)
+      const allContribKeys = new Set(contribGroupKeys)
+      const _dbgSeenActions = new Set<string>()
+      for (const event of damageEvents) {
+        if (_dbgSeenActions.has(event.actionName)) continue
+        _dbgSeenActions.add(event.actionName)
+        const storedOk = event.average <= event.criticalStrike + 0.01
+        const prefix = storedOk ? '  ' : '⚠️STORED avg>crit'
+        console.log(
+          prefix,
+          `[snap ${event.snapshotId}] ${event.actionName}`,
+          '| stored avg:', Math.round(event.average),
+          '| stored normal:', Math.round(event.normalStrike),
+          '| stored crit:', Math.round(event.criticalStrike),
+        )
+        if (event.calcParams) {
+          const reEval = event.calcParams.reEvaluate(allContribKeys)
+          const reEvalOk = reEval.avg <= reEval.crit + 0.01
+          const rePrefix = reEvalOk ? '  ' : '⚠️REEVAL avg>crit'
+          console.log(
+            rePrefix,
+            `  reEval(allContribs) avg:`, Math.round(reEval.avg),
+            '| normal:', Math.round(reEval.normal),
+            '| crit:', Math.round(reEval.crit),
+          )
+        }
+      }
+      console.groupEnd()
+    }
+  }
+  // ─────────────────────────────────────────────────────────────────────────────────────────────────
+
   if (!open || !snapshot) return null
 
   const totalDamage = calculateTotalDamage(adjustedDamageEvents, mode)
@@ -215,7 +252,7 @@ export default function DataOverlay({ snapshot, previousSnapshot = null, startWi
           {/* Left panel — energy delta + active buff stats */}
           <div className="dataLeftPanel">
             <EnergySection snapshot={snapshot} previousSnapshot={previousSnapshot} startWithFullEnergy={startWithFullEnergy} characters={characters} />
-            <ActiveStatsSection damageEvents={adjustedDamageEvents} activeContribs={activeContribs} characters={characters} snapshot={snapshot} />
+            <ActiveStatsSection damageEvents={adjustedDamageEvents} activeContribs={activeContribs} contribGroupKeys={contribGroupKeys} characters={characters} snapshot={snapshot} />
           </div>
 
           <div className="dataColDivider" />
@@ -1080,9 +1117,10 @@ function getFinalStatValue(key: string, finalStats: CharacterStats): number {
   return (finalStats[key as keyof CharacterStats] as number) ?? 0
 }
 
-function ActiveStatsSection({ damageEvents, activeContribs, characters, snapshot }: {
+function ActiveStatsSection({ damageEvents, activeContribs, contribGroupKeys, characters, snapshot }: {
   damageEvents: DamageEvent[]
   activeContribs: Set<string>
+  contribGroupKeys: Set<string>
   characters: ResolvedCharacter[]
   snapshot: Snapshot | null
 }) {
@@ -1140,9 +1178,36 @@ function ActiveStatsSection({ damageEvents, activeContribs, characters, snapshot
       }
     }
 
-    const finalStats = actingChar ? mergeStats(actingChar.stats, activeCharMods) : null
+    const allActive = activeContribs.size >= contribGroupKeys.size
+    const calcFinalStats = allActive
+      ? (damageEvents.find(e => e.calcParams?.finalCharacterStats)?.calcParams?.finalCharacterStats ?? null)
+      : null
+
+    const independentFinalStats = actingChar ? mergeStats(actingChar.stats, activeCharMods) : null
+
+    // When all contributions are active, use the stats captured at calculation time as the source
+    // of truth. These come directly from the damage pipeline, not reconstructed from snapshots.
+    const finalStats = calcFinalStats ?? independentFinalStats
+
+    // Sanity check: if both sources are available and they diverge significantly, something is wrong.
+    if (allActive && calcFinalStats && independentFinalStats) {
+      const EPSILON = 0.001
+      const statsToCheck: (keyof CharacterStats)[] = ['critRate', 'critDamage', 'ATK', 'HP', 'DEF']
+      for (const stat of statsToCheck) {
+        const calcVal = (calcFinalStats[stat] as number) ?? 0
+        const indepVal = (independentFinalStats[stat] as number) ?? 0
+        if (Math.abs(calcVal - indepVal) > EPSILON) {
+          console.error(
+            `[ActiveStatsSection] Stats display diverges from calculation for "${stat}":`,
+            `displayed=${indepVal.toFixed(4)}, actual=${calcVal.toFixed(4)}`,
+            '— buffsActivationStats may be incomplete or stale.',
+          )
+        }
+      }
+    }
+
     return { finalStats, enemyDebuffStats }
-  }, [activeContribs, metaMap, modifierMap, snapshot, actingChar])
+  }, [activeContribs, contribGroupKeys, metaMap, modifierMap, snapshot, actingChar, damageEvents])
 
   const visibleCharGroups = FINAL_STAT_GROUPS.map(group => ({
     ...group,

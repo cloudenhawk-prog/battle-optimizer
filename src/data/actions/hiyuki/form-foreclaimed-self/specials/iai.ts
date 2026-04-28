@@ -35,10 +35,7 @@ const hiyuki_foreclaimed_iai: Action = {
   coordinatedAttacks: [],
   castConditions: {
     startState: 'GROUND',
-    swapOutState: 'GROUND',
     endState: 'GROUND',
-    requiresSwapOut: true,
-    persistenceTime: 1000, // TODO
     requiredForms: ['Foreclaimed Self'],
     previousActions: [ // TODO Uncertain
       { name: 'Foreclaimed: Iai' } as Action,

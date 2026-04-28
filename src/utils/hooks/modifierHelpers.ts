@@ -70,7 +70,7 @@ export function activateModifiers(modifiers: DamageModifier[], existingModifiers
     }
 
     // Check if this modifier already exists
-    const existingIndex = result.findIndex(mia => mia.modifier.source === modifier.source && mia.modifier.displayName === modifier.displayName)
+    let existingIndex = result.findIndex(mia => mia.modifier.source === modifier.source && mia.modifier.displayName === modifier.displayName)
 
     if (existingIndex !== -1) {
       // Modifier exists - handle stacking
@@ -93,6 +93,8 @@ export function activateModifiers(modifiers: DamageModifier[], existingModifiers
         for (let i = result.length - 1; i >= 0; i--) {
           if (result[i].modifier.source === removeSource) {
             result.splice(i, 1)
+            // Adjust existingIndex if the splice shifted it.
+            if (i < existingIndex) existingIndex--
             break
           }
         }
