@@ -9,7 +9,7 @@ const hiyuki_BA_1: Action = {
   name: 'Basic Attack 1',
   displayName: 'Basic Attack 1',
   category: 'Basics',
-  castTime: 1.00, // TODO
+  castTime: values.cast_time_BA1,
   multiplier: values.BA1_multiplier,
   scaling: 'ATK',
   elements: ['GLACIO'],
@@ -45,7 +45,7 @@ const hiyuki_BA_1_cancel_with_swap: Action = {
   name: 'Basic Attack 1 (swap cancel)',
   displayName: 'Basic Attack 1 (swap cancel)',
   category: 'Basics',
-  castTime: 1.00, // TODO
+  castTime: values.SWAP_CANCEL_TIME,
   multiplier: values.BA1_multiplier,
   scaling: 'ATK',
   elements: ['GLACIO'],
@@ -85,7 +85,7 @@ const hiyuki_BA_1_2: Action = {
   name: 'Basic Attack 1-2',
   displayName: 'Basic Attack 1-2',
   category: 'Basics',
-  castTime: 1.00, // TODO
+  castTime: values.cast_time_BA1 + values.cast_time_BA2,
   multiplier: values.BA1_multiplier + values.BA2_multiplier,
   scaling: 'ATK',
   elements: ['GLACIO'],
@@ -121,7 +121,7 @@ const hiyuki_BA_1_2_cancel_with_swap: Action = {
   name: 'Basic Attack 1-2 (swap cancel)',
   displayName: 'Basic Attack 1-2 (swap cancel)',
   category: 'Basics',
-  castTime: 1.00, // TODO
+  castTime: values.cast_time_BA1 + values.SWAP_CANCEL_TIME,
   multiplier: values.BA1_multiplier + values.BA2_multiplier,
   scaling: 'ATK',
   elements: ['GLACIO'],
@@ -161,7 +161,7 @@ const hiyuki_BA_1_3: Action = {
   name: 'Basic Attack 1-3',
   displayName: 'Basic Attack 1-3',
   category: 'Basics',
-  castTime: 1.00, // TODO
+  castTime: values.cast_time_BA1 + values.cast_time_BA2 + values.cast_time_BA3,
   multiplier: values.BA1_multiplier + values.BA2_multiplier + values.BA3_multiplier,
   scaling: 'ATK',
   elements: ['GLACIO'],
@@ -197,7 +197,7 @@ const hiyuki_BA_1_3_cancel_with_swap: Action = {
   name: 'Basic Attack 1-3 (swap cancel)',
   displayName: 'Basic Attack 1-3 (swap cancel)',
   category: 'Basics',
-  castTime: 1.00, // TODO
+  castTime: values.cast_time_BA1 + values.cast_time_BA2 + values.SWAP_CANCEL_TIME,
   multiplier: values.BA1_multiplier + values.BA2_multiplier + values.BA3_multiplier,
   scaling: 'ATK',
   elements: ['GLACIO'],

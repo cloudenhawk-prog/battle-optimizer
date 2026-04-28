@@ -11,7 +11,7 @@ const hiyuki_foreclaimed_BA_5: Action = {
   name: 'Foreclaimed: Basic Attack 5',
   displayName: 'Foreclaimed: Basic Attack 5',
   category: 'Basics',
-  castTime: 1.00, // TODO
+  castTime: values.cast_time_UBA5,
   multiplier: values.foreclaimed_BA5_multiplier,
   scaling: 'ATK',
   elements: ['GLACIO'],
@@ -51,7 +51,7 @@ const hiyuki_foreclaimed_BA_5_cancel_with_swap: Action = {
   name: 'Foreclaimed: Basic Attack 5 (swap cancel)',
   displayName: 'Foreclaimed: Basic Attack 5 (swap cancel)',
   category: 'Basics',
-  castTime: 1.00, // TODO
+  castTime: values.SWAP_CANCEL_TIME,
   multiplier: values.foreclaimed_BA5_multiplier,
   scaling: 'ATK',
   elements: ['GLACIO'],

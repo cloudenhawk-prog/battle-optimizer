@@ -7,7 +7,7 @@ const hiyuki_heavy_attack_enhanced: Action = {
   name: 'Enhanced Heavy Attack',
   displayName: 'Frost Splinter: Present Self',
   category: 'Basics',
-  castTime: 1.00, // TODO
+  castTime: values.cast_time_FHA,
   multiplier: values.enhanced_heavy_multiplier,
   scaling: 'ATK',
   elements: ['GLACIO'],
@@ -47,7 +47,7 @@ const hiyuki_heavy_attack_enhanced_cancel_with_swap: Action = {
   name: 'Enhanced Heavy Attack (swap cancel)',
   displayName: 'Frost Splinter: Present Self (Swap Cancel)',
   category: 'Basics',
-  castTime: 1.00, // TODO
+  castTime: values.no_swap_time_FHA + values.SWAP_CANCEL_TIME,
   multiplier: values.enhanced_heavy_multiplier,
   scaling: 'ATK',
   elements: ['GLACIO'],

@@ -11,7 +11,7 @@ const hiyuki_BA_3: Action = {
   name: 'Basic Attack 3',
   displayName: 'Basic Attack 3',
   category: 'Basics',
-  castTime: 1.00, // TODO
+  castTime: values.cast_time_BA3,
   multiplier: values.BA3_multiplier,
   scaling: 'ATK',
   elements: ['GLACIO'],
@@ -48,7 +48,7 @@ const hiyuki_BA_3_cancel_with_swap: Action = {
   name: 'Basic Attack 3 (swap cancel)',
   displayName: 'Basic Attack 3 (swap cancel)',
   category: 'Basics',
-  castTime: 1.00, // TODO
+  castTime: values.SWAP_CANCEL_TIME,
   multiplier: values.BA3_multiplier,
   scaling: 'ATK',
   elements: ['GLACIO'],
@@ -91,7 +91,7 @@ const hiyuki_BA_3_enhanced: Action = {
   name: 'Enhanced Basic Attack 3',
   displayName: 'Enhanced Basic Attack 3',
   category: 'Basics',
-  castTime: 1.00, // TODO
+  castTime: values.cast_time_BA3,
   multiplier: values.BA3_multiplier,
   scaling: 'ATK',
   elements: ['GLACIO'],
@@ -128,7 +128,7 @@ const hiyuki_BA_3_enhanced_cancel_with_swap: Action = {
   name: 'Enhanced Basic Attack 3 (swap cancel)',
   displayName: 'Enhanced Basic Attack 3 (swap cancel)',
   category: 'Basics',
-  castTime: 1.00, // TODO
+  castTime: values.SWAP_CANCEL_TIME,
   multiplier: values.BA3_multiplier,
   scaling: 'ATK',
   elements: ['GLACIO'],

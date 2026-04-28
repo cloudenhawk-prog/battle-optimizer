@@ -11,7 +11,7 @@ const hiyuki_foreclaimed_BA_4: Action = {
   name: 'Foreclaimed: Basic Attack 4',
   displayName: 'Foreclaimed: Basic Attack 4',
   category: 'Basics',
-  castTime: 1.00, // TODO
+  castTime: values.cast_time_UBA4,
   multiplier: values.foreclaimed_BA4_multiplier,
   scaling: 'ATK',
   elements: ['GLACIO'],
@@ -51,7 +51,7 @@ const hiyuki_foreclaimed_BA_4_cancel_with_swap: Action = {
   name: 'Foreclaimed: Basic Attack 4 (swap cancel)',
   displayName: 'Foreclaimed: Basic Attack 4 (swap cancel)',
   category: 'Basics',
-  castTime: 1.00, // TODO
+  castTime: values.SWAP_CANCEL_TIME,
   multiplier: values.foreclaimed_BA4_multiplier,
   scaling: 'ATK',
   elements: ['GLACIO'],
@@ -96,7 +96,7 @@ const hiyuki_foreclaimed_BA_4_5: Action = {
   name: 'Foreclaimed: Basic Attack 4-5',
   displayName: 'Foreclaimed: Basic Attack 4-5',
   category: 'Basics',
-  castTime: 1.00, // TODO
+  castTime: values.cast_time_UBA4 + values.cast_time_UBA5,
   multiplier: values.foreclaimed_BA4_multiplier + values.foreclaimed_BA5_multiplier,
   scaling: 'ATK',
   elements: ['GLACIO'],
@@ -136,7 +136,7 @@ const hiyuki_foreclaimed_BA_4_5_cancel_with_swap: Action = {
   name: 'Foreclaimed: Basic Attack 4-5 (swap cancel)',
   displayName: 'Foreclaimed: Basic Attack 4-5 (swap cancel)',
   category: 'Basics',
-  castTime: 1.00, // TODO
+  castTime: values.cast_time_UBA4 + values.SWAP_CANCEL_TIME,
   multiplier: values.foreclaimed_BA4_multiplier + values.foreclaimed_BA5_multiplier,
   scaling: 'ATK',
   elements: ['GLACIO'],

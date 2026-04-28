@@ -1,5 +1,6 @@
 ﻿import type { Action } from '../../../../types/action'
 import { outro_buff } from '../../../modifiers/hiyuki'
+import * as values from '../values'
 
 // Intro
 const hiyuki_intro: Action = {
@@ -7,7 +8,7 @@ const hiyuki_intro: Action = {
   name: 'Hiyuki Intro',
   displayName: 'Frostedge',
   category: 'Other',
-  castTime: 1.0, // TODO
+  castTime: values.cast_time_Intro,
   multiplier: (156.15) / 100,
   scaling: 'ATK',
   elements: ['GLACIO'],

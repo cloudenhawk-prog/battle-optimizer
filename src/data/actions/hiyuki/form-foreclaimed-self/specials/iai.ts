@@ -16,7 +16,7 @@ const hiyuki_foreclaimed_iai: Action = {
   name: 'Foreclaimed: Iai',
   displayName: 'Iai',
   category: 'Skills',
-  castTime: 0.625,
+  castTime: values.cast_time_UHA,
   multiplier: values.foreclaimed_iai_multiplier,
   scaling: 'ATK',
   elements: ['GLACIO'],
@@ -35,8 +35,10 @@ const hiyuki_foreclaimed_iai: Action = {
   coordinatedAttacks: [],
   castConditions: {
     startState: 'GROUND',
+    swapOutState: 'GROUND',
     endState: 'GROUND',
-    preventsSwapOut: true,
+    requiresSwapOut: true,
+    persistenceTime: 1000, // TODO
     requiredForms: ['Foreclaimed Self'],
     previousActions: [ // TODO Uncertain
       { name: 'Foreclaimed: Iai' } as Action,
@@ -101,7 +103,7 @@ const hiyuki_foreclaimed_iai_cancel_with_swap: Action = {
   name: 'Foreclaimed: Iai (swap cancel)',
   displayName: 'Iai (swap cancel)',
   category: 'Skills',
-  castTime: 0.625,
+  castTime: values.SWAP_CANCEL_TIME,
   multiplier: values.foreclaimed_iai_multiplier,
   scaling: 'ATK',
   elements: ['GLACIO'],

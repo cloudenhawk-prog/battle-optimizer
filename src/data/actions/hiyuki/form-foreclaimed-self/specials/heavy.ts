@@ -7,7 +7,7 @@ const hiyuki_foreclaimed_enhanced_heavy_attack: Action = {
   name: 'Foreclaimed: Enhanced Heavy Attack',
   displayName: 'Bitterfrost: Foreclaimed Self',
   category: 'Basics',
-  castTime: 1.00, // TODO
+  castTime: values.cast_time_UFHA,
   multiplier: values.foreclaimed_enhanced_heavy_multiplier,
   scaling: 'ATK',
   elements: ['GLACIO'],
@@ -52,7 +52,7 @@ const hiyuki_foreclaimed_enhanced_heavy_attack_cancel_with_swap: Action = {
   name: 'Foreclaimed: Enhanced Heavy Attack (swap cancel)',
   displayName: 'Bitterfrost: Foreclaimed Self (swap cancel)',
   category: 'Basics',
-  castTime: 1.00, // TODO
+  castTime: values.SWAP_CANCEL_TIME,
   multiplier: values.foreclaimed_enhanced_heavy_multiplier,
   scaling: 'ATK',
   elements: ['GLACIO'],

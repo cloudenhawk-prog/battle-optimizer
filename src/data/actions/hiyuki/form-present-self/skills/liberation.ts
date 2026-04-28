@@ -8,7 +8,7 @@ const hiyuki_liberation: Action = {
   name: 'Liberation',
   displayName: 'Foreclaiming: Inward Vision',
   category: 'Skills',
-  castTime: 1.00, // TODO
+  castTime: values.cast_time_Ult1,
   multiplier: values.liberation_multiplier,
   scaling: 'ATK',
   elements: ['GLACIO'],

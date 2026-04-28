@@ -61,7 +61,7 @@ const foreclaimed_BA1_energy = (1.07)
 const foreclaimed_BA1_concerto = (1.6)
 const foreclaimed_BA1_stack = (0)
 const foreclaimed_BA1_offtune = (0.283)
-const foreclaimed_BA1_frostheart = 14
+const foreclaimed_BA1_frostheart = 10
 
 // Foreclaimed BA2
 const foreclaimed_BA2_multiplier = (40.02 + 40.02) / 100
@@ -69,7 +69,7 @@ const foreclaimed_BA2_energy = (0.87 + 0.87)
 const foreclaimed_BA2_concerto = (1.3 + 1.3)
 const foreclaimed_BA2_stack = (0)
 const foreclaimed_BA2_offtune = (0.23 + 0.23)
-const foreclaimed_BA2_frostheart = (2 * 12)
+const foreclaimed_BA2_frostheart = (8 + 7)
 
 // Foreclaimed BA3
 const foreclaimed_BA3_multiplier = (4 * 25.16 + 67.08) / 100
@@ -77,7 +77,7 @@ const foreclaimed_BA3_energy = (4 * 0.55 + 1.45)
 const foreclaimed_BA3_concerto = (4 * 0.82 + 2.17)
 const foreclaimed_BA3_stack = (1)
 const foreclaimed_BA3_offtune = (4 * 0.145 + 0.386)
-const foreclaimed_BA3_frostheart = (4 * 8 + 19)
+const foreclaimed_BA3_frostheart = (4 * 5 + 12)
 
 // Foreclaimed BA4
 const foreclaimed_BA4_multiplier = (5 * 29.93) / 100
@@ -85,7 +85,7 @@ const foreclaimed_BA4_energy = (5 * 0.65)
 const foreclaimed_BA4_concerto = (5 * 0.97)
 const foreclaimed_BA4_stack = (1)
 const foreclaimed_BA4_offtune = (5 * 0.172)
-const foreclaimed_BA4_frostheart = (5 * 9)
+const foreclaimed_BA4_frostheart = (5 * 6)
 
 // Foreclaimed BA5
 const foreclaimed_BA5_multiplier = (12.17 + 109.47) / 100
@@ -93,7 +93,7 @@ const foreclaimed_BA5_energy = (0.27 + 2.36)
 const foreclaimed_BA5_concerto = (0.4 + 3.54)
 const foreclaimed_BA5_stack = (1)
 const foreclaimed_BA5_offtune = (0.07 + 0.629)
-const foreclaimed_BA5_frostheart = (4 + 31)
+const foreclaimed_BA5_frostheart = (24 + 0)
 
 // Foreclaimed MA1
 const foreclaimed_MA1_multiplier = (2 * 28.83 + 38.43) / 100
@@ -101,7 +101,7 @@ const foreclaimed_MA1_energy = (2 * 0.49 + 0.65)
 const foreclaimed_MA1_concerto = (2 * 0.94 + 1.25)
 const foreclaimed_MA1_stack = (0)
 const foreclaimed_MA1_offtune = (2 * 0.184 + 0.246)
-const foreclaimed_MA1_frostheart = (2 * 10 + 13)
+const foreclaimed_MA1_frostheart = (2 * 6 + 7)
 
 // Foreclaimed MA2
 const foreclaimed_MA2_multiplier = (4 * 26.09) / 100
@@ -109,7 +109,7 @@ const foreclaimed_MA2_energy = (4 * 0.45)
 const foreclaimed_MA2_concerto = (4 * 0.85)
 const foreclaimed_MA2_stack = (1)
 const foreclaimed_MA2_offtune = (4 * 0.17)
-const foreclaimed_MA2_frostheart = (4 * 9)
+const foreclaimed_MA2_frostheart = (4 * 5)
 
 // Foreclaimed MA3
 const foreclaimed_MA3_multiplier = (111.60) / 100
@@ -117,7 +117,7 @@ const foreclaimed_MA3_energy = (1.89)
 const foreclaimed_MA3_concerto = (3.61)
 const foreclaimed_MA3_stack = (1)
 const foreclaimed_MA3_offtune = (0.713)
-const foreclaimed_MA3_frostheart = (35)
+const foreclaimed_MA3_frostheart = (22)
 
 // Foreclaimed Skill 1
 const foreclaimed_skill_1_multiplier = (4 * 66.01) / 100
@@ -145,6 +145,35 @@ const foreclaimed_iai_multiplier = (283.82 + 4 * 47.31) / 100
 const foreclaimed_iai_energy = 1.12 + 4 * 0.19
 const foreclaimed_iai_concerto = 2.15 + 4 * 0.36
 const foreclaimed_iai_offtune = 0.381 + 4 * 0.064
+// ========== Timing (60 FPS) ==================================================================================================
+// Cast times from own_intepretation.csv: max(FPB − Time Stop, 0) / 60, clamped to 0.01 s minimum.
+const FPS = 60
+const SWAP_CANCEL_TIME = 0.15
+
+// ── Present Self ──────────────────────────────────────────────────────────────────────────────────
+const cast_time_BA1 = 30 / FPS                // BA1: FPB 30, Time Stop 0
+const cast_time_BA2 = 36 / FPS                // BA2: FPB 36, Time Stop 0
+const cast_time_BA3 = 48 / FPS                // BA3: FPB 48, Time Stop 0
+const cast_time_Skill = 78 / FPS              // Skill: FPB 78, Time Stop 0
+const cast_time_FHA = 120 / FPS               // FHA (Enhanced Heavy): FPB 120, Time Stop 0
+const no_swap_time_FHA = 120 / FPS            // FHA: NoSwap 120 frames → cannot swap earlier
+const cast_time_Ult1 = 0.01                   // Ult1: FPB 240, Time Stop 240 → clamped to min 0.01 s
+const cast_time_Intro = 60 / FPS              // Intro/UIntro: FPB 60, Time Stop 0
+
+// ── Foreclaimed Self ──────────────────────────────────────────────────────────────────────────────
+const cast_time_UBA1 = 20 / FPS               // UBA1: FPB 20, Time Stop 0
+const cast_time_UBA2 = 32 / FPS               // UBA2: FPB 32, Time Stop 0
+const cast_time_UBA3 = 66 / FPS               // UBA3: FPB 66, Time Stop 0
+const cast_time_UBA4 = 58 / FPS               // UBA4: FPB 58, Time Stop 0
+const cast_time_UBA5 = 80 / FPS               // UBA5: FPB 80, Time Stop 0
+const cast_time_UMA1 = 46 / FPS               // UMA1: FPB 46, Time Stop 0
+const cast_time_UMA2 = 50 / FPS               // UMA2: FPB 50, Time Stop 0
+const cast_time_UMHA = 49 / FPS               // UMHA (Foreclaimed MA3): FPB 49, Time Stop 0
+const cast_time_USkill1 = 35 / FPS            // USkill1: FPB 35, Time Stop 0
+const cast_time_USkill2 = 36 / FPS            // USkill2: FPB 36, Time Stop 0
+const cast_time_UFHA = 0.01                   // UFHA (Foreclaimed Enhanced Heavy): FPB 150, Time Stop 150 → clamped to min 0.01 s
+const cast_time_UHA = 100 / FPS               // UHA: FPB 100, Time Stop 0
+const cast_time_Ult2 = 0.01                   // Ult2: FPB 360, Time Stop 360 → clamped to min 0.01 s
 
 export {
   // Basic Attacks
@@ -181,5 +210,12 @@ export {
   foreclaimed_enhanced_heavy_multiplier, foreclaimed_enhanced_heavy_energy, foreclaimed_enhanced_heavy_concerto, foreclaimed_enhanced_heavy_snowforged_blade, foreclaimed_enhanced_heavy_offtune,
 
   // Foreclaimed Self: Iai
-  foreclaimed_iai_multiplier, foreclaimed_iai_energy, foreclaimed_iai_concerto, foreclaimed_iai_offtune
+  foreclaimed_iai_multiplier, foreclaimed_iai_energy, foreclaimed_iai_concerto, foreclaimed_iai_offtune,
+
+  // Timing
+  FPS, SWAP_CANCEL_TIME,
+  cast_time_BA1, cast_time_BA2, cast_time_BA3, cast_time_Skill, cast_time_FHA, no_swap_time_FHA, cast_time_Ult1, cast_time_Intro,
+  cast_time_UBA1, cast_time_UBA2, cast_time_UBA3, cast_time_UBA4, cast_time_UBA5,
+  cast_time_UMA1, cast_time_UMA2, cast_time_UMHA,
+  cast_time_USkill1, cast_time_USkill2, cast_time_UFHA, cast_time_UHA, cast_time_Ult2,
 }

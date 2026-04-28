@@ -1,12 +1,13 @@
 import type { Action } from '../../../../../types/action'
 import { liberation_s6_crit_dmg } from '../../../../modifiers/hiyuki'
+import * as values from '../../values'
 
 const hiyuki_foreclaimed_liberation: Action = {
   tags: ['LIBERATION'],
   name: 'Foreclaimed: Liberation',
   displayName: 'Foreclaiming: Blade Liberation',
   category: 'Skills',
-  castTime: 1.00, // TODO
+  castTime: values.cast_time_Ult2,
   multiplier: (198.81 + 795.24) / 100,
   scaling: 'ATK',
   elements: ['GLACIO'],
