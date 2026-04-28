@@ -1,0 +1,19 @@
+Name,Explanation
+Total Frames,Total Frames of a skill/attack (counting for hitlag)
+Frame Perfect Buffer,The exact frame the game transitions into a new move (doesn't count for hitlag)
+Hit Instance/s,How many hits there are in a skill/attack
+HitLag,How many frames a hit slows down an animation
+Earliest Frame Until Cancel,The earliest frame until you can cancel a move with all hit instance/s hitting (not including Ult Cancel unless specified)
+Frames Until Last Hit Instance,The exact frame until the last hit instance collides with the enemy
+Endlag,Total Frames - Earliest Frame Until Cancel
+EndSkill,"The frame wherein the game considers this skill as ""over"""
+Invincible (f),How many frames a resonator is invincible (cannot be damaged)
+NoInterruption (f),How many frames a resonator is immune to interruption
+NoSwap (f),How many frames a resonator is not able to swap into another resonator
+QTE (f),How many frames a skill is considered an Intro Skill
+Dodge (f),How many frames a skill is considered a Dodge Skill
+Time Stop (f),How many frames time is stopped
+Enemy Stop (f),How many frames enemies are stopped
+,
+For Those Interested in Extra Hiyuki Stuff,
+For Those Interested in Extra Denia Stuff,

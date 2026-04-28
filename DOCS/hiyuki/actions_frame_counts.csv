@@ -1,0 +1,101 @@
+Resonator,Internal Name,SkillName (CN),Skill Shorthand,Total Frames ,Frame Perfect Buffer,Hit Instance/s,HitLag,Earliest Frame Until Cancel,Frames Until First Hit Instance,Frames Until Last Hit Instance,Endlag,EndSkill,Invincible (f),NoInterruption (f),NoSwap (f),QTE (f),Dodge (f),Time Stop (f),Enemy Stop (f)
+Denia,AM_AirAttackII_01,二形态空中普攻-A1,UMA1,22,18,1,4,13,13,13,9,77,0,0,0,0,0,0,0
+Denia,AM_AirAttackII_02,二形态空中普攻-A2,UMA2,53,47,5,6,14,14,44,39,111,0,0,0,0,0,0,0
+Denia,AM_AirAttackII_03,二形态空中普攻-A3,UMA3,36,31,1,5,23,23,23,13,106,0,0,0,0,0,0,0
+Denia,AM_AirAttackII_04,二形态空中普攻-A4,UMA4,58,54,2,4,40,14,40,18,59,0,0,0,0,0,0,0
+Denia,AM_AirAttack,白-下落攻击,MA,41,41,2,0,37,22,37,4,47,0,0,0,0,0,0,0
+Denia,AM_AirAttack02,黑-下落攻击,UMHA,48,48,2,0,34,22,34,14,51,0,0,0,0,0,0,0
+Denia,AM_AttackI-01,一形态普攻-A1,BA1,16,16,1,0,9,9,9,7,76,0,0,0,0,0,0,0
+Denia,AM_AttackI-02,一形态普攻-A2,BA2,36,30,2,6,24,16,24,12,91,0,0,0,0,0,0,0
+Denia,AM_AttackI-03,一形态普攻-A3,BA3,38,38,3,0,4,20,38,34,44,0,0,0,0,0,0,0
+Denia,AM_AttackI-04,一形态普攻-A4,BA4,59,54,1,5,"16 (After BA3), 18 (After Intro)","16 (After BA3), 18 (After Intro)","16 (After BA3), 18 (After Intro)","43 (After BA3), 41 (After Intro)",99,0,0,0,0,0,0,0
+Denia,AM_AttackII_01,二形态普攻-A1,UBA1,22,18,1,4,13,13,13,9,77,0,0,0,0,0,0,0
+Denia,AM_AttackII_02,二形态普攻-A2,UBA2,53,47,5,6,14,14,44,39,111,0,0,0,0,0,0,0
+Denia,AM_AttackII_03,二形态普攻-A3,UBA3,36,31,1,5,23,23,23,13,113,0,0,0,0,0,0,0
+Denia,AM_AttackII_04,二形态普攻-A4,UBA4,64,60,2,4,40,14,40,24,86,0,0,0,0,0,0,0
+Denia,AM_Burst01,一形态-大招,Ult1,275,259,1,16,259,257,257,16,260,0,0,0,0,0,251,251
+Denia,AM_Burst02,二形态-终结技大招,Ult2,171,171,4,0,171,104,126,0,187,0,0,0,0,0,131,131
+Denia,AM_Execute01,音感仪破弱-白形态,TB,90,90,1,0,90,56,56,0,90,90,0,90,0,0,90,54
+Denia,AM_Execute02,音感仪破弱-黑形态,UTB,90,90,1,0,90,56,56,0,90,90,0,90,0,0,90,54
+Denia,AM_Hold01,一形态-重击,HA,95,81,2,14,54,42,54,41,105,0,0,0,0,0,0,0
+Denia,AM_Hold02,二形态-重击,UHA,75,69,1,6,63,63,63,12,114,0,0,0,0,0,0,0
+Denia,AM_SkillQTE_01,一形态-QTE入场,Intro,53,53,1,0,53,28,28,0,105,74,0,47,6,0,0,48
+Denia,AM_SkillQTE_02,二形态-QTE入场,UIntro,92,78,3,14,81,73,87,11,189,81,0,75,6,0,0,44
+Denia,AM_Skill_01,白-E,Skill,68,53,4,15,5,5,43,63,114,0,0,0,0,0,0,0
+Denia,AM_Skill_02,黑-E,USkill,52,52,6,0,0,0,69,52,55,0,0,0,0,0,0,0
+Denia,AM_Skill_02_Ex1,黑-强化E1,UESkill1,57,52,3,5,10,28,42,47,86,0,0,0,0,0,0,0
+Denia,AM_Skill_02_Ex2,黑-强化E2,UESkill2,68,56,1,12,0,23,23,68,60,0,0,0,0,0,0,0
+,,,,,,,,,,,,,,,,,,,
+,,,,,,,,,,,,,,,,,,,
+,,,,,,,,,,,,,,,,,,,
+Hiyuki,AM_AirAttackSp01,绯雪神刀-空中居合预备,UMAFDash,30,30,0,0,30,0,0,0,100,26,0,0,0,0,0,0
+Hiyuki,AM_AirAttackSp02,绯雪神刀-空中居合攻击,UFMA1,41,39,5,2,15,2,33,26,60,0,0,0,0,0,0,0
+Hiyuki,AM_AirAttackSp03,绯雪神刀-空中居合攻击,UFMA2,41,39,5,2,15,2,33,26,60,0,0,0,0,0,0,0
+Hiyuki,AM_AirAttack_Burst01,绯雪神刀空中普攻1,UMA1,46,46,3,0,38,20,38,8,185,0,0,0,0,0,0,0
+Hiyuki,AM_AirAttack_Burst02,绯雪神刀空中普攻2,UMA2,50,50,4,0,42,4,42,8,211,0,0,0,0,0,0,0
+Hiyuki,AM_AirAttack,绯雪神刀下落攻击,UMHA,51,49,1,2,35,35,35,16,57,0,0,0,0,0,0,0
+Hiyuki,AM_AirAttack_Common,绯雪下落攻击,MA,53,51,1,2,37,37,37,16,59,0,0,0,0,0,0,0
+Hiyuki,AM_Attack01,绯雪普攻1,BA1,34,30,2,4,26,10,26,8,50,0,0,0,0,0,0,0
+Hiyuki,AM_Attack02,绯雪普攻2,BA2,39,36,1,3,20,20,20,19,50,0,0,0,0,0,0,0
+Hiyuki,AM_Attack03,绯雪普攻3-剑舞,BA3,55,48,6,7,41,9,41,14,80,0,0,0,0,0,0,0
+Hiyuki,AM_Attack04Pro,绯雪强化重击,FHA,135,120,3,15,107 (with Ult),28,107,28,140,0,0,120,0,0,0,0
+Hiyuki,AM_AttackBurst01,绯雪神刀普攻1,UBA1,22,20,1,2,10,10,10,12,40,0,0,0,0,0,0,0
+Hiyuki,AM_AttackBurst02,绯雪神刀普攻2,UBA2,36,32,2,4,30,14,30,6,50,0,0,0,0,0,0,0
+Hiyuki,AM_AttackBurst03,绯雪神刀普攻3,UBA3,76,66,5,10,10,10,65,66,90,0,0,0,0,0,0,0
+Hiyuki,AM_AttackBurst04,绯雪神刀普攻4,UBA4,68,58,5,10,52,8,52,16,80,0,0,0,0,0,0,0
+Hiyuki,AM_AttackBurst05,绯雪神刀普攻5,UBA5,82,80,2,2,23,17,70,59,90,0,0,0,0,0,0,0
+Hiyuki,AM_AttackBurst06Pro,绯雪神刀强化重击,UFHA,150,150,9,0,150,10,132,0,150,0,0,0,0,0,150,150
+Hiyuki,AM_AttackBurst06Pro_Air,绯雪神刀强化重击,UFHA,31,31,1,0,25,25,25,6,0,0,0,0,0,0,0,0
+Hiyuki,AM_AttackBurst06,绯雪神刀普通重击,UHA,104,100,1,4,90,90,90,14,120,0,0,0,0,0,0,0
+Hiyuki,AM_AttackSp01,绯雪神刀-地面居合预备,UFDash,30,30,0,0,30,0,0,0,100,26,0,0,0,0,0,0
+Hiyuki,AM_AttackSp02,绯雪神刀-地面居合攻击,UFBA1,41,39,5,2,15,2,33,26,60,0,0,0,0,0,0,0
+Hiyuki,AM_AttackSp03,绯雪神刀-地面居合攻击,UFBA2,41,39,5,2,15,2,33,26,60,0,0,0,0,0,0,0
+Hiyuki,AM_Burst01,绯雪大招-拔刀,Ult1,240,240,1,0,240,210,210,0,240,0,0,0,0,0,240,240
+Hiyuki,AM_Burst02,绯雪神刀大招-收刀,Ult2,360,360,1,0,360,270,270,0,360,0,0,0,0,0,360,360
+Hiyuki,AM_BurstSkillQte,绯雪神刀QTE,UIntro,65,60,1,5,65,44,44,0,94,60,0,60,8,0,0,46
+Hiyuki,AM_Execute01,迅刃破弱,TB,89,89,5,0,89,30,72,0,101,90,0,90,0,0,90,70
+Hiyuki,AM_Skill01,绯雪共鸣技能,Skill,88,78,5,10,63,12,63,25,100,0,0,0,0,0,0,0
+Hiyuki,AM_SkillBurst01,绯雪神刀-地面E,USkill1,42,35,4,7,34,18,34,24,120,0,0,0,0,0,0,0
+Hiyuki,AM_SkillBurst02,绯雪神刀-空中E,USkill2,45,36,5,9,39,16,39,24,90,0,0,0,0,0,0,0
+Hiyuki,AM_SkillQte,绯雪神刀QTE,Intro,65,60,1,5,65,38,38,0,94,60,0,60,8,0,0,48
+,,,,,,,,,,,,,,,,,,,
+--------WIP--------,,,,,,,,,,,,,,,,,,,
+,,,,,,,,,,,,,,,,,,,
+Chisa,AM_AirAttack_End,专武下落攻击,MA,14,14,,,,,,,60,0,0,0,0,0,0,0
+Chisa,AM_AirAttack_Loop,专武下落攻击,MA,0,0,,,,,,,0,0,0,0,0,0,0,0
+Chisa,AM_AirAttack_Start,专武下落攻击,MA,0,0,,,,,,,0,0,0,0,0,0,0,0
+Chisa,AM_Attack01,剪刀普攻1,BA1,26,17,2,9,,8,19,,28,0,0,0,0,0,0,0
+Chisa,AM_Attack02,剪刀普攻2,BA2,60,48,3,12,,11,41,,64,0,0,0,0,0,0,0
+Chisa,AM_Attack03_End,剪刀普攻3-特殊下落攻击,EMA,8,8,,,,,,,30,0,0,0,0,0,0,0
+Chisa,AM_Attack03_Loop,剪刀普攻3-特殊下落攻击,EMA,0,0,,,,,,,0,0,0,0,0,0,0,0
+Chisa,AM_Attack03_Start,剪刀普攻3-特殊下落攻击,EMA,0,0,,,,,,,0,0,0,0,0,0,0,0
+Chisa,AM_Attack_Ex2_Air,剪刀普攻4-空中重击,Severed Facet,56,45,2,11,,29,37,,90,0,0,0,0,0,0,0
+Chisa,AM_Attack_Ex2_Land,剪刀普攻4-空中重击,Severed Facet,10,10,0,0,10,0,0,,10,0,0,0,0,0,0,0
+Chisa,AM_Attack_Ex2_Dash,剪刀向后弹飞,Thread Withdrawn,54,54,3,0,,6,48,,86,50,0,0,0,0,0,0
+Chisa,AM_Attack_Ex2_Lv1,剪刀派生普攻2-大剪刀,Death Snip 1,73,61,3,12,,14,66,,124,0,0,0,0,0,0,0
+Chisa,AM_Attack_Ex2_Lv2,剪刀派生普攻2-大剪刀,Death Snip 2,60,48,3,12,,4,50,,102,0,0,0,0,0,0,0
+Chisa,AM_Attack_Ex2_Lv3,剪刀派生普攻2-大剪刀,Death Snip 3,32,24,2,8,,10,22,,72,0,0,0,0,0,0,0
+Chisa,AM_Attack_Ex3,剪刀派生普攻3-地面,Rending Lunge,76,76,,,,,,,108,0,0,0,0,0,0,0
+Chisa,AM_Attack_Ex3_Air,剪刀派生普攻3-空中,Rending Lunge Air,80,80,,,,,,,108,0,0,0,0,0,0,0
+Chisa,AM_Attack_Ex3_Air_N,剪刀派生普攻3-空中,Rending Lunge Air,80,80,,,,,,,108,0,0,0,0,0,0,0
+Chisa,AM_Burst01,大招,Ult,220,220,,,,,,,254,220,0,0,0,0,220,170
+Chisa,AM_Execute01,大剑破弱,TB,94,94,,,,,,,94,93,0,93,0,0,93,64
+Chisa,AM_H_Attack01,剪刀地面重击-升龙,HA,36,36,,,,,,,100,0,0,0,0,0,0,0
+Chisa,AM_Skill01,穿针E,Skill,18,18,,,,,,,42,0,0,0,0,0,0,0
+Chisa,AM_Skill01_Air,穿针E-空中,Skill Air,18,18,,,,,,,58,0,0,0,0,0,0,0
+Chisa,AM_Skill02,变形E,FSkill,56,56,,,,,,,129,0,0,0,0,0,0,0
+Chisa,AM_Skill02_Ex,变形E,FSkill,0,0,,,,,,,36,0,0,0,0,0,0,0
+Chisa,AM_SkillQte,出场技能,Intro,48,48,,,,,,,100,54,0,54,2,0,0,38
+Chisa,AM_Sp_Attack01,电锯第1段普攻,FBA1,23,23,,,,,,,40,0,0,0,0,0,0,0
+Chisa,AM_Sp_Attack01_E,电锯第1段普攻-接E用,FBA1 After FSkill,23,23,,,,,,,40,0,0,0,0,0,0,0
+Chisa,AM_Sp_Attack03,电锯第3段普攻-开车跳劈,FBA3,47,47,,,,,,,74,0,0,0,0,0,0,0
+Chisa,AM_Sp_Attack03_1,电锯第3段普攻-原地跳劈,FBA3,47,47,,,,,,,74,0,0,0,0,0,0,0
+Chisa,AM_Sp_Attack03_End,电锯第3段普攻-开车跳劈/电锯第3段普攻-原地跳劈,FBA3 Falltone,0,0,,,,,,,36,0,0,0,0,0,0,0
+Chisa,AM_Sp_Attack03_Ex,电锯终结劈,Eradication,144,144,,,,,,,176,0,0,0,0,0,0,0
+Chisa,AM_Sp_Attack05,电锯第2段-开车,FBA2,34,34,,,,,,,62,0,0,0,0,0,0,0
+Chisa,AM_Sp_Attack05_1,接下落攻击-电锯第2段-开车,FBA2 After Intro,26,26,,,,,,,55,0,0,0,0,0,0,0
+Chisa,AM_Sp_Attack05_Ex,电锯第2段-开车/接下落攻击-电锯第2段-开车,FBA2 Discordance,0,0,,,,,,,148,24,0,0,0,0,0,0
+,,,,,,,,,,,,,,,,,,,
+,,,,,,,,,,,,,,,,,,,
+Chisa Death Snip Breakdown,,,,,,,,,,,,,,,,,,,
+"Death Snip 1 to Death Snip 2 happens at F26 (no hitlag). Death Snip 2 to Death Snip 3 happens at F16, again no hitlag. Then Death Snip 3 Full Animation will play afterwards (accounting for hitlag). Overall Death Snip 123 would be 74 frames in total. In essence, 26 frames of Death Snip 1 + 16 frames of Death Snip 2 + 32 Total Frames of Death Snip 3.",,,"With this in mind, the Frames Until First Hit Instance would be 14, Frames Until Last HIt Instace would be 64. Earliest Frame Until Cancel would also be 64. There will be a 10f Endlag.",,,,,,,,,,,,,,,,
