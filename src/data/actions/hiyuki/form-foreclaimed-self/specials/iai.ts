@@ -85,7 +85,7 @@ const hiyuki_foreclaimed_iai: Action = {
         ],
         statusModifications: [
           ...this.statusModifications,
-          { type: 'negativeStatus' as const, targetName: 'Glacio Chafe', stackChange: 3 },
+          { type: 'negativeStatus' as const, targetName: 'Glacio Chafe', stackChange: 3, applicationCount: 3 },
         ],
         offtune: this.offtune * 2,
         resolveVariant: undefined,

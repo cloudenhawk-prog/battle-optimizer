@@ -22,7 +22,7 @@ const hiyuki_liberation: Action = {
   energyCost: [
     { energyType: 'foreclaiming', amount: values.liberation_cost_foreclaiming }
   ],
-  statusModifications: [{ type: 'negativeStatus', targetName: 'Glacio Chafe', stackChange: values.liberation_glacio_chafe_stacks }],
+  statusModifications: [{ type: 'negativeStatus', targetName: 'Glacio Chafe', stackChange: values.liberation_glacio_chafe_stacks, applicationCount: 4 }],
   damageModifiers: [],
   inherentModifiers: [liberation_s6_crit_dmg],
   sideEffects: [],
