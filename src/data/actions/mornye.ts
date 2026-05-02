@@ -741,7 +741,7 @@ const mode_mornye_heavy: Action = {
       },
       condition: ownerAtLeast('Mornye', 1),
       targetStrategy: 'all',
-      durationStrategy: { type: 'limited', timeDuration: 20 },
+      durationStrategy: { type: 'limited', timeDuration: 30 },
       stackingStrategy: { maxStacks: 1, resetTimerOnApplication: true, stacksRemovedEachTime: 1 },
       description: 'For 20 seconds: Every 1 % of Mornye\'s Energy Regen over 100 % grants 0.25% Damage Bonus to all Resonators, up to 40%.',
       showStats: true
@@ -760,7 +760,7 @@ const mode_mornye_heavy: Action = {
       },
       condition: ownerAtLeast('Mornye', 2),
       targetStrategy: 'all',
-      durationStrategy: { type: 'limited', timeDuration: 20 },
+      durationStrategy: { type: 'limited', timeDuration: 30 },
       stackingStrategy: { maxStacks: 1, resetTimerOnApplication: true, stacksRemovedEachTime: 1 },
       description: 'For 20 seconds: Every 1 % of Mornye\'s Energy Regen over 100 % grants 0.2% Crit DMG to all Resonators, up to 32%.',
       showStats: true

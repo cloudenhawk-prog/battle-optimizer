@@ -120,6 +120,16 @@ export type Action = {
     actionName: string // Name of the action to follow up with
     must?: boolean     // When true: MUST follow up or the chain is blocked; omitted/false: attempt only, no locking
   }
+
+  /** When set, the character's next action must be one of the listed action names
+   *  (matched by exact name OR groupName). All other actions for this character are
+   *  blocked until one of the allowed actions is cast. Other characters are also
+   *  locked out for the immediately following row (same semantics as attemptFollowUp
+   *  with must: true, but letting the user choose among multiple valid options).
+   *
+   *  Can also be a function returning the list (or undefined for no restriction),
+   *  evaluated at resolve time against the snapshot before this action was cast. */
+  restrictNextTo?: string[] | ((prevSnapshot: Snapshot | undefined, characterName: string) => string[] | undefined)
 }
 
 export type CastConditions = {

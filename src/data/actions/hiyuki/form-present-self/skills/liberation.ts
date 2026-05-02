@@ -35,14 +35,9 @@ const hiyuki_liberation: Action = {
   offtune: values.liberation_offtune,
   formChange: 'Foreclaimed Self',
   resolveVariant(_prevSnapshot, _characterName, owner) {
-    // S1: Casting this action enhances the next Basic Attack 1-5 so that BA1 & BA2 also apply
-    // Glacio Chafe. Grant one-shot s1_enhanced_ba1 and s1_enhanced_ba2 tokens consumed by hiyuki_foreclaimed_BA_1_5.
-    // S6: DMG Multiplier of Foreclaiming: Inward Vision is increased by 30%.
-    const s6Multiplier = owner.sequence >= 6 ? 1.3 : 1
     if (owner.sequence >= 1) {
       return {
         ...this,
-        multiplier: this.multiplier * s6Multiplier,
         energyGenerated: [
           ...this.energyGenerated,
           { energyType: 's1_enhanced_ba1' as const, amount: 1, share: 0 },
@@ -51,7 +46,7 @@ const hiyuki_liberation: Action = {
         resolveVariant: undefined,
       }
     }
-    return { ...this, multiplier: this.multiplier * s6Multiplier, resolveVariant: undefined }
+    return { ...this, resolveVariant: undefined }
   },
 }
 

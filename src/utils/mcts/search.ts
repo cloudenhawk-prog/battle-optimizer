@@ -99,6 +99,7 @@ function createMCTSInitialSnapshot(team: ResolvedCharacter[]): Snapshot {
     charactersForms: {},
     charactersSwapCooldownUntil: {},
     charactersAttemptFollowUp: {},
+    charactersRestrictNextTo: {},
     charactersComboWindows: {},
     charactersForteGrants: {},
     charactersComboChainTags: {},

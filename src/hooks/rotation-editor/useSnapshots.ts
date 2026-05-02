@@ -128,6 +128,7 @@ export function createEmptySnapshot(charactersMap: Record<string, Character>, ch
     charactersForms: {},
     charactersSwapCooldownUntil: {},
     charactersAttemptFollowUp: {},
+    charactersRestrictNextTo: {},
     charactersComboWindows: {},
     charactersForteGrants: {},
     charactersComboChainTags: {},

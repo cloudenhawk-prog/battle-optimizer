@@ -338,6 +338,14 @@ export function ActionSelect({ value, actions, character, currentEnergies, previ
           isNotRequiredFollowUp = true
         }
       }
+      // restrictNextTo: if a restriction is active, only allow actions in the list
+      if (!isNotRequiredFollowUp) {
+        const restrictNextTo = previousSnapshot.charactersRestrictNextTo?.[character.name]
+        if (restrictNextTo?.length) {
+          const isAllowed = restrictNextTo.includes(action.name) || (action.groupName !== undefined && restrictNextTo.includes(action.groupName))
+          if (!isAllowed) isNotRequiredFollowUp = true
+        }
+      }
     }
 
     // Goal 9: combo starter validation

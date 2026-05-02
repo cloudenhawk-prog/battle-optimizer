@@ -78,6 +78,17 @@ export function BodyRow({ snapshot, previousSnapshot, charactersInBattle, tableC
         }
       }
     }
+
+    // Lock all characters except the one with a restrictNextTo (same semantics as must:true follow-up)
+    const restrictNextToMap = previousSnapshot.charactersRestrictNextTo ?? {}
+    const charactersWithRestriction = Object.keys(restrictNextToMap).filter(char => (restrictNextToMap[char]?.length ?? 0) > 0)
+    if (charactersWithRestriction.length > 0) {
+      for (const char of charactersInBattle) {
+        if (!charactersWithRestriction.includes(char.name)) {
+          lockedCharacters.add(char.name)
+        }
+      }
+    }
   }
 
   return (

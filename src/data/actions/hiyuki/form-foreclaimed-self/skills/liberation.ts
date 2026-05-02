@@ -1,5 +1,6 @@
 import type { Action } from '../../../../../types/action'
 import { liberation_s6_crit_dmg } from '../../../../modifiers/hiyuki'
+import { loadSettings } from '../../../../../hooks/useSettings'
 import * as values from '../../values'
 
 const hiyuki_foreclaimed_liberation: Action = {
@@ -33,7 +34,8 @@ const hiyuki_foreclaimed_liberation: Action = {
   formChange: 'Present Self',
   resolveVariant(prevSnapshot, characterName) {
     const energies = prevSnapshot?.charactersEnergies[characterName]
-    const snowforged_blade = energies?.snowforged_blade ?? 0
+    const { useFixedStacks } = loadSettings()
+    const snowforged_blade = useFixedStacks ? 1.5 : (energies?.snowforged_blade ?? 0)
 
     return {
       ...this,

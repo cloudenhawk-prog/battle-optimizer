@@ -78,6 +78,7 @@ const foreclaimed_BA3_concerto = (4 * 0.82 + 2.17)
 const foreclaimed_BA3_stack = (1)
 const foreclaimed_BA3_offtune = (4 * 0.145 + 0.386)
 const foreclaimed_BA3_frostheart = (4 * 5 + 12)
+const foreclaimed_BA3_frostheart_immediate = (0) // full amount is delayed for now
 
 // Foreclaimed BA4
 const foreclaimed_BA4_multiplier = (5 * 29.93) / 100
@@ -93,7 +94,7 @@ const foreclaimed_BA5_energy = (0.27 + 2.36)
 const foreclaimed_BA5_concerto = (0.4 + 3.54)
 const foreclaimed_BA5_stack = (1)
 const foreclaimed_BA5_offtune = (0.07 + 0.629)
-const foreclaimed_BA5_frostheart = (24 + 0)
+const foreclaimed_BA5_frostheart = (0 + 24)
 
 // Foreclaimed MA1
 const foreclaimed_MA1_multiplier = (2 * 28.83 + 38.43) / 100
@@ -151,28 +152,31 @@ const FPS = 60
 const SWAP_CANCEL_TIME = 0.15
 
 // ── Present Self ──────────────────────────────────────────────────────────────────────────────────
-const cast_time_BA1 = 32 / FPS                // BA1: Total 32, Time Stop 0
+const cast_time_BA1 = 31 / FPS                // BA1: Total 32, Time Stop 0
 const cast_time_BA2 = 41 / FPS                // BA2: Total 41, Time Stop 0
-const cast_time_BA3 = 52 / FPS                // BA3: Total 52, Time Stop 0
-const cast_time_Skill = 89 / FPS              // Skill: Total 89, Time Stop 0
-const cast_time_FHA = 134 / FPS               // FHA (Enhanced Heavy): Total 134, Time Stop 0
-const no_swap_time_FHA = 120 / FPS            // FHA: NoSwap 120 frames → cannot swap earlier
+const cast_time_BA3 = 16 / FPS                // Custom Tested: when chained into skill
+const cast_time_Skill = 92 / FPS              // Custom Tested
+const cast_time_FHA = 101 / FPS               // FHA (Enhanced Heavy): Total 134, Time Stop 0
 const cast_time_Ult1 = 0.01                   // Ult1: FPB 240, Time Stop 240 → clamped to min 0.01 s
-const cast_time_Intro = 67 / FPS              // Intro/UIntro: Total 67, Time Stop 0
+const cast_time_Intro = 68 / FPS              // Intro/UIntro: Total 67, Time Stop 0
 
 // ── Foreclaimed Self ──────────────────────────────────────────────────────────────────────────────
 const cast_time_UBA1 = 19 / FPS               // UBA1: Total 19, Time Stop 0
 const cast_time_UBA2 = 37 / FPS               // UBA2: Total 37, Time Stop 0
 const cast_time_UBA3 = 70 / FPS               // UBA3: Total 70, Time Stop 0
+const cast_time_UBA3_skill_cancel = 6 / FPS   // Custom Tested
+const cast_time_UBA3_dash_cancel = 27 / FPS   // Custom Tested (Dash seems to take ~21 frames)
 const cast_time_UBA4 = 62 / FPS               // UBA4: Total 62, Time Stop 0
 const cast_time_UBA5 = 89 / FPS               // UBA5: Total 89, Time Stop 0
+const cast_time_UBA5_dash_cancel = 27 / FPS   // Custom Tested (Dash seems to take ~21 frames)
 const cast_time_UMA1 = 45 / FPS               // UMA1: Total 45, Time Stop 0
 const cast_time_UMA2 = 49 / FPS               // UMA2: Total 49, Time Stop 0
 const cast_time_UMHA = 54 / FPS               // UMHA (Foreclaimed MA3): Total 54, Time Stop 0
 const cast_time_USkill1 = 38 / FPS            // USkill1: Total 38, Time Stop 0
 const cast_time_USkill2 = 57 / FPS            // USkill2: Total 57, Time Stop 0
 const cast_time_UFHA = 0.01                   // UFHA (Foreclaimed Enhanced Heavy): FPB 150, Time Stop 150 → clamped to min 0.01 s
-const cast_time_UHA = 44 / FPS                // UHA (Foreclaimed: Iai): Total 44, Time Stop 0
+const cast_time_UHA = 33 / FPS                // UHA (Foreclaimed: Iai): Total 44, Time Stop 0
+const cast_time_UHA_stance_setup = 21 / FPS   // Custom Tested (stance setup time)
 const cast_time_Ult2 = 0.01                   // Ult2: FPB 360, Time Stop 360 → clamped to min 0.01 s
 
 export {
@@ -193,7 +197,7 @@ export {
   // Foreclaimed Self: Basic Attacks
   foreclaimed_BA1_multiplier, foreclaimed_BA1_energy, foreclaimed_BA1_concerto, foreclaimed_BA1_stack, foreclaimed_BA1_offtune, foreclaimed_BA1_frostheart,
   foreclaimed_BA2_multiplier, foreclaimed_BA2_energy, foreclaimed_BA2_concerto, foreclaimed_BA2_stack, foreclaimed_BA2_offtune, foreclaimed_BA2_frostheart,
-  foreclaimed_BA3_multiplier, foreclaimed_BA3_energy, foreclaimed_BA3_concerto, foreclaimed_BA3_stack, foreclaimed_BA3_offtune, foreclaimed_BA3_frostheart,
+  foreclaimed_BA3_multiplier, foreclaimed_BA3_energy, foreclaimed_BA3_concerto, foreclaimed_BA3_stack, foreclaimed_BA3_offtune, foreclaimed_BA3_frostheart, foreclaimed_BA3_frostheart_immediate,
   foreclaimed_BA4_multiplier, foreclaimed_BA4_energy, foreclaimed_BA4_concerto, foreclaimed_BA4_stack, foreclaimed_BA4_offtune, foreclaimed_BA4_frostheart,
   foreclaimed_BA5_multiplier, foreclaimed_BA5_energy, foreclaimed_BA5_concerto, foreclaimed_BA5_stack, foreclaimed_BA5_offtune, foreclaimed_BA5_frostheart,
   
@@ -214,8 +218,8 @@ export {
 
   // Timing
   FPS, SWAP_CANCEL_TIME,
-  cast_time_BA1, cast_time_BA2, cast_time_BA3, cast_time_Skill, cast_time_FHA, no_swap_time_FHA, cast_time_Ult1, cast_time_Intro,
-  cast_time_UBA1, cast_time_UBA2, cast_time_UBA3, cast_time_UBA4, cast_time_UBA5,
+  cast_time_BA1, cast_time_BA2, cast_time_BA3, cast_time_Skill, cast_time_FHA, cast_time_Ult1, cast_time_Intro,
+  cast_time_UBA1, cast_time_UBA2, cast_time_UBA3, cast_time_UBA3_skill_cancel, cast_time_UBA3_dash_cancel, cast_time_UBA4, cast_time_UBA5, cast_time_UBA5_dash_cancel,
   cast_time_UMA1, cast_time_UMA2, cast_time_UMHA,
-  cast_time_USkill1, cast_time_USkill2, cast_time_UFHA, cast_time_UHA, cast_time_Ult2,
+  cast_time_USkill1, cast_time_USkill2, cast_time_UFHA, cast_time_UHA, cast_time_UHA_stance_setup, cast_time_Ult2,
 }

@@ -975,6 +975,18 @@ export function resolveCastState(ctx: StepContext): void {
     ctx.current.charactersAttemptFollowUp = {}
   }
 
+  // Track restrictNextTo for combo system
+  const restrictNextToValue = typeof ctx.action.restrictNextTo === 'function'
+    ? ctx.action.restrictNextTo(ctx.prev, charName)
+    : ctx.action.restrictNextTo
+  if (restrictNextToValue?.length) {
+    ctx.current.charactersRestrictNextTo = {
+      [charName]: restrictNextToValue,
+    }
+  } else {
+    ctx.current.charactersRestrictNextTo = {}
+  }
+
   // Handle form changes if this action changes the character's form
   if (ctx.action.formChange) {
     ctx.current.charactersForms = {

@@ -1,15 +1,7 @@
 
 import type { Action } from '../../../../../types/action'
 import * as values from '../../values'
-import { hiyuki_foreclaimed_BA_1_5, hiyuki_foreclaimed_BA_1_5_cancel_with_swap } from '../basics/BA1'
-import { hiyuki_foreclaimed_BA_2_5, hiyuki_foreclaimed_BA_2_5_cancel_with_swap } from '../basics/BA2'
-import { hiyuki_foreclaimed_BA_3_5, hiyuki_foreclaimed_BA_3_5_cancel_with_swap } from '../basics/BA3'
-import { hiyuki_foreclaimed_BA_4_5, hiyuki_foreclaimed_BA_4_5_cancel_with_swap } from '../basics/BA4'
-import { hiyuki_foreclaimed_BA_5, hiyuki_foreclaimed_BA_5_cancel_with_swap } from '../basics/BA5'
-import { hiyuki_foreclaimed_midair_1_3, hiyuki_foreclaimed_midair_1_3_cancel_with_swap } from '../basics/MA1'
-import { hiyuki_foreclaimed_midair_2_3, hiyuki_foreclaimed_midair_2_3_cancel_with_swap } from '../basics/MA2'
-import { hiyuki_foreclaimed_midair_3, hiyuki_foreclaimed_midair_3_cancel_with_swap } from '../basics/MA3'
-import { hiyuki_foreclaimed_skill_1, hiyuki_foreclaimed_skill_1_cancel_with_swap, hiyuki_foreclaimed_skill_2, hiyuki_foreclaimed_skill_2_cancel_with_swap } from '../skills/resonance'
+
 
 // Default
 const hiyuki_foreclaimed_iai: Action = {
@@ -37,29 +29,12 @@ const hiyuki_foreclaimed_iai: Action = {
     startState: 'GROUND',
     endState: 'GROUND',
     requiredForms: ['Foreclaimed Self'],
-    previousActions: [ // TODO Uncertain
-      { name: 'Foreclaimed: Iai' } as Action,
-      hiyuki_foreclaimed_BA_1_5,
-      hiyuki_foreclaimed_BA_1_5_cancel_with_swap,
-      hiyuki_foreclaimed_BA_2_5,
-      hiyuki_foreclaimed_BA_2_5_cancel_with_swap,
-      hiyuki_foreclaimed_BA_3_5,
-      hiyuki_foreclaimed_BA_3_5_cancel_with_swap,
-      hiyuki_foreclaimed_BA_4_5,
-      hiyuki_foreclaimed_BA_4_5_cancel_with_swap,
-      hiyuki_foreclaimed_BA_5,
-      hiyuki_foreclaimed_BA_5_cancel_with_swap,
-      hiyuki_foreclaimed_midair_1_3,
-      hiyuki_foreclaimed_midair_1_3_cancel_with_swap,
-      hiyuki_foreclaimed_midair_2_3,
-      hiyuki_foreclaimed_midair_2_3_cancel_with_swap,
-      hiyuki_foreclaimed_midair_3,
-      hiyuki_foreclaimed_midair_3_cancel_with_swap,
-      hiyuki_foreclaimed_skill_1,
-      hiyuki_foreclaimed_skill_1_cancel_with_swap,
-      hiyuki_foreclaimed_skill_2,
-      hiyuki_foreclaimed_skill_2_cancel_with_swap
-    ]
+  },
+  comboChainTags: ['Iai Stance Setup'],
+  restrictNextTo(prevSnapshot, characterName) {
+    const currentFrostheart = prevSnapshot?.charactersEnergies[characterName]?.frostheart ?? 0
+    const frostAfterCast = currentFrostheart - 100 // Iai costs 100 frostheart
+    return frostAfterCast >= 100 ? ['Foreclaimed: Iai'] : undefined
   },
   offtune: values.foreclaimed_iai_offtune,
   groupName: 'Foreclaimed: Iai',
@@ -69,10 +44,17 @@ const hiyuki_foreclaimed_iai: Action = {
     const frosthardenIai = energies?.frostharden_iai ?? 0
     // S2: Iai's DMG Multiplier is increased by 125%.
     const s2Multiplier = owner.sequence >= 2 ? 2.25 : 1
+    // Cast time is normal if the previous action was a "setup" (dash cancel or Iai).
+    // Otherwise, add stance setup time.
+    const prevComboTags = prevSnapshot?.charactersComboChainTags?.[characterName] ?? []
+    const castTime = prevComboTags.includes('Iai Stance Setup')
+      ? values.cast_time_UHA
+      : values.cast_time_UHA + values.cast_time_UHA_stance_setup
 
     if (frosthardenIai > 0) {
       return {
         ...this,
+        castTime,
         tags: ['GLACIO_CHAFE_APPLIER'],
         multiplier: this.multiplier * s2Multiplier,
         energyGenerated: [
@@ -91,7 +73,7 @@ const hiyuki_foreclaimed_iai: Action = {
         resolveVariant: undefined,
       }
     }
-    return { ...this, multiplier: this.multiplier * s2Multiplier, resolveVariant: undefined }
+    return { ...this, castTime, multiplier: this.multiplier * s2Multiplier, resolveVariant: undefined }
   }
 }
 
@@ -124,30 +106,8 @@ const hiyuki_foreclaimed_iai_cancel_with_swap: Action = {
     requiresSwapOut: true,
     persistenceTime: 1000, // TODO
     requiredForms: ['Foreclaimed Self'],
-    previousActions: [ // TODO Uncertain
-      { name: 'Foreclaimed: Iai' } as Action,
-      hiyuki_foreclaimed_BA_1_5,
-      hiyuki_foreclaimed_BA_1_5_cancel_with_swap,
-      hiyuki_foreclaimed_BA_2_5,
-      hiyuki_foreclaimed_BA_2_5_cancel_with_swap,
-      hiyuki_foreclaimed_BA_3_5,
-      hiyuki_foreclaimed_BA_3_5_cancel_with_swap,
-      hiyuki_foreclaimed_BA_4_5,
-      hiyuki_foreclaimed_BA_4_5_cancel_with_swap,
-      hiyuki_foreclaimed_BA_5,
-      hiyuki_foreclaimed_BA_5_cancel_with_swap,
-      hiyuki_foreclaimed_midair_1_3,
-      hiyuki_foreclaimed_midair_1_3_cancel_with_swap,
-      hiyuki_foreclaimed_midair_2_3,
-      hiyuki_foreclaimed_midair_2_3_cancel_with_swap,
-      hiyuki_foreclaimed_midair_3,
-      hiyuki_foreclaimed_midair_3_cancel_with_swap,
-      hiyuki_foreclaimed_skill_1,
-      hiyuki_foreclaimed_skill_1_cancel_with_swap,
-      hiyuki_foreclaimed_skill_2,
-      hiyuki_foreclaimed_skill_2_cancel_with_swap
-    ]
   },
+  comboChainTags: ['Iai Stance Setup'],
   offtune: values.foreclaimed_iai_offtune,
   groupName: 'Foreclaimed: Iai',
   variantName: 'Cancel With Swap',
@@ -156,10 +116,17 @@ const hiyuki_foreclaimed_iai_cancel_with_swap: Action = {
     const frosthardenIai = energies?.frostharden_iai ?? 0
     // S2: Iai's DMG Multiplier is increased by 125%.
     const s2Multiplier = owner.sequence >= 2 ? 2.25 : 1
+    // Cast time is normal if the previous action was a "setup" (dash cancel or Iai).
+    // Otherwise, add stance setup time.
+    const prevComboTags = prevSnapshot?.charactersComboChainTags?.[characterName] ?? []
+    const castTime = prevComboTags.includes('Iai Stance Setup')
+      ? values.SWAP_CANCEL_TIME
+      : values.SWAP_CANCEL_TIME + values.cast_time_UHA_stance_setup
 
     if (frosthardenIai > 0) {
       return {
         ...this,
+        castTime,
         tags: ['GLACIO_CHAFE_APPLIER'],
         multiplier: this.multiplier * s2Multiplier,
         energyGenerated: [
@@ -178,7 +145,7 @@ const hiyuki_foreclaimed_iai_cancel_with_swap: Action = {
         resolveVariant: undefined,
       }
     }
-    return { ...this, multiplier: this.multiplier * s2Multiplier, resolveVariant: undefined }
+    return { ...this, castTime, multiplier: this.multiplier * s2Multiplier, resolveVariant: undefined }
   }
 }
 
