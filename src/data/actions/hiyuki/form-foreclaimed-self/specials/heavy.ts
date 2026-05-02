@@ -33,55 +33,6 @@ const hiyuki_foreclaimed_enhanced_heavy_attack: Action = {
   },
   offtune: values.foreclaimed_enhanced_heavy_offtune,
   hideWhenNotCastable: true,
-  groupName: 'Foreclaimed: Enhanced Heavy Attack',
-  variantName: 'Default',
-  resolveVariant(_prevSnapshot, _characterName, owner) {
-    // S3: Additional +160%
-    if (owner.sequence < 3) return { ...this, resolveVariant: undefined }
-    return {
-      ...this,
-      multiplier: this.multiplier * 2.6,
-      resolveVariant: undefined,
-    }
-  }
-}
-
-// Cancel With Swap
-const hiyuki_foreclaimed_enhanced_heavy_attack_cancel_with_swap: Action = {
-  tags: ['HEAVY_ATTACK', 'GLACIO_CHAFE_APPLIER'],
-  name: 'Foreclaimed: Enhanced Heavy Attack (swap cancel)',
-  displayName: 'Bitterfrost: Foreclaimed Self (swap cancel)',
-  category: 'Basics',
-  castTime: values.SWAP_CANCEL_TIME,
-  multiplier: values.foreclaimed_enhanced_heavy_multiplier,
-  scaling: 'ATK',
-  elements: ['GLACIO'],
-  dmgTypes: ['LIBERATION'],
-  cooldown: 0,
-  energyGenerated: [
-    { energyType: 'energy', amount: values.foreclaimed_enhanced_heavy_energy, share: 0.5, scalingStat: 'energyPercent' },
-    { energyType: 'concerto', amount: values.foreclaimed_enhanced_heavy_concerto, share: 0 },
-    { energyType: 'snowforged_blade', amount: values.foreclaimed_enhanced_heavy_snowforged_blade, share: 0 }
-  ],
-  energyCost: [
-    { energyType: 'whiteout_bitterfrost', amount: 3 }
-  ],
-  statusModifications: [{ type: 'negativeStatus', targetName: 'Glacio Chafe', stackChange: 1 }],
-  damageModifiers: [],
-  sideEffects: [],
-  coordinatedAttacks: [],
-  castConditions: {
-    startState: 'GROUND',
-    swapOutState: 'GROUND',
-    endState: 'GROUND',
-    requiresSwapOut: true,
-    persistenceTime: 1000, // TODO
-    requiredForms: ['Foreclaimed Self']
-  },
-  offtune: values.foreclaimed_enhanced_heavy_offtune,
-  hideWhenNotCastable: true,
-  groupName: 'Foreclaimed: Enhanced Heavy Attack',
-  variantName: 'Cancel With Swap',
   resolveVariant(_prevSnapshot, _characterName, owner) {
     // S3: Additional +160%
     if (owner.sequence < 3) return { ...this, resolveVariant: undefined }
@@ -94,6 +45,5 @@ const hiyuki_foreclaimed_enhanced_heavy_attack_cancel_with_swap: Action = {
 }
 
 export {
-  hiyuki_foreclaimed_enhanced_heavy_attack,
-  hiyuki_foreclaimed_enhanced_heavy_attack_cancel_with_swap
+  hiyuki_foreclaimed_enhanced_heavy_attack
 }

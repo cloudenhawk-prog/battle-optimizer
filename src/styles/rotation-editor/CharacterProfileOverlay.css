@@ -746,3 +746,330 @@
   font-variant-numeric: tabular-nums;
 }
 
+/* ═════════════════════════════════════════════════════════════
+ *  ADP — ACTION DPS PANEL
+ * ═════════════════════════════════════════════════════════════ */
+
+.charStatBreakdown.adp {
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  height: 100%;
+  background: #0c0f1c;
+}
+
+/* Scrollable area below the header */
+.adp-grid-scroll {
+  flex: 1;
+  overflow-y: auto;
+  overflow-x: hidden;
+  padding: 16px 18px 20px;
+  scrollbar-width: thin;
+  scrollbar-color: rgba(80, 100, 130, 0.3) transparent;
+}
+
+/* Auto-fill grid — cards wrap to new rows automatically */
+.adp-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+  gap: 30px;
+  align-items: start;
+}
+
+/* ── Card shell ── fixed height for uniform grid */
+.adp-card {
+  position: relative;
+  background: rgba(16, 20, 34, 0.98);
+  border-radius: 12px;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  height: 440px;
+  transition: box-shadow 0.2s, transform 0.15s;
+}
+
+.adp-card:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 28px rgba(0,0,0,0.6), 0 0 18px var(--adp-elem-color-dim, rgba(100,150,220,0.12));
+}
+
+/* Top accent bar */
+.adp-card-accent {
+  height: 2px;
+  flex-shrink: 0;
+}
+
+/* Rank + category row */
+.adp-card-top {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 12px 16px 4px;
+  flex-shrink: 0;
+}
+
+.adp-rank {
+  font-family: 'Orbitron', sans-serif;
+  font-size: 0.75rem;
+  font-weight: 900;
+  letter-spacing: 0.05em;
+}
+
+.adp-category {
+  font-family: 'Share Tech Mono', monospace;
+  font-size: 0.68rem;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+}
+
+/* Icon + name column */
+.adp-card-identity {
+  display: flex;
+  align-items: center;
+  gap: 13px;
+  padding: 6px 16px 0;
+  flex-shrink: 0;
+  min-width: 0;
+}
+
+.adp-icon-wrap {
+  width: 52px;
+  height: 52px;
+  border-radius: 10px;
+  flex-shrink: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+  background: rgba(255,255,255,0.04);
+}
+
+.adp-icon-wrap--placeholder {
+  /* set on element via inline style */
+}
+
+.adp-icon {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  border-radius: 6px;
+}
+
+.adp-icon-placeholder {
+  font-family: 'Orbitron', sans-serif;
+  font-size: 0.78rem;
+  font-weight: 900;
+  letter-spacing: 0.04em;
+  user-select: none;
+}
+
+.adp-name-col {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  min-width: 0;
+}
+
+/* Action name */
+.adp-card-name {
+  font-family: 'Rajdhani', 'Segoe UI', sans-serif;
+  font-size: 1.05rem;
+  font-weight: 700;
+  color: rgba(215, 228, 252, 0.92);
+  line-height: 1.2;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+/* Chips row: element + dmg type + DoT */
+.adp-chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px;
+}
+
+.adp-chip {
+  font-family: 'Share Tech Mono', monospace;
+  font-size: 0.68rem;
+  letter-spacing: 0.05em;
+  border: 1px solid;
+  border-radius: 3px;
+  padding: 1px 6px;
+  white-space: nowrap;
+  line-height: 1.5;
+}
+
+/* DPS hero number */
+.adp-card-dps-wrap {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 14px 16px 6px;
+  gap: 3px;
+  flex-shrink: 0;
+}
+
+.adp-card-dps {
+  font-family: 'Orbitron', sans-serif;
+  font-size: 2.0rem;
+  font-weight: 700;
+  font-variant-numeric: tabular-nums;
+  letter-spacing: 0.02em;
+  line-height: 1;
+  text-shadow: 0 0 28px var(--adp-elem-color-dim, rgba(100,180,255,0.2));
+}
+
+.adp-card-dmg {
+  font-family: 'Share Tech Mono', monospace;
+  font-size: 0.82rem;
+  font-variant-numeric: tabular-nums;
+  color: rgba(160, 175, 210, 0.48);
+  letter-spacing: 0.03em;
+}
+
+/* Full-width progress bar with overlaid percentage */
+.adp-card-bar-track {
+  height: 5px;
+  background: rgba(50, 65, 90, 0.4);
+  margin: 0 16px 8px;
+  border-radius: 99px;
+  overflow: visible;
+  position: relative;
+  flex-shrink: 0;
+}
+
+.adp-card-bar-fill {
+  height: 100%;
+  border-radius: 99px;
+  min-width: 2px;
+}
+
+.adp-bar-pct {
+  position: absolute;
+  right: 0;
+  top: 7px;
+  font-family: 'Share Tech Mono', monospace;
+  font-size: 0.66rem;
+  letter-spacing: 0.04em;
+  line-height: 1;
+}
+
+/* Stats row: labeled blocks with dividers */
+.adp-card-stats {
+  display: flex;
+  align-items: center;
+  justify-content: space-around;
+  padding: 4px 16px 10px;
+  flex-shrink: 0;
+}
+
+.adp-stat-block {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 2px;
+}
+
+.adp-stat-label {
+  font-family: 'Share Tech Mono', monospace;
+  font-size: 0.64rem;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  color: rgba(120, 135, 170, 0.55);
+}
+
+.adp-stat-value {
+  font-family: 'Share Tech Mono', monospace;
+  font-size: 0.86rem;
+  font-variant-numeric: tabular-nums;
+  font-weight: 600;
+  letter-spacing: 0.03em;
+}
+
+.adp-stat-divider {
+  width: 1px;
+  height: 28px;
+  background: rgba(100, 120, 160, 0.2);
+  flex-shrink: 0;
+}
+
+/* Status modification badges */
+.adp-status-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 5px;
+  padding: 0 16px 10px;
+  flex-shrink: 0;
+}
+
+.adp-status-badge {
+  font-family: 'Share Tech Mono', monospace;
+  font-size: 0.74rem;
+  letter-spacing: 0.04em;
+  border: 1px solid;
+  border-radius: 4px;
+  padding: 2px 7px;
+  white-space: nowrap;
+}
+
+/* Variant footer — mini comparison bars, pinned to bottom */
+.adp-card-variants {
+  display: flex;
+  flex-direction: column;
+  gap: 0;
+  padding: 6px 0 6px;
+  margin-top: auto;
+}
+
+.adp-variant-line {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 5px 16px;
+}
+
+.adp-variant-line:hover {
+  background: rgba(255,255,255,0.03);
+}
+
+.adp-variant-label {
+  font-family: 'Rajdhani', 'Segoe UI', sans-serif;
+  font-size: 0.86rem;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  width: 110px;
+  flex-shrink: 0;
+}
+
+.adp-variant-bar-wrap {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  flex: 1;
+  min-width: 0;
+}
+
+.adp-variant-mini-bar {
+  flex: 1;
+  height: 5px;
+  border-radius: 99px;
+  overflow: hidden;
+  min-width: 0;
+}
+
+.adp-variant-dps-small {
+  font-family: 'Share Tech Mono', monospace;
+  font-size: 0.8rem;
+  font-variant-numeric: tabular-nums;
+  flex-shrink: 0;
+}
+
+.adp-dps-unit {
+  font-size: 0.55em;
+  letter-spacing: 0.06em;
+  opacity: 0.7;
+  margin-left: 1px;
+}
+

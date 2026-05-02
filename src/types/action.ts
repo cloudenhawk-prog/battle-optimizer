@@ -86,6 +86,9 @@ export type Action = {
 
   toolTip?: string
 
+  /** Optional icon path displayed in the Action DPS panel. */
+  icon?: string
+
   groupName?: string
   variantName?: string
 

@@ -8,7 +8,7 @@ import type { Echo, Gear, Weapon, EchoSlots } from '../../types/gear'
 import { computeEchoSetCounts, echoSetRegistry } from '../../data/gear/echoSets'
 import { EchoPickerModal } from './EchoPickerModal'
 import { WeaponPickerModal } from './WeaponPickerModal'
-import { calculateScalingStat } from '../../utils/calculators/damageCalculator'
+import { calculateScalingStat, calculateBonusMultiplier, calculateAmplifyMultiplier, calculateTotalMultiplier } from '../../utils/calculators/damageCalculator'
 import { computeGearStatBreakdown, computeActiveModifierBreakdown, computeFinalStats } from '../../utils/gear/computeStatBreakdown'
 import type { ActiveModifierBreakdown, NamedStatContribution } from '../../utils/gear/computeStatBreakdown'
 import '../../styles/rotation-editor/CharacterStateTracker.css'
@@ -1293,6 +1293,331 @@ function ActiveBuffsPanel({ activeBreakdown, finalStats, allCharacters, elColor,
   )
 }
 
+// ========== Sub-component: ActionDpsPanel ====================================================================================
+
+// Neutral level-90 enemy used for DPS calculations (no element-specific resistance)
+const NEUTRAL_ENEMY_STATS = {
+  level: 90,
+  aeroRES: 0.0,
+  spectroRES: 0.0,
+  havocRES: 0.0,
+  glacioRES: 0.0,
+  fusionRES: 0.0,
+  electroRES: 0.0,
+  resistance: 0.0,
+  damageReduction: 0.0,
+}
+
+function calcDefenseMultiplier(attackerLevel: number, defenderLevel: number, defIgnore: number): number {
+  const defenseValue = 8 * defenderLevel + 792
+  const effectiveDefense = defenseValue * (1 - defIgnore)
+  return (800 + 8 * attackerLevel) / (800 + 8 * attackerLevel + effectiveDefense)
+}
+
+function calcResistanceMultiplierValue(pen: number, resistance: number): number {
+  const eff = resistance - pen
+  if (eff < 0) return 1 - eff / 2
+  if (eff < 0.8) return 1 - eff
+  return 1 / (1 + 5 * eff)
+}
+
+function calcActionDamage(
+  finalStats: CharacterStats,
+  action: import('../../types/action').Action,
+): { damage: number; dps: number; multiplier: number } {
+  const { scaling, dmgTypes, elements, multiplier: actionMultiplier, castTime } = action
+
+  // For pure negative-status damage hits (multiplier = 0, NEGATIVE_STATUS only): skip
+  if (actionMultiplier === 0 && dmgTypes.every(t => t === 'NEGATIVE_STATUS')) {
+    return { damage: 0, dps: 0, multiplier: 0 }
+  }
+
+  const critRate = Math.min(finalStats.critRate, 1.0)
+  const critMult = 1 + critRate * (finalStats.critDamage - 1)
+  const baseStat = calculateScalingStat(finalStats, scaling)
+  const bonusMult = calculateBonusMultiplier(finalStats, elements, dmgTypes)
+  const amplifyMult = calculateAmplifyMultiplier(finalStats, elements, dmgTypes)
+  const totalMult = calculateTotalMultiplier(finalStats, elements, dmgTypes)
+
+  // Resistance + defense using the neutral dummy enemy
+  const defMult = calcDefenseMultiplier(finalStats.level, NEUTRAL_ENEMY_STATS.level, finalStats.defIgnore)
+  const resMult = calcResistanceMultiplierValue(finalStats.resistancePEN, NEUTRAL_ENEMY_STATS.resistance)
+
+  // Elemental resistance for the first non-empty element
+  let elemResMult = 1
+  const firstElem = elements.find(e => e !== '') ?? ''
+  if (firstElem) {
+    const elemResKey = `${firstElem.toLowerCase()}RES` as keyof typeof NEUTRAL_ENEMY_STATS
+    const elemRes = (NEUTRAL_ENEMY_STATS[elemResKey] as number) ?? 0
+    const effElemRes = elemRes - finalStats.elementalResPEN
+    if (effElemRes < 0) elemResMult = 1 - effElemRes / 2
+    else if (effElemRes < 0.8) elemResMult = 1 - effElemRes
+    else elemResMult = 1 / (1 + 5 * effElemRes)
+  }
+
+  const resistanceMult = defMult * resMult * elemResMult
+  const damage = Math.ceil(actionMultiplier * baseStat * bonusMult * amplifyMult * totalMult * resistanceMult * critMult)
+  const dps = castTime > 0 ? damage / castTime : damage
+  return { damage, dps, multiplier: actionMultiplier }
+}
+
+type ActionDpsPanelProps = {
+  character: Character
+  finalStats: CharacterStats
+  snapshot: Snapshot | null
+  elColor: string
+  onClose: () => void
+}
+
+function ActionDpsPanel({ character, finalStats, elColor, onClose }: ActionDpsPanelProps) {
+  type ActionEntry = {
+    groupKey: string
+    category: string
+    variants: Array<{
+      action: import('../../types/action').Action
+      damage: number
+      dps: number
+    }>
+    bestDps: number
+    bestDamage: number
+    topAction: import('../../types/action').Action
+  }
+
+  const seen = new Set<string>()
+  const entries: ActionEntry[] = []
+  const skipCategories = new Set(['Testing'])
+  // Actions with castTime at or below this threshold are swap/cancel stubs; DPS is not representative
+  const MIN_CAST_FOR_DPS = 0.05
+
+  for (const action of character.actions) {
+    if (skipCategories.has(action.category)) continue
+    if (action.multiplier === 0 && action.dmgTypes.every(t => t === 'NEGATIVE_STATUS')) continue
+    if (action.castTime <= MIN_CAST_FOR_DPS) continue
+    const groupKey = action.groupName ?? action.name
+    if (seen.has(action.name)) continue
+    seen.add(action.name)
+
+    const { damage, dps } = calcActionDamage(finalStats, action)
+    const existing = entries.find(e => e.groupKey === groupKey)
+    const variant = { action, damage, dps }
+    if (existing) {
+      existing.variants.push(variant)
+      if (dps > existing.bestDps) {
+        existing.bestDps = dps
+        existing.bestDamage = damage
+        existing.topAction = action
+      }
+    } else {
+      entries.push({ groupKey, category: action.category, variants: [variant], bestDps: dps, bestDamage: damage, topAction: action })
+    }
+  }
+
+  entries.sort((a, b) => b.bestDps - a.bestDps)
+  for (const e of entries) e.variants.sort((a, b) => b.dps - a.dps)
+
+  const maxDps = entries.length > 0 ? entries[0].bestDps : 1
+
+  const ELEMENT_COLORS: Record<string, string> = {
+    GLACIO:  '#66d4f8',
+    FUSION:  '#ff8c42',
+    AERO:    '#5fe49a',
+    SPECTRO: '#ffd84d',
+    HAVOC:   '#c87cf0',
+    ELECTRO: '#b57aff',
+  }
+
+  const DMG_TYPE_LABELS: Record<string, string> = {
+    BASIC: 'Basic',
+    HEAVY: 'Heavy',
+    SKILL: 'Skill',
+    LIBERATION: 'Liberation',
+    COORDINATED: 'Coordinated',
+    ECHO: 'Echo',
+    INTRO: 'Intro',
+    OUTRO: 'Outro',
+  }
+
+  // Top-3 get special rank colors
+  const RANK_COLORS = [
+    'hsl(45 100% 62%)',  // gold
+    'hsl(210 20% 72%)',  // silver
+    'hsl(25 70% 55%)',   // bronze
+  ]
+
+  return (
+    <div className="charStatBreakdown adp" style={{ '--cpo-el-raw': elColor } as React.CSSProperties}>
+      <div className="charStatBreakdownHeader">
+        <span className="charStatBreakdownTitle">Action DPS Ranking</span>
+        <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
+          <span style={{ fontSize: '0.68rem', fontFamily: FONT_MONO, color: MUTED, letterSpacing: '0.08em' }}>vs. Lv.90 · no RES · avg dmg</span>
+          <button className="cpo-close-btn" onClick={onClose} aria-label="Close action DPS panel">
+            <img src="/assets/ui/close.png" alt="" style={{ width: 'var(--cpo-close-btn-icon-size)', height: 'var(--cpo-close-btn-icon-size)', display: 'block' }} />
+          </button>
+        </div>
+      </div>
+
+      <div className="adp-grid-scroll">
+        <div className="adp-grid">
+          {entries.map(({ groupKey, category, variants, bestDps, bestDamage, topAction }, rankIndex) => {
+            const barPct = maxDps > 0 ? (bestDps / maxDps) * 100 : 0
+            const rankColor = RANK_COLORS[rankIndex] ?? `hsl(${elColor} / 0.42)`
+            const hasVariants = variants.length > 1
+            const elems = topAction.elements.filter(e => e !== '')
+            const primaryElem = elems[0] ?? ''
+            const elemColor = ELEMENT_COLORS[primaryElem] ?? `hsl(${elColor})`
+            const activeStatusMods = topAction.statusModifications.filter(m => m.type === 'negativeStatus' || m.type === 'buff' || m.type === 'debuff')
+            const dmgTypes = topAction.dmgTypes.filter(t => t !== 'NEGATIVE_STATUS')
+            const hasNegStatus = topAction.statusModifications.some(m => m.type === 'negativeStatus')
+
+            return (
+              <motion.div
+                key={groupKey}
+                className="adp-card"
+                initial={{ opacity: 0, y: 10, scale: 0.97 }}
+                animate={{ opacity: 1, y: 0, scale: 1 }}
+                transition={{ duration: 0.26, delay: rankIndex * 0.02, ease: 'easeOut' }}
+                style={{
+                  '--adp-elem-color': elemColor,
+                  '--adp-elem-color-dim': elemColor + '28',
+                  border: `1px solid ${elemColor}28`,
+                } as React.CSSProperties}
+              >
+                {/* Top accent line */}
+                <div className="adp-card-accent" style={{ background: `linear-gradient(90deg, ${elemColor}bb, transparent)` }} />
+
+                {/* Header: rank badge + category pill */}
+                <div className="adp-card-top">
+                  <span className="adp-rank" style={{ color: rankColor }}>#{rankIndex + 1}</span>
+                  <span className="adp-category" style={{ color: `${elemColor}88` }}>{category}</span>
+                </div>
+
+                {/* Icon + name row */}
+                <div className="adp-card-identity">
+                  {topAction.icon ? (
+                    <div className="adp-icon-wrap" style={{ boxShadow: `0 0 12px ${elemColor}33`, border: `1px solid ${elemColor}33` }}>
+                      <img
+                        src={topAction.icon}
+                        alt=""
+                        className="adp-icon"
+                        onError={e => { (e.currentTarget as HTMLImageElement).style.display = 'none' }}
+                      />
+                    </div>
+                  ) : (
+                    <div className="adp-icon-wrap adp-icon-wrap--placeholder" style={{ border: `1px solid ${elemColor}22`, background: `${elemColor}0a` }}>
+                      <span className="adp-icon-placeholder" style={{ color: `${elemColor}55` }}>
+                        {groupKey.slice(0, 2).toUpperCase()}
+                      </span>
+                    </div>
+                  )}
+                  <div className="adp-name-col">
+                    <span className="adp-card-name" title={groupKey}>{groupKey}</span>
+                    <div className="adp-chips">
+                      {elems.map(el => (
+                        <span key={el} className="adp-chip adp-chip--elem" style={{ color: ELEMENT_COLORS[el], background: ELEMENT_COLORS[el] + '18', borderColor: ELEMENT_COLORS[el] + '44' }}>
+                          {el[0] + el.slice(1).toLowerCase()}
+                        </span>
+                      ))}
+                      {dmgTypes.map(t => (
+                        <span key={t} className="adp-chip adp-chip--type" style={{ color: 'rgba(165,180,215,0.75)', background: 'rgba(100,115,160,0.1)', borderColor: 'rgba(110,125,165,0.2)' }}>
+                          {DMG_TYPE_LABELS[t] ?? t}
+                        </span>
+                      ))}
+                      {hasNegStatus && (
+                        <span className="adp-chip adp-chip--status" style={{ color: elemColor + 'cc', background: elemColor + '18', borderColor: elemColor + '44' }}>
+                          DoT
+                        </span>
+                      )}
+                    </div>
+                  </div>
+                </div>
+
+                {/* DPS hero */}
+                <div className="adp-card-dps-wrap">
+                  <span className="adp-card-dps" style={{ color: elemColor }}>
+                    {formatFlat(Math.round(bestDps))}
+                    <span className="adp-dps-unit">/s</span>
+                  </span>
+                  <span className="adp-card-dmg">{formatFlat(bestDamage)} dmg</span>
+                </div>
+
+                {/* Full-width progress bar with percentage label */}
+                <div className="adp-card-bar-track">
+                  <motion.div
+                    className="adp-card-bar-fill"
+                    style={{ background: `linear-gradient(90deg, ${elemColor}dd, ${elemColor}44)` }}
+                    initial={{ width: 0 }}
+                    animate={{ width: `${barPct}%` }}
+                    transition={{ duration: 0.55, delay: rankIndex * 0.02 + 0.12, ease: 'easeOut' }}
+                  />
+                  <span className="adp-bar-pct" style={{ color: `${elemColor}88` }}>
+                    {barPct.toFixed(0)}%
+                  </span>
+                </div>
+
+                {/* Stats row: labeled multiplier · cast time · scaling */}
+                <div className="adp-card-stats">
+                  <div className="adp-stat-block">
+                    <span className="adp-stat-label">Mult</span>
+                    <span className="adp-stat-value" style={{ color: elemColor }}>{(topAction.multiplier * 100).toFixed(0)}%</span>
+                  </div>
+                  <div className="adp-stat-divider" />
+                  <div className="adp-stat-block">
+                    <span className="adp-stat-label">Cast</span>
+                    <span className="adp-stat-value" style={{ color: 'rgba(185,200,230,0.8)' }}>{topAction.castTime.toFixed(2)}s</span>
+                  </div>
+                  <div className="adp-stat-divider" />
+                  <div className="adp-stat-block">
+                    <span className="adp-stat-label">Scale</span>
+                    <span className="adp-stat-value" style={{ color: 'rgba(185,200,230,0.8)' }}>{topAction.scaling}</span>
+                  </div>
+                </div>
+
+                {/* Status modification badges */}
+                {activeStatusMods.length > 0 && (
+                  <div className="adp-status-row">
+                    {activeStatusMods.map((m, i) => {
+                      const change = m.stackChange !== undefined ? (m.stackChange > 0 ? `+${m.stackChange}` : `${m.stackChange}`) : ''
+                      return (
+                        <span key={i} className="adp-status-badge" style={{ color: elemColor, background: elemColor + '15', borderColor: elemColor + '40' }}>
+                          {m.targetName}{change}
+                        </span>
+                      )
+                    })}
+                  </div>
+                )}
+
+                {/* Variant comparison mini-bars */}
+                {hasVariants && (
+                  <div className="adp-card-variants" style={{ borderTop: `1px solid ${elemColor}18` }}>
+                    {variants.map(({ action, dps }, vi) => {
+                      const vPct = bestDps > 0 ? (dps / bestDps) * 100 : 0
+                      return (
+                        <div key={action.name} className="adp-variant-line">
+                          <span className="adp-variant-label" style={{ color: vi === 0 ? 'rgba(190,205,235,0.75)' : MUTED }}>
+                            {action.variantName ?? action.displayName}
+                          </span>
+                          <div className="adp-variant-bar-wrap">
+                            <div className="adp-variant-mini-bar" style={{ background: `${elemColor}18` }}>
+                              <div style={{ width: `${vPct}%`, height: '100%', background: `${elemColor}${vi === 0 ? 'cc' : '66'}`, borderRadius: 'inherit' }} />
+                            </div>
+                            <span className="adp-variant-dps-small" style={{ color: `${elemColor}${vi === 0 ? 'cc' : '77'}` }}>
+                              {formatFlat(Math.round(dps))}/s
+                            </span>
+                          </div>
+                        </div>
+                      )
+                    })}
+                  </div>
+                )}
+              </motion.div>
+            )
+          })}
+        </div>
+      </div>
+    </div>
+  )
+}
+
 // ========== Sub-component: OrbitalScanPanel =================================================================================
 
 function OrbitalScanPanel({ item, elColor }: { item: OrbitalScanItem | null; elColor: string }) {
@@ -1367,6 +1692,7 @@ export function CharacterProfileOverlay({ characterName, character, snapshot, al
   const [prevLocalSequence, setPrevLocalSequence] = useState<0 | 1 | 2 | 3 | 4 | 5 | 6>(-1 as 0 | 1 | 2 | 3 | 4 | 5 | 6) // initially -1 casted to satisfy TS
   const [orbitalItem, setOrbitalItem] = useState<OrbitalScanItem | null>(null)
   const [activeBuffsPanelOpen, setActiveBuffsPanelOpen] = useState(false)
+  const [actionDpsPanelOpen, setActionDpsPanelOpen] = useState(false)
 
   function handleSequenceChange(seq: 0 | 1 | 2 | 3 | 4 | 5 | 6) {
     setPrevLocalSequence(localSequence)
@@ -1586,6 +1912,38 @@ export function CharacterProfileOverlay({ characterName, character, snapshot, al
                   Active Buffs
                 </button>
               </motion.div>
+
+              {/* Action DPS Button */}
+              <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: 0.65 }} style={{ marginTop: 6, flexShrink: 0 }}>
+                <button
+                  type="button"
+                  onClick={() => setActionDpsPanelOpen(true)}
+                  style={{
+                    width: '100%',
+                    padding: '8px 0',
+                    background: `hsl(${elTheme.primary} / 0.07)`,
+                    border: `1px solid hsl(${elTheme.primary} / 0.25)`,
+                    borderRadius: 6,
+                    cursor: 'pointer',
+                    color: `hsl(${elTheme.primary} / 0.85)`,
+                    fontFamily: FONT_DISPLAY,
+                    fontSize: '0.62rem',
+                    fontWeight: 700,
+                    letterSpacing: '0.12em',
+                    textTransform: 'uppercase',
+                    transition: 'background 0.15s, border-color 0.15s',
+                  }}
+                  onMouseEnter={e => {
+                    ;(e.currentTarget as HTMLButtonElement).style.background = `hsl(${elTheme.primary} / 0.14)`
+                    ;(e.currentTarget as HTMLButtonElement).style.borderColor = `hsl(${elTheme.primary} / 0.45)`
+                  }}
+                  onMouseLeave={e => {
+                    ;(e.currentTarget as HTMLButtonElement).style.background = `hsl(${elTheme.primary} / 0.07)`
+                    ;(e.currentTarget as HTMLButtonElement).style.borderColor = `hsl(${elTheme.primary} / 0.25)`
+                  }}>
+                  Action DPS
+                </button>
+              </motion.div>
             </div>
 
             {/* ── CENTER COL: Equipment Orbit + Resonance Chain ── */}
@@ -1672,6 +2030,13 @@ export function CharacterProfileOverlay({ characterName, character, snapshot, al
             {activeBuffsPanelOpen && (
               <div className="cpo-breakdown-overlay">
                 <ActiveBuffsPanel activeBreakdown={activeBreakdown} finalStats={finalStats} allCharacters={allCharacters} elColor={elTheme.primary} onClose={() => setActiveBuffsPanelOpen(false)} />
+              </div>
+            )}
+
+            {/* Action DPS panel — covers entire body */}
+            {actionDpsPanelOpen && (
+              <div className="cpo-breakdown-overlay">
+                <ActionDpsPanel character={character} finalStats={finalStats} snapshot={snapshot} elColor={elTheme.primary} onClose={() => setActionDpsPanelOpen(false)} />
               </div>
             )}
           </div>
