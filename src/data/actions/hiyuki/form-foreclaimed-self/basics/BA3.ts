@@ -128,6 +128,53 @@ const hiyuki_foreclaimed_BA_3_cancel_with_skill: Action = {
   variantName: 'Cancel With Skill',
 }
 
+// Cancel With Heavy
+const hiyuki_foreclaimed_BA_3_cancel_with_heavy: Action = {
+  tags: ['BASIC_ATTACK', 'GLACIO_CHAFE_APPLIER'],
+  name: 'Foreclaimed: Basic Attack 3 (heavy cancel)',
+  displayName: 'Foreclaimed: Basic Attack 3 (heavy cancel)',
+  category: 'Basics',
+  castTime: values.cast_time_UBA3_skill_cancel,
+  multiplier: values.foreclaimed_BA3_multiplier,
+  scaling: 'ATK',
+  elements: ['GLACIO'],
+  dmgTypes: ['LIBERATION'],
+  cooldown: 0,
+  energyGenerated: [
+    { energyType: 'energy', amount: values.foreclaimed_BA3_energy, share: 0.5, scalingStat: 'energyPercent' },
+    { energyType: 'concerto', amount: values.foreclaimed_BA3_concerto, share: 0 },
+    { energyType: 'frostheart', amount: values.foreclaimed_BA3_frostheart, share: 0 }
+  ],
+  energyCost: [],
+  statusModifications: [
+    { type: 'negativeStatus', targetName: 'Glacio Chafe', stackChange: values.foreclaimed_BA3_stack, applicationCount: 1 }
+  ],
+  damageModifiers: [],
+  inherentModifiers: [s1_foreclaimed_basic_multiplier],
+  sideEffects: [],
+  coordinatedAttacks: [],
+  castConditions: {
+    startState: 'GROUND',
+    endState: 'GROUND',
+    preventsSwapOut: true,
+    requiredForms: ['Foreclaimed Self'],
+    requiredComboTags: ['Foreclaiming BA2'],
+    blockedComboTags: ['Foreclaiming BA Block', 'Foreclaiming BA1', 'Foreclaiming BA3', 'Foreclaiming BA4']
+  },
+  restrictNextTo: [
+    'Foreclaimed: Heavy Attack BA2-3 combo',
+    'Foreclaimed: Heavy Attack BA2-3 combo (swap cancel)',
+    'Foreclaimed: Heavy Attack BA2-3 combo (skill cancel)',
+    'Foreclaimed: Heavy Attack BA2-3 combo (dash cancel)',
+    'Foreclaimed: Heavy Attack BA2-3 combo (heavy cancel)',
+  ],
+  comboChainTags: ['Foreclaiming BA Block'],
+  offtune: values.foreclaimed_BA3_offtune,
+  hideWhenNotCastable: true,
+  groupName: 'Foreclaimed: Basic Attack 3',
+  variantName: 'Cancel With Heavy',
+}
+
 // Cancel With Dash
 const hiyuki_foreclaimed_BA_3_cancel_with_dash: Action = {
   tags: ['BASIC_ATTACK', 'GLACIO_CHAFE_APPLIER'],
@@ -172,7 +219,6 @@ const hiyuki_foreclaimed_BA_3_cancel_with_dash: Action = {
   groupName: 'Foreclaimed: Basic Attack 3',
   variantName: 'Cancel With Dash',
 }
-
 
 // ========== BA3-4 ============================================================================================================
 
@@ -392,6 +438,7 @@ export {
   hiyuki_foreclaimed_BA_3,
   hiyuki_foreclaimed_BA_3_cancel_with_swap,
   hiyuki_foreclaimed_BA_3_cancel_with_skill,
+  hiyuki_foreclaimed_BA_3_cancel_with_heavy,
   hiyuki_foreclaimed_BA_3_cancel_with_dash,
   hiyuki_foreclaimed_BA_3_4,
   hiyuki_foreclaimed_BA_3_4_cancel_with_swap,

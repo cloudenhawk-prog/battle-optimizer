@@ -26,15 +26,15 @@ const hiyuki_foreclaimed_iai: Action = {
   sideEffects: [],
   coordinatedAttacks: [],
   castConditions: {
-    startState: 'GROUND',
-    endState: 'GROUND',
+    startState: 'ANY',
+    endState: 'PRESERVE',
     requiredForms: ['Foreclaimed Self'],
   },
   comboChainTags: ['Iai Stance Setup'],
   restrictNextTo(prevSnapshot, characterName) {
     const currentFrostheart = prevSnapshot?.charactersEnergies[characterName]?.frostheart ?? 0
     const frostAfterCast = currentFrostheart - 100 // Iai costs 100 frostheart
-    return frostAfterCast >= 100 ? ['Foreclaimed: Iai'] : undefined
+    return frostAfterCast >= 100 ? ['Foreclaimed: Iai', 'Foreclaimed: Resonance Skill 1', 'Foreclaimed: Resonance Skill 1 (swap cancel)', 'Foreclaimed: Resonance Skill 2', 'Foreclaimed: Resonance Skill 2 (swap cancel)'] : undefined
   },
   offtune: values.foreclaimed_iai_offtune,
   groupName: 'Foreclaimed: Iai',

@@ -134,6 +134,13 @@ const foreclaimed_skill_2_concerto = 4 * 0.63 + 0.63
 const foreclaimed_skill_2_offtune = 4 * 0.129 + 0.129
 const foreclaimed_skill_2_frostheart = 75
 
+// Foreclaimed Heavy Attack
+const foreclaimed_heavy_multiplier = (107.16) / 100
+const foreclaimed_heavy_energy = 1.81
+const foreclaimed_heavy_concerto = 3.47
+const foreclaimed_heavy_offtune = 0.616
+const foreclaimed_heavy_frostheart = 21
+
 // Foreclaimed Enhanced Heavy Attack
 const foreclaimed_enhanced_heavy_multiplier = (8 * 15.41 + 493.05) / 100
 const foreclaimed_enhanced_heavy_energy = 0
@@ -172,6 +179,7 @@ const cast_time_UBA5_dash_cancel = 27 / FPS   // Custom Tested (Dash seems to ta
 const cast_time_UMA1 = 45 / FPS               // UMA1: Total 45, Time Stop 0
 const cast_time_UMA2 = 49 / FPS               // UMA2: Total 49, Time Stop 0
 const cast_time_UMHA = 54 / FPS               // UMHA (Foreclaimed MA3): Total 54, Time Stop 0
+const cast_time_heavy = 58 / FPS              // Custom Tested: used in heavy-BA2-3 combo
 const cast_time_USkill1 = 38 / FPS            // USkill1: Total 38, Time Stop 0
 const cast_time_USkill2 = 57 / FPS            // USkill2: Total 57, Time Stop 0
 const cast_time_UFHA = 0.01                   // UFHA (Foreclaimed Enhanced Heavy): FPB 150, Time Stop 150 → clamped to min 0.01 s
@@ -206,6 +214,9 @@ export {
   foreclaimed_MA2_multiplier, foreclaimed_MA2_energy, foreclaimed_MA2_concerto, foreclaimed_MA2_stack, foreclaimed_MA2_offtune, foreclaimed_MA2_frostheart,
   foreclaimed_MA3_multiplier, foreclaimed_MA3_energy, foreclaimed_MA3_concerto, foreclaimed_MA3_stack, foreclaimed_MA3_offtune, foreclaimed_MA3_frostheart,
 
+  // Foreclaimed Self: Heavy Attack
+  foreclaimed_heavy_multiplier, foreclaimed_heavy_energy, foreclaimed_heavy_concerto, foreclaimed_heavy_offtune, foreclaimed_heavy_frostheart,
+
   // Foreclaimed Self: Skills
   foreclaimed_skill_1_multiplier, foreclaimed_skill_1_energy, foreclaimed_skill_1_concerto, foreclaimed_skill_1_offtune, foreclaimed_skill_1_frostheart,
   foreclaimed_skill_2_multiplier, foreclaimed_skill_2_energy, foreclaimed_skill_2_concerto, foreclaimed_skill_2_offtune, foreclaimed_skill_2_frostheart,
@@ -220,6 +231,7 @@ export {
   FPS, SWAP_CANCEL_TIME,
   cast_time_BA1, cast_time_BA2, cast_time_BA3, cast_time_Skill, cast_time_FHA, cast_time_Ult1, cast_time_Intro,
   cast_time_UBA1, cast_time_UBA2, cast_time_UBA3, cast_time_UBA3_skill_cancel, cast_time_UBA3_dash_cancel, cast_time_UBA4, cast_time_UBA5, cast_time_UBA5_dash_cancel,
+  cast_time_heavy,
   cast_time_UMA1, cast_time_UMA2, cast_time_UMHA,
   cast_time_USkill1, cast_time_USkill2, cast_time_UFHA, cast_time_UHA, cast_time_UHA_stance_setup, cast_time_Ult2,
 }

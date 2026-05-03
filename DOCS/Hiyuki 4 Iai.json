@@ -1,0 +1,78 @@
+{
+  "name": "Rotation 5/3/2026",
+  "createdAt": "2026-05-03T10:58:43.942Z",
+  "steps": [
+    {
+      "character": "Lucila",
+      "action": "Cheat Buff"
+    },
+    {
+      "character": "Mornye",
+      "action": "Basic Attack 1-3 (into heavy)"
+    },
+    {
+      "character": "Hiyuki",
+      "action": "Energy Up"
+    },
+    {
+      "character": "Hiyuki",
+      "action": "Resonance Skill"
+    },
+    {
+      "character": "Hiyuki",
+      "action": "Enhanced Heavy Attack"
+    },
+    {
+      "character": "Hiyuki",
+      "action": "Liberation"
+    },
+    {
+      "character": "Hiyuki",
+      "action": "Foreclaimed: Heavy Attack BA2-3 combo (heavy cancel)"
+    },
+    {
+      "character": "Hiyuki",
+      "action": "Foreclaimed: Heavy Attack BA2-3 combo (heavy cancel)"
+    },
+    {
+      "character": "Hiyuki",
+      "action": "Foreclaimed: Heavy Attack BA2-3 combo (dash cancel)"
+    },
+    {
+      "character": "Hiyuki",
+      "action": "Foreclaimed: Iai"
+    },
+    {
+      "character": "Hiyuki",
+      "action": "Foreclaimed: Resonance Skill 1"
+    },
+    {
+      "character": "Hiyuki",
+      "action": "Foreclaimed: Iai"
+    },
+    {
+      "character": "Hiyuki",
+      "action": "Foreclaimed: Resonance Skill 2"
+    },
+    {
+      "character": "Hiyuki",
+      "action": "Foreclaimed: Iai"
+    },
+    {
+      "character": "Hiyuki",
+      "action": "Foreclaimed: Iai"
+    },
+    {
+      "character": "Hiyuki",
+      "action": "Foreclaimed: Iai"
+    },
+    {
+      "character": "Hiyuki",
+      "action": "Foreclaimed: Enhanced Heavy Attack"
+    },
+    {
+      "character": "Hiyuki",
+      "action": "Foreclaimed: Liberation"
+    }
+  ]
+}
