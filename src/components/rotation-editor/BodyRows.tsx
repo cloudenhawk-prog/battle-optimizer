@@ -141,7 +141,7 @@ export function BodyRow({ snapshot, previousSnapshot, charactersInBattle, tableC
         ) : (
           <ActionSelect
             value={action}
-            actions={charactersInBattle.find(c => c.name === character)?.actions ?? []}
+            actions={(charactersInBattle.find(c => c.name === character)?.actions ?? []).filter(a => !a.tags?.includes('INTRO_ACTION') && !a.tags?.includes('OUTRO_ACTION'))}
             character={charactersInBattle.find(c => c.name === character)}
             currentEnergies={snapshot.charactersEnergies[character]}
             previousSnapshot={previousSnapshot}

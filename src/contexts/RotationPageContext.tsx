@@ -11,6 +11,7 @@ export interface RotationPageContextValue {
   toggleTopbar: () => void
   openRotations: () => void
   openFieldReport: () => void
+  openBuildOptimizer: () => void
   hasData: boolean
   optimizerEditMode: boolean
   toggleOptimizerEditMode: () => void
@@ -19,6 +20,8 @@ export interface RotationPageContextValue {
   setRotationsOpen: React.Dispatch<React.SetStateAction<boolean>>
   summaryOpen: boolean
   setSummaryOpen: React.Dispatch<React.SetStateAction<boolean>>
+  buildOptimizerOpen: boolean
+  setBuildOptimizerOpen: React.Dispatch<React.SetStateAction<boolean>>
   onHasDataChange: (value: boolean) => void
   // Active character for sidebar image
   selectedCharacterName: string | null

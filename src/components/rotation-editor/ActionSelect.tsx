@@ -93,7 +93,7 @@ export function ActionSelect({ value, actions, character, currentEnergies, previ
 
   // Get the current state of an action
   const getActionState = (action: Action): ActionState => {
-    const isSpecial = action.name === 'Intro' || action.name === 'Outro'
+    const isSpecial = action.tags?.includes('INTRO_ACTION') || action.tags?.includes('OUTRO_ACTION')
     const isCurrent = action.name === value
 
     if (sandboxMode) {
