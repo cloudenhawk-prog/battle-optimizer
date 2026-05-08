@@ -44,6 +44,101 @@
   aspect-ratio: 5 / 4;
 }
 
+/* ========== Config Drawer =========================================================================== */
+/* Slides in from the right inside the panel wrap. Shares the panel's border-radius clip.             */
+
+.buildOptConfigDrawer {
+  position: absolute;
+  inset: 0;
+  z-index: 20;
+  border-radius: 28px;
+  overflow: hidden;
+  pointer-events: none;
+}
+
+.buildOptConfigDrawer.open {
+  pointer-events: auto;
+}
+
+/* Frosted backdrop — only visible when open */
+.buildOptConfigDrawer::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: oklch(0.10 0.010 80 / 0.60);
+  backdrop-filter: blur(6px);
+  opacity: 0;
+  transition: opacity 0.25s ease;
+  border-radius: 28px;
+}
+
+.buildOptConfigDrawer.open::before {
+  opacity: 1;
+}
+
+.buildOptConfigDrawerInner {
+  position: absolute;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  width: 72%;
+  max-width: 640px;
+  background: oklch(0.16 0.014 80);
+  border-left: 1px solid oklch(0.86 0.13 88 / 0.18);
+  display: flex;
+  flex-direction: column;
+  gap: 0;
+  transform: translateX(100%);
+  transition: transform 0.28s cubic-bezier(0.22, 1, 0.36, 1);
+  overflow: hidden;
+}
+
+.buildOptConfigDrawer.open .buildOptConfigDrawerInner {
+  transform: translateX(0);
+}
+
+.buildOptConfigDrawerHead {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 24px;
+  height: 64px;
+  border-bottom: 1px solid oklch(0.86 0.13 88 / 0.12);
+  flex-shrink: 0;
+}
+
+.buildOptConfigDrawerTitle {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-size: 13px;
+  letter-spacing: 0.20em;
+  text-transform: uppercase;
+  color: var(--bo-ink);
+}
+
+.buildOptConfigSection {
+  padding: 16px 24px;
+  border-bottom: 1px solid oklch(0.86 0.13 88 / 0.08);
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.buildOptConfigSection.buildOptEchoConfig {
+  flex: 1;
+  overflow-y: auto;
+  border-bottom: none;
+  padding-bottom: 24px;
+}
+
+.buildOptConfigSectionLabel {
+  font-size: 9.5px;
+  text-transform: uppercase;
+  letter-spacing: 0.28em;
+  color: var(--bo-ink-dim);
+}
+
 /* ========== Panel ================================================================================== */
 
 .buildOptPanel {
@@ -852,6 +947,135 @@
   padding: 12px;
 }
 
+/* ========== RIGHT: Tier selector ================================================================= */
+
+.buildOptTierRow {
+  display: flex;
+  align-items: center;
+  padding: 5px 8px;
+  gap: 3px;
+}
+
+.buildOptTierBtn {
+  flex: 1;
+  height: 26px;
+  border-radius: 5px;
+  background: oklch(0.13 0.012 80 / 0.60);
+  border: 1px solid oklch(0.86 0.13 88 / 0.10);
+  color: var(--bo-ink-dim);
+  font-size: 10.5px;
+  font-family: Georgia, 'Times New Roman', serif;
+  cursor: pointer;
+  transition: background 0.12s, border-color 0.12s, color 0.12s;
+  line-height: 1;
+  display: grid;
+  place-items: center;
+}
+
+.buildOptTierBtn:hover {
+  background: oklch(0.22 0.014 80 / 0.80);
+  color: var(--bo-ink);
+}
+
+.buildOptTierBtn.active {
+  background: oklch(0.86 0.13 88 / 0.15);
+  border-color: oklch(0.86 0.13 88 / 0.50);
+  color: var(--bo-gold);
+}
+
+/* ========== CENTER: Echo substat configuration ==================================================== */
+
+.buildOptEchoConfig {
+  flex-shrink: 0;
+  max-height: 46%;
+  overflow-y: auto;
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+  padding: 8px 10px;
+}
+
+.buildOptEchoSlot {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  padding: 7px 9px;
+  border-radius: 8px;
+  border: 1px solid oklch(0.86 0.13 88 / 0.08);
+  background: oklch(0.22 0.014 80 / 0.35);
+}
+
+.buildOptEchoSlot.empty {
+  border-style: dashed;
+  opacity: 0.50;
+}
+
+.buildOptEchoSlotHead {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.buildOptEchoSlotLabel {
+  font-size: 9.5px;
+  text-transform: uppercase;
+  letter-spacing: 0.14em;
+  color: var(--bo-ink-dim);
+}
+
+.buildOptEchoSlotName {
+  color: var(--bo-ink);
+  text-transform: none;
+  letter-spacing: 0.01em;
+}
+
+.buildOptEchoSlotCost {
+  font-size: 9px;
+  padding: 1px 6px;
+  border-radius: 9999px;
+  border: 1px solid oklch(0.86 0.13 88 / 0.22);
+  color: var(--bo-gold-soft);
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+}
+
+.buildOptEchoEmpty {
+  font-size: 10px;
+  color: var(--bo-ink-dim);
+  font-style: italic;
+}
+
+.buildOptEchoSubstatGrid {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 3px;
+  margin-top: 1px;
+}
+
+.buildOptSubstatChip {
+  padding: 2px 7px;
+  border-radius: 9999px;
+  background: oklch(0.13 0.012 80 / 0.60);
+  border: 1px solid oklch(0.86 0.13 88 / 0.10);
+  color: var(--bo-ink-dim);
+  font-size: 9.5px;
+  cursor: pointer;
+  transition: background 0.12s, border-color 0.12s, color 0.12s;
+  line-height: 1.6;
+  white-space: nowrap;
+}
+
+.buildOptSubstatChip:hover {
+  background: oklch(0.22 0.014 80 / 0.80);
+  color: var(--bo-ink);
+}
+
+.buildOptSubstatChip.active {
+  background: oklch(0.86 0.13 88 / 0.15);
+  border-color: oklch(0.86 0.13 88 / 0.45);
+  color: var(--bo-gold);
+}
+
 /* ========== RIGHT: Headroom / Gap ================================================================== */
 
 .buildOptGapBox {
@@ -936,6 +1160,12 @@
 .buildOptSmallBtn:hover {
   background: oklch(0.25 0.016 80 / 0.80);
   color: var(--bo-ink);
+}
+
+.buildOptSmallBtn.active {
+  background: oklch(0.86 0.13 88 / 0.12);
+  border-color: oklch(0.86 0.13 88 / 0.40);
+  color: var(--bo-gold);
 }
 
 .buildOptFooterInfo {

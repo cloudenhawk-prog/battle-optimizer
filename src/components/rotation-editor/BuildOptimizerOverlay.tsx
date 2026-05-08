@@ -7,25 +7,54 @@ import type { TableConfig } from '../../types/tableDefinitions'
 import type { Snapshot } from '../../types/snapshot'
 import type { Settings } from '../../hooks/useSettings'
 import { extractSteps } from '../../utils/importExport'
-import { resolveCharacter } from '../../utils/gear/resolveCharacter'
 import { replaySteps } from '../../utils/engine/replaySteps'
 import { createEmptySnapshot } from '../../hooks/rotation-editor/useSnapshots'
-import { weaponCatalog, buildWeapon } from '../../data/gear/weaponCatalog'
-import { baseCharacters } from '../../data/characters'
 import { negativeStatuses as negativeStatusesData } from '../../data/negativeStatuses'
+import { SUBSTAT_OPTIONS } from '../../data/gear/echoStats'
+import type { CharacterStats } from '../../types/stats'
 import type { EngineState } from '../../utils/engine/step'
 
 // ========== Types ============================================================================================================
 
 export type BuildResult = {
+  /** One-line row label for the leaderboard. */
   label: string
-  weaponName: string
-  weaponRank: number
+  /**
+   * Short description of the echo substat combination this build represents.
+   * e.g. "E1: ATK%+CR / E3: CD+ER"
+   * Empty string for the current-build baseline entry.
+   */
+  buildDesc: string
   dps: number
   delta: number
   deltaPct: number
   isCurrent: boolean
 }
+
+// ========== Echo Optimizer Config ============================================================================================
+
+/**
+ * Which substats are toggled ON for a given echo slot.
+ * The optimizer will later test all permutations of value assignments at `globalTier`
+ * for each enabled substat across all slots (cartesian product of per-slot combos).
+ *
+ * Tier mapping (1–8):
+ *   - 8-value substats (most):     values[tier - 1]
+ *   - 4-value substats (flatATK, flatDEF): values[Math.floor((tier - 1) / 2)]
+ *     tier 1-2 → lowest, 3-4 → second, 5-6 → third, 7-8 → highest
+ */
+export type EchoSlotConfig = {
+  enabledSubstats: Set<keyof CharacterStats>
+}
+
+export type EchoOptConfig = Partial<Record<1 | 2 | 3 | 4 | 5, EchoSlotConfig>>
+
+/**
+ * All substats eligible for echo optimization — the full SUBSTAT_OPTIONS pool.
+ * Every entry here contributes to damage: crit, ATK/HP/DEF (flat and %), energy regen,
+ * and action-type bonus DMG multipliers.
+ */
+const OPTIMIZER_SUBSTATS = SUBSTAT_OPTIONS
 
 // ========== Helpers ==========================================================================================================
 
@@ -54,13 +83,6 @@ function freshEngineState(): EngineState {
     modifiersInAction: [],
     coordinatedAttacksInAction: [],
   }
-}
-
-function bestRank(entry: { ranks: Partial<Record<1 | 2 | 3 | 4 | 5, unknown>> }): 1 | 2 | 3 | 4 | 5 | null {
-  for (const r of [5, 4, 3, 2, 1] as const) {
-    if (entry.ranks[r] !== undefined) return r
-  }
-  return null
 }
 
 function scoreRotation(params: {
@@ -392,6 +414,11 @@ export default function BuildOptimizerOverlay({
   const [results, setResults] = useState<BuildResult[]>([])
   const [running, setRunning] = useState(false)
   const [ran, setRan] = useState(false)
+  const [configOpen, setConfigOpen] = useState(false)
+  // Global quality tier for all selected substats (1 = lowest roll, 8 = highest)
+  const [globalTier, setGlobalTier] = useState<number>(8)
+  // Per-echo-slot substat selection — which substats the optimizer will vary for that slot
+  const [echoConfig, setEchoConfig] = useState<EchoOptConfig>({})
 
   const steps = extractSteps(snapshots)
   const hasRotation = steps.length > 0
@@ -401,6 +428,18 @@ export default function BuildOptimizerOverlay({
     setSelectedCharName(name)
     setResults([])
     setRan(false)
+    setEchoConfig({})
+    setConfigOpen(false)
+  }
+
+  function toggleSubstat(slot: 1 | 2 | 3 | 4 | 5, statKey: keyof CharacterStats) {
+    setEchoConfig(prev => {
+      const slotCfg = prev[slot] ?? { enabledSubstats: new Set<keyof CharacterStats>() }
+      const next = new Set(slotCfg.enabledSubstats)
+      if (next.has(statKey)) next.delete(statKey)
+      else next.add(statKey)
+      return { ...prev, [slot]: { enabledSubstats: next } }
+    })
   }
 
   const runOptimizer = useCallback(() => {
@@ -413,13 +452,6 @@ export default function BuildOptimizerOverlay({
     const characterColumnsMap = Object.fromEntries(
       charactersInBattle.map(c => [c.name, Object.keys(c.maxEnergies)]),
     )
-    const baseCharMap = Object.fromEntries(baseCharacters.map(c => [c.name, c]))
-    const baseChar = baseCharMap[selectedChar.name]
-
-    if (!baseChar) {
-      setRunning(false)
-      return
-    }
 
     const currentCharactersMap = Object.fromEntries(charactersInBattle.map(c => [c.name, c]))
     const currentDPS = scoreRotation({
@@ -433,14 +465,10 @@ export default function BuildOptimizerOverlay({
       autocastFollowUps: true,
     })
 
-    const currentWeaponName = selectedChar.gear.weapon?.name ?? '(no weapon)'
-    const currentWeaponRank = selectedChar.gear.weapon?.rank ?? 1
-
     const candidateResults: BuildResult[] = [
       {
-        label: `${currentWeaponName} \u2605${currentWeaponRank} (current)`,
-        weaponName: currentWeaponName,
-        weaponRank: currentWeaponRank,
+        label: 'Current build',
+        buildDesc: '',
         dps: currentDPS,
         delta: 0,
         deltaPct: 0,
@@ -448,42 +476,26 @@ export default function BuildOptimizerOverlay({
       },
     ]
 
-    for (const entry of weaponCatalog.filter(w => w.weaponType === selectedChar.weaponType)) {
-      const rank = bestRank(entry)
-      if (rank === null) continue
-      if (entry.name === currentWeaponName && rank === currentWeaponRank) continue
-
-      const newWeapon = buildWeapon(entry, rank, selectedChar.name)
-      if (!newWeapon) continue
-
-      const candidate = resolveCharacter(baseChar, { ...baseChar.gear, weapon: newWeapon })
-      const candidateCharactersMap = { ...currentCharactersMap, [selectedChar.name]: candidate }
-      const candidateColumnsMap = {
-        ...characterColumnsMap,
-        [selectedChar.name]: Object.keys(candidate.maxEnergies),
-      }
-
-      const dps = scoreRotation({
-        steps,
-        charactersMap: candidateCharactersMap,
-        characterColumnsMap: candidateColumnsMap,
-        globalColumns,
-        enemy,
-        tableConfig,
-        settings,
-        autocastFollowUps: true,
-      })
-
-      candidateResults.push({
-        label: `${entry.name} \u2605${rank}`,
-        weaponName: entry.name,
-        weaponRank: rank,
-        dps,
-        delta: 0,
-        deltaPct: 0,
-        isCurrent: false,
-      })
-    }
+    // TODO: Echo substat optimizer — for each echo slot, enumerate all combinations of the
+    // enabled substats (from echoConfig[slot].enabledSubstats) at the selected quality tier.
+    //
+    // Algorithm sketch (future implementation):
+    //   const slotCombos = ([1,2,3,4,5] as const).map(slot => {
+    //     const echo = selectedChar.gear.echoSlots[slot]
+    //     if (!echo) return [null]  // slot is empty, no variation
+    //     const enabled = [...(echoConfig[slot]?.enabledSubstats ?? [])]
+    //     return generateSubstatAssignments(echo, enabled, globalTier)
+    //     // Tier mapping:
+    //     //   8-value substats:  values[globalTier - 1]
+    //     //   4-value substats (flatATK, flatDEF): values[Math.floor((globalTier - 1) / 2)]
+    //   })
+    //   for (const combo of cartesianProduct(slotCombos)) {
+    //     const candidateEchoSlots = buildCandidateSlots(selectedChar, combo)
+    //     const candidateGear = { ...selectedChar.gear, echoSlots: candidateEchoSlots }
+    //     const candidate = resolveCharacter(baseCharForSelected, candidateGear)
+    //     const dps = scoreRotation({ ..., charactersMap: { ...currentCharactersMap, [selectedChar.name]: candidate } })
+    //     candidateResults.push({ label: buildComboLabel(combo), buildDesc: buildComboDesc(combo), dps, ... })
+    //   }
 
     candidateResults.sort((a, b) => b.dps - a.dps)
 
@@ -497,7 +509,7 @@ export default function BuildOptimizerOverlay({
     setResults(withDeltas)
     setRunning(false)
     setRan(true)
-  }, [selectedChar, steps, charactersInBattle, enemy, tableConfig, settings])
+  }, [selectedChar, steps, charactersInBattle, enemy, tableConfig, settings, echoConfig, globalTier])
 
   const bestResult = ran && results.length > 0 ? results[0] : null
   const currentResult = ran ? results.find(r => r.isCurrent) : null
@@ -514,6 +526,88 @@ export default function BuildOptimizerOverlay({
       <div className="buildOptPanelWrap">
         {/* Edge orbiter lives OUTSIDE the panel so overflow:hidden doesn't clip its teeth */}
         <BoEdgeOrbiter />
+
+        {/* ===================== CONFIG DRAWER ===================== */}
+        {/* Slides in over the main panel from the right, inside the wrapper so it clips to
+            the panel's border-radius. z-index sits above body content but below header. */}
+        <div className={`buildOptConfigDrawer${configOpen ? ' open' : ''}`} onClick={e => e.stopPropagation()}>
+          <div className="buildOptConfigDrawerInner">
+            <div className="buildOptConfigDrawerHead">
+              <div className="buildOptConfigDrawerTitle">
+                <BoCog size={14} teeth={8} />
+                Echo Configuration
+              </div>
+              <button
+                className="buildOptCloseBtn"
+                onClick={() => setConfigOpen(false)}
+                aria-label="Close configuration"
+              >
+                ✕
+              </button>
+            </div>
+
+            {/* Tier selector */}
+            <div className="buildOptConfigSection">
+              <div className="buildOptConfigSectionLabel">Substat Roll Quality</div>
+              <div className="buildOptTierRow">
+                {([1, 2, 3, 4, 5, 6, 7, 8] as const).map(t => (
+                  <button
+                    key={t}
+                    className={`buildOptTierBtn${globalTier === t ? ' active' : ''}`}
+                    onClick={() => setGlobalTier(t)}
+                    title={t === 1 ? 'Lowest roll' : t === 8 ? 'Highest roll' : `Tier ${t}`}
+                  >
+                    {t}
+                  </button>
+                ))}
+              </div>
+            </div>
+
+            {/* Per-slot substat toggles */}
+            <div className="buildOptConfigSection buildOptEchoConfig">
+              <div className="buildOptConfigSectionLabel">Substats to Vary per Echo</div>
+              {!selectedChar ? (
+                <div className="buildOptEmptyNote">Select a character first.</div>
+              ) : (
+                ([1, 2, 3, 4, 5] as const).map(slot => {
+                  const echo = selectedChar.gear.echoSlots[slot]
+                  const slotCfg = echoConfig[slot] ?? { enabledSubstats: new Set<keyof CharacterStats>() }
+                  return (
+                    <div key={slot} className={`buildOptEchoSlot${echo ? '' : ' empty'}`}>
+                      <div className="buildOptEchoSlotHead">
+                        <span className="buildOptEchoSlotLabel">
+                          Slot {slot}
+                          {echo && <span className="buildOptEchoSlotName"> · {echo.name}</span>}
+                          {!echo && <span> · (empty)</span>}
+                        </span>
+                        {echo && <span className="buildOptEchoSlotCost">Cost {echo.cost}</span>}
+                      </div>
+                      {echo ? (
+                        <div className="buildOptEchoSubstatGrid">
+                          {OPTIMIZER_SUBSTATS.map(s => {
+                            const active = slotCfg.enabledSubstats.has(s.key)
+                            return (
+                              <button
+                                key={s.key}
+                                className={`buildOptSubstatChip${active ? ' active' : ''}`}
+                                onClick={() => toggleSubstat(slot, s.key)}
+                                title={s.isPercent ? `${s.label} (%)` : s.label}
+                              >
+                                {s.label}
+                              </button>
+                            )
+                          })}
+                        </div>
+                      ) : (
+                        <div className="buildOptEchoEmpty">No echo equipped in this slot</div>
+                      )}
+                    </div>
+                  )
+                })
+              )}
+            </div>
+          </div>
+        </div>
 
         <div className="buildOptPanel" onClick={e => e.stopPropagation()}>
 
@@ -600,6 +694,7 @@ export default function BuildOptimizerOverlay({
 
           {/* CENTER: Hero card + Leaderboard */}
           <section className="buildOptSectionCenter">
+
             {ran && bestResult && (
               <div className="buildOptHeroCard boInsetPanel">
                 <BoCog size={220} teeth={48} className="buildOptHeroCog" />
@@ -612,9 +707,9 @@ export default function BuildOptimizerOverlay({
                     </div>
                     <div>
                       <div className="buildOptHeroSubLabel">Leading Configuration</div>
-                      <h3 className="buildOptHeroName">{bestResult.weaponName}</h3>
+                      <h3 className="buildOptHeroName">{bestResult.label}</h3>
                       <div className="buildOptHeroMeta">
-                        \u2605{bestResult.weaponRank} \u00b7 {selectedChar?.weaponType}
+                        {bestResult.buildDesc || `${selectedChar?.element} \u00b7 ${selectedChar?.weaponType}`}
                       </div>
                     </div>
                   </div>
@@ -659,8 +754,8 @@ export default function BuildOptimizerOverlay({
                   >
                     <span className="buildOptLeaderRank">{String(i + 1).padStart(2, '0')}</span>
                     <span className="buildOptLeaderName">
-                      {r.weaponName}
-                      <span className="buildOptLeaderStar"> \u2605{r.weaponRank}</span>
+                      {r.label}
+                      {r.buildDesc && <span className="buildOptLeaderStar"> · {r.buildDesc}</span>}
                       {r.isCurrent && <span className="buildOptLeaderCurrent"> current</span>}
                     </span>
                     <div className="buildOptLeaderBarWrap">
@@ -683,8 +778,9 @@ export default function BuildOptimizerOverlay({
             </div>
           </section>
 
-          {/* RIGHT: Convergence dial + build stats */}
+          {/* RIGHT: Tier selector + Convergence + Build info */}
           <section className="buildOptSectionRight">
+
             <BoSectionHeading title="Convergence" icon={<BoCross size={12} />} />
             <div className="buildOptConvergenceBox boInsetPanel">
               {/* Dial */}
@@ -722,8 +818,14 @@ export default function BuildOptimizerOverlay({
               <div className="buildOptDialStats">
                 <BoKV k="Builds" v={ran ? String(results.length) : '—'} />
                 <BoKV k="Steps" v={String(steps.length)} />
-                <BoKV k="Echoes" v="Fixed" />
-                <BoKV k="Mode" v="Weapons" />
+                <BoKV k="Tier" v={`T${globalTier}`} />
+                <BoKV k="Subs" v={
+                  (() => {
+                    const total = ([1,2,3,4,5] as const)
+                      .reduce((n, s) => n + (echoConfig[s]?.enabledSubstats.size ?? 0), 0)
+                    return total > 0 ? String(total) : '—'
+                  })()
+                } />
               </div>
             </div>
 
@@ -731,10 +833,26 @@ export default function BuildOptimizerOverlay({
             <div className="buildOptCurrentBox boInsetPanel">
               {selectedChar ? (
                 <>
-                  <BoKV k="Weapon" v={selectedChar.gear.weapon?.name ?? '—'} />
-                  <BoKV k="Rank" v={selectedChar.gear.weapon ? `★${selectedChar.gear.weapon.rank}` : '—'} />
-                  <BoKV k="Type" v={selectedChar.weaponType} />
-                  <BoKV k="Element" v={selectedChar.element} />
+                  {(() => {
+                    const slots = selectedChar.gear.echoSlots
+                    const filled = ([1, 2, 3, 4, 5] as const).filter(s => slots[s] !== null).length
+                    const setNames = ([1, 2, 3, 4, 5] as const)
+                      .map(s => slots[s]?.setName)
+                      .filter((n): n is string => n !== undefined)
+                    const uniqueSets = [...new Set(setNames)]
+                    return (
+                      <>
+                        <BoKV k="Echoes" v={`${filled} / 5`} />
+                        <BoKV k="Set" v={
+                          uniqueSets.length === 0 ? '—' :
+                          uniqueSets.length === 1 ? uniqueSets[0] :
+                          `${uniqueSets.length} sets`
+                        } />
+                        <BoKV k="Weapon" v={selectedChar.gear.weapon?.name ?? '—'} />
+                        <BoKV k="Element" v={selectedChar.element} />
+                      </>
+                    )
+                  })()}
                 </>
               ) : (
                 <div className="buildOptEmptyNote">No character selected</div>
@@ -765,9 +883,17 @@ export default function BuildOptimizerOverlay({
         <footer className="buildOptFooter">
           <div className="buildOptFooterLeft">
             <button className="buildOptSmallBtn" onClick={onClose}>Close</button>
+            <button
+              className={`buildOptSmallBtn${configOpen ? ' active' : ''}`}
+              onClick={() => setConfigOpen(v => !v)}
+              aria-label="Echo configuration"
+            >
+              <BoCog size={14} teeth={8} />
+              Configure
+            </button>
             {ran && (
               <div className="buildOptFooterInfo">
-                {results.length} weapons scored \u00b7 {selectedCharName}
+                {results.length} builds tested · {selectedCharName}
               </div>
             )}
           </div>
