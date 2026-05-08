@@ -47,7 +47,7 @@
 /* ========== Config Drawer =========================================================================== */
 /* Slides in from the right inside the panel wrap. Shares the panel's border-radius clip.             */
 
-.buildOptConfigDrawer {
+.buildOptDrawer {
   position: absolute;
   inset: 0;
   z-index: 20;
@@ -56,12 +56,12 @@
   pointer-events: none;
 }
 
-.buildOptConfigDrawer.open {
+.buildOptDrawer.open {
   pointer-events: auto;
 }
 
 /* Frosted backdrop — only visible when open */
-.buildOptConfigDrawer::before {
+.buildOptDrawer::before {
   content: '';
   position: absolute;
   inset: 0;
@@ -72,11 +72,11 @@
   border-radius: 28px;
 }
 
-.buildOptConfigDrawer.open::before {
+.buildOptDrawer.open::before {
   opacity: 1;
 }
 
-.buildOptConfigDrawerInner {
+.buildOptDrawerInner {
   position: absolute;
   top: 0;
   right: 0;
@@ -87,17 +87,17 @@
   border-left: 1px solid oklch(0.86 0.13 88 / 0.18);
   display: flex;
   flex-direction: column;
-  gap: 0;
+  height: 100%;
   transform: translateX(100%);
   transition: transform 0.28s cubic-bezier(0.22, 1, 0.36, 1);
   overflow: hidden;
 }
 
-.buildOptConfigDrawer.open .buildOptConfigDrawerInner {
+.buildOptDrawer.open .buildOptDrawerInner {
   transform: translateX(0);
 }
 
-.buildOptConfigDrawerHead {
+.buildOptDrawerHead {
   display: flex;
   align-items: center;
   justify-content: space-between;
@@ -107,7 +107,7 @@
   flex-shrink: 0;
 }
 
-.buildOptConfigDrawerTitle {
+.buildOptDrawerTitle {
   display: flex;
   align-items: center;
   gap: 10px;
@@ -129,6 +129,7 @@
   flex: 1;
   overflow-y: auto;
   border-bottom: none;
+  min-height: 0;
   padding-bottom: 24px;
 }
 
@@ -339,6 +340,9 @@
   filter: drop-shadow(0 0 8px oklch(0.86 0.13 88 / 0.45));
 }
 
+/* hide the header cog when it is only used for decoration */
+.buildOptHeaderCog.hidden { display: none; }
+
 .buildOptCloseBtn {
   background: transparent;
   border: none;
@@ -379,7 +383,7 @@
   display: flex;
   flex-direction: column;
   gap: 12px;
-  overflow: hidden;
+  overflow-y: auto;
   min-height: 0;
 }
 
@@ -600,7 +604,7 @@
 
 .buildOptHeroLeft {
   display: flex;
-  align-items: center;
+  align-items: flex-start;
   gap: 16px;
 }
 
@@ -643,10 +647,26 @@
 
 .buildOptHeroName {
   font-family: Georgia, 'Times New Roman', serif;
-  font-size: 22px;
+  font-size: 14px;
   font-weight: 400;
   color: var(--bo-ink);
   margin: 2px 0;
+  line-height: 1.4;
+}
+
+.buildOptHeroMainStats {
+  margin-top: 4px;
+  font-size: 13px;
+  font-weight: 500;
+  color: var(--bo-ink);
+  letter-spacing: 0.04em;
+  line-height: 1.5;
+}
+
+.buildOptHeroMainStatsEmpty {
+  font-style: italic;
+  opacity: 0.45;
+  font-size: 11px;
 }
 
 .buildOptHeroMeta {
@@ -655,9 +675,51 @@
   margin-top: 2px;
 }
 
+.buildOptHeroMetaDot {
+  opacity: 0.5;
+}
+
+.buildOptHeroDetailsBtn {
+  margin-top: 6px;
+  display: inline-flex;
+  align-items: center;
+  gap: 3px;
+  font-size: 10px;
+  text-transform: uppercase;
+  letter-spacing: 0.15em;
+  color: var(--bo-ink-dim);
+  background: none;
+  border: none;
+  padding: 0;
+  cursor: pointer;
+  opacity: 0.7;
+  transition: opacity 0.15s;
+}
+.buildOptHeroDetailsBtn:hover { opacity: 1; color: var(--bo-gold); }
+
+.buildOptHeroDetailBox {
+  margin-top: 6px;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  padding: 6px 8px;
+  background: oklch(0.14 0.01 240 / 0.6);
+  border: 1px solid var(--bo-edge);
+  border-radius: 4px;
+}
+
+.buildOptHeroDetailLine {
+  font-size: 11px;
+  font-family: ui-monospace, monospace;
+  color: var(--bo-ink);
+  opacity: 0.8;
+  white-space: nowrap;
+}
+
 .buildOptHeroRight {
   text-align: right;
   flex-shrink: 0;
+  align-self: flex-start;
 }
 
 .buildOptHeroDpsSub {
@@ -674,13 +736,6 @@
   color: var(--bo-gold);
   font-variant-numeric: tabular-nums;
   margin-top: 2px;
-}
-
-.buildOptHeroDpsNote {
-  font-size: 11px;
-  color: var(--bo-ink-dim);
-  letter-spacing: 0.08em;
-  margin-top: 4px;
 }
 
 /* ========== CENTER: Leaderboard ==================================================================== */
@@ -841,6 +896,43 @@
 .buildOptLeaderDelta.neg { color: hsl(0 65% 58%); }
 .buildOptLeaderDelta.neu { color: var(--bo-ink-dim); }
 
+.buildOptLeaderExpandBtn {
+  flex-shrink: 0;
+  width: 18px;
+  height: 18px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  background: none;
+  border: 1px solid var(--bo-edge);
+  border-radius: 3px;
+  color: var(--bo-ink-dim);
+  font-size: 14px;
+  line-height: 1;
+  cursor: pointer;
+  padding: 0;
+  transition: color 0.15s, border-color 0.15s, transform 0.15s;
+}
+.buildOptLeaderExpandBtn:hover { color: var(--bo-gold); border-color: var(--bo-gold); }
+.buildOptLeaderExpandBtn.open { transform: rotate(90deg); color: var(--bo-gold); border-color: var(--bo-gold); }
+
+.buildOptLeaderDetail {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px 10px;
+  padding: 5px 10px 7px 32px;
+  background: oklch(0.13 0.01 240 / 0.5);
+  border-bottom: 1px solid var(--bo-edge);
+}
+
+.buildOptLeaderDetailLine {
+  font-size: 10px;
+  font-family: ui-monospace, monospace;
+  color: var(--bo-ink);
+  opacity: 0.75;
+  white-space: nowrap;
+}
+
 /* ========== RIGHT: Panels ========================================================================== */
 
 .buildOptConvergenceBox {
@@ -947,6 +1039,109 @@
   padding: 12px;
 }
 
+
+
+.buildOptEchoesToggle {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  border-radius: 6px;
+  background: oklch(0.13 0.012 80 / 0.40);
+  border: 1px solid oklch(0.86 0.13 88 / 0.07);
+  padding: 6px 10px;
+  width: 100%;
+  cursor: pointer;
+  color: var(--bo-ink-dim);
+  font-size: 10px;
+  text-transform: uppercase;
+  letter-spacing: 0.12em;
+  transition: background 0.12s, border-color 0.12s, color 0.12s;
+}
+
+.buildOptEchoesToggle:hover {
+  background: oklch(0.22 0.014 80 / 0.60);
+  color: var(--bo-ink);
+  border-color: oklch(0.86 0.13 88 / 0.18);
+}
+
+.buildOptEchoesToggle.active {
+  background: oklch(0.86 0.13 88 / 0.08);
+  border-color: oklch(0.86 0.13 88 / 0.25);
+  color: var(--bo-gold-soft);
+}
+
+.buildOptEchoesToggleLeft {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+}
+
+.buildOptEchoDetailSlot {
+  border-radius: 8px;
+  background: oklch(0.13 0.012 80 / 0.50);
+  border: 1px solid oklch(0.86 0.13 88 / 0.08);
+  padding: 8px 10px;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.buildOptEchoDetailSlot.empty {
+  opacity: 0.45;
+}
+
+.buildOptEchoDetailHead {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.buildOptEchoDetailSlotNum {
+  font-size: 9px;
+  font-weight: 700;
+  letter-spacing: 0.15em;
+  color: var(--bo-gold-soft);
+  min-width: 16px;
+}
+
+.buildOptEchoDetailName {
+  font-size: 11px;
+  color: var(--bo-ink);
+  flex: 1;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.buildOptEchoDetailEmpty {
+  font-size: 10px;
+  color: var(--bo-ink-dim);
+  font-style: italic;
+}
+
+.buildOptEchoDetailCost {
+  font-size: 9px;
+  letter-spacing: 0.10em;
+  color: var(--bo-ink-dim);
+  flex-shrink: 0;
+}
+
+.buildOptEchoDetailSubs {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px;
+}
+
+.buildOptEchoDetailSub {
+  font-size: 9.5px;
+  padding: 2px 6px;
+  border-radius: 4px;
+  background: oklch(0.22 0.014 80 / 0.60);
+  border: 1px solid oklch(0.86 0.13 88 / 0.07);
+  color: var(--bo-ink-dim);
+  white-space: nowrap;
+}
+
 /* ========== RIGHT: Tier selector ================================================================= */
 
 .buildOptTierRow {
@@ -984,16 +1179,6 @@
 }
 
 /* ========== CENTER: Echo substat configuration ==================================================== */
-
-.buildOptEchoConfig {
-  flex-shrink: 0;
-  max-height: 46%;
-  overflow-y: auto;
-  display: flex;
-  flex-direction: column;
-  gap: 5px;
-  padding: 8px 10px;
-}
 
 .buildOptEchoSlot {
   display: flex;
@@ -1045,6 +1230,72 @@
   font-style: italic;
 }
 
+/* Sub-section row (label + group picker on the same line) */
+
+.buildOptEchoSubRow {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-top: 5px;
+}
+
+.buildOptEchoSubLabel {
+  font-size: 8.5px;
+  text-transform: uppercase;
+  letter-spacing: 0.20em;
+  color: var(--bo-ink-dim);
+}
+
+/* Group size row */
+
+.buildOptGroupRow {
+  display: flex;
+  align-items: center;
+  gap: 3px;
+  font-size: 8.5px;
+  letter-spacing: 0.10em;
+  text-transform: uppercase;
+  color: var(--bo-ink-dim);
+}
+
+.buildOptGroupBtn {
+  width: 18px;
+  height: 18px;
+  border-radius: 4px;
+  background: oklch(0.13 0.012 80 / 0.60);
+  border: 1px solid oklch(0.86 0.13 88 / 0.10);
+  color: var(--bo-ink-dim);
+  font-size: 9.5px;
+  cursor: pointer;
+  display: grid;
+  place-items: center;
+  transition: background 0.12s, border-color 0.12s, color 0.12s;
+  line-height: 1;
+}
+
+.buildOptGroupBtn:hover {
+  background: oklch(0.22 0.014 80 / 0.80);
+  color: var(--bo-ink);
+}
+
+.buildOptGroupBtn.active {
+  background: oklch(0.86 0.13 88 / 0.15);
+  border-color: oklch(0.86 0.13 88 / 0.45);
+  color: var(--bo-gold);
+}
+
+.buildOptGroupBtn.dim {
+  opacity: 0.35;
+}
+
+.buildOptGroupPinHint {
+  font-size: 9px;
+  letter-spacing: 0.04em;
+  color: oklch(0.82 0.12 170);
+  opacity: 0.8;
+  margin-left: 2px;
+}
+
 .buildOptEchoSubstatGrid {
   display: flex;
   flex-wrap: wrap;
@@ -1074,6 +1325,12 @@
   background: oklch(0.86 0.13 88 / 0.15);
   border-color: oklch(0.86 0.13 88 / 0.45);
   color: var(--bo-gold);
+}
+
+.buildOptSubstatChip.pinned {
+  background: oklch(0.72 0.13 170 / 0.18);
+  border-color: oklch(0.72 0.13 170 / 0.55);
+  color: oklch(0.82 0.12 170);
 }
 
 /* ========== RIGHT: Headroom / Gap ================================================================== */

@@ -392,7 +392,7 @@ export const echoCatalog: Record<string, EchoCatalogEntry[]> = {
     {
       name: 'Windlash Coleoid',
       setName: 'Wishes of Quiet Snowfall',
-      cost: 1,
+      cost: 3,
       icon: 'assets/gear/echoes/windlash_coleoid.png',
       info_icon: 'assets/gear/echoes/info_windlash_coleoid.png',
       info: '',

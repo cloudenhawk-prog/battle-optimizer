@@ -28,7 +28,7 @@ export {
   // Weapon
   hiyuki_weapon,
 
-  // Echoesc
+  // Echoes
   hiyuki_cost_4_echo_1,
   hiyuki_cost_3_echo_1,
   hiyuki_cost_3_echo_2,
