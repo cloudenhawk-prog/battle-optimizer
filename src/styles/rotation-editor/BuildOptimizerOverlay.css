@@ -1,204 +1,986 @@
-/* ========== Overlay backdrop ======================================================================= */
+/* =====================================================================================
+   BUILD OPTIMIZER OVERLAY
+   Visual design: dark gold-accented panel with cogwheel motifs.
+   Layout: 3-column grid (left | center | right) between absolute header and footer.
+   Inspired by the Tacet Forge visual language.
+   ===================================================================================== */
+
+/* ╔══════════════════════════════════════════════════════════════════════════════════╗
+   ║  Color palette — all tokens scoped to .buildOptOverlay                          ║
+   ╚══════════════════════════════════════════════════════════════════════════════════╝ */
+.buildOptOverlay {
+  --bo-gold:       oklch(0.86 0.13 88);
+  --bo-gold-soft:  oklch(0.80 0.09 88);
+  --bo-gold-dim:   oklch(0.75 0.08 88 / 0.6);
+  --bo-bg:         oklch(0.13 0.012 80);
+  --bo-panel:      oklch(0.18 0.012 80);
+  --bo-panel-2:    oklch(0.22 0.014 80);
+  --bo-edge:       oklch(0.30 0.015 80);
+  --bo-ink:        oklch(0.92 0.012 80);
+  --bo-ink-dim:    oklch(0.58 0.010 80);
+}
+
+/* ========== Backdrop ================================================================================ */
 
 .buildOptOverlay {
   position: fixed;
   inset: 0;
   z-index: 1000;
-  background: rgba(0, 0, 0, 0.65);
+  background: rgba(0, 0, 0, 0.85);
+  backdrop-filter: blur(4px);
   display: flex;
   align-items: center;
   justify-content: center;
+  padding: 24px;
+  color: var(--bo-ink);
+}
+
+/* ========== Panel wrap (holds panel + orbiter SVG as siblings) ====================================== */
+
+.buildOptPanelWrap {
+  position: relative;
+  width: min(80vw, calc(90vh * 5 / 4));
+  max-width: 1180px;
+  aspect-ratio: 5 / 4;
 }
 
 /* ========== Panel ================================================================================== */
 
 .buildOptPanel {
-  background: rgb(24, 26, 31);
-  border: 1px solid hsla(210, 50%, 45%, 0.35);
-  border-radius: 10px;
-  width: min(560px, 95vw);
-  max-height: 85vh;
-  display: flex;
-  flex-direction: column;
+  position: relative;
+  width: 100%;
+  height: 100%;
+  border-radius: 28px;
   overflow: hidden;
-  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.75);
+  background: radial-gradient(
+    120% 80% at 50% 0%,
+    oklch(0.30 0.018 80) 0%,
+    oklch(0.18 0.012 80) 60%,
+    oklch(0.13 0.012 80) 100%
+  );
+  box-shadow:
+    0 0 0 1px oklch(0.86 0.13 88 / 0.22),
+    0 0 60px oklch(0.86 0.13 88 / 0.07),
+    0 24px 80px rgba(0, 0, 0, 0.80);
+}
+
+/* ========== Decorative bg layers =================================================================== */
+
+.buildOptGridOverlay {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  z-index: 0;
+  background-image:
+    linear-gradient(oklch(0.86 0.13 88 / 0.03) 1px, transparent 1px),
+    linear-gradient(90deg, oklch(0.86 0.13 88 / 0.03) 1px, transparent 1px);
+  background-size: 40px 40px;
+  opacity: 0.35;
+}
+
+.buildOptDecoCogBL {
+  position: absolute;
+  left: -192px;
+  bottom: -192px;
+  color: oklch(0.86 0.13 88 / 0.06);
+  pointer-events: none;
+  z-index: 0;
+  animation: bo-cog-spin 45s linear infinite;
+}
+
+.buildOptDecoCogBR {
+  position: absolute;
+  right: -112px;
+  bottom: -112px;
+  color: oklch(0.86 0.13 88 / 0.05);
+  pointer-events: none;
+  z-index: 0;
+}
+
+/* ========== Edge orbiter =========================================================================== */
+/* Sits on the WRAPPER (outside panel's overflow:hidden).                                             */
+/* ViewBox is 112×92 with panel region at 6..106 × 6..86.                                            */
+/* Cog center rides at x/y=3 (R=3 outside panel border), teeth graze the panel border inward.        */
+/*   Horizontal overhang: 6 SVG units = 6% of wrapper width  → left/right: -6%                       */
+/*   Vertical overhang:   6 SVG units = 6% of wrapper width  = 7.5% of wrapper height → top/bottom: -7.5% */
+
+.buildOptEdgeOrbiter {
+  pointer-events: none;
+  position: absolute;
+  left: -6%;
+  right: -6%;
+  top: -7.5%;
+  bottom: -7.5%;
+  z-index: 2;
+  overflow: visible;
 }
 
 /* ========== Header ================================================================================= */
 
 .buildOptHeader {
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: 0;
+  height: 64px;
+  padding: 0 32px;
   display: flex;
   align-items: center;
   justify-content: space-between;
-  padding: 12px 16px;
-  border-bottom: 1px solid hsla(210, 50%, 45%, 0.2);
-  background: hsla(210, 40%, 14%, 0.5);
+  border-bottom: 1px solid oklch(0.86 0.13 88 / 0.12);
+  z-index: 10;
+}
+
+.buildOptHeaderLeft {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+}
+
+.buildOptHeaderTriquetra {
+  color: oklch(0.80 0.09 88 / 0.80);
   flex-shrink: 0;
 }
 
-.buildOptTitle {
-  font-size: 11px;
-  font-weight: 700;
-  letter-spacing: 0.12em;
-  color: hsl(210, 80%, 70%);
-  text-transform: uppercase;
+.buildOptHeaderTitles {
+  line-height: 1.25;
 }
 
-.buildOptClose {
+.buildOptHeaderSub {
+  font-size: 10px;
+  text-transform: uppercase;
+  letter-spacing: 0.32em;
+  color: var(--bo-ink-dim);
+}
+
+.buildOptHeaderTitle {
+  font-family: Georgia, 'Times New Roman', serif;
+  font-size: 19px;
+  font-weight: 400;
+  letter-spacing: 0.04em;
+  color: var(--bo-ink);
+  margin: 0;
+}
+
+.buildOptGold {
+  color: var(--bo-gold);
+}
+
+/* Status chip */
+
+.boStatusChip {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 4px 10px;
+  border-radius: 9999px;
+  border: 1px solid var(--bo-edge);
+  background: oklch(0.18 0.012 80 / 0.4);
+  font-size: 10px;
+  letter-spacing: 0.25em;
+  text-transform: uppercase;
+  color: var(--bo-gold-soft);
+}
+
+.boStatusDot {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: var(--bo-gold);
+  flex-shrink: 0;
+}
+
+.boStatusChip.solving .boStatusDot {
+  animation: bo-pulse 1.4s ease-in-out infinite;
+}
+
+.boStatusChip.done .boStatusDot {
+  background: hsl(135 65% 55%);
+}
+
+.buildOptHeaderRight {
+  display: flex;
+  align-items: center;
+  gap: 20px;
+}
+
+/* Stat block */
+
+.boStat {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  line-height: 1.25;
+}
+
+.boStatLabel {
+  font-size: 9px;
+  text-transform: uppercase;
+  letter-spacing: 0.3em;
+  color: var(--bo-ink-dim);
+}
+
+.boStatValue {
+  font-family: Georgia, 'Times New Roman', serif;
+  font-size: 15px;
+  color: var(--bo-ink);
+  font-variant-numeric: tabular-nums;
+}
+
+.boStatValue.accent {
+  font-size: 18px;
+  color: var(--bo-gold);
+}
+
+.boHeaderDivider {
+  display: block;
+  width: 1px;
+  height: 28px;
+  background: var(--bo-edge);
+}
+
+.buildOptHeaderCog {
+  color: oklch(0.86 0.13 88);
+  filter: drop-shadow(0 0 8px oklch(0.86 0.13 88 / 0.45));
+}
+
+.buildOptCloseBtn {
   background: transparent;
   border: none;
-  color: hsl(0, 0%, 45%);
+  color: var(--bo-ink-dim);
   font-size: 14px;
   cursor: pointer;
-  padding: 3px 7px;
+  padding: 4px 8px;
   border-radius: 4px;
   line-height: 1;
   transition: color 0.15s, background 0.15s;
 }
 
-.buildOptClose:hover {
-  color: hsl(0, 0%, 80%);
-  background: rgba(255, 255, 255, 0.07);
+.buildOptCloseBtn:hover {
+  color: var(--bo-ink);
+  background: oklch(0.86 0.13 88 / 0.08);
 }
 
 /* ========== Body =================================================================================== */
 
 .buildOptBody {
+  position: absolute;
+  left: 32px;
+  right: 32px;
+  top: 80px;
+  bottom: 96px;
+  display: grid;
+  grid-template-columns: 3fr 6fr 3fr;
+  gap: 20px;
+  z-index: 10;
+  overflow: hidden;
+}
+
+/* ========== Shared section utilities =============================================================== */
+
+.buildOptSectionLeft,
+.buildOptSectionCenter,
+.buildOptSectionRight {
   display: flex;
   flex-direction: column;
-  flex: 1;
-  overflow-y: auto;
-  padding: 16px;
   gap: 12px;
+  overflow: hidden;
+  min-height: 0;
 }
 
-/* ========== Labels ================================================================================= */
-
-.buildOptSectionLabel {
-  font-size: 10px;
-  font-weight: 700;
-  letter-spacing: 0.1em;
-  color: hsl(0, 0%, 45%);
-  text-transform: uppercase;
+.boInsetPanel {
+  border-radius: 16px;
+  background: oklch(0.18 0.012 80 / 0.60);
+  border: 1px solid oklch(0.86 0.13 88 / 0.06);
+  box-shadow: inset 0 1px 0 oklch(0.86 0.13 88 / 0.06);
 }
 
-.buildOptEmptyNote {
-  font-size: 12px;
-  color: hsl(0, 0%, 38%);
-  font-style: italic;
-}
+/* Section heading */
 
-/* ========== Rotation steps ========================================================================= */
-
-.buildOptRotationChips {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 5px;
-}
-
-.buildOptStepChip {
+.boSectionHeading {
   display: flex;
   align-items: center;
-  gap: 4px;
-  padding: 3px 8px;
-  border-radius: 4px;
-  background: rgba(255, 255, 255, 0.05);
-  border: 1px solid rgba(255, 255, 255, 0.1);
-  font-size: 11px;
-  line-height: 1.4;
+  justify-content: space-between;
+  padding: 0 4px;
 }
 
-.buildOptStepChar {
-  color: hsl(210, 70%, 65%);
-  font-weight: 600;
-}
-
-.buildOptStepAction {
-  color: hsl(0, 0%, 65%);
-}
-
-/* ========== Character tabs ========================================================================= */
-
-.buildOptCharTabs {
-  display: flex;
-  gap: 6px;
-  flex-wrap: wrap;
-}
-
-.buildOptCharTab {
-  padding: 6px 14px;
-  border-radius: 5px;
-  background: rgba(255, 255, 255, 0.05);
-  border: 1px solid rgba(255, 255, 255, 0.1);
-  color: hsl(0, 0%, 60%);
-  font-size: 12px;
-  cursor: pointer;
-  transition: background 0.15s, color 0.15s, border-color 0.15s;
-}
-
-.buildOptCharTab:hover {
-  background: rgba(255, 255, 255, 0.09);
-  color: hsl(0, 0%, 80%);
-}
-
-.buildOptCharTab.active {
-  background: hsla(210, 60%, 30%, 0.35);
-  border-color: hsla(210, 70%, 55%, 0.5);
-  color: hsl(210, 80%, 78%);
-}
-
-/* ========== Current gear info ====================================================================== */
-
-.buildOptCurrentGear {
+.boSectionHeadingLeft {
   display: flex;
   align-items: center;
   gap: 8px;
-  padding: 7px 11px;
-  border-radius: 5px;
-  background: rgba(255, 255, 255, 0.04);
-  border: 1px solid rgba(255, 255, 255, 0.08);
+  color: var(--bo-gold-soft);
 }
 
-.buildOptGearKey {
-  font-size: 10px;
-  font-weight: 700;
-  letter-spacing: 0.08em;
-  color: hsl(0, 0%, 40%);
-  text-transform: uppercase;
+.boSectionHeadingIcon {
+  display: flex;
+  align-items: center;
   flex-shrink: 0;
 }
 
-.buildOptGearVal {
-  font-size: 12px;
-  color: hsl(0, 0%, 72%);
+.boSectionHeadingTitle {
+  font-size: 10px;
+  text-transform: uppercase;
+  letter-spacing: 0.32em;
+  color: var(--bo-ink);
 }
 
-/* ========== Scope note ============================================================================= */
+.boSectionHeadingHint {
+  font-size: 10px;
+  text-transform: uppercase;
+  letter-spacing: 0.18em;
+  color: var(--bo-ink-dim);
+}
 
-.buildOptScopeNote {
+/* KV row */
+
+.boKV {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  border-radius: 6px;
+  background: oklch(0.13 0.012 80 / 0.40);
+  border: 1px solid oklch(0.86 0.13 88 / 0.07);
+  padding: 6px 10px;
+}
+
+.boKVKey {
+  font-size: 10px;
+  text-transform: uppercase;
+  letter-spacing: 0.12em;
+  color: var(--bo-ink-dim);
+}
+
+.boKVVal {
+  font-size: 11.5px;
+  color: var(--bo-ink);
+  font-variant-numeric: tabular-nums;
+}
+
+/* Empty note */
+
+.buildOptEmptyNote {
   font-size: 11px;
-  color: hsl(0, 0%, 38%);
+  color: var(--bo-ink-dim);
+  font-style: italic;
+  padding: 8px 0;
+}
+
+/* ========== LEFT: Rotation list ==================================================================== */
+
+.buildOptRotList {
+  flex: 1;
+  overflow-y: auto;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  padding: 12px;
+  min-height: 0;
+}
+
+.buildOptRotRow {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  border-radius: 6px;
+  padding: 8px 12px;
+  border: 1px solid oklch(0.86 0.13 88 / 0.08);
+  background: oklch(0.22 0.014 80 / 0.60);
+}
+
+.buildOptRotRow.first {
+  background: oklch(0.86 0.13 88 / 0.10);
+}
+
+.buildOptRotIdx {
+  display: grid;
+  place-items: center;
+  width: 24px;
+  height: 24px;
+  flex-shrink: 0;
+  border-radius: 4px;
+  background: oklch(0.13 0.012 80 / 0.60);
+  border: 1px solid var(--bo-edge);
+  font-size: 10px;
+  color: var(--bo-gold-soft);
+}
+
+.buildOptRotInfo {
+  flex: 1;
+  min-width: 0;
+}
+
+.buildOptRotChar {
+  font-size: 12.5px;
+  color: var(--bo-ink);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.buildOptRotAction {
+  font-size: 10px;
+  color: var(--bo-ink-dim);
+  letter-spacing: 0.06em;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+/* ========== LEFT: Character selector =============================================================== */
+
+.buildOptCharList {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.buildOptCharBtn {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 8px 12px;
+  border-radius: 8px;
+  border: 1px solid oklch(0.86 0.13 88 / 0.10);
+  background: oklch(0.22 0.014 80 / 0.60);
+  cursor: pointer;
+  color: var(--bo-ink-dim);
+  transition: background 0.15s, border-color 0.15s, color 0.15s;
+  text-align: left;
+  width: 100%;
+}
+
+.buildOptCharBtn:hover {
+  background: oklch(0.25 0.016 80 / 0.80);
+  color: var(--bo-ink);
+}
+
+.buildOptCharBtn.active {
+  background: oklch(0.86 0.13 88 / 0.10);
+  border-color: oklch(0.86 0.13 88 / 0.40);
+  color: var(--bo-gold);
+}
+
+.buildOptCharBtnName {
+  font-size: 12.5px;
+}
+
+.buildOptCharBtnType {
+  font-size: 10px;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--bo-ink-dim);
+}
+
+/* ========== CENTER: Hero card ====================================================================== */
+
+.buildOptHeroCard {
+  position: relative;
+  padding: 20px;
+  flex-shrink: 0;
+  overflow: hidden;
+}
+
+.buildOptHeroCog {
+  position: absolute;
+  right: -40px;
+  top: -40px;
+  color: oklch(0.86 0.13 88 / 0.08);
+  pointer-events: none;
+}
+
+.buildOptHeroGlow {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  background: radial-gradient(60% 50% at 50% 30%, oklch(0.86 0.13 88 / 0.10), transparent 70%);
+}
+
+.buildOptHeroRow {
+  position: relative;
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 16px;
+}
+
+.buildOptHeroLeft {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+}
+
+.buildOptHeroIconWrap {
+  position: relative;
+  display: grid;
+  place-items: center;
+  width: 64px;
+  height: 64px;
+  flex-shrink: 0;
+  border-radius: 12px;
+  background: oklch(0.13 0.012 80 / 0.60);
+  border: 1px solid oklch(0.86 0.13 88 / 0.40);
+}
+
+.buildOptHeroTriquetra {
+  color: var(--bo-gold);
+}
+
+.buildOptHeroRank {
+  position: absolute;
+  top: -8px;
+  left: -8px;
+  background: var(--bo-gold);
+  color: oklch(0.13 0.012 80);
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 0.15em;
+  padding: 2px 6px;
+  border-radius: 4px;
+  line-height: 1.4;
+}
+
+.buildOptHeroSubLabel {
+  font-size: 10px;
+  text-transform: uppercase;
+  letter-spacing: 0.30em;
+  color: var(--bo-ink-dim);
+}
+
+.buildOptHeroName {
+  font-family: Georgia, 'Times New Roman', serif;
+  font-size: 22px;
+  font-weight: 400;
+  color: var(--bo-ink);
+  margin: 2px 0;
+}
+
+.buildOptHeroMeta {
+  font-size: 11px;
+  color: var(--bo-gold-soft);
+  margin-top: 2px;
+}
+
+.buildOptHeroRight {
+  text-align: right;
+  flex-shrink: 0;
+}
+
+.buildOptHeroDpsSub {
+  font-size: 10px;
+  text-transform: uppercase;
+  letter-spacing: 0.30em;
+  color: var(--bo-ink-dim);
+}
+
+.buildOptHeroDps {
+  font-family: Georgia, 'Times New Roman', serif;
+  font-size: 34px;
+  line-height: 1;
+  color: var(--bo-gold);
+  font-variant-numeric: tabular-nums;
+  margin-top: 2px;
+}
+
+.buildOptHeroDpsNote {
+  font-size: 11px;
+  color: var(--bo-ink-dim);
+  letter-spacing: 0.08em;
+  margin-top: 4px;
+}
+
+/* ========== CENTER: Leaderboard ==================================================================== */
+
+.buildOptLeaderboard {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  min-height: 0;
+}
+
+.buildOptLeaderHead {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 10px 16px;
+  border-bottom: 1px solid oklch(0.86 0.13 88 / 0.08);
+  flex-shrink: 0;
+}
+
+.buildOptLeaderHeadLeft {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  color: var(--bo-gold-soft);
+}
+
+.buildOptLeaderHeadIcon {
+  color: var(--bo-gold-soft);
+}
+
+.buildOptLeaderHeadLabel {
+  font-size: 11px;
+  text-transform: uppercase;
+  letter-spacing: 0.30em;
+  color: var(--bo-ink-dim);
+}
+
+.buildOptLeaderHeadRight {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  font-size: 10px;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--bo-ink-dim);
+}
+
+.buildOptLeaderHeadDivider {
+  display: block;
+  width: 1px;
+  height: 12px;
+  background: var(--bo-edge);
+}
+
+.buildOptLeaderBody {
+  flex: 1;
+  overflow-y: auto;
+}
+
+.buildOptLeaderEmpty {
+  padding: 24px 16px;
+  font-size: 12px;
+  color: var(--bo-ink-dim);
   font-style: italic;
 }
 
-/* ========== Run button ============================================================================= */
+.buildOptLeaderRow {
+  display: grid;
+  grid-template-columns: 28px 1fr 80px 88px 60px;
+  align-items: center;
+  gap: 8px;
+  padding: 9px 16px;
+  border-bottom: 1px solid oklch(0.86 0.13 88 / 0.05);
+  font-size: 12.5px;
+  transition: background 0.1s;
+}
+
+.buildOptLeaderRow:last-child {
+  border-bottom: none;
+}
+
+.buildOptLeaderRow:hover {
+  background: oklch(0.86 0.13 88 / 0.04);
+}
+
+.buildOptLeaderRow.current {
+  background: oklch(0.86 0.13 88 / 0.06);
+}
+
+.buildOptLeaderRow.best:not(.current) {
+  background: oklch(0.86 0.13 88 / 0.08);
+}
+
+.buildOptLeaderRank {
+  font-family: Georgia, 'Times New Roman', serif;
+  font-size: 11px;
+  color: var(--bo-gold-soft);
+  font-variant-numeric: tabular-nums;
+}
+
+.buildOptLeaderRow.best .buildOptLeaderRank {
+  color: var(--bo-gold);
+}
+
+.buildOptLeaderName {
+  color: var(--bo-ink);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.buildOptLeaderStar {
+  font-size: 10px;
+  color: var(--bo-gold);
+}
+
+.buildOptLeaderCurrent {
+  font-size: 9px;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: oklch(0.70 0.07 220);
+}
+
+.buildOptLeaderBarWrap {
+  height: 6px;
+  border-radius: 9999px;
+  background: oklch(0.13 0.012 80 / 0.60);
+  overflow: hidden;
+}
+
+.buildOptLeaderBarFill {
+  height: 100%;
+  background: linear-gradient(to right, var(--bo-gold), oklch(0.80 0.09 88 / 0.40));
+  border-radius: 9999px;
+}
+
+.buildOptLeaderDps {
+  text-align: right;
+  font-variant-numeric: tabular-nums;
+  color: var(--bo-ink);
+}
+
+.buildOptLeaderRow.best .buildOptLeaderDps {
+  color: var(--bo-gold);
+  font-weight: 600;
+}
+
+.buildOptLeaderDelta {
+  text-align: right;
+  font-size: 11px;
+  font-variant-numeric: tabular-nums;
+}
+
+.buildOptLeaderDelta.pos { color: hsl(135 65% 55%); }
+.buildOptLeaderDelta.neg { color: hsl(0 65% 58%); }
+.buildOptLeaderDelta.neu { color: var(--bo-ink-dim); }
+
+/* ========== RIGHT: Panels ========================================================================== */
+
+.buildOptConvergenceBox {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 10px;
+  align-items: center;
+  padding: 12px;
+}
+
+/* Dial */
+
+.buildOptDial {
+  position: relative;
+  aspect-ratio: 1;
+  width: 100%;
+}
+
+.buildOptDialRingOuter {
+  position: absolute;
+  inset: 0;
+  border-radius: 50%;
+  border: 1px solid var(--bo-edge);
+}
+
+.buildOptDialRingInner {
+  position: absolute;
+  inset: 10%;
+  border-radius: 50%;
+  border: 1px solid oklch(0.86 0.13 88 / 0.15);
+}
+
+.buildOptDialTick {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  width: 1px;
+  background: oklch(0.80 0.09 88 / 0.45);
+  transform-origin: bottom center;
+}
+
+.buildOptDialNeedle {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  width: 2px;
+  height: 40%;
+  background: linear-gradient(to top, var(--bo-gold), transparent);
+  transform-origin: bottom center;
+  transition: transform 0.5s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+.buildOptDialDot {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  background: var(--bo-gold);
+  transform: translate(-50%, -50%);
+}
+
+.buildOptDialCenter {
+  position: absolute;
+  inset: 0;
+  display: grid;
+  place-items: center;
+  pointer-events: none;
+}
+
+.buildOptDialCenterInner {
+  margin-top: 40%;
+  text-align: center;
+}
+
+.buildOptDialValue {
+  font-family: Georgia, 'Times New Roman', serif;
+  font-size: 18px;
+  line-height: 1;
+  color: var(--bo-gold);
+  font-variant-numeric: tabular-nums;
+  margin-top: 48%;
+}
+
+.buildOptDialSub {
+  font-size: 9px;
+  letter-spacing: 0.25em;
+  text-transform: uppercase;
+  color: var(--bo-ink-dim);
+  margin-top: 2px;
+}
+
+.buildOptDialStats {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.buildOptCurrentBox {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  padding: 12px;
+}
+
+/* ========== RIGHT: Headroom / Gap ================================================================== */
+
+.buildOptGapBox {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 16px 12px;
+  text-align: center;
+}
+
+.buildOptGapValue {
+  font-family: Georgia, 'Times New Roman', serif;
+  font-size: 28px;
+  line-height: 1;
+  color: var(--bo-gold);
+  font-variant-numeric: tabular-nums;
+}
+
+.buildOptGapLabel {
+  font-size: 10px;
+  text-transform: uppercase;
+  letter-spacing: 0.28em;
+  color: var(--bo-ink-dim);
+  margin-top: 4px;
+}
+
+.buildOptGapPct {
+  font-family: Georgia, 'Times New Roman', serif;
+  font-size: 18px;
+  color: hsl(135 65% 55%);
+  font-variant-numeric: tabular-nums;
+  margin-top: 6px;
+}
+
+.buildOptGapSub {
+  font-size: 10px;
+  color: var(--bo-ink-dim);
+  margin-top: 2px;
+}
+
+/* ========== Footer ================================================================================= */
+
+.buildOptFooter {
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  height: 80px;
+  padding: 0 32px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  border-top: 1px solid var(--bo-edge);
+  background: linear-gradient(to top, oklch(0.13 0.012 80 / 0.50), transparent);
+  z-index: 10;
+}
+
+.buildOptFooterLeft {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+}
+
+.buildOptSmallBtn {
+  height: 40px;
+  padding: 0 16px;
+  border-radius: 6px;
+  background: oklch(0.22 0.014 80 / 0.60);
+  border: 1px solid oklch(0.86 0.13 88 / 0.12);
+  color: var(--bo-ink-dim);
+  font-size: 12px;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  cursor: pointer;
+  transition: background 0.15s, color 0.15s;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.buildOptSmallBtn:hover {
+  background: oklch(0.25 0.016 80 / 0.80);
+  color: var(--bo-ink);
+}
+
+.buildOptFooterInfo {
+  font-size: 11px;
+  color: var(--bo-ink-dim);
+  letter-spacing: 0.08em;
+}
+
+.buildOptFooterRight {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.buildOptFooterWarn {
+  font-size: 11px;
+  color: var(--bo-ink-dim);
+  font-style: italic;
+}
+
+/* Run button */
 
 .buildOptRunBtn {
-  align-self: flex-start;
-  padding: 8px 22px;
-  background: hsl(210, 65%, 26%);
-  border: 1px solid hsl(210, 65%, 44%);
-  border-radius: 6px;
-  color: hsl(210, 80%, 88%);
-  font-size: 13px;
+  height: 48px;
+  padding: 0 24px;
+  border-radius: 9999px;
+  background: linear-gradient(to bottom, var(--bo-gold), var(--bo-gold-soft));
+  border: none;
+  color: oklch(0.13 0.012 80);
+  font-size: 12px;
   font-weight: 700;
-  letter-spacing: 0.05em;
+  letter-spacing: 0.20em;
+  text-transform: uppercase;
   cursor: pointer;
-  transition: background 0.15s, opacity 0.15s;
+  transition: filter 0.15s, opacity 0.15s;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  box-shadow:
+    0 0 0 1px oklch(0.86 0.13 88 / 0.40),
+    0 4px 20px oklch(0.86 0.13 88 / 0.30);
 }
 
 .buildOptRunBtn:hover:not(:disabled) {
-  background: hsl(210, 65%, 32%);
+  filter: brightness(1.10);
 }
 
 .buildOptRunBtn:disabled {
@@ -206,109 +988,24 @@
   cursor: not-allowed;
 }
 
-/* ========== Results table ========================================================================== */
-
-.buildOptResults {
-  display: flex;
-  flex-direction: column;
-  border-radius: 6px;
-  border: 1px solid rgba(255, 255, 255, 0.08);
-  overflow: hidden;
+.buildOptRunCog {
+  color: oklch(0.13 0.012 80);
 }
 
-.buildOptResultHeader,
-.buildOptResultRow {
-  display: grid;
-  grid-template-columns: 28px 1fr 90px 72px;
-  align-items: center;
-  gap: 6px;
-  padding: 6px 10px;
+.buildOptRunIcon {
+  color: oklch(0.13 0.012 80 / 0.70);
 }
 
-.buildOptResultHeader {
-  background: rgba(255, 255, 255, 0.04);
-  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
-  font-size: 9px;
-  font-weight: 700;
-  letter-spacing: 0.1em;
-  color: hsl(0, 0%, 38%);
-  text-transform: uppercase;
+/* ========== Animations ============================================================================= */
+
+@keyframes bo-cog-spin {
+  to { transform: rotate(360deg); }
 }
 
-.buildOptResultRow {
-  border-bottom: 1px solid rgba(255, 255, 255, 0.04);
-  font-size: 12px;
-  transition: background 0.1s;
+@keyframes bo-pulse {
+  0%, 100% { opacity: 1; }
+  50%       { opacity: 0.15; }
 }
 
-.buildOptResultRow:last-child {
-  border-bottom: none;
-}
-
-.buildOptResultRow:hover {
-  background: rgba(255, 255, 255, 0.04);
-}
-
-.buildOptResultRow.current {
-  background: hsla(210, 50%, 20%, 0.18);
-}
-
-.buildOptResultRow.best:not(.current) {
-  background: hsla(42, 80%, 20%, 0.18);
-}
-
-/* ========== Result columns ========================================================================= */
-
-.buildOptColRank {
-  font-size: 11px;
-  font-weight: 700;
-  color: hsl(0, 0%, 35%);
-  text-align: right;
-}
-
-.buildOptResultRow.best .buildOptColRank {
-  color: hsl(42, 85%, 62%);
-}
-
-.buildOptColName {
-  color: hsl(0, 0%, 80%);
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
-}
-
-.buildOptWeaponRank {
-  font-size: 10px;
-  color: hsl(42, 75%, 55%);
-  margin-left: 2px;
-}
-
-.buildOptCurrentTag {
-  font-size: 9px;
-  font-weight: 700;
-  letter-spacing: 0.07em;
-  text-transform: uppercase;
-  color: hsl(210, 65%, 55%);
-  margin-left: 5px;
-}
-
-.buildOptColDps {
-  text-align: right;
-  font-variant-numeric: tabular-nums;
-  color: hsl(0, 0%, 75%);
-}
-
-.buildOptResultRow.best .buildOptColDps {
-  color: hsl(42, 85%, 68%);
-  font-weight: 600;
-}
-
-.buildOptColDelta {
-  text-align: right;
-  font-variant-numeric: tabular-nums;
-  font-size: 11px;
-}
-
-.buildOptColDelta.positive { color: hsl(135, 65%, 55%); }
-.buildOptColDelta.negative { color: hsl(0, 65%, 58%); }
-.buildOptColDelta.neutral  { color: hsl(0, 0%, 38%); }
+.boCogSpin     { animation: bo-cog-spin 12s linear infinite; }
+.boCogSpinFast { animation: bo-cog-spin 2.5s linear infinite; }
