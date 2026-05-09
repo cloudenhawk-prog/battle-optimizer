@@ -41,6 +41,27 @@ const FONT_DISPLAY = '"Orbitron", sans-serif'
 const FONT_MONO = '"Share Tech Mono", monospace'
 const FONT_BODY = '"Rajdhani", "Segoe UI", sans-serif'
 
+// ========== Portrait Config ==================================================================================================
+// Controls the 3D pop-out effect: the portrait image is clipped only at the bottom arc, letting hair/features overflow the ring.
+// PORTRAIT_SIZE_PX must stay in sync with --cpo-portrait-size in CharacterProfileOverlay.css.
+
+const PORTRAIT_SIZE_PX   = 250   // px — diameter of the portrait circle (must match --cpo-portrait-size)
+const PORTRAIT_OVERFLOW_PX = 99999  // px the image may extend above/outside the circle (9999 ≈ unrestricted)
+const PORTRAIT_ARC_DEG   = 145   // degrees of bottom arc that clips the image (0–180; 180 = full bottom semicircle)
+
+// Computes an SVG path() clip-path that contains only the bottom arc region plus everything above it up to `overflowPx`.
+function portraitClipPath(sizePx: number, arcDeg: number, overflowPx: number): string {
+  const R = sizePx / 2
+  const cx = R, cy = R
+  const startAngleRad = ((90 - arcDeg / 2) * Math.PI) / 180
+  const endAngleRad   = ((90 + arcDeg / 2) * Math.PI) / 180
+  const startX = (cx + R * Math.cos(startAngleRad)).toFixed(2)
+  const arcY   = (cy + R * Math.sin(startAngleRad)).toFixed(2)
+  const endX   = (cx + R * Math.cos(endAngleRad)).toFixed(2)
+  const largeArc = arcDeg > 180 ? 1 : 0
+  return `M ${startX} ${arcY} A ${R} ${R} 0 ${largeArc} 1 ${endX} ${arcY} L -9999 ${arcY} L -9999 ${-overflowPx} L 9999 ${-overflowPx} L 9999 ${arcY} Z`
+}
+
 // ========== Asset Path Helper ================================================================================================
 
 function assetPath(path: string): string {
@@ -1859,11 +1880,35 @@ export function CharacterProfileOverlay({ characterName, character, snapshot, al
 
               {character.image && (
                 <div className="cpo-portrait-wrap">
+                  {/* Circle ring — z-index:-1 within the isolated stacking context places it behind the image
+                       but above the wrap background, so hair/features can pop out above for a 3D effect */}
+                  <div
+                    style={{
+                      position: 'absolute',
+                      left: '50%',
+                      top: 0,
+                      transform: 'translateX(-50%)',
+                      width: 'var(--cpo-portrait-size)',
+                      height: 'var(--cpo-portrait-size)',
+                      borderRadius: '50%',
+                      border: `2px solid hsl(${elTheme.primary} / 0.35)`,
+                      boxShadow: `0 0 20px hsl(${elTheme.primary} / 0.2)`,
+                      pointerEvents: 'none',
+                      zIndex: -1,
+                    }}
+                  />
                   <img
                     src={assetPath(character.image)}
                     alt={character.name}
                     className="cpo-portrait"
-                    style={{ borderColor: `hsl(${elTheme.primary} / 0.35)`, boxShadow: `0 0 20px hsl(${elTheme.primary} / 0.2)` }}
+                    style={{
+                      clipPath: `path('${portraitClipPath(PORTRAIT_SIZE_PX, PORTRAIT_ARC_DEG, PORTRAIT_OVERFLOW_PX)}')`,
+                      // z-index:1 places the image above the SVG arc tracks from PortraitSequenceDisplay / PortraitLeftArc
+                      // so the overflow (hair, features) renders on top of those decorative lines.
+                      // Sequence nodes are at radius 160px — outside the 250px portrait box — so they remain fully interactive.
+                      position: 'relative',
+                      zIndex: 1,
+                    }}
                     onError={e => {
                       ;(e.target as HTMLImageElement).style.display = 'none'
                     }}

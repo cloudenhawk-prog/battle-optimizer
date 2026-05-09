@@ -201,15 +201,15 @@
   justify-content: center;
   margin-bottom: var(--cpo-portrait-gap);
   flex-shrink: 0;
+  /* Creates a stacking context so the ring div (z-index:-1) renders behind the image but above the wrap background */
+  isolation: isolate;
 }
 
 .cpo-portrait {
   width:  var(--cpo-portrait-size);
   height: var(--cpo-portrait-size);
   object-fit: cover;
-  border-radius: 50%;
-  border: 2px solid;
-  box-sizing: border-box;
+  /* clip-path is computed in JSX from PORTRAIT_* constants in CharacterProfileOverlay.tsx */
 }
 
 /* ═════════════════════════════════════════════════════════════
