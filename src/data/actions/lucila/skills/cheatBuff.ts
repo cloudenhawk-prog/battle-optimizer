@@ -6,7 +6,7 @@ const lucila_cheat_buff: Action = {
   name: 'Cheat Buff',
   displayName: 'Cheat Buff',
   category: 'Skills',
-  castTime: 7,
+  castTime: 0,
   multiplier: 0.0001,
   scaling: 'ATK',
   elements: ['GLACIO'],

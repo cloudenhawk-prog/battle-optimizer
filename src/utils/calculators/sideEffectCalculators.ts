@@ -44,17 +44,20 @@ export function calculateAeroErosionSideEffectDamage(context: StepContext, sideE
   return event
 }
 
-// ========== Hiyuki: Fine Snow — Glacio Chafe Proc ===========================================================================
+// ========== Hiyuki: Snow Rust 2 — Glacio Bite ATK Proc ======================================================================
 
 /**
- * Hiyuki Fine Snow (2 stacks) — Glacio Bite proc.
+ * Hiyuki Snow Rust 2 — Glacio Bite ATK proc (negative-status pipeline).
  *
- * Scales as 102% ATK (or 590% ATK at S3) but follows the negative-status damage pipeline:
- * only Glacio Chafe-specific multipliers apply (glacioChafeBonusDMG/AmplifyDMG/TotalMultiplierDMG),
- * no general bonusDMG or glacioBonusDMG, and no defIgnore/resistancePEN/elementalResPEN.
- * No crit — treat the same as a DoT tick.
+ * Fires a hit that scales as 102% ATK (590% ATK at S3+) through the negative-status damage
+ * pipeline: only Glacio Chafe-specific multipliers apply (glacioChafeBonusDMG/AmplifyDMG/
+ * TotalMultiplierDMG), no general bonusDMG or glacioBonusDMG, no defIgnore/resistancePEN.
+ * No crit — treated the same as a DoT tick.
  *
- * The snow_rust >= 2 guard lives in the ActionTrigger condition on the character;
+ * This is NOT the Everfrost Dominion hit — that one uses the Glacio Chafe damage table
+ * at max stacks and does not scale off ATK (see calculateGlacioChafeDominionDamage).
+ *
+ * The snow_rust >= 2 guard lives in the trigger condition on the character;
  * this function is only called when it is already satisfied.
  */
 export function calculateGlacioChafeProcDamage(context: StepContext, sideEffectName: string, timeStamp: number): DamageEvent {
@@ -88,14 +91,18 @@ export function calculateGlacioChafeProcDamage(context: StepContext, sideEffectN
 }
 
 /**
- * Hiyuki Fine Snow (2 stacks) — Glacio Bite proc (action pipeline variant).
+ * Hiyuki Snow Rust 2 — Glacio Bite ATK proc (action pipeline variant).
  *
- * Fires through the normal action damage pipeline (crit, bonusDMG, RES, defIgnore, etc.)
- * with a 102% ATK multiplier (590% at S3+, where S3 adds +488% to the DMG Multiplier).
+ * Alternative to calculateGlacioChafeProcDamage that fires through the normal action
+ * damage pipeline (crit, bonusDMG, RES, defIgnore, etc.) with a 102% ATK multiplier
+ * (590% at S3+, where S3 adds +488% to the DMG Multiplier).
  *
  * elements: ['GLACIO'] + dmgTypes: ['NEGATIVE_STATUS'] so the calculator applies
  * Glacio Chafe-specific stat bonuses (glacioChafeBonusDMG, glacioChafeAmplifyDMG,
  * glacioChafeTotalMultiplierDMG) as well as standard Glacio resistance and RES PEN.
+ *
+ * This is NOT the Everfrost Dominion hit — that one uses the Glacio Chafe damage table
+ * at max stacks and does not scale off ATK (see calculateGlacioChafeDominionDamage).
  */
 export function calculateGlacioChafeProcActionDamage(context: StepContext, sideEffectName: string, timeStamp: number): DamageEvent {
   const multiplier = context.character.sequence >= 3 ? 1.02 + 4.88 : 1.02
@@ -153,13 +160,14 @@ export function calculateGlacioChafeProcActionDamage(context: StepContext, sideE
  * Hiyuki S6 (Everfrost Dominion) — fires a Glacio Chafe negative-status damage hit at the
  * current effective MAX stacks whenever any team member applies Glacio Chafe.
  *
- * Key differences from `calculateGlacioChafeProcDamage` (Fine Snow ATK proc):
- *  - Damage is a NegativeStatus tick at max stacks, not an ATK-multiplier hit.
- *  - Uses the Glacio Chafe damage table, so it scales with the same modifiers that
- *    affect Glacio Chafe DoT ticks (glacioChafeAmplifyDMG, enemy GLACIO RES, etc.).
- *  - Fires for any Resonator's Glacio Chafe application, not only Hiyuki's own attacks.
- *  - `context.character` is always Hiyuki (substituted by the TeamActionTrigger resolver),
- *    ensuring correct dealer attribution regardless of who cast the triggering action.
+ * This is NOT an ATK-scaling hit. Damage is derived from the Glacio Chafe stack damage
+ * table at max stacks — the same value used for a DoT tick at maximum stacks. It does
+ * not use the 102%/590% ATK multiplier from the Snow Rust 2 proc
+ * (see calculateGlacioChafeProcDamage for that).
+ *
+ * Fires for any Resonator's Glacio Chafe application, not only Hiyuki's own attacks.
+ * `context.character` is always Hiyuki (substituted by the TeamActionTrigger resolver),
+ * ensuring correct dealer attribution regardless of who cast the triggering action.
  */
 export function calculateGlacioChafeDominionDamage(context: StepContext, sideEffectName: string, timeStamp: number): DamageEvent {
   const defaultMaxStacks = negativeStatuses['glacioChafe'].maxStacksDefault

@@ -1146,6 +1146,9 @@ const STAT_GROUPS: Array<{ label: string; keys: (keyof import('./../../types/sta
 
 
 function formatFinalStat(key: string, value: number): string {
+  if (/TotalMultiplier/i.test(key)) {
+    return 'x' + value.toFixed(2)
+  }
   if (/Rate|Bonus|Amplify|PEN|Percent|Boost|Ignore|critDamage/i.test(key)) {
     return (value * 100).toFixed(1) + '%'
   }

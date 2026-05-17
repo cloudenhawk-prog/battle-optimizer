@@ -6,7 +6,7 @@ const lucila_glacio_chafe_26: Action = {
   name: 'Glacio Chafe ×26',
   displayName: 'Glacio Chafe ×26',
   category: 'Skills',
-  castTime: 0,
+  castTime: 7,
   multiplier: 0.001,
   scaling: 'ATK',
   elements: ['GLACIO'],

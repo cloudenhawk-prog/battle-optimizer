@@ -6,7 +6,7 @@ const lucila_intro: Action = {
   name: 'Lucila Intro',
   displayName: 'TODO',
   category: 'Other',
-  castTime: 1.0,
+  castTime: 0.0,
   multiplier: (0) / 100,
   scaling: 'ATK',
   elements: ['GLACIO'],
