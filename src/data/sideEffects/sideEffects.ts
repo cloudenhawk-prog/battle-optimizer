@@ -1,5 +1,5 @@
 import type { SideEffect } from '../../types/sideEffect'
-import { calculateAeroErosionSideEffectDamage, calculateGlacioChafeProcDamage, calculateGlacioChafeProcActionDamage, calculateGlacioChafeDominionDamage } from '../../utils/calculators/sideEffectCalculators'
+import { calculateAeroErosionSideEffectDamage, calculateGlacioChafeProcDamage } from '../../utils/calculators/sideEffectCalculators'
 import { removeNegativeStatusStacks } from '../../utils/modifications/statusModificationHelpers'
 
 // ========== Side Effects =====================================================================================================
@@ -30,13 +30,12 @@ export const hiyuki_glacio_chafe_proc: SideEffect = {
   statusModifications: [],
 }
 
-// Hiyuki S6 Everfrost Dominion — Glacio Bite damage at max stacks, fired on every
-// Glacio Chafe application by any Resonator on the team.
+// Hiyuki S6 Everfrost Dominion — same 102% ATK Glacio Bite proc as Snow Rust 2, but fired on every
+// Glacio Chafe application by ANY Resonator on the team (not just Hiyuki).
 // Fires via teamActionTriggers (see hiyuki.ts); ctx.character is always Hiyuki regardless
 // of who cast the triggering action, ensuring correct dealer attribution.
-// Damage uses the Glacio Chafe negative-status pipeline (not ATK-scaled).
 export const hiyuki_everfrost_dominion_glacio_bite: SideEffect = {
   name: 'Everfrost Dominion: Glacio Bite',
-  damageDealt: calculateGlacioChafeDominionDamage,
+  damageDealt: calculateGlacioChafeProcDamage,
   statusModifications: [],
 }

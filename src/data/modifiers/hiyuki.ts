@@ -94,7 +94,7 @@ export const snow_rust_3_s6_team: DamageModifier = {
   type: 'buff',
   ownerCharacter: 'Hiyuki',
   color: '#dbe9ff',
-  characterStats: { glacioChafeTotalMultiplierDMG: 0.25 },
+  characterStats: { glacioChafeTotalMultiplierDMG: 1.25 },
   condition: (ctx) => {
     if (!ownerAtLeast('Hiyuki', 6)(ctx)) return 0
     const snowRust = ctx.current.charactersEnergies['Hiyuki']?.snow_rust ?? 0

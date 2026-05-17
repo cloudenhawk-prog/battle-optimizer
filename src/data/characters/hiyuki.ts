@@ -4,7 +4,7 @@ import { form_present_self, form_foreclaimed_self } from '../forms/hiyuki'
 import { hiyuki_cost_1_echo_1, hiyuki_cost_1_echo_2, hiyuki_cost_3_echo_1, hiyuki_cost_3_echo_2, hiyuki_cost_4_echo_1, hiyuki_weapon } from '../gear/hiyuki'
 import { hiyuki_inherentStats, hiyuki_stats } from '../stats/hiyuki'
 import { hiyuki_glacio_chafe_proc, hiyuki_everfrost_dominion_glacio_bite } from '../sideEffects/sideEffects'
-import { snow_rust_1_3, snow_rust_1, snow_rust_2_s6_self } from '../modifiers/hiyuki'
+import { snow_rust_1_3, snow_rust_1, snow_rust_2_s6_self, snow_rust_3_s6_team } from '../modifiers/hiyuki'
 
 export const hiyuki: Character = {
   name: 'Hiyuki',
@@ -30,7 +30,8 @@ export const hiyuki: Character = {
   damageModifiers: [
     snow_rust_1_3,
     snow_rust_1,
-    snow_rust_2_s6_self
+    snow_rust_2_s6_self,
+    snow_rust_3_s6_team
   ],
   stats: hiyuki_stats,
   inherentStats: hiyuki_inherentStats,
@@ -52,7 +53,7 @@ export const hiyuki: Character = {
   // S2: start with 3 Frostharden Iai and 2 Frostheart tokens (one-time at battle start).
   startingEnergies: (seq) => ({
     // Ephemeral Realm
-    ...(seq >= 3 ? { snow_rust: 2 } : { snow_rust: 1 }),
+    ...(seq >= 3 ? { snow_rust: 3 } : { snow_rust: 2 }),
     snowforged_blade: seq >= 2 ? 3 : 1,
     ...(seq >= 2 ? { frostharden_iai: 3, s2_frostheart_token: 2 } : {}),
   }),

@@ -6,7 +6,7 @@ const lucila_cheat_buff: Action = {
   name: 'Cheat Buff',
   displayName: 'Cheat Buff',
   category: 'Skills',
-  castTime: 0,
+  castTime: 7,
   multiplier: 0.0001,
   scaling: 'ATK',
   elements: ['GLACIO'],
@@ -24,9 +24,11 @@ const lucila_cheat_buff: Action = {
       ownerCharacter: null,
       characterStats: {
         glacioBonusDMG: 0.25,
-        liberationAmplifyDMG: 0.25,
-        glacioAmplifyDMG: 0.20,
-        bonusDMG: 0.10
+        glacioChafeBonusDMG: 0.60,
+        bonusATK: 0.24
+      },
+      enemyStats: { 
+        glacioRES: -0.08,
       },
       condition: always(),
       targetStrategy: 'all',
