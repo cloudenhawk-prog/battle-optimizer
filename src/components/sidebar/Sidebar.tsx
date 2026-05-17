@@ -97,6 +97,14 @@ export default function Sidebar({ collapsed }: SidebarProps) {
               <span className="sidebar-action-label">Rotation Stats</span>
             </button>
             <button
+              className={`sidebar-action-btn ${!rotationCtx.hasData ? 'disabled' : ''}`}
+              onClick={rotationCtx.openBuildOptimizer}
+              disabled={!rotationCtx.hasData}
+              title={rotationCtx.hasData ? 'Find best weapon for each character' : 'No rotation data yet'}
+            >
+              <span className="sidebar-action-label">Build Optimizer</span>
+            </button>
+            <button
               className={`sidebar-action-btn${rotationCtx.optimizerEditMode ? ' active' : ''}`}
               onClick={rotationCtx.toggleOptimizerEditMode}
               title={rotationCtx.optimizerEditMode ? 'Exit rotation edit mode' : 'Edit rotation structure'}

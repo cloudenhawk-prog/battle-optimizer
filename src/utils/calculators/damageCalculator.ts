@@ -56,6 +56,8 @@ export function calculateDamage({ action, name, stats, damageModifiers, modifier
 
   // Step 2: Merge base stats with modifiers
   const finalStats = mergeStats(stats, modifierCharacterStats)
+  // Crit rate is capped at 100% — values above cause impossible average > crit results.
+  finalStats.critRate = Math.min(finalStats.critRate, 1.0)
   const finalEnemyStats = mergeEnemyStats(enemy.stats, modifierEnemyStats)
 
   // Step 3: Calculate base attack/hp/def value
@@ -392,6 +394,9 @@ function convertLevelToDefense(level: number): number {
   return 8 * level + 792
 }
 
+// ── DEBUG: tracks which character:action combos have already logged a critRate overflow (one-shot) ─
+const _dbgLoggedOverflows = new Set<string>()
+
 // ========== Buff Toggle Re-Evaluator =========================================================================================
 
 /**
@@ -472,6 +477,34 @@ export function evaluateDamageWithGroups(
       }
     }
   }
+
+  // ── DEBUG: log when critRate overflows 100% (causes impossible average > crit) ─────────────────
+  const _dbgFinalCritRate = (baseStats.critRate ?? 0) + (charMods.critRate ?? 0)
+  if (_dbgFinalCritRate > 1.0 && !_dbgLoggedOverflows.has(`${characterName}:${action.name}`)) {
+    _dbgLoggedOverflows.add(`${characterName}:${action.name}`)
+    // Build a readable snapshot of every modifier that contributed critRate
+    const _dbgCritContrib = damageModifiers
+      .filter(m => (m.characterStats as Record<string, unknown> | undefined)?.critRate)
+      .map((m, _i) => ({
+        globalIdx: _i,
+        source: m.source,
+        displayName: m.displayName,
+        critRate: (m.characterStats as Record<string, unknown>).critRate,
+      }))
+    const _dbgGroupMap: Record<string, number[]> = {}
+    for (const [k, v] of groupIndices) _dbgGroupMap[k] = v
+    console.warn(
+      `[DEBUG evaluateDamageWithGroups] critRate overflow on "${action.name}" (${characterName})`,
+      '\n  baseStats.critRate:', baseStats.critRate,
+      '\n  charMods.critRate:', charMods.critRate,
+      '\n  finalCritRate:', _dbgFinalCritRate,
+      '\n  All modifiers with critRate:', _dbgCritContrib,
+      '\n  damageModifiers.length:', damageModifiers.length,
+      '\n  groupIndices (key → indices):', _dbgGroupMap,
+      '\n  All modifier sources:', damageModifiers.map((m, i) => `[${i}] ${m.source} / ${m.displayName}`),
+    )
+  }
+  // ────────────────────────────────────────────────────────────────────────────────────────────────
 
   const result = calculateDamage({
     action,

@@ -247,7 +247,7 @@ function computeActionBreakdowns(
   const result = new Map<string, ActionBreakdownEntry[]>()
   for (const char of characters) {
     const byAction = new Map<string, number>()
-    const byActionSnapshots = new Map<string, Set<number>>()
+    const byActionCount = new Map<string, number>()
     for (const e of damageEvents) {
       const attributedToChar = e.dealer === char.name || e.dealer.startsWith(char.name + ': ')
       if (!attributedToChar) continue
@@ -256,13 +256,12 @@ function computeActionBreakdowns(
       // skip events where NEGATIVE_STATUS is the sole dmgType.
       if (e.dmgTypes.every(t => t === 'NEGATIVE_STATUS') && e.dealer === char.name) continue
       byAction.set(e.actionName, (byAction.get(e.actionName) ?? 0) + e.average)
-      if (!byActionSnapshots.has(e.actionName)) byActionSnapshots.set(e.actionName, new Set())
-      byActionSnapshots.get(e.actionName)!.add(e.snapshotId)
+      byActionCount.set(e.actionName, (byActionCount.get(e.actionName) ?? 0) + 1)
     }
     result.set(
       char.name,
       Array.from(byAction.entries())
-        .map(([actionName, damage]) => ({ actionName, damage, count: byActionSnapshots.get(actionName)?.size ?? 0 }))
+        .map(([actionName, damage]) => ({ actionName, damage, count: byActionCount.get(actionName) ?? 0 }))
         .sort((a, b) => b.damage - a.damage),
     )
   }
@@ -1517,7 +1516,20 @@ type SummaryOverlayProps = {
 export default function SummaryOverlay({ open, onClose, snapshots, damageEvents, characters }: SummaryOverlayProps) {
   if (!open) return null
 
-  const activeChars = characters.filter(c => snapshots.some(s => s.character === c.name && s.action))
+  // Include characters who have taken actions OR who have attributed damage events (off-field passives).
+  // Without the damage-event check, a purely off-field character (e.g. a passive support with
+  // teamActionTriggers but no rotation entries) would be excluded, causing their "Name: ..." events
+  // to fall through into passiveDamageEvents / "Other Sources".
+  const charsWithActions = new Set(
+    snapshots.filter(s => s.action).map(s => s.character).filter((c): c is string => !!c)
+  )
+  const charsWithDamage = new Set(
+    damageEvents.map(e => {
+      const colonIdx = e.dealer.indexOf(': ')
+      return colonIdx >= 0 ? e.dealer.slice(0, colonIdx) : e.dealer
+    })
+  )
+  const activeChars = characters.filter(c => charsWithActions.has(c.name) || charsWithDamage.has(c.name))
   const charColorMap = buildCharacterColorMap(activeChars)
 
   const { characterSummaries, globalDamage, totalPassiveDamage, grandTotal, totalDuration } =

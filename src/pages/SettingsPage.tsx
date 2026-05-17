@@ -69,6 +69,27 @@ export default function SettingsPage() {
 
             <label className="settingsRow">
               <div className="settingsRowBody">
+                <span className="settingsRowLabel">Use fixed stacks</span>
+                <p className="settingsRowDesc">
+                  When enabled, actions with variable stack-based multipliers use a fixed stack value instead of the actual runtime amount. For example, Hiyuki's Foreclaimed Liberation uses 1.5 Snowforged Blade stacks.
+                </p>
+              </div>
+              <div className="settingsToggleWrap">
+                <input
+                  type="checkbox"
+                  checked={settings.useFixedStacks}
+                  onChange={e => updateSetting('useFixedStacks', e.target.checked)}
+                />
+                <div className="settingsToggleTrack">
+                  <div className="settingsToggleThumb" />
+                </div>
+              </div>
+            </label>
+
+            <div className="settingsRowDivider" />
+
+            <label className="settingsRow">
+              <div className="settingsRowBody">
                 <span className="settingsRowLabel">Row deletion mode</span>
                 <p className="settingsRowDesc">
                   When enabled, each action row shows a delete button. Clicking it removes that row and all rows after it, then replays the remaining steps from scratch.
@@ -79,6 +100,27 @@ export default function SettingsPage() {
                   type="checkbox"
                   checked={settings.rowDeletionMode}
                   onChange={e => updateSetting('rowDeletionMode', e.target.checked)}
+                />
+                <div className="settingsToggleTrack">
+                  <div className="settingsToggleThumb" />
+                </div>
+              </div>
+            </label>
+
+            <div className="settingsRowDivider" />
+
+            <label className="settingsRow">
+              <div className="settingsRowBody">
+                <span className="settingsRowLabel">Auto-trigger Outro/Intro on character select</span>
+                <p className="settingsRowDesc">
+                  When enabled, switching to a different character automatically fires the Outro and Intro without requiring you to pick an action first. Useful for inspecting the post-intro state before committing to the next action.
+                </p>
+              </div>
+              <div className="settingsToggleWrap">
+                <input
+                  type="checkbox"
+                  checked={settings.triggerOutroIntroOnCharacterSelect}
+                  onChange={e => updateSetting('triggerOutroIntroOnCharacterSelect', e.target.checked)}
                 />
                 <div className="settingsToggleTrack">
                   <div className="settingsToggleThumb" />

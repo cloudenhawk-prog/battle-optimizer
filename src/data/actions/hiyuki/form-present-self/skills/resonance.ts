@@ -11,7 +11,7 @@ const hiyuki_skill: Action = {
   name: 'Resonance Skill',
   displayName: 'Frostblight',
   category: 'Skills',
-  castTime: 1.00, // TODO
+  castTime: values.cast_time_Skill,
   multiplier: values.skill_multiplier,
   scaling: 'ATK',
   elements: ['GLACIO'],
@@ -55,7 +55,7 @@ const hiyuki_skill_cancel_with_swap: Action = {
   name: 'Resonance Skill (swap cancel)',
   displayName: 'Frostblight (swap cancel)',
   category: 'Skills',
-  castTime: 1.00, // TODO
+  castTime: values.SWAP_CANCEL_TIME,
   multiplier: values.skill_multiplier,
   scaling: 'ATK',
   elements: ['GLACIO'],

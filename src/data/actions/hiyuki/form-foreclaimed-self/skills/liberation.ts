@@ -1,12 +1,14 @@
 import type { Action } from '../../../../../types/action'
 import { liberation_s6_crit_dmg } from '../../../../modifiers/hiyuki'
+import { loadSettings } from '../../../../../hooks/useSettings'
+import * as values from '../../values'
 
 const hiyuki_foreclaimed_liberation: Action = {
   tags: ['LIBERATION'],
   name: 'Foreclaimed: Liberation',
   displayName: 'Foreclaiming: Blade Liberation',
   category: 'Skills',
-  castTime: 1.00, // TODO
+  castTime: values.cast_time_Ult2,
   multiplier: (198.81 + 795.24) / 100,
   scaling: 'ATK',
   elements: ['GLACIO'],
@@ -32,7 +34,8 @@ const hiyuki_foreclaimed_liberation: Action = {
   formChange: 'Present Self',
   resolveVariant(prevSnapshot, characterName) {
     const energies = prevSnapshot?.charactersEnergies[characterName]
-    const snowforged_blade = energies?.snowforged_blade ?? 0
+    const { useFixedStacks } = loadSettings()
+    const snowforged_blade = useFixedStacks ? 1.5 : (energies?.snowforged_blade ?? 0)
 
     return {
       ...this,

@@ -135,6 +135,7 @@ export function createSnapshot(previousSnapshot: Snapshot, charactersMap: Record
     charactersForms,
     charactersSwapCooldownUntil,
     charactersAttemptFollowUp: {},
+    charactersRestrictNextTo: {},
     charactersComboWindows: {},
     charactersForteGrants,
     charactersComboChainTags,

@@ -8,7 +8,7 @@ const hiyuki_foreclaimed_skill_1: Action = {
   name: 'Foreclaimed: Resonance Skill 1',
   displayName: 'Frostblight: Jade Cleave',
   category: 'Skills',
-  castTime: 1.00, // TODO
+  castTime: values.cast_time_USkill1,
   multiplier: values.foreclaimed_skill_1_multiplier,
   scaling: 'ATK',
   elements: ['GLACIO'],
@@ -68,7 +68,7 @@ const hiyuki_foreclaimed_skill_1_cancel_with_swap: Action = {
   name: 'Foreclaimed: Resonance Skill 1 (swap cancel)',
   displayName: 'Frostblight: Jade Cleave (swap cancel)',
   category: 'Skills',
-  castTime: 1.00, // TODO
+  castTime: values.SWAP_CANCEL_TIME,
   multiplier: values.foreclaimed_skill_1_multiplier,
   scaling: 'ATK',
   elements: ['GLACIO'],
@@ -132,7 +132,7 @@ const hiyuki_foreclaimed_skill_2: Action = {
   name: 'Foreclaimed: Resonance Skill 2',
   displayName: 'Frostblight: Petalfall',
   category: 'Skills',
-  castTime: 1.00, // TODO
+  castTime: values.cast_time_USkill2,
   multiplier: values.foreclaimed_skill_2_multiplier,
   scaling: 'ATK',
   elements: ['GLACIO'],
@@ -192,7 +192,7 @@ const hiyuki_foreclaimed_skill_2_cancel_with_swap: Action = {
   name: 'Foreclaimed: Resonance Skill 2 (swap cancel)',
   displayName: 'Frostblight: Petalfall (swap cancel)',
   category: 'Skills',
-  castTime: 1.00, // TODO
+  castTime: values.SWAP_CANCEL_TIME,
   multiplier: values.foreclaimed_skill_2_multiplier,
   scaling: 'ATK',
   elements: ['GLACIO'],

@@ -1,0 +1,32 @@
+Resonator,Internal Name,SkillName (CN),Skill Shorthand,Total Frames ,Frame Perfect Buffer,Hit Instance/s,HitLag,Earliest Frame Until Cancel,Frames Until First Hit Instance,Frames Until Last Hit Instance,Endlag,EndSkill,Invincible (f),NoInterruption (f),NoSwap (f),QTE (f),Dodge (f),Time Stop (f),Enemy Stop (f)
+
+Hiyuki,AM_AirAttackSp01,绯雪神刀-空中居合预备,UMAFDash,30,30,0,0,30,0,0,0,100,26,0,0,0,0,0,0
+Hiyuki,AM_AirAttackSp02,绯雪神刀-空中居合攻击,UFMA1,41,39,5,2,15,2,33,26,60,0,0,0,0,0,0,0
+Hiyuki,AM_AirAttackSp03,绯雪神刀-空中居合攻击,UFMA2,41,39,5,2,15,2,33,26,60,0,0,0,0,0,0,0
+Hiyuki,AM_AirAttack_Burst01,绯雪神刀空中普攻1,UMA1,46,46,3,0,38,20,38,8,185,0,0,0,0,0,0,0
+Hiyuki,AM_AirAttack_Burst02,绯雪神刀空中普攻2,UMA2,50,50,4,0,42,4,42,8,211,0,0,0,0,0,0,0
+Hiyuki,AM_AirAttack,绯雪神刀下落攻击,UMHA,51,49,1,2,35,35,35,16,57,0,0,0,0,0,0,0
+Hiyuki,AM_AirAttack_Common,绯雪下落攻击,MA,53,51,1,2,37,37,37,16,59,0,0,0,0,0,0,0
+Hiyuki,AM_Attack01,绯雪普攻1,BA1,34,30,2,4,26,10,26,8,50,0,0,0,0,0,0,0
+Hiyuki,AM_Attack02,绯雪普攻2,BA2,39,36,1,3,20,20,20,19,50,0,0,0,0,0,0,0
+Hiyuki,AM_Attack03,绯雪普攻3-剑舞,BA3,55,48,6,7,41,9,41,14,80,0,0,0,0,0,0,0
+Hiyuki,AM_Attack04Pro,绯雪强化重击,FHA,135,120,3,15,107 (with Ult),28,107,28,140,0,0,120,0,0,0,0
+Hiyuki,AM_AttackBurst01,绯雪神刀普攻1,UBA1,22,20,1,2,10,10,10,12,40,0,0,0,0,0,0,0
+Hiyuki,AM_AttackBurst02,绯雪神刀普攻2,UBA2,36,32,2,4,30,14,30,6,50,0,0,0,0,0,0,0
+Hiyuki,AM_AttackBurst03,绯雪神刀普攻3,UBA3,76,66,5,10,10,10,65,66,90,0,0,0,0,0,0,0
+Hiyuki,AM_AttackBurst04,绯雪神刀普攻4,UBA4,68,58,5,10,52,8,52,16,80,0,0,0,0,0,0,0
+Hiyuki,AM_AttackBurst05,绯雪神刀普攻5,UBA5,82,80,2,2,23,17,70,59,90,0,0,0,0,0,0,0
+Hiyuki,AM_AttackBurst06Pro,绯雪神刀强化重击,UFHA,150,150,9,0,150,10,132,0,150,0,0,0,0,0,150,150
+Hiyuki,AM_AttackBurst06Pro_Air,绯雪神刀强化重击,UFHA,31,31,1,0,25,25,25,6,0,0,0,0,0,0,0,0
+Hiyuki,AM_AttackBurst06,绯雪神刀普通重击,UHA,104,100,1,4,90,90,90,14,120,0,0,0,0,0,0,0
+Hiyuki,AM_AttackSp01,绯雪神刀-地面居合预备,UFDash,30,30,0,0,30,0,0,0,100,26,0,0,0,0,0,0
+Hiyuki,AM_AttackSp02,绯雪神刀-地面居合攻击,UFBA1,41,39,5,2,15,2,33,26,60,0,0,0,0,0,0,0
+Hiyuki,AM_AttackSp03,绯雪神刀-地面居合攻击,UFBA2,41,39,5,2,15,2,33,26,60,0,0,0,0,0,0,0
+Hiyuki,AM_Burst01,绯雪大招-拔刀,Ult1,240,240,1,0,240,210,210,0,240,0,0,0,0,0,240,240
+Hiyuki,AM_Burst02,绯雪神刀大招-收刀,Ult2,360,360,1,0,360,270,270,0,360,0,0,0,0,0,360,360
+Hiyuki,AM_BurstSkillQte,绯雪神刀QTE,UIntro,65,60,1,5,65,44,44,0,94,60,0,60,8,0,0,46
+Hiyuki,AM_Execute01,迅刃破弱,TB,89,89,5,0,89,30,72,0,101,90,0,90,0,0,90,70
+Hiyuki,AM_Skill01,绯雪共鸣技能,Skill,88,78,5,10,63,12,63,25,100,0,0,0,0,0,0,0
+Hiyuki,AM_SkillBurst01,绯雪神刀-地面E,USkill1,42,35,4,7,34,18,34,24,120,0,0,0,0,0,0,0
+Hiyuki,AM_SkillBurst02,绯雪神刀-空中E,USkill2,45,36,5,9,39,16,39,24,90,0,0,0,0,0,0,0
+Hiyuki,AM_SkillQte,绯雪神刀QTE,Intro,65,60,1,5,65,38,38,0,94,60,0,60,8,0,0,48

@@ -7,6 +7,8 @@ export type Settings = {
   startWithFullEnergy: boolean
   sandboxMode: boolean
   rowDeletionMode: boolean
+  useFixedStacks: boolean
+  triggerOutroIntroOnCharacterSelect: boolean
 }
 
 // ========== Defaults & Persistence ===========================================================================================
@@ -19,10 +21,12 @@ function getDefaultSettings(): Settings {
     startWithFullEnergy: false,
     sandboxMode: false,
     rowDeletionMode: false,
+    useFixedStacks: false,
+    triggerOutroIntroOnCharacterSelect: false,
   }
 }
 
-function loadSettings(): Settings {
+export function loadSettings(): Settings {
   try {
     const raw = localStorage.getItem(SETTINGS_KEY)
     if (raw) return { ...getDefaultSettings(), ...JSON.parse(raw) }

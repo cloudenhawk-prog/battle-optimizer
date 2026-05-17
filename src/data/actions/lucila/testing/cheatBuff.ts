@@ -5,7 +5,7 @@ const lucila_cheat_buff: Action = {
   tags: ['SKILL'],
   name: 'Cheat Buff',
   displayName: 'Cheat Buff',
-  category: 'Skills',
+  category: 'Testing',
   castTime: 0,
   multiplier: 0.0001,
   scaling: 'ATK',
@@ -23,10 +23,13 @@ const lucila_cheat_buff: Action = {
       color: '#6EC1F2',
       ownerCharacter: null,
       characterStats: {
+        // 12 % glacio from outro from Glommoth
         glacioBonusDMG: 0.25,
-        liberationAmplifyDMG: 0.25,
-        glacioAmplifyDMG: 0.20,
-        bonusDMG: 0.10
+        glacioChafeBonusDMG: 0.60,
+        bonusATK: 0.24
+      },
+      enemyStats: { 
+        glacioRES: -0.08,
       },
       condition: always(),
       targetStrategy: 'all',

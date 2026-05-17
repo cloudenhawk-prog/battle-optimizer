@@ -1,6 +1,7 @@
 import type { Action } from '../../../../../types/action'
 import * as values from '../../values'
-import { hiyuki_skill, hiyuki_skill_cancel_with_swap } from '../skills/resonance'
+import { hiyuki_skill, hiyuki_skill_cancel_with_swap,  } from '../skills/resonance'
+import { hiyuki_intro } from '../../others/introOutro'
 
 // ========== Normal ===========================================================================================================
 // TODO: Try cancel with dodge
@@ -11,7 +12,7 @@ const hiyuki_BA_3: Action = {
   name: 'Basic Attack 3',
   displayName: 'Basic Attack 3',
   category: 'Basics',
-  castTime: 1.00, // TODO
+  castTime: values.cast_time_BA3,
   multiplier: values.BA3_multiplier,
   scaling: 'ATK',
   elements: ['GLACIO'],
@@ -32,8 +33,11 @@ const hiyuki_BA_3: Action = {
     endState: 'GROUND',
     preventsSwapOut: true,
     blockedComboTags: ['BA1', 'BA3'],
-    requiredComboTags: ['BA2'],
-    requiredForms: ['Present Self']
+    requiredForms: ['Present Self'],
+    customCanCast(prevSnapshot, characterName) {
+      const tags = prevSnapshot?.charactersComboChainTags?.[characterName] ?? []
+      return tags.includes('BA2') || tags.includes('Intro Enables BA3')
+    },
   },
   comboChainTags: ['BA3'],
   hideWhenNotCastable: true,
@@ -48,7 +52,7 @@ const hiyuki_BA_3_cancel_with_swap: Action = {
   name: 'Basic Attack 3 (swap cancel)',
   displayName: 'Basic Attack 3 (swap cancel)',
   category: 'Basics',
-  castTime: 1.00, // TODO
+  castTime: values.SWAP_CANCEL_TIME,
   multiplier: values.BA3_multiplier,
   scaling: 'ATK',
   elements: ['GLACIO'],
@@ -71,8 +75,11 @@ const hiyuki_BA_3_cancel_with_swap: Action = {
     requiresSwapOut: true,
     persistenceTime: values.BA3_persistenceTime,
     blockedComboTags: ['BA1', 'BA3'],
-    requiredComboTags: ['BA2'],
-    requiredForms: ['Present Self']
+    requiredForms: ['Present Self'],
+    customCanCast(prevSnapshot, characterName) {
+      const tags = prevSnapshot?.charactersComboChainTags?.[characterName] ?? []
+      return tags.includes('BA2') || tags.includes('Intro Enables BA3')
+    },
   },
   comboChainTags: ['BA3'],
   hideWhenNotCastable: true,
@@ -91,7 +98,7 @@ const hiyuki_BA_3_enhanced: Action = {
   name: 'Enhanced Basic Attack 3',
   displayName: 'Enhanced Basic Attack 3',
   category: 'Basics',
-  castTime: 1.00, // TODO
+  castTime: values.cast_time_BA3,
   multiplier: values.BA3_multiplier,
   scaling: 'ATK',
   elements: ['GLACIO'],
@@ -109,7 +116,9 @@ const hiyuki_BA_3_enhanced: Action = {
   coordinatedAttacks: [],
   castConditions: {
     startState: 'GROUND',
-    endState: 'GROUND',    preventsSwapOut: true,    requiredForms: ['Present Self'],
+    endState: 'GROUND',
+    preventsSwapOut: true,
+    requiredForms: ['Present Self'],
     previousActions: [hiyuki_skill, hiyuki_skill_cancel_with_swap], // TODO: if this works after swapping back in, will need a way to persist the "combo"
     customCanCast(prevSnapshot) {
       const dedication = prevSnapshot?.charactersEnergies['Hiyuki']?.dedication ?? 0
@@ -128,7 +137,7 @@ const hiyuki_BA_3_enhanced_cancel_with_swap: Action = {
   name: 'Enhanced Basic Attack 3 (swap cancel)',
   displayName: 'Enhanced Basic Attack 3 (swap cancel)',
   category: 'Basics',
-  castTime: 1.00, // TODO
+  castTime: values.SWAP_CANCEL_TIME,
   multiplier: values.BA3_multiplier,
   scaling: 'ATK',
   elements: ['GLACIO'],

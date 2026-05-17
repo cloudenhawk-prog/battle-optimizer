@@ -23,7 +23,7 @@ export default function RotationEditorPage() {
   const [gearResetKey, setGearResetKey] = useState(0)
 
   const rotationCtx = useRotationPageContext()!
-  const { topbarVisible, rotationsOpen, setRotationsOpen, summaryOpen, setSummaryOpen, onHasDataChange } = rotationCtx
+  const { topbarVisible, rotationsOpen, setRotationsOpen, summaryOpen, setSummaryOpen, buildOptimizerOpen, setBuildOptimizerOpen, onHasDataChange } = rotationCtx
 
   /**
    * Called when the player swaps weapon or echoes on a character.
@@ -57,7 +57,7 @@ export default function RotationEditorPage() {
     <div style={{ display: 'flex', flexDirection: 'column', flex: 1, minHeight: 0 }}>
       {topbarVisible && <Topbar tableConfig={tableConfig} allColumns={allColumns} columnVisibility={columnVisibility} setColumnVisibility={setColumnVisibility} />}
 
-      <RotationEditor gearResetKey={gearResetKey} charactersInBattle={resolvedCharacters} enemy={enemies[0]} tableConfig={tableConfig} columnVisibility={columnVisibility} setColumnVisibility={setColumnVisibility} onGearChange={handleGearChange} onSequenceChange={handleSequenceChange} settings={settings} rotationsOpen={rotationsOpen} setRotationsOpen={setRotationsOpen} summaryOpen={summaryOpen} setSummaryOpen={setSummaryOpen} onHasDataChange={onHasDataChange} />
+      <RotationEditor gearResetKey={gearResetKey} charactersInBattle={resolvedCharacters} enemy={enemies[0]} tableConfig={tableConfig} columnVisibility={columnVisibility} setColumnVisibility={setColumnVisibility} onGearChange={handleGearChange} onSequenceChange={handleSequenceChange} settings={settings} rotationsOpen={rotationsOpen} setRotationsOpen={setRotationsOpen} summaryOpen={summaryOpen} setSummaryOpen={setSummaryOpen} buildOptimizerOpen={buildOptimizerOpen} setBuildOptimizerOpen={setBuildOptimizerOpen} onHasDataChange={onHasDataChange} />
     </div>
   )
 }

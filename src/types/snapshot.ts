@@ -65,6 +65,10 @@ export interface Snapshot {
    *  When set, all other actions/characters are locked in the next row (subject to
    *  the `must` flag — see Action.attemptFollowUp for semantics). */
   charactersAttemptFollowUp: Record<string, { actionName: string; must: boolean }>
+  /** When set, the character's next action must be one of the listed action names.
+   *  Other characters are locked out for the immediately following row.
+   *  Cleared when the character casts any action. */
+  charactersRestrictNextTo: Record<string, string[]>
   /** Tracks active combo windows for time-based combo systems.
    *  Key: character name. Value: info about the last combo starter action. */
   charactersComboWindows: Record<

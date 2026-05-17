@@ -1,5 +1,5 @@
 import type { SideEffect } from '../../types/sideEffect'
-import { calculateAeroErosionSideEffectDamage, calculateGlacioChafeProcDamage, calculateGlacioChafeProcActionDamage, calculateGlacioChafeDominionDamage } from '../../utils/calculators/sideEffectCalculators'
+import { calculateAeroErosionSideEffectDamage, calculateGlacioChafeProcDamage, calculateGlacioChafeDominionDamage, calculateLucilaOblivionDamage } from '../../utils/calculators/sideEffectCalculators'
 import { removeNegativeStatusStacks } from '../../utils/modifications/statusModificationHelpers'
 
 // ========== Side Effects =====================================================================================================
@@ -30,13 +30,47 @@ export const hiyuki_glacio_chafe_proc: SideEffect = {
   statusModifications: [],
 }
 
-// Hiyuki S6 Everfrost Dominion — Glacio Bite damage at max stacks, fired on every
-// Glacio Chafe application by any Resonator on the team.
+// Hiyuki S6 Everfrost Dominion — fires a Glacio Chafe negative-status damage hit at the
+// current max Glacio Chafe stacks whenever any Resonator on the team applies Glacio Chafe.
+// Damage scales off the Glacio Chafe stack damage table, NOT off ATK.
 // Fires via teamActionTriggers (see hiyuki.ts); ctx.character is always Hiyuki regardless
 // of who cast the triggering action, ensuring correct dealer attribution.
-// Damage uses the Glacio Chafe negative-status pipeline (not ATK-scaled).
 export const hiyuki_everfrost_dominion_glacio_bite: SideEffect = {
   name: 'Everfrost Dominion: Glacio Bite',
   damageDealt: calculateGlacioChafeDominionDamage,
   statusModifications: [],
+}
+
+// ========== Lucila ==========================================================================================================
+
+// Oblivion — fires once per Photo (50 Traces) consumed by Basic Attack - Tracing Forms Stage 3.
+// In Glacio Chafe mode, considered as Basic Attack DMG. Also inflicts 1 stack of Glacio Chafe.
+// Concerto (+5) and Film Roll (+2) generation per photo is handled in the action's resolveVariant
+// via energyGenerated, since SideEffect cannot generate energy.
+export const lucila_oblivion: SideEffect = {
+  name: 'Oblivion',
+  damageDealt: calculateLucilaOblivionDamage,
+  statusModifications: [{ type: 'negativeStatus', targetName: 'Glacio Chafe', stackChange: 1 }],
+}
+
+// Film Roll proc — fires via teamActionTriggers when a teammate applies Glacio Chafe
+// and Lucila has ≥ 1 Film Roll stack. Inflicts 2 stacks of Glacio Chafe on the target.
+// 1 Film Roll is consumed via TeamActionTrigger.energyCost on the trigger definition.
+export const lucila_film_roll_proc: SideEffect = {
+  name: 'Film Roll: Glacio Chafe',
+  damageDealt: (_ctx, sideEffectName, timeStamp) => ({
+    snapshotId: _ctx.snapshotId,
+    dealer: `${_ctx.character.name}: ${sideEffectName}`,
+    target: _ctx.enemy.name,
+    elements: [],
+    dmgTypes: [],
+    scaling: 'FLAT',
+    actionName: sideEffectName,
+    normalStrike: 0,
+    criticalStrike: 0,
+    average: 0,
+    contributions: {},
+    timeStamp,
+  }),
+  statusModifications: [{ type: 'negativeStatus', targetName: 'Glacio Chafe', stackChange: 2, applicationCount: 2 }],
 }

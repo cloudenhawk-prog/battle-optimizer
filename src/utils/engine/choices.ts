@@ -63,6 +63,14 @@ export function getAvailableActions(
     return locked ? [locked] : []
   }
 
+  // restrictNextTo lock: if a restriction is active, only return the listed actions
+  const restrictNextTo = snapshot.charactersRestrictNextTo?.[charName]
+  if (restrictNextTo?.length) {
+    return character.actions.filter(
+      a => restrictNextTo.includes(a.name) || (a.groupName !== undefined && restrictNextTo.includes(a.groupName))
+    )
+  }
+
   const lastAction = snapshot.charactersLastAction?.[charName]
   const comboChainTags = snapshot.charactersComboChainTags?.[charName] ?? []
 

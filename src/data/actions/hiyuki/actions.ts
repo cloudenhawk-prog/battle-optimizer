@@ -27,6 +27,7 @@ import * as forclaimed_BA5 from './form-foreclaimed-self/basics/BA5'
 import * as forclaimed_MA1 from './form-foreclaimed-self/basics/MA1'
 import * as forclaimed_MA2 from './form-foreclaimed-self/basics/MA2'
 import * as forclaimed_MA3 from './form-foreclaimed-self/basics/MA3'
+import * as forclaimed_heavy_attack from './form-foreclaimed-self/basics/heavy'
 import * as forclaimed_resonance from './form-foreclaimed-self/skills/resonance'
 import * as forclaimed_liberation from './form-foreclaimed-self/skills/liberation'
 import * as forclaimed_heavy from './form-foreclaimed-self/specials/heavy'
@@ -56,6 +57,7 @@ export const all_actions = [
   ...Object.values(forclaimed_MA1),
   ...Object.values(forclaimed_MA2),
   ...Object.values(forclaimed_MA3),
+  ...Object.values(forclaimed_heavy_attack),
   ...Object.values(forclaimed_resonance),
   ...Object.values(forclaimed_liberation),
   ...Object.values(forclaimed_heavy),

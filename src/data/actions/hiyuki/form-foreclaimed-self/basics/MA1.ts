@@ -10,7 +10,7 @@ const hiyuki_foreclaimed_midair_1: Action = {
   name: 'Foreclaimed: Mid-air Attack 1',
   displayName: 'Foreclaimed: Mid-air Attack 1',
   category: 'Basics',
-  castTime: 1.00, // TODO
+  castTime: values.cast_time_UMA1,
   multiplier: values.foreclaimed_MA1_multiplier,
   scaling: 'ATK',
   elements: ['GLACIO'],
@@ -47,7 +47,7 @@ const hiyuki_foreclaimed_midair_1_cancel_with_swap: Action = {
   name: 'Foreclaimed: Mid-air Attack 1 (swap cancel)',
   displayName: 'Foreclaimed: Mid-air Attack 1 (swap cancel)',
   category: 'Basics',
-  castTime: 1.00, // TODO
+  castTime: values.SWAP_CANCEL_TIME,
   multiplier: values.foreclaimed_MA1_multiplier,
   scaling: 'ATK',
   elements: ['GLACIO'],
@@ -88,7 +88,7 @@ const hiyuki_foreclaimed_midair_1_2: Action = {
   name: 'Foreclaimed: Mid-air Attack 1-2',
   displayName: 'Foreclaimed: Mid-air Attack 1-2',
   category: 'Basics',
-  castTime: 1.00, // TODO
+  castTime: values.cast_time_UMA1 + values.cast_time_UMA2,
   multiplier: values.foreclaimed_MA1_multiplier + values.foreclaimed_MA2_multiplier,
   scaling: 'ATK',
   elements: ['GLACIO'],
@@ -132,7 +132,7 @@ const hiyuki_foreclaimed_midair_1_2_cancel_with_swap: Action = {
   name: 'Foreclaimed: Mid-air Attack 1-2 (swap cancel)',
   displayName: 'Foreclaimed: Mid-air Attack 1-2 (swap cancel)',
   category: 'Basics',
-  castTime: 1.00, // TODO
+  castTime: values.cast_time_UMA1 + values.SWAP_CANCEL_TIME,
   multiplier: values.foreclaimed_MA1_multiplier + values.foreclaimed_MA2_multiplier,
   scaling: 'ATK',
   elements: ['GLACIO'],
@@ -180,7 +180,7 @@ const hiyuki_foreclaimed_midair_1_3: Action = {
   name: 'Foreclaimed: Mid-air Attack 1-3',
   displayName: 'Foreclaimed: Mid-air Attack 1-3',
   category: 'Basics',
-  castTime: 1.00, // TODO
+  castTime: values.cast_time_UMA1 + values.cast_time_UMA2 + values.cast_time_UMHA,
   multiplier: values.foreclaimed_MA1_multiplier + values.foreclaimed_MA2_multiplier + values.foreclaimed_MA3_multiplier,
   scaling: 'ATK',
   elements: ['GLACIO'],
@@ -224,7 +224,7 @@ const hiyuki_foreclaimed_midair_1_3_cancel_with_swap: Action = {
   name: 'Foreclaimed: Mid-air Attack 1-3 (swap cancel)',
   displayName: 'Foreclaimed: Mid-air Attack 1-3 (swap cancel)',
   category: 'Basics',
-  castTime: 1.00, // TODO
+  castTime: values.cast_time_UMA1 + values.cast_time_UMA2 + values.SWAP_CANCEL_TIME,
   multiplier: values.foreclaimed_MA1_multiplier + values.foreclaimed_MA2_multiplier + values.foreclaimed_MA3_multiplier,
   scaling: 'ATK',
   elements: ['GLACIO'],

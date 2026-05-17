@@ -48,6 +48,15 @@ export function getMCTSChoices(snapshot: Snapshot, team: ResolvedCharacter[]): C
     }
   }
 
+  // Global restrictNextTo lock: any character with a restriction locks out all other characters
+  for (const character of team) {
+    const restrictNextTo = snapshot.charactersRestrictNextTo?.[character.name]
+    if (restrictNextTo?.length) {
+      return getAvailableActions(snapshot, character)
+        .map(a => ({ character: character.name, actionName: a.name }))
+    }
+  }
+
   const choices: Choice[] = []
   for (const character of team) {
     // Skip characters that are swap-required-locked (just cast a requiresSwapOut action)

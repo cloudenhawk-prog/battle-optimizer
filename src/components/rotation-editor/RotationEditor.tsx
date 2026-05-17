@@ -4,6 +4,7 @@ import { useRotationEditor } from '../../hooks/rotation-editor/useRotationEditor
 import { RotationTable } from './RotationTable'
 import DataOverlay from './DataOverlay'
 import SummaryOverlay from './SummaryOverlay'
+import BuildOptimizerOverlay from './BuildOptimizerOverlay'
 import { ImportExportPanel } from './ImportExportPanel'
 import type { ResolvedCharacter } from '../../types/character'
 import type { Enemy } from '../../types/enemy'
@@ -31,10 +32,12 @@ type RotationEditorProps = {
   setRotationsOpen: React.Dispatch<React.SetStateAction<boolean>>
   summaryOpen: boolean
   setSummaryOpen: React.Dispatch<React.SetStateAction<boolean>>
+  buildOptimizerOpen: boolean
+  setBuildOptimizerOpen: React.Dispatch<React.SetStateAction<boolean>>
   onHasDataChange?: (hasData: boolean) => void
 }
 
-export default function RotationEditor({ charactersInBattle, enemy, tableConfig, columnVisibility, setColumnVisibility, onGearChange, onSequenceChange, gearResetKey, settings, rotationsOpen, setRotationsOpen, summaryOpen, setSummaryOpen, onHasDataChange }: RotationEditorProps) {
+export default function RotationEditor({ charactersInBattle, enemy, tableConfig, columnVisibility, setColumnVisibility, onGearChange, onSequenceChange, gearResetKey, settings, rotationsOpen, setRotationsOpen, summaryOpen, setSummaryOpen, buildOptimizerOpen, setBuildOptimizerOpen, onHasDataChange }: RotationEditorProps) {
   const { snapshots, damageEvents, handleCharacterSelect, handleActionSelect, importExport, editModeEntries, addEditModeEntry, removeEditModeEntry, updateEditModeEntry, clearEditModeEntries } = useRotationEditor({ charactersInBattle, tableConfig, enemy, gearResetKey, settings })
   const [overlayOpen, setOverlayOpen] = useState(false)
   const [overlayData, setOverlayData] = useState<null | { snapshot: Snapshot; previousSnapshot: Snapshot | null; damageEvents: DamageEvent[] }>(null)
@@ -250,6 +253,7 @@ export default function RotationEditor({ charactersInBattle, enemy, tableConfig,
         rowInfo={{ current: overlayIndex + 1, total: actionSnapshots.length }}
       />
       <SummaryOverlay open={summaryOpen} onClose={() => setSummaryOpen(false)} snapshots={snapshots} damageEvents={damageEvents ?? []} characters={charactersInBattle} />
+      <BuildOptimizerOverlay open={buildOptimizerOpen} onClose={() => setBuildOptimizerOpen(false)} snapshots={snapshots} charactersInBattle={charactersInBattle} enemy={enemy} tableConfig={tableConfig} settings={settings} />
     </div>
   )
 }

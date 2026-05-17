@@ -1,4 +1,5 @@
 import type { DamageType, ScalingType, ElementType } from './baseTypes'
+import type { CharacterStats } from './stats'
 
 // ========== Type: Damage Event Calc Params ===================================================================================
 
@@ -6,6 +7,9 @@ import type { DamageType, ScalingType, ElementType } from './baseTypes'
  *  damage with any subset of modifier groups active (buff toggle feature). */
 export type DamageEventCalcParams = {
   reEvaluate: (activeGroupKeys: Set<string>) => { normal: number; crit: number; avg: number }
+  /** The actual merged character stats used in the original calculation (all contributions active,
+   *  critRate clamped to 1.0). DataOverlay uses this as the source of truth for the stats display. */
+  finalCharacterStats: CharacterStats
 }
 
 // ========== Type: Damage Event ===============================================================================================

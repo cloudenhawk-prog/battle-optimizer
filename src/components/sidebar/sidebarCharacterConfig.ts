@@ -15,4 +15,5 @@ export type SidebarCharacterImageConfig = {
 // Keyed by character name (must match Character.name exactly).
 export const sidebarCharacterConfig: Record<string, SidebarCharacterImageConfig> = {
   Hiyuki: { x: '-45px', y: '5px', width: '350px' },
+  Lucila: { x: '-23px', y: '4px', width: '350px' },
 }

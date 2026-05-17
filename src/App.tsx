@@ -14,6 +14,7 @@ export default function App() {
   const [topbarVisible, setTopbarVisible] = useState(false)
   const [rotationsOpen, setRotationsOpen] = useState(false)
   const [summaryOpen, setSummaryOpen] = useState(false)
+  const [buildOptimizerOpen, setBuildOptimizerOpen] = useState(false)
   const [hasData, setHasData] = useState(false)
   const [selectedCharacterName, setSelectedCharacterName] = useState<string | null>(null)
   const [optimizerEditMode, setOptimizerEditMode] = useState(false)
@@ -21,10 +22,11 @@ export default function App() {
   const toggleTopbar = useCallback(() => setTopbarVisible(v => !v), [])
   const openRotations = useCallback(() => setRotationsOpen(true), [])
   const openFieldReport = useCallback(() => { if (hasData) setSummaryOpen(true) }, [hasData])
+  const openBuildOptimizer = useCallback(() => { if (hasData) setBuildOptimizerOpen(true) }, [hasData])
   const toggleOptimizerEditMode = useCallback(() => setOptimizerEditMode(v => !v), [])
 
   return (
-    <RotationPageContext.Provider value={{ topbarVisible, toggleTopbar, openRotations, openFieldReport, hasData, optimizerEditMode, toggleOptimizerEditMode, rotationsOpen, setRotationsOpen, summaryOpen, setSummaryOpen, onHasDataChange: setHasData, selectedCharacterName, setSelectedCharacterName }}>
+    <RotationPageContext.Provider value={{ topbarVisible, toggleTopbar, openRotations, openFieldReport, openBuildOptimizer, hasData, optimizerEditMode, toggleOptimizerEditMode, rotationsOpen, setRotationsOpen, summaryOpen, setSummaryOpen, buildOptimizerOpen, setBuildOptimizerOpen, onHasDataChange: setHasData, selectedCharacterName, setSelectedCharacterName }}>
       <AppLayout>
         <AppRoutes />
       </AppLayout>

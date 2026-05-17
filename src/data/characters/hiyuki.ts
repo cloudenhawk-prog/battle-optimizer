@@ -4,7 +4,7 @@ import { form_present_self, form_foreclaimed_self } from '../forms/hiyuki'
 import { hiyuki_cost_1_echo_1, hiyuki_cost_1_echo_2, hiyuki_cost_3_echo_1, hiyuki_cost_3_echo_2, hiyuki_cost_4_echo_1, hiyuki_weapon } from '../gear/hiyuki'
 import { hiyuki_inherentStats, hiyuki_stats } from '../stats/hiyuki'
 import { hiyuki_glacio_chafe_proc, hiyuki_everfrost_dominion_glacio_bite } from '../sideEffects/sideEffects'
-import { snow_rust_1_3, snow_rust_1, snow_rust_2_s6_self } from '../modifiers/hiyuki'
+import { snow_rust_1_3, snow_rust_1, snow_rust_2_s6_self, snow_rust_3_s6_team } from '../modifiers/hiyuki'
 
 export const hiyuki: Character = {
   name: 'Hiyuki',
@@ -30,7 +30,8 @@ export const hiyuki: Character = {
   damageModifiers: [
     snow_rust_1_3,
     snow_rust_1,
-    snow_rust_2_s6_self
+    snow_rust_2_s6_self,
+    snow_rust_3_s6_team
   ],
   stats: hiyuki_stats,
   inherentStats: hiyuki_inherentStats,
@@ -52,18 +53,18 @@ export const hiyuki: Character = {
   // S2: start with 3 Frostharden Iai and 2 Frostheart tokens (one-time at battle start).
   startingEnergies: (seq) => ({
     // Ephemeral Realm
-    ...(seq >= 3 ? { snow_rust: 2 } : { snow_rust: 1 }),
+    ...(seq >= 3 ? { snow_rust: 3 } : { snow_rust: 2 }),
     snowforged_blade: seq >= 2 ? 3 : 1,
     ...(seq >= 2 ? { frostharden_iai: 3, s2_frostheart_token: 2 } : {}),
   }),
   actionTriggers: [
     {
-      // We may want to have names and icons for this and a placeto see actionTriggers and offFieldTriggers in the UI
-      // At 2+ Snow Rust, while Hiyuki is on-field: every GLACIO_CHAFE_APPLIER cast fires a
-      // 102% ATK Glacio hit using the full damage pipeline (crit, modifiers, RES, etc.).
-      // Active at all sequence levels whenever snow_rust >= 2.
+      // Snow Rust 2 Glacio Bite (below S6): while Hiyuki is on-field, at 2+ Snow Rust stacks,
+      // every Glacio Chafe application fires a 102% ATK (590% at S3+) Glacio hit using the
+      // full damage pipeline (crit, modifiers, RES, etc.).
+      // At S6 this moves to teamActionTriggers to cover all team members.
       requiredTags: ['GLACIO_CHAFE_APPLIER'],
-      condition: (ctx) => (ctx.prev.charactersEnergies['Hiyuki']?.snow_rust ?? 0) >= 2,
+      condition: (ctx) => ctx.character.sequence < 6 && (ctx.prev.charactersEnergies['Hiyuki']?.snow_rust ?? 0) >= 2,
       sideEffect: hiyuki_glacio_chafe_proc,
       // Fire once per application event of Glacio Chafe, not once per action cast.
       // Actions that aggregate multiple hit events set applicationCount on their
@@ -73,37 +74,34 @@ export const hiyuki: Character = {
           .filter(m => m.type === 'negativeStatus' && m.targetName === 'Glacio Chafe')
           .reduce((sum, m) => sum + (m.applicationCount ?? 1), 0),
     },
+  ],
+  teamActionTriggers: [
     {
-      // TODO: Uncertain if this is the 102% Glacio hit or the everfrost dominion hit
-
-      // Everfrost Dominion (S0–S5): while Hiyuki is on-field and below S6, every time Hiyuki
-      // applies Glacio Chafe she deals a Glacio Chafe negative-status damage hit.
-      // At S6 this is superseded by teamActionTriggers (Everfrost Dominion), which covers all team members.
+      // S6 Snow Rust 2 Glacio Bite: at S6 every Glacio Chafe application by any team member
+      // fires a 102% ATK (590% at S3+) Glacio hit using the full damage pipeline.
       requiredTags: ['GLACIO_CHAFE_APPLIER'],
-      condition: (ctx) => ctx.character.sequence < 6,
-      sideEffect: hiyuki_everfrost_dominion_glacio_bite,
-      // Fire once per application event (same pattern as above).
+      condition: (ctx) => ctx.character.sequence >= 6 && (ctx.prev.charactersEnergies['Hiyuki']?.snow_rust ?? 0) >= 2,
+      sideEffect: hiyuki_glacio_chafe_proc,
+      // Fire once per application event (same pattern as actionTriggers above).
       fireCount: (ctx) =>
         (ctx.action.statusModifications ?? [])
           .filter(m => m.type === 'negativeStatus' && m.targetName === 'Glacio Chafe')
           .reduce((sum, m) => sum + (m.applicationCount ?? 1), 0),
-    }
-  ],
-  teamActionTriggers: [
+    },
     {
-      // S6 Everfrost Dominion: every time any Resonator on the team applies Glacio Chafe,
+      // Everfrost Dominion: every time any Resonator on the team applies Glacio Chafe,
       // Hiyuki deals a Glacio Chafe negative-status damage hit at the current max stacks.
       // Fires regardless of whether Hiyuki or a teammate is the active character.
       // ctx.character is substituted to Hiyuki by the resolver, so dealer = "Hiyuki: ...".
       requiredTags: ['GLACIO_CHAFE_APPLIER'],
       condition: (ctx) => ctx.character.sequence >= 6,
       sideEffect: hiyuki_everfrost_dominion_glacio_bite,
-      // Fire once per application event (same pattern as actionTriggers above).
+      // Fire once per application event (same pattern as above).
       fireCount: (ctx) =>
         (ctx.action.statusModifications ?? [])
           .filter(m => m.type === 'negativeStatus' && m.targetName === 'Glacio Chafe')
           .reduce((sum, m) => sum + (m.applicationCount ?? 1), 0),
-    }
+    },
   ],
   sequence_nodes: [
     // S1

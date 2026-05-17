@@ -70,7 +70,7 @@ export function activateModifiers(modifiers: DamageModifier[], existingModifiers
     }
 
     // Check if this modifier already exists
-    const existingIndex = result.findIndex(mia => mia.modifier.source === modifier.source && mia.modifier.displayName === modifier.displayName)
+    let existingIndex = result.findIndex(mia => mia.modifier.source === modifier.source && mia.modifier.displayName === modifier.displayName)
 
     if (existingIndex !== -1) {
       // Modifier exists - handle stacking
@@ -88,11 +88,15 @@ export function activateModifiers(modifiers: DamageModifier[], existingModifiers
       // Remove any existing modifiers whose source matches the removal target (refresh case).
       // This fires on every re-activation, not just on first creation, because the
       // activationCondition already guarantees the prerequisite is present.
+      // ownerCharacter scoping ensures that two characters wearing the same set don't
+      // accidentally consume each other's tracked buffs.
       if (modifier.removesModifierSourceOnActivation) {
         const removeSource = modifier.removesModifierSourceOnActivation
         for (let i = result.length - 1; i >= 0; i--) {
-          if (result[i].modifier.source === removeSource) {
+          if (result[i].modifier.source === removeSource && result[i].modifier.ownerCharacter === modifier.ownerCharacter) {
             result.splice(i, 1)
+            // Adjust existingIndex if the splice shifted it.
+            if (i < existingIndex) existingIndex--
             break
           }
         }
@@ -115,12 +119,15 @@ export function activateModifiers(modifiers: DamageModifier[], existingModifiers
     } else {
       // New modifier - create ModifierInAction
 
-      // Remove any existing modifiers whose source matches the removal target
+      // Remove any existing modifiers whose source matches the removal target.
+      // ownerCharacter scoping ensures that two characters wearing the same set don't
+      // accidentally consume each other's tracked buffs.
       if (modifier.removesModifierSourceOnActivation) {
         const removeSource = modifier.removesModifierSourceOnActivation
         for (let i = result.length - 1; i >= 0; i--) {
-          if (result[i].modifier.source === removeSource) {
+          if (result[i].modifier.source === removeSource && result[i].modifier.ownerCharacter === modifier.ownerCharacter) {
             result.splice(i, 1)
+            break
           }
         }
       }

@@ -93,7 +93,7 @@ export function ActionSelect({ value, actions, character, currentEnergies, previ
 
   // Get the current state of an action
   const getActionState = (action: Action): ActionState => {
-    const isSpecial = action.name === 'Intro' || action.name === 'Outro'
+    const isSpecial = action.tags?.includes('INTRO_ACTION') || action.tags?.includes('OUTRO_ACTION')
     const isCurrent = action.name === value
 
     if (sandboxMode) {
@@ -336,6 +336,14 @@ export function ActionSelect({ value, actions, character, currentEnergies, previ
         const isThisTheFollowUp = action.name === followUpEntry.actionName || action.groupName === followUpEntry.actionName
         if (!isThisTheFollowUp) {
           isNotRequiredFollowUp = true
+        }
+      }
+      // restrictNextTo: if a restriction is active, only allow actions in the list
+      if (!isNotRequiredFollowUp) {
+        const restrictNextTo = previousSnapshot.charactersRestrictNextTo?.[character.name]
+        if (restrictNextTo?.length) {
+          const isAllowed = restrictNextTo.includes(action.name) || (action.groupName !== undefined && restrictNextTo.includes(action.groupName))
+          if (!isAllowed) isNotRequiredFollowUp = true
         }
       }
     }

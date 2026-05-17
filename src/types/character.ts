@@ -2,6 +2,7 @@ import type { CharacterStats } from './stats'
 import type { DamageModifier } from './modifiers'
 import type { Action, ActionTag } from './action'
 import type { ElementType, EnergyType } from './baseTypes'
+import type { EnergyCost } from './energy'
 import type { Gear, WeaponType } from './gear'
 import type { Form } from './form'
 import type { Snapshot } from './snapshot'
@@ -74,6 +75,21 @@ export type TeamActionTrigger = {
    * Called with the owner-substituted context. See `ActionTrigger.fireCount` for usage pattern.
    */
   fireCount?: (ctx: StepContext) => number
+  /**
+   * Energy to deduct from the trigger owner once per trigger activation (not per fireCount repetition).
+   * Deducted at the moment the trigger fires, before the side effect executes.
+   */
+  energyCost?: EnergyCost[]
+  /**
+   * When set, after this trigger fires, a secondary pass of all OTHER team members'
+   * `teamActionTriggers` is run, treating the fired side effect's `statusModifications`
+   * as if an action with these tags was cast.
+   *
+   * This allows a chain: e.g. Lucila's film_roll_proc applies Glacio Chafe (tags here),
+   * which in turn lets Hiyuki's GLACIO_CHAFE_APPLIER triggers react to those stacks.
+   * The owner of this trigger is excluded from the secondary pass to prevent reflexive firing.
+   */
+  propagateTags?: ActionTag[]
 }
 
 // ========== Type: Off-Field Trigger ==========================================================================================
