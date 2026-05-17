@@ -1516,7 +1516,20 @@ type SummaryOverlayProps = {
 export default function SummaryOverlay({ open, onClose, snapshots, damageEvents, characters }: SummaryOverlayProps) {
   if (!open) return null
 
-  const activeChars = characters.filter(c => snapshots.some(s => s.character === c.name && s.action))
+  // Include characters who have taken actions OR who have attributed damage events (off-field passives).
+  // Without the damage-event check, a purely off-field character (e.g. a passive support with
+  // teamActionTriggers but no rotation entries) would be excluded, causing their "Name: ..." events
+  // to fall through into passiveDamageEvents / "Other Sources".
+  const charsWithActions = new Set(
+    snapshots.filter(s => s.action).map(s => s.character).filter((c): c is string => !!c)
+  )
+  const charsWithDamage = new Set(
+    damageEvents.map(e => {
+      const colonIdx = e.dealer.indexOf(': ')
+      return colonIdx >= 0 ? e.dealer.slice(0, colonIdx) : e.dealer
+    })
+  )
+  const activeChars = characters.filter(c => charsWithActions.has(c.name) || charsWithDamage.has(c.name))
   const charColorMap = buildCharacterColorMap(activeChars)
 
   const { characterSummaries, globalDamage, totalPassiveDamage, grandTotal, totalDuration } =

@@ -201,3 +201,58 @@ export function calculateGlacioChafeDominionDamage(context: StepContext, sideEff
   }
   return event
 }
+
+// ========== Lucila: Oblivion — Basic Attack DMG proc from photo consumption ==================================================
+
+/**
+ * Lucila's Oblivion — fires when BA Tracing Forms Stage 3 consumes a Photo (50 Traces).
+ * In Resonance Mode - Glacio Chafe (always active for this build), Oblivion is considered
+ * as Basic Attack DMG (285.48% ATK, Glacio element).
+ * The sideEffect is pushed once per photo consumed into Action.sideEffects by resolveVariant.
+ */
+export function calculateLucilaOblivionDamage(context: StepContext, sideEffectName: string, timeStamp: number): DamageEvent {
+  const syntheticAction = {
+    name: sideEffectName,
+    displayName: sideEffectName,
+    category: 'Other',
+    castTime: 0,
+    multiplier: 2.8548, // 285.48%
+    scaling: 'ATK',
+    elements: ['GLACIO'],
+    dmgTypes: ['BASIC'], // Considered as Basic Attack DMG in Glacio Chafe mode
+    cooldown: 0,
+    energyGenerated: [],
+    energyCost: [],
+    statusModifications: [],
+    damageModifiers: [],
+    sideEffects: [],
+    castConditions: { startState: 'GROUND', endState: 'GROUND' },
+    offtune: 0.96,
+  } as unknown as Action
+
+  const { damageEvent } = calculateDamage({
+    action: syntheticAction,
+    name: `${context.character.name}: ${sideEffectName}`,
+    stats: context.character.stats,
+    damageModifiers: context.damageModifiers,
+    modifierCharacterStats: context.aggregatedCharacterModifiers,
+    modifierEnemyStats: context.aggregatedEnemyModifiers,
+    enemy: context.enemy,
+    snapshotId: context.snapshotId,
+    timeStamp,
+    ctx: context,
+  })
+
+  const _oblivionFinalStats = mergeStats(context.character.stats, context.aggregatedCharacterModifiers)
+  _oblivionFinalStats.critRate = Math.min(_oblivionFinalStats.critRate, 1.0)
+  damageEvent.calcParams = {
+    reEvaluate: (activeGroupKeys) => evaluateDamageWithGroups(
+      { action: syntheticAction, characterName: context.character.name, baseStats: context.character.stats, damageModifiers: context.damageModifiers, enemy: context.enemy, ctx: context },
+      context.snapshotId,
+      timeStamp,
+      activeGroupKeys,
+    ),
+    finalCharacterStats: _oblivionFinalStats,
+  }
+  return damageEvent
+}

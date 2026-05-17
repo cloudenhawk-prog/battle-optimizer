@@ -14,6 +14,7 @@
 import type { Action } from '../../types/action'
 import type { Echo, EchoConditionalStats, InjectedModifier, InjectedSideEffect } from '../../types/gear'
 import type { CharacterStats } from '../../types/stats'
+import { always } from '../../utils/conditions/damageModifierConditions'
 import { nightmareKelpieOutroTrigger } from '../sideEffects/sideEffects'
 import { buildBaseStats } from './echoStats'
 
@@ -102,6 +103,25 @@ const echoSkill_aleph1: Action = {
     persistenceTime: 0.09,
     requiresSwapOut: true
   },
+  offtune: 0,
+}
+
+const echoSkill_glommoth: Action = {
+  name: 'Echo Skill',
+  displayName: 'Glommoth (Active)',
+  category: 'Echo Skill',
+  castTime: 1.0, // TODO: verify cast time
+  multiplier: 273.60 / 100,
+  scaling: 'ATK',
+  elements: ['GLACIO'],
+  dmgTypes: ['ECHO'],
+  cooldown: 20,
+  energyGenerated: [{ energyType: 'energy', amount: 1.9, share: 0.5, scalingStat: 'energyPercent' }], // TODO: verify energy
+  energyCost: [],
+  statusModifications: [],
+  damageModifiers: [],
+  sideEffects: [],
+  castConditions: { startState: 'ANY', endState: 'PRESERVE' },
   offtune: 0,
 }
 
@@ -387,7 +407,29 @@ export const echoCatalog: Record<string, EchoCatalogEntry[]> = {
       cost: 3,
       icon: 'assets/gear/echoes/glommoth.png',
       info_icon: 'assets/gear/echoes/info_glommoth.png',
-      info: '',
+      info: 'Summon a Glommoth to stomp enemies, dealing 273.60% Glacio DMG. Casting Outro Skill within 15s after summoning Glommoth grants 12.00% Glacio DMG Bonus to the incoming Resonator for 15s. CD: 20s.',
+      // TODO: verify firstSlotStats passive bonus
+      echoSkill: echoSkill_glommoth,
+      injectedModifiers: [
+        {
+          targets: [{ tag: 'OUTRO_ACTION' }],
+          modifiers: [
+            {
+              source: 'Glommoth',
+              displayName: 'Glommoth: Glacio DMG Bonus',
+              type: 'buff',
+              description: 'Outro Skill within 15s of Glommoth active: incoming Resonator gains 12% Glacio DMG Bonus for 15s.',
+              ownerCharacter: null,
+              // TODO: condition should check that Glommoth echo skill was used within the last 15s
+              condition: always(),
+              characterStats: { glacioBonusDMG: 0.12 },
+              targetStrategy: 'nextSwap',
+              durationStrategy: { type: 'limited', timeDuration: 15 },
+              stackingStrategy: { maxStacks: 1, resetTimerOnApplication: true, stacksRemovedEachTime: 1 },
+            },
+          ],
+        },
+      ],
     },
     {
       name: 'Windlash Coleoid',

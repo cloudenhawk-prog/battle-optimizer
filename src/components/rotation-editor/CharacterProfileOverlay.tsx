@@ -47,7 +47,7 @@ const FONT_BODY = '"Rajdhani", "Segoe UI", sans-serif'
 
 const PORTRAIT_SIZE_PX   = 250   // px — diameter of the portrait circle (must match --cpo-portrait-size)
 const PORTRAIT_OVERFLOW_PX = 99999  // px the image may extend above/outside the circle (9999 ≈ unrestricted)
-const PORTRAIT_ARC_DEG   = 145   // degrees of bottom arc that clips the image (0–180; 180 = full bottom semicircle)
+const PORTRAIT_ARC_DEG   = 160   // degrees of bottom arc that clips the image (0–180; 180 = full bottom semicircle)
 
 // Computes an SVG path() clip-path that contains only the bottom arc region plus everything above it up to `overflowPx`.
 function portraitClipPath(sizePx: number, arcDeg: number, overflowPx: number): string {

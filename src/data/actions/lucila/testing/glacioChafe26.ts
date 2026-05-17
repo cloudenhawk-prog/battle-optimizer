@@ -5,7 +5,7 @@ const lucila_glacio_chafe_26: Action = {
   tags: ['SKILL', 'GLACIO_CHAFE_APPLIER'],
   name: 'Glacio Chafe ×26',
   displayName: 'Glacio Chafe ×26',
-  category: 'Skills',
+  category: 'Testing',
   castTime: 7,
   multiplier: 0.001,
   scaling: 'ATK',

@@ -106,6 +106,27 @@ export default function SettingsPage() {
                 </div>
               </div>
             </label>
+
+            <div className="settingsRowDivider" />
+
+            <label className="settingsRow">
+              <div className="settingsRowBody">
+                <span className="settingsRowLabel">Auto-trigger Outro/Intro on character select</span>
+                <p className="settingsRowDesc">
+                  When enabled, switching to a different character automatically fires the Outro and Intro without requiring you to pick an action first. Useful for inspecting the post-intro state before committing to the next action.
+                </p>
+              </div>
+              <div className="settingsToggleWrap">
+                <input
+                  type="checkbox"
+                  checked={settings.triggerOutroIntroOnCharacterSelect}
+                  onChange={e => updateSetting('triggerOutroIntroOnCharacterSelect', e.target.checked)}
+                />
+                <div className="settingsToggleTrack">
+                  <div className="settingsToggleThumb" />
+                </div>
+              </div>
+            </label>
           </div>
         </section>
 

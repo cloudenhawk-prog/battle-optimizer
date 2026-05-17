@@ -10,7 +10,7 @@ import type { GlobalColumns, TableConfig } from '../../types/tableDefinitions'
 import { useRef } from 'react'
 import { copySnapshots } from '../../utils/hooks/snapshotHelpers'
 import type { Settings } from '../useSettings'
-import { engineStep, initEngineState } from '../../utils/engine/step'
+import { engineStep, initEngineState, shouldTriggerOutroIntro, handleOutroIntroFlow } from '../../utils/engine/step'
 
 // Re-export pure engine functions for callers that imported them from here
 export {
@@ -66,8 +66,33 @@ export function useCharacterActions({ setSnapshots, charactersInBattle, enemy, t
       if (currentIndex === -1) return updated
 
       // Keep snapshots up to current + 1 (the blank row)
-      const result = updated.slice(0, currentIndex + 2)
-      return result
+      const truncated = updated.slice(0, currentIndex + 2)
+
+      if (settings.triggerOutroIntroOnCharacterSelect && shouldTriggerOutroIntro(truncated, snapshotId)) {
+        const result = handleOutroIntroFlow({
+          snapshots: truncated,
+          snapshotId,
+          charactersMap,
+          characterColumnsMap,
+          globalColumns,
+          enemy,
+          negativeStatusesInAction: negativeStatusesInAction.current,
+          modifiersInAction: modifiersInAction.current,
+          coordinatedAttacksInAction: coordinatedAttacksInAction.current,
+        })
+
+        if (result.damageEvents.length > 0) {
+          setDamageEvents(prev => [...prev, ...result.damageEvents])
+        }
+
+        negativeStatusesInAction.current = result.negativeStatusesInAction
+        modifiersInAction.current = result.modifiersInAction
+        coordinatedAttacksInAction.current = result.coordinatedAttacksInAction
+
+        return result.snapshots
+      }
+
+      return truncated
     })
   }
 

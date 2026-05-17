@@ -40,7 +40,7 @@ const hiyuki_intro: Action = {
       }
     }
 
-    return { ...this, resolveVariant: undefined }
+    return { ...this, comboChainTags: ['Intro Enables BA3'], resolveVariant: undefined }
   }
 }
 

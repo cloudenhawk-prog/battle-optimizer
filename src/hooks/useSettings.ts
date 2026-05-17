@@ -8,6 +8,7 @@ export type Settings = {
   sandboxMode: boolean
   rowDeletionMode: boolean
   useFixedStacks: boolean
+  triggerOutroIntroOnCharacterSelect: boolean
 }
 
 // ========== Defaults & Persistence ===========================================================================================
@@ -21,6 +22,7 @@ function getDefaultSettings(): Settings {
     sandboxMode: false,
     rowDeletionMode: false,
     useFixedStacks: false,
+    triggerOutroIntroOnCharacterSelect: false,
   }
 }
 

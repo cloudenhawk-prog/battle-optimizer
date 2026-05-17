@@ -289,7 +289,7 @@ export function resolveSideEffectsAndStatuses(ctx: StepContext): void {
   const statusModifications = aggregateStatusModifications(ctx)
 
   // Side Effects Damage
-  helpSideEffectsDamage(ctx)
+  helpSideEffectsDamage(ctx, statusModifications)
 
   // Negative Statuses
   helpNegativeStatuses(ctx, statusModifications)
@@ -430,7 +430,63 @@ function helpModifierStatusModifications(ctx: StepContext, statusModifications: 
   }
 }
 
-function helpSideEffectsDamage(ctx: StepContext): void {
+/**
+ * Builds a StepContext for an off-field character firing a teamActionTrigger.
+ * Re-collects and re-aggregates modifiers with ownerChar as the "active" character so that
+ * self-targeting modifiers (e.g. Hiyuki's Snow Rust crit DMG) are correctly included instead
+ * of being dropped when the spread context carries the active character's aggregated stats.
+ */
+function buildOwnerStepContext(ownerChar: ResolvedCharacter, ctx: StepContext): StepContext {
+  const otherChars = [ctx.character, ...ctx.allies].filter(c => c.name !== ownerChar.name)
+
+  const ownerAllMods = collectAllModifiers(ownerChar, ctx.action, ctx.negativeStatusesInAction, otherChars)
+  const ownerPermanentMods = ownerAllMods.filter(m => !m.durationStrategy || m.durationStrategy.type === 'permanent')
+
+  const baseOwnerCtx: StepContext = { ...ctx, character: ownerChar }
+  const ownerApplicableMods = filterApplicableModifiers(ctx.modifiersInAction, ownerPermanentMods, baseOwnerCtx)
+
+  const characterModifiers = initializeEmptyCharacterStats()
+  const enemyModifiers = initializeEmptyEnemyStats()
+
+  for (const modifier of ownerApplicableMods) {
+    const stackedModifier = modifier.durationStrategy?.type === 'limited'
+      ? applyStackMultiplier(modifier, ctx.modifiersInAction)
+      : modifier
+    const conditionMultiplier = stackedModifier.condition ? stackedModifier.condition(baseOwnerCtx) : 1
+
+    if (stackedModifier.characterStats) {
+      for (const [key, value] of Object.entries(stackedModifier.characterStats)) {
+        const statKey = key as keyof CharacterStats
+        characterModifiers[statKey] = aggregateStat(
+          characterModifiers[statKey] as number | undefined,
+          (value as number) * conditionMultiplier,
+          statKey,
+        ) as any
+      }
+    }
+
+    if (stackedModifier.enemyStats) {
+      for (const [key, value] of Object.entries(stackedModifier.enemyStats)) {
+        const statKey = key as keyof EnemyStats
+        enemyModifiers[statKey] = aggregateStat(
+          enemyModifiers[statKey] as number | undefined,
+          (value as number) * conditionMultiplier,
+          statKey,
+        ) as any
+      }
+    }
+  }
+
+  return {
+    ...ctx,
+    character: ownerChar,
+    damageModifiers: ownerApplicableMods,
+    aggregatedCharacterModifiers: characterModifiers,
+    aggregatedEnemyModifiers: enemyModifiers,
+  }
+}
+
+function helpSideEffectsDamage(ctx: StepContext, statusModifications: ReturnType<typeof aggregateStatusModifications>): void {
   const sideEffects = ctx.action.sideEffects ?? []
 
   // Collect character-level action triggers whose required tags all match and condition passes.
@@ -448,17 +504,25 @@ function helpSideEffectsDamage(ctx: StepContext): void {
   // Collect team-wide triggers from all characters (active + allies).
   // Each fires with an owner-substituted context so ctx.character = trigger owner,
   // ensuring correct dealer attribution and owner stats regardless of who is active.
-  type TeamFiring = { sideEffect: SideEffect; ownerCtx: StepContext }
+  type TeamFiring = { sideEffect: SideEffect; ownerCtx: StepContext; propagateTags?: string[] }
   const teamFirings: TeamFiring[] = []
   for (const teamChar of [ctx.character, ...ctx.allies]) {
     if (!teamChar.teamActionTriggers?.length) continue
-    const ownerCtx: StepContext = teamChar.name === ctx.character.name ? ctx : { ...ctx, character: teamChar }
+    const ownerCtx: StepContext = teamChar.name === ctx.character.name ? ctx : buildOwnerStepContext(teamChar, ctx)
     for (const trigger of teamChar.teamActionTriggers) {
       if (!trigger.requiredTags.every(tag => ctx.action.tags?.includes(tag))) continue
       if (trigger.condition && !trigger.condition(ownerCtx)) continue
       const count = trigger.fireCount ? trigger.fireCount(ownerCtx) : 1
+      if (trigger.energyCost?.length) {
+        const charEnergies = { ...(ctx.current.charactersEnergies?.[teamChar.name] ?? {}) }
+        for (const cost of trigger.energyCost) {
+          const prev = charEnergies[cost.energyType] ?? 0
+          charEnergies[cost.energyType] = Math.max(0, prev - cost.amount)
+        }
+        ctx.current.charactersEnergies = { ...ctx.current.charactersEnergies, [teamChar.name]: charEnergies }
+      }
       for (let i = 0; i < count; i++) {
-        teamFirings.push({ sideEffect: trigger.sideEffect, ownerCtx })
+        teamFirings.push({ sideEffect: trigger.sideEffect, ownerCtx, propagateTags: trigger.propagateTags })
       }
     }
   }
@@ -481,6 +545,58 @@ function helpSideEffectsDamage(ctx: StepContext): void {
     if (damageEvent.average > 0) {
       damageEvents.push(damageEvent)
       totalSideEffectDamage += damageEvent.average
+    }
+  }
+
+  // Secondary pass: for teamFirings with propagateTags, fire other characters' teamActionTriggers
+  // as if an action with those tags was cast — using the side effect's own statusModifications
+  // so that fireCount (which reads applicationCount from action.statusModifications) works correctly.
+  // The owner of the firing trigger is excluded to prevent reflexive re-triggering.
+  // Also merges the side effect's statusModifications into the aggregated mods (e.g. Glacio Chafe stacks
+  // from film_roll_proc are included in the negative-status update that runs after this function).
+  const dedupSet = new Set<string>()
+  for (const { sideEffect, ownerCtx, propagateTags } of teamFirings) {
+    if (!propagateTags?.length) continue
+
+    for (const mod of sideEffect.statusModifications ?? []) {
+      aggregateModification(statusModifications, mod)
+    }
+
+    const syntheticCtx: StepContext = {
+      ...ctx,
+      action: {
+        ...ctx.action,
+        tags: propagateTags as any,
+        statusModifications: sideEffect.statusModifications ?? [],
+      },
+    }
+
+    let charTriggerIndex = 0
+    for (const teamChar of [ctx.character, ...ctx.allies]) {
+      if (teamChar.name === ownerCtx.character.name) continue
+      if (!teamChar.teamActionTriggers?.length) continue
+
+      const charOwnerCtx: StepContext = teamChar.name === ctx.character.name
+        ? syntheticCtx
+        : buildOwnerStepContext(teamChar, syntheticCtx)
+
+      for (const trigger of teamChar.teamActionTriggers) {
+        const dedupKey = `${ownerCtx.character.name}->${teamChar.name}[${charTriggerIndex++}]`
+        if (dedupSet.has(dedupKey)) continue
+        if (!trigger.requiredTags.every(tag => propagateTags.includes(tag))) continue
+        if (trigger.condition && !trigger.condition(charOwnerCtx)) continue
+
+        const count = trigger.fireCount ? trigger.fireCount(charOwnerCtx) : 1
+        dedupSet.add(dedupKey)
+
+        for (let i = 0; i < count; i++) {
+          const damageEvent = trigger.sideEffect.damageDealt(charOwnerCtx, trigger.sideEffect.name, ctx.fromTime)
+          if (damageEvent.average > 0) {
+            damageEvents.push(damageEvent)
+            totalSideEffectDamage += damageEvent.average
+          }
+        }
+      }
     }
   }
 
