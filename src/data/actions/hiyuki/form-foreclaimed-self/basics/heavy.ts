@@ -1,3 +1,4 @@
+// Hiyuki — Foreclaimed Self form: Heavy Attack into BA2-3 combo (default / swap / skill / heavy / dash cancel).
 import type { Action } from '../../../../../types/action'
 import * as values from '../../values'
 import { s1_foreclaimed_basic_multiplier } from '../../../../modifiers/hiyuki'

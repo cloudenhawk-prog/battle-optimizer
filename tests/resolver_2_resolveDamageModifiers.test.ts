@@ -1,4 +1,4 @@
-import { buildStepContext, resolveDamageModifiers, aggregateStat } from '../src/utils/hooks/resolvers'
+import { buildStepContext, resolveDamageModifiers, aggregateStat } from '../src/engine/resolvers'
 import { createMockSnapshot, createMockCharacter, createMockAction, createMockEnemy, createMockNegativeStatus, createMockActiveNegativeStatus, createMockDamageModifier } from './testUtils'
 
 /**

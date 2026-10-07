@@ -1,3 +1,4 @@
+// CLI entry point for the MCTS rotation search (npm run mcts): parses args, runs a diagnostic rollout, prints the top rotations.
 /**
  * MCTS Battle Optimizer — Entry Point
  *
@@ -29,18 +30,18 @@ import * as fs from 'fs'
 import * as path from 'path'
 import { characters } from '../src/data/characters'
 import { enemies } from '../src/data/enemies'
-import { runMCTS } from '../src/utils/mcts/search'
-import { extractTopRotations } from '../src/utils/mcts/output'
-import type { TerminationGoal } from '../src/utils/mcts/score'
-import { getMCTSChoices } from '../src/utils/mcts/choices'
-import { initEngineState, engineStep } from '../src/utils/engine/step'
-import { assignCharacterToRow, isSwapRequiredLocked } from '../src/utils/hooks/snapshotHelpers'
-import { getAvailableActions } from '../src/utils/engine/choices'
-import type { GlobalColumns } from '../src/types/tableDefinitions'
+import { runMCTS } from '../src/optimizers/mcts/search'
+import { extractTopRotations } from '../src/optimizers/mcts/output'
+import type { TerminationGoal } from '../src/optimizers/mcts/score'
+import { getMCTSChoices } from '../src/optimizers/mcts/choices'
+import { initEngineState } from '../src/engine/simulation/engineState'
+import { isSwapRequiredLocked } from '../src/engine/state/snapshotHelpers'
+import { createMCTSInitialSnapshot } from '../src/optimizers/mcts/initialSnapshot'
+import { applyChoice } from '../src/optimizers/mcts/applyChoice'
+import { getAvailableActions } from '../src/engine/castRules/availableActions'
 import type { ResolvedCharacter } from '../src/types/character'
 import type { Enemy } from '../src/types/enemy'
 import type { Snapshot } from '../src/types/snapshot'
-import type { EnergyType } from '../src/types/baseTypes'
 
 // ========== CLI Arg Parsing ==================================================================================================
 
@@ -131,33 +132,6 @@ Examples:
 
 // ========== Diagnostics =====================================================================================================
 
-const EMPTY_GLOBAL_COLUMNS: GlobalColumns = { basic: [], buffs: [], debuffs: [], negativeStatuses: [] }
-
-function createInitialSnapshot(team: ResolvedCharacter[]): Snapshot {
-  const charactersEnergies: Record<string, Partial<Record<EnergyType, number>>> = {}
-  for (const char of team) {
-    const energies: Partial<Record<EnergyType, number>> = {}
-    const starting = char.startingEnergies?.(char.sequence) ?? {}
-    for (const [key, maxVal] of Object.entries(char.maxEnergies) as [EnergyType, number][]) {
-      energies[key] = Math.min(starting[key] ?? 0, maxVal)
-    }
-    charactersEnergies[char.name] = energies
-  }
-  return {
-    id: '0', character: '', action: '', fromTime: 0, toTime: 0, damage: 0, dps: 0,
-    charactersEnergies, buffs: {}, buffsTimeLeft: {}, buffsSwapsLeft: {}, buffsMaxStacks: {},
-    buffsActivationStats: {}, buffsTargetCharacter: {}, debuffs: {}, debuffsTimeLeft: {},
-    debuffsSwapsLeft: {}, debuffsMaxStacks: {}, negativeStatuses: {}, negativeStatusesTimeLeft: {},
-    negativeStatusesMaxStacks: {}, coordinatedAttacks: {}, coordinatedAttacksTimeLeft: {},
-    coordinatedAttacksSwapRequired: {}, charactersCooldowns: {}, charactersActionStacks: {},
-    charactersActionStacksConfig: {}, charactersPositions: {}, charactersPersistentUntil: {},
-    charactersLastAction: {}, charactersRequiresSwapOut: {}, charactersForms: {},
-    charactersSwapCooldownUntil: {}, charactersAttemptFollowUp: {}, charactersComboWindows: {},
-    charactersForteGrants: {}, charactersComboChainTags: {}, charactersOffFieldSince: {},
-    offFieldTriggerEvents: {},
-  }
-}
-
 /**
  * Called when getMCTSChoices returns empty. Prints a per-character breakdown of why
  * each character has no castable actions, so it's easy to diagnose the stuck state.
@@ -223,7 +197,7 @@ function diagnoseStuck(snapshot: Snapshot, team: ResolvedCharacter[]): void {
  */
 function runDiagnostics(team: ResolvedCharacter[], enemy: Enemy, steps = 10): void {
   const charactersMap = Object.fromEntries(team.map(c => [c.name, c]))
-  let snapshots: Snapshot[] = [createInitialSnapshot(team)]
+  let snapshots: Snapshot[] = [createMCTSInitialSnapshot(team)]
   let engineState = initEngineState()
 
   const rootChoices = getMCTSChoices(snapshots[0], team)
@@ -251,23 +225,9 @@ function runDiagnostics(team: ResolvedCharacter[], enemy: Enemy, steps = 10): vo
       break
     }
 
+    // Uniform random here (unlike the search's damage-weighted rollouts): this is only a smoke test.
     const choice = choices[Math.floor(Math.random() * choices.length)]
-    const snapshotId = snapshots.length - 1
-    const snapshotsWithChar = [...snapshots]
-    snapshotsWithChar[snapshotId] = assignCharacterToRow(snapshotsWithChar[snapshotId], choice.character)
-
-    const result = engineStep({
-      snapshots: snapshotsWithChar,
-      snapshotId,
-      actionName: choice.actionName,
-      engineState,
-      charactersMap,
-      characterColumnsMap: {},
-      globalColumns: EMPTY_GLOBAL_COLUMNS,
-      enemy,
-      autocastFollowUps: false,
-    })
-
+    const result = applyChoice(snapshots, engineState, choice, charactersMap, enemy)
     snapshots = result.snapshots
     engineState = result.engineState
 

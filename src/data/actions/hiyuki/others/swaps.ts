@@ -1,3 +1,4 @@
+// Hiyuki — utility wait actions (fixed 0.05s, until next swap, until next cooldown).
 import type { Action } from '../../../../types/action'
 
 // Wait 0.05s
@@ -53,6 +54,7 @@ const hiyuki_wait_for_swap: Action = {
     },
   },
   offtune: 0,
+  // castTime = time until the earliest character swap cooldown expires.
   resolveVariant(prevSnapshot) {
     const cooldowns = prevSnapshot?.charactersSwapCooldownUntil ?? {}
     const toTime = prevSnapshot?.toTime ?? 0
@@ -89,6 +91,7 @@ const hiyuki_wait_for_cooldown: Action = {
     },
   },
   offtune: 0,
+  // castTime = time until this character's shortest running cooldown expires.
   resolveVariant(prevSnapshot, characterName) {
     const cooldowns = prevSnapshot?.charactersCooldowns?.[characterName] ?? {}
     const remaining = Object.values(cooldowns).filter(r => r > 0)

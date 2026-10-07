@@ -1,3 +1,4 @@
+// Detail panel for a buff/debuff/negative status (stacks, description, stats) as a modal or a fixed tooltip
 import { createPortal } from 'react-dom'
 import type { CSSProperties, ReactNode, ReactElement } from 'react'
 import '../../styles/rotation-editor/StatusDetailPanel.css'
@@ -92,6 +93,7 @@ export function StatusDetailPanel({ status, onClose, variant = 'modal', style }:
   const typeLabel = TYPE_LABELS[status.type ?? ''] ?? 'Effect'
   const accent = status.color ?? TYPE_ACCENT_DEFAULTS[status.type ?? ''] ?? '#88AACC'
   const value = status.value ?? 0
+  // Single-stack statuses read "Active" instead of "1 / 1"
   const isActive = value === 1 && (!status.maxStacks || status.maxStacks === 1)
   const stacksDisplay = isActive ? 'Active' : `${value} / ${status.maxStacks}`
   const showStatusSection = status.showStatus !== false
@@ -170,6 +172,7 @@ export function StatusDetailPanel({ status, onClose, variant = 'modal', style }:
     </div>
   )
 
+  // Tooltip: caller positions it via `style`. Modal: click on the backdrop closes, clicks inside don't.
   if (variant === 'tooltip') {
     return createPortal(panelContent, document.body)
   }

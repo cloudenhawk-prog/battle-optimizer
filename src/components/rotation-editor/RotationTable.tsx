@@ -1,3 +1,4 @@
+// Rotation table: state tracker, header rows, one BodyRow per snapshot, plus Edit Mode insert/entry rows.
 import '../../styles/rotation-editor/RotationTable.css'
 import { useState, useEffect, useRef } from 'react'
 import { HeaderRow } from './HeaderRow'
@@ -42,6 +43,7 @@ export function RotationTable({ snapshots, charactersInBattle, charactersMap = {
   const lastMaxId = useRef(0)
   const rotationCtx = useRotationPageContext()
 
+  // Flash newly appended rows for 1.5s (deferred a tick so the class change triggers the CSS animation)
   useEffect(() => {
     const idsToHighlight = getHighlightIds(snapshots, lastMaxId)
 
@@ -68,6 +70,7 @@ export function RotationTable({ snapshots, charactersInBattle, charactersMap = {
   const lastSnapshot = snapshots.length > 0 ? snapshots[snapshots.length - 1] : null
   const activeCharacterName = lastSnapshot?.character || null
 
+  // Publish the active character so the sidebar can show their artwork
   useEffect(() => {
     rotationCtx?.setSelectedCharacterName(activeCharacterName)
   }, [activeCharacterName])
@@ -82,6 +85,7 @@ export function RotationTable({ snapshots, charactersInBattle, charactersMap = {
             <CurrentStateRow snapshot={currentSnapshot || null} firstFromTime={firstFromTime} tableConfig={tableConfig} columnVisibility={columnVisibility} />
           </thead>
           <tbody>
+          {/* Snapshot rows interleaved with Edit Mode insert slots / pending entries, keyed by user-step count */}
           {(() => {
             const rows: React.ReactNode[] = []
             let stepCount = 0
@@ -154,6 +158,10 @@ export function RotationTable({ snapshots, charactersInBattle, charactersMap = {
 
 // ========== Helper Functions =================================================================================================
 
+/**
+ * Ids to flash when the timeline grew (max id increased): the row before the new blank row, plus the
+ * Outro/Intro pair if a swap just happened. Updates lastMaxId as a side effect.
+ */
 function getHighlightIds(snapshots: Snapshot[], lastMaxId: React.MutableRefObject<number>): number[] {
   if (!snapshots.length) return []
 

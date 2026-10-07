@@ -1,6 +1,7 @@
+// Ciaccona (Aero) — character definition: kit, gear, sequences.
 import type { Character } from '../../types/character'
-import { always } from '../../utils/conditions/damageModifierConditions'
-import * as ciacconaActions from '../actions/ciaccona'
+import { always } from '../helpers/modifierConditions'
+import * as ciacconaActions from '../actions/ciaccona/actions'
 import { ciaccona_cost_1_echo_1, ciaccona_cost_1_echo_2, ciaccona_cost_3_echo_1, ciaccona_cost_3_echo_2, ciaccona_cost_4_echo_1, ciaccona_set_bonus, ciaccona_weapon } from '../gear/ciaccona'
 import { ciaccona_stats, ciaccona_inherentStats } from '../stats/ciaccona'
 

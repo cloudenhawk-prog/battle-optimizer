@@ -1,4 +1,5 @@
-﻿/* =====================================================================================
+﻿/* Data overlay (per-row analysis) styles; also imported by CharacterProfileOverlay for shared panel/stat classes */
+/* =====================================================================================
    RESONANCE FIELD ANALYSIS — DATA OVERLAY
    Layout:  3-column flex (left | center | right), full-panel like SummaryOverlay
    Left:    (empty)

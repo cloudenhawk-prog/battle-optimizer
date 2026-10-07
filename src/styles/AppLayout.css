@@ -1,10 +1,11 @@
+/* App shell layout: container, main content column and background layers. */
 /* -------------- App Layout Variables ------ */
 
 :root {
   --content-column-width-free-space: 24px;
 }
 
-/* -------------- NO CLUE -------------- */
+/* -------------- App Container & Content -------------- */
 
 .app-container {
   display: flex;

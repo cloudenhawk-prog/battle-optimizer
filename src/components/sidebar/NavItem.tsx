@@ -1,3 +1,4 @@
+// Sidebar navigation link (label hidden when the sidebar is collapsed).
 import { Link } from 'react-router-dom'
 import React from 'react'
 import '../../styles/sidebar/NavItem.css'

@@ -1,0 +1,3165 @@
+{
+ "base": {
+  "actions": [
+   {
+    "castConditions": {
+     "endState": "AIR",
+     "startState": "GROUND"
+    },
+    "castTime": 1,
+    "category": "Skills",
+    "cooldown": 3,
+    "damageModifiers": [],
+    "displayName": "Awakening Gale",
+    "dmgTypes": [
+     "SKILL"
+    ],
+    "elements": [
+     "AERO"
+    ],
+    "energyCost": [],
+    "energyGenerated": [
+     {
+      "amount": 5,
+      "energyType": "energy",
+      "scalingStat": "energyPercent",
+      "share": 0.5
+     },
+     {
+      "amount": 10,
+      "energyType": "concerto",
+      "share": 0
+     }
+    ],
+    "groupName": "Resonance Skill 1",
+    "multiplier": 1.661,
+    "name": "Resonance Skill 1",
+    "offtune": 0.76,
+    "scaling": "ATK",
+    "sideEffects": [],
+    "statusModifications": [],
+    "tags": [
+     "SKILL"
+    ],
+    "variantName": "Default"
+   },
+   {
+    "castConditions": {
+     "endState": "AIR",
+     "persistenceTime": 1.4,
+     "requiresSwapOut": true,
+     "startState": "GROUND",
+     "swapOutState": "GROUND"
+    },
+    "castTime": 0.15,
+    "category": "Skills",
+    "cooldown": 3,
+    "damageModifiers": [],
+    "displayName": "Awakening Gale (swap cancel)",
+    "dmgTypes": [
+     "SKILL"
+    ],
+    "elements": [
+     "AERO"
+    ],
+    "energyCost": [],
+    "energyGenerated": [
+     {
+      "amount": 5,
+      "energyType": "energy",
+      "scalingStat": "energyPercent",
+      "share": 0.5
+     },
+     {
+      "amount": 10,
+      "energyType": "concerto",
+      "share": 0
+     }
+    ],
+    "groupName": "Resonance Skill 1",
+    "multiplier": 1.661,
+    "name": "Resonance Skill 1 (swap cancel)",
+    "offtune": 0.76,
+    "scaling": "ATK",
+    "sideEffects": [],
+    "statusModifications": [],
+    "tags": [
+     "SKILL"
+    ],
+    "variantName": "Cancel With Swap"
+   },
+   {
+    "castConditions": {
+     "endState": "AIR",
+     "startState": "AIR"
+    },
+    "castTime": 0.84,
+    "category": "Skills",
+    "cooldown": 12,
+    "damageModifiers": [],
+    "displayName": "Skyfall Severance",
+    "dmgTypes": [
+     "SKILL"
+    ],
+    "elements": [
+     "AERO"
+    ],
+    "energyCost": [],
+    "energyGenerated": [
+     {
+      "amount": 2.52,
+      "energyType": "energy",
+      "scalingStat": "energyPercent",
+      "share": 0.5
+     },
+     {
+      "amount": 5,
+      "energyType": "concerto",
+      "share": 0
+     }
+    ],
+    "groupName": "Resonance Skill 2",
+    "multiplier": 1.7526,
+    "name": "Resonance Skill 2",
+    "offtune": 0.81,
+    "scaling": "ATK",
+    "sideEffects": [],
+    "statusModifications": [],
+    "tags": [
+     "SKILL"
+    ],
+    "variantName": "Default"
+   },
+   {
+    "castConditions": {
+     "endState": "AIR",
+     "persistenceTime": 1,
+     "requiresSwapOut": true,
+     "startState": "AIR",
+     "swapOutState": "AIR"
+    },
+    "castTime": 0.19,
+    "category": "Skills",
+    "cooldown": 12,
+    "damageModifiers": [],
+    "displayName": "Skyfall Severance (swap cancel)",
+    "dmgTypes": [
+     "SKILL"
+    ],
+    "elements": [
+     "AERO"
+    ],
+    "energyCost": [],
+    "energyGenerated": [
+     {
+      "amount": 2.52,
+      "energyType": "energy",
+      "scalingStat": "energyPercent",
+      "share": 0.5
+     },
+     {
+      "amount": 5,
+      "energyType": "concerto",
+      "share": 0
+     }
+    ],
+    "groupName": "Resonance Skill 2",
+    "multiplier": 1.7526,
+    "name": "Resonance Skill 2 (swap cancel)",
+    "offtune": 0.81,
+    "scaling": "ATK",
+    "sideEffects": [],
+    "statusModifications": [],
+    "tags": [
+     "SKILL"
+    ],
+    "variantName": "Cancel With Swap"
+   },
+   {
+    "castConditions": {
+     "endState": "GROUND",
+     "startState": "GROUND"
+    },
+    "castTime": 1.67,
+    "category": "Skills",
+    "cooldown": 0,
+    "damageModifiers": [],
+    "displayName": "Unbound Flow 1-2",
+    "dmgTypes": [
+     "SKILL"
+    ],
+    "elements": [
+     "AERO"
+    ],
+    "energyCost": [
+     {
+      "amount": 120,
+      "energyType": "forte"
+     }
+    ],
+    "energyGenerated": [
+     {
+      "amount": 30,
+      "energyType": "energy",
+      "scalingStat": "energyPercent",
+      "share": 0.5
+     },
+     {
+      "amount": 40,
+      "energyType": "concerto",
+      "share": 0
+     }
+    ],
+    "groupName": "Resonance Skill 3",
+    "multiplier": 11.62889,
+    "name": "Resonance Skill 3",
+    "offtune": 5.83,
+    "scaling": "ATK",
+    "sideEffects": [],
+    "statusModifications": [],
+    "tags": [
+     "SKILL",
+     "HEAL_PROC"
+    ],
+    "variantName": "Default"
+   },
+   {
+    "castConditions": {
+     "endState": "GROUND",
+     "persistenceTime": 1,
+     "requiresSwapOut": true,
+     "startState": "GROUND",
+     "swapOutState": "GROUND"
+    },
+    "castTime": 0.17,
+    "category": "Skills",
+    "cooldown": 0,
+    "damageModifiers": [],
+    "displayName": "Unbound Flow 1-2 (swap cancel 1)",
+    "dmgTypes": [
+     "SKILL"
+    ],
+    "elements": [
+     "AERO"
+    ],
+    "energyCost": [
+     {
+      "amount": 120,
+      "energyType": "forte"
+     }
+    ],
+    "energyGenerated": [
+     {
+      "amount": 30,
+      "energyType": "energy",
+      "scalingStat": "energyPercent",
+      "share": 0.5
+     },
+     {
+      "amount": 40,
+      "energyType": "concerto",
+      "share": 0
+     }
+    ],
+    "groupName": "Resonance Skill 3",
+    "multiplier": 11.62889,
+    "name": "Resonance Skill 3 (swap cancel 1)",
+    "offtune": 5.83,
+    "scaling": "ATK",
+    "sideEffects": [],
+    "statusModifications": [],
+    "tags": [
+     "SKILL",
+     "HEAL_PROC"
+    ],
+    "variantName": "Cancel With Swap 1"
+   },
+   {
+    "castConditions": {
+     "endState": "GROUND",
+     "persistenceTime": 1.33,
+     "requiresSwapOut": true,
+     "startState": "GROUND",
+     "swapOutState": "GROUND"
+    },
+    "castTime": 1.33,
+    "category": "Skills",
+    "cooldown": 0,
+    "damageModifiers": [],
+    "displayName": "Unbound Flow 1-2 (swap cancel 2)",
+    "dmgTypes": [
+     "SKILL"
+    ],
+    "elements": [
+     "AERO"
+    ],
+    "energyCost": [
+     {
+      "amount": 120,
+      "energyType": "forte"
+     }
+    ],
+    "energyGenerated": [
+     {
+      "amount": 30,
+      "energyType": "energy",
+      "scalingStat": "energyPercent",
+      "share": 0.5
+     },
+     {
+      "amount": 40,
+      "energyType": "concerto",
+      "share": 0
+     }
+    ],
+    "groupName": "Resonance Skill 3",
+    "multiplier": 11.62889,
+    "name": "Resonance Skill 3 (swap cancel 2)",
+    "offtune": 5.83,
+    "scaling": "ATK",
+    "sideEffects": [],
+    "statusModifications": [],
+    "tags": [
+     "SKILL",
+     "HEAL_PROC"
+    ],
+    "variantName": "Cancel With Swap 2"
+   },
+   {
+    "castConditions": {
+     "endState": "GROUND",
+     "startState": "ANY"
+    },
+    "castTime": 0.08,
+    "category": "Skills",
+    "cooldown": 24,
+    "damageModifiers": [],
+    "displayName": "Omega Storm",
+    "dmgTypes": [
+     "LIBERATION"
+    ],
+    "elements": [
+     "AERO"
+    ],
+    "energyCost": [
+     {
+      "amount": 150,
+      "energyType": "energy"
+     }
+    ],
+    "energyGenerated": [
+     {
+      "amount": 0,
+      "energyType": "energy",
+      "scalingStat": "energyPercent",
+      "share": 0.5
+     },
+     {
+      "amount": 20,
+      "energyType": "concerto",
+      "share": 0
+     },
+     {
+      "amount": 25,
+      "energyType": "forte",
+      "share": 0
+     }
+    ],
+    "multiplier": 6.44148,
+    "name": "Liberation",
+    "offtune": 4.8,
+    "scaling": "ATK",
+    "sideEffects": [],
+    "statusModifications": [],
+    "tags": [
+     "LIBERATION",
+     "HEAL_PROC"
+    ]
+   },
+   {
+    "castConditions": {
+     "endState": "AIR",
+     "previousActions": [
+      {
+       "castConditions": {
+        "endState": "AIR",
+        "startState": "GROUND"
+       },
+       "castTime": 1,
+       "category": "Skills",
+       "cooldown": 3,
+       "damageModifiers": [],
+       "displayName": "Awakening Gale",
+       "dmgTypes": [
+        "SKILL"
+       ],
+       "elements": [
+        "AERO"
+       ],
+       "energyCost": [],
+       "energyGenerated": [
+        {
+         "amount": 5,
+         "energyType": "energy",
+         "scalingStat": "energyPercent",
+         "share": 0.5
+        },
+        {
+         "amount": 10,
+         "energyType": "concerto",
+         "share": 0
+        }
+       ],
+       "groupName": "Resonance Skill 1",
+       "multiplier": 1.661,
+       "name": "Resonance Skill 1",
+       "offtune": 0.76,
+       "scaling": "ATK",
+       "sideEffects": [],
+       "statusModifications": [],
+       "tags": [
+        "SKILL"
+       ],
+       "variantName": "Default"
+      }
+     ],
+     "startState": "AIR"
+    },
+    "castTime": 0.8,
+    "category": "Skills",
+    "cooldown": 0,
+    "damageModifiers": [
+     {
+      "characterStats": {
+       "skillBonusDMG": 0.15
+      },
+      "condition": "[Function]",
+      "displayName": "Rover S4",
+      "durationStrategy": {
+       "timeDuration": 6,
+       "type": "limited"
+      },
+      "ownerCharacter": "Rover",
+      "source": "Rover S4",
+      "stackingStrategy": {
+       "maxStacks": 1,
+       "resetTimerOnApplication": true,
+       "stacksRemovedEachTime": 1
+      },
+      "targetStrategy": "self",
+      "type": "buff"
+     }
+    ],
+    "displayName": "Cloudburst Dance 1-2",
+    "dmgTypes": [
+     "SKILL"
+    ],
+    "elements": [
+     "AERO"
+    ],
+    "energyCost": [],
+    "energyGenerated": [
+     {
+      "amount": 1.93,
+      "energyType": "energy",
+      "scalingStat": "energyPercent",
+      "share": 0.5
+     },
+     {
+      "amount": 6.15,
+      "energyType": "concerto",
+      "share": 0
+     },
+     {
+      "amount": 50,
+      "energyType": "forte",
+      "share": 0
+     }
+    ],
+    "groupName": "Mid Air 1-2",
+    "multiplier": 2.7027,
+    "name": "Mid Air 1-2",
+    "offtune": 0.61,
+    "scaling": "ATK",
+    "sideEffects": [],
+    "statusModifications": [],
+    "tags": [
+     "HEAL_PROC"
+    ],
+    "variantName": "Default"
+   },
+   {
+    "castConditions": {
+     "endState": "AIR",
+     "persistenceTime": 1,
+     "previousActions": [
+      {
+       "castConditions": {
+        "endState": "AIR",
+        "startState": "GROUND"
+       },
+       "castTime": 1,
+       "category": "Skills",
+       "cooldown": 3,
+       "damageModifiers": [],
+       "displayName": "Awakening Gale",
+       "dmgTypes": [
+        "SKILL"
+       ],
+       "elements": [
+        "AERO"
+       ],
+       "energyCost": [],
+       "energyGenerated": [
+        {
+         "amount": 5,
+         "energyType": "energy",
+         "scalingStat": "energyPercent",
+         "share": 0.5
+        },
+        {
+         "amount": 10,
+         "energyType": "concerto",
+         "share": 0
+        }
+       ],
+       "groupName": "Resonance Skill 1",
+       "multiplier": 1.661,
+       "name": "Resonance Skill 1",
+       "offtune": 0.76,
+       "scaling": "ATK",
+       "sideEffects": [],
+       "statusModifications": [],
+       "tags": [
+        "SKILL"
+       ],
+       "variantName": "Default"
+      }
+     ],
+     "requiresSwapOut": true,
+     "startState": "AIR",
+     "swapOutState": "AIR"
+    },
+    "castTime": 0.55,
+    "category": "Skills",
+    "cooldown": 0,
+    "damageModifiers": [
+     {
+      "characterStats": {
+       "skillBonusDMG": 0.15
+      },
+      "condition": "[Function]",
+      "displayName": "Rover S4",
+      "durationStrategy": {
+       "timeDuration": 6,
+       "type": "limited"
+      },
+      "ownerCharacter": "Rover",
+      "source": "Rover S4",
+      "stackingStrategy": {
+       "maxStacks": 1,
+       "resetTimerOnApplication": true,
+       "stacksRemovedEachTime": 1
+      },
+      "targetStrategy": "self",
+      "type": "buff"
+     }
+    ],
+    "displayName": "Cloudburst Dance 1-2 (swap cancel)",
+    "dmgTypes": [
+     "SKILL"
+    ],
+    "elements": [
+     "AERO"
+    ],
+    "energyCost": [],
+    "energyGenerated": [
+     {
+      "amount": 1.93,
+      "energyType": "energy",
+      "scalingStat": "energyPercent",
+      "share": 0.5
+     },
+     {
+      "amount": 6.15,
+      "energyType": "concerto",
+      "share": 0
+     },
+     {
+      "amount": 50,
+      "energyType": "forte",
+      "share": 0
+     }
+    ],
+    "groupName": "Mid Air 1-2",
+    "multiplier": 2.7027,
+    "name": "Mid Air 1-2 (swap cancel)",
+    "offtune": 0.61,
+    "scaling": "ATK",
+    "sideEffects": [],
+    "statusModifications": [],
+    "tags": [
+     "HEAL_PROC"
+    ],
+    "variantName": "Cancel With Swap"
+   },
+   {
+    "castConditions": {
+     "endState": "GROUND",
+     "startState": "AIR"
+    },
+    "castTime": 0.83,
+    "category": "Basics",
+    "cooldown": 0,
+    "damageModifiers": [],
+    "displayName": "Plunge",
+    "dmgTypes": [
+     "BASIC"
+    ],
+    "elements": [
+     "AERO"
+    ],
+    "energyCost": [],
+    "energyGenerated": [
+     {
+      "amount": 0.52,
+      "energyType": "energy",
+      "scalingStat": "energyPercent",
+      "share": 0.5
+     },
+     {
+      "amount": 9.6,
+      "energyType": "concerto",
+      "share": 0
+     }
+    ],
+    "groupName": "Plunge",
+    "multiplier": 1.4076,
+    "name": "Plunge",
+    "offtune": 0.96,
+    "scaling": "ATK",
+    "sideEffects": [],
+    "statusModifications": [],
+    "tags": [
+     "BASIC_ATTACK"
+    ],
+    "variantName": "Default"
+   },
+   {
+    "castConditions": {
+     "endState": "GROUND",
+     "persistenceTime": 1,
+     "requiresSwapOut": true,
+     "startState": "AIR",
+     "swapOutState": "AIR"
+    },
+    "castTime": 0.18,
+    "category": "Basics",
+    "cooldown": 0,
+    "damageModifiers": [],
+    "displayName": "Plunge (swap cancel)",
+    "dmgTypes": [
+     "BASIC"
+    ],
+    "elements": [
+     "AERO"
+    ],
+    "energyCost": [],
+    "energyGenerated": [
+     {
+      "amount": 0.52,
+      "energyType": "energy",
+      "scalingStat": "energyPercent",
+      "share": 0.5
+     },
+     {
+      "amount": 9.6,
+      "energyType": "concerto",
+      "share": 0
+     }
+    ],
+    "groupName": "Plunge",
+    "multiplier": 1.4076,
+    "name": "Plunge (swap cancel)",
+    "offtune": 0.96,
+    "scaling": "ATK",
+    "sideEffects": [],
+    "statusModifications": [],
+    "tags": [
+     "BASIC_ATTACK"
+    ],
+    "variantName": "Cancel With Swap"
+   },
+   {
+    "castConditions": {
+     "endState": "GROUND",
+     "previousActions": [
+      {
+       "castConditions": {
+        "endState": "GROUND",
+        "startState": "AIR"
+       },
+       "castTime": 0.83,
+       "category": "Basics",
+       "cooldown": 0,
+       "damageModifiers": [],
+       "displayName": "Plunge",
+       "dmgTypes": [
+        "BASIC"
+       ],
+       "elements": [
+        "AERO"
+       ],
+       "energyCost": [],
+       "energyGenerated": [
+        {
+         "amount": 0.52,
+         "energyType": "energy",
+         "scalingStat": "energyPercent",
+         "share": 0.5
+        },
+        {
+         "amount": 9.6,
+         "energyType": "concerto",
+         "share": 0
+        }
+       ],
+       "groupName": "Plunge",
+       "multiplier": 1.4076,
+       "name": "Plunge",
+       "offtune": 0.96,
+       "scaling": "ATK",
+       "sideEffects": [],
+       "statusModifications": [],
+       "tags": [
+        "BASIC_ATTACK"
+       ],
+       "variantName": "Default"
+      }
+     ],
+     "startState": "GROUND"
+    },
+    "castTime": 0.43,
+    "category": "Basics",
+    "cooldown": 0,
+    "damageModifiers": [],
+    "displayName": "Basic Attack 4",
+    "dmgTypes": [
+     "BASIC"
+    ],
+    "elements": [
+     "AERO"
+    ],
+    "energyCost": [],
+    "energyGenerated": [
+     {
+      "amount": 1.64,
+      "energyType": "energy",
+      "scalingStat": "energyPercent",
+      "share": 0.5
+     },
+     {
+      "amount": 5.24,
+      "energyType": "concerto",
+      "share": 0
+     },
+     {
+      "amount": 10,
+      "energyType": "forte",
+      "share": 0
+     }
+    ],
+    "groupName": "Basic Attack 4",
+    "multiplier": 0.7672,
+    "name": "Basic Attack 4",
+    "offtune": 0.52,
+    "scaling": "ATK",
+    "sideEffects": [],
+    "statusModifications": [],
+    "tags": [
+     "BASIC_ATTACK"
+    ],
+    "variantName": "Default"
+   },
+   {
+    "castConditions": {
+     "endState": "GROUND",
+     "persistenceTime": 1,
+     "previousActions": [
+      {
+       "castConditions": {
+        "endState": "GROUND",
+        "startState": "AIR"
+       },
+       "castTime": 0.83,
+       "category": "Basics",
+       "cooldown": 0,
+       "damageModifiers": [],
+       "displayName": "Plunge",
+       "dmgTypes": [
+        "BASIC"
+       ],
+       "elements": [
+        "AERO"
+       ],
+       "energyCost": [],
+       "energyGenerated": [
+        {
+         "amount": 0.52,
+         "energyType": "energy",
+         "scalingStat": "energyPercent",
+         "share": 0.5
+        },
+        {
+         "amount": 9.6,
+         "energyType": "concerto",
+         "share": 0
+        }
+       ],
+       "groupName": "Plunge",
+       "multiplier": 1.4076,
+       "name": "Plunge",
+       "offtune": 0.96,
+       "scaling": "ATK",
+       "sideEffects": [],
+       "statusModifications": [],
+       "tags": [
+        "BASIC_ATTACK"
+       ],
+       "variantName": "Default"
+      }
+     ],
+     "requiresSwapOut": true,
+     "startState": "GROUND",
+     "swapOutState": "GROUND"
+    },
+    "castTime": 0.2,
+    "category": "Basics",
+    "cooldown": 0,
+    "damageModifiers": [],
+    "displayName": "Basic Attack 4 (swap cancel)",
+    "dmgTypes": [
+     "BASIC"
+    ],
+    "elements": [
+     "AERO"
+    ],
+    "energyCost": [],
+    "energyGenerated": [
+     {
+      "amount": 1.64,
+      "energyType": "energy",
+      "scalingStat": "energyPercent",
+      "share": 0.5
+     },
+     {
+      "amount": 5.24,
+      "energyType": "concerto",
+      "share": 0
+     },
+     {
+      "amount": 10,
+      "energyType": "forte",
+      "share": 0
+     }
+    ],
+    "groupName": "Basic Attack 4",
+    "multiplier": 0.7672,
+    "name": "Basic Attack 4 (swap cancel)",
+    "offtune": 0.52,
+    "scaling": "ATK",
+    "sideEffects": [],
+    "statusModifications": [],
+    "tags": [
+     "BASIC_ATTACK"
+    ],
+    "variantName": "Cancel With Swap"
+   },
+   {
+    "castConditions": {
+     "endState": "AIR",
+     "startState": "ANY"
+    },
+    "castTime": 1.42,
+    "category": "Other",
+    "cooldown": 0,
+    "damageModifiers": [
+     {
+      "characterStats": {
+       "bonusATK": 0.2
+      },
+      "condition": "[Function]",
+      "displayName": "Rover Intro Buff",
+      "durationStrategy": {
+       "timeDuration": 10,
+       "type": "limited"
+      },
+      "ownerCharacter": "Rover",
+      "source": "Rover Intro Buff",
+      "stackingStrategy": {
+       "maxStacks": 1,
+       "resetTimerOnApplication": true,
+       "stacksRemovedEachTime": 1
+      },
+      "targetStrategy": "self",
+      "type": "buff"
+     }
+    ],
+    "displayName": "Relentless Squall",
+    "dmgTypes": [
+     "INTRO"
+    ],
+    "elements": [
+     "AERO"
+    ],
+    "energyCost": [],
+    "energyGenerated": [
+     {
+      "amount": 10,
+      "energyType": "energy",
+      "scalingStat": "energyPercent",
+      "share": 0.5
+     },
+     {
+      "amount": 10,
+      "energyType": "concerto",
+      "share": 0
+     },
+     {
+      "amount": 20,
+      "energyType": "forte",
+      "share": 0
+     }
+    ],
+    "multiplier": 1.9882,
+    "name": "Intro Skill",
+    "offtune": 1.15,
+    "scaling": "ATK",
+    "sideEffects": [],
+    "statusModifications": [],
+    "tags": [
+     "INTRO_ACTION"
+    ]
+   },
+   {
+    "castConditions": {
+     "endState": "PRESERVE",
+     "startState": "ANY"
+    },
+    "castTime": 0,
+    "category": "Other",
+    "cooldown": 0,
+    "damageModifiers": [
+     {
+      "condition": "[Function]",
+      "displayName": "Aeolian Realm",
+      "durationStrategy": {
+       "timeDuration": 40,
+       "type": "limited"
+      },
+      "negativeStatusEffects": [
+       {
+        "property": "maxStacks",
+        "targetStatus": "Aero Erosion",
+        "value": 3
+       }
+      ],
+      "ownerCharacter": "Rover",
+      "source": "Rover Outro Buff",
+      "stackingStrategy": {
+       "maxStacks": 1,
+       "resetTimerOnApplication": true,
+       "stacksRemovedEachTime": 1
+      },
+      "targetStrategy": "all",
+      "type": "buff"
+     }
+    ],
+    "displayName": "Storms Echo",
+    "dmgTypes": [
+     "OUTRO"
+    ],
+    "elements": [
+     "AERO"
+    ],
+    "energyCost": [],
+    "energyGenerated": [],
+    "multiplier": 0,
+    "name": "Outro Skill",
+    "offtune": 0,
+    "scaling": "ATK",
+    "sideEffects": [],
+    "statusModifications": [],
+    "tags": [
+     "OUTRO_ACTION"
+    ]
+   },
+   {
+    "castConditions": {
+     "endState": "PRESERVE",
+     "startState": "ANY"
+    },
+    "castTime": 0.05,
+    "category": "Testing",
+    "cooldown": 0,
+    "damageModifiers": [],
+    "displayName": "Wait 0.05s",
+    "dmgTypes": [
+     ""
+    ],
+    "elements": [
+     ""
+    ],
+    "energyCost": [],
+    "energyGenerated": [],
+    "multiplier": 0,
+    "name": "Wait 0.05s",
+    "offtune": 0,
+    "scaling": "HP",
+    "sideEffects": [],
+    "statusModifications": []
+   },
+   {
+    "castConditions": {
+     "customCanCast": "[Function]",
+     "endState": "PRESERVE",
+     "startState": "ANY"
+    },
+    "castTime": 0,
+    "category": "Other",
+    "cooldown": 0,
+    "damageModifiers": [],
+    "displayName": "Wait Until Next Swap Is Available",
+    "dmgTypes": [
+     ""
+    ],
+    "elements": [
+     ""
+    ],
+    "energyCost": [],
+    "energyGenerated": [],
+    "multiplier": 0,
+    "name": "Wait Until Next Swap Is Available",
+    "offtune": 0,
+    "resolveVariant": "[Function]",
+    "scaling": "HP",
+    "sideEffects": [],
+    "statusModifications": []
+   },
+   {
+    "castConditions": {
+     "endState": "PRESERVE",
+     "startState": "ANY"
+    },
+    "castTime": 0,
+    "category": "Testing",
+    "cooldown": 0,
+    "damageModifiers": [],
+    "displayName": "Energy Up",
+    "dmgTypes": [
+     ""
+    ],
+    "elements": [
+     ""
+    ],
+    "energyCost": [],
+    "energyGenerated": [
+     {
+      "amount": 1000,
+      "energyType": "energy",
+      "share": 0
+     }
+    ],
+    "multiplier": 0,
+    "name": "Energy Up",
+    "offtune": 0,
+    "scaling": "HP",
+    "sideEffects": [],
+    "statusModifications": []
+   },
+   {
+    "castConditions": {
+     "endState": "PRESERVE",
+     "startState": "ANY"
+    },
+    "castTime": 0,
+    "category": "Testing",
+    "cooldown": 0,
+    "damageModifiers": [],
+    "displayName": "Concerto Up",
+    "dmgTypes": [
+     ""
+    ],
+    "elements": [
+     ""
+    ],
+    "energyCost": [],
+    "energyGenerated": [
+     {
+      "amount": 1000,
+      "energyType": "concerto",
+      "share": 0
+     }
+    ],
+    "multiplier": 0,
+    "name": "Concerto Up",
+    "offtune": 0,
+    "scaling": "HP",
+    "sideEffects": [],
+    "statusModifications": []
+   },
+   {
+    "castConditions": {
+     "endState": "PRESERVE",
+     "startState": "ANY"
+    },
+    "castTime": 0,
+    "category": "Testing",
+    "cooldown": 0,
+    "damageModifiers": [],
+    "displayName": "Forte Up",
+    "dmgTypes": [
+     ""
+    ],
+    "elements": [
+     ""
+    ],
+    "energyCost": [],
+    "energyGenerated": [
+     {
+      "amount": 1000,
+      "energyType": "forte",
+      "share": 0
+     }
+    ],
+    "multiplier": 0,
+    "name": "Forte Up",
+    "offtune": 0,
+    "scaling": "HP",
+    "sideEffects": [],
+    "statusModifications": []
+   }
+  ],
+  "damageModifiers": [],
+  "element": "AERO",
+  "gear": {
+   "echoSlots": {
+    "1": {
+     "baseStats": {
+      "critRate": 0.22,
+      "flatATK": 150
+     },
+     "conditionalStats": {
+      "condition": "[Function]",
+      "stats": {
+       "aeroBonusDMG": 0.1
+      }
+     },
+     "cost": 4,
+     "echoSkill": {
+      "castConditions": {
+       "endState": "PRESERVE",
+       "startState": "ANY"
+      },
+      "castTime": 0,
+      "category": "Echo Skill",
+      "cooldown": 20,
+      "damageModifiers": [],
+      "displayName": "Reminiscence: Fleurdelys (Active)",
+      "dmgTypes": [
+       "ECHO"
+      ],
+      "elements": [
+       "AERO"
+      ],
+      "energyCost": [],
+      "energyGenerated": [
+       {
+        "amount": 4.94,
+        "energyType": "energy",
+        "scalingStat": "energyPercent",
+        "share": 0.5
+       }
+      ],
+      "multiplier": 3.5568,
+      "name": "Reminiscence: Fleurdelys (Active)",
+      "offtune": 0,
+      "scaling": "ATK",
+      "sideEffects": [],
+      "statusModifications": []
+     },
+     "firstSlotStats": {
+      "aeroBonusDMG": 0.1
+     },
+     "icon": "assets/gear/echoes/reminiscence_fleurdelys.png",
+     "info": "The Resonator with this Echo equipped in the main slot gains 10.00% Aero DMG Bonus. When Resonator: Aero Rover or Cartethyia equips this Echo, they gain 10.00% more Aero DMG Bonus.",
+     "info_icon": "assets/gear/echoes/info_reminiscence_fleurdelys.png",
+     "name": "Reminiscence: Fleurdelys",
+     "setName": "Windward Pilgrimage",
+     "subStats": {
+      "bonusHP": 0.079,
+      "critDamage": 0.15,
+      "critRate": 0.075
+     }
+    },
+    "2": {
+     "baseStats": {
+      "aeroBonusDMG": 0.3,
+      "flatATK": 100
+     },
+     "cost": 3,
+     "icon": "assets/gear/echoes/capitaneus.png",
+     "info": "The Resonator with this Echo equipped in their main slot gains 12.00% Spectro DMG Bonus and 12.00% Heavy Attack DMG Bonus.",
+     "info_icon": "assets/gear/echoes/info_capitaneus.png",
+     "name": "Capitaneus",
+     "setName": "Windward Pilgrimage",
+     "subStats": {
+      "bonusATK": 0.079,
+      "critDamage": 0.15,
+      "critRate": 0.075
+     }
+    },
+    "3": {
+     "baseStats": {
+      "aeroBonusDMG": 0.3,
+      "flatATK": 100
+     },
+     "cost": 3,
+     "icon": "assets/gear/echoes/kerasaur.png",
+     "info": "The Resonator with this Echo equipped in the main slot gains 12.00% Aero DMG Bonus and 12.00% Resonance Liberation DMG Bonus.",
+     "info_icon": "assets/gear/echoes/info_kerasaur.png",
+     "name": "Kerasaur",
+     "setName": "Windward Pilgrimage",
+     "subStats": {
+      "bonusATK": 0.079,
+      "critDamage": 0.15,
+      "critRate": 0.075
+     }
+    },
+    "4": {
+     "baseStats": {
+      "bonusATK": 0.18,
+      "flatHP": 2280
+     },
+     "cost": 1,
+     "icon": "assets/gear/echoes/sacerdos.png",
+     "info_icon": "assets/gear/echoes/info_sacerdos.png",
+     "name": "Sagittario",
+     "setName": "Windward Pilgrimage",
+     "subStats": {
+      "bonusATK": 0.079,
+      "critDamage": 0.15,
+      "critRate": 0.075
+     }
+    },
+    "5": {
+     "baseStats": {
+      "bonusATK": 0.18,
+      "flatHP": 2280
+     },
+     "cost": 1,
+     "icon": "assets/gear/echoes/spectro_drake.png",
+     "info_icon": "assets/gear/echoes/info_spectro_drake.png",
+     "name": "Spectro Drake",
+     "setName": "Windward Pilgrimage",
+     "subStats": {
+      "bonusATK": 0.079,
+      "critDamage": 0.15,
+      "critRate": 0.075
+     }
+    }
+   },
+   "setBonus": {
+    "icon": "assets/gear/set-bonuses/windward_pilgrimage.png",
+    "info": {
+     "2-piece": "Aero DMG + 10%",
+     "5-piece": "Hitting a target with Aero Erosion increases Crit. Rate by 10% and grants 30% Aero DMG Bonus, lasting for 10s."
+    },
+    "injectedModifiers": [
+     {
+      "modifiers": [
+       {
+        "characterStats": {
+         "aeroBonusDMG": 0.3,
+         "critRate": 0.1
+        },
+        "condition": "[Function]",
+        "displayName": "Windward Pilgrimage (Set Bonus)",
+        "durationStrategy": {
+         "type": "permanent"
+        },
+        "ownerCharacter": "Cartethyia",
+        "source": "Cartethyia",
+        "stackingStrategy": {
+         "maxStacks": 1,
+         "resetTimerOnApplication": false,
+         "stacksRemovedEachTime": 0
+        },
+        "targetStrategy": "self",
+        "type": "buff"
+       }
+      ],
+      "targets": [
+       "character"
+      ]
+     }
+    ],
+    "name": "Windward Pilgrimage",
+    "stats": {
+     "aeroBonusDMG": 0.1
+    }
+   },
+   "weapon": {
+    "icon": "assets/gear/weapons/bloodpact's_pledge.png",
+    "info": "Providing Healing increases Resonance Skill DMG by 10%/14%/18%/22%/26% for 6/6/6/6/6s. When Rover: Aero casts Resonance Skill Unbound Flow, Aero DMG dealt by nearby Resonators on the field is Amplified by 10%/14%/18%/22%/26% for 30/30/30/30/30s.",
+    "injectedModifiers": [
+     {
+      "modifiers": [
+       {
+        "characterStats": {
+         "skillBonusDMG": 0.26
+        },
+        "condition": "[Function]",
+        "displayName": "Harmonious Vibrancy",
+        "durationStrategy": {
+         "timeDuration": 6,
+         "type": "limited"
+        },
+        "ownerCharacter": "Rover",
+        "source": "Bloodpact's Pledge",
+        "stackingStrategy": {
+         "maxStacks": 1,
+         "resetTimerOnApplication": true,
+         "stacksRemovedEachTime": 1
+        },
+        "targetStrategy": "self",
+        "type": "buff"
+       }
+      ],
+      "targets": [
+       {
+        "tag": "HEAL_PROC"
+       }
+      ]
+     },
+     {
+      "modifiers": [
+       {
+        "characterStats": {
+         "skillBonusDMG": 0.26
+        },
+        "condition": "[Function]",
+        "displayName": "Harmonious Vibrancy",
+        "durationStrategy": {
+         "timeDuration": 36,
+         "type": "limited"
+        },
+        "ownerCharacter": "Rover",
+        "source": "Bloodpact's Pledge",
+        "stackingStrategy": {
+         "maxStacks": 1,
+         "resetTimerOnApplication": true,
+         "stacksRemovedEachTime": 1
+        },
+        "targetStrategy": "self",
+        "type": "buff"
+       }
+      ],
+      "targets": [
+       {
+        "match": "all",
+        "tags": [
+         "SKILL",
+         "HEAL_PROC"
+        ]
+       }
+      ]
+     }
+    ],
+    "name": "Bloodpact's Pledge",
+    "rank": 5,
+    "stats": {
+     "baseATK": 587.5,
+     "energyPercent": 0.3888
+    },
+    "weaponType": "Sword"
+   }
+  },
+  "image": "/assets/characters/rover.png",
+  "inherentStats": {
+   "bonusATK": 0.12
+  },
+  "maxEnergies": {
+   "concerto": 100,
+   "energy": 150,
+   "forte": 120
+  },
+  "name": "Rover",
+  "sequence": 6,
+  "sequence_nodes": [
+   "Casting Mid-air Attack Cloudburst Dance enhances Rover's resistance to interruption for 3s.",
+   "Casting Resonance Skill Unbound Flow continuously restores HP for the Resonator on the field by 20% of Rover's ATK every 3s for 30s. When the Resonator on the field has an HP lower than 35%, immediately restore 10% of their lost HP. This restoration effect can be triggered once every 10s and will not be affected by any Healing Bonus.",
+   "Aero DMG Bonus is increased by 15%.",
+   "Casting Mid-air Attack Cloudburst Dance increases Resonance Skill DMG Bonus by 15% for 5s.",
+   "The DMG Multiplier of Resonance Liberation Omega Storm is increased by 20%.",
+   "The DMG Multiplier of Resonance Skill Unbound Flow is increased by 30%."
+  ],
+  "sequence_nodes_icons": [
+   "assets/characters/sequences/roverAero_1.png",
+   "assets/characters/sequences/roverAero_2.png",
+   "assets/characters/sequences/roverAero_3.png",
+   "assets/characters/sequences/roverAero_4.png",
+   "assets/characters/sequences/roverAero_5.png",
+   "assets/characters/sequences/roverAero_6.png"
+  ],
+  "stats": {
+   "baseATK": 437,
+   "baseDEF": 1136,
+   "baseHP": 10775
+  },
+  "weaponType": "Sword"
+ },
+ "resolved": {
+  "actions": [
+   {
+    "castConditions": {
+     "endState": "AIR",
+     "startState": "GROUND"
+    },
+    "castTime": 1,
+    "category": "Skills",
+    "cooldown": 3,
+    "damageModifiers": [],
+    "displayName": "Awakening Gale",
+    "dmgTypes": [
+     "SKILL"
+    ],
+    "elements": [
+     "AERO"
+    ],
+    "energyCost": [],
+    "energyGenerated": [
+     {
+      "amount": 5,
+      "energyType": "energy",
+      "scalingStat": "energyPercent",
+      "share": 0.5
+     },
+     {
+      "amount": 10,
+      "energyType": "concerto",
+      "share": 0
+     }
+    ],
+    "groupName": "Resonance Skill 1",
+    "multiplier": 1.661,
+    "name": "Resonance Skill 1",
+    "offtune": 0.76,
+    "scaling": "ATK",
+    "sideEffects": [],
+    "statusModifications": [],
+    "tags": [
+     "SKILL"
+    ],
+    "variantName": "Default"
+   },
+   {
+    "castConditions": {
+     "endState": "AIR",
+     "persistenceTime": 1.4,
+     "requiresSwapOut": true,
+     "startState": "GROUND",
+     "swapOutState": "GROUND"
+    },
+    "castTime": 0.15,
+    "category": "Skills",
+    "cooldown": 3,
+    "damageModifiers": [],
+    "displayName": "Awakening Gale (swap cancel)",
+    "dmgTypes": [
+     "SKILL"
+    ],
+    "elements": [
+     "AERO"
+    ],
+    "energyCost": [],
+    "energyGenerated": [
+     {
+      "amount": 5,
+      "energyType": "energy",
+      "scalingStat": "energyPercent",
+      "share": 0.5
+     },
+     {
+      "amount": 10,
+      "energyType": "concerto",
+      "share": 0
+     }
+    ],
+    "groupName": "Resonance Skill 1",
+    "multiplier": 1.661,
+    "name": "Resonance Skill 1 (swap cancel)",
+    "offtune": 0.76,
+    "scaling": "ATK",
+    "sideEffects": [],
+    "statusModifications": [],
+    "tags": [
+     "SKILL"
+    ],
+    "variantName": "Cancel With Swap"
+   },
+   {
+    "castConditions": {
+     "endState": "AIR",
+     "startState": "AIR"
+    },
+    "castTime": 0.84,
+    "category": "Skills",
+    "cooldown": 12,
+    "damageModifiers": [],
+    "displayName": "Skyfall Severance",
+    "dmgTypes": [
+     "SKILL"
+    ],
+    "elements": [
+     "AERO"
+    ],
+    "energyCost": [],
+    "energyGenerated": [
+     {
+      "amount": 2.52,
+      "energyType": "energy",
+      "scalingStat": "energyPercent",
+      "share": 0.5
+     },
+     {
+      "amount": 5,
+      "energyType": "concerto",
+      "share": 0
+     }
+    ],
+    "groupName": "Resonance Skill 2",
+    "multiplier": 1.7526,
+    "name": "Resonance Skill 2",
+    "offtune": 0.81,
+    "scaling": "ATK",
+    "sideEffects": [],
+    "statusModifications": [],
+    "tags": [
+     "SKILL"
+    ],
+    "variantName": "Default"
+   },
+   {
+    "castConditions": {
+     "endState": "AIR",
+     "persistenceTime": 1,
+     "requiresSwapOut": true,
+     "startState": "AIR",
+     "swapOutState": "AIR"
+    },
+    "castTime": 0.19,
+    "category": "Skills",
+    "cooldown": 12,
+    "damageModifiers": [],
+    "displayName": "Skyfall Severance (swap cancel)",
+    "dmgTypes": [
+     "SKILL"
+    ],
+    "elements": [
+     "AERO"
+    ],
+    "energyCost": [],
+    "energyGenerated": [
+     {
+      "amount": 2.52,
+      "energyType": "energy",
+      "scalingStat": "energyPercent",
+      "share": 0.5
+     },
+     {
+      "amount": 5,
+      "energyType": "concerto",
+      "share": 0
+     }
+    ],
+    "groupName": "Resonance Skill 2",
+    "multiplier": 1.7526,
+    "name": "Resonance Skill 2 (swap cancel)",
+    "offtune": 0.81,
+    "scaling": "ATK",
+    "sideEffects": [],
+    "statusModifications": [],
+    "tags": [
+     "SKILL"
+    ],
+    "variantName": "Cancel With Swap"
+   },
+   {
+    "castConditions": {
+     "endState": "GROUND",
+     "startState": "GROUND"
+    },
+    "castTime": 1.67,
+    "category": "Skills",
+    "cooldown": 0,
+    "damageModifiers": [
+     {
+      "characterStats": {
+       "skillBonusDMG": 0.26
+      },
+      "condition": "[Function]",
+      "displayName": "Harmonious Vibrancy",
+      "durationStrategy": {
+       "timeDuration": 6,
+       "type": "limited"
+      },
+      "ownerCharacter": "Rover",
+      "source": "Bloodpact's Pledge",
+      "stackingStrategy": {
+       "maxStacks": 1,
+       "resetTimerOnApplication": true,
+       "stacksRemovedEachTime": 1
+      },
+      "targetStrategy": "self",
+      "type": "buff"
+     },
+     {
+      "characterStats": {
+       "skillBonusDMG": 0.26
+      },
+      "condition": "[Function]",
+      "displayName": "Harmonious Vibrancy",
+      "durationStrategy": {
+       "timeDuration": 36,
+       "type": "limited"
+      },
+      "ownerCharacter": "Rover",
+      "source": "Bloodpact's Pledge",
+      "stackingStrategy": {
+       "maxStacks": 1,
+       "resetTimerOnApplication": true,
+       "stacksRemovedEachTime": 1
+      },
+      "targetStrategy": "self",
+      "type": "buff"
+     }
+    ],
+    "displayName": "Unbound Flow 1-2",
+    "dmgTypes": [
+     "SKILL"
+    ],
+    "elements": [
+     "AERO"
+    ],
+    "energyCost": [
+     {
+      "amount": 120,
+      "energyType": "forte"
+     }
+    ],
+    "energyGenerated": [
+     {
+      "amount": 30,
+      "energyType": "energy",
+      "scalingStat": "energyPercent",
+      "share": 0.5
+     },
+     {
+      "amount": 40,
+      "energyType": "concerto",
+      "share": 0
+     }
+    ],
+    "groupName": "Resonance Skill 3",
+    "multiplier": 11.62889,
+    "name": "Resonance Skill 3",
+    "offtune": 5.83,
+    "scaling": "ATK",
+    "sideEffects": [],
+    "statusModifications": [],
+    "tags": [
+     "SKILL",
+     "HEAL_PROC"
+    ],
+    "variantName": "Default"
+   },
+   {
+    "castConditions": {
+     "endState": "GROUND",
+     "persistenceTime": 1,
+     "requiresSwapOut": true,
+     "startState": "GROUND",
+     "swapOutState": "GROUND"
+    },
+    "castTime": 0.17,
+    "category": "Skills",
+    "cooldown": 0,
+    "damageModifiers": [
+     {
+      "characterStats": {
+       "skillBonusDMG": 0.26
+      },
+      "condition": "[Function]",
+      "displayName": "Harmonious Vibrancy",
+      "durationStrategy": {
+       "timeDuration": 6,
+       "type": "limited"
+      },
+      "ownerCharacter": "Rover",
+      "source": "Bloodpact's Pledge",
+      "stackingStrategy": {
+       "maxStacks": 1,
+       "resetTimerOnApplication": true,
+       "stacksRemovedEachTime": 1
+      },
+      "targetStrategy": "self",
+      "type": "buff"
+     },
+     {
+      "characterStats": {
+       "skillBonusDMG": 0.26
+      },
+      "condition": "[Function]",
+      "displayName": "Harmonious Vibrancy",
+      "durationStrategy": {
+       "timeDuration": 36,
+       "type": "limited"
+      },
+      "ownerCharacter": "Rover",
+      "source": "Bloodpact's Pledge",
+      "stackingStrategy": {
+       "maxStacks": 1,
+       "resetTimerOnApplication": true,
+       "stacksRemovedEachTime": 1
+      },
+      "targetStrategy": "self",
+      "type": "buff"
+     }
+    ],
+    "displayName": "Unbound Flow 1-2 (swap cancel 1)",
+    "dmgTypes": [
+     "SKILL"
+    ],
+    "elements": [
+     "AERO"
+    ],
+    "energyCost": [
+     {
+      "amount": 120,
+      "energyType": "forte"
+     }
+    ],
+    "energyGenerated": [
+     {
+      "amount": 30,
+      "energyType": "energy",
+      "scalingStat": "energyPercent",
+      "share": 0.5
+     },
+     {
+      "amount": 40,
+      "energyType": "concerto",
+      "share": 0
+     }
+    ],
+    "groupName": "Resonance Skill 3",
+    "multiplier": 11.62889,
+    "name": "Resonance Skill 3 (swap cancel 1)",
+    "offtune": 5.83,
+    "scaling": "ATK",
+    "sideEffects": [],
+    "statusModifications": [],
+    "tags": [
+     "SKILL",
+     "HEAL_PROC"
+    ],
+    "variantName": "Cancel With Swap 1"
+   },
+   {
+    "castConditions": {
+     "endState": "GROUND",
+     "persistenceTime": 1.33,
+     "requiresSwapOut": true,
+     "startState": "GROUND",
+     "swapOutState": "GROUND"
+    },
+    "castTime": 1.33,
+    "category": "Skills",
+    "cooldown": 0,
+    "damageModifiers": [
+     {
+      "characterStats": {
+       "skillBonusDMG": 0.26
+      },
+      "condition": "[Function]",
+      "displayName": "Harmonious Vibrancy",
+      "durationStrategy": {
+       "timeDuration": 6,
+       "type": "limited"
+      },
+      "ownerCharacter": "Rover",
+      "source": "Bloodpact's Pledge",
+      "stackingStrategy": {
+       "maxStacks": 1,
+       "resetTimerOnApplication": true,
+       "stacksRemovedEachTime": 1
+      },
+      "targetStrategy": "self",
+      "type": "buff"
+     },
+     {
+      "characterStats": {
+       "skillBonusDMG": 0.26
+      },
+      "condition": "[Function]",
+      "displayName": "Harmonious Vibrancy",
+      "durationStrategy": {
+       "timeDuration": 36,
+       "type": "limited"
+      },
+      "ownerCharacter": "Rover",
+      "source": "Bloodpact's Pledge",
+      "stackingStrategy": {
+       "maxStacks": 1,
+       "resetTimerOnApplication": true,
+       "stacksRemovedEachTime": 1
+      },
+      "targetStrategy": "self",
+      "type": "buff"
+     }
+    ],
+    "displayName": "Unbound Flow 1-2 (swap cancel 2)",
+    "dmgTypes": [
+     "SKILL"
+    ],
+    "elements": [
+     "AERO"
+    ],
+    "energyCost": [
+     {
+      "amount": 120,
+      "energyType": "forte"
+     }
+    ],
+    "energyGenerated": [
+     {
+      "amount": 30,
+      "energyType": "energy",
+      "scalingStat": "energyPercent",
+      "share": 0.5
+     },
+     {
+      "amount": 40,
+      "energyType": "concerto",
+      "share": 0
+     }
+    ],
+    "groupName": "Resonance Skill 3",
+    "multiplier": 11.62889,
+    "name": "Resonance Skill 3 (swap cancel 2)",
+    "offtune": 5.83,
+    "scaling": "ATK",
+    "sideEffects": [],
+    "statusModifications": [],
+    "tags": [
+     "SKILL",
+     "HEAL_PROC"
+    ],
+    "variantName": "Cancel With Swap 2"
+   },
+   {
+    "castConditions": {
+     "endState": "GROUND",
+     "startState": "ANY"
+    },
+    "castTime": 0.08,
+    "category": "Skills",
+    "cooldown": 24,
+    "damageModifiers": [
+     {
+      "characterStats": {
+       "skillBonusDMG": 0.26
+      },
+      "condition": "[Function]",
+      "displayName": "Harmonious Vibrancy",
+      "durationStrategy": {
+       "timeDuration": 6,
+       "type": "limited"
+      },
+      "ownerCharacter": "Rover",
+      "source": "Bloodpact's Pledge",
+      "stackingStrategy": {
+       "maxStacks": 1,
+       "resetTimerOnApplication": true,
+       "stacksRemovedEachTime": 1
+      },
+      "targetStrategy": "self",
+      "type": "buff"
+     }
+    ],
+    "displayName": "Omega Storm",
+    "dmgTypes": [
+     "LIBERATION"
+    ],
+    "elements": [
+     "AERO"
+    ],
+    "energyCost": [
+     {
+      "amount": 150,
+      "energyType": "energy"
+     }
+    ],
+    "energyGenerated": [
+     {
+      "amount": 0,
+      "energyType": "energy",
+      "scalingStat": "energyPercent",
+      "share": 0.5
+     },
+     {
+      "amount": 20,
+      "energyType": "concerto",
+      "share": 0
+     },
+     {
+      "amount": 25,
+      "energyType": "forte",
+      "share": 0
+     }
+    ],
+    "multiplier": 6.44148,
+    "name": "Liberation",
+    "offtune": 4.8,
+    "scaling": "ATK",
+    "sideEffects": [],
+    "statusModifications": [],
+    "tags": [
+     "LIBERATION",
+     "HEAL_PROC"
+    ]
+   },
+   {
+    "castConditions": {
+     "endState": "AIR",
+     "previousActions": [
+      {
+       "castConditions": {
+        "endState": "AIR",
+        "startState": "GROUND"
+       },
+       "castTime": 1,
+       "category": "Skills",
+       "cooldown": 3,
+       "damageModifiers": [],
+       "displayName": "Awakening Gale",
+       "dmgTypes": [
+        "SKILL"
+       ],
+       "elements": [
+        "AERO"
+       ],
+       "energyCost": [],
+       "energyGenerated": [
+        {
+         "amount": 5,
+         "energyType": "energy",
+         "scalingStat": "energyPercent",
+         "share": 0.5
+        },
+        {
+         "amount": 10,
+         "energyType": "concerto",
+         "share": 0
+        }
+       ],
+       "groupName": "Resonance Skill 1",
+       "multiplier": 1.661,
+       "name": "Resonance Skill 1",
+       "offtune": 0.76,
+       "scaling": "ATK",
+       "sideEffects": [],
+       "statusModifications": [],
+       "tags": [
+        "SKILL"
+       ],
+       "variantName": "Default"
+      }
+     ],
+     "startState": "AIR"
+    },
+    "castTime": 0.8,
+    "category": "Skills",
+    "cooldown": 0,
+    "damageModifiers": [
+     {
+      "characterStats": {
+       "skillBonusDMG": 0.15
+      },
+      "condition": "[Function]",
+      "displayName": "Rover S4",
+      "durationStrategy": {
+       "timeDuration": 6,
+       "type": "limited"
+      },
+      "ownerCharacter": "Rover",
+      "source": "Rover S4",
+      "stackingStrategy": {
+       "maxStacks": 1,
+       "resetTimerOnApplication": true,
+       "stacksRemovedEachTime": 1
+      },
+      "targetStrategy": "self",
+      "type": "buff"
+     },
+     {
+      "characterStats": {
+       "skillBonusDMG": 0.26
+      },
+      "condition": "[Function]",
+      "displayName": "Harmonious Vibrancy",
+      "durationStrategy": {
+       "timeDuration": 6,
+       "type": "limited"
+      },
+      "ownerCharacter": "Rover",
+      "source": "Bloodpact's Pledge",
+      "stackingStrategy": {
+       "maxStacks": 1,
+       "resetTimerOnApplication": true,
+       "stacksRemovedEachTime": 1
+      },
+      "targetStrategy": "self",
+      "type": "buff"
+     }
+    ],
+    "displayName": "Cloudburst Dance 1-2",
+    "dmgTypes": [
+     "SKILL"
+    ],
+    "elements": [
+     "AERO"
+    ],
+    "energyCost": [],
+    "energyGenerated": [
+     {
+      "amount": 1.93,
+      "energyType": "energy",
+      "scalingStat": "energyPercent",
+      "share": 0.5
+     },
+     {
+      "amount": 6.15,
+      "energyType": "concerto",
+      "share": 0
+     },
+     {
+      "amount": 50,
+      "energyType": "forte",
+      "share": 0
+     }
+    ],
+    "groupName": "Mid Air 1-2",
+    "multiplier": 2.7027,
+    "name": "Mid Air 1-2",
+    "offtune": 0.61,
+    "scaling": "ATK",
+    "sideEffects": [],
+    "statusModifications": [],
+    "tags": [
+     "HEAL_PROC"
+    ],
+    "variantName": "Default"
+   },
+   {
+    "castConditions": {
+     "endState": "AIR",
+     "persistenceTime": 1,
+     "previousActions": [
+      {
+       "castConditions": {
+        "endState": "AIR",
+        "startState": "GROUND"
+       },
+       "castTime": 1,
+       "category": "Skills",
+       "cooldown": 3,
+       "damageModifiers": [],
+       "displayName": "Awakening Gale",
+       "dmgTypes": [
+        "SKILL"
+       ],
+       "elements": [
+        "AERO"
+       ],
+       "energyCost": [],
+       "energyGenerated": [
+        {
+         "amount": 5,
+         "energyType": "energy",
+         "scalingStat": "energyPercent",
+         "share": 0.5
+        },
+        {
+         "amount": 10,
+         "energyType": "concerto",
+         "share": 0
+        }
+       ],
+       "groupName": "Resonance Skill 1",
+       "multiplier": 1.661,
+       "name": "Resonance Skill 1",
+       "offtune": 0.76,
+       "scaling": "ATK",
+       "sideEffects": [],
+       "statusModifications": [],
+       "tags": [
+        "SKILL"
+       ],
+       "variantName": "Default"
+      }
+     ],
+     "requiresSwapOut": true,
+     "startState": "AIR",
+     "swapOutState": "AIR"
+    },
+    "castTime": 0.55,
+    "category": "Skills",
+    "cooldown": 0,
+    "damageModifiers": [
+     {
+      "characterStats": {
+       "skillBonusDMG": 0.15
+      },
+      "condition": "[Function]",
+      "displayName": "Rover S4",
+      "durationStrategy": {
+       "timeDuration": 6,
+       "type": "limited"
+      },
+      "ownerCharacter": "Rover",
+      "source": "Rover S4",
+      "stackingStrategy": {
+       "maxStacks": 1,
+       "resetTimerOnApplication": true,
+       "stacksRemovedEachTime": 1
+      },
+      "targetStrategy": "self",
+      "type": "buff"
+     },
+     {
+      "characterStats": {
+       "skillBonusDMG": 0.26
+      },
+      "condition": "[Function]",
+      "displayName": "Harmonious Vibrancy",
+      "durationStrategy": {
+       "timeDuration": 6,
+       "type": "limited"
+      },
+      "ownerCharacter": "Rover",
+      "source": "Bloodpact's Pledge",
+      "stackingStrategy": {
+       "maxStacks": 1,
+       "resetTimerOnApplication": true,
+       "stacksRemovedEachTime": 1
+      },
+      "targetStrategy": "self",
+      "type": "buff"
+     }
+    ],
+    "displayName": "Cloudburst Dance 1-2 (swap cancel)",
+    "dmgTypes": [
+     "SKILL"
+    ],
+    "elements": [
+     "AERO"
+    ],
+    "energyCost": [],
+    "energyGenerated": [
+     {
+      "amount": 1.93,
+      "energyType": "energy",
+      "scalingStat": "energyPercent",
+      "share": 0.5
+     },
+     {
+      "amount": 6.15,
+      "energyType": "concerto",
+      "share": 0
+     },
+     {
+      "amount": 50,
+      "energyType": "forte",
+      "share": 0
+     }
+    ],
+    "groupName": "Mid Air 1-2",
+    "multiplier": 2.7027,
+    "name": "Mid Air 1-2 (swap cancel)",
+    "offtune": 0.61,
+    "scaling": "ATK",
+    "sideEffects": [],
+    "statusModifications": [],
+    "tags": [
+     "HEAL_PROC"
+    ],
+    "variantName": "Cancel With Swap"
+   },
+   {
+    "castConditions": {
+     "endState": "GROUND",
+     "startState": "AIR"
+    },
+    "castTime": 0.83,
+    "category": "Basics",
+    "cooldown": 0,
+    "damageModifiers": [],
+    "displayName": "Plunge",
+    "dmgTypes": [
+     "BASIC"
+    ],
+    "elements": [
+     "AERO"
+    ],
+    "energyCost": [],
+    "energyGenerated": [
+     {
+      "amount": 0.52,
+      "energyType": "energy",
+      "scalingStat": "energyPercent",
+      "share": 0.5
+     },
+     {
+      "amount": 9.6,
+      "energyType": "concerto",
+      "share": 0
+     }
+    ],
+    "groupName": "Plunge",
+    "multiplier": 1.4076,
+    "name": "Plunge",
+    "offtune": 0.96,
+    "scaling": "ATK",
+    "sideEffects": [],
+    "statusModifications": [],
+    "tags": [
+     "BASIC_ATTACK"
+    ],
+    "variantName": "Default"
+   },
+   {
+    "castConditions": {
+     "endState": "GROUND",
+     "persistenceTime": 1,
+     "requiresSwapOut": true,
+     "startState": "AIR",
+     "swapOutState": "AIR"
+    },
+    "castTime": 0.18,
+    "category": "Basics",
+    "cooldown": 0,
+    "damageModifiers": [],
+    "displayName": "Plunge (swap cancel)",
+    "dmgTypes": [
+     "BASIC"
+    ],
+    "elements": [
+     "AERO"
+    ],
+    "energyCost": [],
+    "energyGenerated": [
+     {
+      "amount": 0.52,
+      "energyType": "energy",
+      "scalingStat": "energyPercent",
+      "share": 0.5
+     },
+     {
+      "amount": 9.6,
+      "energyType": "concerto",
+      "share": 0
+     }
+    ],
+    "groupName": "Plunge",
+    "multiplier": 1.4076,
+    "name": "Plunge (swap cancel)",
+    "offtune": 0.96,
+    "scaling": "ATK",
+    "sideEffects": [],
+    "statusModifications": [],
+    "tags": [
+     "BASIC_ATTACK"
+    ],
+    "variantName": "Cancel With Swap"
+   },
+   {
+    "castConditions": {
+     "endState": "GROUND",
+     "previousActions": [
+      {
+       "castConditions": {
+        "endState": "GROUND",
+        "startState": "AIR"
+       },
+       "castTime": 0.83,
+       "category": "Basics",
+       "cooldown": 0,
+       "damageModifiers": [],
+       "displayName": "Plunge",
+       "dmgTypes": [
+        "BASIC"
+       ],
+       "elements": [
+        "AERO"
+       ],
+       "energyCost": [],
+       "energyGenerated": [
+        {
+         "amount": 0.52,
+         "energyType": "energy",
+         "scalingStat": "energyPercent",
+         "share": 0.5
+        },
+        {
+         "amount": 9.6,
+         "energyType": "concerto",
+         "share": 0
+        }
+       ],
+       "groupName": "Plunge",
+       "multiplier": 1.4076,
+       "name": "Plunge",
+       "offtune": 0.96,
+       "scaling": "ATK",
+       "sideEffects": [],
+       "statusModifications": [],
+       "tags": [
+        "BASIC_ATTACK"
+       ],
+       "variantName": "Default"
+      }
+     ],
+     "startState": "GROUND"
+    },
+    "castTime": 0.43,
+    "category": "Basics",
+    "cooldown": 0,
+    "damageModifiers": [],
+    "displayName": "Basic Attack 4",
+    "dmgTypes": [
+     "BASIC"
+    ],
+    "elements": [
+     "AERO"
+    ],
+    "energyCost": [],
+    "energyGenerated": [
+     {
+      "amount": 1.64,
+      "energyType": "energy",
+      "scalingStat": "energyPercent",
+      "share": 0.5
+     },
+     {
+      "amount": 5.24,
+      "energyType": "concerto",
+      "share": 0
+     },
+     {
+      "amount": 10,
+      "energyType": "forte",
+      "share": 0
+     }
+    ],
+    "groupName": "Basic Attack 4",
+    "multiplier": 0.7672,
+    "name": "Basic Attack 4",
+    "offtune": 0.52,
+    "scaling": "ATK",
+    "sideEffects": [],
+    "statusModifications": [],
+    "tags": [
+     "BASIC_ATTACK"
+    ],
+    "variantName": "Default"
+   },
+   {
+    "castConditions": {
+     "endState": "GROUND",
+     "persistenceTime": 1,
+     "previousActions": [
+      {
+       "castConditions": {
+        "endState": "GROUND",
+        "startState": "AIR"
+       },
+       "castTime": 0.83,
+       "category": "Basics",
+       "cooldown": 0,
+       "damageModifiers": [],
+       "displayName": "Plunge",
+       "dmgTypes": [
+        "BASIC"
+       ],
+       "elements": [
+        "AERO"
+       ],
+       "energyCost": [],
+       "energyGenerated": [
+        {
+         "amount": 0.52,
+         "energyType": "energy",
+         "scalingStat": "energyPercent",
+         "share": 0.5
+        },
+        {
+         "amount": 9.6,
+         "energyType": "concerto",
+         "share": 0
+        }
+       ],
+       "groupName": "Plunge",
+       "multiplier": 1.4076,
+       "name": "Plunge",
+       "offtune": 0.96,
+       "scaling": "ATK",
+       "sideEffects": [],
+       "statusModifications": [],
+       "tags": [
+        "BASIC_ATTACK"
+       ],
+       "variantName": "Default"
+      }
+     ],
+     "requiresSwapOut": true,
+     "startState": "GROUND",
+     "swapOutState": "GROUND"
+    },
+    "castTime": 0.2,
+    "category": "Basics",
+    "cooldown": 0,
+    "damageModifiers": [],
+    "displayName": "Basic Attack 4 (swap cancel)",
+    "dmgTypes": [
+     "BASIC"
+    ],
+    "elements": [
+     "AERO"
+    ],
+    "energyCost": [],
+    "energyGenerated": [
+     {
+      "amount": 1.64,
+      "energyType": "energy",
+      "scalingStat": "energyPercent",
+      "share": 0.5
+     },
+     {
+      "amount": 5.24,
+      "energyType": "concerto",
+      "share": 0
+     },
+     {
+      "amount": 10,
+      "energyType": "forte",
+      "share": 0
+     }
+    ],
+    "groupName": "Basic Attack 4",
+    "multiplier": 0.7672,
+    "name": "Basic Attack 4 (swap cancel)",
+    "offtune": 0.52,
+    "scaling": "ATK",
+    "sideEffects": [],
+    "statusModifications": [],
+    "tags": [
+     "BASIC_ATTACK"
+    ],
+    "variantName": "Cancel With Swap"
+   },
+   {
+    "castConditions": {
+     "endState": "AIR",
+     "startState": "ANY"
+    },
+    "castTime": 1.42,
+    "category": "Other",
+    "cooldown": 0,
+    "damageModifiers": [
+     {
+      "characterStats": {
+       "bonusATK": 0.2
+      },
+      "condition": "[Function]",
+      "displayName": "Rover Intro Buff",
+      "durationStrategy": {
+       "timeDuration": 10,
+       "type": "limited"
+      },
+      "ownerCharacter": "Rover",
+      "source": "Rover Intro Buff",
+      "stackingStrategy": {
+       "maxStacks": 1,
+       "resetTimerOnApplication": true,
+       "stacksRemovedEachTime": 1
+      },
+      "targetStrategy": "self",
+      "type": "buff"
+     }
+    ],
+    "displayName": "Relentless Squall",
+    "dmgTypes": [
+     "INTRO"
+    ],
+    "elements": [
+     "AERO"
+    ],
+    "energyCost": [],
+    "energyGenerated": [
+     {
+      "amount": 10,
+      "energyType": "energy",
+      "scalingStat": "energyPercent",
+      "share": 0.5
+     },
+     {
+      "amount": 10,
+      "energyType": "concerto",
+      "share": 0
+     },
+     {
+      "amount": 20,
+      "energyType": "forte",
+      "share": 0
+     }
+    ],
+    "multiplier": 1.9882,
+    "name": "Intro Skill",
+    "offtune": 1.15,
+    "scaling": "ATK",
+    "sideEffects": [],
+    "statusModifications": [],
+    "tags": [
+     "INTRO_ACTION"
+    ]
+   },
+   {
+    "castConditions": {
+     "endState": "PRESERVE",
+     "startState": "ANY"
+    },
+    "castTime": 0,
+    "category": "Other",
+    "cooldown": 0,
+    "damageModifiers": [
+     {
+      "condition": "[Function]",
+      "displayName": "Aeolian Realm",
+      "durationStrategy": {
+       "timeDuration": 40,
+       "type": "limited"
+      },
+      "negativeStatusEffects": [
+       {
+        "property": "maxStacks",
+        "targetStatus": "Aero Erosion",
+        "value": 3
+       }
+      ],
+      "ownerCharacter": "Rover",
+      "source": "Rover Outro Buff",
+      "stackingStrategy": {
+       "maxStacks": 1,
+       "resetTimerOnApplication": true,
+       "stacksRemovedEachTime": 1
+      },
+      "targetStrategy": "all",
+      "type": "buff"
+     }
+    ],
+    "displayName": "Storms Echo",
+    "dmgTypes": [
+     "OUTRO"
+    ],
+    "elements": [
+     "AERO"
+    ],
+    "energyCost": [],
+    "energyGenerated": [],
+    "multiplier": 0,
+    "name": "Outro Skill",
+    "offtune": 0,
+    "scaling": "ATK",
+    "sideEffects": [],
+    "statusModifications": [],
+    "tags": [
+     "OUTRO_ACTION"
+    ]
+   },
+   {
+    "castConditions": {
+     "endState": "PRESERVE",
+     "startState": "ANY"
+    },
+    "castTime": 0.05,
+    "category": "Testing",
+    "cooldown": 0,
+    "damageModifiers": [],
+    "displayName": "Wait 0.05s",
+    "dmgTypes": [
+     ""
+    ],
+    "elements": [
+     ""
+    ],
+    "energyCost": [],
+    "energyGenerated": [],
+    "multiplier": 0,
+    "name": "Wait 0.05s",
+    "offtune": 0,
+    "scaling": "HP",
+    "sideEffects": [],
+    "statusModifications": []
+   },
+   {
+    "castConditions": {
+     "customCanCast": "[Function]",
+     "endState": "PRESERVE",
+     "startState": "ANY"
+    },
+    "castTime": 0,
+    "category": "Other",
+    "cooldown": 0,
+    "damageModifiers": [],
+    "displayName": "Wait Until Next Swap Is Available",
+    "dmgTypes": [
+     ""
+    ],
+    "elements": [
+     ""
+    ],
+    "energyCost": [],
+    "energyGenerated": [],
+    "multiplier": 0,
+    "name": "Wait Until Next Swap Is Available",
+    "offtune": 0,
+    "resolveVariant": "[Function]",
+    "scaling": "HP",
+    "sideEffects": [],
+    "statusModifications": []
+   },
+   {
+    "castConditions": {
+     "endState": "PRESERVE",
+     "startState": "ANY"
+    },
+    "castTime": 0,
+    "category": "Testing",
+    "cooldown": 0,
+    "damageModifiers": [],
+    "displayName": "Energy Up",
+    "dmgTypes": [
+     ""
+    ],
+    "elements": [
+     ""
+    ],
+    "energyCost": [],
+    "energyGenerated": [
+     {
+      "amount": 1000,
+      "energyType": "energy",
+      "share": 0
+     }
+    ],
+    "multiplier": 0,
+    "name": "Energy Up",
+    "offtune": 0,
+    "scaling": "HP",
+    "sideEffects": [],
+    "statusModifications": []
+   },
+   {
+    "castConditions": {
+     "endState": "PRESERVE",
+     "startState": "ANY"
+    },
+    "castTime": 0,
+    "category": "Testing",
+    "cooldown": 0,
+    "damageModifiers": [],
+    "displayName": "Concerto Up",
+    "dmgTypes": [
+     ""
+    ],
+    "elements": [
+     ""
+    ],
+    "energyCost": [],
+    "energyGenerated": [
+     {
+      "amount": 1000,
+      "energyType": "concerto",
+      "share": 0
+     }
+    ],
+    "multiplier": 0,
+    "name": "Concerto Up",
+    "offtune": 0,
+    "scaling": "HP",
+    "sideEffects": [],
+    "statusModifications": []
+   },
+   {
+    "castConditions": {
+     "endState": "PRESERVE",
+     "startState": "ANY"
+    },
+    "castTime": 0,
+    "category": "Testing",
+    "cooldown": 0,
+    "damageModifiers": [],
+    "displayName": "Forte Up",
+    "dmgTypes": [
+     ""
+    ],
+    "elements": [
+     ""
+    ],
+    "energyCost": [],
+    "energyGenerated": [
+     {
+      "amount": 1000,
+      "energyType": "forte",
+      "share": 0
+     }
+    ],
+    "multiplier": 0,
+    "name": "Forte Up",
+    "offtune": 0,
+    "scaling": "HP",
+    "sideEffects": [],
+    "statusModifications": []
+   },
+   {
+    "castConditions": {
+     "endState": "PRESERVE",
+     "startState": "ANY"
+    },
+    "castTime": 0,
+    "category": "Echo Skill",
+    "cooldown": 20,
+    "damageModifiers": [],
+    "displayName": "Reminiscence: Fleurdelys (Active)",
+    "dmgTypes": [
+     "ECHO"
+    ],
+    "elements": [
+     "AERO"
+    ],
+    "energyCost": [],
+    "energyGenerated": [
+     {
+      "amount": 4.94,
+      "energyType": "energy",
+      "scalingStat": "energyPercent",
+      "share": 0.5
+     }
+    ],
+    "multiplier": 3.5568,
+    "name": "Reminiscence: Fleurdelys (Active)",
+    "offtune": 0,
+    "scaling": "ATK",
+    "sideEffects": [],
+    "statusModifications": []
+   }
+  ],
+  "damageModifiers": [],
+  "element": "AERO",
+  "flattenedPassiveModifiers": [
+   {
+    "characterStats": {
+     "aeroBonusDMG": 0.3,
+     "critRate": 0.1
+    },
+    "condition": "[Function]",
+    "displayName": "Windward Pilgrimage (Set Bonus)",
+    "durationStrategy": {
+     "type": "permanent"
+    },
+    "ownerCharacter": "Cartethyia",
+    "source": "Cartethyia",
+    "stackingStrategy": {
+     "maxStacks": 1,
+     "resetTimerOnApplication": false,
+     "stacksRemovedEachTime": 0
+    },
+    "targetStrategy": "self",
+    "type": "buff"
+   }
+  ],
+  "gear": {
+   "echoSlots": {
+    "1": {
+     "baseStats": {
+      "critRate": 0.22,
+      "flatATK": 150
+     },
+     "conditionalStats": {
+      "condition": "[Function]",
+      "stats": {
+       "aeroBonusDMG": 0.1
+      }
+     },
+     "cost": 4,
+     "echoSkill": {
+      "castConditions": {
+       "endState": "PRESERVE",
+       "startState": "ANY"
+      },
+      "castTime": 0,
+      "category": "Echo Skill",
+      "cooldown": 20,
+      "damageModifiers": [],
+      "displayName": "Reminiscence: Fleurdelys (Active)",
+      "dmgTypes": [
+       "ECHO"
+      ],
+      "elements": [
+       "AERO"
+      ],
+      "energyCost": [],
+      "energyGenerated": [
+       {
+        "amount": 4.94,
+        "energyType": "energy",
+        "scalingStat": "energyPercent",
+        "share": 0.5
+       }
+      ],
+      "multiplier": 3.5568,
+      "name": "Reminiscence: Fleurdelys (Active)",
+      "offtune": 0,
+      "scaling": "ATK",
+      "sideEffects": [],
+      "statusModifications": []
+     },
+     "firstSlotStats": {
+      "aeroBonusDMG": 0.1
+     },
+     "icon": "assets/gear/echoes/reminiscence_fleurdelys.png",
+     "info": "The Resonator with this Echo equipped in the main slot gains 10.00% Aero DMG Bonus. When Resonator: Aero Rover or Cartethyia equips this Echo, they gain 10.00% more Aero DMG Bonus.",
+     "info_icon": "assets/gear/echoes/info_reminiscence_fleurdelys.png",
+     "name": "Reminiscence: Fleurdelys",
+     "setName": "Windward Pilgrimage",
+     "subStats": {
+      "bonusHP": 0.079,
+      "critDamage": 0.15,
+      "critRate": 0.075
+     }
+    },
+    "2": {
+     "baseStats": {
+      "aeroBonusDMG": 0.3,
+      "flatATK": 100
+     },
+     "cost": 3,
+     "icon": "assets/gear/echoes/capitaneus.png",
+     "info": "The Resonator with this Echo equipped in their main slot gains 12.00% Spectro DMG Bonus and 12.00% Heavy Attack DMG Bonus.",
+     "info_icon": "assets/gear/echoes/info_capitaneus.png",
+     "name": "Capitaneus",
+     "setName": "Windward Pilgrimage",
+     "subStats": {
+      "bonusATK": 0.079,
+      "critDamage": 0.15,
+      "critRate": 0.075
+     }
+    },
+    "3": {
+     "baseStats": {
+      "aeroBonusDMG": 0.3,
+      "flatATK": 100
+     },
+     "cost": 3,
+     "icon": "assets/gear/echoes/kerasaur.png",
+     "info": "The Resonator with this Echo equipped in the main slot gains 12.00% Aero DMG Bonus and 12.00% Resonance Liberation DMG Bonus.",
+     "info_icon": "assets/gear/echoes/info_kerasaur.png",
+     "name": "Kerasaur",
+     "setName": "Windward Pilgrimage",
+     "subStats": {
+      "bonusATK": 0.079,
+      "critDamage": 0.15,
+      "critRate": 0.075
+     }
+    },
+    "4": {
+     "baseStats": {
+      "bonusATK": 0.18,
+      "flatHP": 2280
+     },
+     "cost": 1,
+     "icon": "assets/gear/echoes/sacerdos.png",
+     "info_icon": "assets/gear/echoes/info_sacerdos.png",
+     "name": "Sagittario",
+     "setName": "Windward Pilgrimage",
+     "subStats": {
+      "bonusATK": 0.079,
+      "critDamage": 0.15,
+      "critRate": 0.075
+     }
+    },
+    "5": {
+     "baseStats": {
+      "bonusATK": 0.18,
+      "flatHP": 2280
+     },
+     "cost": 1,
+     "icon": "assets/gear/echoes/spectro_drake.png",
+     "info_icon": "assets/gear/echoes/info_spectro_drake.png",
+     "name": "Spectro Drake",
+     "setName": "Windward Pilgrimage",
+     "subStats": {
+      "bonusATK": 0.079,
+      "critDamage": 0.15,
+      "critRate": 0.075
+     }
+    }
+   },
+   "setBonus": {
+    "icon": "assets/gear/set-bonuses/windward_pilgrimage.png",
+    "info": {
+     "2-piece": "Aero DMG + 10%",
+     "5-piece": "Hitting a target with Aero Erosion increases Crit. Rate by 10% and grants 30% Aero DMG Bonus, lasting for 10s."
+    },
+    "injectedModifiers": [
+     {
+      "modifiers": [
+       {
+        "characterStats": {
+         "aeroBonusDMG": 0.3,
+         "critRate": 0.1
+        },
+        "condition": "[Function]",
+        "displayName": "Windward Pilgrimage (Set Bonus)",
+        "durationStrategy": {
+         "type": "permanent"
+        },
+        "ownerCharacter": "Cartethyia",
+        "source": "Cartethyia",
+        "stackingStrategy": {
+         "maxStacks": 1,
+         "resetTimerOnApplication": false,
+         "stacksRemovedEachTime": 0
+        },
+        "targetStrategy": "self",
+        "type": "buff"
+       }
+      ],
+      "targets": [
+       "character"
+      ]
+     }
+    ],
+    "name": "Windward Pilgrimage",
+    "stats": {
+     "aeroBonusDMG": 0.1
+    }
+   },
+   "weapon": {
+    "icon": "assets/gear/weapons/bloodpact's_pledge.png",
+    "info": "Providing Healing increases Resonance Skill DMG by 10%/14%/18%/22%/26% for 6/6/6/6/6s. When Rover: Aero casts Resonance Skill Unbound Flow, Aero DMG dealt by nearby Resonators on the field is Amplified by 10%/14%/18%/22%/26% for 30/30/30/30/30s.",
+    "injectedModifiers": [
+     {
+      "modifiers": [
+       {
+        "characterStats": {
+         "skillBonusDMG": 0.26
+        },
+        "condition": "[Function]",
+        "displayName": "Harmonious Vibrancy",
+        "durationStrategy": {
+         "timeDuration": 6,
+         "type": "limited"
+        },
+        "ownerCharacter": "Rover",
+        "source": "Bloodpact's Pledge",
+        "stackingStrategy": {
+         "maxStacks": 1,
+         "resetTimerOnApplication": true,
+         "stacksRemovedEachTime": 1
+        },
+        "targetStrategy": "self",
+        "type": "buff"
+       }
+      ],
+      "targets": [
+       {
+        "tag": "HEAL_PROC"
+       }
+      ]
+     },
+     {
+      "modifiers": [
+       {
+        "characterStats": {
+         "skillBonusDMG": 0.26
+        },
+        "condition": "[Function]",
+        "displayName": "Harmonious Vibrancy",
+        "durationStrategy": {
+         "timeDuration": 36,
+         "type": "limited"
+        },
+        "ownerCharacter": "Rover",
+        "source": "Bloodpact's Pledge",
+        "stackingStrategy": {
+         "maxStacks": 1,
+         "resetTimerOnApplication": true,
+         "stacksRemovedEachTime": 1
+        },
+        "targetStrategy": "self",
+        "type": "buff"
+       }
+      ],
+      "targets": [
+       {
+        "match": "all",
+        "tags": [
+         "SKILL",
+         "HEAL_PROC"
+        ]
+       }
+      ]
+     }
+    ],
+    "name": "Bloodpact's Pledge",
+    "rank": 5,
+    "stats": {
+     "baseATK": 587.5,
+     "energyPercent": 0.3888
+    },
+    "weaponType": "Sword"
+   }
+  },
+  "image": "/assets/characters/rover.png",
+  "inherentStats": {
+   "bonusATK": 0.12
+  },
+  "maxEnergies": {
+   "concerto": 100,
+   "energy": 150,
+   "forte": 120
+  },
+  "name": "Rover",
+  "sequence": 6,
+  "sequence_nodes": [
+   "Casting Mid-air Attack Cloudburst Dance enhances Rover's resistance to interruption for 3s.",
+   "Casting Resonance Skill Unbound Flow continuously restores HP for the Resonator on the field by 20% of Rover's ATK every 3s for 30s. When the Resonator on the field has an HP lower than 35%, immediately restore 10% of their lost HP. This restoration effect can be triggered once every 10s and will not be affected by any Healing Bonus.",
+   "Aero DMG Bonus is increased by 15%.",
+   "Casting Mid-air Attack Cloudburst Dance increases Resonance Skill DMG Bonus by 15% for 5s.",
+   "The DMG Multiplier of Resonance Liberation Omega Storm is increased by 20%.",
+   "The DMG Multiplier of Resonance Skill Unbound Flow is increased by 30%."
+  ],
+  "sequence_nodes_icons": [
+   "assets/characters/sequences/roverAero_1.png",
+   "assets/characters/sequences/roverAero_2.png",
+   "assets/characters/sequences/roverAero_3.png",
+   "assets/characters/sequences/roverAero_4.png",
+   "assets/characters/sequences/roverAero_5.png",
+   "assets/characters/sequences/roverAero_6.png"
+  ],
+  "stats": {
+   "aeroAmplifyDMG": 0,
+   "aeroBonusDMG": 1.2,
+   "aeroErosionAmplifyDMG": 0,
+   "aeroErosionBonusDMG": 0,
+   "aeroErosionTotalMultiplierDMG": 1,
+   "aeroTotalMultiplierDMG": 1,
+   "amplifyATK": 0,
+   "amplifyDEF": 0,
+   "amplifyDMG": 0,
+   "amplifyHP": 0,
+   "baseATK": 1024.5,
+   "baseDEF": 1136,
+   "baseHP": 10775,
+   "basicAmplifyDMG": 0,
+   "basicBonusDMG": 0,
+   "basicTotalMultiplierDMG": 1,
+   "bonusATK": 0.796,
+   "bonusDEF": 0,
+   "bonusDMG": 0,
+   "bonusHP": 0.079,
+   "coordinatedAmplifyDMG": 0,
+   "coordinatedBonusDMG": 0,
+   "coordinatedTotalMultiplierDMG": 1,
+   "critDamage": 2.25,
+   "critRate": 0.745,
+   "defIgnore": 0,
+   "echoAmplifyDMG": 0,
+   "echoBonusDMG": 0,
+   "echoTotalMultiplierDMG": 1,
+   "electroAmplifyDMG": 0,
+   "electroBonusDMG": 0,
+   "electroFlareAmplifyDMG": 0,
+   "electroFlareBonusDMG": 0,
+   "electroFlareTotalMultiplierDMG": 1,
+   "electroTotalMultiplierDMG": 1,
+   "elementalResPEN": 0,
+   "energyPercent": 1.3888,
+   "flatATK": 350,
+   "flatDEF": 0,
+   "flatHP": 4560,
+   "fusionAmplifyDMG": 0,
+   "fusionBonusDMG": 0,
+   "fusionBurstAmplifyDMG": 0,
+   "fusionBurstBonusDMG": 0,
+   "fusionBurstTotalMultiplierDMG": 1,
+   "fusionTotalMultiplierDMG": 1,
+   "glacioAmplifyDMG": 0,
+   "glacioBonusDMG": 0,
+   "glacioChafeAmplifyDMG": 0,
+   "glacioChafeBonusDMG": 0,
+   "glacioChafeTotalMultiplierDMG": 1,
+   "glacioTotalMultiplierDMG": 1,
+   "havocAmplifyDMG": 0,
+   "havocBaneAmplifyDMG": 0,
+   "havocBaneBonusDMG": 0,
+   "havocBaneTotalMultiplierDMG": 1,
+   "havocBonusDMG": 0,
+   "havocTotalMultiplierDMG": 1,
+   "healingBonus": 0,
+   "heavyAmplifyDMG": 0,
+   "heavyBonusDMG": 0,
+   "heavyTotalMultiplierDMG": 1,
+   "introAmplifyDMG": 0,
+   "introBonusDMG": 0,
+   "introTotalMultiplierDMG": 1,
+   "level": 90,
+   "liberationAmplifyDMG": 0,
+   "liberationBonusDMG": 0,
+   "liberationTotalMultiplierDMG": 1,
+   "offtuneBuildupRate": 1,
+   "outroAmplifyDMG": 0,
+   "outroBonusDMG": 0,
+   "outroTotalMultiplierDMG": 1,
+   "resistancePEN": 0,
+   "skillAmplifyDMG": 0,
+   "skillBonusDMG": 0,
+   "skillTotalMultiplierDMG": 1,
+   "spectroAmplifyDMG": 0,
+   "spectroBonusDMG": 0,
+   "spectroFrazzleAmplifyDMG": 0,
+   "spectroFrazzleBonusDMG": 0,
+   "spectroFrazzleTotalMultiplierDMG": 1,
+   "spectroTotalMultiplierDMG": 1,
+   "totalMultiplierATK": 1,
+   "totalMultiplierDEF": 1,
+   "totalMultiplierDMG": 1,
+   "totalMultiplierHP": 1,
+   "tuneBreakBoost": 0
+  },
+  "weaponType": "Sword"
+ }
+}

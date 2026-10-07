@@ -1,0 +1,1104 @@
+{
+ "candidateCount": 35,
+ "candidates": [
+  {
+   "blockDuration": 2.05,
+   "steps": [
+    {
+     "action": "Basic Attack 1",
+     "character": "Hiyuki"
+    },
+    {
+     "action": "Resonance Skill",
+     "character": "Hiyuki"
+    }
+   ]
+  },
+  {
+   "blockDuration": 2.56666666667,
+   "steps": [
+    {
+     "action": "Basic Attack 1",
+     "character": "Hiyuki"
+    },
+    {
+     "action": "Resonance Skill",
+     "character": "Hiyuki"
+    },
+    {
+     "action": "Basic Attack 1",
+     "character": "Hiyuki"
+    }
+   ]
+  },
+  {
+   "blockDuration": 2.2,
+   "steps": [
+    {
+     "action": "Basic Attack 1",
+     "character": "Hiyuki"
+    },
+    {
+     "action": "Enhanced Heavy Attack",
+     "character": "Hiyuki"
+    }
+   ]
+  },
+  {
+   "blockDuration": 2.71666666667,
+   "steps": [
+    {
+     "action": "Basic Attack 1",
+     "character": "Hiyuki"
+    },
+    {
+     "action": "Enhanced Heavy Attack",
+     "character": "Hiyuki"
+    },
+    {
+     "action": "Basic Attack 1",
+     "character": "Hiyuki"
+    }
+   ]
+  },
+  {
+   "blockDuration": 2.72666666667,
+   "steps": [
+    {
+     "action": "Basic Attack 1",
+     "character": "Hiyuki"
+    },
+    {
+     "action": "Enhanced Heavy Attack",
+     "character": "Hiyuki"
+    },
+    {
+     "action": "Basic Attack 1",
+     "character": "Hiyuki"
+    },
+    {
+     "action": "Liberation",
+     "character": "Hiyuki"
+    }
+   ]
+  },
+  {
+   "blockDuration": 2.21,
+   "steps": [
+    {
+     "action": "Basic Attack 1",
+     "character": "Hiyuki"
+    },
+    {
+     "action": "Enhanced Heavy Attack",
+     "character": "Hiyuki"
+    },
+    {
+     "action": "Liberation",
+     "character": "Hiyuki"
+    }
+   ]
+  },
+  {
+   "blockDuration": 2.52666666667,
+   "steps": [
+    {
+     "action": "Basic Attack 1",
+     "character": "Hiyuki"
+    },
+    {
+     "action": "Enhanced Heavy Attack",
+     "character": "Hiyuki"
+    },
+    {
+     "action": "Liberation",
+     "character": "Hiyuki"
+    },
+    {
+     "action": "Foreclaimed: Basic Attack 1",
+     "character": "Hiyuki"
+    }
+   ]
+  },
+  {
+   "blockDuration": 2.84333333333,
+   "steps": [
+    {
+     "action": "Basic Attack 1",
+     "character": "Hiyuki"
+    },
+    {
+     "action": "Enhanced Heavy Attack",
+     "character": "Hiyuki"
+    },
+    {
+     "action": "Liberation",
+     "character": "Hiyuki"
+    },
+    {
+     "action": "Foreclaimed: Resonance Skill 1",
+     "character": "Hiyuki"
+    }
+   ]
+  },
+  {
+   "blockDuration": 1.2,
+   "steps": [
+    {
+     "action": "Basic Attack 1-2",
+     "character": "Hiyuki"
+    }
+   ]
+  },
+  {
+   "blockDuration": 2.73333333333,
+   "steps": [
+    {
+     "action": "Basic Attack 1-2",
+     "character": "Hiyuki"
+    },
+    {
+     "action": "Resonance Skill",
+     "character": "Hiyuki"
+    }
+   ]
+  },
+  {
+   "blockDuration": 2.88333333333,
+   "steps": [
+    {
+     "action": "Basic Attack 1-2",
+     "character": "Hiyuki"
+    },
+    {
+     "action": "Enhanced Heavy Attack",
+     "character": "Hiyuki"
+    }
+   ]
+  },
+  {
+   "blockDuration": 2.89333333333,
+   "steps": [
+    {
+     "action": "Basic Attack 1-2",
+     "character": "Hiyuki"
+    },
+    {
+     "action": "Enhanced Heavy Attack",
+     "character": "Hiyuki"
+    },
+    {
+     "action": "Liberation",
+     "character": "Hiyuki"
+    }
+   ]
+  },
+  {
+   "blockDuration": 1.46666666667,
+   "steps": [
+    {
+     "action": "Basic Attack 1-3",
+     "character": "Hiyuki"
+    }
+   ]
+  },
+  {
+   "blockDuration": 1.98333333333,
+   "steps": [
+    {
+     "action": "Basic Attack 1-3",
+     "character": "Hiyuki"
+    },
+    {
+     "action": "Basic Attack 1",
+     "character": "Hiyuki"
+    }
+   ]
+  },
+  {
+   "blockDuration": 2.66666666667,
+   "steps": [
+    {
+     "action": "Basic Attack 1-3",
+     "character": "Hiyuki"
+    },
+    {
+     "action": "Basic Attack 1-2",
+     "character": "Hiyuki"
+    }
+   ]
+  },
+  {
+   "blockDuration": 2.93333333333,
+   "steps": [
+    {
+     "action": "Basic Attack 1-3",
+     "character": "Hiyuki"
+    },
+    {
+     "action": "Basic Attack 1-3",
+     "character": "Hiyuki"
+    }
+   ]
+  },
+  {
+   "blockDuration": 3,
+   "steps": [
+    {
+     "action": "Basic Attack 1-3",
+     "character": "Hiyuki"
+    },
+    {
+     "action": "Resonance Skill",
+     "character": "Hiyuki"
+    }
+   ]
+  },
+  {
+   "blockDuration": 1.53333333333,
+   "steps": [
+    {
+     "action": "Resonance Skill",
+     "character": "Hiyuki"
+    }
+   ]
+  },
+  {
+   "blockDuration": 2.05,
+   "steps": [
+    {
+     "action": "Resonance Skill",
+     "character": "Hiyuki"
+    },
+    {
+     "action": "Basic Attack 1",
+     "character": "Hiyuki"
+    }
+   ]
+  },
+  {
+   "blockDuration": 2.73333333333,
+   "steps": [
+    {
+     "action": "Resonance Skill",
+     "character": "Hiyuki"
+    },
+    {
+     "action": "Basic Attack 1-2",
+     "character": "Hiyuki"
+    }
+   ]
+  },
+  {
+   "blockDuration": 3,
+   "steps": [
+    {
+     "action": "Resonance Skill",
+     "character": "Hiyuki"
+    },
+    {
+     "action": "Basic Attack 1-3",
+     "character": "Hiyuki"
+    }
+   ]
+  },
+  {
+   "blockDuration": 1.68333333333,
+   "steps": [
+    {
+     "action": "Enhanced Heavy Attack",
+     "character": "Hiyuki"
+    }
+   ]
+  },
+  {
+   "blockDuration": 2.2,
+   "steps": [
+    {
+     "action": "Enhanced Heavy Attack",
+     "character": "Hiyuki"
+    },
+    {
+     "action": "Basic Attack 1",
+     "character": "Hiyuki"
+    }
+   ]
+  },
+  {
+   "blockDuration": 2.21,
+   "steps": [
+    {
+     "action": "Enhanced Heavy Attack",
+     "character": "Hiyuki"
+    },
+    {
+     "action": "Basic Attack 1",
+     "character": "Hiyuki"
+    },
+    {
+     "action": "Liberation",
+     "character": "Hiyuki"
+    }
+   ]
+  },
+  {
+   "blockDuration": 2.52666666667,
+   "steps": [
+    {
+     "action": "Enhanced Heavy Attack",
+     "character": "Hiyuki"
+    },
+    {
+     "action": "Basic Attack 1",
+     "character": "Hiyuki"
+    },
+    {
+     "action": "Liberation",
+     "character": "Hiyuki"
+    },
+    {
+     "action": "Foreclaimed: Basic Attack 1",
+     "character": "Hiyuki"
+    }
+   ]
+  },
+  {
+   "blockDuration": 2.84333333333,
+   "steps": [
+    {
+     "action": "Enhanced Heavy Attack",
+     "character": "Hiyuki"
+    },
+    {
+     "action": "Basic Attack 1",
+     "character": "Hiyuki"
+    },
+    {
+     "action": "Liberation",
+     "character": "Hiyuki"
+    },
+    {
+     "action": "Foreclaimed: Resonance Skill 1",
+     "character": "Hiyuki"
+    }
+   ]
+  },
+  {
+   "blockDuration": 2.88333333333,
+   "steps": [
+    {
+     "action": "Enhanced Heavy Attack",
+     "character": "Hiyuki"
+    },
+    {
+     "action": "Basic Attack 1-2",
+     "character": "Hiyuki"
+    }
+   ]
+  },
+  {
+   "blockDuration": 2.89333333333,
+   "steps": [
+    {
+     "action": "Enhanced Heavy Attack",
+     "character": "Hiyuki"
+    },
+    {
+     "action": "Basic Attack 1-2",
+     "character": "Hiyuki"
+    },
+    {
+     "action": "Liberation",
+     "character": "Hiyuki"
+    }
+   ]
+  },
+  {
+   "blockDuration": 1.69333333333,
+   "steps": [
+    {
+     "action": "Enhanced Heavy Attack",
+     "character": "Hiyuki"
+    },
+    {
+     "action": "Liberation",
+     "character": "Hiyuki"
+    }
+   ]
+  },
+  {
+   "blockDuration": 2.01,
+   "steps": [
+    {
+     "action": "Enhanced Heavy Attack",
+     "character": "Hiyuki"
+    },
+    {
+     "action": "Liberation",
+     "character": "Hiyuki"
+    },
+    {
+     "action": "Foreclaimed: Basic Attack 1",
+     "character": "Hiyuki"
+    }
+   ]
+  },
+  {
+   "blockDuration": 2.64333333333,
+   "steps": [
+    {
+     "action": "Enhanced Heavy Attack",
+     "character": "Hiyuki"
+    },
+    {
+     "action": "Liberation",
+     "character": "Hiyuki"
+    },
+    {
+     "action": "Foreclaimed: Basic Attack 1",
+     "character": "Hiyuki"
+    },
+    {
+     "action": "Foreclaimed: Resonance Skill 1",
+     "character": "Hiyuki"
+    }
+   ]
+  },
+  {
+   "blockDuration": 2.62666666667,
+   "steps": [
+    {
+     "action": "Enhanced Heavy Attack",
+     "character": "Hiyuki"
+    },
+    {
+     "action": "Liberation",
+     "character": "Hiyuki"
+    },
+    {
+     "action": "Foreclaimed: Basic Attack 1-2",
+     "character": "Hiyuki"
+    }
+   ]
+  },
+  {
+   "blockDuration": 2.72666666667,
+   "steps": [
+    {
+     "action": "Enhanced Heavy Attack",
+     "character": "Hiyuki"
+    },
+    {
+     "action": "Liberation",
+     "character": "Hiyuki"
+    },
+    {
+     "action": "Foreclaimed: Basic Attack 1-3 (skill cancel)",
+     "character": "Hiyuki"
+    }
+   ]
+  },
+  {
+   "blockDuration": 2.72666666667,
+   "steps": [
+    {
+     "action": "Enhanced Heavy Attack",
+     "character": "Hiyuki"
+    },
+    {
+     "action": "Liberation",
+     "character": "Hiyuki"
+    },
+    {
+     "action": "Foreclaimed: Basic Attack 1-3 (heavy cancel)",
+     "character": "Hiyuki"
+    }
+   ]
+  },
+  {
+   "blockDuration": 2.32666666667,
+   "steps": [
+    {
+     "action": "Enhanced Heavy Attack",
+     "character": "Hiyuki"
+    },
+    {
+     "action": "Liberation",
+     "character": "Hiyuki"
+    },
+    {
+     "action": "Foreclaimed: Resonance Skill 1",
+     "character": "Hiyuki"
+    }
+   ]
+  }
+ ],
+ "scored": [
+  {
+   "score": 10867.6363589,
+   "steps": [
+    {
+     "action": "Basic Attack 1",
+     "character": "Hiyuki"
+    },
+    {
+     "action": "Resonance Skill",
+     "character": "Hiyuki"
+    }
+   ],
+   "valid": true
+  },
+  {
+   "score": 11234.7072544,
+   "steps": [
+    {
+     "action": "Basic Attack 1",
+     "character": "Hiyuki"
+    },
+    {
+     "action": "Resonance Skill",
+     "character": "Hiyuki"
+    },
+    {
+     "action": "Basic Attack 1",
+     "character": "Hiyuki"
+    }
+   ],
+   "valid": true
+  },
+  {
+   "score": 15965.3601794,
+   "steps": [
+    {
+     "action": "Basic Attack 1",
+     "character": "Hiyuki"
+    },
+    {
+     "action": "Enhanced Heavy Attack",
+     "character": "Hiyuki"
+    }
+   ],
+   "valid": true
+  },
+  {
+   "score": 16351.1344331,
+   "steps": [
+    {
+     "action": "Basic Attack 1",
+     "character": "Hiyuki"
+    },
+    {
+     "action": "Enhanced Heavy Attack",
+     "character": "Hiyuki"
+    },
+    {
+     "action": "Basic Attack 1",
+     "character": "Hiyuki"
+    }
+   ],
+   "valid": true
+  },
+  {
+   "score": 27785.8330545,
+   "steps": [
+    {
+     "action": "Basic Attack 1",
+     "character": "Hiyuki"
+    },
+    {
+     "action": "Enhanced Heavy Attack",
+     "character": "Hiyuki"
+    },
+    {
+     "action": "Basic Attack 1",
+     "character": "Hiyuki"
+    },
+    {
+     "action": "Liberation",
+     "character": "Hiyuki"
+    }
+   ],
+   "valid": true
+  },
+  {
+   "score": 27520.0876639,
+   "steps": [
+    {
+     "action": "Basic Attack 1",
+     "character": "Hiyuki"
+    },
+    {
+     "action": "Enhanced Heavy Attack",
+     "character": "Hiyuki"
+    },
+    {
+     "action": "Liberation",
+     "character": "Hiyuki"
+    }
+   ],
+   "valid": true
+  },
+  {
+   "score": 30549.8021906,
+   "steps": [
+    {
+     "action": "Basic Attack 1",
+     "character": "Hiyuki"
+    },
+    {
+     "action": "Enhanced Heavy Attack",
+     "character": "Hiyuki"
+    },
+    {
+     "action": "Liberation",
+     "character": "Hiyuki"
+    },
+    {
+     "action": "Foreclaimed: Basic Attack 1",
+     "character": "Hiyuki"
+    }
+   ],
+   "valid": true
+  },
+  {
+   "score": 31690.9672993,
+   "steps": [
+    {
+     "action": "Basic Attack 1",
+     "character": "Hiyuki"
+    },
+    {
+     "action": "Enhanced Heavy Attack",
+     "character": "Hiyuki"
+    },
+    {
+     "action": "Liberation",
+     "character": "Hiyuki"
+    },
+    {
+     "action": "Foreclaimed: Resonance Skill 1",
+     "character": "Hiyuki"
+    }
+   ],
+   "valid": true
+  },
+  {
+   "score": 9308.43048515,
+   "steps": [
+    {
+     "action": "Basic Attack 1-2",
+     "character": "Hiyuki"
+    }
+   ],
+   "valid": true
+  },
+  {
+   "score": 11258.4945679,
+   "steps": [
+    {
+     "action": "Basic Attack 1-2",
+     "character": "Hiyuki"
+    },
+    {
+     "action": "Resonance Skill",
+     "character": "Hiyuki"
+    }
+   ],
+   "valid": true
+  },
+  {
+   "score": 16266.1854416,
+   "steps": [
+    {
+     "action": "Basic Attack 1-2",
+     "character": "Hiyuki"
+    },
+    {
+     "action": "Enhanced Heavy Attack",
+     "character": "Hiyuki"
+    }
+   ],
+   "valid": true
+  },
+  {
+   "score": 27700.884063,
+   "steps": [
+    {
+     "action": "Basic Attack 1-2",
+     "character": "Hiyuki"
+    },
+    {
+     "action": "Enhanced Heavy Attack",
+     "character": "Hiyuki"
+    },
+    {
+     "action": "Liberation",
+     "character": "Hiyuki"
+    }
+   ],
+   "valid": true
+  },
+  {
+   "score": 10922.56223,
+   "steps": [
+    {
+     "action": "Basic Attack 1-3",
+     "character": "Hiyuki"
+    }
+   ],
+   "valid": true
+  },
+  {
+   "score": 11216.6093512,
+   "steps": [
+    {
+     "action": "Basic Attack 1-3",
+     "character": "Hiyuki"
+    },
+    {
+     "action": "Basic Attack 1",
+     "character": "Hiyuki"
+    }
+   ],
+   "valid": true
+  },
+  {
+   "score": 11707.0682651,
+   "steps": [
+    {
+     "action": "Basic Attack 1-3",
+     "character": "Hiyuki"
+    },
+    {
+     "action": "Basic Attack 1-2",
+     "character": "Hiyuki"
+    }
+   ],
+   "valid": true
+  },
+  {
+   "score": 13321.20001,
+   "steps": [
+    {
+     "action": "Basic Attack 1-3",
+     "character": "Hiyuki"
+    },
+    {
+     "action": "Basic Attack 1-3",
+     "character": "Hiyuki"
+    }
+   ],
+   "valid": true
+  },
+  {
+   "score": 12902.637295,
+   "steps": [
+    {
+     "action": "Basic Attack 1-3",
+     "character": "Hiyuki"
+    },
+    {
+     "action": "Resonance Skill",
+     "character": "Hiyuki"
+    }
+   ],
+   "valid": true
+  },
+  {
+   "score": 10503.999515,
+   "steps": [
+    {
+     "action": "Resonance Skill",
+     "character": "Hiyuki"
+    }
+   ],
+   "valid": true
+  },
+  {
+   "score": 10907.9815082,
+   "steps": [
+    {
+     "action": "Resonance Skill",
+     "character": "Hiyuki"
+    },
+    {
+     "action": "Basic Attack 1",
+     "character": "Hiyuki"
+    }
+   ],
+   "valid": true
+  },
+  {
+   "score": 11347.1139708,
+   "steps": [
+    {
+     "action": "Resonance Skill",
+     "character": "Hiyuki"
+    },
+    {
+     "action": "Basic Attack 1-2",
+     "character": "Hiyuki"
+    }
+   ],
+   "valid": true
+  },
+  {
+   "score": 13026.9639993,
+   "steps": [
+    {
+     "action": "Resonance Skill",
+     "character": "Hiyuki"
+    },
+    {
+     "action": "Basic Attack 1-3",
+     "character": "Hiyuki"
+    }
+   ],
+   "valid": true
+  },
+  {
+   "score": 15511.6903888,
+   "steps": [
+    {
+     "action": "Enhanced Heavy Attack",
+     "character": "Hiyuki"
+    }
+   ],
+   "valid": true
+  },
+  {
+   "score": 16024.4086868,
+   "steps": [
+    {
+     "action": "Enhanced Heavy Attack",
+     "character": "Hiyuki"
+    },
+    {
+     "action": "Basic Attack 1",
+     "character": "Hiyuki"
+    }
+   ],
+   "valid": true
+  },
+  {
+   "score": 27579.1361714,
+   "steps": [
+    {
+     "action": "Enhanced Heavy Attack",
+     "character": "Hiyuki"
+    },
+    {
+     "action": "Basic Attack 1",
+     "character": "Hiyuki"
+    },
+    {
+     "action": "Liberation",
+     "character": "Hiyuki"
+    }
+   ],
+   "valid": true
+  },
+  {
+   "score": 30608.8506981,
+   "steps": [
+    {
+     "action": "Enhanced Heavy Attack",
+     "character": "Hiyuki"
+    },
+    {
+     "action": "Basic Attack 1",
+     "character": "Hiyuki"
+    },
+    {
+     "action": "Liberation",
+     "character": "Hiyuki"
+    },
+    {
+     "action": "Foreclaimed: Basic Attack 1",
+     "character": "Hiyuki"
+    }
+   ],
+   "valid": true
+  },
+  {
+   "score": 31750.0158068,
+   "steps": [
+    {
+     "action": "Enhanced Heavy Attack",
+     "character": "Hiyuki"
+    },
+    {
+     "action": "Basic Attack 1",
+     "character": "Hiyuki"
+    },
+    {
+     "action": "Liberation",
+     "character": "Hiyuki"
+    },
+    {
+     "action": "Foreclaimed: Resonance Skill 1",
+     "character": "Hiyuki"
+    }
+   ],
+   "valid": true
+  },
+  {
+   "score": 16485.8359256,
+   "steps": [
+    {
+     "action": "Enhanced Heavy Attack",
+     "character": "Hiyuki"
+    },
+    {
+     "action": "Basic Attack 1-2",
+     "character": "Hiyuki"
+    }
+   ],
+   "valid": true
+  },
+  {
+   "score": 27920.534547,
+   "steps": [
+    {
+     "action": "Enhanced Heavy Attack",
+     "character": "Hiyuki"
+    },
+    {
+     "action": "Basic Attack 1-2",
+     "character": "Hiyuki"
+    },
+    {
+     "action": "Liberation",
+     "character": "Hiyuki"
+    }
+   ],
+   "valid": true
+  },
+  {
+   "score": 26946.3890101,
+   "steps": [
+    {
+     "action": "Enhanced Heavy Attack",
+     "character": "Hiyuki"
+    },
+    {
+     "action": "Liberation",
+     "character": "Hiyuki"
+    }
+   ],
+   "valid": true
+  },
+  {
+   "score": 30223.0764444,
+   "steps": [
+    {
+     "action": "Enhanced Heavy Attack",
+     "character": "Hiyuki"
+    },
+    {
+     "action": "Liberation",
+     "character": "Hiyuki"
+    },
+    {
+     "action": "Foreclaimed: Basic Attack 1",
+     "character": "Hiyuki"
+    }
+   ],
+   "valid": true
+  },
+  {
+   "score": 31990.7229284,
+   "steps": [
+    {
+     "action": "Enhanced Heavy Attack",
+     "character": "Hiyuki"
+    },
+    {
+     "action": "Liberation",
+     "character": "Hiyuki"
+    },
+    {
+     "action": "Foreclaimed: Basic Attack 1",
+     "character": "Hiyuki"
+    },
+    {
+     "action": "Foreclaimed: Resonance Skill 1",
+     "character": "Hiyuki"
+    }
+   ],
+   "valid": true
+  },
+  {
+   "score": 32534.6804718,
+   "steps": [
+    {
+     "action": "Enhanced Heavy Attack",
+     "character": "Hiyuki"
+    },
+    {
+     "action": "Liberation",
+     "character": "Hiyuki"
+    },
+    {
+     "action": "Foreclaimed: Basic Attack 1-2",
+     "character": "Hiyuki"
+    }
+   ],
+   "valid": true
+  },
+  {
+   "score": 36106.578045,
+   "steps": [
+    {
+     "action": "Enhanced Heavy Attack",
+     "character": "Hiyuki"
+    },
+    {
+     "action": "Liberation",
+     "character": "Hiyuki"
+    },
+    {
+     "action": "Foreclaimed: Basic Attack 1-3 (skill cancel)",
+     "character": "Hiyuki"
+    }
+   ],
+   "valid": true
+  },
+  {
+   "score": 36106.578045,
+   "steps": [
+    {
+     "action": "Enhanced Heavy Attack",
+     "character": "Hiyuki"
+    },
+    {
+     "action": "Liberation",
+     "character": "Hiyuki"
+    },
+    {
+     "action": "Foreclaimed: Basic Attack 1-3 (heavy cancel)",
+     "character": "Hiyuki"
+    }
+   ],
+   "valid": true
+  },
+  {
+   "score": 31364.2415531,
+   "steps": [
+    {
+     "action": "Enhanced Heavy Attack",
+     "character": "Hiyuki"
+    },
+    {
+     "action": "Liberation",
+     "character": "Hiyuki"
+    },
+    {
+     "action": "Foreclaimed: Resonance Skill 1",
+     "character": "Hiyuki"
+    }
+   ],
+   "valid": true
+  }
+ ]
+}

@@ -1,3 +1,4 @@
+// Mornye's default gear: Starfield Calibrator R1 and a Halo of Starry Radiance echo set built from the catalogs.
 import { weaponCatalog, buildWeapon } from './weaponCatalog'
 import { buildEcho } from './echoCatalog'
 

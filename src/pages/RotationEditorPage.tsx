@@ -1,13 +1,14 @@
+// Rotation editor page: builds the table config, owns column visibility and resolved characters (gear/sequence).
 import RotationEditor from '../components/rotation-editor/RotationEditor'
 import { characters, baseCharacters } from '../data/characters'
 import { enemies } from '../data/enemies.ts'
-import { buildTableConfig } from '../utils/table-builders/buildTableConfig'
-import { flattenTableColumns } from '../utils/table-builders/helpers.tsx'
+import { buildTableConfig } from '../tableConfig/buildTableConfig'
+import { flattenTableColumns } from '../tableConfig/helpers.tsx'
 import { useState, useCallback } from 'react'
 import Topbar from '../components/topbar/Topbar.tsx'
 import type { ResolvedCharacter } from '../types/character'
 import type { Gear } from '../types/gear'
-import { resolveCharacter } from '../utils/gear/resolveCharacter'
+import { resolveCharacter } from '../engine/gear/resolveCharacter'
 import { useSettings } from '../hooks/useSettings'
 import { useRotationPageContext } from '../contexts/RotationPageContext'
 

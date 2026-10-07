@@ -1,3 +1,4 @@
+// Live-editing handlers: picking a character or an action on a row runs the engine and updates React state.
 import type { Snapshot } from '../../types/snapshot'
 import type { ResolvedCharacter } from '../../types/character'
 import type { Dispatch, SetStateAction } from 'react'
@@ -6,20 +7,14 @@ import type { DamageEvent } from '../../types/events'
 import type { NegativeStatusInAction } from '../../types/negativeStatus'
 import type { ModifierInAction } from '../../types/modifiers'
 import type { CoordinatedAttackInAction } from '../../types/coordinatedAttack'
-import type { GlobalColumns, TableConfig } from '../../types/tableDefinitions'
+import type { TableConfig } from '../../types/tableDefinitions'
+import type { Settings } from '../../types/settings'
 import { useRef } from 'react'
-import { copySnapshots } from '../../utils/hooks/snapshotHelpers'
-import type { Settings } from '../useSettings'
-import { engineStep, initEngineState, shouldTriggerOutroIntro, handleOutroIntroFlow } from '../../utils/engine/step'
-
-// Re-export pure engine functions for callers that imported them from here
-export {
-  updateSnapshotsWithAction,
-  shouldTriggerOutroIntro,
-  handleOutroIntroFlow,
-  autocastFollowUpChain,
-  type EngineState,
-} from '../../utils/engine/step'
+import { copySnapshots } from '../../engine/state/snapshotHelpers'
+import { engineStep } from '../../engine/simulation/step'
+import { initEngineState } from '../../engine/simulation/engineState'
+import { shouldTriggerOutroIntro, handleOutroIntroFlow } from '../../engine/simulation/outroIntro'
+import { deriveGlobalColumns, energyColumnsFromTableConfig } from '../../tableConfig/engineColumns'
 
 // ========== Hook: useCharacterActions ========================================================================================
 
@@ -34,23 +29,12 @@ type UseCharacterActionsProps = {
 
 export function useCharacterActions({ setSnapshots, charactersInBattle, enemy, tableConfig, setDamageEvents, settings }: UseCharacterActionsProps) {
   const charactersMap: Record<string, ResolvedCharacter> = Object.fromEntries(charactersInBattle.map(c => [c.name, c]))
-  const characterColumnsMap: Record<string, string[]> = Object.fromEntries(tableConfig.characters.map(c => [c.label, c.columns.map(col => col.key.slice(col.key.indexOf('_') + 1))]))
-
-  // Extract columns from statusEffects group
-  const statusEffectsColumns = tableConfig.statusEffects?.columns ?? []
-  const buffsCol = statusEffectsColumns.find(col => col.key === 'buffs')
-  const debuffsCol = statusEffectsColumns.find(col => col.key === 'debuffs')
-  const negativeStatusesCol = statusEffectsColumns.find(col => col.key === 'negativeStatuses')
-
-  const globalColumns: GlobalColumns = {
-    basic: tableConfig.basic.columns.map(col => col.key),
-    buffs: buffsCol?.statusMetadata?.map(meta => meta.key) ?? [],
-    debuffs: debuffsCol?.statusMetadata?.map(meta => meta.key) ?? [],
-    negativeStatuses: negativeStatusesCol?.statusMetadata?.map(meta => meta.key) ?? [],
-  }
+  const characterColumnsMap = energyColumnsFromTableConfig(tableConfig)
+  const globalColumns = deriveGlobalColumns(tableConfig)
 
   // Persistent engine state — survives across action selections.
   // These three refs are the canonical state; useImportExport writes to them directly.
+  // Refs (not state) because they are read and written inside setSnapshots updaters.
   const initState = initEngineState()
   const negativeStatusesInAction = useRef<NegativeStatusInAction[]>(initState.negativeStatusesInAction)
   const modifiersInAction = useRef<ModifierInAction[]>(initState.modifiersInAction)
@@ -61,11 +45,10 @@ export function useCharacterActions({ setSnapshots, charactersInBattle, enemy, t
       // Update the character for the specified snapshot and clear its action
       const updated = prev.map(s => (Number(s.id) === snapshotId ? { ...s, character: characterName, action: '' } : s))
 
-      // Keep all snapshots up to and including the current one, plus one blank row after
       const currentIndex = updated.findIndex(s => Number(s.id) === snapshotId)
       if (currentIndex === -1) return updated
 
-      // Keep snapshots up to current + 1 (the blank row)
+      // Picking a character on an earlier row discards everything after it, keeping one blank row.
       const truncated = updated.slice(0, currentIndex + 2)
 
       if (settings.triggerOutroIntroOnCharacterSelect && shouldTriggerOutroIntro(truncated, snapshotId)) {
@@ -114,12 +97,10 @@ export function useCharacterActions({ setSnapshots, charactersInBattle, enemy, t
         autocastFollowUps: settings.autocastFollowUps,
       })
 
-      // Dispatch damage events to React state
       if (result.damageEvents.length > 0) {
         setDamageEvents(prev => [...prev, ...result.damageEvents])
       }
 
-      // Persist updated engine state into the canonical refs
       negativeStatusesInAction.current = result.engineState.negativeStatusesInAction
       modifiersInAction.current = result.engineState.modifiersInAction
       coordinatedAttacksInAction.current = result.engineState.coordinatedAttacksInAction

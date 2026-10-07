@@ -1,4 +1,5 @@
-﻿import type { Action } from '../../../../../types/action'
+// Hiyuki — Present Self form: Basic Attack 2 and 2-3 after a swap-cancelled BA1 (default / swap cancel).
+import type { Action } from '../../../../../types/action'
 import * as values from '../../values'
 
 // TODO: Try cancel with dodge

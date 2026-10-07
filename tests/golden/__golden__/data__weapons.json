@@ -1,0 +1,3110 @@
+[
+ {
+  "entry": {
+   "icon": "assets/gear/weapons/defier's_thorn.png",
+   "info": "Max HP is increased by 12%/15%/18%/21%/24%. 15s after casting Intro Skill or Basic Attacks, ignore 8%/10%/12%/14%/16% of the target's DEF when dealing damage. If the target has at least 1 stack of Aero Erosion, the DMG taken by the target is Amplified by 20%/25%/30%/35%/40%.",
+   "name": "Defier's Thorn",
+   "ranks": {
+    "1": {
+     "injectedModifiers": [
+      {
+       "modifiers": [
+        {
+         "characterStats": {
+          "bonusHP": 0.12
+         },
+         "condition": "[Function]",
+         "displayName": "A Free Knight's Tarantella (HP)",
+         "durationStrategy": {
+          "type": "permanent"
+         },
+         "ownerCharacter": null,
+         "source": "Defier's Thorn",
+         "stackingStrategy": {
+          "maxStacks": 1,
+          "resetTimerOnApplication": false,
+          "stacksRemovedEachTime": 0
+         },
+         "targetStrategy": "self",
+         "type": "buff"
+        },
+        {
+         "characterStats": {
+          "defIgnore": 0.08
+         },
+         "condition": "[Function]",
+         "displayName": "A Free Knight's Tarantella (1)",
+         "durationStrategy": {
+          "type": "permanent"
+         },
+         "ownerCharacter": null,
+         "source": "Defier's Thorn",
+         "stackingStrategy": {
+          "maxStacks": 1,
+          "resetTimerOnApplication": false,
+          "stacksRemovedEachTime": 0
+         },
+         "targetStrategy": "self",
+         "type": "buff"
+        },
+        {
+         "characterStats": {
+          "amplifyDMG": 0.2
+         },
+         "condition": "[Function]",
+         "displayName": "A Free Knight's Tarantella (2)",
+         "durationStrategy": {
+          "type": "permanent"
+         },
+         "ownerCharacter": null,
+         "source": "Defier's Thorn",
+         "stackingStrategy": {
+          "maxStacks": 1,
+          "resetTimerOnApplication": false,
+          "stacksRemovedEachTime": 0
+         },
+         "targetStrategy": "self",
+         "type": "buff"
+        }
+       ],
+       "targets": [
+        "character"
+       ]
+      }
+     ]
+    }
+   },
+   "stats": {
+    "baseATK": 412.5,
+    "bonusHP": 0.7223
+   },
+   "weaponType": "Sword"
+  },
+  "ranks": [
+   {
+    "icon": "assets/gear/weapons/defier's_thorn.png",
+    "info": "Max HP is increased by 12%/15%/18%/21%/24%. 15s after casting Intro Skill or Basic Attacks, ignore 8%/10%/12%/14%/16% of the target's DEF when dealing damage. If the target has at least 1 stack of Aero Erosion, the DMG taken by the target is Amplified by 20%/25%/30%/35%/40%.",
+    "injectedModifiers": [
+     {
+      "modifiers": [
+       {
+        "characterStats": {
+         "bonusHP": 0.12
+        },
+        "condition": "[Function]",
+        "displayName": "A Free Knight's Tarantella (HP)",
+        "durationStrategy": {
+         "type": "permanent"
+        },
+        "ownerCharacter": "Hiyuki",
+        "source": "Defier's Thorn",
+        "stackingStrategy": {
+         "maxStacks": 1,
+         "resetTimerOnApplication": false,
+         "stacksRemovedEachTime": 0
+        },
+        "targetStrategy": "self",
+        "type": "buff"
+       },
+       {
+        "characterStats": {
+         "defIgnore": 0.08
+        },
+        "condition": "[Function]",
+        "displayName": "A Free Knight's Tarantella (1)",
+        "durationStrategy": {
+         "type": "permanent"
+        },
+        "ownerCharacter": "Hiyuki",
+        "source": "Defier's Thorn",
+        "stackingStrategy": {
+         "maxStacks": 1,
+         "resetTimerOnApplication": false,
+         "stacksRemovedEachTime": 0
+        },
+        "targetStrategy": "self",
+        "type": "buff"
+       },
+       {
+        "characterStats": {
+         "amplifyDMG": 0.2
+        },
+        "condition": "[Function]",
+        "displayName": "A Free Knight's Tarantella (2)",
+        "durationStrategy": {
+         "type": "permanent"
+        },
+        "ownerCharacter": "Hiyuki",
+        "source": "Defier's Thorn",
+        "stackingStrategy": {
+         "maxStacks": 1,
+         "resetTimerOnApplication": false,
+         "stacksRemovedEachTime": 0
+        },
+        "targetStrategy": "self",
+        "type": "buff"
+       }
+      ],
+      "targets": [
+       "character"
+      ]
+     }
+    ],
+    "name": "Defier's Thorn",
+    "rank": 1,
+    "stats": {
+     "baseATK": 412.5,
+     "bonusHP": 0.7223
+    },
+    "weaponType": "Sword"
+   },
+   null,
+   null,
+   null,
+   null
+  ]
+ },
+ {
+  "entry": {
+   "icon": "assets/gear/weapons/bloodpact's_pledge.png",
+   "info": "Providing Healing increases Resonance Skill DMG by 10%/14%/18%/22%/26% for 6s. When Rover: Aero casts Resonance Skill Unbound Flow, Aero DMG dealt by nearby Resonators on the field is Amplified by 10%/14%/18%/22%/26% for 30s.",
+   "name": "Bloodpact's Pledge",
+   "ranks": {
+    "5": {
+     "injectedModifiers": [
+      {
+       "modifiers": [
+        {
+         "characterStats": {
+          "skillBonusDMG": 0.26
+         },
+         "condition": "[Function]",
+         "displayName": "Harmonious Vibrancy",
+         "durationStrategy": {
+          "timeDuration": 6,
+          "type": "limited"
+         },
+         "ownerCharacter": null,
+         "source": "Bloodpact's Pledge",
+         "stackingStrategy": {
+          "maxStacks": 1,
+          "resetTimerOnApplication": true,
+          "stacksRemovedEachTime": 1
+         },
+         "targetStrategy": "self",
+         "type": "buff"
+        }
+       ],
+       "targets": [
+        {
+         "tag": "HEAL_PROC"
+        }
+       ]
+      },
+      {
+       "modifiers": [
+        {
+         "characterStats": {
+          "skillBonusDMG": 0.26
+         },
+         "condition": "[Function]",
+         "displayName": "Harmonious Vibrancy",
+         "durationStrategy": {
+          "timeDuration": 36,
+          "type": "limited"
+         },
+         "ownerCharacter": null,
+         "source": "Bloodpact's Pledge",
+         "stackingStrategy": {
+          "maxStacks": 1,
+          "resetTimerOnApplication": true,
+          "stacksRemovedEachTime": 1
+         },
+         "targetStrategy": "self",
+         "type": "buff"
+        }
+       ],
+       "targets": [
+        {
+         "match": "all",
+         "tags": [
+          "SKILL",
+          "HEAL_PROC"
+         ]
+        }
+       ]
+      }
+     ]
+    }
+   },
+   "stats": {
+    "baseATK": 587.5,
+    "energyPercent": 0.3888
+   },
+   "weaponType": "Sword"
+  },
+  "ranks": [
+   null,
+   null,
+   null,
+   null,
+   {
+    "icon": "assets/gear/weapons/bloodpact's_pledge.png",
+    "info": "Providing Healing increases Resonance Skill DMG by 10%/14%/18%/22%/26% for 6s. When Rover: Aero casts Resonance Skill Unbound Flow, Aero DMG dealt by nearby Resonators on the field is Amplified by 10%/14%/18%/22%/26% for 30s.",
+    "injectedModifiers": [
+     {
+      "modifiers": [
+       {
+        "characterStats": {
+         "skillBonusDMG": 0.26
+        },
+        "condition": "[Function]",
+        "displayName": "Harmonious Vibrancy",
+        "durationStrategy": {
+         "timeDuration": 6,
+         "type": "limited"
+        },
+        "ownerCharacter": "Hiyuki",
+        "source": "Bloodpact's Pledge",
+        "stackingStrategy": {
+         "maxStacks": 1,
+         "resetTimerOnApplication": true,
+         "stacksRemovedEachTime": 1
+        },
+        "targetStrategy": "self",
+        "type": "buff"
+       }
+      ],
+      "targets": [
+       {
+        "tag": "HEAL_PROC"
+       }
+      ]
+     },
+     {
+      "modifiers": [
+       {
+        "characterStats": {
+         "skillBonusDMG": 0.26
+        },
+        "condition": "[Function]",
+        "displayName": "Harmonious Vibrancy",
+        "durationStrategy": {
+         "timeDuration": 36,
+         "type": "limited"
+        },
+        "ownerCharacter": "Hiyuki",
+        "source": "Bloodpact's Pledge",
+        "stackingStrategy": {
+         "maxStacks": 1,
+         "resetTimerOnApplication": true,
+         "stacksRemovedEachTime": 1
+        },
+        "targetStrategy": "self",
+        "type": "buff"
+       }
+      ],
+      "targets": [
+       {
+        "match": "all",
+        "tags": [
+         "SKILL",
+         "HEAL_PROC"
+        ]
+       }
+      ]
+     }
+    ],
+    "name": "Bloodpact's Pledge",
+    "rank": 5,
+    "stats": {
+     "baseATK": 587.5,
+     "energyPercent": 0.3888
+    },
+    "weaponType": "Sword"
+   }
+  ]
+ },
+ {
+  "entry": {
+   "icon": "assets/gear/weapons/frostburn.png",
+   "info": "Increase ATK by 12/15/18/21/24%. When applying Glacio Chafe, Glacio DMG is Amplified by 28/35/42/49/56% and Liberation DMG ignore 10/12.5/15/17.5/20% DEF for 20 seconds. When the wielder is the active resonator in the team, Glacio Chafe DMG dealt by all resoantors is amplified by 20% for 6s.",
+   "name": "Frostburn",
+   "ranks": {
+    "1": {
+     "injectedModifiers": [
+      {
+       "modifiers": [
+        {
+         "characterStats": {
+          "bonusATK": 0.12
+         },
+         "condition": "[Function]",
+         "description": "Increases ATK by 12%.",
+         "displayName": "Frostburn: Passive ATK",
+         "durationStrategy": {
+          "type": "permanent"
+         },
+         "ownerCharacter": null,
+         "source": "Frostburn",
+         "stackingStrategy": {
+          "maxStacks": 1,
+          "resetTimerOnApplication": false,
+          "stacksRemovedEachTime": 0
+         },
+         "targetStrategy": "self",
+         "type": "buff"
+        }
+       ],
+       "targets": [
+        "character"
+       ]
+      },
+      {
+       "modifiers": [
+        {
+         "characterStats": {
+          "glacioAmplifyDMG": 0.28
+         },
+         "color": "#FF2E3A",
+         "condition": "[Function]",
+         "description": "When applying Glacio Chafe, Glacio DMG is Amplified by 28% for 20 seconds.",
+         "displayName": "Frostburn: Glacio Buff",
+         "durationStrategy": {
+          "timeDuration": 20,
+          "type": "limited"
+         },
+         "ownerCharacter": null,
+         "source": "Frostburn",
+         "stackingStrategy": {
+          "maxStacks": 1,
+          "resetTimerOnApplication": true,
+          "stacksRemovedEachTime": 1
+         },
+         "targetStrategy": "self",
+         "type": "buff"
+        },
+        {
+         "characterStats": {
+          "defIgnore": 0.1
+         },
+         "color": "#FF2E3A",
+         "condition": "[Function]",
+         "description": "When applying Glacio Chafe, Liberation DMG ignore 10% DEF for 20 seconds.",
+         "displayName": "Frostburn: Liberation Buff",
+         "durationStrategy": {
+          "timeDuration": 20,
+          "type": "limited"
+         },
+         "ownerCharacter": null,
+         "source": "Frostburn",
+         "stackingStrategy": {
+          "maxStacks": 1,
+          "resetTimerOnApplication": true,
+          "stacksRemovedEachTime": 1
+         },
+         "targetStrategy": "self",
+         "type": "buff"
+        }
+       ],
+       "targets": [
+        {
+         "tag": "GLACIO_CHAFE_APPLIER"
+        }
+       ]
+      }
+     ]
+    },
+    "2": {
+     "injectedModifiers": [
+      {
+       "modifiers": [
+        {
+         "characterStats": {
+          "bonusATK": 0.15
+         },
+         "condition": "[Function]",
+         "description": "Increases ATK by 15%.",
+         "displayName": "Frostburn: Passive ATK",
+         "durationStrategy": {
+          "type": "permanent"
+         },
+         "ownerCharacter": null,
+         "source": "Frostburn",
+         "stackingStrategy": {
+          "maxStacks": 1,
+          "resetTimerOnApplication": false,
+          "stacksRemovedEachTime": 0
+         },
+         "targetStrategy": "self",
+         "type": "buff"
+        }
+       ],
+       "targets": [
+        "character"
+       ]
+      },
+      {
+       "modifiers": [
+        {
+         "characterStats": {
+          "glacioAmplifyDMG": 0.35
+         },
+         "color": "#FF2E3A",
+         "condition": "[Function]",
+         "description": "When applying Glacio Chafe, Glacio DMG is Amplified by 35% for 20 seconds.",
+         "displayName": "Frostburn: Glacio Buff",
+         "durationStrategy": {
+          "timeDuration": 20,
+          "type": "limited"
+         },
+         "ownerCharacter": null,
+         "source": "Frostburn",
+         "stackingStrategy": {
+          "maxStacks": 1,
+          "resetTimerOnApplication": true,
+          "stacksRemovedEachTime": 1
+         },
+         "targetStrategy": "self",
+         "type": "buff"
+        },
+        {
+         "characterStats": {
+          "defIgnore": 0.125
+         },
+         "color": "#FF2E3A",
+         "condition": "[Function]",
+         "description": "When applying Glacio Chafe, Liberation DMG ignore 12.5% DEF for 20 seconds.",
+         "displayName": "Frostburn: Liberation Buff",
+         "durationStrategy": {
+          "timeDuration": 20,
+          "type": "limited"
+         },
+         "ownerCharacter": null,
+         "source": "Frostburn",
+         "stackingStrategy": {
+          "maxStacks": 1,
+          "resetTimerOnApplication": true,
+          "stacksRemovedEachTime": 1
+         },
+         "targetStrategy": "self",
+         "type": "buff"
+        }
+       ],
+       "targets": [
+        {
+         "tag": "GLACIO_CHAFE_APPLIER"
+        }
+       ]
+      }
+     ]
+    },
+    "3": {
+     "injectedModifiers": [
+      {
+       "modifiers": [
+        {
+         "characterStats": {
+          "bonusATK": 0.18
+         },
+         "condition": "[Function]",
+         "description": "Increases ATK by 18%.",
+         "displayName": "Frostburn: Passive ATK",
+         "durationStrategy": {
+          "type": "permanent"
+         },
+         "ownerCharacter": null,
+         "source": "Frostburn",
+         "stackingStrategy": {
+          "maxStacks": 1,
+          "resetTimerOnApplication": false,
+          "stacksRemovedEachTime": 0
+         },
+         "targetStrategy": "self",
+         "type": "buff"
+        }
+       ],
+       "targets": [
+        "character"
+       ]
+      },
+      {
+       "modifiers": [
+        {
+         "characterStats": {
+          "glacioAmplifyDMG": 0.42
+         },
+         "color": "#FF2E3A",
+         "condition": "[Function]",
+         "description": "When applying Glacio Chafe, Glacio DMG is Amplified by 42% for 20 seconds.",
+         "displayName": "Frostburn: Glacio Buff",
+         "durationStrategy": {
+          "timeDuration": 20,
+          "type": "limited"
+         },
+         "ownerCharacter": null,
+         "source": "Frostburn",
+         "stackingStrategy": {
+          "maxStacks": 1,
+          "resetTimerOnApplication": true,
+          "stacksRemovedEachTime": 1
+         },
+         "targetStrategy": "self",
+         "type": "buff"
+        },
+        {
+         "characterStats": {
+          "defIgnore": 0.15
+         },
+         "color": "#FF2E3A",
+         "condition": "[Function]",
+         "description": "When applying Glacio Chafe, Liberation DMG ignore 15% DEF for 20 seconds.",
+         "displayName": "Frostburn: Liberation Buff",
+         "durationStrategy": {
+          "timeDuration": 20,
+          "type": "limited"
+         },
+         "ownerCharacter": null,
+         "source": "Frostburn",
+         "stackingStrategy": {
+          "maxStacks": 1,
+          "resetTimerOnApplication": true,
+          "stacksRemovedEachTime": 1
+         },
+         "targetStrategy": "self",
+         "type": "buff"
+        }
+       ],
+       "targets": [
+        {
+         "tag": "GLACIO_CHAFE_APPLIER"
+        }
+       ]
+      }
+     ]
+    },
+    "4": {
+     "injectedModifiers": [
+      {
+       "modifiers": [
+        {
+         "characterStats": {
+          "bonusATK": 0.21
+         },
+         "condition": "[Function]",
+         "description": "Increases ATK by 21%.",
+         "displayName": "Frostburn: Passive ATK",
+         "durationStrategy": {
+          "type": "permanent"
+         },
+         "ownerCharacter": null,
+         "source": "Frostburn",
+         "stackingStrategy": {
+          "maxStacks": 1,
+          "resetTimerOnApplication": false,
+          "stacksRemovedEachTime": 0
+         },
+         "targetStrategy": "self",
+         "type": "buff"
+        }
+       ],
+       "targets": [
+        "character"
+       ]
+      },
+      {
+       "modifiers": [
+        {
+         "characterStats": {
+          "glacioAmplifyDMG": 0.49
+         },
+         "color": "#FF2E3A",
+         "condition": "[Function]",
+         "description": "When applying Glacio Chafe, Glacio DMG is Amplified by 49% for 20 seconds.",
+         "displayName": "Frostburn: Glacio Buff",
+         "durationStrategy": {
+          "timeDuration": 20,
+          "type": "limited"
+         },
+         "ownerCharacter": null,
+         "source": "Frostburn",
+         "stackingStrategy": {
+          "maxStacks": 1,
+          "resetTimerOnApplication": true,
+          "stacksRemovedEachTime": 1
+         },
+         "targetStrategy": "self",
+         "type": "buff"
+        },
+        {
+         "characterStats": {
+          "defIgnore": 0.175
+         },
+         "color": "#FF2E3A",
+         "condition": "[Function]",
+         "description": "When applying Glacio Chafe, Liberation DMG ignore 17.5% DEF for 20 seconds.",
+         "displayName": "Frostburn: Liberation Buff",
+         "durationStrategy": {
+          "timeDuration": 20,
+          "type": "limited"
+         },
+         "ownerCharacter": null,
+         "source": "Frostburn",
+         "stackingStrategy": {
+          "maxStacks": 1,
+          "resetTimerOnApplication": true,
+          "stacksRemovedEachTime": 1
+         },
+         "targetStrategy": "self",
+         "type": "buff"
+        }
+       ],
+       "targets": [
+        {
+         "tag": "GLACIO_CHAFE_APPLIER"
+        }
+       ]
+      }
+     ]
+    },
+    "5": {
+     "injectedModifiers": [
+      {
+       "modifiers": [
+        {
+         "characterStats": {
+          "bonusATK": 0.24
+         },
+         "condition": "[Function]",
+         "description": "Increases ATK by 24%.",
+         "displayName": "Frostburn: Passive ATK",
+         "durationStrategy": {
+          "type": "permanent"
+         },
+         "ownerCharacter": null,
+         "source": "Frostburn",
+         "stackingStrategy": {
+          "maxStacks": 1,
+          "resetTimerOnApplication": false,
+          "stacksRemovedEachTime": 0
+         },
+         "targetStrategy": "self",
+         "type": "buff"
+        }
+       ],
+       "targets": [
+        "character"
+       ]
+      },
+      {
+       "modifiers": [
+        {
+         "characterStats": {
+          "glacioAmplifyDMG": 0.56
+         },
+         "color": "#FF2E3A",
+         "condition": "[Function]",
+         "description": "When applying Glacio Chafe, Glacio DMG is Amplified by 56% for 20 seconds.",
+         "displayName": "Frostburn: Glacio Buff",
+         "durationStrategy": {
+          "timeDuration": 20,
+          "type": "limited"
+         },
+         "ownerCharacter": null,
+         "source": "Frostburn",
+         "stackingStrategy": {
+          "maxStacks": 1,
+          "resetTimerOnApplication": true,
+          "stacksRemovedEachTime": 1
+         },
+         "targetStrategy": "self",
+         "type": "buff"
+        },
+        {
+         "characterStats": {
+          "defIgnore": 0.2
+         },
+         "color": "#FF2E3A",
+         "condition": "[Function]",
+         "description": "When applying Glacio Chafe, Liberation DMG ignore 20% DEF for 20 seconds.",
+         "displayName": "Frostburn: Liberation Buff",
+         "durationStrategy": {
+          "timeDuration": 20,
+          "type": "limited"
+         },
+         "ownerCharacter": null,
+         "source": "Frostburn",
+         "stackingStrategy": {
+          "maxStacks": 1,
+          "resetTimerOnApplication": true,
+          "stacksRemovedEachTime": 1
+         },
+         "targetStrategy": "self",
+         "type": "buff"
+        }
+       ],
+       "targets": [
+        {
+         "tag": "GLACIO_CHAFE_APPLIER"
+        }
+       ]
+      }
+     ]
+    }
+   },
+   "stats": {
+    "baseATK": 587,
+    "critRate": 0.243
+   },
+   "weaponType": "Sword"
+  },
+  "ranks": [
+   {
+    "icon": "assets/gear/weapons/frostburn.png",
+    "info": "Increase ATK by 12/15/18/21/24%. When applying Glacio Chafe, Glacio DMG is Amplified by 28/35/42/49/56% and Liberation DMG ignore 10/12.5/15/17.5/20% DEF for 20 seconds. When the wielder is the active resonator in the team, Glacio Chafe DMG dealt by all resoantors is amplified by 20% for 6s.",
+    "injectedModifiers": [
+     {
+      "modifiers": [
+       {
+        "characterStats": {
+         "bonusATK": 0.12
+        },
+        "condition": "[Function]",
+        "description": "Increases ATK by 12%.",
+        "displayName": "Frostburn: Passive ATK",
+        "durationStrategy": {
+         "type": "permanent"
+        },
+        "ownerCharacter": "Hiyuki",
+        "source": "Frostburn",
+        "stackingStrategy": {
+         "maxStacks": 1,
+         "resetTimerOnApplication": false,
+         "stacksRemovedEachTime": 0
+        },
+        "targetStrategy": "self",
+        "type": "buff"
+       }
+      ],
+      "targets": [
+       "character"
+      ]
+     },
+     {
+      "modifiers": [
+       {
+        "characterStats": {
+         "glacioAmplifyDMG": 0.28
+        },
+        "color": "#FF2E3A",
+        "condition": "[Function]",
+        "description": "When applying Glacio Chafe, Glacio DMG is Amplified by 28% for 20 seconds.",
+        "displayName": "Frostburn: Glacio Buff",
+        "durationStrategy": {
+         "timeDuration": 20,
+         "type": "limited"
+        },
+        "ownerCharacter": "Hiyuki",
+        "source": "Frostburn",
+        "stackingStrategy": {
+         "maxStacks": 1,
+         "resetTimerOnApplication": true,
+         "stacksRemovedEachTime": 1
+        },
+        "targetStrategy": "self",
+        "type": "buff"
+       },
+       {
+        "characterStats": {
+         "defIgnore": 0.1
+        },
+        "color": "#FF2E3A",
+        "condition": "[Function]",
+        "description": "When applying Glacio Chafe, Liberation DMG ignore 10% DEF for 20 seconds.",
+        "displayName": "Frostburn: Liberation Buff",
+        "durationStrategy": {
+         "timeDuration": 20,
+         "type": "limited"
+        },
+        "ownerCharacter": "Hiyuki",
+        "source": "Frostburn",
+        "stackingStrategy": {
+         "maxStacks": 1,
+         "resetTimerOnApplication": true,
+         "stacksRemovedEachTime": 1
+        },
+        "targetStrategy": "self",
+        "type": "buff"
+       }
+      ],
+      "targets": [
+       {
+        "tag": "GLACIO_CHAFE_APPLIER"
+       }
+      ]
+     }
+    ],
+    "name": "Frostburn",
+    "rank": 1,
+    "stats": {
+     "baseATK": 587,
+     "critRate": 0.243
+    },
+    "weaponType": "Sword"
+   },
+   {
+    "icon": "assets/gear/weapons/frostburn.png",
+    "info": "Increase ATK by 12/15/18/21/24%. When applying Glacio Chafe, Glacio DMG is Amplified by 28/35/42/49/56% and Liberation DMG ignore 10/12.5/15/17.5/20% DEF for 20 seconds. When the wielder is the active resonator in the team, Glacio Chafe DMG dealt by all resoantors is amplified by 20% for 6s.",
+    "injectedModifiers": [
+     {
+      "modifiers": [
+       {
+        "characterStats": {
+         "bonusATK": 0.15
+        },
+        "condition": "[Function]",
+        "description": "Increases ATK by 15%.",
+        "displayName": "Frostburn: Passive ATK",
+        "durationStrategy": {
+         "type": "permanent"
+        },
+        "ownerCharacter": "Hiyuki",
+        "source": "Frostburn",
+        "stackingStrategy": {
+         "maxStacks": 1,
+         "resetTimerOnApplication": false,
+         "stacksRemovedEachTime": 0
+        },
+        "targetStrategy": "self",
+        "type": "buff"
+       }
+      ],
+      "targets": [
+       "character"
+      ]
+     },
+     {
+      "modifiers": [
+       {
+        "characterStats": {
+         "glacioAmplifyDMG": 0.35
+        },
+        "color": "#FF2E3A",
+        "condition": "[Function]",
+        "description": "When applying Glacio Chafe, Glacio DMG is Amplified by 35% for 20 seconds.",
+        "displayName": "Frostburn: Glacio Buff",
+        "durationStrategy": {
+         "timeDuration": 20,
+         "type": "limited"
+        },
+        "ownerCharacter": "Hiyuki",
+        "source": "Frostburn",
+        "stackingStrategy": {
+         "maxStacks": 1,
+         "resetTimerOnApplication": true,
+         "stacksRemovedEachTime": 1
+        },
+        "targetStrategy": "self",
+        "type": "buff"
+       },
+       {
+        "characterStats": {
+         "defIgnore": 0.125
+        },
+        "color": "#FF2E3A",
+        "condition": "[Function]",
+        "description": "When applying Glacio Chafe, Liberation DMG ignore 12.5% DEF for 20 seconds.",
+        "displayName": "Frostburn: Liberation Buff",
+        "durationStrategy": {
+         "timeDuration": 20,
+         "type": "limited"
+        },
+        "ownerCharacter": "Hiyuki",
+        "source": "Frostburn",
+        "stackingStrategy": {
+         "maxStacks": 1,
+         "resetTimerOnApplication": true,
+         "stacksRemovedEachTime": 1
+        },
+        "targetStrategy": "self",
+        "type": "buff"
+       }
+      ],
+      "targets": [
+       {
+        "tag": "GLACIO_CHAFE_APPLIER"
+       }
+      ]
+     }
+    ],
+    "name": "Frostburn",
+    "rank": 2,
+    "stats": {
+     "baseATK": 587,
+     "critRate": 0.243
+    },
+    "weaponType": "Sword"
+   },
+   {
+    "icon": "assets/gear/weapons/frostburn.png",
+    "info": "Increase ATK by 12/15/18/21/24%. When applying Glacio Chafe, Glacio DMG is Amplified by 28/35/42/49/56% and Liberation DMG ignore 10/12.5/15/17.5/20% DEF for 20 seconds. When the wielder is the active resonator in the team, Glacio Chafe DMG dealt by all resoantors is amplified by 20% for 6s.",
+    "injectedModifiers": [
+     {
+      "modifiers": [
+       {
+        "characterStats": {
+         "bonusATK": 0.18
+        },
+        "condition": "[Function]",
+        "description": "Increases ATK by 18%.",
+        "displayName": "Frostburn: Passive ATK",
+        "durationStrategy": {
+         "type": "permanent"
+        },
+        "ownerCharacter": "Hiyuki",
+        "source": "Frostburn",
+        "stackingStrategy": {
+         "maxStacks": 1,
+         "resetTimerOnApplication": false,
+         "stacksRemovedEachTime": 0
+        },
+        "targetStrategy": "self",
+        "type": "buff"
+       }
+      ],
+      "targets": [
+       "character"
+      ]
+     },
+     {
+      "modifiers": [
+       {
+        "characterStats": {
+         "glacioAmplifyDMG": 0.42
+        },
+        "color": "#FF2E3A",
+        "condition": "[Function]",
+        "description": "When applying Glacio Chafe, Glacio DMG is Amplified by 42% for 20 seconds.",
+        "displayName": "Frostburn: Glacio Buff",
+        "durationStrategy": {
+         "timeDuration": 20,
+         "type": "limited"
+        },
+        "ownerCharacter": "Hiyuki",
+        "source": "Frostburn",
+        "stackingStrategy": {
+         "maxStacks": 1,
+         "resetTimerOnApplication": true,
+         "stacksRemovedEachTime": 1
+        },
+        "targetStrategy": "self",
+        "type": "buff"
+       },
+       {
+        "characterStats": {
+         "defIgnore": 0.15
+        },
+        "color": "#FF2E3A",
+        "condition": "[Function]",
+        "description": "When applying Glacio Chafe, Liberation DMG ignore 15% DEF for 20 seconds.",
+        "displayName": "Frostburn: Liberation Buff",
+        "durationStrategy": {
+         "timeDuration": 20,
+         "type": "limited"
+        },
+        "ownerCharacter": "Hiyuki",
+        "source": "Frostburn",
+        "stackingStrategy": {
+         "maxStacks": 1,
+         "resetTimerOnApplication": true,
+         "stacksRemovedEachTime": 1
+        },
+        "targetStrategy": "self",
+        "type": "buff"
+       }
+      ],
+      "targets": [
+       {
+        "tag": "GLACIO_CHAFE_APPLIER"
+       }
+      ]
+     }
+    ],
+    "name": "Frostburn",
+    "rank": 3,
+    "stats": {
+     "baseATK": 587,
+     "critRate": 0.243
+    },
+    "weaponType": "Sword"
+   },
+   {
+    "icon": "assets/gear/weapons/frostburn.png",
+    "info": "Increase ATK by 12/15/18/21/24%. When applying Glacio Chafe, Glacio DMG is Amplified by 28/35/42/49/56% and Liberation DMG ignore 10/12.5/15/17.5/20% DEF for 20 seconds. When the wielder is the active resonator in the team, Glacio Chafe DMG dealt by all resoantors is amplified by 20% for 6s.",
+    "injectedModifiers": [
+     {
+      "modifiers": [
+       {
+        "characterStats": {
+         "bonusATK": 0.21
+        },
+        "condition": "[Function]",
+        "description": "Increases ATK by 21%.",
+        "displayName": "Frostburn: Passive ATK",
+        "durationStrategy": {
+         "type": "permanent"
+        },
+        "ownerCharacter": "Hiyuki",
+        "source": "Frostburn",
+        "stackingStrategy": {
+         "maxStacks": 1,
+         "resetTimerOnApplication": false,
+         "stacksRemovedEachTime": 0
+        },
+        "targetStrategy": "self",
+        "type": "buff"
+       }
+      ],
+      "targets": [
+       "character"
+      ]
+     },
+     {
+      "modifiers": [
+       {
+        "characterStats": {
+         "glacioAmplifyDMG": 0.49
+        },
+        "color": "#FF2E3A",
+        "condition": "[Function]",
+        "description": "When applying Glacio Chafe, Glacio DMG is Amplified by 49% for 20 seconds.",
+        "displayName": "Frostburn: Glacio Buff",
+        "durationStrategy": {
+         "timeDuration": 20,
+         "type": "limited"
+        },
+        "ownerCharacter": "Hiyuki",
+        "source": "Frostburn",
+        "stackingStrategy": {
+         "maxStacks": 1,
+         "resetTimerOnApplication": true,
+         "stacksRemovedEachTime": 1
+        },
+        "targetStrategy": "self",
+        "type": "buff"
+       },
+       {
+        "characterStats": {
+         "defIgnore": 0.175
+        },
+        "color": "#FF2E3A",
+        "condition": "[Function]",
+        "description": "When applying Glacio Chafe, Liberation DMG ignore 17.5% DEF for 20 seconds.",
+        "displayName": "Frostburn: Liberation Buff",
+        "durationStrategy": {
+         "timeDuration": 20,
+         "type": "limited"
+        },
+        "ownerCharacter": "Hiyuki",
+        "source": "Frostburn",
+        "stackingStrategy": {
+         "maxStacks": 1,
+         "resetTimerOnApplication": true,
+         "stacksRemovedEachTime": 1
+        },
+        "targetStrategy": "self",
+        "type": "buff"
+       }
+      ],
+      "targets": [
+       {
+        "tag": "GLACIO_CHAFE_APPLIER"
+       }
+      ]
+     }
+    ],
+    "name": "Frostburn",
+    "rank": 4,
+    "stats": {
+     "baseATK": 587,
+     "critRate": 0.243
+    },
+    "weaponType": "Sword"
+   },
+   {
+    "icon": "assets/gear/weapons/frostburn.png",
+    "info": "Increase ATK by 12/15/18/21/24%. When applying Glacio Chafe, Glacio DMG is Amplified by 28/35/42/49/56% and Liberation DMG ignore 10/12.5/15/17.5/20% DEF for 20 seconds. When the wielder is the active resonator in the team, Glacio Chafe DMG dealt by all resoantors is amplified by 20% for 6s.",
+    "injectedModifiers": [
+     {
+      "modifiers": [
+       {
+        "characterStats": {
+         "bonusATK": 0.24
+        },
+        "condition": "[Function]",
+        "description": "Increases ATK by 24%.",
+        "displayName": "Frostburn: Passive ATK",
+        "durationStrategy": {
+         "type": "permanent"
+        },
+        "ownerCharacter": "Hiyuki",
+        "source": "Frostburn",
+        "stackingStrategy": {
+         "maxStacks": 1,
+         "resetTimerOnApplication": false,
+         "stacksRemovedEachTime": 0
+        },
+        "targetStrategy": "self",
+        "type": "buff"
+       }
+      ],
+      "targets": [
+       "character"
+      ]
+     },
+     {
+      "modifiers": [
+       {
+        "characterStats": {
+         "glacioAmplifyDMG": 0.56
+        },
+        "color": "#FF2E3A",
+        "condition": "[Function]",
+        "description": "When applying Glacio Chafe, Glacio DMG is Amplified by 56% for 20 seconds.",
+        "displayName": "Frostburn: Glacio Buff",
+        "durationStrategy": {
+         "timeDuration": 20,
+         "type": "limited"
+        },
+        "ownerCharacter": "Hiyuki",
+        "source": "Frostburn",
+        "stackingStrategy": {
+         "maxStacks": 1,
+         "resetTimerOnApplication": true,
+         "stacksRemovedEachTime": 1
+        },
+        "targetStrategy": "self",
+        "type": "buff"
+       },
+       {
+        "characterStats": {
+         "defIgnore": 0.2
+        },
+        "color": "#FF2E3A",
+        "condition": "[Function]",
+        "description": "When applying Glacio Chafe, Liberation DMG ignore 20% DEF for 20 seconds.",
+        "displayName": "Frostburn: Liberation Buff",
+        "durationStrategy": {
+         "timeDuration": 20,
+         "type": "limited"
+        },
+        "ownerCharacter": "Hiyuki",
+        "source": "Frostburn",
+        "stackingStrategy": {
+         "maxStacks": 1,
+         "resetTimerOnApplication": true,
+         "stacksRemovedEachTime": 1
+        },
+        "targetStrategy": "self",
+        "type": "buff"
+       }
+      ],
+      "targets": [
+       {
+        "tag": "GLACIO_CHAFE_APPLIER"
+       }
+      ]
+     }
+    ],
+    "name": "Frostburn",
+    "rank": 5,
+    "stats": {
+     "baseATK": 587,
+     "critRate": 0.243
+    },
+    "weaponType": "Sword"
+   }
+  ]
+ },
+ {
+  "entry": {
+   "icon": "assets/gear/weapons/static_mist.png",
+   "info": "Increases Energy Regen by 12.8%/16%/19.2%/22.4%/25.6%. Incoming Resonator's ATK is increased by 10%/12.5%/15%/17.5%/20% for 14s, stackable for up to 1 time after the wielder casts Outro Skill.",
+   "name": "Static Mist",
+   "ranks": {
+    "3": {
+     "injectedModifiers": [
+      {
+       "modifiers": [
+        {
+         "characterStats": {
+          "energyPercent": 0.192
+         },
+         "condition": "[Function]",
+         "displayName": "Static Mist Energy Regen",
+         "durationStrategy": {
+          "type": "permanent"
+         },
+         "ownerCharacter": null,
+         "source": "Static Mist",
+         "stackingStrategy": {
+          "maxStacks": 1,
+          "resetTimerOnApplication": false,
+          "stacksRemovedEachTime": 0
+         },
+         "targetStrategy": "self",
+         "type": "buff"
+        }
+       ],
+       "targets": [
+        "character"
+       ]
+      },
+      {
+       "modifiers": [
+        {
+         "characterStats": {
+          "bonusATK": 0.15
+         },
+         "condition": "[Function]",
+         "displayName": "Static Mist Outro Buff",
+         "durationStrategy": {
+          "numberOfSwaps": 1,
+          "timeDuration": 14,
+          "type": "limited"
+         },
+         "ownerCharacter": null,
+         "source": "Static Mist",
+         "stackingStrategy": {
+          "maxStacks": 1,
+          "resetTimerOnApplication": true,
+          "stacksRemovedEachTime": 1
+         },
+         "targetStrategy": "nextSwap",
+         "type": "buff"
+        }
+       ],
+       "targets": [
+        {
+         "tag": "OUTRO_ACTION"
+        }
+       ]
+      }
+     ]
+    }
+   },
+   "stats": {
+    "baseATK": 587.5,
+    "critRate": 0.243
+   },
+   "weaponType": "Pistol"
+  },
+  "ranks": [
+   null,
+   null,
+   {
+    "icon": "assets/gear/weapons/static_mist.png",
+    "info": "Increases Energy Regen by 12.8%/16%/19.2%/22.4%/25.6%. Incoming Resonator's ATK is increased by 10%/12.5%/15%/17.5%/20% for 14s, stackable for up to 1 time after the wielder casts Outro Skill.",
+    "injectedModifiers": [
+     {
+      "modifiers": [
+       {
+        "characterStats": {
+         "energyPercent": 0.192
+        },
+        "condition": "[Function]",
+        "displayName": "Static Mist Energy Regen",
+        "durationStrategy": {
+         "type": "permanent"
+        },
+        "ownerCharacter": "Hiyuki",
+        "source": "Static Mist",
+        "stackingStrategy": {
+         "maxStacks": 1,
+         "resetTimerOnApplication": false,
+         "stacksRemovedEachTime": 0
+        },
+        "targetStrategy": "self",
+        "type": "buff"
+       }
+      ],
+      "targets": [
+       "character"
+      ]
+     },
+     {
+      "modifiers": [
+       {
+        "characterStats": {
+         "bonusATK": 0.15
+        },
+        "condition": "[Function]",
+        "displayName": "Static Mist Outro Buff",
+        "durationStrategy": {
+         "numberOfSwaps": 1,
+         "timeDuration": 14,
+         "type": "limited"
+        },
+        "ownerCharacter": "Hiyuki",
+        "source": "Static Mist",
+        "stackingStrategy": {
+         "maxStacks": 1,
+         "resetTimerOnApplication": true,
+         "stacksRemovedEachTime": 1
+        },
+        "targetStrategy": "nextSwap",
+        "type": "buff"
+       }
+      ],
+      "targets": [
+       {
+        "tag": "OUTRO_ACTION"
+       }
+      ]
+     }
+    ],
+    "name": "Static Mist",
+    "rank": 3,
+    "stats": {
+     "baseATK": 587.5,
+     "critRate": 0.243
+    },
+    "weaponType": "Pistol"
+   },
+   null,
+   null
+  ]
+ },
+ {
+  "entry": {
+   "icon": "assets/gear/weapons/starfield_calibrator.png",
+   "info": "Increases DEF by 16%/20%/24%/28%/32%. Casting Resonance Liberation restores 8/10/12/14/16 points of Concerto Energy. This effect can be triggered 1 time every 20s. When the wielder heals Resonators, increases Crit. DMG of all nearby Resonators in the team by 20%/25%/30%/35%/40% for 4s. Effects of the same name cannot be stacked.",
+   "name": "Starfield Calibrator",
+   "ranks": {
+    "1": {
+     "injectedModifiers": [
+      {
+       "modifiers": [
+        {
+         "characterStats": {
+          "bonusDEF": 0.16
+         },
+         "condition": "[Function]",
+         "description": "Increases DEF by 16%.",
+         "displayName": "Starfield Calibrator: Passive DEF",
+         "durationStrategy": {
+          "type": "permanent"
+         },
+         "ownerCharacter": null,
+         "source": "Starfield Calibrator",
+         "stackingStrategy": {
+          "maxStacks": 1,
+          "resetTimerOnApplication": false,
+          "stacksRemovedEachTime": 0
+         },
+         "targetStrategy": "self",
+         "type": "buff"
+        }
+       ],
+       "targets": [
+        "character"
+       ]
+      },
+      {
+       "energyGeneration": [
+        {
+         "amount": 8,
+         "cooldownDuration": 20,
+         "cooldownKey": "Starfield Calibrator: Liberation Energy",
+         "energyType": "concerto",
+         "share": 0
+        }
+       ],
+       "modifiers": [],
+       "targets": [
+        {
+         "tag": "LIBERATION"
+        }
+       ]
+      },
+      {
+       "modifiers": [
+        {
+         "characterStats": {
+          "critDamage": 0.2
+         },
+         "color": "#FF9B5E",
+         "condition": "[Function]",
+         "description": "When the wielder heals Resonators, increases Crit. DMG of all nearby Resonators in the team by 20% for 4s.",
+         "displayName": "Starfield Calibrator: Heal Buff",
+         "durationStrategy": {
+          "timeDuration": 4,
+          "type": "limited"
+         },
+         "ownerCharacter": null,
+         "source": "Starfield Calibrator",
+         "stackingStrategy": {
+          "maxStacks": 1,
+          "resetTimerOnApplication": true,
+          "stacksRemovedEachTime": 1
+         },
+         "targetStrategy": "all",
+         "type": "buff"
+        }
+       ],
+       "targets": [
+        {
+         "tag": "HEAL_PROC"
+        }
+       ]
+      }
+     ]
+    },
+    "2": {
+     "injectedModifiers": [
+      {
+       "modifiers": [
+        {
+         "characterStats": {
+          "bonusDEF": 0.2
+         },
+         "condition": "[Function]",
+         "description": "Increases DEF by 20%.",
+         "displayName": "Starfield Calibrator: Passive DEF",
+         "durationStrategy": {
+          "type": "permanent"
+         },
+         "ownerCharacter": null,
+         "source": "Starfield Calibrator",
+         "stackingStrategy": {
+          "maxStacks": 1,
+          "resetTimerOnApplication": false,
+          "stacksRemovedEachTime": 0
+         },
+         "targetStrategy": "self",
+         "type": "buff"
+        }
+       ],
+       "targets": [
+        "character"
+       ]
+      },
+      {
+       "energyGeneration": [
+        {
+         "amount": 10,
+         "cooldownDuration": 20,
+         "cooldownKey": "Starfield Calibrator: Liberation Energy",
+         "energyType": "concerto",
+         "share": 0
+        }
+       ],
+       "modifiers": [],
+       "targets": [
+        {
+         "tag": "LIBERATION"
+        }
+       ]
+      },
+      {
+       "modifiers": [
+        {
+         "characterStats": {
+          "critDamage": 0.25
+         },
+         "color": "#FF9B5E",
+         "condition": "[Function]",
+         "description": "When the wielder heals Resonators, increases Crit. DMG of all nearby Resonators in the team by 25% for 4s.",
+         "displayName": "Starfield Calibrator: Heal Buff",
+         "durationStrategy": {
+          "timeDuration": 4,
+          "type": "limited"
+         },
+         "ownerCharacter": null,
+         "source": "Starfield Calibrator",
+         "stackingStrategy": {
+          "maxStacks": 1,
+          "resetTimerOnApplication": true,
+          "stacksRemovedEachTime": 1
+         },
+         "targetStrategy": "all",
+         "type": "buff"
+        }
+       ],
+       "targets": [
+        {
+         "tag": "HEAL_PROC"
+        }
+       ]
+      }
+     ]
+    },
+    "3": {
+     "injectedModifiers": [
+      {
+       "modifiers": [
+        {
+         "characterStats": {
+          "bonusDEF": 0.24
+         },
+         "condition": "[Function]",
+         "description": "Increases DEF by 24%.",
+         "displayName": "Starfield Calibrator: Passive DEF",
+         "durationStrategy": {
+          "type": "permanent"
+         },
+         "ownerCharacter": null,
+         "source": "Starfield Calibrator",
+         "stackingStrategy": {
+          "maxStacks": 1,
+          "resetTimerOnApplication": false,
+          "stacksRemovedEachTime": 0
+         },
+         "targetStrategy": "self",
+         "type": "buff"
+        }
+       ],
+       "targets": [
+        "character"
+       ]
+      },
+      {
+       "energyGeneration": [
+        {
+         "amount": 12,
+         "cooldownDuration": 20,
+         "cooldownKey": "Starfield Calibrator: Liberation Energy",
+         "energyType": "concerto",
+         "share": 0
+        }
+       ],
+       "modifiers": [],
+       "targets": [
+        {
+         "tag": "LIBERATION"
+        }
+       ]
+      },
+      {
+       "modifiers": [
+        {
+         "characterStats": {
+          "critDamage": 0.3
+         },
+         "color": "#FF9B5E",
+         "condition": "[Function]",
+         "description": "When the wielder heals Resonators, increases Crit. DMG of all nearby Resonators in the team by 30% for 4s.",
+         "displayName": "Starfield Calibrator: Heal Buff",
+         "durationStrategy": {
+          "timeDuration": 4,
+          "type": "limited"
+         },
+         "ownerCharacter": null,
+         "source": "Starfield Calibrator",
+         "stackingStrategy": {
+          "maxStacks": 1,
+          "resetTimerOnApplication": true,
+          "stacksRemovedEachTime": 1
+         },
+         "targetStrategy": "all",
+         "type": "buff"
+        }
+       ],
+       "targets": [
+        {
+         "tag": "HEAL_PROC"
+        }
+       ]
+      }
+     ]
+    },
+    "4": {
+     "injectedModifiers": [
+      {
+       "modifiers": [
+        {
+         "characterStats": {
+          "bonusDEF": 0.28
+         },
+         "condition": "[Function]",
+         "description": "Increases DEF by 28%.",
+         "displayName": "Starfield Calibrator: Passive DEF",
+         "durationStrategy": {
+          "type": "permanent"
+         },
+         "ownerCharacter": null,
+         "source": "Starfield Calibrator",
+         "stackingStrategy": {
+          "maxStacks": 1,
+          "resetTimerOnApplication": false,
+          "stacksRemovedEachTime": 0
+         },
+         "targetStrategy": "self",
+         "type": "buff"
+        }
+       ],
+       "targets": [
+        "character"
+       ]
+      },
+      {
+       "energyGeneration": [
+        {
+         "amount": 14,
+         "cooldownDuration": 20,
+         "cooldownKey": "Starfield Calibrator: Liberation Energy",
+         "energyType": "concerto",
+         "share": 0
+        }
+       ],
+       "modifiers": [],
+       "targets": [
+        {
+         "tag": "LIBERATION"
+        }
+       ]
+      },
+      {
+       "modifiers": [
+        {
+         "characterStats": {
+          "critDamage": 0.35
+         },
+         "color": "#FF9B5E",
+         "condition": "[Function]",
+         "description": "When the wielder heals Resonators, increases Crit. DMG of all nearby Resonators in the team by 25% for 4s.",
+         "displayName": "Starfield Calibrator: Heal Buff",
+         "durationStrategy": {
+          "timeDuration": 4,
+          "type": "limited"
+         },
+         "ownerCharacter": null,
+         "source": "Starfield Calibrator",
+         "stackingStrategy": {
+          "maxStacks": 1,
+          "resetTimerOnApplication": true,
+          "stacksRemovedEachTime": 1
+         },
+         "targetStrategy": "all",
+         "type": "buff"
+        }
+       ],
+       "targets": [
+        {
+         "tag": "HEAL_PROC"
+        }
+       ]
+      }
+     ]
+    },
+    "5": {
+     "injectedModifiers": [
+      {
+       "modifiers": [
+        {
+         "characterStats": {
+          "bonusDEF": 0.32
+         },
+         "condition": "[Function]",
+         "description": "Increases DEF by 32%.",
+         "displayName": "Starfield Calibrator: Passive DEF",
+         "durationStrategy": {
+          "type": "permanent"
+         },
+         "ownerCharacter": null,
+         "source": "Starfield Calibrator",
+         "stackingStrategy": {
+          "maxStacks": 1,
+          "resetTimerOnApplication": false,
+          "stacksRemovedEachTime": 0
+         },
+         "targetStrategy": "self",
+         "type": "buff"
+        }
+       ],
+       "targets": [
+        "character"
+       ]
+      },
+      {
+       "energyGeneration": [
+        {
+         "amount": 16,
+         "cooldownDuration": 20,
+         "cooldownKey": "Starfield Calibrator: Liberation Energy",
+         "energyType": "concerto",
+         "share": 0
+        }
+       ],
+       "modifiers": [],
+       "targets": [
+        {
+         "tag": "LIBERATION"
+        }
+       ]
+      },
+      {
+       "modifiers": [
+        {
+         "characterStats": {
+          "critDamage": 0.4
+         },
+         "color": "#FF9B5E",
+         "condition": "[Function]",
+         "description": "When the wielder heals Resonators, increases Crit. DMG of all nearby Resonators in the team by 40% for 4s.",
+         "displayName": "Starfield Calibrator: Heal Buff",
+         "durationStrategy": {
+          "timeDuration": 4,
+          "type": "limited"
+         },
+         "ownerCharacter": null,
+         "source": "Starfield Calibrator",
+         "stackingStrategy": {
+          "maxStacks": 1,
+          "resetTimerOnApplication": true,
+          "stacksRemovedEachTime": 1
+         },
+         "targetStrategy": "all",
+         "type": "buff"
+        }
+       ],
+       "targets": [
+        {
+         "tag": "HEAL_PROC"
+        }
+       ]
+      }
+     ]
+    }
+   },
+   "stats": {
+    "baseATK": 412.5,
+    "energyPercent": 0.7704
+   },
+   "weaponType": "Broadblade"
+  },
+  "ranks": [
+   {
+    "icon": "assets/gear/weapons/starfield_calibrator.png",
+    "info": "Increases DEF by 16%/20%/24%/28%/32%. Casting Resonance Liberation restores 8/10/12/14/16 points of Concerto Energy. This effect can be triggered 1 time every 20s. When the wielder heals Resonators, increases Crit. DMG of all nearby Resonators in the team by 20%/25%/30%/35%/40% for 4s. Effects of the same name cannot be stacked.",
+    "injectedModifiers": [
+     {
+      "modifiers": [
+       {
+        "characterStats": {
+         "bonusDEF": 0.16
+        },
+        "condition": "[Function]",
+        "description": "Increases DEF by 16%.",
+        "displayName": "Starfield Calibrator: Passive DEF",
+        "durationStrategy": {
+         "type": "permanent"
+        },
+        "ownerCharacter": "Hiyuki",
+        "source": "Starfield Calibrator",
+        "stackingStrategy": {
+         "maxStacks": 1,
+         "resetTimerOnApplication": false,
+         "stacksRemovedEachTime": 0
+        },
+        "targetStrategy": "self",
+        "type": "buff"
+       }
+      ],
+      "targets": [
+       "character"
+      ]
+     },
+     {
+      "energyGeneration": [
+       {
+        "amount": 8,
+        "cooldownDuration": 20,
+        "cooldownKey": "Starfield Calibrator: Liberation Energy",
+        "energyType": "concerto",
+        "share": 0
+       }
+      ],
+      "modifiers": [],
+      "targets": [
+       {
+        "tag": "LIBERATION"
+       }
+      ]
+     },
+     {
+      "modifiers": [
+       {
+        "characterStats": {
+         "critDamage": 0.2
+        },
+        "color": "#FF9B5E",
+        "condition": "[Function]",
+        "description": "When the wielder heals Resonators, increases Crit. DMG of all nearby Resonators in the team by 20% for 4s.",
+        "displayName": "Starfield Calibrator: Heal Buff",
+        "durationStrategy": {
+         "timeDuration": 4,
+         "type": "limited"
+        },
+        "ownerCharacter": "Hiyuki",
+        "source": "Starfield Calibrator",
+        "stackingStrategy": {
+         "maxStacks": 1,
+         "resetTimerOnApplication": true,
+         "stacksRemovedEachTime": 1
+        },
+        "targetStrategy": "all",
+        "type": "buff"
+       }
+      ],
+      "targets": [
+       {
+        "tag": "HEAL_PROC"
+       }
+      ]
+     }
+    ],
+    "name": "Starfield Calibrator",
+    "rank": 1,
+    "stats": {
+     "baseATK": 412.5,
+     "energyPercent": 0.7704
+    },
+    "weaponType": "Broadblade"
+   },
+   {
+    "icon": "assets/gear/weapons/starfield_calibrator.png",
+    "info": "Increases DEF by 16%/20%/24%/28%/32%. Casting Resonance Liberation restores 8/10/12/14/16 points of Concerto Energy. This effect can be triggered 1 time every 20s. When the wielder heals Resonators, increases Crit. DMG of all nearby Resonators in the team by 20%/25%/30%/35%/40% for 4s. Effects of the same name cannot be stacked.",
+    "injectedModifiers": [
+     {
+      "modifiers": [
+       {
+        "characterStats": {
+         "bonusDEF": 0.2
+        },
+        "condition": "[Function]",
+        "description": "Increases DEF by 20%.",
+        "displayName": "Starfield Calibrator: Passive DEF",
+        "durationStrategy": {
+         "type": "permanent"
+        },
+        "ownerCharacter": "Hiyuki",
+        "source": "Starfield Calibrator",
+        "stackingStrategy": {
+         "maxStacks": 1,
+         "resetTimerOnApplication": false,
+         "stacksRemovedEachTime": 0
+        },
+        "targetStrategy": "self",
+        "type": "buff"
+       }
+      ],
+      "targets": [
+       "character"
+      ]
+     },
+     {
+      "energyGeneration": [
+       {
+        "amount": 10,
+        "cooldownDuration": 20,
+        "cooldownKey": "Starfield Calibrator: Liberation Energy",
+        "energyType": "concerto",
+        "share": 0
+       }
+      ],
+      "modifiers": [],
+      "targets": [
+       {
+        "tag": "LIBERATION"
+       }
+      ]
+     },
+     {
+      "modifiers": [
+       {
+        "characterStats": {
+         "critDamage": 0.25
+        },
+        "color": "#FF9B5E",
+        "condition": "[Function]",
+        "description": "When the wielder heals Resonators, increases Crit. DMG of all nearby Resonators in the team by 25% for 4s.",
+        "displayName": "Starfield Calibrator: Heal Buff",
+        "durationStrategy": {
+         "timeDuration": 4,
+         "type": "limited"
+        },
+        "ownerCharacter": "Hiyuki",
+        "source": "Starfield Calibrator",
+        "stackingStrategy": {
+         "maxStacks": 1,
+         "resetTimerOnApplication": true,
+         "stacksRemovedEachTime": 1
+        },
+        "targetStrategy": "all",
+        "type": "buff"
+       }
+      ],
+      "targets": [
+       {
+        "tag": "HEAL_PROC"
+       }
+      ]
+     }
+    ],
+    "name": "Starfield Calibrator",
+    "rank": 2,
+    "stats": {
+     "baseATK": 412.5,
+     "energyPercent": 0.7704
+    },
+    "weaponType": "Broadblade"
+   },
+   {
+    "icon": "assets/gear/weapons/starfield_calibrator.png",
+    "info": "Increases DEF by 16%/20%/24%/28%/32%. Casting Resonance Liberation restores 8/10/12/14/16 points of Concerto Energy. This effect can be triggered 1 time every 20s. When the wielder heals Resonators, increases Crit. DMG of all nearby Resonators in the team by 20%/25%/30%/35%/40% for 4s. Effects of the same name cannot be stacked.",
+    "injectedModifiers": [
+     {
+      "modifiers": [
+       {
+        "characterStats": {
+         "bonusDEF": 0.24
+        },
+        "condition": "[Function]",
+        "description": "Increases DEF by 24%.",
+        "displayName": "Starfield Calibrator: Passive DEF",
+        "durationStrategy": {
+         "type": "permanent"
+        },
+        "ownerCharacter": "Hiyuki",
+        "source": "Starfield Calibrator",
+        "stackingStrategy": {
+         "maxStacks": 1,
+         "resetTimerOnApplication": false,
+         "stacksRemovedEachTime": 0
+        },
+        "targetStrategy": "self",
+        "type": "buff"
+       }
+      ],
+      "targets": [
+       "character"
+      ]
+     },
+     {
+      "energyGeneration": [
+       {
+        "amount": 12,
+        "cooldownDuration": 20,
+        "cooldownKey": "Starfield Calibrator: Liberation Energy",
+        "energyType": "concerto",
+        "share": 0
+       }
+      ],
+      "modifiers": [],
+      "targets": [
+       {
+        "tag": "LIBERATION"
+       }
+      ]
+     },
+     {
+      "modifiers": [
+       {
+        "characterStats": {
+         "critDamage": 0.3
+        },
+        "color": "#FF9B5E",
+        "condition": "[Function]",
+        "description": "When the wielder heals Resonators, increases Crit. DMG of all nearby Resonators in the team by 30% for 4s.",
+        "displayName": "Starfield Calibrator: Heal Buff",
+        "durationStrategy": {
+         "timeDuration": 4,
+         "type": "limited"
+        },
+        "ownerCharacter": "Hiyuki",
+        "source": "Starfield Calibrator",
+        "stackingStrategy": {
+         "maxStacks": 1,
+         "resetTimerOnApplication": true,
+         "stacksRemovedEachTime": 1
+        },
+        "targetStrategy": "all",
+        "type": "buff"
+       }
+      ],
+      "targets": [
+       {
+        "tag": "HEAL_PROC"
+       }
+      ]
+     }
+    ],
+    "name": "Starfield Calibrator",
+    "rank": 3,
+    "stats": {
+     "baseATK": 412.5,
+     "energyPercent": 0.7704
+    },
+    "weaponType": "Broadblade"
+   },
+   {
+    "icon": "assets/gear/weapons/starfield_calibrator.png",
+    "info": "Increases DEF by 16%/20%/24%/28%/32%. Casting Resonance Liberation restores 8/10/12/14/16 points of Concerto Energy. This effect can be triggered 1 time every 20s. When the wielder heals Resonators, increases Crit. DMG of all nearby Resonators in the team by 20%/25%/30%/35%/40% for 4s. Effects of the same name cannot be stacked.",
+    "injectedModifiers": [
+     {
+      "modifiers": [
+       {
+        "characterStats": {
+         "bonusDEF": 0.28
+        },
+        "condition": "[Function]",
+        "description": "Increases DEF by 28%.",
+        "displayName": "Starfield Calibrator: Passive DEF",
+        "durationStrategy": {
+         "type": "permanent"
+        },
+        "ownerCharacter": "Hiyuki",
+        "source": "Starfield Calibrator",
+        "stackingStrategy": {
+         "maxStacks": 1,
+         "resetTimerOnApplication": false,
+         "stacksRemovedEachTime": 0
+        },
+        "targetStrategy": "self",
+        "type": "buff"
+       }
+      ],
+      "targets": [
+       "character"
+      ]
+     },
+     {
+      "energyGeneration": [
+       {
+        "amount": 14,
+        "cooldownDuration": 20,
+        "cooldownKey": "Starfield Calibrator: Liberation Energy",
+        "energyType": "concerto",
+        "share": 0
+       }
+      ],
+      "modifiers": [],
+      "targets": [
+       {
+        "tag": "LIBERATION"
+       }
+      ]
+     },
+     {
+      "modifiers": [
+       {
+        "characterStats": {
+         "critDamage": 0.35
+        },
+        "color": "#FF9B5E",
+        "condition": "[Function]",
+        "description": "When the wielder heals Resonators, increases Crit. DMG of all nearby Resonators in the team by 25% for 4s.",
+        "displayName": "Starfield Calibrator: Heal Buff",
+        "durationStrategy": {
+         "timeDuration": 4,
+         "type": "limited"
+        },
+        "ownerCharacter": "Hiyuki",
+        "source": "Starfield Calibrator",
+        "stackingStrategy": {
+         "maxStacks": 1,
+         "resetTimerOnApplication": true,
+         "stacksRemovedEachTime": 1
+        },
+        "targetStrategy": "all",
+        "type": "buff"
+       }
+      ],
+      "targets": [
+       {
+        "tag": "HEAL_PROC"
+       }
+      ]
+     }
+    ],
+    "name": "Starfield Calibrator",
+    "rank": 4,
+    "stats": {
+     "baseATK": 412.5,
+     "energyPercent": 0.7704
+    },
+    "weaponType": "Broadblade"
+   },
+   {
+    "icon": "assets/gear/weapons/starfield_calibrator.png",
+    "info": "Increases DEF by 16%/20%/24%/28%/32%. Casting Resonance Liberation restores 8/10/12/14/16 points of Concerto Energy. This effect can be triggered 1 time every 20s. When the wielder heals Resonators, increases Crit. DMG of all nearby Resonators in the team by 20%/25%/30%/35%/40% for 4s. Effects of the same name cannot be stacked.",
+    "injectedModifiers": [
+     {
+      "modifiers": [
+       {
+        "characterStats": {
+         "bonusDEF": 0.32
+        },
+        "condition": "[Function]",
+        "description": "Increases DEF by 32%.",
+        "displayName": "Starfield Calibrator: Passive DEF",
+        "durationStrategy": {
+         "type": "permanent"
+        },
+        "ownerCharacter": "Hiyuki",
+        "source": "Starfield Calibrator",
+        "stackingStrategy": {
+         "maxStacks": 1,
+         "resetTimerOnApplication": false,
+         "stacksRemovedEachTime": 0
+        },
+        "targetStrategy": "self",
+        "type": "buff"
+       }
+      ],
+      "targets": [
+       "character"
+      ]
+     },
+     {
+      "energyGeneration": [
+       {
+        "amount": 16,
+        "cooldownDuration": 20,
+        "cooldownKey": "Starfield Calibrator: Liberation Energy",
+        "energyType": "concerto",
+        "share": 0
+       }
+      ],
+      "modifiers": [],
+      "targets": [
+       {
+        "tag": "LIBERATION"
+       }
+      ]
+     },
+     {
+      "modifiers": [
+       {
+        "characterStats": {
+         "critDamage": 0.4
+        },
+        "color": "#FF9B5E",
+        "condition": "[Function]",
+        "description": "When the wielder heals Resonators, increases Crit. DMG of all nearby Resonators in the team by 40% for 4s.",
+        "displayName": "Starfield Calibrator: Heal Buff",
+        "durationStrategy": {
+         "timeDuration": 4,
+         "type": "limited"
+        },
+        "ownerCharacter": "Hiyuki",
+        "source": "Starfield Calibrator",
+        "stackingStrategy": {
+         "maxStacks": 1,
+         "resetTimerOnApplication": true,
+         "stacksRemovedEachTime": 1
+        },
+        "targetStrategy": "all",
+        "type": "buff"
+       }
+      ],
+      "targets": [
+       {
+        "tag": "HEAL_PROC"
+       }
+      ]
+     }
+    ],
+    "name": "Starfield Calibrator",
+    "rank": 5,
+    "stats": {
+     "baseATK": 412.5,
+     "energyPercent": 0.7704
+    },
+    "weaponType": "Broadblade"
+   }
+  ]
+ },
+ {
+  "entry": {
+   "icon": "assets/gear/weapons/freeze_frame.png",
+   "info": "Increases ATK by 12%/15%/18%/21%/24%. After the wielder inflicts Glacio Chafe on the target, their Glacio DMG Bonus is increased by 30%/37.5%/45%/52.5%/60% for 12s. The ATK of all Resonators in the team (including self) is increased by 24%/30%/36%/42%/48% ATK for 30s.",
+   "name": "Freeze Frame",
+   "ranks": {
+    "1": {
+     "injectedModifiers": [
+      {
+       "modifiers": [
+        {
+         "characterStats": {
+          "bonusATK": 0.12
+         },
+         "condition": "[Function]",
+         "description": "Increases ATK by 12%.",
+         "displayName": "Freeze Frame: Passive ATK",
+         "durationStrategy": {
+          "type": "permanent"
+         },
+         "ownerCharacter": null,
+         "source": "Freeze Frame",
+         "stackingStrategy": {
+          "maxStacks": 1,
+          "resetTimerOnApplication": false,
+          "stacksRemovedEachTime": 0
+         },
+         "targetStrategy": "self",
+         "type": "buff"
+        }
+       ],
+       "targets": [
+        "character"
+       ]
+      },
+      {
+       "modifiers": [
+        {
+         "characterStats": {
+          "glacioBonusDMG": 0.3
+         },
+         "condition": "[Function]",
+         "description": "After inflicting Glacio Chafe, Glacio DMG Bonus +30% for 12s.",
+         "displayName": "Freeze Frame: Glacio DMG Bonus",
+         "durationStrategy": {
+          "timeDuration": 12,
+          "type": "limited"
+         },
+         "ownerCharacter": null,
+         "source": "Freeze Frame",
+         "stackingStrategy": {
+          "maxStacks": 1,
+          "resetTimerOnApplication": true,
+          "stacksRemovedEachTime": 1
+         },
+         "targetStrategy": "self",
+         "type": "buff"
+        },
+        {
+         "characterStats": {
+          "bonusATK": 0.24
+         },
+         "condition": "[Function]",
+         "description": "After inflicting Glacio Chafe, ATK of all Resonators in the team +24% for 30s.",
+         "displayName": "Freeze Frame: Team ATK",
+         "durationStrategy": {
+          "timeDuration": 30,
+          "type": "limited"
+         },
+         "ownerCharacter": null,
+         "source": "Freeze Frame",
+         "stackingStrategy": {
+          "maxStacks": 1,
+          "resetTimerOnApplication": true,
+          "stacksRemovedEachTime": 1
+         },
+         "targetStrategy": "all",
+         "type": "buff"
+        }
+       ],
+       "targets": [
+        {
+         "tag": "GLACIO_CHAFE_APPLIER"
+        }
+       ]
+      }
+     ]
+    },
+    "2": {
+     "injectedModifiers": [
+      {
+       "modifiers": [
+        {
+         "characterStats": {
+          "bonusATK": 0.15
+         },
+         "condition": "[Function]",
+         "description": "Increases ATK by 15%.",
+         "displayName": "Freeze Frame: Passive ATK",
+         "durationStrategy": {
+          "type": "permanent"
+         },
+         "ownerCharacter": null,
+         "source": "Freeze Frame",
+         "stackingStrategy": {
+          "maxStacks": 1,
+          "resetTimerOnApplication": false,
+          "stacksRemovedEachTime": 0
+         },
+         "targetStrategy": "self",
+         "type": "buff"
+        }
+       ],
+       "targets": [
+        "character"
+       ]
+      },
+      {
+       "modifiers": [
+        {
+         "characterStats": {
+          "glacioBonusDMG": 0.375
+         },
+         "condition": "[Function]",
+         "description": "After inflicting Glacio Chafe, Glacio DMG Bonus +37.5% for 12s.",
+         "displayName": "Freeze Frame: Glacio DMG Bonus",
+         "durationStrategy": {
+          "timeDuration": 12,
+          "type": "limited"
+         },
+         "ownerCharacter": null,
+         "source": "Freeze Frame",
+         "stackingStrategy": {
+          "maxStacks": 1,
+          "resetTimerOnApplication": true,
+          "stacksRemovedEachTime": 1
+         },
+         "targetStrategy": "self",
+         "type": "buff"
+        },
+        {
+         "characterStats": {
+          "bonusATK": 0.3
+         },
+         "condition": "[Function]",
+         "description": "After inflicting Glacio Chafe, ATK of all Resonators in the team +30% for 30s.",
+         "displayName": "Freeze Frame: Team ATK",
+         "durationStrategy": {
+          "timeDuration": 30,
+          "type": "limited"
+         },
+         "ownerCharacter": null,
+         "source": "Freeze Frame",
+         "stackingStrategy": {
+          "maxStacks": 1,
+          "resetTimerOnApplication": true,
+          "stacksRemovedEachTime": 1
+         },
+         "targetStrategy": "all",
+         "type": "buff"
+        }
+       ],
+       "targets": [
+        {
+         "tag": "GLACIO_CHAFE_APPLIER"
+        }
+       ]
+      }
+     ]
+    },
+    "3": {
+     "injectedModifiers": [
+      {
+       "modifiers": [
+        {
+         "characterStats": {
+          "bonusATK": 0.18
+         },
+         "condition": "[Function]",
+         "description": "Increases ATK by 18%.",
+         "displayName": "Freeze Frame: Passive ATK",
+         "durationStrategy": {
+          "type": "permanent"
+         },
+         "ownerCharacter": null,
+         "source": "Freeze Frame",
+         "stackingStrategy": {
+          "maxStacks": 1,
+          "resetTimerOnApplication": false,
+          "stacksRemovedEachTime": 0
+         },
+         "targetStrategy": "self",
+         "type": "buff"
+        }
+       ],
+       "targets": [
+        "character"
+       ]
+      },
+      {
+       "modifiers": [
+        {
+         "characterStats": {
+          "glacioBonusDMG": 0.45
+         },
+         "condition": "[Function]",
+         "description": "After inflicting Glacio Chafe, Glacio DMG Bonus +45% for 12s.",
+         "displayName": "Freeze Frame: Glacio DMG Bonus",
+         "durationStrategy": {
+          "timeDuration": 12,
+          "type": "limited"
+         },
+         "ownerCharacter": null,
+         "source": "Freeze Frame",
+         "stackingStrategy": {
+          "maxStacks": 1,
+          "resetTimerOnApplication": true,
+          "stacksRemovedEachTime": 1
+         },
+         "targetStrategy": "self",
+         "type": "buff"
+        },
+        {
+         "characterStats": {
+          "bonusATK": 0.36
+         },
+         "condition": "[Function]",
+         "description": "After inflicting Glacio Chafe, ATK of all Resonators in the team +36% for 30s.",
+         "displayName": "Freeze Frame: Team ATK",
+         "durationStrategy": {
+          "timeDuration": 30,
+          "type": "limited"
+         },
+         "ownerCharacter": null,
+         "source": "Freeze Frame",
+         "stackingStrategy": {
+          "maxStacks": 1,
+          "resetTimerOnApplication": true,
+          "stacksRemovedEachTime": 1
+         },
+         "targetStrategy": "all",
+         "type": "buff"
+        }
+       ],
+       "targets": [
+        {
+         "tag": "GLACIO_CHAFE_APPLIER"
+        }
+       ]
+      }
+     ]
+    },
+    "4": {
+     "injectedModifiers": [
+      {
+       "modifiers": [
+        {
+         "characterStats": {
+          "bonusATK": 0.21
+         },
+         "condition": "[Function]",
+         "description": "Increases ATK by 21%.",
+         "displayName": "Freeze Frame: Passive ATK",
+         "durationStrategy": {
+          "type": "permanent"
+         },
+         "ownerCharacter": null,
+         "source": "Freeze Frame",
+         "stackingStrategy": {
+          "maxStacks": 1,
+          "resetTimerOnApplication": false,
+          "stacksRemovedEachTime": 0
+         },
+         "targetStrategy": "self",
+         "type": "buff"
+        }
+       ],
+       "targets": [
+        "character"
+       ]
+      },
+      {
+       "modifiers": [
+        {
+         "characterStats": {
+          "glacioBonusDMG": 0.525
+         },
+         "condition": "[Function]",
+         "description": "After inflicting Glacio Chafe, Glacio DMG Bonus +52.5% for 12s.",
+         "displayName": "Freeze Frame: Glacio DMG Bonus",
+         "durationStrategy": {
+          "timeDuration": 12,
+          "type": "limited"
+         },
+         "ownerCharacter": null,
+         "source": "Freeze Frame",
+         "stackingStrategy": {
+          "maxStacks": 1,
+          "resetTimerOnApplication": true,
+          "stacksRemovedEachTime": 1
+         },
+         "targetStrategy": "self",
+         "type": "buff"
+        },
+        {
+         "characterStats": {
+          "bonusATK": 0.42
+         },
+         "condition": "[Function]",
+         "description": "After inflicting Glacio Chafe, ATK of all Resonators in the team +42% for 30s.",
+         "displayName": "Freeze Frame: Team ATK",
+         "durationStrategy": {
+          "timeDuration": 30,
+          "type": "limited"
+         },
+         "ownerCharacter": null,
+         "source": "Freeze Frame",
+         "stackingStrategy": {
+          "maxStacks": 1,
+          "resetTimerOnApplication": true,
+          "stacksRemovedEachTime": 1
+         },
+         "targetStrategy": "all",
+         "type": "buff"
+        }
+       ],
+       "targets": [
+        {
+         "tag": "GLACIO_CHAFE_APPLIER"
+        }
+       ]
+      }
+     ]
+    },
+    "5": {
+     "injectedModifiers": [
+      {
+       "modifiers": [
+        {
+         "characterStats": {
+          "bonusATK": 0.24
+         },
+         "condition": "[Function]",
+         "description": "Increases ATK by 24%.",
+         "displayName": "Freeze Frame: Passive ATK",
+         "durationStrategy": {
+          "type": "permanent"
+         },
+         "ownerCharacter": null,
+         "source": "Freeze Frame",
+         "stackingStrategy": {
+          "maxStacks": 1,
+          "resetTimerOnApplication": false,
+          "stacksRemovedEachTime": 0
+         },
+         "targetStrategy": "self",
+         "type": "buff"
+        }
+       ],
+       "targets": [
+        "character"
+       ]
+      },
+      {
+       "modifiers": [
+        {
+         "characterStats": {
+          "glacioBonusDMG": 0.6
+         },
+         "condition": "[Function]",
+         "description": "After inflicting Glacio Chafe, Glacio DMG Bonus +60% for 12s.",
+         "displayName": "Freeze Frame: Glacio DMG Bonus",
+         "durationStrategy": {
+          "timeDuration": 12,
+          "type": "limited"
+         },
+         "ownerCharacter": null,
+         "source": "Freeze Frame",
+         "stackingStrategy": {
+          "maxStacks": 1,
+          "resetTimerOnApplication": true,
+          "stacksRemovedEachTime": 1
+         },
+         "targetStrategy": "self",
+         "type": "buff"
+        },
+        {
+         "characterStats": {
+          "bonusATK": 0.48
+         },
+         "condition": "[Function]",
+         "description": "After inflicting Glacio Chafe, ATK of all Resonators in the team +48% for 30s.",
+         "displayName": "Freeze Frame: Team ATK",
+         "durationStrategy": {
+          "timeDuration": 30,
+          "type": "limited"
+         },
+         "ownerCharacter": null,
+         "source": "Freeze Frame",
+         "stackingStrategy": {
+          "maxStacks": 1,
+          "resetTimerOnApplication": true,
+          "stacksRemovedEachTime": 1
+         },
+         "targetStrategy": "all",
+         "type": "buff"
+        }
+       ],
+       "targets": [
+        {
+         "tag": "GLACIO_CHAFE_APPLIER"
+        }
+       ]
+      }
+     ]
+    }
+   },
+   "stats": {
+    "baseATK": 587.5,
+    "critRate": 0.243
+   },
+   "weaponType": "Rectifier"
+  },
+  "ranks": [
+   {
+    "icon": "assets/gear/weapons/freeze_frame.png",
+    "info": "Increases ATK by 12%/15%/18%/21%/24%. After the wielder inflicts Glacio Chafe on the target, their Glacio DMG Bonus is increased by 30%/37.5%/45%/52.5%/60% for 12s. The ATK of all Resonators in the team (including self) is increased by 24%/30%/36%/42%/48% ATK for 30s.",
+    "injectedModifiers": [
+     {
+      "modifiers": [
+       {
+        "characterStats": {
+         "bonusATK": 0.12
+        },
+        "condition": "[Function]",
+        "description": "Increases ATK by 12%.",
+        "displayName": "Freeze Frame: Passive ATK",
+        "durationStrategy": {
+         "type": "permanent"
+        },
+        "ownerCharacter": "Hiyuki",
+        "source": "Freeze Frame",
+        "stackingStrategy": {
+         "maxStacks": 1,
+         "resetTimerOnApplication": false,
+         "stacksRemovedEachTime": 0
+        },
+        "targetStrategy": "self",
+        "type": "buff"
+       }
+      ],
+      "targets": [
+       "character"
+      ]
+     },
+     {
+      "modifiers": [
+       {
+        "characterStats": {
+         "glacioBonusDMG": 0.3
+        },
+        "condition": "[Function]",
+        "description": "After inflicting Glacio Chafe, Glacio DMG Bonus +30% for 12s.",
+        "displayName": "Freeze Frame: Glacio DMG Bonus",
+        "durationStrategy": {
+         "timeDuration": 12,
+         "type": "limited"
+        },
+        "ownerCharacter": "Hiyuki",
+        "source": "Freeze Frame",
+        "stackingStrategy": {
+         "maxStacks": 1,
+         "resetTimerOnApplication": true,
+         "stacksRemovedEachTime": 1
+        },
+        "targetStrategy": "self",
+        "type": "buff"
+       },
+       {
+        "characterStats": {
+         "bonusATK": 0.24
+        },
+        "condition": "[Function]",
+        "description": "After inflicting Glacio Chafe, ATK of all Resonators in the team +24% for 30s.",
+        "displayName": "Freeze Frame: Team ATK",
+        "durationStrategy": {
+         "timeDuration": 30,
+         "type": "limited"
+        },
+        "ownerCharacter": "Hiyuki",
+        "source": "Freeze Frame",
+        "stackingStrategy": {
+         "maxStacks": 1,
+         "resetTimerOnApplication": true,
+         "stacksRemovedEachTime": 1
+        },
+        "targetStrategy": "all",
+        "type": "buff"
+       }
+      ],
+      "targets": [
+       {
+        "tag": "GLACIO_CHAFE_APPLIER"
+       }
+      ]
+     }
+    ],
+    "name": "Freeze Frame",
+    "rank": 1,
+    "stats": {
+     "baseATK": 587.5,
+     "critRate": 0.243
+    },
+    "weaponType": "Rectifier"
+   },
+   {
+    "icon": "assets/gear/weapons/freeze_frame.png",
+    "info": "Increases ATK by 12%/15%/18%/21%/24%. After the wielder inflicts Glacio Chafe on the target, their Glacio DMG Bonus is increased by 30%/37.5%/45%/52.5%/60% for 12s. The ATK of all Resonators in the team (including self) is increased by 24%/30%/36%/42%/48% ATK for 30s.",
+    "injectedModifiers": [
+     {
+      "modifiers": [
+       {
+        "characterStats": {
+         "bonusATK": 0.15
+        },
+        "condition": "[Function]",
+        "description": "Increases ATK by 15%.",
+        "displayName": "Freeze Frame: Passive ATK",
+        "durationStrategy": {
+         "type": "permanent"
+        },
+        "ownerCharacter": "Hiyuki",
+        "source": "Freeze Frame",
+        "stackingStrategy": {
+         "maxStacks": 1,
+         "resetTimerOnApplication": false,
+         "stacksRemovedEachTime": 0
+        },
+        "targetStrategy": "self",
+        "type": "buff"
+       }
+      ],
+      "targets": [
+       "character"
+      ]
+     },
+     {
+      "modifiers": [
+       {
+        "characterStats": {
+         "glacioBonusDMG": 0.375
+        },
+        "condition": "[Function]",
+        "description": "After inflicting Glacio Chafe, Glacio DMG Bonus +37.5% for 12s.",
+        "displayName": "Freeze Frame: Glacio DMG Bonus",
+        "durationStrategy": {
+         "timeDuration": 12,
+         "type": "limited"
+        },
+        "ownerCharacter": "Hiyuki",
+        "source": "Freeze Frame",
+        "stackingStrategy": {
+         "maxStacks": 1,
+         "resetTimerOnApplication": true,
+         "stacksRemovedEachTime": 1
+        },
+        "targetStrategy": "self",
+        "type": "buff"
+       },
+       {
+        "characterStats": {
+         "bonusATK": 0.3
+        },
+        "condition": "[Function]",
+        "description": "After inflicting Glacio Chafe, ATK of all Resonators in the team +30% for 30s.",
+        "displayName": "Freeze Frame: Team ATK",
+        "durationStrategy": {
+         "timeDuration": 30,
+         "type": "limited"
+        },
+        "ownerCharacter": "Hiyuki",
+        "source": "Freeze Frame",
+        "stackingStrategy": {
+         "maxStacks": 1,
+         "resetTimerOnApplication": true,
+         "stacksRemovedEachTime": 1
+        },
+        "targetStrategy": "all",
+        "type": "buff"
+       }
+      ],
+      "targets": [
+       {
+        "tag": "GLACIO_CHAFE_APPLIER"
+       }
+      ]
+     }
+    ],
+    "name": "Freeze Frame",
+    "rank": 2,
+    "stats": {
+     "baseATK": 587.5,
+     "critRate": 0.243
+    },
+    "weaponType": "Rectifier"
+   },
+   {
+    "icon": "assets/gear/weapons/freeze_frame.png",
+    "info": "Increases ATK by 12%/15%/18%/21%/24%. After the wielder inflicts Glacio Chafe on the target, their Glacio DMG Bonus is increased by 30%/37.5%/45%/52.5%/60% for 12s. The ATK of all Resonators in the team (including self) is increased by 24%/30%/36%/42%/48% ATK for 30s.",
+    "injectedModifiers": [
+     {
+      "modifiers": [
+       {
+        "characterStats": {
+         "bonusATK": 0.18
+        },
+        "condition": "[Function]",
+        "description": "Increases ATK by 18%.",
+        "displayName": "Freeze Frame: Passive ATK",
+        "durationStrategy": {
+         "type": "permanent"
+        },
+        "ownerCharacter": "Hiyuki",
+        "source": "Freeze Frame",
+        "stackingStrategy": {
+         "maxStacks": 1,
+         "resetTimerOnApplication": false,
+         "stacksRemovedEachTime": 0
+        },
+        "targetStrategy": "self",
+        "type": "buff"
+       }
+      ],
+      "targets": [
+       "character"
+      ]
+     },
+     {
+      "modifiers": [
+       {
+        "characterStats": {
+         "glacioBonusDMG": 0.45
+        },
+        "condition": "[Function]",
+        "description": "After inflicting Glacio Chafe, Glacio DMG Bonus +45% for 12s.",
+        "displayName": "Freeze Frame: Glacio DMG Bonus",
+        "durationStrategy": {
+         "timeDuration": 12,
+         "type": "limited"
+        },
+        "ownerCharacter": "Hiyuki",
+        "source": "Freeze Frame",
+        "stackingStrategy": {
+         "maxStacks": 1,
+         "resetTimerOnApplication": true,
+         "stacksRemovedEachTime": 1
+        },
+        "targetStrategy": "self",
+        "type": "buff"
+       },
+       {
+        "characterStats": {
+         "bonusATK": 0.36
+        },
+        "condition": "[Function]",
+        "description": "After inflicting Glacio Chafe, ATK of all Resonators in the team +36% for 30s.",
+        "displayName": "Freeze Frame: Team ATK",
+        "durationStrategy": {
+         "timeDuration": 30,
+         "type": "limited"
+        },
+        "ownerCharacter": "Hiyuki",
+        "source": "Freeze Frame",
+        "stackingStrategy": {
+         "maxStacks": 1,
+         "resetTimerOnApplication": true,
+         "stacksRemovedEachTime": 1
+        },
+        "targetStrategy": "all",
+        "type": "buff"
+       }
+      ],
+      "targets": [
+       {
+        "tag": "GLACIO_CHAFE_APPLIER"
+       }
+      ]
+     }
+    ],
+    "name": "Freeze Frame",
+    "rank": 3,
+    "stats": {
+     "baseATK": 587.5,
+     "critRate": 0.243
+    },
+    "weaponType": "Rectifier"
+   },
+   {
+    "icon": "assets/gear/weapons/freeze_frame.png",
+    "info": "Increases ATK by 12%/15%/18%/21%/24%. After the wielder inflicts Glacio Chafe on the target, their Glacio DMG Bonus is increased by 30%/37.5%/45%/52.5%/60% for 12s. The ATK of all Resonators in the team (including self) is increased by 24%/30%/36%/42%/48% ATK for 30s.",
+    "injectedModifiers": [
+     {
+      "modifiers": [
+       {
+        "characterStats": {
+         "bonusATK": 0.21
+        },
+        "condition": "[Function]",
+        "description": "Increases ATK by 21%.",
+        "displayName": "Freeze Frame: Passive ATK",
+        "durationStrategy": {
+         "type": "permanent"
+        },
+        "ownerCharacter": "Hiyuki",
+        "source": "Freeze Frame",
+        "stackingStrategy": {
+         "maxStacks": 1,
+         "resetTimerOnApplication": false,
+         "stacksRemovedEachTime": 0
+        },
+        "targetStrategy": "self",
+        "type": "buff"
+       }
+      ],
+      "targets": [
+       "character"
+      ]
+     },
+     {
+      "modifiers": [
+       {
+        "characterStats": {
+         "glacioBonusDMG": 0.525
+        },
+        "condition": "[Function]",
+        "description": "After inflicting Glacio Chafe, Glacio DMG Bonus +52.5% for 12s.",
+        "displayName": "Freeze Frame: Glacio DMG Bonus",
+        "durationStrategy": {
+         "timeDuration": 12,
+         "type": "limited"
+        },
+        "ownerCharacter": "Hiyuki",
+        "source": "Freeze Frame",
+        "stackingStrategy": {
+         "maxStacks": 1,
+         "resetTimerOnApplication": true,
+         "stacksRemovedEachTime": 1
+        },
+        "targetStrategy": "self",
+        "type": "buff"
+       },
+       {
+        "characterStats": {
+         "bonusATK": 0.42
+        },
+        "condition": "[Function]",
+        "description": "After inflicting Glacio Chafe, ATK of all Resonators in the team +42% for 30s.",
+        "displayName": "Freeze Frame: Team ATK",
+        "durationStrategy": {
+         "timeDuration": 30,
+         "type": "limited"
+        },
+        "ownerCharacter": "Hiyuki",
+        "source": "Freeze Frame",
+        "stackingStrategy": {
+         "maxStacks": 1,
+         "resetTimerOnApplication": true,
+         "stacksRemovedEachTime": 1
+        },
+        "targetStrategy": "all",
+        "type": "buff"
+       }
+      ],
+      "targets": [
+       {
+        "tag": "GLACIO_CHAFE_APPLIER"
+       }
+      ]
+     }
+    ],
+    "name": "Freeze Frame",
+    "rank": 4,
+    "stats": {
+     "baseATK": 587.5,
+     "critRate": 0.243
+    },
+    "weaponType": "Rectifier"
+   },
+   {
+    "icon": "assets/gear/weapons/freeze_frame.png",
+    "info": "Increases ATK by 12%/15%/18%/21%/24%. After the wielder inflicts Glacio Chafe on the target, their Glacio DMG Bonus is increased by 30%/37.5%/45%/52.5%/60% for 12s. The ATK of all Resonators in the team (including self) is increased by 24%/30%/36%/42%/48% ATK for 30s.",
+    "injectedModifiers": [
+     {
+      "modifiers": [
+       {
+        "characterStats": {
+         "bonusATK": 0.24
+        },
+        "condition": "[Function]",
+        "description": "Increases ATK by 24%.",
+        "displayName": "Freeze Frame: Passive ATK",
+        "durationStrategy": {
+         "type": "permanent"
+        },
+        "ownerCharacter": "Hiyuki",
+        "source": "Freeze Frame",
+        "stackingStrategy": {
+         "maxStacks": 1,
+         "resetTimerOnApplication": false,
+         "stacksRemovedEachTime": 0
+        },
+        "targetStrategy": "self",
+        "type": "buff"
+       }
+      ],
+      "targets": [
+       "character"
+      ]
+     },
+     {
+      "modifiers": [
+       {
+        "characterStats": {
+         "glacioBonusDMG": 0.6
+        },
+        "condition": "[Function]",
+        "description": "After inflicting Glacio Chafe, Glacio DMG Bonus +60% for 12s.",
+        "displayName": "Freeze Frame: Glacio DMG Bonus",
+        "durationStrategy": {
+         "timeDuration": 12,
+         "type": "limited"
+        },
+        "ownerCharacter": "Hiyuki",
+        "source": "Freeze Frame",
+        "stackingStrategy": {
+         "maxStacks": 1,
+         "resetTimerOnApplication": true,
+         "stacksRemovedEachTime": 1
+        },
+        "targetStrategy": "self",
+        "type": "buff"
+       },
+       {
+        "characterStats": {
+         "bonusATK": 0.48
+        },
+        "condition": "[Function]",
+        "description": "After inflicting Glacio Chafe, ATK of all Resonators in the team +48% for 30s.",
+        "displayName": "Freeze Frame: Team ATK",
+        "durationStrategy": {
+         "timeDuration": 30,
+         "type": "limited"
+        },
+        "ownerCharacter": "Hiyuki",
+        "source": "Freeze Frame",
+        "stackingStrategy": {
+         "maxStacks": 1,
+         "resetTimerOnApplication": true,
+         "stacksRemovedEachTime": 1
+        },
+        "targetStrategy": "all",
+        "type": "buff"
+       }
+      ],
+      "targets": [
+       {
+        "tag": "GLACIO_CHAFE_APPLIER"
+       }
+      ]
+     }
+    ],
+    "name": "Freeze Frame",
+    "rank": 5,
+    "stats": {
+     "baseATK": 587.5,
+     "critRate": 0.243
+    },
+    "weaponType": "Rectifier"
+   }
+  ]
+ }
+]

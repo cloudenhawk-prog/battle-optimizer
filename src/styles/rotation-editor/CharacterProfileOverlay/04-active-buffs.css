@@ -1,0 +1,293 @@
+/* Character profile overlay: Active Buffs & Current Stats panel (abp-*) */
+
+/* ═════════════════════════════════════════════════════════════
+ *  ABP — ACTIVE BUFFS & CURRENT STATS PANEL
+ * ═════════════════════════════════════════════════════════════ */
+
+.abp { background: hsl(222 25% 9%); }
+
+.abp .charStatBreakdownTitle   { font-size: var(--abp-header-size); }
+.abp .cpo-section-header-label { font-size: var(--abp-subheader-size); }
+
+/* ═════════════════════════════════════════════════════════════
+ *  ABP — LAYOUT
+ * ═════════════════════════════════════════════════════════════ */
+
+.abp-body {
+  flex: 1;
+  min-height: 0;
+  display: flex;
+  overflow: hidden;
+}
+
+.abp-left {
+  flex: 0 0 var(--abp-left-width);
+  overflow-y: auto;
+  overflow-x: hidden;
+  padding: 16px 20px;
+  scrollbar-width: thin;
+  scrollbar-color: rgba(80, 100, 130, 0.3) transparent;
+}
+
+.abp-right {
+  flex: 1;
+  min-width: 0;
+  overflow-y: auto;
+  overflow-x: hidden;
+  padding: 16px 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  scrollbar-width: thin;
+  scrollbar-color: rgba(80, 100, 130, 0.3) transparent;
+}
+
+/* ═════════════════════════════════════════════════════════════
+ *  ABP — STATS HEADER & TOGGLE
+ * ═════════════════════════════════════════════════════════════ */
+
+.abp-stats-header {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 12px;
+}
+
+.abp-toggle-btn {
+  font-family: 'Orbitron', sans-serif;
+  font-size: var(--abp-toggle-size);
+  font-weight: 700;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  padding: var(--abp-toggle-padding);
+  border-radius: 4px;
+  cursor: pointer;
+  transition: all 0.15s;
+  flex-shrink: 0;
+}
+
+/* ═════════════════════════════════════════════════════════════
+ *  ABP — STAT GROUPS
+ * ═════════════════════════════════════════════════════════════ */
+
+.abp-group { margin-bottom: 18px; }
+
+.abp-group-label {
+  font-family: 'Orbitron', sans-serif;
+  font-size: var(--abp-group-label-size);
+  font-weight: 700;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  margin-bottom: 6px;
+  padding-bottom: 3px;
+}
+
+.abp-grid {
+  display: grid;
+  grid-template-columns: 1fr auto 1fr auto;
+  column-gap: 10px;
+}
+
+.abp-stat-label,
+.abp-stat-value,
+.abp-stat-empty {
+  padding: 3px 0;
+  border-bottom: 1px solid rgba(50, 70, 100, 0.18);
+}
+
+.abp-stat-row--lone {
+  grid-column: 1 / -1;
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  padding: 3px 0;
+  border-bottom: 1px solid rgba(50, 70, 100, 0.18);
+}
+.abp-stat-row--lone .abp-stat-label,
+.abp-stat-row--lone .abp-stat-value {
+  padding: 0;
+  border-bottom: none;
+}
+
+.abp-stat-label {
+  font-family: 'Rajdhani', 'Segoe UI', sans-serif;
+  font-size: var(--abp-stat-label-size);
+  color: rgba(140, 155, 190, 0.85);
+}
+
+.abp-stat-label--right { padding-left: 8px; }
+
+.abp-stat-value {
+  font-family: system-ui, -apple-system, 'Segoe UI', sans-serif;
+  font-size: var(--abp-stat-value-size);
+  font-weight: 650;
+  font-variant-numeric: tabular-nums;
+  text-align: right;
+}
+
+.abp-stat-value--left { padding-right: 8px; }
+
+/* ═════════════════════════════════════════════════════════════
+ *  ABP — BUFF CARDS
+ * ═════════════════════════════════════════════════════════════ */
+
+/* Animatable custom property for the conic gradient rotation */
+@property --abp-glow-angle {
+  syntax: '<angle>';
+  inherits: false;
+  initial-value: 0deg;
+}
+
+@keyframes abp-card-orbit {
+  to { --abp-glow-angle: 360deg; }
+}
+
+.abp-buff-card {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  border-radius: 8px;
+  padding: 10px 12px;
+  position: relative;
+  transition: background var(--abp-buff-card-time);
+}
+
+/* Static base border glow — always visible on hover, fills the dead zones between hot-spots */
+.abp-buff-card::after {
+  content: '';
+  position: absolute;
+  inset: -3px;
+  border-radius: 11px;
+  padding: 3px;
+  background: hsl(var(--cpo-el-raw) / 1);
+  -webkit-mask:
+    linear-gradient(#fff 0 0) content-box,
+    linear-gradient(#fff 0 0);
+  -webkit-mask-composite: destination-out;
+  mask:
+    linear-gradient(#fff 0 0) content-box,
+    linear-gradient(#fff 0 0);
+  mask-composite: exclude;
+  filter: blur(var(--abp-buff-card-glow-blur));
+  opacity: 0;
+  transition: opacity var(--abp-buff-card-time);
+  pointer-events: none;
+}
+
+/*
+ * Rotating orbit glow — conic gradient shaped into a border ring via mask-composite.
+ * The interior is punched out entirely, so the conic fill never bleeds inside the card
+ * regardless of what background the card itself has.
+ * Two irregular hot-spots give an uneven, sparking feel as they orbit.
+ * --cpo-el-raw must be set on a parent element (done in ActiveBuffsPanel TSX).
+ */
+.abp-buff-card::before {
+  content: '';
+  position: absolute;
+  inset: -3px;
+  border-radius: 11px;
+  padding: 3px;                          /* defines the visible ring width */
+  background: conic-gradient(
+    from var(--abp-glow-angle),
+    transparent                     0deg,
+    hsl(var(--cpo-el-raw) / 0.15)  32deg,
+    hsl(var(--cpo-el-raw) / 0.90)  58deg,   /* primary hot-spot */
+    hsl(var(--cpo-el-raw) / 0.15)  84deg,
+    transparent                   108deg,
+    transparent                   178deg,
+    hsl(var(--cpo-el-raw) / 0.10) 200deg,
+    hsl(var(--cpo-el-raw) / 0.50) 228deg,   /* secondary — dimmer, slightly wider */
+    hsl(var(--cpo-el-raw) / 0.10) 256deg,
+    transparent                   280deg,
+    transparent                   360deg
+  );
+  /* Punch out the interior — only the border ring remains.
+   * content-box here equals exactly the card's interior because the element has
+   * inset: -3px (so it starts 3px outside the card) + padding: 3px (pushes content
+   * edge back inward by 3px), netting zero offset = card boundary = the hole to remove.
+   * NOTE: padding-box == border-box when there is no border, so it must be content-box. */
+  -webkit-mask:
+    linear-gradient(#fff 0 0) content-box,
+    linear-gradient(#fff 0 0);
+  -webkit-mask-composite: destination-out;
+  mask:
+    linear-gradient(#fff 0 0) content-box,
+    linear-gradient(#fff 0 0);
+  mask-composite: exclude;
+  filter: blur(var(--abp-buff-card-glow-blur));
+  opacity: 0;
+  transition: opacity var(--abp-buff-card-time);
+  animation: abp-card-orbit var(--abp-buff-card-orbit-speed) linear infinite;
+  animation-play-state: paused;
+  pointer-events: none;
+}
+
+.abp-buff-card:hover::before {
+  opacity: var(--abp-buff-card-glow-opacity);
+  animation-play-state: running;
+}
+
+.abp-buff-card:hover::after {
+  opacity: var(--abp-buff-card-base-opacity);
+}
+
+.abp-buff-header {
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+}
+
+.abp-buff-icon {
+  width:  var(--abp-buff-icon-size);
+  height: var(--abp-buff-icon-size);
+  object-fit: contain;
+  flex-shrink: 0;
+  border-radius: 4px;
+}
+
+.abp-buff-text {
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+  flex: 1;
+  min-width: 0;
+}
+
+.abp-buff-name {
+  font-family: 'Rajdhani', 'Segoe UI', sans-serif;
+  font-size: var(--abp-buff-name-size);
+  font-weight: 700;
+}
+
+.abp-buff-desc {
+  margin: 0;
+  font-family: 'Rajdhani', 'Segoe UI', sans-serif;
+  font-size: var(--abp-buff-desc-size);
+  color: rgba(160, 172, 200, 0.8);
+  line-height: 1.5;
+}
+
+.abp-buff-stats {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  padding-top: 6px;
+}
+
+.abp-buff-stat-row {
+  display: flex;
+  gap: 8px;
+  align-items: baseline;
+}
+
+.abp-buff-stat-label {
+  font-size: var(--abp-buff-stat-size);
+  color: rgba(150, 165, 195, 0.8);
+}
+
+.abp-buff-stat-value {
+  font-size: var(--abp-buff-stat-size);
+  font-weight: 600;
+  font-variant-numeric: tabular-nums;
+}
+

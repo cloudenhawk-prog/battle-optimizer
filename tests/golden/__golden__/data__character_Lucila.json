@@ -1,0 +1,4121 @@
+{
+ "base": {
+  "actions": [
+   {
+    "castConditions": {
+     "blockedComboTags": [
+      "BA Block",
+      "BA1",
+      "BA2"
+     ],
+     "endState": "GROUND",
+     "preventsSwapOut": true,
+     "requiredForms": [
+      "Default Form"
+     ],
+     "startState": "GROUND"
+    },
+    "castTime": 0.3,
+    "category": "Basics",
+    "comboChainTags": [
+     "BA Block"
+    ],
+    "cooldown": 0,
+    "coordinatedAttacks": [],
+    "damageModifiers": [],
+    "displayName": "Snapshot: Stage 1",
+    "dmgTypes": [
+     "BASIC"
+    ],
+    "elements": [
+     "GLACIO"
+    ],
+    "energyCost": [],
+    "energyGenerated": [
+     {
+      "amount": 1.07,
+      "energyType": "energy",
+      "scalingStat": "energyPercent",
+      "share": 0.5
+     },
+     {
+      "amount": 1.71,
+      "energyType": "concerto",
+      "share": 0
+     }
+    ],
+    "groupName": "Basic Attack 1",
+    "hideWhenNotCastable": true,
+    "multiplier": 0.5929,
+    "name": "Basic Attack 1",
+    "offtune": 0.34,
+    "scaling": "ATK",
+    "sideEffects": [],
+    "statusModifications": [],
+    "tags": [
+     "BASIC_ATTACK"
+    ],
+    "variantName": "Default"
+   },
+   {
+    "castConditions": {
+     "blockedComboTags": [
+      "BA Block",
+      "BA1",
+      "BA2"
+     ],
+     "endState": "GROUND",
+     "preventsSwapOut": true,
+     "requiredForms": [
+      "Default Form"
+     ],
+     "startState": "GROUND"
+    },
+    "castTime": 0.6,
+    "category": "Basics",
+    "comboChainTags": [
+     "BA Block"
+    ],
+    "cooldown": 0,
+    "coordinatedAttacks": [],
+    "damageModifiers": [],
+    "displayName": "Snapshot: Stage 1-2",
+    "dmgTypes": [
+     "BASIC"
+    ],
+    "elements": [
+     "GLACIO"
+    ],
+    "energyCost": [],
+    "energyGenerated": [
+     {
+      "amount": 2.29,
+      "energyType": "energy",
+      "scalingStat": "energyPercent",
+      "share": 0.5
+     },
+     {
+      "amount": 3.65,
+      "energyType": "concerto",
+      "share": 0
+     }
+    ],
+    "groupName": "Basic Attack 1-2",
+    "hideWhenNotCastable": true,
+    "multiplier": 1.2652,
+    "name": "Basic Attack 1-2",
+    "offtune": 0.82,
+    "scaling": "ATK",
+    "sideEffects": [],
+    "statusModifications": [],
+    "tags": [
+     "BASIC_ATTACK"
+    ],
+    "variantName": "Default"
+   },
+   {
+    "castConditions": {
+     "blockedComboTags": [
+      "BA Block",
+      "BA1",
+      "BA2"
+     ],
+     "endState": "GROUND",
+     "preventsSwapOut": true,
+     "requiredForms": [
+      "Default Form"
+     ],
+     "startState": "GROUND"
+    },
+    "castTime": 0.9,
+    "category": "Basics",
+    "comboChainTags": [
+     "BA3"
+    ],
+    "cooldown": 0,
+    "coordinatedAttacks": [],
+    "damageModifiers": [],
+    "displayName": "Snapshot: Stage 1-3",
+    "dmgTypes": [
+     "BASIC"
+    ],
+    "elements": [
+     "GLACIO"
+    ],
+    "energyCost": [],
+    "energyGenerated": [
+     {
+      "amount": 6.52,
+      "energyType": "energy",
+      "scalingStat": "energyPercent",
+      "share": 0.5
+     },
+     {
+      "amount": 10.42,
+      "energyType": "concerto",
+      "share": 0
+     },
+     {
+      "amount": 50,
+      "energyType": "traces",
+      "share": 0
+     }
+    ],
+    "groupName": "Basic Attack 1-3",
+    "hideWhenNotCastable": true,
+    "multiplier": 3.6179,
+    "name": "Basic Attack 1-3",
+    "offtune": 2.17,
+    "scaling": "ATK",
+    "sideEffects": [],
+    "statusModifications": [],
+    "tags": [
+     "BASIC_ATTACK"
+    ],
+    "variantName": "Default"
+   },
+   {
+    "castConditions": {
+     "blockedComboTags": [
+      "BA Block",
+      "BA2",
+      "BA3"
+     ],
+     "endState": "GROUND",
+     "preventsSwapOut": true,
+     "requiredComboTags": [
+      "BA1"
+     ],
+     "requiredForms": [
+      "Default Form"
+     ],
+     "startState": "GROUND"
+    },
+    "castTime": 0.3,
+    "category": "Basics",
+    "comboChainTags": [
+     "BA Block"
+    ],
+    "cooldown": 0,
+    "coordinatedAttacks": [],
+    "damageModifiers": [],
+    "displayName": "Snapshot: Stage 2",
+    "dmgTypes": [
+     "BASIC"
+    ],
+    "elements": [
+     "GLACIO"
+    ],
+    "energyCost": [],
+    "energyGenerated": [
+     {
+      "amount": 1.22,
+      "energyType": "energy",
+      "scalingStat": "energyPercent",
+      "share": 0.5
+     },
+     {
+      "amount": 1.94,
+      "energyType": "concerto",
+      "share": 0
+     }
+    ],
+    "groupName": "Basic Attack 2",
+    "hideWhenNotCastable": true,
+    "multiplier": 0.6723,
+    "name": "Basic Attack 2",
+    "offtune": 0.48,
+    "scaling": "ATK",
+    "sideEffects": [],
+    "statusModifications": [],
+    "tags": [
+     "BASIC_ATTACK"
+    ],
+    "variantName": "Default"
+   },
+   {
+    "castConditions": {
+     "blockedComboTags": [
+      "BA Block",
+      "BA2",
+      "BA3"
+     ],
+     "endState": "GROUND",
+     "preventsSwapOut": true,
+     "requiredComboTags": [
+      "BA1"
+     ],
+     "requiredForms": [
+      "Default Form"
+     ],
+     "startState": "GROUND"
+    },
+    "castTime": 0.6,
+    "category": "Basics",
+    "comboChainTags": [
+     "BA3"
+    ],
+    "cooldown": 0,
+    "coordinatedAttacks": [],
+    "damageModifiers": [],
+    "displayName": "Snapshot: Stage 2-3",
+    "dmgTypes": [
+     "BASIC"
+    ],
+    "elements": [
+     "GLACIO"
+    ],
+    "energyCost": [],
+    "energyGenerated": [
+     {
+      "amount": 5.45,
+      "energyType": "energy",
+      "scalingStat": "energyPercent",
+      "share": 0.5
+     },
+     {
+      "amount": 8.71,
+      "energyType": "concerto",
+      "share": 0
+     },
+     {
+      "amount": 50,
+      "energyType": "traces",
+      "share": 0
+     }
+    ],
+    "groupName": "Basic Attack 2-3",
+    "hideWhenNotCastable": true,
+    "multiplier": 3.025,
+    "name": "Basic Attack 2-3",
+    "offtune": 1.83,
+    "scaling": "ATK",
+    "sideEffects": [],
+    "statusModifications": [],
+    "tags": [
+     "BASIC_ATTACK"
+    ],
+    "variantName": "Default"
+   },
+   {
+    "castConditions": {
+     "endState": "GROUND",
+     "preventsSwapOut": true,
+     "requiredComboTags": [
+      "BA2"
+     ],
+     "requiredForms": [
+      "Default Form"
+     ],
+     "startState": "GROUND"
+    },
+    "castTime": 0.3,
+    "category": "Basics",
+    "comboChainTags": [
+     "BA3"
+    ],
+    "cooldown": 0,
+    "coordinatedAttacks": [],
+    "damageModifiers": [],
+    "displayName": "Snapshot: Stage 3 (Commendable)",
+    "dmgTypes": [
+     "BASIC"
+    ],
+    "elements": [
+     "GLACIO"
+    ],
+    "energyCost": [],
+    "energyGenerated": [
+     {
+      "amount": 4.23,
+      "energyType": "energy",
+      "scalingStat": "energyPercent",
+      "share": 0.5
+     },
+     {
+      "amount": 6.77,
+      "energyType": "concerto",
+      "share": 0
+     },
+     {
+      "amount": 50,
+      "energyType": "traces",
+      "share": 0
+     }
+    ],
+    "groupName": "Basic Attack 3",
+    "hideWhenNotCastable": true,
+    "multiplier": 2.3527,
+    "name": "Basic Attack 3",
+    "offtune": 1.35,
+    "scaling": "ATK",
+    "sideEffects": [],
+    "statusModifications": [],
+    "tags": [
+     "BASIC_ATTACK"
+    ],
+    "variantName": "Default"
+   },
+   {
+    "castConditions": {
+     "endState": "GROUND",
+     "requiredForms": [
+      "Default Form"
+     ],
+     "startState": "GROUND"
+    },
+    "castTime": 0.3,
+    "category": "Skills",
+    "cooldown": 16,
+    "coordinatedAttacks": [],
+    "damageModifiers": [
+     {
+      "color": "#a3d4f7",
+      "condition": "[Function]",
+      "description": "Phantom Frame (Perfect Focus): Glacio RES reduced by 8% for 30s.",
+      "displayName": "Slow Motion: Glacio RES Down",
+      "durationStrategy": {
+       "timeDuration": 30,
+       "type": "limited"
+      },
+      "enemyStats": {
+       "glacioRES": -0.08
+      },
+      "ownerCharacter": "Lucila",
+      "showStats": true,
+      "source": "Lucila: Slow Motion",
+      "stackingStrategy": {
+       "maxStacks": 1,
+       "resetTimerOnApplication": true,
+       "stacksRemovedEachTime": 1
+      },
+      "targetStrategy": "all",
+      "type": "debuff"
+     }
+    ],
+    "displayName": "Phantom Frame — Spotlight",
+    "dmgTypes": [
+     "SKILL"
+    ],
+    "elements": [
+     "GLACIO"
+    ],
+    "energyCost": [],
+    "energyGenerated": [
+     {
+      "amount": 29.25,
+      "energyType": "energy",
+      "scalingStat": "energyPercent",
+      "share": 0.5
+     },
+     {
+      "amount": 29.95,
+      "energyType": "concerto",
+      "share": 0
+     },
+     {
+      "amount": 50,
+      "energyType": "traces",
+      "share": 0
+     }
+    ],
+    "groupName": "Resonance Skill",
+    "multiplier": 5.9137,
+    "name": "Resonance Skill",
+    "offtune": 1.34,
+    "scaling": "ATK",
+    "sideEffects": [],
+    "statusModifications": [
+     {
+      "stackChange": 1,
+      "targetName": "Glacio Chafe",
+      "type": "negativeStatus"
+     }
+    ],
+    "tags": [
+     "SKILL",
+     "GLACIO_CHAFE_APPLIER"
+    ],
+    "variantName": "Default"
+   },
+   {
+    "castConditions": {
+     "endState": "GROUND",
+     "requiredForms": [
+      "Default Form"
+     ],
+     "startState": "ANY"
+    },
+    "castTime": 0.3,
+    "category": "Skills",
+    "cooldown": 25,
+    "coordinatedAttacks": [],
+    "damageModifiers": [
+     {
+      "characterStats": {
+       "basicBonusDMG": 0.3
+      },
+      "color": "#c5e8ff",
+      "condition": "[Function]",
+      "description": "Casting Clear As Day increases Lucila's Basic Attack DMG Bonus by 30% for 10s.",
+      "displayName": "Clear As Day: Basic ATK Bonus",
+      "durationStrategy": {
+       "timeDuration": 10,
+       "type": "limited"
+      },
+      "ownerCharacter": "Lucila",
+      "showStats": true,
+      "source": "Lucila: Clear As Day",
+      "stackingStrategy": {
+       "maxStacks": 1,
+       "resetTimerOnApplication": true,
+       "stacksRemovedEachTime": 1
+      },
+      "targetStrategy": "self",
+      "type": "buff"
+     }
+    ],
+    "displayName": "Clear As Day",
+    "dmgTypes": [
+     "BASIC"
+    ],
+    "elements": [
+     "GLACIO"
+    ],
+    "energyCost": [
+     {
+      "amount": 125,
+      "energyType": "energy"
+     }
+    ],
+    "energyGenerated": [
+     {
+      "amount": 20,
+      "energyType": "concerto",
+      "share": 0
+     },
+     {
+      "amount": 4,
+      "energyType": "film_roll",
+      "share": 0
+     }
+    ],
+    "formChange": "Reminiscence",
+    "groupName": "Liberation",
+    "multiplier": 1.4274,
+    "name": "Liberation",
+    "offtune": 3.84,
+    "scaling": "ATK",
+    "sideEffects": [],
+    "statusModifications": [],
+    "tags": [
+     "LIBERATION"
+    ],
+    "variantName": "Default"
+   },
+   {
+    "castConditions": {
+     "blockedComboTags": [
+      "Tracing Block",
+      "Tracing1",
+      "Tracing2"
+     ],
+     "endState": "GROUND",
+     "preventsSwapOut": true,
+     "requiredForms": [
+      "Reminiscence"
+     ],
+     "startState": "GROUND"
+    },
+    "castTime": 0.3,
+    "category": "Basics",
+    "comboChainTags": [
+     "Tracing Block"
+    ],
+    "cooldown": 0,
+    "coordinatedAttacks": [],
+    "damageModifiers": [],
+    "displayName": "Tracing Forms: Stage 1",
+    "dmgTypes": [
+     "BASIC"
+    ],
+    "elements": [
+     "GLACIO"
+    ],
+    "energyCost": [],
+    "energyGenerated": [
+     {
+      "amount": 1.67,
+      "energyType": "energy",
+      "scalingStat": "energyPercent",
+      "share": 0.5
+     },
+     {
+      "amount": 2.54,
+      "energyType": "concerto",
+      "share": 0
+     }
+    ],
+    "groupName": "Tracing Forms 1",
+    "hideWhenNotCastable": true,
+    "multiplier": 0.7659,
+    "name": "Tracing Forms 1",
+    "offtune": 0.35,
+    "scaling": "ATK",
+    "sideEffects": [],
+    "statusModifications": [],
+    "tags": [
+     "BASIC_ATTACK"
+    ],
+    "variantName": "Default"
+   },
+   {
+    "castConditions": {
+     "blockedComboTags": [
+      "Tracing Block",
+      "Tracing1",
+      "Tracing2"
+     ],
+     "endState": "GROUND",
+     "preventsSwapOut": true,
+     "requiredForms": [
+      "Reminiscence"
+     ],
+     "startState": "GROUND"
+    },
+    "castTime": 0.6,
+    "category": "Basics",
+    "comboChainTags": [
+     "Tracing Block"
+    ],
+    "cooldown": 0,
+    "coordinatedAttacks": [],
+    "damageModifiers": [],
+    "displayName": "Tracing Forms: Stage 1-2",
+    "dmgTypes": [
+     "BASIC"
+    ],
+    "elements": [
+     "GLACIO"
+    ],
+    "energyCost": [],
+    "energyGenerated": [
+     {
+      "amount": 3.77,
+      "energyType": "energy",
+      "scalingStat": "energyPercent",
+      "share": 0.5
+     },
+     {
+      "amount": 7.48,
+      "energyType": "concerto",
+      "share": 0
+     }
+    ],
+    "groupName": "Tracing Forms 1-2",
+    "hideWhenNotCastable": true,
+    "multiplier": 2.2601,
+    "name": "Tracing Forms 1-2",
+    "offtune": 1.02,
+    "scaling": "ATK",
+    "sideEffects": [],
+    "statusModifications": [],
+    "tags": [
+     "BASIC_ATTACK"
+    ],
+    "variantName": "Default"
+   },
+   {
+    "castConditions": {
+     "blockedComboTags": [
+      "Tracing Block",
+      "Tracing1",
+      "Tracing2"
+     ],
+     "endState": "GROUND",
+     "preventsSwapOut": true,
+     "requiredForms": [
+      "Reminiscence"
+     ],
+     "startState": "GROUND"
+    },
+    "castTime": 0.9,
+    "category": "Basics",
+    "comboChainTags": [
+     "Tracing3"
+    ],
+    "cooldown": 0,
+    "coordinatedAttacks": [],
+    "damageModifiers": [],
+    "displayName": "Tracing Forms: Stage 1-3",
+    "dmgTypes": [
+     "BASIC"
+    ],
+    "elements": [
+     "GLACIO"
+    ],
+    "energyCost": [],
+    "energyGenerated": [
+     {
+      "amount": 9.13,
+      "energyType": "energy",
+      "scalingStat": "energyPercent",
+      "share": 0.5
+     },
+     {
+      "amount": 20.12,
+      "energyType": "concerto",
+      "share": 0
+     }
+    ],
+    "groupName": "Tracing Forms 1-3",
+    "hideWhenNotCastable": true,
+    "multiplier": 6.0897,
+    "name": "Tracing Forms 1-3",
+    "offtune": 2.7,
+    "resolveVariant": "[Function]",
+    "scaling": "ATK",
+    "sideEffects": [],
+    "statusModifications": [],
+    "tags": [
+     "BASIC_ATTACK",
+     "GLACIO_CHAFE_APPLIER"
+    ],
+    "variantName": "Default"
+   },
+   {
+    "castConditions": {
+     "blockedComboTags": [
+      "Tracing Block",
+      "Tracing2",
+      "Tracing3"
+     ],
+     "endState": "GROUND",
+     "preventsSwapOut": true,
+     "requiredComboTags": [
+      "Tracing1"
+     ],
+     "requiredForms": [
+      "Reminiscence"
+     ],
+     "startState": "GROUND"
+    },
+    "castTime": 0.3,
+    "category": "Basics",
+    "comboChainTags": [
+     "Tracing Block"
+    ],
+    "cooldown": 0,
+    "coordinatedAttacks": [],
+    "damageModifiers": [],
+    "displayName": "Tracing Forms: Stage 2",
+    "dmgTypes": [
+     "BASIC"
+    ],
+    "elements": [
+     "GLACIO"
+    ],
+    "energyCost": [],
+    "energyGenerated": [
+     {
+      "amount": 2.1,
+      "energyType": "energy",
+      "scalingStat": "energyPercent",
+      "share": 0.5
+     },
+     {
+      "amount": 4.94,
+      "energyType": "concerto",
+      "share": 0
+     }
+    ],
+    "groupName": "Tracing Forms 2",
+    "hideWhenNotCastable": true,
+    "multiplier": 1.4942,
+    "name": "Tracing Forms 2",
+    "offtune": 0.67,
+    "scaling": "ATK",
+    "sideEffects": [],
+    "statusModifications": [],
+    "tags": [
+     "BASIC_ATTACK"
+    ],
+    "variantName": "Default"
+   },
+   {
+    "castConditions": {
+     "blockedComboTags": [
+      "Tracing Block",
+      "Tracing2",
+      "Tracing3"
+     ],
+     "endState": "GROUND",
+     "preventsSwapOut": true,
+     "requiredComboTags": [
+      "Tracing1"
+     ],
+     "requiredForms": [
+      "Reminiscence"
+     ],
+     "startState": "GROUND"
+    },
+    "castTime": 0.6,
+    "category": "Basics",
+    "comboChainTags": [
+     "Tracing3"
+    ],
+    "cooldown": 0,
+    "coordinatedAttacks": [],
+    "damageModifiers": [],
+    "displayName": "Tracing Forms: Stage 2-3",
+    "dmgTypes": [
+     "BASIC"
+    ],
+    "elements": [
+     "GLACIO"
+    ],
+    "energyCost": [],
+    "energyGenerated": [
+     {
+      "amount": 7.46,
+      "energyType": "energy",
+      "scalingStat": "energyPercent",
+      "share": 0.5
+     },
+     {
+      "amount": 17.58,
+      "energyType": "concerto",
+      "share": 0
+     }
+    ],
+    "groupName": "Tracing Forms 2-3",
+    "hideWhenNotCastable": true,
+    "multiplier": 5.3238,
+    "name": "Tracing Forms 2-3",
+    "offtune": 2.35,
+    "resolveVariant": "[Function]",
+    "scaling": "ATK",
+    "sideEffects": [],
+    "statusModifications": [],
+    "tags": [
+     "BASIC_ATTACK",
+     "GLACIO_CHAFE_APPLIER"
+    ],
+    "variantName": "Default"
+   },
+   {
+    "castConditions": {
+     "endState": "GROUND",
+     "preventsSwapOut": true,
+     "requiredComboTags": [
+      "Tracing2"
+     ],
+     "requiredForms": [
+      "Reminiscence"
+     ],
+     "startState": "GROUND"
+    },
+    "castTime": 0.3,
+    "category": "Basics",
+    "comboChainTags": [
+     "Tracing3"
+    ],
+    "cooldown": 0,
+    "coordinatedAttacks": [],
+    "damageModifiers": [],
+    "displayName": "Tracing Forms: Stage 3",
+    "dmgTypes": [
+     "BASIC"
+    ],
+    "elements": [
+     "GLACIO"
+    ],
+    "energyCost": [],
+    "energyGenerated": [
+     {
+      "amount": 5.36,
+      "energyType": "energy",
+      "scalingStat": "energyPercent",
+      "share": 0.5
+     },
+     {
+      "amount": 12.64,
+      "energyType": "concerto",
+      "share": 0
+     }
+    ],
+    "groupName": "Tracing Forms 3",
+    "hideWhenNotCastable": true,
+    "multiplier": 3.8296,
+    "name": "Tracing Forms 3",
+    "offtune": 1.68,
+    "resolveVariant": "[Function]",
+    "scaling": "ATK",
+    "sideEffects": [],
+    "statusModifications": [],
+    "tags": [
+     "BASIC_ATTACK",
+     "GLACIO_CHAFE_APPLIER"
+    ],
+    "variantName": "Default"
+   },
+   {
+    "castConditions": {
+     "endState": "GROUND",
+     "preventsSwapOut": true,
+     "requiredComboTags": [
+      "Tracing3"
+     ],
+     "requiredForms": [
+      "Reminiscence"
+     ],
+     "startState": "GROUND"
+    },
+    "castTime": 0.3,
+    "category": "Skills",
+    "cooldown": 0,
+    "coordinatedAttacks": [],
+    "damageModifiers": [],
+    "displayName": "Letting It Go",
+    "dmgTypes": [
+     "BASIC"
+    ],
+    "elements": [
+     "GLACIO"
+    ],
+    "energyCost": [],
+    "energyGenerated": [
+     {
+      "amount": 3.36,
+      "energyType": "energy",
+      "scalingStat": "energyPercent",
+      "share": 0.5
+     },
+     {
+      "amount": 7.88,
+      "energyType": "concerto",
+      "share": 0
+     }
+    ],
+    "formChange": "Default Form",
+    "groupName": "Letting It Go",
+    "multiplier": 8.4807,
+    "name": "Letting It Go",
+    "offtune": 3.67,
+    "scaling": "ATK",
+    "sideEffects": [],
+    "statusModifications": [],
+    "tags": [
+     "BASIC_ATTACK"
+    ],
+    "variantName": "Default"
+   },
+   {
+    "castConditions": {
+     "endState": "GROUND",
+     "startState": "ANY"
+    },
+    "castTime": 0.3,
+    "category": "Other",
+    "cooldown": 0,
+    "damageModifiers": [],
+    "displayName": "Clip It",
+    "dmgTypes": [
+     "INTRO"
+    ],
+    "elements": [
+     "GLACIO"
+    ],
+    "energyCost": [],
+    "energyGenerated": [
+     {
+      "amount": 11.9,
+      "energyType": "energy",
+      "scalingStat": "energyPercent",
+      "share": 0.5
+     },
+     {
+      "amount": 14.49,
+      "energyType": "concerto",
+      "share": 0
+     },
+     {
+      "amount": 100,
+      "energyType": "traces",
+      "share": 0
+     }
+    ],
+    "multiplier": 1.0577,
+    "name": "Lucila Intro",
+    "offtune": 0.61,
+    "resolveVariant": "[Function]",
+    "scaling": "ATK",
+    "sideEffects": [],
+    "statusModifications": [
+     {
+      "stackChange": 1,
+      "targetName": "Glacio Chafe",
+      "type": "negativeStatus"
+     }
+    ],
+    "tags": [
+     "INTRO_ACTION",
+     "GLACIO_CHAFE_APPLIER"
+    ]
+   },
+   {
+    "castConditions": {
+     "endState": "PRESERVE",
+     "startState": "ANY"
+    },
+    "castTime": 0,
+    "category": "Other",
+    "cooldown": 0,
+    "damageModifiers": [
+     {
+      "characterStats": {
+       "glacioChafeBonusDMG": 0.6
+      },
+      "color": "#b8e0ff",
+      "condition": "[Function]",
+      "description": "Outro Skill - Montage: whole team gains +60% Glacio Chafe DMG Bonus for 30s.",
+      "displayName": "Montage",
+      "durationStrategy": {
+       "timeDuration": 30,
+       "type": "limited"
+      },
+      "ownerCharacter": "Lucila",
+      "showStats": true,
+      "source": "Lucila Outro Buff",
+      "stackingStrategy": {
+       "maxStacks": 1,
+       "resetTimerOnApplication": true,
+       "stacksRemovedEachTime": 1
+      },
+      "targetStrategy": "all",
+      "type": "buff"
+     }
+    ],
+    "displayName": "Montage",
+    "dmgTypes": [
+     "OUTRO"
+    ],
+    "elements": [
+     "GLACIO"
+    ],
+    "energyCost": [],
+    "energyGenerated": [],
+    "multiplier": 0,
+    "name": "Outro",
+    "offtune": 0,
+    "scaling": "ATK",
+    "sideEffects": [],
+    "statusModifications": [],
+    "tags": [
+     "OUTRO_ACTION"
+    ]
+   },
+   {
+    "castConditions": {
+     "endState": "PRESERVE",
+     "startState": "ANY"
+    },
+    "castTime": 0,
+    "category": "Testing",
+    "cooldown": 0,
+    "damageModifiers": [],
+    "displayName": "Energy Up",
+    "dmgTypes": [
+     ""
+    ],
+    "elements": [
+     ""
+    ],
+    "energyCost": [],
+    "energyGenerated": [
+     {
+      "amount": 1000,
+      "energyType": "energy",
+      "share": 0
+     }
+    ],
+    "multiplier": 0,
+    "name": "Energy Up",
+    "offtune": 0,
+    "scaling": "ATK",
+    "sideEffects": [],
+    "statusModifications": []
+   },
+   {
+    "castConditions": {
+     "endState": "PRESERVE",
+     "startState": "ANY"
+    },
+    "castTime": 0,
+    "category": "Testing",
+    "cooldown": 0,
+    "damageModifiers": [],
+    "displayName": "Concerto Up",
+    "dmgTypes": [
+     ""
+    ],
+    "elements": [
+     ""
+    ],
+    "energyCost": [],
+    "energyGenerated": [
+     {
+      "amount": 1000,
+      "energyType": "concerto",
+      "share": 0
+     }
+    ],
+    "multiplier": 0,
+    "name": "Concerto Up",
+    "offtune": 0,
+    "scaling": "ATK",
+    "sideEffects": [],
+    "statusModifications": []
+   },
+   {
+    "castConditions": {
+     "endState": "PRESERVE",
+     "startState": "ANY"
+    },
+    "castTime": 0,
+    "category": "Testing",
+    "cooldown": 0,
+    "coordinatedAttacks": [],
+    "damageModifiers": [
+     {
+      "characterStats": {
+       "bonusATK": 0.24,
+       "glacioBonusDMG": 0.25,
+       "glacioChafeBonusDMG": 0.6
+      },
+      "color": "#6EC1F2",
+      "condition": "[Function]",
+      "displayName": "Lucila Cheat Buff",
+      "durationStrategy": {
+       "timeDuration": 1000,
+       "type": "limited"
+      },
+      "enemyStats": {
+       "glacioRES": -0.08
+      },
+      "ownerCharacter": null,
+      "source": "Lucila Cheat Buff",
+      "stackingStrategy": {
+       "maxStacks": 1,
+       "resetTimerOnApplication": true,
+       "stacksRemovedEachTime": 1
+      },
+      "targetStrategy": "all",
+      "type": "buff"
+     }
+    ],
+    "displayName": "Cheat Buff",
+    "dmgTypes": [
+     "SKILL"
+    ],
+    "elements": [
+     "GLACIO"
+    ],
+    "energyCost": [],
+    "energyGenerated": [],
+    "multiplier": 0.0001,
+    "name": "Cheat Buff",
+    "offtune": 0,
+    "scaling": "ATK",
+    "sideEffects": [],
+    "statusModifications": [],
+    "tags": [
+     "SKILL"
+    ]
+   },
+   {
+    "castConditions": {
+     "endState": "PRESERVE",
+     "startState": "ANY"
+    },
+    "castTime": 7,
+    "category": "Testing",
+    "cooldown": 0,
+    "coordinatedAttacks": [],
+    "damageModifiers": [],
+    "displayName": "Glacio Chafe ×26",
+    "dmgTypes": [
+     "SKILL"
+    ],
+    "elements": [
+     "GLACIO"
+    ],
+    "energyCost": [],
+    "energyGenerated": [],
+    "multiplier": 0.001,
+    "name": "Glacio Chafe ×26",
+    "offtune": 0,
+    "scaling": "ATK",
+    "sideEffects": [],
+    "statusModifications": [
+     {
+      "applicationCount": 26,
+      "stackChange": 26,
+      "targetName": "Glacio Chafe",
+      "type": "negativeStatus"
+     }
+    ],
+    "tags": [
+     "SKILL",
+     "GLACIO_CHAFE_APPLIER"
+    ]
+   }
+  ],
+  "damageModifiers": [],
+  "defaultForm": "Default Form",
+  "element": "GLACIO",
+  "energyDescriptions": {
+   "concerto": "Used to cast Outro Skill and trigger Intro Skills.",
+   "energy": "Used to cast Resonance Liberation - Clear As Day.",
+   "film_roll": "Gained when consuming Photos (2 per photo). When teammates inflict Glacio Chafe, consumes 1 Film Roll to inflict Glacio Chafe 2 times.",
+   "traces": "Forte resource. Every 50 Traces = 1 Photo (max 3). Consumed by Tracing Forms Stage 3 to fire Oblivion."
+  },
+  "forms": [
+   {
+    "displayName": "Default Form",
+    "introAction": {
+     "castConditions": {
+      "endState": "GROUND",
+      "startState": "ANY"
+     },
+     "castTime": 0.3,
+     "category": "Other",
+     "cooldown": 0,
+     "damageModifiers": [],
+     "displayName": "Clip It",
+     "dmgTypes": [
+      "INTRO"
+     ],
+     "elements": [
+      "GLACIO"
+     ],
+     "energyCost": [],
+     "energyGenerated": [
+      {
+       "amount": 11.9,
+       "energyType": "energy",
+       "scalingStat": "energyPercent",
+       "share": 0.5
+      },
+      {
+       "amount": 14.49,
+       "energyType": "concerto",
+       "share": 0
+      },
+      {
+       "amount": 100,
+       "energyType": "traces",
+       "share": 0
+      }
+     ],
+     "multiplier": 1.0577,
+     "name": "Lucila Intro",
+     "offtune": 0.61,
+     "resolveVariant": "[Function]",
+     "scaling": "ATK",
+     "sideEffects": [],
+     "statusModifications": [
+      {
+       "stackChange": 1,
+       "targetName": "Glacio Chafe",
+       "type": "negativeStatus"
+      }
+     ],
+     "tags": [
+      "INTRO_ACTION",
+      "GLACIO_CHAFE_APPLIER"
+     ]
+    },
+    "name": "Default Form",
+    "outroAction": {
+     "castConditions": {
+      "endState": "PRESERVE",
+      "startState": "ANY"
+     },
+     "castTime": 0,
+     "category": "Other",
+     "cooldown": 0,
+     "damageModifiers": [
+      {
+       "characterStats": {
+        "glacioChafeBonusDMG": 0.6
+       },
+       "color": "#b8e0ff",
+       "condition": "[Function]",
+       "description": "Outro Skill - Montage: whole team gains +60% Glacio Chafe DMG Bonus for 30s.",
+       "displayName": "Montage",
+       "durationStrategy": {
+        "timeDuration": 30,
+        "type": "limited"
+       },
+       "ownerCharacter": "Lucila",
+       "showStats": true,
+       "source": "Lucila Outro Buff",
+       "stackingStrategy": {
+        "maxStacks": 1,
+        "resetTimerOnApplication": true,
+        "stacksRemovedEachTime": 1
+       },
+       "targetStrategy": "all",
+       "type": "buff"
+      }
+     ],
+     "displayName": "Montage",
+     "dmgTypes": [
+      "OUTRO"
+     ],
+     "elements": [
+      "GLACIO"
+     ],
+     "energyCost": [],
+     "energyGenerated": [],
+     "multiplier": 0,
+     "name": "Outro",
+     "offtune": 0,
+     "scaling": "ATK",
+     "sideEffects": [],
+     "statusModifications": [],
+     "tags": [
+      "OUTRO_ACTION"
+     ]
+    }
+   },
+   {
+    "displayName": "Reminiscence",
+    "introAction": {
+     "castConditions": {
+      "endState": "GROUND",
+      "startState": "ANY"
+     },
+     "castTime": 0.3,
+     "category": "Other",
+     "cooldown": 0,
+     "damageModifiers": [],
+     "displayName": "Clip It",
+     "dmgTypes": [
+      "INTRO"
+     ],
+     "elements": [
+      "GLACIO"
+     ],
+     "energyCost": [],
+     "energyGenerated": [
+      {
+       "amount": 11.9,
+       "energyType": "energy",
+       "scalingStat": "energyPercent",
+       "share": 0.5
+      },
+      {
+       "amount": 14.49,
+       "energyType": "concerto",
+       "share": 0
+      },
+      {
+       "amount": 100,
+       "energyType": "traces",
+       "share": 0
+      }
+     ],
+     "multiplier": 1.0577,
+     "name": "Lucila Intro",
+     "offtune": 0.61,
+     "resolveVariant": "[Function]",
+     "scaling": "ATK",
+     "sideEffects": [],
+     "statusModifications": [
+      {
+       "stackChange": 1,
+       "targetName": "Glacio Chafe",
+       "type": "negativeStatus"
+      }
+     ],
+     "tags": [
+      "INTRO_ACTION",
+      "GLACIO_CHAFE_APPLIER"
+     ]
+    },
+    "name": "Reminiscence",
+    "resetFormOnSwapOut": false
+   }
+  ],
+  "gear": {
+   "echoSlots": {
+    "1": {
+     "baseStats": {
+      "flatATK": 100,
+      "glacioBonusDMG": 0.3
+     },
+     "cost": 3,
+     "echoSkill": {
+      "castConditions": {
+       "endState": "PRESERVE",
+       "startState": "ANY"
+      },
+      "castTime": 1,
+      "category": "Echo Skill",
+      "cooldown": 20,
+      "damageModifiers": [],
+      "displayName": "Glommoth (Active)",
+      "dmgTypes": [
+       "ECHO"
+      ],
+      "elements": [
+       "GLACIO"
+      ],
+      "energyCost": [],
+      "energyGenerated": [
+       {
+        "amount": 1.9,
+        "energyType": "energy",
+        "scalingStat": "energyPercent",
+        "share": 0.5
+       }
+      ],
+      "multiplier": 2.736,
+      "name": "Echo Skill",
+      "offtune": 0,
+      "scaling": "ATK",
+      "sideEffects": [],
+      "statusModifications": []
+     },
+     "icon": "assets/gear/echoes/glommoth.png",
+     "info": "Summon a Glommoth to stomp enemies, dealing 273.60% Glacio DMG. Casting Outro Skill within 15s after summoning Glommoth grants 12.00% Glacio DMG Bonus to the incoming Resonator for 15s. CD: 20s.",
+     "info_icon": "assets/gear/echoes/info_glommoth.png",
+     "injectedModifiers": [
+      {
+       "modifiers": [
+        {
+         "characterStats": {
+          "glacioBonusDMG": 0.12
+         },
+         "condition": "[Function]",
+         "description": "Outro Skill within 15s of Glommoth active: incoming Resonator gains 12% Glacio DMG Bonus for 15s.",
+         "displayName": "Glommoth: Glacio DMG Bonus",
+         "durationStrategy": {
+          "timeDuration": 15,
+          "type": "limited"
+         },
+         "ownerCharacter": null,
+         "source": "Glommoth",
+         "stackingStrategy": {
+          "maxStacks": 1,
+          "resetTimerOnApplication": true,
+          "stacksRemovedEachTime": 1
+         },
+         "targetStrategy": "nextSwap",
+         "type": "buff"
+        }
+       ],
+       "targets": [
+        {
+         "tag": "OUTRO_ACTION"
+        }
+       ]
+      }
+     ],
+     "name": "Glommoth",
+     "setName": "Wishes of Quiet Snowfall",
+     "subStats": {
+      "bonusATK": 0.079,
+      "critDamage": 0.138,
+      "critRate": 0.063,
+      "energyPercent": 0.071
+     }
+    },
+    "2": {
+     "baseStats": {
+      "critDamage": 0.33,
+      "flatATK": 150
+     },
+     "cost": 4,
+     "echoSkill": {
+      "castConditions": {
+       "endState": "PRESERVE",
+       "persistenceTime": 0.09,
+       "requiresSwapOut": true,
+       "startState": "ANY",
+       "swapOutState": "PRESERVE"
+      },
+      "castTime": 0.09,
+      "category": "Echo Skill",
+      "cooldown": 20,
+      "damageModifiers": [],
+      "displayName": "Aleph-1 (Active)",
+      "dmgTypes": [
+       "ECHO"
+      ],
+      "elements": [
+       "GLACIO"
+      ],
+      "energyCost": [],
+      "energyGenerated": [
+       {
+        "amount": 1.96,
+        "energyType": "energy",
+        "scalingStat": "energyPercent",
+        "share": 0.5
+       }
+      ],
+      "multiplier": 2.7356,
+      "name": "Echo Skill",
+      "offtune": 0,
+      "scaling": "ATK",
+      "sideEffects": [],
+      "statusModifications": []
+     },
+     "firstSlotStats": {
+      "glacioBonusDMG": 0.12,
+      "liberationBonusDMG": 0.12
+     },
+     "icon": "assets/gear/echoes/aleph-1.png",
+     "info": "The Resonator with this Echo equipped in the main slot gains 12.00% Glacio DMG Bonus and 12.00% Resonance Liberation DMG Bonus. Summon Aleph-1's Creation to deal 21.88% Glacio DMG 5 times and 164.16% Glacio DMG one time to enemies.",
+     "info_icon": "assets/gear/echoes/info_aleph-1.png",
+     "name": "Aleph-1",
+     "setName": "Wishes of Quiet Snowfall",
+     "subStats": {
+      "bonusATK": 0.101,
+      "critDamage": 0.21,
+      "critRate": 0.069,
+      "energyPercent": 0.071
+     }
+    },
+    "3": {
+     "baseStats": {
+      "flatATK": 100,
+      "glacioBonusDMG": 0.3
+     },
+     "cost": 3,
+     "icon": "assets/gear/echoes/windlash_coleoid.png",
+     "info": "",
+     "info_icon": "assets/gear/echoes/info_windlash_coleoid.png",
+     "name": "Windlash Coleoid",
+     "setName": "Wishes of Quiet Snowfall",
+     "subStats": {
+      "bonusATK": 0.079,
+      "critDamage": 0.15,
+      "critRate": 0.105
+     }
+    },
+    "4": {
+     "baseStats": {
+      "bonusATK": 0.18,
+      "flatHP": 2280
+     },
+     "cost": 1,
+     "icon": "assets/gear/echoes/shadow_stepper.png",
+     "info": "",
+     "info_icon": "assets/gear/echoes/info_shadow_stepper.png",
+     "name": "Shadow Stepper",
+     "setName": "Wishes of Quiet Snowfall",
+     "subStats": {
+      "critDamage": 0.21,
+      "critRate": 0.099,
+      "energyPercent": 0.071
+     }
+    },
+    "5": {
+     "baseStats": {
+      "bonusATK": 0.18,
+      "flatHP": 2280
+     },
+     "cost": 1,
+     "icon": "assets/gear/echoes/iceglint_dancer.png",
+     "info": "",
+     "info_icon": "assets/gear/echoes/info_iceglint_dancer.png",
+     "name": "Iceglint Dancer",
+     "setName": "Wishes of Quiet Snowfall",
+     "subStats": {
+      "critDamage": 0.21,
+      "critRate": 0.069,
+      "energyPercent": 0.071
+     }
+    }
+   },
+   "setBonus": null,
+   "weapon": {
+    "icon": "assets/gear/weapons/freeze_frame.png",
+    "info": "Increases ATK by 12%/15%/18%/21%/24%. After the wielder inflicts Glacio Chafe on the target, their Glacio DMG Bonus is increased by 30%/37.5%/45%/52.5%/60% for 12s. The ATK of all Resonators in the team (including self) is increased by 24%/30%/36%/42%/48% ATK for 30s.",
+    "injectedModifiers": [
+     {
+      "modifiers": [
+       {
+        "characterStats": {
+         "bonusATK": 0.12
+        },
+        "condition": "[Function]",
+        "description": "Increases ATK by 12%.",
+        "displayName": "Freeze Frame: Passive ATK",
+        "durationStrategy": {
+         "type": "permanent"
+        },
+        "ownerCharacter": "Lucila",
+        "source": "Freeze Frame",
+        "stackingStrategy": {
+         "maxStacks": 1,
+         "resetTimerOnApplication": false,
+         "stacksRemovedEachTime": 0
+        },
+        "targetStrategy": "self",
+        "type": "buff"
+       }
+      ],
+      "targets": [
+       "character"
+      ]
+     },
+     {
+      "modifiers": [
+       {
+        "characterStats": {
+         "glacioBonusDMG": 0.3
+        },
+        "condition": "[Function]",
+        "description": "After inflicting Glacio Chafe, Glacio DMG Bonus +30% for 12s.",
+        "displayName": "Freeze Frame: Glacio DMG Bonus",
+        "durationStrategy": {
+         "timeDuration": 12,
+         "type": "limited"
+        },
+        "ownerCharacter": "Lucila",
+        "source": "Freeze Frame",
+        "stackingStrategy": {
+         "maxStacks": 1,
+         "resetTimerOnApplication": true,
+         "stacksRemovedEachTime": 1
+        },
+        "targetStrategy": "self",
+        "type": "buff"
+       },
+       {
+        "characterStats": {
+         "bonusATK": 0.24
+        },
+        "condition": "[Function]",
+        "description": "After inflicting Glacio Chafe, ATK of all Resonators in the team +24% for 30s.",
+        "displayName": "Freeze Frame: Team ATK",
+        "durationStrategy": {
+         "timeDuration": 30,
+         "type": "limited"
+        },
+        "ownerCharacter": "Lucila",
+        "source": "Freeze Frame",
+        "stackingStrategy": {
+         "maxStacks": 1,
+         "resetTimerOnApplication": true,
+         "stacksRemovedEachTime": 1
+        },
+        "targetStrategy": "all",
+        "type": "buff"
+       }
+      ],
+      "targets": [
+       {
+        "tag": "GLACIO_CHAFE_APPLIER"
+       }
+      ]
+     }
+    ],
+    "name": "Freeze Frame",
+    "rank": 1,
+    "stats": {
+     "baseATK": 587.5,
+     "critRate": 0.243
+    },
+    "weaponType": "Rectifier"
+   }
+  },
+  "hiddenEnergies": [],
+  "image": "/assets/characters/lucila.png",
+  "inherentStats": {
+   "bonusATK": 0.12,
+   "critRate": 0.08
+  },
+  "maxEnergies": {
+   "concerto": 100,
+   "energy": 125,
+   "film_roll": 10,
+   "traces": 150
+  },
+  "name": "Lucila",
+  "sequence": 0,
+  "sequence_nodes": [
+   "While casting Resonance Skill - Phantom Frame to deploy Focus Ring and landing the cursor within Perfect Focus for the first time, Perfect Focus immediately fills up Focus Ring. Releasing the Resonance Skill while the cursor is within Perfect Focus increases Lucila's Crit. Rate by 20% for 10s.\nLucila is immune to interruption while casting Resonance Skill - Phantom Frame and deploying Focus Ring.\nResonance Skill - Spotlight and Basic Attack - Tracing Forms Stage 3 are immune to interruption.",
+   "Outro Skill - Montage is enhanced:\n- When in Resonance Mode - Glacio Chafe, nearby targets takes 120% Amplified damage from Glacio Chafe for 30s.\n- When in Resonance Mode - Echo, grant 80% Echo Skill DMG Amplification to the incoming Resonator for 14s or until the Resonator is switched out.",
+   "The DMG Multiplier of Letting It Go is increased by 100%.",
+   "Oblivion pulls in nearby targets upon hit. While casting Oblivion, Lucila's ATK is increased by 10% for 6s, stacking up 3 times. All stacks are removed when the duration ends.\nWhile casting Basic Attack - Tracing Forms Stage 3, Lucila takes 30% less DMG.",
+   "The DMG Multiplier of Oblivion is increased by 50%.",
+   "When in Reminiscence, each time Lucila consumes Photo she gains 1 Remembrance, stacking up 3 times. Each stack of Remembrance increases Letting It Go's damage dealt to the target by 30%. Casting Letting It Go removes all stacks of Remembrance.\nDefeating a target with Letting It Go grants Lucila Longing: When not in combat, consume Longing, restoring 100% Resonance Energy and 150 Traces."
+  ],
+  "sequence_nodes_icons": [
+   "assets/characters/sequences/lucila_1.png",
+   "assets/characters/sequences/lucila_2.png",
+   "assets/characters/sequences/lucila_3.png",
+   "assets/characters/sequences/lucila_4.png",
+   "assets/characters/sequences/lucila_5.png",
+   "assets/characters/sequences/lucila_6.png"
+  ],
+  "stats": {
+   "baseATK": 375,
+   "baseDEF": 1197,
+   "baseHP": 12237
+  },
+  "teamActionTriggers": [
+   {
+    "condition": "[Function]",
+    "energyCost": [
+     {
+      "amount": 1,
+      "energyType": "film_roll"
+     }
+    ],
+    "propagateTags": [
+     "GLACIO_CHAFE_APPLIER"
+    ],
+    "requiredTags": [
+     "GLACIO_CHAFE_APPLIER"
+    ],
+    "sideEffect": {
+     "damageDealt": "[Function]",
+     "name": "Film Roll: Glacio Chafe",
+     "statusModifications": [
+      {
+       "applicationCount": 2,
+       "stackChange": 2,
+       "targetName": "Glacio Chafe",
+       "type": "negativeStatus"
+      }
+     ]
+    }
+   }
+  ],
+  "weaponType": "Rectifier"
+ },
+ "resolved": {
+  "actions": [
+   {
+    "castConditions": {
+     "blockedComboTags": [
+      "BA Block",
+      "BA1",
+      "BA2"
+     ],
+     "endState": "GROUND",
+     "preventsSwapOut": true,
+     "requiredForms": [
+      "Default Form"
+     ],
+     "startState": "GROUND"
+    },
+    "castTime": 0.3,
+    "category": "Basics",
+    "comboChainTags": [
+     "BA Block"
+    ],
+    "cooldown": 0,
+    "coordinatedAttacks": [],
+    "damageModifiers": [],
+    "displayName": "Snapshot: Stage 1",
+    "dmgTypes": [
+     "BASIC"
+    ],
+    "elements": [
+     "GLACIO"
+    ],
+    "energyCost": [],
+    "energyGenerated": [
+     {
+      "amount": 1.07,
+      "energyType": "energy",
+      "scalingStat": "energyPercent",
+      "share": 0.5
+     },
+     {
+      "amount": 1.71,
+      "energyType": "concerto",
+      "share": 0
+     }
+    ],
+    "groupName": "Basic Attack 1",
+    "hideWhenNotCastable": true,
+    "multiplier": 0.5929,
+    "name": "Basic Attack 1",
+    "offtune": 0.34,
+    "scaling": "ATK",
+    "sideEffects": [],
+    "statusModifications": [],
+    "tags": [
+     "BASIC_ATTACK"
+    ],
+    "variantName": "Default"
+   },
+   {
+    "castConditions": {
+     "blockedComboTags": [
+      "BA Block",
+      "BA1",
+      "BA2"
+     ],
+     "endState": "GROUND",
+     "preventsSwapOut": true,
+     "requiredForms": [
+      "Default Form"
+     ],
+     "startState": "GROUND"
+    },
+    "castTime": 0.6,
+    "category": "Basics",
+    "comboChainTags": [
+     "BA Block"
+    ],
+    "cooldown": 0,
+    "coordinatedAttacks": [],
+    "damageModifiers": [],
+    "displayName": "Snapshot: Stage 1-2",
+    "dmgTypes": [
+     "BASIC"
+    ],
+    "elements": [
+     "GLACIO"
+    ],
+    "energyCost": [],
+    "energyGenerated": [
+     {
+      "amount": 2.29,
+      "energyType": "energy",
+      "scalingStat": "energyPercent",
+      "share": 0.5
+     },
+     {
+      "amount": 3.65,
+      "energyType": "concerto",
+      "share": 0
+     }
+    ],
+    "groupName": "Basic Attack 1-2",
+    "hideWhenNotCastable": true,
+    "multiplier": 1.2652,
+    "name": "Basic Attack 1-2",
+    "offtune": 0.82,
+    "scaling": "ATK",
+    "sideEffects": [],
+    "statusModifications": [],
+    "tags": [
+     "BASIC_ATTACK"
+    ],
+    "variantName": "Default"
+   },
+   {
+    "castConditions": {
+     "blockedComboTags": [
+      "BA Block",
+      "BA1",
+      "BA2"
+     ],
+     "endState": "GROUND",
+     "preventsSwapOut": true,
+     "requiredForms": [
+      "Default Form"
+     ],
+     "startState": "GROUND"
+    },
+    "castTime": 0.9,
+    "category": "Basics",
+    "comboChainTags": [
+     "BA3"
+    ],
+    "cooldown": 0,
+    "coordinatedAttacks": [],
+    "damageModifiers": [],
+    "displayName": "Snapshot: Stage 1-3",
+    "dmgTypes": [
+     "BASIC"
+    ],
+    "elements": [
+     "GLACIO"
+    ],
+    "energyCost": [],
+    "energyGenerated": [
+     {
+      "amount": 6.52,
+      "energyType": "energy",
+      "scalingStat": "energyPercent",
+      "share": 0.5
+     },
+     {
+      "amount": 10.42,
+      "energyType": "concerto",
+      "share": 0
+     },
+     {
+      "amount": 50,
+      "energyType": "traces",
+      "share": 0
+     }
+    ],
+    "groupName": "Basic Attack 1-3",
+    "hideWhenNotCastable": true,
+    "multiplier": 3.6179,
+    "name": "Basic Attack 1-3",
+    "offtune": 2.17,
+    "scaling": "ATK",
+    "sideEffects": [],
+    "statusModifications": [],
+    "tags": [
+     "BASIC_ATTACK"
+    ],
+    "variantName": "Default"
+   },
+   {
+    "castConditions": {
+     "blockedComboTags": [
+      "BA Block",
+      "BA2",
+      "BA3"
+     ],
+     "endState": "GROUND",
+     "preventsSwapOut": true,
+     "requiredComboTags": [
+      "BA1"
+     ],
+     "requiredForms": [
+      "Default Form"
+     ],
+     "startState": "GROUND"
+    },
+    "castTime": 0.3,
+    "category": "Basics",
+    "comboChainTags": [
+     "BA Block"
+    ],
+    "cooldown": 0,
+    "coordinatedAttacks": [],
+    "damageModifiers": [],
+    "displayName": "Snapshot: Stage 2",
+    "dmgTypes": [
+     "BASIC"
+    ],
+    "elements": [
+     "GLACIO"
+    ],
+    "energyCost": [],
+    "energyGenerated": [
+     {
+      "amount": 1.22,
+      "energyType": "energy",
+      "scalingStat": "energyPercent",
+      "share": 0.5
+     },
+     {
+      "amount": 1.94,
+      "energyType": "concerto",
+      "share": 0
+     }
+    ],
+    "groupName": "Basic Attack 2",
+    "hideWhenNotCastable": true,
+    "multiplier": 0.6723,
+    "name": "Basic Attack 2",
+    "offtune": 0.48,
+    "scaling": "ATK",
+    "sideEffects": [],
+    "statusModifications": [],
+    "tags": [
+     "BASIC_ATTACK"
+    ],
+    "variantName": "Default"
+   },
+   {
+    "castConditions": {
+     "blockedComboTags": [
+      "BA Block",
+      "BA2",
+      "BA3"
+     ],
+     "endState": "GROUND",
+     "preventsSwapOut": true,
+     "requiredComboTags": [
+      "BA1"
+     ],
+     "requiredForms": [
+      "Default Form"
+     ],
+     "startState": "GROUND"
+    },
+    "castTime": 0.6,
+    "category": "Basics",
+    "comboChainTags": [
+     "BA3"
+    ],
+    "cooldown": 0,
+    "coordinatedAttacks": [],
+    "damageModifiers": [],
+    "displayName": "Snapshot: Stage 2-3",
+    "dmgTypes": [
+     "BASIC"
+    ],
+    "elements": [
+     "GLACIO"
+    ],
+    "energyCost": [],
+    "energyGenerated": [
+     {
+      "amount": 5.45,
+      "energyType": "energy",
+      "scalingStat": "energyPercent",
+      "share": 0.5
+     },
+     {
+      "amount": 8.71,
+      "energyType": "concerto",
+      "share": 0
+     },
+     {
+      "amount": 50,
+      "energyType": "traces",
+      "share": 0
+     }
+    ],
+    "groupName": "Basic Attack 2-3",
+    "hideWhenNotCastable": true,
+    "multiplier": 3.025,
+    "name": "Basic Attack 2-3",
+    "offtune": 1.83,
+    "scaling": "ATK",
+    "sideEffects": [],
+    "statusModifications": [],
+    "tags": [
+     "BASIC_ATTACK"
+    ],
+    "variantName": "Default"
+   },
+   {
+    "castConditions": {
+     "endState": "GROUND",
+     "preventsSwapOut": true,
+     "requiredComboTags": [
+      "BA2"
+     ],
+     "requiredForms": [
+      "Default Form"
+     ],
+     "startState": "GROUND"
+    },
+    "castTime": 0.3,
+    "category": "Basics",
+    "comboChainTags": [
+     "BA3"
+    ],
+    "cooldown": 0,
+    "coordinatedAttacks": [],
+    "damageModifiers": [],
+    "displayName": "Snapshot: Stage 3 (Commendable)",
+    "dmgTypes": [
+     "BASIC"
+    ],
+    "elements": [
+     "GLACIO"
+    ],
+    "energyCost": [],
+    "energyGenerated": [
+     {
+      "amount": 4.23,
+      "energyType": "energy",
+      "scalingStat": "energyPercent",
+      "share": 0.5
+     },
+     {
+      "amount": 6.77,
+      "energyType": "concerto",
+      "share": 0
+     },
+     {
+      "amount": 50,
+      "energyType": "traces",
+      "share": 0
+     }
+    ],
+    "groupName": "Basic Attack 3",
+    "hideWhenNotCastable": true,
+    "multiplier": 2.3527,
+    "name": "Basic Attack 3",
+    "offtune": 1.35,
+    "scaling": "ATK",
+    "sideEffects": [],
+    "statusModifications": [],
+    "tags": [
+     "BASIC_ATTACK"
+    ],
+    "variantName": "Default"
+   },
+   {
+    "castConditions": {
+     "endState": "GROUND",
+     "requiredForms": [
+      "Default Form"
+     ],
+     "startState": "GROUND"
+    },
+    "castTime": 0.3,
+    "category": "Skills",
+    "cooldown": 16,
+    "coordinatedAttacks": [],
+    "damageModifiers": [
+     {
+      "color": "#a3d4f7",
+      "condition": "[Function]",
+      "description": "Phantom Frame (Perfect Focus): Glacio RES reduced by 8% for 30s.",
+      "displayName": "Slow Motion: Glacio RES Down",
+      "durationStrategy": {
+       "timeDuration": 30,
+       "type": "limited"
+      },
+      "enemyStats": {
+       "glacioRES": -0.08
+      },
+      "ownerCharacter": "Lucila",
+      "showStats": true,
+      "source": "Lucila: Slow Motion",
+      "stackingStrategy": {
+       "maxStacks": 1,
+       "resetTimerOnApplication": true,
+       "stacksRemovedEachTime": 1
+      },
+      "targetStrategy": "all",
+      "type": "debuff"
+     },
+     {
+      "characterStats": {
+       "glacioBonusDMG": 0.3
+      },
+      "condition": "[Function]",
+      "description": "After inflicting Glacio Chafe, Glacio DMG Bonus +30% for 12s.",
+      "displayName": "Freeze Frame: Glacio DMG Bonus",
+      "durationStrategy": {
+       "timeDuration": 12,
+       "type": "limited"
+      },
+      "ownerCharacter": "Lucila",
+      "source": "Freeze Frame",
+      "stackingStrategy": {
+       "maxStacks": 1,
+       "resetTimerOnApplication": true,
+       "stacksRemovedEachTime": 1
+      },
+      "targetStrategy": "self",
+      "type": "buff"
+     },
+     {
+      "characterStats": {
+       "bonusATK": 0.24
+      },
+      "condition": "[Function]",
+      "description": "After inflicting Glacio Chafe, ATK of all Resonators in the team +24% for 30s.",
+      "displayName": "Freeze Frame: Team ATK",
+      "durationStrategy": {
+       "timeDuration": 30,
+       "type": "limited"
+      },
+      "ownerCharacter": "Lucila",
+      "source": "Freeze Frame",
+      "stackingStrategy": {
+       "maxStacks": 1,
+       "resetTimerOnApplication": true,
+       "stacksRemovedEachTime": 1
+      },
+      "targetStrategy": "all",
+      "type": "buff"
+     },
+     {
+      "characterStats": {
+       "glacioBonusDMG": 0.1
+      },
+      "color": "#6EC1F2",
+      "condition": "[Function]",
+      "description": "Inflicting Glacio Chafe on enemies increases Glacio DMG dealt by 10% for 15s.",
+      "displayName": "Wishes of Quiet Snowfall: Glacio Buff",
+      "durationStrategy": {
+       "timeDuration": 15,
+       "type": "limited"
+      },
+      "ownerCharacter": "Lucila",
+      "source": "Wishes of Quiet Snowfall: Glacio DMG Buff",
+      "stackingStrategy": {
+       "maxStacks": 1,
+       "resetTimerOnApplication": true,
+       "stacksRemovedEachTime": 1
+      },
+      "targetStrategy": "self",
+      "type": "buff"
+     },
+     {
+      "characterStats": {},
+      "color": "#6EC1F2",
+      "condition": "[Function]",
+      "displayName": "Wishes of Quiet Snowfall: Snowfall",
+      "durationStrategy": {
+       "timeDuration": 25,
+       "type": "limited"
+      },
+      "ownerCharacter": "Lucila",
+      "source": "Wishes of Quiet Snowfall: Snowfall",
+      "stackingStrategy": {
+       "maxStacks": 1,
+       "resetTimerOnApplication": false,
+       "stacksRemovedEachTime": 1
+      },
+      "targetStrategy": "self",
+      "trackerOnly": true,
+      "type": "buff"
+     }
+    ],
+    "displayName": "Phantom Frame — Spotlight",
+    "dmgTypes": [
+     "SKILL"
+    ],
+    "elements": [
+     "GLACIO"
+    ],
+    "energyCost": [],
+    "energyGenerated": [
+     {
+      "amount": 29.25,
+      "energyType": "energy",
+      "scalingStat": "energyPercent",
+      "share": 0.5
+     },
+     {
+      "amount": 29.95,
+      "energyType": "concerto",
+      "share": 0
+     },
+     {
+      "amount": 50,
+      "energyType": "traces",
+      "share": 0
+     }
+    ],
+    "groupName": "Resonance Skill",
+    "multiplier": 5.9137,
+    "name": "Resonance Skill",
+    "offtune": 1.34,
+    "scaling": "ATK",
+    "sideEffects": [],
+    "statusModifications": [
+     {
+      "stackChange": 1,
+      "targetName": "Glacio Chafe",
+      "type": "negativeStatus"
+     }
+    ],
+    "tags": [
+     "SKILL",
+     "GLACIO_CHAFE_APPLIER"
+    ],
+    "variantName": "Default"
+   },
+   {
+    "castConditions": {
+     "endState": "GROUND",
+     "requiredForms": [
+      "Default Form"
+     ],
+     "startState": "ANY"
+    },
+    "castTime": 0.3,
+    "category": "Skills",
+    "cooldown": 25,
+    "coordinatedAttacks": [],
+    "damageModifiers": [
+     {
+      "characterStats": {
+       "basicBonusDMG": 0.3
+      },
+      "color": "#c5e8ff",
+      "condition": "[Function]",
+      "description": "Casting Clear As Day increases Lucila's Basic Attack DMG Bonus by 30% for 10s.",
+      "displayName": "Clear As Day: Basic ATK Bonus",
+      "durationStrategy": {
+       "timeDuration": 10,
+       "type": "limited"
+      },
+      "ownerCharacter": "Lucila",
+      "showStats": true,
+      "source": "Lucila: Clear As Day",
+      "stackingStrategy": {
+       "maxStacks": 1,
+       "resetTimerOnApplication": true,
+       "stacksRemovedEachTime": 1
+      },
+      "targetStrategy": "self",
+      "type": "buff"
+     }
+    ],
+    "displayName": "Clear As Day",
+    "dmgTypes": [
+     "BASIC"
+    ],
+    "elements": [
+     "GLACIO"
+    ],
+    "energyCost": [
+     {
+      "amount": 125,
+      "energyType": "energy"
+     }
+    ],
+    "energyGenerated": [
+     {
+      "amount": 20,
+      "energyType": "concerto",
+      "share": 0
+     },
+     {
+      "amount": 4,
+      "energyType": "film_roll",
+      "share": 0
+     }
+    ],
+    "formChange": "Reminiscence",
+    "groupName": "Liberation",
+    "multiplier": 1.4274,
+    "name": "Liberation",
+    "offtune": 3.84,
+    "scaling": "ATK",
+    "sideEffects": [],
+    "statusModifications": [],
+    "tags": [
+     "LIBERATION"
+    ],
+    "variantName": "Default"
+   },
+   {
+    "castConditions": {
+     "blockedComboTags": [
+      "Tracing Block",
+      "Tracing1",
+      "Tracing2"
+     ],
+     "endState": "GROUND",
+     "preventsSwapOut": true,
+     "requiredForms": [
+      "Reminiscence"
+     ],
+     "startState": "GROUND"
+    },
+    "castTime": 0.3,
+    "category": "Basics",
+    "comboChainTags": [
+     "Tracing Block"
+    ],
+    "cooldown": 0,
+    "coordinatedAttacks": [],
+    "damageModifiers": [],
+    "displayName": "Tracing Forms: Stage 1",
+    "dmgTypes": [
+     "BASIC"
+    ],
+    "elements": [
+     "GLACIO"
+    ],
+    "energyCost": [],
+    "energyGenerated": [
+     {
+      "amount": 1.67,
+      "energyType": "energy",
+      "scalingStat": "energyPercent",
+      "share": 0.5
+     },
+     {
+      "amount": 2.54,
+      "energyType": "concerto",
+      "share": 0
+     }
+    ],
+    "groupName": "Tracing Forms 1",
+    "hideWhenNotCastable": true,
+    "multiplier": 0.7659,
+    "name": "Tracing Forms 1",
+    "offtune": 0.35,
+    "scaling": "ATK",
+    "sideEffects": [],
+    "statusModifications": [],
+    "tags": [
+     "BASIC_ATTACK"
+    ],
+    "variantName": "Default"
+   },
+   {
+    "castConditions": {
+     "blockedComboTags": [
+      "Tracing Block",
+      "Tracing1",
+      "Tracing2"
+     ],
+     "endState": "GROUND",
+     "preventsSwapOut": true,
+     "requiredForms": [
+      "Reminiscence"
+     ],
+     "startState": "GROUND"
+    },
+    "castTime": 0.6,
+    "category": "Basics",
+    "comboChainTags": [
+     "Tracing Block"
+    ],
+    "cooldown": 0,
+    "coordinatedAttacks": [],
+    "damageModifiers": [],
+    "displayName": "Tracing Forms: Stage 1-2",
+    "dmgTypes": [
+     "BASIC"
+    ],
+    "elements": [
+     "GLACIO"
+    ],
+    "energyCost": [],
+    "energyGenerated": [
+     {
+      "amount": 3.77,
+      "energyType": "energy",
+      "scalingStat": "energyPercent",
+      "share": 0.5
+     },
+     {
+      "amount": 7.48,
+      "energyType": "concerto",
+      "share": 0
+     }
+    ],
+    "groupName": "Tracing Forms 1-2",
+    "hideWhenNotCastable": true,
+    "multiplier": 2.2601,
+    "name": "Tracing Forms 1-2",
+    "offtune": 1.02,
+    "scaling": "ATK",
+    "sideEffects": [],
+    "statusModifications": [],
+    "tags": [
+     "BASIC_ATTACK"
+    ],
+    "variantName": "Default"
+   },
+   {
+    "castConditions": {
+     "blockedComboTags": [
+      "Tracing Block",
+      "Tracing1",
+      "Tracing2"
+     ],
+     "endState": "GROUND",
+     "preventsSwapOut": true,
+     "requiredForms": [
+      "Reminiscence"
+     ],
+     "startState": "GROUND"
+    },
+    "castTime": 0.9,
+    "category": "Basics",
+    "comboChainTags": [
+     "Tracing3"
+    ],
+    "cooldown": 0,
+    "coordinatedAttacks": [],
+    "damageModifiers": [
+     {
+      "characterStats": {
+       "glacioBonusDMG": 0.3
+      },
+      "condition": "[Function]",
+      "description": "After inflicting Glacio Chafe, Glacio DMG Bonus +30% for 12s.",
+      "displayName": "Freeze Frame: Glacio DMG Bonus",
+      "durationStrategy": {
+       "timeDuration": 12,
+       "type": "limited"
+      },
+      "ownerCharacter": "Lucila",
+      "source": "Freeze Frame",
+      "stackingStrategy": {
+       "maxStacks": 1,
+       "resetTimerOnApplication": true,
+       "stacksRemovedEachTime": 1
+      },
+      "targetStrategy": "self",
+      "type": "buff"
+     },
+     {
+      "characterStats": {
+       "bonusATK": 0.24
+      },
+      "condition": "[Function]",
+      "description": "After inflicting Glacio Chafe, ATK of all Resonators in the team +24% for 30s.",
+      "displayName": "Freeze Frame: Team ATK",
+      "durationStrategy": {
+       "timeDuration": 30,
+       "type": "limited"
+      },
+      "ownerCharacter": "Lucila",
+      "source": "Freeze Frame",
+      "stackingStrategy": {
+       "maxStacks": 1,
+       "resetTimerOnApplication": true,
+       "stacksRemovedEachTime": 1
+      },
+      "targetStrategy": "all",
+      "type": "buff"
+     },
+     {
+      "characterStats": {
+       "glacioBonusDMG": 0.1
+      },
+      "color": "#6EC1F2",
+      "condition": "[Function]",
+      "description": "Inflicting Glacio Chafe on enemies increases Glacio DMG dealt by 10% for 15s.",
+      "displayName": "Wishes of Quiet Snowfall: Glacio Buff",
+      "durationStrategy": {
+       "timeDuration": 15,
+       "type": "limited"
+      },
+      "ownerCharacter": "Lucila",
+      "source": "Wishes of Quiet Snowfall: Glacio DMG Buff",
+      "stackingStrategy": {
+       "maxStacks": 1,
+       "resetTimerOnApplication": true,
+       "stacksRemovedEachTime": 1
+      },
+      "targetStrategy": "self",
+      "type": "buff"
+     },
+     {
+      "characterStats": {},
+      "color": "#6EC1F2",
+      "condition": "[Function]",
+      "displayName": "Wishes of Quiet Snowfall: Snowfall",
+      "durationStrategy": {
+       "timeDuration": 25,
+       "type": "limited"
+      },
+      "ownerCharacter": "Lucila",
+      "source": "Wishes of Quiet Snowfall: Snowfall",
+      "stackingStrategy": {
+       "maxStacks": 1,
+       "resetTimerOnApplication": false,
+       "stacksRemovedEachTime": 1
+      },
+      "targetStrategy": "self",
+      "trackerOnly": true,
+      "type": "buff"
+     }
+    ],
+    "displayName": "Tracing Forms: Stage 1-3",
+    "dmgTypes": [
+     "BASIC"
+    ],
+    "elements": [
+     "GLACIO"
+    ],
+    "energyCost": [],
+    "energyGenerated": [
+     {
+      "amount": 9.13,
+      "energyType": "energy",
+      "scalingStat": "energyPercent",
+      "share": 0.5
+     },
+     {
+      "amount": 20.12,
+      "energyType": "concerto",
+      "share": 0
+     }
+    ],
+    "groupName": "Tracing Forms 1-3",
+    "hideWhenNotCastable": true,
+    "multiplier": 6.0897,
+    "name": "Tracing Forms 1-3",
+    "offtune": 2.7,
+    "resolveVariant": "[Function]",
+    "scaling": "ATK",
+    "sideEffects": [],
+    "statusModifications": [],
+    "tags": [
+     "BASIC_ATTACK",
+     "GLACIO_CHAFE_APPLIER"
+    ],
+    "variantName": "Default"
+   },
+   {
+    "castConditions": {
+     "blockedComboTags": [
+      "Tracing Block",
+      "Tracing2",
+      "Tracing3"
+     ],
+     "endState": "GROUND",
+     "preventsSwapOut": true,
+     "requiredComboTags": [
+      "Tracing1"
+     ],
+     "requiredForms": [
+      "Reminiscence"
+     ],
+     "startState": "GROUND"
+    },
+    "castTime": 0.3,
+    "category": "Basics",
+    "comboChainTags": [
+     "Tracing Block"
+    ],
+    "cooldown": 0,
+    "coordinatedAttacks": [],
+    "damageModifiers": [],
+    "displayName": "Tracing Forms: Stage 2",
+    "dmgTypes": [
+     "BASIC"
+    ],
+    "elements": [
+     "GLACIO"
+    ],
+    "energyCost": [],
+    "energyGenerated": [
+     {
+      "amount": 2.1,
+      "energyType": "energy",
+      "scalingStat": "energyPercent",
+      "share": 0.5
+     },
+     {
+      "amount": 4.94,
+      "energyType": "concerto",
+      "share": 0
+     }
+    ],
+    "groupName": "Tracing Forms 2",
+    "hideWhenNotCastable": true,
+    "multiplier": 1.4942,
+    "name": "Tracing Forms 2",
+    "offtune": 0.67,
+    "scaling": "ATK",
+    "sideEffects": [],
+    "statusModifications": [],
+    "tags": [
+     "BASIC_ATTACK"
+    ],
+    "variantName": "Default"
+   },
+   {
+    "castConditions": {
+     "blockedComboTags": [
+      "Tracing Block",
+      "Tracing2",
+      "Tracing3"
+     ],
+     "endState": "GROUND",
+     "preventsSwapOut": true,
+     "requiredComboTags": [
+      "Tracing1"
+     ],
+     "requiredForms": [
+      "Reminiscence"
+     ],
+     "startState": "GROUND"
+    },
+    "castTime": 0.6,
+    "category": "Basics",
+    "comboChainTags": [
+     "Tracing3"
+    ],
+    "cooldown": 0,
+    "coordinatedAttacks": [],
+    "damageModifiers": [
+     {
+      "characterStats": {
+       "glacioBonusDMG": 0.3
+      },
+      "condition": "[Function]",
+      "description": "After inflicting Glacio Chafe, Glacio DMG Bonus +30% for 12s.",
+      "displayName": "Freeze Frame: Glacio DMG Bonus",
+      "durationStrategy": {
+       "timeDuration": 12,
+       "type": "limited"
+      },
+      "ownerCharacter": "Lucila",
+      "source": "Freeze Frame",
+      "stackingStrategy": {
+       "maxStacks": 1,
+       "resetTimerOnApplication": true,
+       "stacksRemovedEachTime": 1
+      },
+      "targetStrategy": "self",
+      "type": "buff"
+     },
+     {
+      "characterStats": {
+       "bonusATK": 0.24
+      },
+      "condition": "[Function]",
+      "description": "After inflicting Glacio Chafe, ATK of all Resonators in the team +24% for 30s.",
+      "displayName": "Freeze Frame: Team ATK",
+      "durationStrategy": {
+       "timeDuration": 30,
+       "type": "limited"
+      },
+      "ownerCharacter": "Lucila",
+      "source": "Freeze Frame",
+      "stackingStrategy": {
+       "maxStacks": 1,
+       "resetTimerOnApplication": true,
+       "stacksRemovedEachTime": 1
+      },
+      "targetStrategy": "all",
+      "type": "buff"
+     },
+     {
+      "characterStats": {
+       "glacioBonusDMG": 0.1
+      },
+      "color": "#6EC1F2",
+      "condition": "[Function]",
+      "description": "Inflicting Glacio Chafe on enemies increases Glacio DMG dealt by 10% for 15s.",
+      "displayName": "Wishes of Quiet Snowfall: Glacio Buff",
+      "durationStrategy": {
+       "timeDuration": 15,
+       "type": "limited"
+      },
+      "ownerCharacter": "Lucila",
+      "source": "Wishes of Quiet Snowfall: Glacio DMG Buff",
+      "stackingStrategy": {
+       "maxStacks": 1,
+       "resetTimerOnApplication": true,
+       "stacksRemovedEachTime": 1
+      },
+      "targetStrategy": "self",
+      "type": "buff"
+     },
+     {
+      "characterStats": {},
+      "color": "#6EC1F2",
+      "condition": "[Function]",
+      "displayName": "Wishes of Quiet Snowfall: Snowfall",
+      "durationStrategy": {
+       "timeDuration": 25,
+       "type": "limited"
+      },
+      "ownerCharacter": "Lucila",
+      "source": "Wishes of Quiet Snowfall: Snowfall",
+      "stackingStrategy": {
+       "maxStacks": 1,
+       "resetTimerOnApplication": false,
+       "stacksRemovedEachTime": 1
+      },
+      "targetStrategy": "self",
+      "trackerOnly": true,
+      "type": "buff"
+     }
+    ],
+    "displayName": "Tracing Forms: Stage 2-3",
+    "dmgTypes": [
+     "BASIC"
+    ],
+    "elements": [
+     "GLACIO"
+    ],
+    "energyCost": [],
+    "energyGenerated": [
+     {
+      "amount": 7.46,
+      "energyType": "energy",
+      "scalingStat": "energyPercent",
+      "share": 0.5
+     },
+     {
+      "amount": 17.58,
+      "energyType": "concerto",
+      "share": 0
+     }
+    ],
+    "groupName": "Tracing Forms 2-3",
+    "hideWhenNotCastable": true,
+    "multiplier": 5.3238,
+    "name": "Tracing Forms 2-3",
+    "offtune": 2.35,
+    "resolveVariant": "[Function]",
+    "scaling": "ATK",
+    "sideEffects": [],
+    "statusModifications": [],
+    "tags": [
+     "BASIC_ATTACK",
+     "GLACIO_CHAFE_APPLIER"
+    ],
+    "variantName": "Default"
+   },
+   {
+    "castConditions": {
+     "endState": "GROUND",
+     "preventsSwapOut": true,
+     "requiredComboTags": [
+      "Tracing2"
+     ],
+     "requiredForms": [
+      "Reminiscence"
+     ],
+     "startState": "GROUND"
+    },
+    "castTime": 0.3,
+    "category": "Basics",
+    "comboChainTags": [
+     "Tracing3"
+    ],
+    "cooldown": 0,
+    "coordinatedAttacks": [],
+    "damageModifiers": [
+     {
+      "characterStats": {
+       "glacioBonusDMG": 0.3
+      },
+      "condition": "[Function]",
+      "description": "After inflicting Glacio Chafe, Glacio DMG Bonus +30% for 12s.",
+      "displayName": "Freeze Frame: Glacio DMG Bonus",
+      "durationStrategy": {
+       "timeDuration": 12,
+       "type": "limited"
+      },
+      "ownerCharacter": "Lucila",
+      "source": "Freeze Frame",
+      "stackingStrategy": {
+       "maxStacks": 1,
+       "resetTimerOnApplication": true,
+       "stacksRemovedEachTime": 1
+      },
+      "targetStrategy": "self",
+      "type": "buff"
+     },
+     {
+      "characterStats": {
+       "bonusATK": 0.24
+      },
+      "condition": "[Function]",
+      "description": "After inflicting Glacio Chafe, ATK of all Resonators in the team +24% for 30s.",
+      "displayName": "Freeze Frame: Team ATK",
+      "durationStrategy": {
+       "timeDuration": 30,
+       "type": "limited"
+      },
+      "ownerCharacter": "Lucila",
+      "source": "Freeze Frame",
+      "stackingStrategy": {
+       "maxStacks": 1,
+       "resetTimerOnApplication": true,
+       "stacksRemovedEachTime": 1
+      },
+      "targetStrategy": "all",
+      "type": "buff"
+     },
+     {
+      "characterStats": {
+       "glacioBonusDMG": 0.1
+      },
+      "color": "#6EC1F2",
+      "condition": "[Function]",
+      "description": "Inflicting Glacio Chafe on enemies increases Glacio DMG dealt by 10% for 15s.",
+      "displayName": "Wishes of Quiet Snowfall: Glacio Buff",
+      "durationStrategy": {
+       "timeDuration": 15,
+       "type": "limited"
+      },
+      "ownerCharacter": "Lucila",
+      "source": "Wishes of Quiet Snowfall: Glacio DMG Buff",
+      "stackingStrategy": {
+       "maxStacks": 1,
+       "resetTimerOnApplication": true,
+       "stacksRemovedEachTime": 1
+      },
+      "targetStrategy": "self",
+      "type": "buff"
+     },
+     {
+      "characterStats": {},
+      "color": "#6EC1F2",
+      "condition": "[Function]",
+      "displayName": "Wishes of Quiet Snowfall: Snowfall",
+      "durationStrategy": {
+       "timeDuration": 25,
+       "type": "limited"
+      },
+      "ownerCharacter": "Lucila",
+      "source": "Wishes of Quiet Snowfall: Snowfall",
+      "stackingStrategy": {
+       "maxStacks": 1,
+       "resetTimerOnApplication": false,
+       "stacksRemovedEachTime": 1
+      },
+      "targetStrategy": "self",
+      "trackerOnly": true,
+      "type": "buff"
+     }
+    ],
+    "displayName": "Tracing Forms: Stage 3",
+    "dmgTypes": [
+     "BASIC"
+    ],
+    "elements": [
+     "GLACIO"
+    ],
+    "energyCost": [],
+    "energyGenerated": [
+     {
+      "amount": 5.36,
+      "energyType": "energy",
+      "scalingStat": "energyPercent",
+      "share": 0.5
+     },
+     {
+      "amount": 12.64,
+      "energyType": "concerto",
+      "share": 0
+     }
+    ],
+    "groupName": "Tracing Forms 3",
+    "hideWhenNotCastable": true,
+    "multiplier": 3.8296,
+    "name": "Tracing Forms 3",
+    "offtune": 1.68,
+    "resolveVariant": "[Function]",
+    "scaling": "ATK",
+    "sideEffects": [],
+    "statusModifications": [],
+    "tags": [
+     "BASIC_ATTACK",
+     "GLACIO_CHAFE_APPLIER"
+    ],
+    "variantName": "Default"
+   },
+   {
+    "castConditions": {
+     "endState": "GROUND",
+     "preventsSwapOut": true,
+     "requiredComboTags": [
+      "Tracing3"
+     ],
+     "requiredForms": [
+      "Reminiscence"
+     ],
+     "startState": "GROUND"
+    },
+    "castTime": 0.3,
+    "category": "Skills",
+    "cooldown": 0,
+    "coordinatedAttacks": [],
+    "damageModifiers": [],
+    "displayName": "Letting It Go",
+    "dmgTypes": [
+     "BASIC"
+    ],
+    "elements": [
+     "GLACIO"
+    ],
+    "energyCost": [],
+    "energyGenerated": [
+     {
+      "amount": 3.36,
+      "energyType": "energy",
+      "scalingStat": "energyPercent",
+      "share": 0.5
+     },
+     {
+      "amount": 7.88,
+      "energyType": "concerto",
+      "share": 0
+     }
+    ],
+    "formChange": "Default Form",
+    "groupName": "Letting It Go",
+    "multiplier": 8.4807,
+    "name": "Letting It Go",
+    "offtune": 3.67,
+    "scaling": "ATK",
+    "sideEffects": [],
+    "statusModifications": [],
+    "tags": [
+     "BASIC_ATTACK"
+    ],
+    "variantName": "Default"
+   },
+   {
+    "castConditions": {
+     "endState": "GROUND",
+     "startState": "ANY"
+    },
+    "castTime": 0.3,
+    "category": "Other",
+    "cooldown": 0,
+    "damageModifiers": [
+     {
+      "characterStats": {
+       "glacioBonusDMG": 0.3
+      },
+      "condition": "[Function]",
+      "description": "After inflicting Glacio Chafe, Glacio DMG Bonus +30% for 12s.",
+      "displayName": "Freeze Frame: Glacio DMG Bonus",
+      "durationStrategy": {
+       "timeDuration": 12,
+       "type": "limited"
+      },
+      "ownerCharacter": "Lucila",
+      "source": "Freeze Frame",
+      "stackingStrategy": {
+       "maxStacks": 1,
+       "resetTimerOnApplication": true,
+       "stacksRemovedEachTime": 1
+      },
+      "targetStrategy": "self",
+      "type": "buff"
+     },
+     {
+      "characterStats": {
+       "bonusATK": 0.24
+      },
+      "condition": "[Function]",
+      "description": "After inflicting Glacio Chafe, ATK of all Resonators in the team +24% for 30s.",
+      "displayName": "Freeze Frame: Team ATK",
+      "durationStrategy": {
+       "timeDuration": 30,
+       "type": "limited"
+      },
+      "ownerCharacter": "Lucila",
+      "source": "Freeze Frame",
+      "stackingStrategy": {
+       "maxStacks": 1,
+       "resetTimerOnApplication": true,
+       "stacksRemovedEachTime": 1
+      },
+      "targetStrategy": "all",
+      "type": "buff"
+     },
+     {
+      "characterStats": {
+       "glacioBonusDMG": 0.1
+      },
+      "color": "#6EC1F2",
+      "condition": "[Function]",
+      "description": "Inflicting Glacio Chafe on enemies increases Glacio DMG dealt by 10% for 15s.",
+      "displayName": "Wishes of Quiet Snowfall: Glacio Buff",
+      "durationStrategy": {
+       "timeDuration": 15,
+       "type": "limited"
+      },
+      "ownerCharacter": "Lucila",
+      "source": "Wishes of Quiet Snowfall: Glacio DMG Buff",
+      "stackingStrategy": {
+       "maxStacks": 1,
+       "resetTimerOnApplication": true,
+       "stacksRemovedEachTime": 1
+      },
+      "targetStrategy": "self",
+      "type": "buff"
+     },
+     {
+      "characterStats": {},
+      "color": "#6EC1F2",
+      "condition": "[Function]",
+      "displayName": "Wishes of Quiet Snowfall: Snowfall",
+      "durationStrategy": {
+       "timeDuration": 25,
+       "type": "limited"
+      },
+      "ownerCharacter": "Lucila",
+      "source": "Wishes of Quiet Snowfall: Snowfall",
+      "stackingStrategy": {
+       "maxStacks": 1,
+       "resetTimerOnApplication": false,
+       "stacksRemovedEachTime": 1
+      },
+      "targetStrategy": "self",
+      "trackerOnly": true,
+      "type": "buff"
+     }
+    ],
+    "displayName": "Clip It",
+    "dmgTypes": [
+     "INTRO"
+    ],
+    "elements": [
+     "GLACIO"
+    ],
+    "energyCost": [],
+    "energyGenerated": [
+     {
+      "amount": 11.9,
+      "energyType": "energy",
+      "scalingStat": "energyPercent",
+      "share": 0.5
+     },
+     {
+      "amount": 14.49,
+      "energyType": "concerto",
+      "share": 0
+     },
+     {
+      "amount": 100,
+      "energyType": "traces",
+      "share": 0
+     }
+    ],
+    "multiplier": 1.0577,
+    "name": "Lucila Intro",
+    "offtune": 0.61,
+    "resolveVariant": "[Function]",
+    "scaling": "ATK",
+    "sideEffects": [],
+    "statusModifications": [
+     {
+      "stackChange": 1,
+      "targetName": "Glacio Chafe",
+      "type": "negativeStatus"
+     }
+    ],
+    "tags": [
+     "INTRO_ACTION",
+     "GLACIO_CHAFE_APPLIER"
+    ]
+   },
+   {
+    "castConditions": {
+     "endState": "PRESERVE",
+     "startState": "ANY"
+    },
+    "castTime": 0,
+    "category": "Other",
+    "cooldown": 0,
+    "damageModifiers": [
+     {
+      "characterStats": {
+       "glacioChafeBonusDMG": 0.6
+      },
+      "color": "#b8e0ff",
+      "condition": "[Function]",
+      "description": "Outro Skill - Montage: whole team gains +60% Glacio Chafe DMG Bonus for 30s.",
+      "displayName": "Montage",
+      "durationStrategy": {
+       "timeDuration": 30,
+       "type": "limited"
+      },
+      "ownerCharacter": "Lucila",
+      "showStats": true,
+      "source": "Lucila Outro Buff",
+      "stackingStrategy": {
+       "maxStacks": 1,
+       "resetTimerOnApplication": true,
+       "stacksRemovedEachTime": 1
+      },
+      "targetStrategy": "all",
+      "type": "buff"
+     },
+     {
+      "characterStats": {
+       "glacioBonusDMG": 0.12
+      },
+      "condition": "[Function]",
+      "description": "Outro Skill within 15s of Glommoth active: incoming Resonator gains 12% Glacio DMG Bonus for 15s.",
+      "displayName": "Glommoth: Glacio DMG Bonus",
+      "durationStrategy": {
+       "timeDuration": 15,
+       "type": "limited"
+      },
+      "ownerCharacter": "Lucila",
+      "source": "Glommoth",
+      "stackingStrategy": {
+       "maxStacks": 1,
+       "resetTimerOnApplication": true,
+       "stacksRemovedEachTime": 1
+      },
+      "targetStrategy": "nextSwap",
+      "type": "buff"
+     },
+     {
+      "activationCondition": "[Function]",
+      "characterStats": {
+       "glacioBonusDMG": 0.25
+      },
+      "color": "#6EC1F2",
+      "condition": "[Function]",
+      "displayName": "Wishes of Quiet Snowfall: Incoming Glacio Buff",
+      "durationStrategy": {
+       "timeDuration": 15,
+       "type": "limited"
+      },
+      "ownerCharacter": "Lucila",
+      "removesModifierSourceOnActivation": "Wishes of Quiet Snowfall: Snowfall",
+      "source": "Wishes of Quiet Snowfall: Incoming Glacio",
+      "stackingStrategy": {
+       "maxStacks": 1,
+       "resetTimerOnApplication": true,
+       "stacksRemovedEachTime": 1
+      },
+      "targetStrategy": "nextSwap",
+      "type": "buff"
+     },
+     {
+      "activationCondition": "[Function]",
+      "characterStats": {
+       "glacioBonusDMG": 0.25
+      },
+      "color": "#6EC1F2",
+      "condition": "[Function]",
+      "displayName": "Wishes of Quiet Snowfall: Incoming Glacio Buff",
+      "durationStrategy": {
+       "timeDuration": 15,
+       "type": "limited"
+      },
+      "ownerCharacter": "Lucila",
+      "removesModifierSourceOnActivation": "Wishes of Quiet Snowfall: Crit Rate",
+      "source": "Wishes of Quiet Snowfall: Incoming Glacio",
+      "stackingStrategy": {
+       "maxStacks": 1,
+       "resetTimerOnApplication": true,
+       "stacksRemovedEachTime": 1
+      },
+      "targetStrategy": "nextSwap",
+      "type": "buff"
+     }
+    ],
+    "displayName": "Montage",
+    "dmgTypes": [
+     "OUTRO"
+    ],
+    "elements": [
+     "GLACIO"
+    ],
+    "energyCost": [],
+    "energyGenerated": [],
+    "multiplier": 0,
+    "name": "Outro",
+    "offtune": 0,
+    "scaling": "ATK",
+    "sideEffects": [],
+    "statusModifications": [],
+    "tags": [
+     "OUTRO_ACTION"
+    ]
+   },
+   {
+    "castConditions": {
+     "endState": "PRESERVE",
+     "startState": "ANY"
+    },
+    "castTime": 0,
+    "category": "Testing",
+    "cooldown": 0,
+    "damageModifiers": [],
+    "displayName": "Energy Up",
+    "dmgTypes": [
+     ""
+    ],
+    "elements": [
+     ""
+    ],
+    "energyCost": [],
+    "energyGenerated": [
+     {
+      "amount": 1000,
+      "energyType": "energy",
+      "share": 0
+     }
+    ],
+    "multiplier": 0,
+    "name": "Energy Up",
+    "offtune": 0,
+    "scaling": "ATK",
+    "sideEffects": [],
+    "statusModifications": []
+   },
+   {
+    "castConditions": {
+     "endState": "PRESERVE",
+     "startState": "ANY"
+    },
+    "castTime": 0,
+    "category": "Testing",
+    "cooldown": 0,
+    "damageModifiers": [],
+    "displayName": "Concerto Up",
+    "dmgTypes": [
+     ""
+    ],
+    "elements": [
+     ""
+    ],
+    "energyCost": [],
+    "energyGenerated": [
+     {
+      "amount": 1000,
+      "energyType": "concerto",
+      "share": 0
+     }
+    ],
+    "multiplier": 0,
+    "name": "Concerto Up",
+    "offtune": 0,
+    "scaling": "ATK",
+    "sideEffects": [],
+    "statusModifications": []
+   },
+   {
+    "castConditions": {
+     "endState": "PRESERVE",
+     "startState": "ANY"
+    },
+    "castTime": 0,
+    "category": "Testing",
+    "cooldown": 0,
+    "coordinatedAttacks": [],
+    "damageModifiers": [
+     {
+      "characterStats": {
+       "bonusATK": 0.24,
+       "glacioBonusDMG": 0.25,
+       "glacioChafeBonusDMG": 0.6
+      },
+      "color": "#6EC1F2",
+      "condition": "[Function]",
+      "displayName": "Lucila Cheat Buff",
+      "durationStrategy": {
+       "timeDuration": 1000,
+       "type": "limited"
+      },
+      "enemyStats": {
+       "glacioRES": -0.08
+      },
+      "ownerCharacter": null,
+      "source": "Lucila Cheat Buff",
+      "stackingStrategy": {
+       "maxStacks": 1,
+       "resetTimerOnApplication": true,
+       "stacksRemovedEachTime": 1
+      },
+      "targetStrategy": "all",
+      "type": "buff"
+     }
+    ],
+    "displayName": "Cheat Buff",
+    "dmgTypes": [
+     "SKILL"
+    ],
+    "elements": [
+     "GLACIO"
+    ],
+    "energyCost": [],
+    "energyGenerated": [],
+    "multiplier": 0.0001,
+    "name": "Cheat Buff",
+    "offtune": 0,
+    "scaling": "ATK",
+    "sideEffects": [],
+    "statusModifications": [],
+    "tags": [
+     "SKILL"
+    ]
+   },
+   {
+    "castConditions": {
+     "endState": "PRESERVE",
+     "startState": "ANY"
+    },
+    "castTime": 7,
+    "category": "Testing",
+    "cooldown": 0,
+    "coordinatedAttacks": [],
+    "damageModifiers": [
+     {
+      "characterStats": {
+       "glacioBonusDMG": 0.3
+      },
+      "condition": "[Function]",
+      "description": "After inflicting Glacio Chafe, Glacio DMG Bonus +30% for 12s.",
+      "displayName": "Freeze Frame: Glacio DMG Bonus",
+      "durationStrategy": {
+       "timeDuration": 12,
+       "type": "limited"
+      },
+      "ownerCharacter": "Lucila",
+      "source": "Freeze Frame",
+      "stackingStrategy": {
+       "maxStacks": 1,
+       "resetTimerOnApplication": true,
+       "stacksRemovedEachTime": 1
+      },
+      "targetStrategy": "self",
+      "type": "buff"
+     },
+     {
+      "characterStats": {
+       "bonusATK": 0.24
+      },
+      "condition": "[Function]",
+      "description": "After inflicting Glacio Chafe, ATK of all Resonators in the team +24% for 30s.",
+      "displayName": "Freeze Frame: Team ATK",
+      "durationStrategy": {
+       "timeDuration": 30,
+       "type": "limited"
+      },
+      "ownerCharacter": "Lucila",
+      "source": "Freeze Frame",
+      "stackingStrategy": {
+       "maxStacks": 1,
+       "resetTimerOnApplication": true,
+       "stacksRemovedEachTime": 1
+      },
+      "targetStrategy": "all",
+      "type": "buff"
+     },
+     {
+      "characterStats": {
+       "glacioBonusDMG": 0.1
+      },
+      "color": "#6EC1F2",
+      "condition": "[Function]",
+      "description": "Inflicting Glacio Chafe on enemies increases Glacio DMG dealt by 10% for 15s.",
+      "displayName": "Wishes of Quiet Snowfall: Glacio Buff",
+      "durationStrategy": {
+       "timeDuration": 15,
+       "type": "limited"
+      },
+      "ownerCharacter": "Lucila",
+      "source": "Wishes of Quiet Snowfall: Glacio DMG Buff",
+      "stackingStrategy": {
+       "maxStacks": 1,
+       "resetTimerOnApplication": true,
+       "stacksRemovedEachTime": 1
+      },
+      "targetStrategy": "self",
+      "type": "buff"
+     },
+     {
+      "characterStats": {},
+      "color": "#6EC1F2",
+      "condition": "[Function]",
+      "displayName": "Wishes of Quiet Snowfall: Snowfall",
+      "durationStrategy": {
+       "timeDuration": 25,
+       "type": "limited"
+      },
+      "ownerCharacter": "Lucila",
+      "source": "Wishes of Quiet Snowfall: Snowfall",
+      "stackingStrategy": {
+       "maxStacks": 1,
+       "resetTimerOnApplication": false,
+       "stacksRemovedEachTime": 1
+      },
+      "targetStrategy": "self",
+      "trackerOnly": true,
+      "type": "buff"
+     }
+    ],
+    "displayName": "Glacio Chafe ×26",
+    "dmgTypes": [
+     "SKILL"
+    ],
+    "elements": [
+     "GLACIO"
+    ],
+    "energyCost": [],
+    "energyGenerated": [],
+    "multiplier": 0.001,
+    "name": "Glacio Chafe ×26",
+    "offtune": 0,
+    "scaling": "ATK",
+    "sideEffects": [],
+    "statusModifications": [
+     {
+      "applicationCount": 26,
+      "stackChange": 26,
+      "targetName": "Glacio Chafe",
+      "type": "negativeStatus"
+     }
+    ],
+    "tags": [
+     "SKILL",
+     "GLACIO_CHAFE_APPLIER"
+    ]
+   },
+   {
+    "castConditions": {
+     "endState": "PRESERVE",
+     "startState": "ANY"
+    },
+    "castTime": 1,
+    "category": "Echo Skill",
+    "cooldown": 20,
+    "damageModifiers": [],
+    "displayName": "Glommoth (Active)",
+    "dmgTypes": [
+     "ECHO"
+    ],
+    "elements": [
+     "GLACIO"
+    ],
+    "energyCost": [],
+    "energyGenerated": [
+     {
+      "amount": 1.9,
+      "energyType": "energy",
+      "scalingStat": "energyPercent",
+      "share": 0.5
+     }
+    ],
+    "multiplier": 2.736,
+    "name": "Echo Skill",
+    "offtune": 0,
+    "scaling": "ATK",
+    "sideEffects": [],
+    "statusModifications": []
+   }
+  ],
+  "damageModifiers": [],
+  "defaultForm": "Default Form",
+  "element": "GLACIO",
+  "energyDescriptions": {
+   "concerto": "Used to cast Outro Skill and trigger Intro Skills.",
+   "energy": "Used to cast Resonance Liberation - Clear As Day.",
+   "film_roll": "Gained when consuming Photos (2 per photo). When teammates inflict Glacio Chafe, consumes 1 Film Roll to inflict Glacio Chafe 2 times.",
+   "traces": "Forte resource. Every 50 Traces = 1 Photo (max 3). Consumed by Tracing Forms Stage 3 to fire Oblivion."
+  },
+  "flattenedPassiveModifiers": [
+   {
+    "characterStats": {
+     "bonusATK": 0.12
+    },
+    "condition": "[Function]",
+    "description": "Increases ATK by 12%.",
+    "displayName": "Freeze Frame: Passive ATK",
+    "durationStrategy": {
+     "type": "permanent"
+    },
+    "ownerCharacter": "Lucila",
+    "source": "Freeze Frame",
+    "stackingStrategy": {
+     "maxStacks": 1,
+     "resetTimerOnApplication": false,
+     "stacksRemovedEachTime": 0
+    },
+    "targetStrategy": "self",
+    "type": "buff"
+   }
+  ],
+  "forms": [
+   {
+    "displayName": "Default Form",
+    "introAction": {
+     "castConditions": {
+      "endState": "GROUND",
+      "startState": "ANY"
+     },
+     "castTime": 0.3,
+     "category": "Other",
+     "cooldown": 0,
+     "damageModifiers": [],
+     "displayName": "Clip It",
+     "dmgTypes": [
+      "INTRO"
+     ],
+     "elements": [
+      "GLACIO"
+     ],
+     "energyCost": [],
+     "energyGenerated": [
+      {
+       "amount": 11.9,
+       "energyType": "energy",
+       "scalingStat": "energyPercent",
+       "share": 0.5
+      },
+      {
+       "amount": 14.49,
+       "energyType": "concerto",
+       "share": 0
+      },
+      {
+       "amount": 100,
+       "energyType": "traces",
+       "share": 0
+      }
+     ],
+     "multiplier": 1.0577,
+     "name": "Lucila Intro",
+     "offtune": 0.61,
+     "resolveVariant": "[Function]",
+     "scaling": "ATK",
+     "sideEffects": [],
+     "statusModifications": [
+      {
+       "stackChange": 1,
+       "targetName": "Glacio Chafe",
+       "type": "negativeStatus"
+      }
+     ],
+     "tags": [
+      "INTRO_ACTION",
+      "GLACIO_CHAFE_APPLIER"
+     ]
+    },
+    "name": "Default Form",
+    "outroAction": {
+     "castConditions": {
+      "endState": "PRESERVE",
+      "startState": "ANY"
+     },
+     "castTime": 0,
+     "category": "Other",
+     "cooldown": 0,
+     "damageModifiers": [
+      {
+       "characterStats": {
+        "glacioChafeBonusDMG": 0.6
+       },
+       "color": "#b8e0ff",
+       "condition": "[Function]",
+       "description": "Outro Skill - Montage: whole team gains +60% Glacio Chafe DMG Bonus for 30s.",
+       "displayName": "Montage",
+       "durationStrategy": {
+        "timeDuration": 30,
+        "type": "limited"
+       },
+       "ownerCharacter": "Lucila",
+       "showStats": true,
+       "source": "Lucila Outro Buff",
+       "stackingStrategy": {
+        "maxStacks": 1,
+        "resetTimerOnApplication": true,
+        "stacksRemovedEachTime": 1
+       },
+       "targetStrategy": "all",
+       "type": "buff"
+      }
+     ],
+     "displayName": "Montage",
+     "dmgTypes": [
+      "OUTRO"
+     ],
+     "elements": [
+      "GLACIO"
+     ],
+     "energyCost": [],
+     "energyGenerated": [],
+     "multiplier": 0,
+     "name": "Outro",
+     "offtune": 0,
+     "scaling": "ATK",
+     "sideEffects": [],
+     "statusModifications": [],
+     "tags": [
+      "OUTRO_ACTION"
+     ]
+    }
+   },
+   {
+    "displayName": "Reminiscence",
+    "introAction": {
+     "castConditions": {
+      "endState": "GROUND",
+      "startState": "ANY"
+     },
+     "castTime": 0.3,
+     "category": "Other",
+     "cooldown": 0,
+     "damageModifiers": [],
+     "displayName": "Clip It",
+     "dmgTypes": [
+      "INTRO"
+     ],
+     "elements": [
+      "GLACIO"
+     ],
+     "energyCost": [],
+     "energyGenerated": [
+      {
+       "amount": 11.9,
+       "energyType": "energy",
+       "scalingStat": "energyPercent",
+       "share": 0.5
+      },
+      {
+       "amount": 14.49,
+       "energyType": "concerto",
+       "share": 0
+      },
+      {
+       "amount": 100,
+       "energyType": "traces",
+       "share": 0
+      }
+     ],
+     "multiplier": 1.0577,
+     "name": "Lucila Intro",
+     "offtune": 0.61,
+     "resolveVariant": "[Function]",
+     "scaling": "ATK",
+     "sideEffects": [],
+     "statusModifications": [
+      {
+       "stackChange": 1,
+       "targetName": "Glacio Chafe",
+       "type": "negativeStatus"
+      }
+     ],
+     "tags": [
+      "INTRO_ACTION",
+      "GLACIO_CHAFE_APPLIER"
+     ]
+    },
+    "name": "Reminiscence",
+    "resetFormOnSwapOut": false
+   }
+  ],
+  "gear": {
+   "echoSlots": {
+    "1": {
+     "baseStats": {
+      "flatATK": 100,
+      "glacioBonusDMG": 0.3
+     },
+     "cost": 3,
+     "echoSkill": {
+      "castConditions": {
+       "endState": "PRESERVE",
+       "startState": "ANY"
+      },
+      "castTime": 1,
+      "category": "Echo Skill",
+      "cooldown": 20,
+      "damageModifiers": [],
+      "displayName": "Glommoth (Active)",
+      "dmgTypes": [
+       "ECHO"
+      ],
+      "elements": [
+       "GLACIO"
+      ],
+      "energyCost": [],
+      "energyGenerated": [
+       {
+        "amount": 1.9,
+        "energyType": "energy",
+        "scalingStat": "energyPercent",
+        "share": 0.5
+       }
+      ],
+      "multiplier": 2.736,
+      "name": "Echo Skill",
+      "offtune": 0,
+      "scaling": "ATK",
+      "sideEffects": [],
+      "statusModifications": []
+     },
+     "icon": "assets/gear/echoes/glommoth.png",
+     "info": "Summon a Glommoth to stomp enemies, dealing 273.60% Glacio DMG. Casting Outro Skill within 15s after summoning Glommoth grants 12.00% Glacio DMG Bonus to the incoming Resonator for 15s. CD: 20s.",
+     "info_icon": "assets/gear/echoes/info_glommoth.png",
+     "injectedModifiers": [
+      {
+       "modifiers": [
+        {
+         "characterStats": {
+          "glacioBonusDMG": 0.12
+         },
+         "condition": "[Function]",
+         "description": "Outro Skill within 15s of Glommoth active: incoming Resonator gains 12% Glacio DMG Bonus for 15s.",
+         "displayName": "Glommoth: Glacio DMG Bonus",
+         "durationStrategy": {
+          "timeDuration": 15,
+          "type": "limited"
+         },
+         "ownerCharacter": null,
+         "source": "Glommoth",
+         "stackingStrategy": {
+          "maxStacks": 1,
+          "resetTimerOnApplication": true,
+          "stacksRemovedEachTime": 1
+         },
+         "targetStrategy": "nextSwap",
+         "type": "buff"
+        }
+       ],
+       "targets": [
+        {
+         "tag": "OUTRO_ACTION"
+        }
+       ]
+      }
+     ],
+     "name": "Glommoth",
+     "setName": "Wishes of Quiet Snowfall",
+     "subStats": {
+      "bonusATK": 0.079,
+      "critDamage": 0.138,
+      "critRate": 0.063,
+      "energyPercent": 0.071
+     }
+    },
+    "2": {
+     "baseStats": {
+      "critDamage": 0.33,
+      "flatATK": 150
+     },
+     "cost": 4,
+     "echoSkill": {
+      "castConditions": {
+       "endState": "PRESERVE",
+       "persistenceTime": 0.09,
+       "requiresSwapOut": true,
+       "startState": "ANY",
+       "swapOutState": "PRESERVE"
+      },
+      "castTime": 0.09,
+      "category": "Echo Skill",
+      "cooldown": 20,
+      "damageModifiers": [],
+      "displayName": "Aleph-1 (Active)",
+      "dmgTypes": [
+       "ECHO"
+      ],
+      "elements": [
+       "GLACIO"
+      ],
+      "energyCost": [],
+      "energyGenerated": [
+       {
+        "amount": 1.96,
+        "energyType": "energy",
+        "scalingStat": "energyPercent",
+        "share": 0.5
+       }
+      ],
+      "multiplier": 2.7356,
+      "name": "Echo Skill",
+      "offtune": 0,
+      "scaling": "ATK",
+      "sideEffects": [],
+      "statusModifications": []
+     },
+     "firstSlotStats": {
+      "glacioBonusDMG": 0.12,
+      "liberationBonusDMG": 0.12
+     },
+     "icon": "assets/gear/echoes/aleph-1.png",
+     "info": "The Resonator with this Echo equipped in the main slot gains 12.00% Glacio DMG Bonus and 12.00% Resonance Liberation DMG Bonus. Summon Aleph-1's Creation to deal 21.88% Glacio DMG 5 times and 164.16% Glacio DMG one time to enemies.",
+     "info_icon": "assets/gear/echoes/info_aleph-1.png",
+     "name": "Aleph-1",
+     "setName": "Wishes of Quiet Snowfall",
+     "subStats": {
+      "bonusATK": 0.101,
+      "critDamage": 0.21,
+      "critRate": 0.069,
+      "energyPercent": 0.071
+     }
+    },
+    "3": {
+     "baseStats": {
+      "flatATK": 100,
+      "glacioBonusDMG": 0.3
+     },
+     "cost": 3,
+     "icon": "assets/gear/echoes/windlash_coleoid.png",
+     "info": "",
+     "info_icon": "assets/gear/echoes/info_windlash_coleoid.png",
+     "name": "Windlash Coleoid",
+     "setName": "Wishes of Quiet Snowfall",
+     "subStats": {
+      "bonusATK": 0.079,
+      "critDamage": 0.15,
+      "critRate": 0.105
+     }
+    },
+    "4": {
+     "baseStats": {
+      "bonusATK": 0.18,
+      "flatHP": 2280
+     },
+     "cost": 1,
+     "icon": "assets/gear/echoes/shadow_stepper.png",
+     "info": "",
+     "info_icon": "assets/gear/echoes/info_shadow_stepper.png",
+     "name": "Shadow Stepper",
+     "setName": "Wishes of Quiet Snowfall",
+     "subStats": {
+      "critDamage": 0.21,
+      "critRate": 0.099,
+      "energyPercent": 0.071
+     }
+    },
+    "5": {
+     "baseStats": {
+      "bonusATK": 0.18,
+      "flatHP": 2280
+     },
+     "cost": 1,
+     "icon": "assets/gear/echoes/iceglint_dancer.png",
+     "info": "",
+     "info_icon": "assets/gear/echoes/info_iceglint_dancer.png",
+     "name": "Iceglint Dancer",
+     "setName": "Wishes of Quiet Snowfall",
+     "subStats": {
+      "critDamage": 0.21,
+      "critRate": 0.069,
+      "energyPercent": 0.071
+     }
+    }
+   },
+   "setBonus": null,
+   "weapon": {
+    "icon": "assets/gear/weapons/freeze_frame.png",
+    "info": "Increases ATK by 12%/15%/18%/21%/24%. After the wielder inflicts Glacio Chafe on the target, their Glacio DMG Bonus is increased by 30%/37.5%/45%/52.5%/60% for 12s. The ATK of all Resonators in the team (including self) is increased by 24%/30%/36%/42%/48% ATK for 30s.",
+    "injectedModifiers": [
+     {
+      "modifiers": [
+       {
+        "characterStats": {
+         "bonusATK": 0.12
+        },
+        "condition": "[Function]",
+        "description": "Increases ATK by 12%.",
+        "displayName": "Freeze Frame: Passive ATK",
+        "durationStrategy": {
+         "type": "permanent"
+        },
+        "ownerCharacter": "Lucila",
+        "source": "Freeze Frame",
+        "stackingStrategy": {
+         "maxStacks": 1,
+         "resetTimerOnApplication": false,
+         "stacksRemovedEachTime": 0
+        },
+        "targetStrategy": "self",
+        "type": "buff"
+       }
+      ],
+      "targets": [
+       "character"
+      ]
+     },
+     {
+      "modifiers": [
+       {
+        "characterStats": {
+         "glacioBonusDMG": 0.3
+        },
+        "condition": "[Function]",
+        "description": "After inflicting Glacio Chafe, Glacio DMG Bonus +30% for 12s.",
+        "displayName": "Freeze Frame: Glacio DMG Bonus",
+        "durationStrategy": {
+         "timeDuration": 12,
+         "type": "limited"
+        },
+        "ownerCharacter": "Lucila",
+        "source": "Freeze Frame",
+        "stackingStrategy": {
+         "maxStacks": 1,
+         "resetTimerOnApplication": true,
+         "stacksRemovedEachTime": 1
+        },
+        "targetStrategy": "self",
+        "type": "buff"
+       },
+       {
+        "characterStats": {
+         "bonusATK": 0.24
+        },
+        "condition": "[Function]",
+        "description": "After inflicting Glacio Chafe, ATK of all Resonators in the team +24% for 30s.",
+        "displayName": "Freeze Frame: Team ATK",
+        "durationStrategy": {
+         "timeDuration": 30,
+         "type": "limited"
+        },
+        "ownerCharacter": "Lucila",
+        "source": "Freeze Frame",
+        "stackingStrategy": {
+         "maxStacks": 1,
+         "resetTimerOnApplication": true,
+         "stacksRemovedEachTime": 1
+        },
+        "targetStrategy": "all",
+        "type": "buff"
+       }
+      ],
+      "targets": [
+       {
+        "tag": "GLACIO_CHAFE_APPLIER"
+       }
+      ]
+     }
+    ],
+    "name": "Freeze Frame",
+    "rank": 1,
+    "stats": {
+     "baseATK": 587.5,
+     "critRate": 0.243
+    },
+    "weaponType": "Rectifier"
+   }
+  },
+  "hiddenEnergies": [],
+  "image": "/assets/characters/lucila.png",
+  "inherentStats": {
+   "bonusATK": 0.12,
+   "critRate": 0.08
+  },
+  "maxEnergies": {
+   "concerto": 100,
+   "energy": 125,
+   "film_roll": 10,
+   "traces": 150
+  },
+  "name": "Lucila",
+  "sequence": 0,
+  "sequence_nodes": [
+   "While casting Resonance Skill - Phantom Frame to deploy Focus Ring and landing the cursor within Perfect Focus for the first time, Perfect Focus immediately fills up Focus Ring. Releasing the Resonance Skill while the cursor is within Perfect Focus increases Lucila's Crit. Rate by 20% for 10s.\nLucila is immune to interruption while casting Resonance Skill - Phantom Frame and deploying Focus Ring.\nResonance Skill - Spotlight and Basic Attack - Tracing Forms Stage 3 are immune to interruption.",
+   "Outro Skill - Montage is enhanced:\n- When in Resonance Mode - Glacio Chafe, nearby targets takes 120% Amplified damage from Glacio Chafe for 30s.\n- When in Resonance Mode - Echo, grant 80% Echo Skill DMG Amplification to the incoming Resonator for 14s or until the Resonator is switched out.",
+   "The DMG Multiplier of Letting It Go is increased by 100%.",
+   "Oblivion pulls in nearby targets upon hit. While casting Oblivion, Lucila's ATK is increased by 10% for 6s, stacking up 3 times. All stacks are removed when the duration ends.\nWhile casting Basic Attack - Tracing Forms Stage 3, Lucila takes 30% less DMG.",
+   "The DMG Multiplier of Oblivion is increased by 50%.",
+   "When in Reminiscence, each time Lucila consumes Photo she gains 1 Remembrance, stacking up 3 times. Each stack of Remembrance increases Letting It Go's damage dealt to the target by 30%. Casting Letting It Go removes all stacks of Remembrance.\nDefeating a target with Letting It Go grants Lucila Longing: When not in combat, consume Longing, restoring 100% Resonance Energy and 150 Traces."
+  ],
+  "sequence_nodes_icons": [
+   "assets/characters/sequences/lucila_1.png",
+   "assets/characters/sequences/lucila_2.png",
+   "assets/characters/sequences/lucila_3.png",
+   "assets/characters/sequences/lucila_4.png",
+   "assets/characters/sequences/lucila_5.png",
+   "assets/characters/sequences/lucila_6.png"
+  ],
+  "stats": {
+   "aeroAmplifyDMG": 0,
+   "aeroBonusDMG": 0,
+   "aeroErosionAmplifyDMG": 0,
+   "aeroErosionBonusDMG": 0,
+   "aeroErosionTotalMultiplierDMG": 1,
+   "aeroTotalMultiplierDMG": 1,
+   "amplifyATK": 0,
+   "amplifyDEF": 0,
+   "amplifyDMG": 0,
+   "amplifyHP": 0,
+   "baseATK": 962.5,
+   "baseDEF": 1197,
+   "baseHP": 12237,
+   "basicAmplifyDMG": 0,
+   "basicBonusDMG": 0,
+   "basicTotalMultiplierDMG": 1,
+   "bonusATK": 0.859,
+   "bonusDEF": 0,
+   "bonusDMG": 0,
+   "bonusHP": 0,
+   "coordinatedAmplifyDMG": 0,
+   "coordinatedBonusDMG": 0,
+   "coordinatedTotalMultiplierDMG": 1,
+   "critDamage": 2.748,
+   "critRate": 0.778,
+   "defIgnore": 0,
+   "echoAmplifyDMG": 0,
+   "echoBonusDMG": 0,
+   "echoTotalMultiplierDMG": 1,
+   "electroAmplifyDMG": 0,
+   "electroBonusDMG": 0,
+   "electroFlareAmplifyDMG": 0,
+   "electroFlareBonusDMG": 0,
+   "electroFlareTotalMultiplierDMG": 1,
+   "electroTotalMultiplierDMG": 1,
+   "elementalResPEN": 0,
+   "energyPercent": 1.284,
+   "flatATK": 350,
+   "flatDEF": 0,
+   "flatHP": 4560,
+   "fusionAmplifyDMG": 0,
+   "fusionBonusDMG": 0,
+   "fusionBurstAmplifyDMG": 0,
+   "fusionBurstBonusDMG": 0,
+   "fusionBurstTotalMultiplierDMG": 1,
+   "fusionTotalMultiplierDMG": 1,
+   "glacioAmplifyDMG": 0,
+   "glacioBonusDMG": 0.7,
+   "glacioChafeAmplifyDMG": 0,
+   "glacioChafeBonusDMG": 0,
+   "glacioChafeTotalMultiplierDMG": 1,
+   "glacioTotalMultiplierDMG": 1,
+   "havocAmplifyDMG": 0,
+   "havocBaneAmplifyDMG": 0,
+   "havocBaneBonusDMG": 0,
+   "havocBaneTotalMultiplierDMG": 1,
+   "havocBonusDMG": 0,
+   "havocTotalMultiplierDMG": 1,
+   "healingBonus": 0,
+   "heavyAmplifyDMG": 0,
+   "heavyBonusDMG": 0,
+   "heavyTotalMultiplierDMG": 1,
+   "introAmplifyDMG": 0,
+   "introBonusDMG": 0,
+   "introTotalMultiplierDMG": 1,
+   "level": 90,
+   "liberationAmplifyDMG": 0,
+   "liberationBonusDMG": 0,
+   "liberationTotalMultiplierDMG": 1,
+   "offtuneBuildupRate": 1,
+   "outroAmplifyDMG": 0,
+   "outroBonusDMG": 0,
+   "outroTotalMultiplierDMG": 1,
+   "resistancePEN": 0,
+   "skillAmplifyDMG": 0,
+   "skillBonusDMG": 0,
+   "skillTotalMultiplierDMG": 1,
+   "spectroAmplifyDMG": 0,
+   "spectroBonusDMG": 0,
+   "spectroFrazzleAmplifyDMG": 0,
+   "spectroFrazzleBonusDMG": 0,
+   "spectroFrazzleTotalMultiplierDMG": 1,
+   "spectroTotalMultiplierDMG": 1,
+   "totalMultiplierATK": 1,
+   "totalMultiplierDEF": 1,
+   "totalMultiplierDMG": 1,
+   "totalMultiplierHP": 1,
+   "tuneBreakBoost": 0
+  },
+  "teamActionTriggers": [
+   {
+    "condition": "[Function]",
+    "energyCost": [
+     {
+      "amount": 1,
+      "energyType": "film_roll"
+     }
+    ],
+    "propagateTags": [
+     "GLACIO_CHAFE_APPLIER"
+    ],
+    "requiredTags": [
+     "GLACIO_CHAFE_APPLIER"
+    ],
+    "sideEffect": {
+     "damageDealt": "[Function]",
+     "name": "Film Roll: Glacio Chafe",
+     "statusModifications": [
+      {
+       "applicationCount": 2,
+       "stackChange": 2,
+       "targetName": "Glacio Chafe",
+       "type": "negativeStatus"
+      }
+     ]
+    }
+   }
+  ],
+  "weaponType": "Rectifier"
+ }
+}

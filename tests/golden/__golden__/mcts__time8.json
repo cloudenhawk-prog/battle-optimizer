@@ -1,0 +1,2072 @@
+{
+ "rollouts": [
+  {
+   "choices": [
+    {
+     "actionName": "Basic Attack 1 (swap cancel)",
+     "character": "Hiyuki"
+    },
+    {
+     "actionName": "Echo Skill",
+     "character": "Mornye"
+    },
+    {
+     "actionName": "Basic Attack 1-2",
+     "character": "Lucila"
+    },
+    {
+     "actionName": "Resonance Skill",
+     "character": "Lucila"
+    },
+    {
+     "actionName": "Basic Attack 1-3 (swap cancel)",
+     "character": "Mornye"
+    },
+    {
+     "actionName": "Echo Skill",
+     "character": "Hiyuki"
+    },
+    {
+     "actionName": "Echo Skill",
+     "character": "Lucila"
+    },
+    {
+     "actionName": "Basic Attack 1 (swap cancel)",
+     "character": "Hiyuki"
+    },
+    {
+     "actionName": "Wait Until Next Swap Is Available",
+     "character": "Mornye"
+    },
+    {
+     "actionName": "Basic Attack 2",
+     "character": "Hiyuki"
+    },
+    {
+     "actionName": "Wait Until Next Swap Is Available",
+     "character": "Hiyuki"
+    },
+    {
+     "actionName": "Basic Attack 1-3",
+     "character": "Lucila"
+    },
+    {
+     "actionName": "Basic Attack 1-3",
+     "character": "Lucila"
+    },
+    {
+     "actionName": "Basic Attack 1-2",
+     "character": "Lucila"
+    },
+    {
+     "actionName": "Basic Attack 1-3",
+     "character": "Hiyuki"
+    }
+   ],
+   "damage": 221805.782116,
+   "score": 20758.9306966,
+   "time": 9.43666666667
+  },
+  {
+   "choices": [
+    {
+     "actionName": "Resonance Skill",
+     "character": "Hiyuki"
+    },
+    {
+     "actionName": "Echo Skill",
+     "character": "Hiyuki"
+    },
+    {
+     "actionName": "Basic Attack 1-3",
+     "character": "Lucila"
+    },
+    {
+     "actionName": "Basic Attack 1-3",
+     "character": "Lucila"
+    },
+    {
+     "actionName": "Basic Attack 1",
+     "character": "Lucila"
+    },
+    {
+     "actionName": "Resonance Skill",
+     "character": "Lucila"
+    },
+    {
+     "actionName": "Echo Skill",
+     "character": "Mornye"
+    },
+    {
+     "actionName": "Basic Attack 1-3",
+     "character": "Hiyuki"
+    },
+    {
+     "actionName": "Basic Attack 1 (swap cancel)",
+     "character": "Hiyuki"
+    },
+    {
+     "actionName": "Basic Attack 1-3 (into heavy)",
+     "character": "Mornye"
+    },
+    {
+     "actionName": "Heavy Attack",
+     "character": "Mornye"
+    }
+   ],
+   "damage": 211438.693555,
+   "score": 24275.3953565,
+   "time": 8.71
+  },
+  {
+   "choices": [
+    {
+     "actionName": "Basic Attack 1-3 (swap cancel)",
+     "character": "Hiyuki"
+    },
+    {
+     "actionName": "Echo Skill",
+     "character": "Mornye"
+    },
+    {
+     "actionName": "Basic Attack 1",
+     "character": "Lucila"
+    },
+    {
+     "actionName": "Resonance Skill",
+     "character": "Lucila"
+    },
+    {
+     "actionName": "Basic Attack 1-3",
+     "character": "Lucila"
+    },
+    {
+     "actionName": "Echo Skill",
+     "character": "Lucila"
+    },
+    {
+     "actionName": "Basic Attack 1 (swap cancel)",
+     "character": "Mornye"
+    },
+    {
+     "actionName": "Enhanced Heavy Attack",
+     "character": "Hiyuki"
+    },
+    {
+     "actionName": "Basic Attack 1-2",
+     "character": "Hiyuki"
+    },
+    {
+     "actionName": "Liberation",
+     "character": "Hiyuki"
+    },
+    {
+     "actionName": "Basic Attack 2-3 (swap cancel)",
+     "character": "Mornye"
+    }
+   ],
+   "damage": 631880.143882,
+   "score": 77949.3651281,
+   "time": 8.02333333333
+  },
+  {
+   "choices": [
+    {
+     "actionName": "Basic Attack 1",
+     "character": "Lucila"
+    },
+    {
+     "actionName": "Resonance Skill",
+     "character": "Lucila"
+    },
+    {
+     "actionName": "Echo Skill",
+     "character": "Mornye"
+    },
+    {
+     "actionName": "Resonance Skill",
+     "character": "Hiyuki"
+    },
+    {
+     "actionName": "Wait Until Next Cooldown",
+     "character": "Hiyuki"
+    }
+   ],
+   "damage": 98076.4127998,
+   "score": 4061.70718952,
+   "time": 22.2233333333
+  },
+  {
+   "choices": [
+    {
+     "actionName": "Echo Skill",
+     "character": "Lucila"
+    },
+    {
+     "actionName": "Resonance Skill",
+     "character": "Lucila"
+    },
+    {
+     "actionName": "Basic Attack 1-3",
+     "character": "Hiyuki"
+    },
+    {
+     "actionName": "Basic Attack 1 (swap cancel)",
+     "character": "Hiyuki"
+    },
+    {
+     "actionName": "Echo Skill",
+     "character": "Mornye"
+    },
+    {
+     "actionName": "Resonance Skill (swap cancel)",
+     "character": "Hiyuki"
+    },
+    {
+     "actionName": "Basic Attack 1 (swap cancel)",
+     "character": "Mornye"
+    },
+    {
+     "actionName": "Echo Skill",
+     "character": "Hiyuki"
+    },
+    {
+     "actionName": "Basic Attack 1-2",
+     "character": "Lucila"
+    },
+    {
+     "actionName": "Basic Attack 1",
+     "character": "Hiyuki"
+    },
+    {
+     "actionName": "Wait Until Next Swap Is Available",
+     "character": "Hiyuki"
+    },
+    {
+     "actionName": "Basic Attack 2 (swap cancel)",
+     "character": "Mornye"
+    },
+    {
+     "actionName": "Wait Until Next Cooldown",
+     "character": "Hiyuki"
+    }
+   ],
+   "damage": 237495.234186,
+   "score": 9865.12120098,
+   "time": 23.1566666667
+  },
+  {
+   "choices": [
+    {
+     "actionName": "Basic Attack 1-2",
+     "character": "Hiyuki"
+    },
+    {
+     "actionName": "Echo Skill",
+     "character": "Hiyuki"
+    },
+    {
+     "actionName": "Resonance Skill",
+     "character": "Lucila"
+    },
+    {
+     "actionName": "Basic Attack 1 (swap cancel)",
+     "character": "Hiyuki"
+    },
+    {
+     "actionName": "Echo Skill",
+     "character": "Lucila"
+    },
+    {
+     "actionName": "Resonance Skill",
+     "character": "Hiyuki"
+    },
+    {
+     "actionName": "Basic Attack 1-3 (swap cancel)",
+     "character": "Hiyuki"
+    },
+    {
+     "actionName": "Basic Attack 1 (swap cancel)",
+     "character": "Mornye"
+    },
+    {
+     "actionName": "Basic Attack 1",
+     "character": "Lucila"
+    },
+    {
+     "actionName": "Basic Attack 1-3 (swap cancel)",
+     "character": "Hiyuki"
+    },
+    {
+     "actionName": "Echo Skill",
+     "character": "Mornye"
+    },
+    {
+     "actionName": "Basic Attack 1-2 (swap cancel)",
+     "character": "Hiyuki"
+    }
+   ],
+   "damage": 279397.344057,
+   "score": 34408.5399085,
+   "time": 8.12
+  },
+  {
+   "choices": [
+    {
+     "actionName": "Basic Attack 1-3 (swap cancel)",
+     "character": "Mornye"
+    },
+    {
+     "actionName": "Echo Skill",
+     "character": "Hiyuki"
+    },
+    {
+     "actionName": "Heavy Attack",
+     "character": "Mornye"
+    },
+    {
+     "actionName": "Echo Skill",
+     "character": "Mornye"
+    },
+    {
+     "actionName": "Echo Skill",
+     "character": "Lucila"
+    },
+    {
+     "actionName": "Wait Until Next Cooldown",
+     "character": "Mornye"
+    }
+   ],
+   "damage": 36928.8696658,
+   "score": 1454.43317159,
+   "time": 22.67
+  },
+  {
+   "choices": [
+    {
+     "actionName": "Echo Skill",
+     "character": "Hiyuki"
+    },
+    {
+     "actionName": "Basic Attack 1",
+     "character": "Lucila"
+    },
+    {
+     "actionName": "Resonance Skill",
+     "character": "Lucila"
+    },
+    {
+     "actionName": "Resonance Skill (swap cancel)",
+     "character": "Hiyuki"
+    },
+    {
+     "actionName": "Echo Skill",
+     "character": "Lucila"
+    },
+    {
+     "actionName": "Echo Skill",
+     "character": "Mornye"
+    },
+    {
+     "actionName": "Basic Attack 1-3",
+     "character": "Hiyuki"
+    },
+    {
+     "actionName": "Basic Attack 1",
+     "character": "Hiyuki"
+    },
+    {
+     "actionName": "Enhanced Heavy Attack",
+     "character": "Hiyuki"
+    },
+    {
+     "actionName": "Liberation",
+     "character": "Hiyuki"
+    },
+    {
+     "actionName": "Foreclaimed: Resonance Skill 1 (swap cancel)",
+     "character": "Hiyuki"
+    },
+    {
+     "actionName": "Basic Attack 1-2 (swap cancel)",
+     "character": "Mornye"
+    },
+    {
+     "actionName": "Foreclaimed: Heavy Attack BA2-3 combo (swap cancel)",
+     "character": "Hiyuki"
+    },
+    {
+     "actionName": "Basic Attack 3 (swap cancel)",
+     "character": "Mornye"
+    }
+   ],
+   "damage": 936209.066764,
+   "score": 116299.262952,
+   "time": 8.05
+  },
+  {
+   "choices": [
+    {
+     "actionName": "Basic Attack 1-3",
+     "character": "Lucila"
+    },
+    {
+     "actionName": "Basic Attack 1-3",
+     "character": "Lucila"
+    },
+    {
+     "actionName": "Basic Attack 1",
+     "character": "Lucila"
+    },
+    {
+     "actionName": "Resonance Skill",
+     "character": "Lucila"
+    },
+    {
+     "actionName": "Enhanced Heavy Attack",
+     "character": "Hiyuki"
+    },
+    {
+     "actionName": "Echo Skill",
+     "character": "Hiyuki"
+    },
+    {
+     "actionName": "Basic Attack 1 (swap cancel)",
+     "character": "Mornye"
+    },
+    {
+     "actionName": "Liberation",
+     "character": "Hiyuki"
+    },
+    {
+     "actionName": "Wait Until Next Cooldown",
+     "character": "Hiyuki"
+    }
+   ],
+   "damage": 593271.058342,
+   "score": 23204.8691389,
+   "time": 24.1733333333
+  },
+  {
+   "choices": [
+    {
+     "actionName": "Echo Skill",
+     "character": "Mornye"
+    },
+    {
+     "actionName": "Resonance Skill",
+     "character": "Hiyuki"
+    },
+    {
+     "actionName": "Basic Attack 1",
+     "character": "Hiyuki"
+    },
+    {
+     "actionName": "Enhanced Heavy Attack",
+     "character": "Hiyuki"
+    },
+    {
+     "actionName": "Basic Attack 1",
+     "character": "Hiyuki"
+    },
+    {
+     "actionName": "Liberation",
+     "character": "Hiyuki"
+    },
+    {
+     "actionName": "Foreclaimed: Resonance Skill 1 (swap cancel)",
+     "character": "Hiyuki"
+    },
+    {
+     "actionName": "Basic Attack 1-3",
+     "character": "Lucila"
+    },
+    {
+     "actionName": "Basic Attack 1-3",
+     "character": "Lucila"
+    },
+    {
+     "actionName": "Resonance Skill",
+     "character": "Lucila"
+    },
+    {
+     "actionName": "Foreclaimed: Resonance Skill 1",
+     "character": "Hiyuki"
+    },
+    {
+     "actionName": "Foreclaimed: Mid-air Attack 1-2 (swap cancel)",
+     "character": "Hiyuki"
+    }
+   ],
+   "damage": 794669.204641,
+   "score": 93724.4419092,
+   "time": 8.13333333333
+  },
+  {
+   "choices": [
+    {
+     "actionName": "Basic Attack 1-2",
+     "character": "Lucila"
+    },
+    {
+     "actionName": "Resonance Skill",
+     "character": "Lucila"
+    },
+    {
+     "actionName": "Resonance Skill",
+     "character": "Hiyuki"
+    },
+    {
+     "actionName": "Basic Attack 1",
+     "character": "Hiyuki"
+    },
+    {
+     "actionName": "Echo Skill",
+     "character": "Hiyuki"
+    },
+    {
+     "actionName": "Basic Attack 1-3 (swap cancel)",
+     "character": "Mornye"
+    },
+    {
+     "actionName": "Basic Attack 1-3 (swap cancel)",
+     "character": "Hiyuki"
+    },
+    {
+     "actionName": "Echo Skill",
+     "character": "Mornye"
+    },
+    {
+     "actionName": "Basic Attack 1-2",
+     "character": "Lucila"
+    },
+    {
+     "actionName": "Echo Skill",
+     "character": "Lucila"
+    },
+    {
+     "actionName": "Basic Attack 1-3 (into heavy)",
+     "character": "Mornye"
+    }
+   ],
+   "damage": 211852.671282,
+   "score": 22902.99149,
+   "time": 9.25
+  },
+  {
+   "choices": [
+    {
+     "actionName": "Basic Attack 1-2 (swap cancel)",
+     "character": "Hiyuki"
+    },
+    {
+     "actionName": "Basic Attack 1-2 (swap cancel)",
+     "character": "Mornye"
+    },
+    {
+     "actionName": "Enhanced Heavy Attack",
+     "character": "Hiyuki"
+    },
+    {
+     "actionName": "Liberation",
+     "character": "Hiyuki"
+    },
+    {
+     "actionName": "Foreclaimed: Basic Attack 1-4 (swap cancel)",
+     "character": "Hiyuki"
+    },
+    {
+     "actionName": "Basic Attack 3 (into heavy)",
+     "character": "Mornye"
+    },
+    {
+     "actionName": "Heavy Attack",
+     "character": "Mornye"
+    },
+    {
+     "actionName": "Echo Skill",
+     "character": "Mornye"
+    },
+    {
+     "actionName": "Echo Skill",
+     "character": "Hiyuki"
+    },
+    {
+     "actionName": "Basic Attack 1-3",
+     "character": "Lucila"
+    },
+    {
+     "actionName": "Echo Skill",
+     "character": "Lucila"
+    }
+   ],
+   "damage": 715676.263189,
+   "score": 80503.5166691,
+   "time": 8.89
+  },
+  {
+   "choices": [
+    {
+     "actionName": "Basic Attack 1-3 (into heavy)",
+     "character": "Mornye"
+    },
+    {
+     "actionName": "Heavy Attack",
+     "character": "Mornye"
+    },
+    {
+     "actionName": "Echo Skill",
+     "character": "Mornye"
+    },
+    {
+     "actionName": "Echo Skill",
+     "character": "Lucila"
+    },
+    {
+     "actionName": "Echo Skill",
+     "character": "Hiyuki"
+    },
+    {
+     "actionName": "Wait Until Next Cooldown",
+     "character": "Mornye"
+    }
+   ],
+   "damage": 39182.8696658,
+   "score": 1526.91807542,
+   "time": 23.07
+  },
+  {
+   "choices": [
+    {
+     "actionName": "Basic Attack 1-2 (swap cancel)",
+     "character": "Mornye"
+    },
+    {
+     "actionName": "Basic Attack 1 (swap cancel)",
+     "character": "Hiyuki"
+    },
+    {
+     "actionName": "Resonance Skill",
+     "character": "Lucila"
+    },
+    {
+     "actionName": "Basic Attack 3 (into heavy)",
+     "character": "Mornye"
+    },
+    {
+     "actionName": "Heavy Attack",
+     "character": "Mornye"
+    },
+    {
+     "actionName": "Echo Skill",
+     "character": "Mornye"
+    },
+    {
+     "actionName": "Echo Skill",
+     "character": "Lucila"
+    },
+    {
+     "actionName": "Basic Attack 2-3 (swap cancel)",
+     "character": "Hiyuki"
+    },
+    {
+     "actionName": "Basic Attack 1-2",
+     "character": "Lucila"
+    },
+    {
+     "actionName": "Basic Attack 1-3 (swap cancel)",
+     "character": "Mornye"
+    },
+    {
+     "actionName": "Basic Attack 1 (swap cancel)",
+     "character": "Hiyuki"
+    },
+    {
+     "actionName": "Heavy Attack",
+     "character": "Mornye"
+    },
+    {
+     "actionName": "Mode: Basic Attack 1-3",
+     "character": "Mornye"
+    }
+   ],
+   "damage": 166722.330665,
+   "score": 17882.2664282,
+   "time": 9.32333333333
+  },
+  {
+   "choices": [
+    {
+     "actionName": "Basic Attack 1 (swap cancel)",
+     "character": "Mornye"
+    },
+    {
+     "actionName": "Enhanced Heavy Attack",
+     "character": "Hiyuki"
+    },
+    {
+     "actionName": "Echo Skill",
+     "character": "Hiyuki"
+    },
+    {
+     "actionName": "Heavy Attack (Swap In)",
+     "character": "Mornye"
+    },
+    {
+     "actionName": "Echo Skill",
+     "character": "Mornye"
+    },
+    {
+     "actionName": "Wait Until Next Cooldown",
+     "character": "Hiyuki"
+    }
+   ],
+   "damage": 193912.756441,
+   "score": 8246.88313257,
+   "time": 21.8633333333
+  },
+  {
+   "choices": [
+    {
+     "actionName": "Resonance Skill",
+     "character": "Lucila"
+    },
+    {
+     "actionName": "Basic Attack 1-3 (swap cancel)",
+     "character": "Hiyuki"
+    },
+    {
+     "actionName": "Echo Skill",
+     "character": "Mornye"
+    },
+    {
+     "actionName": "Basic Attack 1-3 (swap cancel)",
+     "character": "Hiyuki"
+    },
+    {
+     "actionName": "Wait Until Next Cooldown",
+     "character": "Mornye"
+    }
+   ],
+   "damage": 187665.055572,
+   "score": 7950.64481717,
+   "time": 21.74
+  },
+  {
+   "choices": [
+    {
+     "actionName": "Resonance Skill (swap cancel)",
+     "character": "Hiyuki"
+    },
+    {
+     "actionName": "Echo Skill",
+     "character": "Mornye"
+    },
+    {
+     "actionName": "Wait Until Next Cooldown",
+     "character": "Hiyuki"
+    }
+   ],
+   "damage": 32048.0469614,
+   "score": 1234.44168734,
+   "time": 20.15
+  },
+  {
+   "choices": [
+    {
+     "actionName": "Basic Attack 1-3",
+     "character": "Hiyuki"
+    },
+    {
+     "actionName": "Echo Skill",
+     "character": "Hiyuki"
+    },
+    {
+     "actionName": "Resonance Skill",
+     "character": "Lucila"
+    },
+    {
+     "actionName": "Basic Attack 1-3",
+     "character": "Lucila"
+    },
+    {
+     "actionName": "Basic Attack 1-2",
+     "character": "Lucila"
+    },
+    {
+     "actionName": "Echo Skill",
+     "character": "Lucila"
+    },
+    {
+     "actionName": "Basic Attack 1-3",
+     "character": "Hiyuki"
+    },
+    {
+     "actionName": "Resonance Skill (swap cancel)",
+     "character": "Hiyuki"
+    },
+    {
+     "actionName": "Basic Attack 1 (swap cancel)",
+     "character": "Mornye"
+    },
+    {
+     "actionName": "Basic Attack 1-2",
+     "character": "Hiyuki"
+    },
+    {
+     "actionName": "Enhanced Heavy Attack",
+     "character": "Hiyuki"
+    }
+   ],
+   "damage": 487839.866113,
+   "score": 51221.9047565,
+   "time": 8.94666666667
+  },
+  {
+   "choices": [
+    {
+     "actionName": "Basic Attack 1",
+     "character": "Hiyuki"
+    },
+    {
+     "actionName": "Echo Skill",
+     "character": "Hiyuki"
+    },
+    {
+     "actionName": "Echo Skill",
+     "character": "Lucila"
+    },
+    {
+     "actionName": "Echo Skill",
+     "character": "Mornye"
+    },
+    {
+     "actionName": "Basic Attack 1-2",
+     "character": "Hiyuki"
+    },
+    {
+     "actionName": "Resonance Skill (swap cancel)",
+     "character": "Hiyuki"
+    },
+    {
+     "actionName": "Basic Attack 1-3",
+     "character": "Lucila"
+    },
+    {
+     "actionName": "Resonance Skill",
+     "character": "Lucila"
+    },
+    {
+     "actionName": "Enhanced Heavy Attack",
+     "character": "Hiyuki"
+    },
+    {
+     "actionName": "Liberation",
+     "character": "Hiyuki"
+    },
+    {
+     "actionName": "Basic Attack 1-3 (swap cancel)",
+     "character": "Mornye"
+    },
+    {
+     "actionName": "Foreclaimed: Basic Attack 1-2",
+     "character": "Hiyuki"
+    }
+   ],
+   "damage": 729716.023711,
+   "score": 81663.2683563,
+   "time": 8.21333333333
+  },
+  {
+   "choices": [
+    {
+     "actionName": "Echo Skill",
+     "character": "Hiyuki"
+    },
+    {
+     "actionName": "Heavy Attack (Swap In)",
+     "character": "Mornye"
+    },
+    {
+     "actionName": "Echo Skill",
+     "character": "Mornye"
+    },
+    {
+     "actionName": "Echo Skill",
+     "character": "Lucila"
+    },
+    {
+     "actionName": "Wait Until Next Cooldown",
+     "character": "Mornye"
+    }
+   ],
+   "damage": 41588.2242571,
+   "score": 1438.97601476,
+   "time": 21.68
+  },
+  {
+   "choices": [
+    {
+     "actionName": "Echo Skill",
+     "character": "Mornye"
+    },
+    {
+     "actionName": "Resonance Skill (swap cancel)",
+     "character": "Hiyuki"
+    },
+    {
+     "actionName": "Resonance Skill",
+     "character": "Lucila"
+    },
+    {
+     "actionName": "Basic Attack 1-3 (into heavy)",
+     "character": "Mornye"
+    },
+    {
+     "actionName": "Heavy Attack",
+     "character": "Mornye"
+    },
+    {
+     "actionName": "Wait Until Next Cooldown",
+     "character": "Mornye"
+    }
+   ],
+   "damage": 105427.710021,
+   "score": 4510.18779368,
+   "time": 20.09
+  },
+  {
+   "choices": [
+    {
+     "actionName": "Basic Attack 1",
+     "character": "Hiyuki"
+    },
+    {
+     "actionName": "Resonance Skill",
+     "character": "Hiyuki"
+    },
+    {
+     "actionName": "Basic Attack 1-3 (swap cancel)",
+     "character": "Hiyuki"
+    },
+    {
+     "actionName": "Basic Attack 1-3",
+     "character": "Lucila"
+    },
+    {
+     "actionName": "Basic Attack 1",
+     "character": "Lucila"
+    },
+    {
+     "actionName": "Echo Skill",
+     "character": "Lucila"
+    },
+    {
+     "actionName": "Basic Attack 1-3",
+     "character": "Hiyuki"
+    },
+    {
+     "actionName": "Enhanced Heavy Attack",
+     "character": "Hiyuki"
+    }
+   ],
+   "damage": 325804.537736,
+   "score": 34280.1588671,
+   "time": 8.75
+  },
+  {
+   "choices": [
+    {
+     "actionName": "Basic Attack 1-2 (swap cancel)",
+     "character": "Hiyuki"
+    },
+    {
+     "actionName": "Echo Skill",
+     "character": "Lucila"
+    },
+    {
+     "actionName": "Heavy Attack",
+     "character": "Mornye"
+    },
+    {
+     "actionName": "Echo Skill",
+     "character": "Mornye"
+    },
+    {
+     "actionName": "Echo Skill",
+     "character": "Hiyuki"
+    },
+    {
+     "actionName": "Basic Attack 1-3",
+     "character": "Lucila"
+    },
+    {
+     "actionName": "Basic Attack 1",
+     "character": "Lucila"
+    },
+    {
+     "actionName": "Resonance Skill",
+     "character": "Lucila"
+    },
+    {
+     "actionName": "Basic Attack 1-2",
+     "character": "Lucila"
+    },
+    {
+     "actionName": "Basic Attack 1-3 (into heavy)",
+     "character": "Mornye"
+    },
+    {
+     "actionName": "Heavy Attack",
+     "character": "Mornye"
+    }
+   ],
+   "damage": 143240.917334,
+   "score": 17368.2183102,
+   "time": 8.07666666667
+  },
+  {
+   "choices": [
+    {
+     "actionName": "Basic Attack 1-3 (swap cancel)",
+     "character": "Hiyuki"
+    },
+    {
+     "actionName": "Basic Attack 1 (swap cancel)",
+     "character": "Mornye"
+    },
+    {
+     "actionName": "Echo Skill",
+     "character": "Hiyuki"
+    },
+    {
+     "actionName": "Wait Until Next Swap Is Available",
+     "character": "Mornye"
+    },
+    {
+     "actionName": "Resonance Skill",
+     "character": "Lucila"
+    },
+    {
+     "actionName": "Echo Skill",
+     "character": "Mornye"
+    },
+    {
+     "actionName": "Basic Attack 1-3 (swap cancel)",
+     "character": "Hiyuki"
+    },
+    {
+     "actionName": "Basic Attack 1 (swap cancel)",
+     "character": "Mornye"
+    },
+    {
+     "actionName": "Resonance Skill",
+     "character": "Hiyuki"
+    },
+    {
+     "actionName": "Basic Attack 1-3 (swap cancel)",
+     "character": "Hiyuki"
+    },
+    {
+     "actionName": "Wait Until Next Cooldown",
+     "character": "Mornye"
+    }
+   ],
+   "damage": 319007.319351,
+   "score": 13260.741366,
+   "time": 22.74
+  },
+  {
+   "choices": [
+    {
+     "actionName": "Echo Skill",
+     "character": "Hiyuki"
+    },
+    {
+     "actionName": "Basic Attack 1",
+     "character": "Lucila"
+    },
+    {
+     "actionName": "Resonance Skill",
+     "character": "Lucila"
+    },
+    {
+     "actionName": "Basic Attack 1-3 (swap cancel)",
+     "character": "Hiyuki"
+    },
+    {
+     "actionName": "Basic Attack 1 (swap cancel)",
+     "character": "Mornye"
+    },
+    {
+     "actionName": "Basic Attack 1 (swap cancel)",
+     "character": "Hiyuki"
+    },
+    {
+     "actionName": "Basic Attack 1-2",
+     "character": "Lucila"
+    },
+    {
+     "actionName": "Echo Skill",
+     "character": "Lucila"
+    },
+    {
+     "actionName": "Basic Attack 2-3 (swap cancel)",
+     "character": "Mornye"
+    },
+    {
+     "actionName": "Wait Until Next Cooldown",
+     "character": "Hiyuki"
+    }
+   ],
+   "damage": 182843.772799,
+   "score": 8371.73872573,
+   "time": 20.09
+  },
+  {
+   "choices": [
+    {
+     "actionName": "Basic Attack 1",
+     "character": "Hiyuki"
+    },
+    {
+     "actionName": "Echo Skill",
+     "character": "Hiyuki"
+    },
+    {
+     "actionName": "Echo Skill",
+     "character": "Mornye"
+    },
+    {
+     "actionName": "Resonance Skill (swap cancel)",
+     "character": "Hiyuki"
+    },
+    {
+     "actionName": "Heavy Attack (Swap In)",
+     "character": "Mornye"
+    },
+    {
+     "actionName": "Wait Until Next Cooldown",
+     "character": "Mornye"
+    }
+   ],
+   "damage": 55618.2242571,
+   "score": 2185.23111612,
+   "time": 20.6966666667
+  },
+  {
+   "choices": [
+    {
+     "actionName": "Basic Attack 1-3",
+     "character": "Hiyuki"
+    },
+    {
+     "actionName": "Basic Attack 1-2 (swap cancel)",
+     "character": "Hiyuki"
+    },
+    {
+     "actionName": "Resonance Skill",
+     "character": "Lucila"
+    },
+    {
+     "actionName": "Echo Skill",
+     "character": "Hiyuki"
+    },
+    {
+     "actionName": "Basic Attack 1-2",
+     "character": "Lucila"
+    },
+    {
+     "actionName": "Liberation",
+     "character": "Lucila"
+    },
+    {
+     "actionName": "Resonance Skill",
+     "character": "Hiyuki"
+    },
+    {
+     "actionName": "Basic Attack 1-2 (swap cancel)",
+     "character": "Hiyuki"
+    },
+    {
+     "actionName": "Echo Skill",
+     "character": "Lucila"
+    },
+    {
+     "actionName": "Echo Skill",
+     "character": "Mornye"
+    },
+    {
+     "actionName": "Enhanced Heavy Attack",
+     "character": "Hiyuki"
+    }
+   ],
+   "damage": 494782.260887,
+   "score": 49315.5976712,
+   "time": 8.39666666667
+  },
+  {
+   "choices": [
+    {
+     "actionName": "Basic Attack 1-3",
+     "character": "Hiyuki"
+    },
+    {
+     "actionName": "Basic Attack 1-3 (swap cancel)",
+     "character": "Hiyuki"
+    },
+    {
+     "actionName": "Echo Skill",
+     "character": "Lucila"
+    },
+    {
+     "actionName": "Basic Attack 1-3 (swap cancel)",
+     "character": "Mornye"
+    },
+    {
+     "actionName": "Basic Attack 1-3 (swap cancel)",
+     "character": "Hiyuki"
+    },
+    {
+     "actionName": "Basic Attack 1-3",
+     "character": "Lucila"
+    },
+    {
+     "actionName": "Resonance Skill",
+     "character": "Lucila"
+    },
+    {
+     "actionName": "Echo Skill",
+     "character": "Mornye"
+    },
+    {
+     "actionName": "Resonance Skill",
+     "character": "Hiyuki"
+    }
+   ],
+   "damage": 283246.210511,
+   "score": 30358.6506442,
+   "time": 9.33
+  },
+  {
+   "choices": [
+    {
+     "actionName": "Echo Skill",
+     "character": "Mornye"
+    },
+    {
+     "actionName": "Echo Skill",
+     "character": "Lucila"
+    },
+    {
+     "actionName": "Basic Attack 1-3 (swap cancel)",
+     "character": "Mornye"
+    },
+    {
+     "actionName": "Resonance Skill",
+     "character": "Hiyuki"
+    },
+    {
+     "actionName": "Echo Skill",
+     "character": "Hiyuki"
+    },
+    {
+     "actionName": "Heavy Attack",
+     "character": "Mornye"
+    },
+    {
+     "actionName": "Wait Until Next Cooldown",
+     "character": "Mornye"
+    }
+   ],
+   "damage": 68729.4015527,
+   "score": 2879.17771581,
+   "time": 20.09
+  },
+  {
+   "choices": [
+    {
+     "actionName": "Basic Attack 1-2 (swap cancel)",
+     "character": "Hiyuki"
+    },
+    {
+     "actionName": "Basic Attack 1-2",
+     "character": "Lucila"
+    },
+    {
+     "actionName": "Resonance Skill",
+     "character": "Lucila"
+    },
+    {
+     "actionName": "Echo Skill",
+     "character": "Hiyuki"
+    },
+    {
+     "actionName": "Heavy Attack (Swap In)",
+     "character": "Mornye"
+    },
+    {
+     "actionName": "Echo Skill",
+     "character": "Mornye"
+    },
+    {
+     "actionName": "Echo Skill",
+     "character": "Lucila"
+    },
+    {
+     "actionName": "Wait Until Next Cooldown",
+     "character": "Mornye"
+    }
+   ],
+   "damage": 131763.100023,
+   "score": 4879.99739497,
+   "time": 23.2466666667
+  },
+  {
+   "choices": [
+    {
+     "actionName": "Basic Attack 1-3 (swap cancel)",
+     "character": "Hiyuki"
+    },
+    {
+     "actionName": "Echo Skill",
+     "character": "Mornye"
+    },
+    {
+     "actionName": "Basic Attack 1-2 (swap cancel)",
+     "character": "Hiyuki"
+    },
+    {
+     "actionName": "Basic Attack 1-3",
+     "character": "Lucila"
+    },
+    {
+     "actionName": "Echo Skill",
+     "character": "Lucila"
+    },
+    {
+     "actionName": "Basic Attack 1-3 (swap cancel)",
+     "character": "Mornye"
+    },
+    {
+     "actionName": "Echo Skill",
+     "character": "Hiyuki"
+    },
+    {
+     "actionName": "Resonance Skill",
+     "character": "Lucila"
+    },
+    {
+     "actionName": "Heavy Attack",
+     "character": "Mornye"
+    },
+    {
+     "actionName": "Wait Until Next Cooldown",
+     "character": "Mornye"
+    }
+   ],
+   "damage": 194210.249773,
+   "score": 8374.75317043,
+   "time": 21.44
+  },
+  {
+   "choices": [
+    {
+     "actionName": "Basic Attack 1-3",
+     "character": "Hiyuki"
+    },
+    {
+     "actionName": "Basic Attack 1-2",
+     "character": "Hiyuki"
+    },
+    {
+     "actionName": "Resonance Skill",
+     "character": "Hiyuki"
+    },
+    {
+     "actionName": "Basic Attack 1",
+     "character": "Hiyuki"
+    },
+    {
+     "actionName": "Echo Skill",
+     "character": "Hiyuki"
+    },
+    {
+     "actionName": "Resonance Skill",
+     "character": "Lucila"
+    },
+    {
+     "actionName": "Basic Attack 1-3",
+     "character": "Hiyuki"
+    },
+    {
+     "actionName": "Basic Attack 1-3 (swap cancel)",
+     "character": "Hiyuki"
+    },
+    {
+     "actionName": "Echo Skill",
+     "character": "Mornye"
+    }
+   ],
+   "damage": 331495.568696,
+   "score": 41367.9994213,
+   "time": 8.01333333333
+  },
+  {
+   "choices": [
+    {
+     "actionName": "Basic Attack 1-3",
+     "character": "Hiyuki"
+    },
+    {
+     "actionName": "Resonance Skill",
+     "character": "Hiyuki"
+    },
+    {
+     "actionName": "Basic Attack 1-3",
+     "character": "Hiyuki"
+    },
+    {
+     "actionName": "Basic Attack 1 (swap cancel)",
+     "character": "Hiyuki"
+    },
+    {
+     "actionName": "Echo Skill",
+     "character": "Mornye"
+    },
+    {
+     "actionName": "Echo Skill",
+     "character": "Lucila"
+    },
+    {
+     "actionName": "Enhanced Heavy Attack",
+     "character": "Hiyuki"
+    },
+    {
+     "actionName": "Liberation",
+     "character": "Hiyuki"
+    },
+    {
+     "actionName": "Foreclaimed: Basic Attack 1 (swap cancel)",
+     "character": "Hiyuki"
+    },
+    {
+     "actionName": "Heavy Attack",
+     "character": "Mornye"
+    }
+   ],
+   "damage": 633067.282233,
+   "score": 60238.9723248,
+   "time": 10.4
+  },
+  {
+   "choices": [
+    {
+     "actionName": "Basic Attack 1-3",
+     "character": "Hiyuki"
+    },
+    {
+     "actionName": "Basic Attack 1 (swap cancel)",
+     "character": "Hiyuki"
+    },
+    {
+     "actionName": "Basic Attack 1-3",
+     "character": "Lucila"
+    },
+    {
+     "actionName": "Resonance Skill",
+     "character": "Lucila"
+    },
+    {
+     "actionName": "Echo Skill",
+     "character": "Mornye"
+    },
+    {
+     "actionName": "Basic Attack 2-3",
+     "character": "Hiyuki"
+    },
+    {
+     "actionName": "Basic Attack 1 (swap cancel)",
+     "character": "Hiyuki"
+    },
+    {
+     "actionName": "Heavy Attack (Swap In)",
+     "character": "Mornye"
+    },
+    {
+     "actionName": "Mode: Basic Attack 1-3",
+     "character": "Mornye"
+    },
+    {
+     "actionName": "Mode: Resonance Skill",
+     "character": "Mornye"
+    }
+   ],
+   "damage": 201134.730782,
+   "score": 24393.0019352,
+   "time": 8.06666666667
+  },
+  {
+   "choices": [
+    {
+     "actionName": "Basic Attack 1-3",
+     "character": "Hiyuki"
+    },
+    {
+     "actionName": "Enhanced Heavy Attack",
+     "character": "Hiyuki"
+    },
+    {
+     "actionName": "Basic Attack 1 (swap cancel)",
+     "character": "Hiyuki"
+    },
+    {
+     "actionName": "Basic Attack 1-3",
+     "character": "Lucila"
+    },
+    {
+     "actionName": "Resonance Skill",
+     "character": "Lucila"
+    },
+    {
+     "actionName": "Basic Attack 2-3 (swap cancel)",
+     "character": "Hiyuki"
+    },
+    {
+     "actionName": "Basic Attack 1",
+     "character": "Lucila"
+    },
+    {
+     "actionName": "Liberation",
+     "character": "Lucila"
+    },
+    {
+     "actionName": "Basic Attack 1-2 (swap cancel)",
+     "character": "Mornye"
+    }
+   ],
+   "damage": 359087.447162,
+   "score": 44313.5475725,
+   "time": 8.10333333333
+  },
+  {
+   "choices": [
+    {
+     "actionName": "Basic Attack 1-3",
+     "character": "Hiyuki"
+    },
+    {
+     "actionName": "Basic Attack 1",
+     "character": "Hiyuki"
+    },
+    {
+     "actionName": "Liberation",
+     "character": "Hiyuki"
+    },
+    {
+     "actionName": "Foreclaimed: Basic Attack 1-2 (swap cancel)",
+     "character": "Hiyuki"
+    },
+    {
+     "actionName": "Basic Attack 1-3",
+     "character": "Lucila"
+    },
+    {
+     "actionName": "Resonance Skill",
+     "character": "Lucila"
+    },
+    {
+     "actionName": "Foreclaimed: Basic Attack 1-4",
+     "character": "Hiyuki"
+    }
+   ],
+   "damage": 870692.411122,
+   "score": 94365.1949447,
+   "time": 8.22666666667
+  },
+  {
+   "choices": [
+    {
+     "actionName": "Basic Attack 1-3",
+     "character": "Hiyuki"
+    },
+    {
+     "actionName": "Basic Attack 1-3",
+     "character": "Hiyuki"
+    },
+    {
+     "actionName": "Liberation",
+     "character": "Hiyuki"
+    },
+    {
+     "actionName": "Basic Attack 1-2 (swap cancel)",
+     "character": "Mornye"
+    },
+    {
+     "actionName": "Foreclaimed: Basic Attack 1-3 (heavy cancel)",
+     "character": "Hiyuki"
+    },
+    {
+     "actionName": "Foreclaimed: Heavy Attack BA2-3 combo (dash cancel)",
+     "character": "Hiyuki"
+    }
+   ],
+   "damage": 700519.992851,
+   "score": 81917.8535383,
+   "time": 8.18
+  },
+  {
+   "choices": [
+    {
+     "actionName": "Basic Attack 1-3",
+     "character": "Hiyuki"
+    },
+    {
+     "actionName": "Resonance Skill (swap cancel)",
+     "character": "Hiyuki"
+    },
+    {
+     "actionName": "Heavy Attack (Swap In)",
+     "character": "Mornye"
+    },
+    {
+     "actionName": "Echo Skill",
+     "character": "Mornye"
+    },
+    {
+     "actionName": "Basic Attack 1-3",
+     "character": "Hiyuki"
+    },
+    {
+     "actionName": "Basic Attack 1-3",
+     "character": "Hiyuki"
+    },
+    {
+     "actionName": "Liberation",
+     "character": "Hiyuki"
+    },
+    {
+     "actionName": "Foreclaimed: Heavy Attack BA2-3 combo (heavy cancel)",
+     "character": "Hiyuki"
+    },
+    {
+     "actionName": "Foreclaimed: Heavy Attack BA2-3 combo (heavy cancel)",
+     "character": "Hiyuki"
+    }
+   ],
+   "damage": 869887.251753,
+   "score": 88900.5888862,
+   "time": 9.51666666667
+  },
+  {
+   "choices": [
+    {
+     "actionName": "Basic Attack 1-3",
+     "character": "Hiyuki"
+    },
+    {
+     "actionName": "Echo Skill",
+     "character": "Hiyuki"
+    },
+    {
+     "actionName": "Echo Skill",
+     "character": "Mornye"
+    },
+    {
+     "actionName": "Basic Attack 1",
+     "character": "Lucila"
+    },
+    {
+     "actionName": "Resonance Skill",
+     "character": "Lucila"
+    },
+    {
+     "actionName": "Liberation",
+     "character": "Hiyuki"
+    },
+    {
+     "actionName": "Basic Attack 1",
+     "character": "Lucila"
+    },
+    {
+     "actionName": "Liberation",
+     "character": "Lucila"
+    },
+    {
+     "actionName": "Foreclaimed: Heavy Attack BA2-3 combo (swap cancel)",
+     "character": "Hiyuki"
+    },
+    {
+     "actionName": "Wait Until Next Cooldown",
+     "character": "Mornye"
+    }
+   ],
+   "damage": 992755.199104,
+   "score": 43742.8171135,
+   "time": 21.6466666667
+  },
+  {
+   "choices": [
+    {
+     "actionName": "Basic Attack 1-3",
+     "character": "Hiyuki"
+    },
+    {
+     "actionName": "Basic Attack 1",
+     "character": "Hiyuki"
+    },
+    {
+     "actionName": "Resonance Skill",
+     "character": "Hiyuki"
+    },
+    {
+     "actionName": "Echo Skill",
+     "character": "Hiyuki"
+    },
+    {
+     "actionName": "Resonance Skill",
+     "character": "Lucila"
+    },
+    {
+     "actionName": "Basic Attack 1-2 (swap cancel)",
+     "character": "Hiyuki"
+    },
+    {
+     "actionName": "Basic Attack 1-2 (swap cancel)",
+     "character": "Mornye"
+    },
+    {
+     "actionName": "Wait Until Next Swap Is Available",
+     "character": "Hiyuki"
+    },
+    {
+     "actionName": "Echo Skill",
+     "character": "Mornye"
+    },
+    {
+     "actionName": "Basic Attack 1 (swap cancel)",
+     "character": "Hiyuki"
+    },
+    {
+     "actionName": "Basic Attack 1-2 (swap cancel)",
+     "character": "Mornye"
+    },
+    {
+     "actionName": "Basic Attack 2-3 (swap cancel)",
+     "character": "Hiyuki"
+    },
+    {
+     "actionName": "Wait Until Next Cooldown",
+     "character": "Mornye"
+    }
+   ],
+   "damage": 356787.386555,
+   "score": 12913.8381451,
+   "time": 25.9633333333
+  }
+ ],
+ "rootChildren": [
+  {
+   "choice": {
+    "actionName": "Basic Attack 1 (swap cancel)",
+    "character": "Hiyuki"
+   },
+   "totalScore": 20758.9306966,
+   "visits": 1
+  },
+  {
+   "choice": {
+    "actionName": "Resonance Skill",
+    "character": "Hiyuki"
+   },
+   "totalScore": 24275.3953565,
+   "visits": 1
+  },
+  {
+   "choice": {
+    "actionName": "Basic Attack 1-3 (swap cancel)",
+    "character": "Hiyuki"
+   },
+   "totalScore": 99584.8596645,
+   "visits": 3
+  },
+  {
+   "choice": {
+    "actionName": "Basic Attack 1",
+    "character": "Lucila"
+   },
+   "totalScore": 4061.70718952,
+   "visits": 1
+  },
+  {
+   "choice": {
+    "actionName": "Echo Skill",
+    "character": "Lucila"
+   },
+   "totalScore": 9865.12120098,
+   "visits": 1
+  },
+  {
+   "choice": {
+    "actionName": "Basic Attack 1-2",
+    "character": "Hiyuki"
+   },
+   "totalScore": 34408.5399085,
+   "visits": 1
+  },
+  {
+   "choice": {
+    "actionName": "Basic Attack 1-3 (swap cancel)",
+    "character": "Mornye"
+   },
+   "totalScore": 1454.43317159,
+   "visits": 1
+  },
+  {
+   "choice": {
+    "actionName": "Echo Skill",
+    "character": "Hiyuki"
+   },
+   "totalScore": 126109.977692,
+   "visits": 3
+  },
+  {
+   "choice": {
+    "actionName": "Basic Attack 1-3",
+    "character": "Lucila"
+   },
+   "totalScore": 23204.8691389,
+   "visits": 1
+  },
+  {
+   "choice": {
+    "actionName": "Echo Skill",
+    "character": "Mornye"
+   },
+   "totalScore": 101113.807419,
+   "visits": 3
+  },
+  {
+   "choice": {
+    "actionName": "Basic Attack 1-2",
+    "character": "Lucila"
+   },
+   "totalScore": 22902.99149,
+   "visits": 1
+  },
+  {
+   "choice": {
+    "actionName": "Basic Attack 1-2 (swap cancel)",
+    "character": "Hiyuki"
+   },
+   "totalScore": 102751.732374,
+   "visits": 3
+  },
+  {
+   "choice": {
+    "actionName": "Basic Attack 1-3 (into heavy)",
+    "character": "Mornye"
+   },
+   "totalScore": 1526.91807542,
+   "visits": 1
+  },
+  {
+   "choice": {
+    "actionName": "Basic Attack 1-2 (swap cancel)",
+    "character": "Mornye"
+   },
+   "totalScore": 17882.2664282,
+   "visits": 1
+  },
+  {
+   "choice": {
+    "actionName": "Basic Attack 1 (swap cancel)",
+    "character": "Mornye"
+   },
+   "totalScore": 8246.88313257,
+   "visits": 1
+  },
+  {
+   "choice": {
+    "actionName": "Resonance Skill",
+    "character": "Lucila"
+   },
+   "totalScore": 7950.64481717,
+   "visits": 1
+  },
+  {
+   "choice": {
+    "actionName": "Resonance Skill (swap cancel)",
+    "character": "Hiyuki"
+   },
+   "totalScore": 1234.44168734,
+   "visits": 1
+  },
+  {
+   "choice": {
+    "actionName": "Basic Attack 1-3",
+    "character": "Hiyuki"
+   },
+   "totalScore": 623049.966954,
+   "visits": 12
+  },
+  {
+   "choice": {
+    "actionName": "Basic Attack 1",
+    "character": "Hiyuki"
+   },
+   "totalScore": 118128.65834,
+   "visits": 3
+  }
+ ],
+ "rootVisits": 40,
+ "top": [
+  {
+   "name": "MCTS #1 — DPS 116299  |  Total 936,209  |  Time 8.1s",
+   "steps": [
+    {
+     "action": "Echo Skill",
+     "character": "Hiyuki"
+    },
+    {
+     "action": "Basic Attack 1",
+     "character": "Lucila"
+    },
+    {
+     "action": "Resonance Skill",
+     "character": "Lucila"
+    },
+    {
+     "action": "Resonance Skill (swap cancel)",
+     "character": "Hiyuki"
+    },
+    {
+     "action": "Echo Skill",
+     "character": "Lucila"
+    },
+    {
+     "action": "Echo Skill",
+     "character": "Mornye"
+    },
+    {
+     "action": "Basic Attack 1-3",
+     "character": "Hiyuki"
+    },
+    {
+     "action": "Basic Attack 1",
+     "character": "Hiyuki"
+    },
+    {
+     "action": "Enhanced Heavy Attack",
+     "character": "Hiyuki"
+    },
+    {
+     "action": "Liberation",
+     "character": "Hiyuki"
+    },
+    {
+     "action": "Foreclaimed: Resonance Skill 1 (swap cancel)",
+     "character": "Hiyuki"
+    },
+    {
+     "action": "Basic Attack 1-2 (swap cancel)",
+     "character": "Mornye"
+    },
+    {
+     "action": "Foreclaimed: Heavy Attack BA2-3 combo (swap cancel)",
+     "character": "Hiyuki"
+    },
+    {
+     "action": "Basic Attack 3 (swap cancel)",
+     "character": "Mornye"
+    }
+   ]
+  },
+  {
+   "name": "MCTS #2 — DPS 94365  |  Total 870,692  |  Time 8.2s",
+   "steps": [
+    {
+     "action": "Basic Attack 1-3",
+     "character": "Hiyuki"
+    },
+    {
+     "action": "Basic Attack 1",
+     "character": "Hiyuki"
+    },
+    {
+     "action": "Liberation",
+     "character": "Hiyuki"
+    },
+    {
+     "action": "Foreclaimed: Basic Attack 1-2 (swap cancel)",
+     "character": "Hiyuki"
+    },
+    {
+     "action": "Basic Attack 1-3",
+     "character": "Lucila"
+    },
+    {
+     "action": "Resonance Skill",
+     "character": "Lucila"
+    },
+    {
+     "action": "Foreclaimed: Basic Attack 1-4",
+     "character": "Hiyuki"
+    }
+   ]
+  },
+  {
+   "name": "MCTS #3 — DPS 93724  |  Total 794,669  |  Time 8.1s",
+   "steps": [
+    {
+     "action": "Echo Skill",
+     "character": "Mornye"
+    },
+    {
+     "action": "Resonance Skill",
+     "character": "Hiyuki"
+    },
+    {
+     "action": "Basic Attack 1",
+     "character": "Hiyuki"
+    },
+    {
+     "action": "Enhanced Heavy Attack",
+     "character": "Hiyuki"
+    },
+    {
+     "action": "Basic Attack 1",
+     "character": "Hiyuki"
+    },
+    {
+     "action": "Liberation",
+     "character": "Hiyuki"
+    },
+    {
+     "action": "Foreclaimed: Resonance Skill 1 (swap cancel)",
+     "character": "Hiyuki"
+    },
+    {
+     "action": "Basic Attack 1-3",
+     "character": "Lucila"
+    },
+    {
+     "action": "Basic Attack 1-3",
+     "character": "Lucila"
+    },
+    {
+     "action": "Resonance Skill",
+     "character": "Lucila"
+    },
+    {
+     "action": "Foreclaimed: Resonance Skill 1",
+     "character": "Hiyuki"
+    },
+    {
+     "action": "Foreclaimed: Mid-air Attack 1-2 (swap cancel)",
+     "character": "Hiyuki"
+    }
+   ]
+  }
+ ]
+}

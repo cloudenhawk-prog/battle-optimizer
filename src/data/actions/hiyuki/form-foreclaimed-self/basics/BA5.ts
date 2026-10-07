@@ -1,4 +1,4 @@
-﻿
+// Hiyuki — Foreclaimed Self form: Basic Attack 5 (default / swap / dash cancel).
 import type { Action } from '../../../../../types/action'
 import * as values from '../../values'
 import { s1_foreclaimed_basic_multiplier } from '../../../../modifiers/hiyuki'

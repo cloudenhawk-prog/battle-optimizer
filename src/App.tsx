@@ -1,3 +1,4 @@
+// Root component: owns the rotation-page context state (sidebar actions, panels) and the routes.
 import { Routes, Route, useLocation } from 'react-router-dom'
 import { useState, useCallback } from 'react'
 import AppLayout from './components/AppLayout'

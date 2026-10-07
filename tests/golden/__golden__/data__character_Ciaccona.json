@@ -1,0 +1,2813 @@
+{
+ "base": {
+  "actions": [
+   {
+    "castConditions": {
+     "endState": "GROUND",
+     "requiresSwapIn": true,
+     "startState": "GROUND"
+    },
+    "castTime": 0.73,
+    "category": "Basics",
+    "cooldown": 0,
+    "damageModifiers": [
+     {
+      "characterStats": {
+       "aeroBonusDMG": 0.24
+      },
+      "condition": "[Function]",
+      "displayName": "Ensemble Sylph",
+      "durationStrategy": {
+       "type": "permanent"
+      },
+      "ownerCharacter": "Ciaccona",
+      "source": "Ciaconna Ensemble Sylph",
+      "stackingStrategy": {
+       "maxStacks": 1,
+       "resetTimerOnApplication": true,
+       "stacksRemovedEachTime": 1
+      },
+      "targetStrategy": "all",
+      "type": "buff"
+     }
+    ],
+    "displayName": "Basic Attack 3-4 (skill cancel)",
+    "dmgTypes": [
+     "BASIC"
+    ],
+    "elements": [
+     "AERO"
+    ],
+    "energyCost": [],
+    "energyGenerated": [
+     {
+      "amount": 5.8,
+      "energyType": "energy",
+      "scalingStat": "energyPercent",
+      "share": 0.5
+     },
+     {
+      "amount": 18.48,
+      "energyType": "concerto",
+      "share": 0
+     },
+     {
+      "amount": 1,
+      "energyType": "forte",
+      "share": 0
+     }
+    ],
+    "groupName": "Basic Attack 3-4",
+    "multiplier": 3.7664,
+    "name": "Basic Attack 3-4 (skill cancel)",
+    "offtune": 1.84,
+    "scaling": "ATK",
+    "sideEffects": [],
+    "statusModifications": [
+     {
+      "stackChange": 1,
+      "targetName": "Aero Erosion",
+      "type": "negativeStatus"
+     }
+    ],
+    "tags": [
+     "BASIC_ATTACK",
+     "AERO_EROSION_APPLIER"
+    ],
+    "toolTip": "Can be cast after Intro Skill",
+    "variantName": "Cancel With Skill"
+   },
+   {
+    "castConditions": {
+     "endState": "GROUND",
+     "persistenceTime": 100,
+     "requiresSwapIn": true,
+     "requiresSwapOut": true,
+     "startState": "GROUND",
+     "swapOutState": "AIR"
+    },
+    "castTime": 0.87,
+    "category": "Basics",
+    "cooldown": 0,
+    "damageModifiers": [
+     {
+      "characterStats": {
+       "aeroBonusDMG": 0.24
+      },
+      "condition": "[Function]",
+      "displayName": "Ensemble Sylph",
+      "durationStrategy": {
+       "type": "permanent"
+      },
+      "ownerCharacter": "Ciaccona",
+      "source": "Ciaconna Ensemble Sylph",
+      "stackingStrategy": {
+       "maxStacks": 1,
+       "resetTimerOnApplication": true,
+       "stacksRemovedEachTime": 1
+      },
+      "targetStrategy": "all",
+      "type": "buff"
+     }
+    ],
+    "displayName": "Basic Attack 3-4 (swap cancel)",
+    "dmgTypes": [
+     "BASIC"
+    ],
+    "elements": [
+     "AERO"
+    ],
+    "energyCost": [],
+    "energyGenerated": [
+     {
+      "amount": 5.8,
+      "energyType": "energy",
+      "scalingStat": "energyPercent",
+      "share": 0.5
+     },
+     {
+      "amount": 18.48,
+      "energyType": "concerto",
+      "share": 0
+     },
+     {
+      "amount": 1,
+      "energyType": "forte",
+      "share": 0
+     }
+    ],
+    "groupName": "Basic Attack 3-4",
+    "multiplier": 3.7664,
+    "name": "Basic Attack 3-4 (swap cancel)",
+    "offtune": 1.84,
+    "scaling": "ATK",
+    "sideEffects": [],
+    "statusModifications": [
+     {
+      "stackChange": 1,
+      "targetName": "Aero Erosion",
+      "type": "negativeStatus"
+     }
+    ],
+    "tags": [
+     "BASIC_ATTACK",
+     "AERO_EROSION_APPLIER"
+    ],
+    "toolTip": "Can be cast after Intro Skill",
+    "variantName": "Cancel With Swap"
+   },
+   {
+    "castConditions": {
+     "endState": "GROUND",
+     "requiresSwapIn": true,
+     "startState": "GROUND"
+    },
+    "castTime": 0.82,
+    "category": "Basics",
+    "cooldown": 0,
+    "damageModifiers": [
+     {
+      "characterStats": {
+       "aeroBonusDMG": 0.24
+      },
+      "condition": "[Function]",
+      "displayName": "Ensemble Sylph",
+      "durationStrategy": {
+       "type": "permanent"
+      },
+      "ownerCharacter": "Ciaccona",
+      "source": "Ciaconna Ensemble Sylph",
+      "stackingStrategy": {
+       "maxStacks": 1,
+       "resetTimerOnApplication": true,
+       "stacksRemovedEachTime": 1
+      },
+      "targetStrategy": "all",
+      "type": "buff"
+     }
+    ],
+    "displayName": "Mid Air 2 -> Basic Attack 4 (skill cancel)",
+    "dmgTypes": [
+     "BASIC"
+    ],
+    "elements": [
+     "AERO"
+    ],
+    "energyCost": [],
+    "energyGenerated": [
+     {
+      "amount": 5.28,
+      "energyType": "energy",
+      "scalingStat": "energyPercent",
+      "share": 0.5
+     },
+     {
+      "amount": 16.8,
+      "energyType": "concerto",
+      "share": 0
+     },
+     {
+      "amount": 1,
+      "energyType": "forte",
+      "share": 0
+     }
+    ],
+    "groupName": "MA2 -> BA4",
+    "multiplier": 3.424,
+    "name": "Mid Air 2 -> Basic Attack 4 (skill cancel)",
+    "offtune": 1.68,
+    "scaling": "ATK",
+    "sideEffects": [],
+    "statusModifications": [
+     {
+      "stackChange": 1,
+      "targetName": "Aero Erosion",
+      "type": "negativeStatus"
+     }
+    ],
+    "tags": [
+     "BASIC_ATTACK",
+     "AERO_EROSION_APPLIER"
+    ],
+    "toolTip": "Can be cast if swapped in mid-air",
+    "variantName": "Cancel With Skill"
+   },
+   {
+    "castConditions": {
+     "endState": "GROUND",
+     "persistenceTime": 100,
+     "requiresSwapIn": true,
+     "requiresSwapOut": true,
+     "startState": "GROUND",
+     "swapOutState": "GROUND"
+    },
+    "castTime": 0.95,
+    "category": "Basics",
+    "cooldown": 0,
+    "damageModifiers": [
+     {
+      "characterStats": {
+       "aeroBonusDMG": 0.24
+      },
+      "condition": "[Function]",
+      "displayName": "Ensemble Sylph",
+      "durationStrategy": {
+       "type": "permanent"
+      },
+      "ownerCharacter": "Ciaccona",
+      "source": "Ciaconna Ensemble Sylph",
+      "stackingStrategy": {
+       "maxStacks": 1,
+       "resetTimerOnApplication": true,
+       "stacksRemovedEachTime": 1
+      },
+      "targetStrategy": "all",
+      "type": "buff"
+     }
+    ],
+    "displayName": "Mid Air 2 -> Basic Attack 4 (swap cancel)",
+    "dmgTypes": [
+     "BASIC"
+    ],
+    "elements": [
+     "AERO"
+    ],
+    "energyCost": [],
+    "energyGenerated": [
+     {
+      "amount": 5.28,
+      "energyType": "energy",
+      "scalingStat": "energyPercent",
+      "share": 0.5
+     },
+     {
+      "amount": 16.8,
+      "energyType": "concerto",
+      "share": 0
+     },
+     {
+      "amount": 1,
+      "energyType": "forte",
+      "share": 0
+     }
+    ],
+    "groupName": "MA2 -> BA4",
+    "multiplier": 3.424,
+    "name": "Mid Air 2 -> Basic Attack 4 (swap cancel)",
+    "offtune": 1.68,
+    "scaling": "ATK",
+    "sideEffects": [],
+    "statusModifications": [
+     {
+      "stackChange": 1,
+      "targetName": "Aero Erosion",
+      "type": "negativeStatus"
+     }
+    ],
+    "tags": [
+     "BASIC_ATTACK",
+     "AERO_EROSION_APPLIER"
+    ],
+    "toolTip": "Can be cast if swapped in mid-air",
+    "variantName": "Cancel With Swap"
+   },
+   {
+    "castConditions": {
+     "endState": "PRESERVE",
+     "startState": "ANY"
+    },
+    "castTime": 0.65,
+    "category": "Skills",
+    "cooldown": 10,
+    "damageModifiers": [],
+    "displayName": "Harmonic Allegro",
+    "dmgTypes": [
+     "SKILL"
+    ],
+    "elements": [
+     "AERO"
+    ],
+    "energyCost": [],
+    "energyGenerated": [
+     {
+      "amount": 9.6,
+      "energyType": "energy",
+      "scalingStat": "energyPercent",
+      "share": 0.5
+     },
+     {
+      "amount": 15,
+      "energyType": "concerto",
+      "share": 0
+     }
+    ],
+    "groupName": "Resonance Skill",
+    "multiplier": 1.6156,
+    "name": "Resonance Skill",
+    "offtune": 0.52,
+    "scaling": "ATK",
+    "sideEffects": [],
+    "statusModifications": [
+     {
+      "stackChange": 1,
+      "targetName": "Aero Erosion",
+      "type": "negativeStatus"
+     }
+    ],
+    "tags": [
+     "SKILL",
+     "AERO_EROSION_APPLIER"
+    ],
+    "variantName": "Default"
+   },
+   {
+    "castConditions": {
+     "endState": "PRESERVE",
+     "persistenceTime": 100,
+     "requiresSwapOut": true,
+     "startState": "ANY",
+     "swapOutState": "PRESERVE"
+    },
+    "castTime": 0.15,
+    "category": "Skills",
+    "cooldown": 10,
+    "damageModifiers": [],
+    "displayName": "Harmonic Allegro (swap cancel)",
+    "dmgTypes": [
+     "SKILL"
+    ],
+    "elements": [
+     "AERO"
+    ],
+    "energyCost": [],
+    "energyGenerated": [
+     {
+      "amount": 9.6,
+      "energyType": "energy",
+      "scalingStat": "energyPercent",
+      "share": 0.5
+     },
+     {
+      "amount": 15,
+      "energyType": "concerto",
+      "share": 0
+     }
+    ],
+    "groupName": "Resonance Skill",
+    "multiplier": 1.6156,
+    "name": "Resonance Skill (swap cancel)",
+    "offtune": 0.52,
+    "scaling": "ATK",
+    "sideEffects": [],
+    "statusModifications": [
+     {
+      "stackChange": 1,
+      "targetName": "Aero Erosion",
+      "type": "negativeStatus"
+     }
+    ],
+    "tags": [
+     "SKILL",
+     "AERO_EROSION_APPLIER"
+    ],
+    "variantName": "Cancel With Swap"
+   },
+   {
+    "castConditions": {
+     "endState": "GROUND",
+     "startState": "GROUND"
+    },
+    "castTime": 1,
+    "category": "Skills",
+    "cooldown": 20,
+    "coordinatedAttacks": [
+     {
+      "displayName": "Singers Triple Cadenza (Coordinated)",
+      "dmgTypes": [
+       "LIBERATION"
+      ],
+      "duration": 32,
+      "elements": [
+       "AERO"
+      ],
+      "energyGenerated": [],
+      "frequency": 1.6,
+      "multiplier": 0.0612,
+      "name": "Singers Triple Cadenza (Coordinated)",
+      "offtune": 0.22,
+      "scaling": "ATK",
+      "statusModifications": [
+       {
+        "stackChange": 1,
+        "targetName": "Aero Erosion",
+        "type": "negativeStatus"
+       }
+      ],
+      "swapRequired": true,
+      "tags": [
+       "AERO_EROSION_APPLIER"
+      ]
+     }
+    ],
+    "damageModifiers": [],
+    "displayName": "Singers Triple Cadenza",
+    "dmgTypes": [
+     "LIBERATION"
+    ],
+    "elements": [
+     "AERO"
+    ],
+    "energyCost": [
+     {
+      "amount": 125,
+      "energyType": "energy"
+     }
+    ],
+    "energyGenerated": [
+     {
+      "amount": 0,
+      "energyType": "energy",
+      "scalingStat": "energyPercent",
+      "share": 0.5
+     },
+     {
+      "amount": 20,
+      "energyType": "concerto",
+      "share": 0
+     }
+    ],
+    "multiplier": 11.0042,
+    "name": "Liberation",
+    "offtune": 4.8,
+    "scaling": "ATK",
+    "sideEffects": [],
+    "statusModifications": [],
+    "tags": [
+     "LIBERATION"
+    ]
+   },
+   {
+    "castConditions": {
+     "endState": "GROUND",
+     "startState": "GROUND"
+    },
+    "castTime": 1.13,
+    "category": "Basics",
+    "cooldown": 0,
+    "damageModifiers": [],
+    "displayName": "Quadruple Downbeat",
+    "dmgTypes": [
+     "HEAVY"
+    ],
+    "elements": [
+     "AERO"
+    ],
+    "energyCost": [
+     {
+      "amount": 3,
+      "energyType": "forte"
+     }
+    ],
+    "energyGenerated": [
+     {
+      "amount": 14.97,
+      "energyType": "energy",
+      "scalingStat": "energyPercent",
+      "share": 0.5
+     },
+     {
+      "amount": 25,
+      "energyType": "concerto",
+      "share": 0
+     }
+    ],
+    "groupName": "Heavy Attack",
+    "multiplier": 8.16569,
+    "name": "Heavy Attack",
+    "offtune": 0.97,
+    "scaling": "ATK",
+    "sideEffects": [],
+    "statusModifications": [
+     {
+      "stackChange": 1,
+      "targetName": "Aero Erosion",
+      "type": "negativeStatus"
+     }
+    ],
+    "tags": [
+     "HEAVY_ATTACK"
+    ],
+    "variantName": "Default"
+   },
+   {
+    "castConditions": {
+     "endState": "GROUND",
+     "persistenceTime": 100,
+     "requiresSwapOut": true,
+     "startState": "GROUND",
+     "swapOutState": "PRESERVE"
+    },
+    "castTime": 0.15,
+    "category": "Basics",
+    "cooldown": 0,
+    "damageModifiers": [],
+    "displayName": "Quadruple Downbeat (swap cancel)",
+    "dmgTypes": [
+     "HEAVY"
+    ],
+    "elements": [
+     "AERO"
+    ],
+    "energyCost": [
+     {
+      "amount": 3,
+      "energyType": "forte"
+     }
+    ],
+    "energyGenerated": [
+     {
+      "amount": 14.97,
+      "energyType": "energy",
+      "scalingStat": "energyPercent",
+      "share": 0.5
+     },
+     {
+      "amount": 25,
+      "energyType": "concerto",
+      "share": 0
+     }
+    ],
+    "groupName": "Heavy Attack",
+    "multiplier": 8.16569,
+    "name": "Heavy Attack (swap cancel)",
+    "offtune": 0.97,
+    "scaling": "ATK",
+    "sideEffects": [],
+    "statusModifications": [
+     {
+      "stackChange": 1,
+      "targetName": "Aero Erosion",
+      "type": "negativeStatus"
+     }
+    ],
+    "tags": [
+     "HEAVY_ATTACK"
+    ],
+    "variantName": "Cancel With Swap"
+   },
+   {
+    "castConditions": {
+     "endState": "GROUND",
+     "startState": "ANY"
+    },
+    "castTime": 0.95,
+    "category": "Other",
+    "cooldown": 0,
+    "damageModifiers": [],
+    "displayName": "Roaming with the Wind",
+    "dmgTypes": [
+     "INTRO"
+    ],
+    "elements": [
+     "AERO"
+    ],
+    "energyCost": [],
+    "energyGenerated": [
+     {
+      "amount": 10,
+      "energyType": "energy",
+      "scalingStat": "energyPercent",
+      "share": 0.5
+     },
+     {
+      "amount": 10,
+      "energyType": "concerto",
+      "share": 0
+     },
+     {
+      "amount": 1,
+      "energyType": "forte",
+      "share": 0
+     }
+    ],
+    "multiplier": 1.8911,
+    "name": "Intro Skill",
+    "offtune": 0.93,
+    "scaling": "ATK",
+    "sideEffects": [],
+    "statusModifications": [],
+    "tags": [
+     "INTRO_ACTION"
+    ]
+   },
+   {
+    "castConditions": {
+     "endState": "PRESERVE",
+     "startState": "ANY"
+    },
+    "castTime": 0,
+    "category": "Other",
+    "cooldown": 0,
+    "damageModifiers": [
+     {
+      "characterStats": {
+       "aeroErosionAmplifyDMG": 1
+      },
+      "condition": "[Function]",
+      "displayName": "Windcalling Tune",
+      "durationStrategy": {
+       "timeDuration": 30,
+       "type": "limited"
+      },
+      "ownerCharacter": "Ciaccona",
+      "source": "Ciaconna Outro Buff",
+      "stackingStrategy": {
+       "maxStacks": 1,
+       "resetTimerOnApplication": true,
+       "stacksRemovedEachTime": 1
+      },
+      "targetStrategy": "all",
+      "type": "buff"
+     }
+    ],
+    "displayName": "Windcalling Tune",
+    "dmgTypes": [
+     "OUTRO"
+    ],
+    "elements": [
+     "AERO"
+    ],
+    "energyCost": [],
+    "energyGenerated": [],
+    "multiplier": 0,
+    "name": "Outro Skill",
+    "offtune": 0,
+    "scaling": "ATK",
+    "sideEffects": [],
+    "statusModifications": [],
+    "tags": [
+     "OUTRO_ACTION"
+    ]
+   },
+   {
+    "castConditions": {
+     "endState": "PRESERVE",
+     "startState": "ANY"
+    },
+    "castTime": 0.05,
+    "category": "Testing",
+    "cooldown": 0,
+    "damageModifiers": [],
+    "displayName": "Wait 0.05s",
+    "dmgTypes": [
+     ""
+    ],
+    "elements": [
+     ""
+    ],
+    "energyCost": [],
+    "energyGenerated": [],
+    "multiplier": 0,
+    "name": "Wait 0.05s",
+    "offtune": 0,
+    "scaling": "HP",
+    "sideEffects": [],
+    "statusModifications": []
+   },
+   {
+    "castConditions": {
+     "customCanCast": "[Function]",
+     "endState": "PRESERVE",
+     "startState": "ANY"
+    },
+    "castTime": 0,
+    "category": "Other",
+    "cooldown": 0,
+    "damageModifiers": [],
+    "displayName": "Wait Until Next Swap Is Available",
+    "dmgTypes": [
+     ""
+    ],
+    "elements": [
+     ""
+    ],
+    "energyCost": [],
+    "energyGenerated": [],
+    "multiplier": 0,
+    "name": "Wait Until Next Swap Is Available",
+    "offtune": 0,
+    "resolveVariant": "[Function]",
+    "scaling": "HP",
+    "sideEffects": [],
+    "statusModifications": []
+   },
+   {
+    "castConditions": {
+     "endState": "PRESERVE",
+     "startState": "ANY"
+    },
+    "castTime": 0,
+    "category": "Testing",
+    "cooldown": 0,
+    "damageModifiers": [],
+    "displayName": "Energy Up",
+    "dmgTypes": [
+     ""
+    ],
+    "elements": [
+     ""
+    ],
+    "energyCost": [],
+    "energyGenerated": [
+     {
+      "amount": 1000,
+      "energyType": "energy",
+      "share": 0
+     }
+    ],
+    "multiplier": 0,
+    "name": "Energy Up",
+    "offtune": 0,
+    "scaling": "HP",
+    "sideEffects": [],
+    "statusModifications": []
+   },
+   {
+    "castConditions": {
+     "endState": "PRESERVE",
+     "startState": "ANY"
+    },
+    "castTime": 0,
+    "category": "Testing",
+    "cooldown": 0,
+    "damageModifiers": [],
+    "displayName": "Concerto Up",
+    "dmgTypes": [
+     ""
+    ],
+    "elements": [
+     ""
+    ],
+    "energyCost": [],
+    "energyGenerated": [
+     {
+      "amount": 1000,
+      "energyType": "concerto",
+      "share": 0
+     }
+    ],
+    "multiplier": 0,
+    "name": "Concerto Up",
+    "offtune": 0,
+    "scaling": "HP",
+    "sideEffects": [],
+    "statusModifications": []
+   },
+   {
+    "castConditions": {
+     "endState": "PRESERVE",
+     "startState": "ANY"
+    },
+    "castTime": 0,
+    "category": "Testing",
+    "cooldown": 0,
+    "damageModifiers": [],
+    "displayName": "Forte Up",
+    "dmgTypes": [
+     ""
+    ],
+    "elements": [
+     ""
+    ],
+    "energyCost": [],
+    "energyGenerated": [
+     {
+      "amount": 1000,
+      "energyType": "forte",
+      "share": 0
+     }
+    ],
+    "multiplier": 0,
+    "name": "Forte Up",
+    "offtune": 0,
+    "scaling": "HP",
+    "sideEffects": [],
+    "statusModifications": []
+   }
+  ],
+  "damageModifiers": [
+   {
+    "characterStats": {
+     "aeroBonusDMG": 0.15
+    },
+    "condition": "[Function]",
+    "displayName": "GoW Team Buff",
+    "durationStrategy": {
+     "type": "permanent"
+    },
+    "ownerCharacter": "Ciaccona",
+    "source": "Gusts of Welkin Team Buff",
+    "stackingStrategy": {
+     "maxStacks": 1,
+     "resetTimerOnApplication": false,
+     "stacksRemovedEachTime": 1
+    },
+    "targetStrategy": "all",
+    "type": "buff"
+   },
+   {
+    "characterStats": {
+     "aeroBonusDMG": 0.15
+    },
+    "condition": "[Function]",
+    "displayName": "GoW Self Buff",
+    "durationStrategy": {
+     "type": "permanent"
+    },
+    "ownerCharacter": "Ciaccona",
+    "source": "Gusts of Welkin Self Buff",
+    "stackingStrategy": {
+     "maxStacks": 1,
+     "resetTimerOnApplication": false,
+     "stacksRemovedEachTime": 1
+    },
+    "targetStrategy": "self",
+    "type": "buff"
+   }
+  ],
+  "element": "ELECTRO",
+  "gear": {
+   "echoSlots": {
+    "1": {
+     "baseStats": {
+      "critDamage": 0.44,
+      "flatATK": 150
+     },
+     "cost": 4,
+     "echoSkill": {
+      "castConditions": {
+       "endState": "AIR",
+       "startState": "GROUND"
+      },
+      "castTime": 0,
+      "category": "Echo Skill",
+      "cooldown": 25,
+      "damageModifiers": [],
+      "displayName": "Nightmare: Kelpie (Active)",
+      "dmgTypes": [
+       "ECHO"
+      ],
+      "elements": [
+       "GLACIO"
+      ],
+      "energyCost": [],
+      "energyGenerated": [
+       {
+        "amount": 2.81,
+        "energyType": "energy",
+        "scalingStat": "energyPercent",
+        "share": 0.5
+       }
+      ],
+      "multiplier": 4.05,
+      "name": "Nightmare: Kelpie (Active)",
+      "offtune": 0,
+      "scaling": "ATK",
+      "sideEffects": [],
+      "statusModifications": []
+     },
+     "firstSlotStats": {
+      "aeroBonusDMG": 0.12,
+      "glacioBonusDMG": 0.12
+     },
+     "icon": "assets/gear/echoes/nightmare_kelpie.png",
+     "info": "The Resonator with this Echo equipped in the main slot gains 12.00% Glacio DMG Bonus and 12.00% Aero DMG Bonus. Switching out the Resonator with Outro Skill summons Nightmare: Kelpie to deal 405.00% Aero DMG.",
+     "info_icon": "assets/gear/echoes/info/info_nightmare_kelpie.png",
+     "injectedSideEffects": [
+      {
+       "sideEffects": [
+        {
+         "damageDealt": "[Function]",
+         "name": "Nightmare: Kelpie Outro Trigger",
+         "statusModifications": []
+        }
+       ],
+       "targets": [
+        {
+         "tag": "OUTRO_ACTION"
+        }
+       ]
+      }
+     ],
+     "name": "Nightmare: Kelpie",
+     "setName": "Gusts of Welkin",
+     "subStats": {
+      "bonusATK": 0.079,
+      "critDamage": 0.15,
+      "critRate": 0.075
+     }
+    },
+    "2": {
+     "baseStats": {
+      "aeroBonusDMG": 0.3,
+      "flatATK": 100
+     },
+     "cost": 3,
+     "icon": "assets/gear/echoes/capitaneus.png",
+     "info": "The Resonator with this Echo equipped in their main slot gains 12.00% Spectro DMG Bonus and 12.00% Heavy Attack DMG Bonus.",
+     "info_icon": "assets/gear/echoes/info_capitaneus.png",
+     "name": "Capitaneus",
+     "setName": "Gusts of Welkin",
+     "subStats": {
+      "bonusATK": 0.079,
+      "critDamage": 0.15,
+      "critRate": 0.075
+     }
+    },
+    "3": {
+     "baseStats": {
+      "aeroBonusDMG": 0.3,
+      "flatATK": 100
+     },
+     "cost": 3,
+     "icon": "assets/gear/echoes/hurriclaw.png",
+     "info_icon": "assets/gear/echoes/info_hurriclaw.png",
+     "name": "Hurriclaw",
+     "setName": "Gusts of Welkin",
+     "subStats": {
+      "bonusATK": 0.079,
+      "critDamage": 0.15,
+      "critRate": 0.075
+     }
+    },
+    "4": {
+     "baseStats": {
+      "bonusATK": 0.18,
+      "flatHP": 2280
+     },
+     "cost": 1,
+     "icon": "assets/gear/echoes/sagittario.png",
+     "info_icon": "assets/gear/echoes/info_sagittario.png",
+     "name": "Sacerdos",
+     "setName": "Gusts of Welkin",
+     "subStats": {
+      "bonusATK": 0.079,
+      "critDamage": 0.15,
+      "critRate": 0.075
+     }
+    },
+    "5": {
+     "baseStats": {
+      "bonusATK": 0.18,
+      "flatHP": 2280
+     },
+     "cost": 1,
+     "icon": "assets/gear/echoes/sacerdos.png",
+     "info_icon": "assets/gear/echoes/info_sacerdos.png",
+     "name": "Sacerdos",
+     "setName": "Gusts of Welkin",
+     "subStats": {
+      "bonusATK": 0.079,
+      "critDamage": 0.15,
+      "critRate": 0.075
+     }
+    }
+   },
+   "setBonus": {
+    "icon": "assets/gear/set-bonuses/gusts_of_welkin.png",
+    "info": {
+     "2-piece": "Aero DMG + 10%",
+     "5-piece": "Inflicting Aero Erosion upon enemies increases Aero DMG for all Resonators in the team by 15%, and for the Resonator triggering this effect by an additional 15%, lasting for 20s."
+    },
+    "injectedModifiers": [
+     {
+      "modifiers": [
+       {
+        "characterStats": {
+         "aeroBonusDMG": 0.15
+        },
+        "condition": "[Function]",
+        "displayName": "Gusts of Welkin (Self Buff)",
+        "durationStrategy": {
+         "timeDuration": 20,
+         "type": "limited"
+        },
+        "ownerCharacter": "Ciaccona",
+        "source": "Ciaccona",
+        "stackingStrategy": {
+         "maxStacks": 1,
+         "resetTimerOnApplication": true,
+         "stacksRemovedEachTime": 1
+        },
+        "targetStrategy": "self",
+        "type": "buff"
+       },
+       {
+        "characterStats": {
+         "aeroBonusDMG": 0.15
+        },
+        "condition": "[Function]",
+        "displayName": "Gusts of Welkin (Team Buff)",
+        "durationStrategy": {
+         "timeDuration": 20,
+         "type": "limited"
+        },
+        "ownerCharacter": "Ciaccona",
+        "source": "Ciaccona",
+        "stackingStrategy": {
+         "maxStacks": 1,
+         "resetTimerOnApplication": true,
+         "stacksRemovedEachTime": 1
+        },
+        "targetStrategy": "all",
+        "type": "buff"
+       }
+      ],
+      "targets": [
+       {
+        "tag": "AERO_EROSION_APPLIER"
+       }
+      ]
+     }
+    ],
+    "name": "Gusts of Welkin",
+    "stats": {
+     "aeroBonusDMG": 0.1
+    }
+   },
+   "weapon": {
+    "icon": "assets/gear/weapons/static_mist.png",
+    "info": "Increases Energy Regen by 12.8%/16%/19.2%/22.4%/25.6%. Incoming Resonator's ATK is increased by 10%/12.5%/15%/17.5%/20% for 14s, stackable for up to 1 time after the wielder casts Outro Skill.",
+    "injectedModifiers": [
+     {
+      "modifiers": [
+       {
+        "characterStats": {
+         "energyPercent": 0.192
+        },
+        "condition": "[Function]",
+        "displayName": "Static Mist Energy Regen",
+        "durationStrategy": {
+         "type": "permanent"
+        },
+        "ownerCharacter": "Ciaccona",
+        "source": "Static Mist",
+        "stackingStrategy": {
+         "maxStacks": 1,
+         "resetTimerOnApplication": false,
+         "stacksRemovedEachTime": 0
+        },
+        "targetStrategy": "self",
+        "type": "buff"
+       }
+      ],
+      "targets": [
+       "character"
+      ]
+     },
+     {
+      "modifiers": [
+       {
+        "characterStats": {
+         "bonusATK": 0.15
+        },
+        "condition": "[Function]",
+        "displayName": "Static Mist Outro Buff",
+        "durationStrategy": {
+         "numberOfSwaps": 1,
+         "timeDuration": 14,
+         "type": "limited"
+        },
+        "ownerCharacter": "Ciaccona",
+        "source": "Static Mist",
+        "stackingStrategy": {
+         "maxStacks": 1,
+         "resetTimerOnApplication": true,
+         "stacksRemovedEachTime": 1
+        },
+        "targetStrategy": "nextSwap",
+        "type": "buff"
+       }
+      ],
+      "targets": [
+       {
+        "tag": "OUTRO_ACTION"
+       }
+      ]
+     }
+    ],
+    "name": "Static Mist",
+    "rank": 3,
+    "stats": {
+     "baseATK": 587.5,
+     "critRate": 0.243
+    },
+    "weaponType": "Pistol"
+   }
+  },
+  "image": "/assets/characters/ciaccona.png",
+  "inherentStats": {
+   "bonusATK": 0.12,
+   "critDamage": 0.16
+  },
+  "maxEnergies": {
+   "concerto": 100,
+   "energy": 125,
+   "forte": 3
+  },
+  "name": "Ciaccona",
+  "sequence": 0,
+  "sequence_nodes": [
+   "Casting Resonance Skill Harmonic Allegro grants Ciaccona immunity to interruption for 3s. Casting Basic Attack increases Ciaccona's ATK by 35% for 10s.",
+   "During Resonance Liberation Singer's Triple Cadenza, Resonators in the team gain 40% Aero DMG Bonus.",
+   "Casting Basic Attack Stage 4 additionally grants 1 segments of Musical Essence. Resonance Skill Harmonic Allegro gains 1 more charge.",
+   "Ciaccona ignores 45% of the targets' DEF when dealing damage with Heavy Attack Quadruple Downbeat; Ciaccona ignores 45% of the targets' DEF when dealing Resonance Liberation DMG.",
+   "Gain 40% Resonance Liberation DMG Bonus; DMG taken by Resonators within and around the range of Resonance Liberation Singer's Triple Cadenza is reduced by 30%.",
+   "When in Solo Concert, Ciaccona or Ensemble Sylph deals Aero DMG equal to 220% of Ciaccona's ATK to nearby targets, considered Resonance Liberation DMG"
+  ],
+  "sequence_nodes_icons": [
+   "assets/characters/sequences/ciaccona_1.png",
+   "assets/characters/sequences/ciaccona_2.png",
+   "assets/characters/sequences/ciaccona_3.png",
+   "assets/characters/sequences/ciaccona_4.png",
+   "assets/characters/sequences/ciaccona_5.png",
+   "assets/characters/sequences/ciaccona_6.png"
+  ],
+  "stats": {
+   "baseATK": 375,
+   "baseDEF": 1197,
+   "baseHP": 12237
+  },
+  "weaponType": "Pistol"
+ },
+ "resolved": {
+  "actions": [
+   {
+    "castConditions": {
+     "endState": "GROUND",
+     "requiresSwapIn": true,
+     "startState": "GROUND"
+    },
+    "castTime": 0.73,
+    "category": "Basics",
+    "cooldown": 0,
+    "damageModifiers": [
+     {
+      "characterStats": {
+       "aeroBonusDMG": 0.24
+      },
+      "condition": "[Function]",
+      "displayName": "Ensemble Sylph",
+      "durationStrategy": {
+       "type": "permanent"
+      },
+      "ownerCharacter": "Ciaccona",
+      "source": "Ciaconna Ensemble Sylph",
+      "stackingStrategy": {
+       "maxStacks": 1,
+       "resetTimerOnApplication": true,
+       "stacksRemovedEachTime": 1
+      },
+      "targetStrategy": "all",
+      "type": "buff"
+     },
+     {
+      "characterStats": {
+       "aeroBonusDMG": 0.15
+      },
+      "condition": "[Function]",
+      "displayName": "Gusts of Welkin (Self Buff)",
+      "durationStrategy": {
+       "timeDuration": 20,
+       "type": "limited"
+      },
+      "ownerCharacter": "Ciaccona",
+      "source": "Ciaccona",
+      "stackingStrategy": {
+       "maxStacks": 1,
+       "resetTimerOnApplication": true,
+       "stacksRemovedEachTime": 1
+      },
+      "targetStrategy": "self",
+      "type": "buff"
+     },
+     {
+      "characterStats": {
+       "aeroBonusDMG": 0.15
+      },
+      "condition": "[Function]",
+      "displayName": "Gusts of Welkin (Team Buff)",
+      "durationStrategy": {
+       "timeDuration": 20,
+       "type": "limited"
+      },
+      "ownerCharacter": "Ciaccona",
+      "source": "Ciaccona",
+      "stackingStrategy": {
+       "maxStacks": 1,
+       "resetTimerOnApplication": true,
+       "stacksRemovedEachTime": 1
+      },
+      "targetStrategy": "all",
+      "type": "buff"
+     }
+    ],
+    "displayName": "Basic Attack 3-4 (skill cancel)",
+    "dmgTypes": [
+     "BASIC"
+    ],
+    "elements": [
+     "AERO"
+    ],
+    "energyCost": [],
+    "energyGenerated": [
+     {
+      "amount": 5.8,
+      "energyType": "energy",
+      "scalingStat": "energyPercent",
+      "share": 0.5
+     },
+     {
+      "amount": 18.48,
+      "energyType": "concerto",
+      "share": 0
+     },
+     {
+      "amount": 1,
+      "energyType": "forte",
+      "share": 0
+     }
+    ],
+    "groupName": "Basic Attack 3-4",
+    "multiplier": 3.7664,
+    "name": "Basic Attack 3-4 (skill cancel)",
+    "offtune": 1.84,
+    "scaling": "ATK",
+    "sideEffects": [],
+    "statusModifications": [
+     {
+      "stackChange": 1,
+      "targetName": "Aero Erosion",
+      "type": "negativeStatus"
+     }
+    ],
+    "tags": [
+     "BASIC_ATTACK",
+     "AERO_EROSION_APPLIER"
+    ],
+    "toolTip": "Can be cast after Intro Skill",
+    "variantName": "Cancel With Skill"
+   },
+   {
+    "castConditions": {
+     "endState": "GROUND",
+     "persistenceTime": 100,
+     "requiresSwapIn": true,
+     "requiresSwapOut": true,
+     "startState": "GROUND",
+     "swapOutState": "AIR"
+    },
+    "castTime": 0.87,
+    "category": "Basics",
+    "cooldown": 0,
+    "damageModifiers": [
+     {
+      "characterStats": {
+       "aeroBonusDMG": 0.24
+      },
+      "condition": "[Function]",
+      "displayName": "Ensemble Sylph",
+      "durationStrategy": {
+       "type": "permanent"
+      },
+      "ownerCharacter": "Ciaccona",
+      "source": "Ciaconna Ensemble Sylph",
+      "stackingStrategy": {
+       "maxStacks": 1,
+       "resetTimerOnApplication": true,
+       "stacksRemovedEachTime": 1
+      },
+      "targetStrategy": "all",
+      "type": "buff"
+     },
+     {
+      "characterStats": {
+       "aeroBonusDMG": 0.15
+      },
+      "condition": "[Function]",
+      "displayName": "Gusts of Welkin (Self Buff)",
+      "durationStrategy": {
+       "timeDuration": 20,
+       "type": "limited"
+      },
+      "ownerCharacter": "Ciaccona",
+      "source": "Ciaccona",
+      "stackingStrategy": {
+       "maxStacks": 1,
+       "resetTimerOnApplication": true,
+       "stacksRemovedEachTime": 1
+      },
+      "targetStrategy": "self",
+      "type": "buff"
+     },
+     {
+      "characterStats": {
+       "aeroBonusDMG": 0.15
+      },
+      "condition": "[Function]",
+      "displayName": "Gusts of Welkin (Team Buff)",
+      "durationStrategy": {
+       "timeDuration": 20,
+       "type": "limited"
+      },
+      "ownerCharacter": "Ciaccona",
+      "source": "Ciaccona",
+      "stackingStrategy": {
+       "maxStacks": 1,
+       "resetTimerOnApplication": true,
+       "stacksRemovedEachTime": 1
+      },
+      "targetStrategy": "all",
+      "type": "buff"
+     }
+    ],
+    "displayName": "Basic Attack 3-4 (swap cancel)",
+    "dmgTypes": [
+     "BASIC"
+    ],
+    "elements": [
+     "AERO"
+    ],
+    "energyCost": [],
+    "energyGenerated": [
+     {
+      "amount": 5.8,
+      "energyType": "energy",
+      "scalingStat": "energyPercent",
+      "share": 0.5
+     },
+     {
+      "amount": 18.48,
+      "energyType": "concerto",
+      "share": 0
+     },
+     {
+      "amount": 1,
+      "energyType": "forte",
+      "share": 0
+     }
+    ],
+    "groupName": "Basic Attack 3-4",
+    "multiplier": 3.7664,
+    "name": "Basic Attack 3-4 (swap cancel)",
+    "offtune": 1.84,
+    "scaling": "ATK",
+    "sideEffects": [],
+    "statusModifications": [
+     {
+      "stackChange": 1,
+      "targetName": "Aero Erosion",
+      "type": "negativeStatus"
+     }
+    ],
+    "tags": [
+     "BASIC_ATTACK",
+     "AERO_EROSION_APPLIER"
+    ],
+    "toolTip": "Can be cast after Intro Skill",
+    "variantName": "Cancel With Swap"
+   },
+   {
+    "castConditions": {
+     "endState": "GROUND",
+     "requiresSwapIn": true,
+     "startState": "GROUND"
+    },
+    "castTime": 0.82,
+    "category": "Basics",
+    "cooldown": 0,
+    "damageModifiers": [
+     {
+      "characterStats": {
+       "aeroBonusDMG": 0.24
+      },
+      "condition": "[Function]",
+      "displayName": "Ensemble Sylph",
+      "durationStrategy": {
+       "type": "permanent"
+      },
+      "ownerCharacter": "Ciaccona",
+      "source": "Ciaconna Ensemble Sylph",
+      "stackingStrategy": {
+       "maxStacks": 1,
+       "resetTimerOnApplication": true,
+       "stacksRemovedEachTime": 1
+      },
+      "targetStrategy": "all",
+      "type": "buff"
+     },
+     {
+      "characterStats": {
+       "aeroBonusDMG": 0.15
+      },
+      "condition": "[Function]",
+      "displayName": "Gusts of Welkin (Self Buff)",
+      "durationStrategy": {
+       "timeDuration": 20,
+       "type": "limited"
+      },
+      "ownerCharacter": "Ciaccona",
+      "source": "Ciaccona",
+      "stackingStrategy": {
+       "maxStacks": 1,
+       "resetTimerOnApplication": true,
+       "stacksRemovedEachTime": 1
+      },
+      "targetStrategy": "self",
+      "type": "buff"
+     },
+     {
+      "characterStats": {
+       "aeroBonusDMG": 0.15
+      },
+      "condition": "[Function]",
+      "displayName": "Gusts of Welkin (Team Buff)",
+      "durationStrategy": {
+       "timeDuration": 20,
+       "type": "limited"
+      },
+      "ownerCharacter": "Ciaccona",
+      "source": "Ciaccona",
+      "stackingStrategy": {
+       "maxStacks": 1,
+       "resetTimerOnApplication": true,
+       "stacksRemovedEachTime": 1
+      },
+      "targetStrategy": "all",
+      "type": "buff"
+     }
+    ],
+    "displayName": "Mid Air 2 -> Basic Attack 4 (skill cancel)",
+    "dmgTypes": [
+     "BASIC"
+    ],
+    "elements": [
+     "AERO"
+    ],
+    "energyCost": [],
+    "energyGenerated": [
+     {
+      "amount": 5.28,
+      "energyType": "energy",
+      "scalingStat": "energyPercent",
+      "share": 0.5
+     },
+     {
+      "amount": 16.8,
+      "energyType": "concerto",
+      "share": 0
+     },
+     {
+      "amount": 1,
+      "energyType": "forte",
+      "share": 0
+     }
+    ],
+    "groupName": "MA2 -> BA4",
+    "multiplier": 3.424,
+    "name": "Mid Air 2 -> Basic Attack 4 (skill cancel)",
+    "offtune": 1.68,
+    "scaling": "ATK",
+    "sideEffects": [],
+    "statusModifications": [
+     {
+      "stackChange": 1,
+      "targetName": "Aero Erosion",
+      "type": "negativeStatus"
+     }
+    ],
+    "tags": [
+     "BASIC_ATTACK",
+     "AERO_EROSION_APPLIER"
+    ],
+    "toolTip": "Can be cast if swapped in mid-air",
+    "variantName": "Cancel With Skill"
+   },
+   {
+    "castConditions": {
+     "endState": "GROUND",
+     "persistenceTime": 100,
+     "requiresSwapIn": true,
+     "requiresSwapOut": true,
+     "startState": "GROUND",
+     "swapOutState": "GROUND"
+    },
+    "castTime": 0.95,
+    "category": "Basics",
+    "cooldown": 0,
+    "damageModifiers": [
+     {
+      "characterStats": {
+       "aeroBonusDMG": 0.24
+      },
+      "condition": "[Function]",
+      "displayName": "Ensemble Sylph",
+      "durationStrategy": {
+       "type": "permanent"
+      },
+      "ownerCharacter": "Ciaccona",
+      "source": "Ciaconna Ensemble Sylph",
+      "stackingStrategy": {
+       "maxStacks": 1,
+       "resetTimerOnApplication": true,
+       "stacksRemovedEachTime": 1
+      },
+      "targetStrategy": "all",
+      "type": "buff"
+     },
+     {
+      "characterStats": {
+       "aeroBonusDMG": 0.15
+      },
+      "condition": "[Function]",
+      "displayName": "Gusts of Welkin (Self Buff)",
+      "durationStrategy": {
+       "timeDuration": 20,
+       "type": "limited"
+      },
+      "ownerCharacter": "Ciaccona",
+      "source": "Ciaccona",
+      "stackingStrategy": {
+       "maxStacks": 1,
+       "resetTimerOnApplication": true,
+       "stacksRemovedEachTime": 1
+      },
+      "targetStrategy": "self",
+      "type": "buff"
+     },
+     {
+      "characterStats": {
+       "aeroBonusDMG": 0.15
+      },
+      "condition": "[Function]",
+      "displayName": "Gusts of Welkin (Team Buff)",
+      "durationStrategy": {
+       "timeDuration": 20,
+       "type": "limited"
+      },
+      "ownerCharacter": "Ciaccona",
+      "source": "Ciaccona",
+      "stackingStrategy": {
+       "maxStacks": 1,
+       "resetTimerOnApplication": true,
+       "stacksRemovedEachTime": 1
+      },
+      "targetStrategy": "all",
+      "type": "buff"
+     }
+    ],
+    "displayName": "Mid Air 2 -> Basic Attack 4 (swap cancel)",
+    "dmgTypes": [
+     "BASIC"
+    ],
+    "elements": [
+     "AERO"
+    ],
+    "energyCost": [],
+    "energyGenerated": [
+     {
+      "amount": 5.28,
+      "energyType": "energy",
+      "scalingStat": "energyPercent",
+      "share": 0.5
+     },
+     {
+      "amount": 16.8,
+      "energyType": "concerto",
+      "share": 0
+     },
+     {
+      "amount": 1,
+      "energyType": "forte",
+      "share": 0
+     }
+    ],
+    "groupName": "MA2 -> BA4",
+    "multiplier": 3.424,
+    "name": "Mid Air 2 -> Basic Attack 4 (swap cancel)",
+    "offtune": 1.68,
+    "scaling": "ATK",
+    "sideEffects": [],
+    "statusModifications": [
+     {
+      "stackChange": 1,
+      "targetName": "Aero Erosion",
+      "type": "negativeStatus"
+     }
+    ],
+    "tags": [
+     "BASIC_ATTACK",
+     "AERO_EROSION_APPLIER"
+    ],
+    "toolTip": "Can be cast if swapped in mid-air",
+    "variantName": "Cancel With Swap"
+   },
+   {
+    "castConditions": {
+     "endState": "PRESERVE",
+     "startState": "ANY"
+    },
+    "castTime": 0.65,
+    "category": "Skills",
+    "cooldown": 10,
+    "damageModifiers": [
+     {
+      "characterStats": {
+       "aeroBonusDMG": 0.15
+      },
+      "condition": "[Function]",
+      "displayName": "Gusts of Welkin (Self Buff)",
+      "durationStrategy": {
+       "timeDuration": 20,
+       "type": "limited"
+      },
+      "ownerCharacter": "Ciaccona",
+      "source": "Ciaccona",
+      "stackingStrategy": {
+       "maxStacks": 1,
+       "resetTimerOnApplication": true,
+       "stacksRemovedEachTime": 1
+      },
+      "targetStrategy": "self",
+      "type": "buff"
+     },
+     {
+      "characterStats": {
+       "aeroBonusDMG": 0.15
+      },
+      "condition": "[Function]",
+      "displayName": "Gusts of Welkin (Team Buff)",
+      "durationStrategy": {
+       "timeDuration": 20,
+       "type": "limited"
+      },
+      "ownerCharacter": "Ciaccona",
+      "source": "Ciaccona",
+      "stackingStrategy": {
+       "maxStacks": 1,
+       "resetTimerOnApplication": true,
+       "stacksRemovedEachTime": 1
+      },
+      "targetStrategy": "all",
+      "type": "buff"
+     }
+    ],
+    "displayName": "Harmonic Allegro",
+    "dmgTypes": [
+     "SKILL"
+    ],
+    "elements": [
+     "AERO"
+    ],
+    "energyCost": [],
+    "energyGenerated": [
+     {
+      "amount": 9.6,
+      "energyType": "energy",
+      "scalingStat": "energyPercent",
+      "share": 0.5
+     },
+     {
+      "amount": 15,
+      "energyType": "concerto",
+      "share": 0
+     }
+    ],
+    "groupName": "Resonance Skill",
+    "multiplier": 1.6156,
+    "name": "Resonance Skill",
+    "offtune": 0.52,
+    "scaling": "ATK",
+    "sideEffects": [],
+    "statusModifications": [
+     {
+      "stackChange": 1,
+      "targetName": "Aero Erosion",
+      "type": "negativeStatus"
+     }
+    ],
+    "tags": [
+     "SKILL",
+     "AERO_EROSION_APPLIER"
+    ],
+    "variantName": "Default"
+   },
+   {
+    "castConditions": {
+     "endState": "PRESERVE",
+     "persistenceTime": 100,
+     "requiresSwapOut": true,
+     "startState": "ANY",
+     "swapOutState": "PRESERVE"
+    },
+    "castTime": 0.15,
+    "category": "Skills",
+    "cooldown": 10,
+    "damageModifiers": [
+     {
+      "characterStats": {
+       "aeroBonusDMG": 0.15
+      },
+      "condition": "[Function]",
+      "displayName": "Gusts of Welkin (Self Buff)",
+      "durationStrategy": {
+       "timeDuration": 20,
+       "type": "limited"
+      },
+      "ownerCharacter": "Ciaccona",
+      "source": "Ciaccona",
+      "stackingStrategy": {
+       "maxStacks": 1,
+       "resetTimerOnApplication": true,
+       "stacksRemovedEachTime": 1
+      },
+      "targetStrategy": "self",
+      "type": "buff"
+     },
+     {
+      "characterStats": {
+       "aeroBonusDMG": 0.15
+      },
+      "condition": "[Function]",
+      "displayName": "Gusts of Welkin (Team Buff)",
+      "durationStrategy": {
+       "timeDuration": 20,
+       "type": "limited"
+      },
+      "ownerCharacter": "Ciaccona",
+      "source": "Ciaccona",
+      "stackingStrategy": {
+       "maxStacks": 1,
+       "resetTimerOnApplication": true,
+       "stacksRemovedEachTime": 1
+      },
+      "targetStrategy": "all",
+      "type": "buff"
+     }
+    ],
+    "displayName": "Harmonic Allegro (swap cancel)",
+    "dmgTypes": [
+     "SKILL"
+    ],
+    "elements": [
+     "AERO"
+    ],
+    "energyCost": [],
+    "energyGenerated": [
+     {
+      "amount": 9.6,
+      "energyType": "energy",
+      "scalingStat": "energyPercent",
+      "share": 0.5
+     },
+     {
+      "amount": 15,
+      "energyType": "concerto",
+      "share": 0
+     }
+    ],
+    "groupName": "Resonance Skill",
+    "multiplier": 1.6156,
+    "name": "Resonance Skill (swap cancel)",
+    "offtune": 0.52,
+    "scaling": "ATK",
+    "sideEffects": [],
+    "statusModifications": [
+     {
+      "stackChange": 1,
+      "targetName": "Aero Erosion",
+      "type": "negativeStatus"
+     }
+    ],
+    "tags": [
+     "SKILL",
+     "AERO_EROSION_APPLIER"
+    ],
+    "variantName": "Cancel With Swap"
+   },
+   {
+    "castConditions": {
+     "endState": "GROUND",
+     "startState": "GROUND"
+    },
+    "castTime": 1,
+    "category": "Skills",
+    "cooldown": 20,
+    "coordinatedAttacks": [
+     {
+      "damageModifiers": [
+       {
+        "characterStats": {
+         "aeroBonusDMG": 0.15
+        },
+        "condition": "[Function]",
+        "displayName": "Gusts of Welkin (Self Buff)",
+        "durationStrategy": {
+         "timeDuration": 20,
+         "type": "limited"
+        },
+        "ownerCharacter": "Ciaccona",
+        "source": "Ciaccona",
+        "stackingStrategy": {
+         "maxStacks": 1,
+         "resetTimerOnApplication": true,
+         "stacksRemovedEachTime": 1
+        },
+        "targetStrategy": "self",
+        "type": "buff"
+       },
+       {
+        "characterStats": {
+         "aeroBonusDMG": 0.15
+        },
+        "condition": "[Function]",
+        "displayName": "Gusts of Welkin (Team Buff)",
+        "durationStrategy": {
+         "timeDuration": 20,
+         "type": "limited"
+        },
+        "ownerCharacter": "Ciaccona",
+        "source": "Ciaccona",
+        "stackingStrategy": {
+         "maxStacks": 1,
+         "resetTimerOnApplication": true,
+         "stacksRemovedEachTime": 1
+        },
+        "targetStrategy": "all",
+        "type": "buff"
+       }
+      ],
+      "displayName": "Singers Triple Cadenza (Coordinated)",
+      "dmgTypes": [
+       "LIBERATION"
+      ],
+      "duration": 32,
+      "elements": [
+       "AERO"
+      ],
+      "energyGenerated": [],
+      "frequency": 1.6,
+      "multiplier": 0.0612,
+      "name": "Singers Triple Cadenza (Coordinated)",
+      "offtune": 0.22,
+      "scaling": "ATK",
+      "statusModifications": [
+       {
+        "stackChange": 1,
+        "targetName": "Aero Erosion",
+        "type": "negativeStatus"
+       }
+      ],
+      "swapRequired": true,
+      "tags": [
+       "AERO_EROSION_APPLIER"
+      ]
+     }
+    ],
+    "damageModifiers": [],
+    "displayName": "Singers Triple Cadenza",
+    "dmgTypes": [
+     "LIBERATION"
+    ],
+    "elements": [
+     "AERO"
+    ],
+    "energyCost": [
+     {
+      "amount": 125,
+      "energyType": "energy"
+     }
+    ],
+    "energyGenerated": [
+     {
+      "amount": 0,
+      "energyType": "energy",
+      "scalingStat": "energyPercent",
+      "share": 0.5
+     },
+     {
+      "amount": 20,
+      "energyType": "concerto",
+      "share": 0
+     }
+    ],
+    "multiplier": 11.0042,
+    "name": "Liberation",
+    "offtune": 4.8,
+    "scaling": "ATK",
+    "sideEffects": [],
+    "statusModifications": [],
+    "tags": [
+     "LIBERATION"
+    ]
+   },
+   {
+    "castConditions": {
+     "endState": "GROUND",
+     "startState": "GROUND"
+    },
+    "castTime": 1.13,
+    "category": "Basics",
+    "cooldown": 0,
+    "damageModifiers": [],
+    "displayName": "Quadruple Downbeat",
+    "dmgTypes": [
+     "HEAVY"
+    ],
+    "elements": [
+     "AERO"
+    ],
+    "energyCost": [
+     {
+      "amount": 3,
+      "energyType": "forte"
+     }
+    ],
+    "energyGenerated": [
+     {
+      "amount": 14.97,
+      "energyType": "energy",
+      "scalingStat": "energyPercent",
+      "share": 0.5
+     },
+     {
+      "amount": 25,
+      "energyType": "concerto",
+      "share": 0
+     }
+    ],
+    "groupName": "Heavy Attack",
+    "multiplier": 8.16569,
+    "name": "Heavy Attack",
+    "offtune": 0.97,
+    "scaling": "ATK",
+    "sideEffects": [],
+    "statusModifications": [
+     {
+      "stackChange": 1,
+      "targetName": "Aero Erosion",
+      "type": "negativeStatus"
+     }
+    ],
+    "tags": [
+     "HEAVY_ATTACK"
+    ],
+    "variantName": "Default"
+   },
+   {
+    "castConditions": {
+     "endState": "GROUND",
+     "persistenceTime": 100,
+     "requiresSwapOut": true,
+     "startState": "GROUND",
+     "swapOutState": "PRESERVE"
+    },
+    "castTime": 0.15,
+    "category": "Basics",
+    "cooldown": 0,
+    "damageModifiers": [],
+    "displayName": "Quadruple Downbeat (swap cancel)",
+    "dmgTypes": [
+     "HEAVY"
+    ],
+    "elements": [
+     "AERO"
+    ],
+    "energyCost": [
+     {
+      "amount": 3,
+      "energyType": "forte"
+     }
+    ],
+    "energyGenerated": [
+     {
+      "amount": 14.97,
+      "energyType": "energy",
+      "scalingStat": "energyPercent",
+      "share": 0.5
+     },
+     {
+      "amount": 25,
+      "energyType": "concerto",
+      "share": 0
+     }
+    ],
+    "groupName": "Heavy Attack",
+    "multiplier": 8.16569,
+    "name": "Heavy Attack (swap cancel)",
+    "offtune": 0.97,
+    "scaling": "ATK",
+    "sideEffects": [],
+    "statusModifications": [
+     {
+      "stackChange": 1,
+      "targetName": "Aero Erosion",
+      "type": "negativeStatus"
+     }
+    ],
+    "tags": [
+     "HEAVY_ATTACK"
+    ],
+    "variantName": "Cancel With Swap"
+   },
+   {
+    "castConditions": {
+     "endState": "GROUND",
+     "startState": "ANY"
+    },
+    "castTime": 0.95,
+    "category": "Other",
+    "cooldown": 0,
+    "damageModifiers": [],
+    "displayName": "Roaming with the Wind",
+    "dmgTypes": [
+     "INTRO"
+    ],
+    "elements": [
+     "AERO"
+    ],
+    "energyCost": [],
+    "energyGenerated": [
+     {
+      "amount": 10,
+      "energyType": "energy",
+      "scalingStat": "energyPercent",
+      "share": 0.5
+     },
+     {
+      "amount": 10,
+      "energyType": "concerto",
+      "share": 0
+     },
+     {
+      "amount": 1,
+      "energyType": "forte",
+      "share": 0
+     }
+    ],
+    "multiplier": 1.8911,
+    "name": "Intro Skill",
+    "offtune": 0.93,
+    "scaling": "ATK",
+    "sideEffects": [],
+    "statusModifications": [],
+    "tags": [
+     "INTRO_ACTION"
+    ]
+   },
+   {
+    "castConditions": {
+     "endState": "PRESERVE",
+     "startState": "ANY"
+    },
+    "castTime": 0,
+    "category": "Other",
+    "cooldown": 0,
+    "damageModifiers": [
+     {
+      "characterStats": {
+       "aeroErosionAmplifyDMG": 1
+      },
+      "condition": "[Function]",
+      "displayName": "Windcalling Tune",
+      "durationStrategy": {
+       "timeDuration": 30,
+       "type": "limited"
+      },
+      "ownerCharacter": "Ciaccona",
+      "source": "Ciaconna Outro Buff",
+      "stackingStrategy": {
+       "maxStacks": 1,
+       "resetTimerOnApplication": true,
+       "stacksRemovedEachTime": 1
+      },
+      "targetStrategy": "all",
+      "type": "buff"
+     },
+     {
+      "characterStats": {
+       "bonusATK": 0.15
+      },
+      "condition": "[Function]",
+      "displayName": "Static Mist Outro Buff",
+      "durationStrategy": {
+       "numberOfSwaps": 1,
+       "timeDuration": 14,
+       "type": "limited"
+      },
+      "ownerCharacter": "Ciaccona",
+      "source": "Static Mist",
+      "stackingStrategy": {
+       "maxStacks": 1,
+       "resetTimerOnApplication": true,
+       "stacksRemovedEachTime": 1
+      },
+      "targetStrategy": "nextSwap",
+      "type": "buff"
+     }
+    ],
+    "displayName": "Windcalling Tune",
+    "dmgTypes": [
+     "OUTRO"
+    ],
+    "elements": [
+     "AERO"
+    ],
+    "energyCost": [],
+    "energyGenerated": [],
+    "multiplier": 0,
+    "name": "Outro Skill",
+    "offtune": 0,
+    "scaling": "ATK",
+    "sideEffects": [
+     {
+      "damageDealt": "[Function]",
+      "name": "Nightmare: Kelpie Outro Trigger",
+      "statusModifications": []
+     }
+    ],
+    "statusModifications": [],
+    "tags": [
+     "OUTRO_ACTION"
+    ]
+   },
+   {
+    "castConditions": {
+     "endState": "PRESERVE",
+     "startState": "ANY"
+    },
+    "castTime": 0.05,
+    "category": "Testing",
+    "cooldown": 0,
+    "damageModifiers": [],
+    "displayName": "Wait 0.05s",
+    "dmgTypes": [
+     ""
+    ],
+    "elements": [
+     ""
+    ],
+    "energyCost": [],
+    "energyGenerated": [],
+    "multiplier": 0,
+    "name": "Wait 0.05s",
+    "offtune": 0,
+    "scaling": "HP",
+    "sideEffects": [],
+    "statusModifications": []
+   },
+   {
+    "castConditions": {
+     "customCanCast": "[Function]",
+     "endState": "PRESERVE",
+     "startState": "ANY"
+    },
+    "castTime": 0,
+    "category": "Other",
+    "cooldown": 0,
+    "damageModifiers": [],
+    "displayName": "Wait Until Next Swap Is Available",
+    "dmgTypes": [
+     ""
+    ],
+    "elements": [
+     ""
+    ],
+    "energyCost": [],
+    "energyGenerated": [],
+    "multiplier": 0,
+    "name": "Wait Until Next Swap Is Available",
+    "offtune": 0,
+    "resolveVariant": "[Function]",
+    "scaling": "HP",
+    "sideEffects": [],
+    "statusModifications": []
+   },
+   {
+    "castConditions": {
+     "endState": "PRESERVE",
+     "startState": "ANY"
+    },
+    "castTime": 0,
+    "category": "Testing",
+    "cooldown": 0,
+    "damageModifiers": [],
+    "displayName": "Energy Up",
+    "dmgTypes": [
+     ""
+    ],
+    "elements": [
+     ""
+    ],
+    "energyCost": [],
+    "energyGenerated": [
+     {
+      "amount": 1000,
+      "energyType": "energy",
+      "share": 0
+     }
+    ],
+    "multiplier": 0,
+    "name": "Energy Up",
+    "offtune": 0,
+    "scaling": "HP",
+    "sideEffects": [],
+    "statusModifications": []
+   },
+   {
+    "castConditions": {
+     "endState": "PRESERVE",
+     "startState": "ANY"
+    },
+    "castTime": 0,
+    "category": "Testing",
+    "cooldown": 0,
+    "damageModifiers": [],
+    "displayName": "Concerto Up",
+    "dmgTypes": [
+     ""
+    ],
+    "elements": [
+     ""
+    ],
+    "energyCost": [],
+    "energyGenerated": [
+     {
+      "amount": 1000,
+      "energyType": "concerto",
+      "share": 0
+     }
+    ],
+    "multiplier": 0,
+    "name": "Concerto Up",
+    "offtune": 0,
+    "scaling": "HP",
+    "sideEffects": [],
+    "statusModifications": []
+   },
+   {
+    "castConditions": {
+     "endState": "PRESERVE",
+     "startState": "ANY"
+    },
+    "castTime": 0,
+    "category": "Testing",
+    "cooldown": 0,
+    "damageModifiers": [],
+    "displayName": "Forte Up",
+    "dmgTypes": [
+     ""
+    ],
+    "elements": [
+     ""
+    ],
+    "energyCost": [],
+    "energyGenerated": [
+     {
+      "amount": 1000,
+      "energyType": "forte",
+      "share": 0
+     }
+    ],
+    "multiplier": 0,
+    "name": "Forte Up",
+    "offtune": 0,
+    "scaling": "HP",
+    "sideEffects": [],
+    "statusModifications": []
+   },
+   {
+    "castConditions": {
+     "endState": "AIR",
+     "startState": "GROUND"
+    },
+    "castTime": 0,
+    "category": "Echo Skill",
+    "cooldown": 25,
+    "damageModifiers": [],
+    "displayName": "Nightmare: Kelpie (Active)",
+    "dmgTypes": [
+     "ECHO"
+    ],
+    "elements": [
+     "GLACIO"
+    ],
+    "energyCost": [],
+    "energyGenerated": [
+     {
+      "amount": 2.81,
+      "energyType": "energy",
+      "scalingStat": "energyPercent",
+      "share": 0.5
+     }
+    ],
+    "multiplier": 4.05,
+    "name": "Nightmare: Kelpie (Active)",
+    "offtune": 0,
+    "scaling": "ATK",
+    "sideEffects": [],
+    "statusModifications": []
+   }
+  ],
+  "damageModifiers": [
+   {
+    "characterStats": {
+     "aeroBonusDMG": 0.15
+    },
+    "condition": "[Function]",
+    "displayName": "GoW Team Buff",
+    "durationStrategy": {
+     "type": "permanent"
+    },
+    "ownerCharacter": "Ciaccona",
+    "source": "Gusts of Welkin Team Buff",
+    "stackingStrategy": {
+     "maxStacks": 1,
+     "resetTimerOnApplication": false,
+     "stacksRemovedEachTime": 1
+    },
+    "targetStrategy": "all",
+    "type": "buff"
+   }
+  ],
+  "element": "ELECTRO",
+  "flattenedPassiveModifiers": [
+   {
+    "characterStats": {
+     "aeroBonusDMG": 0.15
+    },
+    "condition": "[Function]",
+    "displayName": "GoW Self Buff",
+    "durationStrategy": {
+     "type": "permanent"
+    },
+    "ownerCharacter": "Ciaccona",
+    "source": "Gusts of Welkin Self Buff",
+    "stackingStrategy": {
+     "maxStacks": 1,
+     "resetTimerOnApplication": false,
+     "stacksRemovedEachTime": 1
+    },
+    "targetStrategy": "self",
+    "type": "buff"
+   },
+   {
+    "characterStats": {
+     "energyPercent": 0.192
+    },
+    "condition": "[Function]",
+    "displayName": "Static Mist Energy Regen",
+    "durationStrategy": {
+     "type": "permanent"
+    },
+    "ownerCharacter": "Ciaccona",
+    "source": "Static Mist",
+    "stackingStrategy": {
+     "maxStacks": 1,
+     "resetTimerOnApplication": false,
+     "stacksRemovedEachTime": 0
+    },
+    "targetStrategy": "self",
+    "type": "buff"
+   }
+  ],
+  "gear": {
+   "echoSlots": {
+    "1": {
+     "baseStats": {
+      "critDamage": 0.44,
+      "flatATK": 150
+     },
+     "cost": 4,
+     "echoSkill": {
+      "castConditions": {
+       "endState": "AIR",
+       "startState": "GROUND"
+      },
+      "castTime": 0,
+      "category": "Echo Skill",
+      "cooldown": 25,
+      "damageModifiers": [],
+      "displayName": "Nightmare: Kelpie (Active)",
+      "dmgTypes": [
+       "ECHO"
+      ],
+      "elements": [
+       "GLACIO"
+      ],
+      "energyCost": [],
+      "energyGenerated": [
+       {
+        "amount": 2.81,
+        "energyType": "energy",
+        "scalingStat": "energyPercent",
+        "share": 0.5
+       }
+      ],
+      "multiplier": 4.05,
+      "name": "Nightmare: Kelpie (Active)",
+      "offtune": 0,
+      "scaling": "ATK",
+      "sideEffects": [],
+      "statusModifications": []
+     },
+     "firstSlotStats": {
+      "aeroBonusDMG": 0.12,
+      "glacioBonusDMG": 0.12
+     },
+     "icon": "assets/gear/echoes/nightmare_kelpie.png",
+     "info": "The Resonator with this Echo equipped in the main slot gains 12.00% Glacio DMG Bonus and 12.00% Aero DMG Bonus. Switching out the Resonator with Outro Skill summons Nightmare: Kelpie to deal 405.00% Aero DMG.",
+     "info_icon": "assets/gear/echoes/info/info_nightmare_kelpie.png",
+     "injectedSideEffects": [
+      {
+       "sideEffects": [
+        {
+         "damageDealt": "[Function]",
+         "name": "Nightmare: Kelpie Outro Trigger",
+         "statusModifications": []
+        }
+       ],
+       "targets": [
+        {
+         "tag": "OUTRO_ACTION"
+        }
+       ]
+      }
+     ],
+     "name": "Nightmare: Kelpie",
+     "setName": "Gusts of Welkin",
+     "subStats": {
+      "bonusATK": 0.079,
+      "critDamage": 0.15,
+      "critRate": 0.075
+     }
+    },
+    "2": {
+     "baseStats": {
+      "aeroBonusDMG": 0.3,
+      "flatATK": 100
+     },
+     "cost": 3,
+     "icon": "assets/gear/echoes/capitaneus.png",
+     "info": "The Resonator with this Echo equipped in their main slot gains 12.00% Spectro DMG Bonus and 12.00% Heavy Attack DMG Bonus.",
+     "info_icon": "assets/gear/echoes/info_capitaneus.png",
+     "name": "Capitaneus",
+     "setName": "Gusts of Welkin",
+     "subStats": {
+      "bonusATK": 0.079,
+      "critDamage": 0.15,
+      "critRate": 0.075
+     }
+    },
+    "3": {
+     "baseStats": {
+      "aeroBonusDMG": 0.3,
+      "flatATK": 100
+     },
+     "cost": 3,
+     "icon": "assets/gear/echoes/hurriclaw.png",
+     "info_icon": "assets/gear/echoes/info_hurriclaw.png",
+     "name": "Hurriclaw",
+     "setName": "Gusts of Welkin",
+     "subStats": {
+      "bonusATK": 0.079,
+      "critDamage": 0.15,
+      "critRate": 0.075
+     }
+    },
+    "4": {
+     "baseStats": {
+      "bonusATK": 0.18,
+      "flatHP": 2280
+     },
+     "cost": 1,
+     "icon": "assets/gear/echoes/sagittario.png",
+     "info_icon": "assets/gear/echoes/info_sagittario.png",
+     "name": "Sacerdos",
+     "setName": "Gusts of Welkin",
+     "subStats": {
+      "bonusATK": 0.079,
+      "critDamage": 0.15,
+      "critRate": 0.075
+     }
+    },
+    "5": {
+     "baseStats": {
+      "bonusATK": 0.18,
+      "flatHP": 2280
+     },
+     "cost": 1,
+     "icon": "assets/gear/echoes/sacerdos.png",
+     "info_icon": "assets/gear/echoes/info_sacerdos.png",
+     "name": "Sacerdos",
+     "setName": "Gusts of Welkin",
+     "subStats": {
+      "bonusATK": 0.079,
+      "critDamage": 0.15,
+      "critRate": 0.075
+     }
+    }
+   },
+   "setBonus": {
+    "icon": "assets/gear/set-bonuses/gusts_of_welkin.png",
+    "info": {
+     "2-piece": "Aero DMG + 10%",
+     "5-piece": "Inflicting Aero Erosion upon enemies increases Aero DMG for all Resonators in the team by 15%, and for the Resonator triggering this effect by an additional 15%, lasting for 20s."
+    },
+    "injectedModifiers": [
+     {
+      "modifiers": [
+       {
+        "characterStats": {
+         "aeroBonusDMG": 0.15
+        },
+        "condition": "[Function]",
+        "displayName": "Gusts of Welkin (Self Buff)",
+        "durationStrategy": {
+         "timeDuration": 20,
+         "type": "limited"
+        },
+        "ownerCharacter": "Ciaccona",
+        "source": "Ciaccona",
+        "stackingStrategy": {
+         "maxStacks": 1,
+         "resetTimerOnApplication": true,
+         "stacksRemovedEachTime": 1
+        },
+        "targetStrategy": "self",
+        "type": "buff"
+       },
+       {
+        "characterStats": {
+         "aeroBonusDMG": 0.15
+        },
+        "condition": "[Function]",
+        "displayName": "Gusts of Welkin (Team Buff)",
+        "durationStrategy": {
+         "timeDuration": 20,
+         "type": "limited"
+        },
+        "ownerCharacter": "Ciaccona",
+        "source": "Ciaccona",
+        "stackingStrategy": {
+         "maxStacks": 1,
+         "resetTimerOnApplication": true,
+         "stacksRemovedEachTime": 1
+        },
+        "targetStrategy": "all",
+        "type": "buff"
+       }
+      ],
+      "targets": [
+       {
+        "tag": "AERO_EROSION_APPLIER"
+       }
+      ]
+     }
+    ],
+    "name": "Gusts of Welkin",
+    "stats": {
+     "aeroBonusDMG": 0.1
+    }
+   },
+   "weapon": {
+    "icon": "assets/gear/weapons/static_mist.png",
+    "info": "Increases Energy Regen by 12.8%/16%/19.2%/22.4%/25.6%. Incoming Resonator's ATK is increased by 10%/12.5%/15%/17.5%/20% for 14s, stackable for up to 1 time after the wielder casts Outro Skill.",
+    "injectedModifiers": [
+     {
+      "modifiers": [
+       {
+        "characterStats": {
+         "energyPercent": 0.192
+        },
+        "condition": "[Function]",
+        "displayName": "Static Mist Energy Regen",
+        "durationStrategy": {
+         "type": "permanent"
+        },
+        "ownerCharacter": "Ciaccona",
+        "source": "Static Mist",
+        "stackingStrategy": {
+         "maxStacks": 1,
+         "resetTimerOnApplication": false,
+         "stacksRemovedEachTime": 0
+        },
+        "targetStrategy": "self",
+        "type": "buff"
+       }
+      ],
+      "targets": [
+       "character"
+      ]
+     },
+     {
+      "modifiers": [
+       {
+        "characterStats": {
+         "bonusATK": 0.15
+        },
+        "condition": "[Function]",
+        "displayName": "Static Mist Outro Buff",
+        "durationStrategy": {
+         "numberOfSwaps": 1,
+         "timeDuration": 14,
+         "type": "limited"
+        },
+        "ownerCharacter": "Ciaccona",
+        "source": "Static Mist",
+        "stackingStrategy": {
+         "maxStacks": 1,
+         "resetTimerOnApplication": true,
+         "stacksRemovedEachTime": 1
+        },
+        "targetStrategy": "nextSwap",
+        "type": "buff"
+       }
+      ],
+      "targets": [
+       {
+        "tag": "OUTRO_ACTION"
+       }
+      ]
+     }
+    ],
+    "name": "Static Mist",
+    "rank": 3,
+    "stats": {
+     "baseATK": 587.5,
+     "critRate": 0.243
+    },
+    "weaponType": "Pistol"
+   }
+  },
+  "image": "/assets/characters/ciaccona.png",
+  "inherentStats": {
+   "bonusATK": 0.12,
+   "critDamage": 0.16
+  },
+  "maxEnergies": {
+   "concerto": 100,
+   "energy": 125,
+   "forte": 3
+  },
+  "name": "Ciaccona",
+  "sequence": 0,
+  "sequence_nodes": [
+   "Casting Resonance Skill Harmonic Allegro grants Ciaccona immunity to interruption for 3s. Casting Basic Attack increases Ciaccona's ATK by 35% for 10s.",
+   "During Resonance Liberation Singer's Triple Cadenza, Resonators in the team gain 40% Aero DMG Bonus.",
+   "Casting Basic Attack Stage 4 additionally grants 1 segments of Musical Essence. Resonance Skill Harmonic Allegro gains 1 more charge.",
+   "Ciaccona ignores 45% of the targets' DEF when dealing damage with Heavy Attack Quadruple Downbeat; Ciaccona ignores 45% of the targets' DEF when dealing Resonance Liberation DMG.",
+   "Gain 40% Resonance Liberation DMG Bonus; DMG taken by Resonators within and around the range of Resonance Liberation Singer's Triple Cadenza is reduced by 30%.",
+   "When in Solo Concert, Ciaccona or Ensemble Sylph deals Aero DMG equal to 220% of Ciaccona's ATK to nearby targets, considered Resonance Liberation DMG"
+  ],
+  "sequence_nodes_icons": [
+   "assets/characters/sequences/ciaccona_1.png",
+   "assets/characters/sequences/ciaccona_2.png",
+   "assets/characters/sequences/ciaccona_3.png",
+   "assets/characters/sequences/ciaccona_4.png",
+   "assets/characters/sequences/ciaccona_5.png",
+   "assets/characters/sequences/ciaccona_6.png"
+  ],
+  "stats": {
+   "aeroAmplifyDMG": 0,
+   "aeroBonusDMG": 0.97,
+   "aeroErosionAmplifyDMG": 0,
+   "aeroErosionBonusDMG": 0,
+   "aeroErosionTotalMultiplierDMG": 1,
+   "aeroTotalMultiplierDMG": 1,
+   "amplifyATK": 0,
+   "amplifyDEF": 0,
+   "amplifyDMG": 0,
+   "amplifyHP": 0,
+   "baseATK": 962.5,
+   "baseDEF": 1197,
+   "baseHP": 12237,
+   "basicAmplifyDMG": 0,
+   "basicBonusDMG": 0,
+   "basicTotalMultiplierDMG": 1,
+   "bonusATK": 0.875,
+   "bonusDEF": 0,
+   "bonusDMG": 0,
+   "bonusHP": 0,
+   "coordinatedAmplifyDMG": 0,
+   "coordinatedBonusDMG": 0,
+   "coordinatedTotalMultiplierDMG": 1,
+   "critDamage": 2.85,
+   "critRate": 0.668,
+   "defIgnore": 0,
+   "echoAmplifyDMG": 0,
+   "echoBonusDMG": 0,
+   "echoTotalMultiplierDMG": 1,
+   "electroAmplifyDMG": 0,
+   "electroBonusDMG": 0,
+   "electroFlareAmplifyDMG": 0,
+   "electroFlareBonusDMG": 0,
+   "electroFlareTotalMultiplierDMG": 1,
+   "electroTotalMultiplierDMG": 1,
+   "elementalResPEN": 0,
+   "energyPercent": 1.192,
+   "flatATK": 350,
+   "flatDEF": 0,
+   "flatHP": 4560,
+   "fusionAmplifyDMG": 0,
+   "fusionBonusDMG": 0,
+   "fusionBurstAmplifyDMG": 0,
+   "fusionBurstBonusDMG": 0,
+   "fusionBurstTotalMultiplierDMG": 1,
+   "fusionTotalMultiplierDMG": 1,
+   "glacioAmplifyDMG": 0,
+   "glacioBonusDMG": 0.12,
+   "glacioChafeAmplifyDMG": 0,
+   "glacioChafeBonusDMG": 0,
+   "glacioChafeTotalMultiplierDMG": 1,
+   "glacioTotalMultiplierDMG": 1,
+   "havocAmplifyDMG": 0,
+   "havocBaneAmplifyDMG": 0,
+   "havocBaneBonusDMG": 0,
+   "havocBaneTotalMultiplierDMG": 1,
+   "havocBonusDMG": 0,
+   "havocTotalMultiplierDMG": 1,
+   "healingBonus": 0,
+   "heavyAmplifyDMG": 0,
+   "heavyBonusDMG": 0,
+   "heavyTotalMultiplierDMG": 1,
+   "introAmplifyDMG": 0,
+   "introBonusDMG": 0,
+   "introTotalMultiplierDMG": 1,
+   "level": 90,
+   "liberationAmplifyDMG": 0,
+   "liberationBonusDMG": 0,
+   "liberationTotalMultiplierDMG": 1,
+   "offtuneBuildupRate": 1,
+   "outroAmplifyDMG": 0,
+   "outroBonusDMG": 0,
+   "outroTotalMultiplierDMG": 1,
+   "resistancePEN": 0,
+   "skillAmplifyDMG": 0,
+   "skillBonusDMG": 0,
+   "skillTotalMultiplierDMG": 1,
+   "spectroAmplifyDMG": 0,
+   "spectroBonusDMG": 0,
+   "spectroFrazzleAmplifyDMG": 0,
+   "spectroFrazzleBonusDMG": 0,
+   "spectroFrazzleTotalMultiplierDMG": 1,
+   "spectroTotalMultiplierDMG": 1,
+   "totalMultiplierATK": 1,
+   "totalMultiplierDEF": 1,
+   "totalMultiplierDMG": 1,
+   "totalMultiplierHP": 1,
+   "tuneBreakBoost": 0
+  },
+  "weaponType": "Pistol"
+ }
+}

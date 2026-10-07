@@ -1,0 +1,9 @@
+{
+  // Jest-only overrides of tests/tsconfig.json: valid on the repo's TypeScript version, JSX enabled for UI golden tests.
+  "extends": "./tsconfig.json",
+  "compilerOptions": {
+    "ignoreDeprecations": "5.0",
+    "jsx": "react-jsx",
+    "isolatedModules": true
+  }
+}

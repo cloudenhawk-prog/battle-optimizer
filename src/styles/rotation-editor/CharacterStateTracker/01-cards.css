@@ -1,0 +1,202 @@
+/* Character state tracker: fonts, profile panel text, tracker cards and headers */
+
+@import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@400;500;600;700;900&family=Rajdhani:wght@300;400;500;600;700&family=Share+Tech+Mono&display=swap');
+
+/* ===== Character Profile Panel ===== */
+
+.charProfilePanel {
+  position: fixed;
+  top: 16px;
+  left: 16px;
+  right: 16px;
+  bottom: 16px;
+  z-index: 201;
+  border-radius: var(--table-corner-radius);
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  background: var(--table-bg);
+  backdrop-filter: blur(12px);
+  user-select: none;
+  cursor: default;
+}
+
+.charProfilePanel::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  pointer-events: none;
+  box-shadow:
+    inset 0 0 0 1px var(--table-border),
+    var(--table-shadow-inner-glow);
+  z-index: 0;
+}
+
+@media (min-width: 1024px) {
+  .charProfilePanel {
+    top: 40px;
+    left: 40px;
+    right: 40px;
+    bottom: 40px;
+  }
+}
+
+/* ===== Character State Tracker ===== */
+
+.stateTracker {
+  display: flex;
+  gap: 12px;
+  margin-bottom: var(--content-column-width-free-space);
+  flex-wrap: wrap;
+}
+
+.stateTrackerCard {
+  flex: 1;
+  min-width: 200px;
+  background: var(--table-bg);
+  backdrop-filter: var(--table-blur);
+  border: 1px solid var(--table-border);
+  border-radius: var(--table-corner-radius);
+  box-shadow: var(--table-shadow-inner), var(--table-shadow-main), var(--table-shadow-glow);
+  overflow: hidden;
+  position: relative;
+  transition:
+    border-color 0.35s ease,
+    box-shadow 0.35s ease;
+}
+
+/* ===== Active (In-Play) Card ===== */
+
+@keyframes activeCardPulse {
+  0%,
+  100% {
+    box-shadow:
+      var(--table-shadow-inner),
+      var(--table-shadow-main),
+      0 0 0 1px hsl(var(--el-primary, 200 100% 70%) / 0.45),
+      0 0 18px hsl(var(--el-primary, 200 100% 70%) / 0.22),
+      0 0 40px hsl(var(--el-primary, 200 100% 70%) / 0.1);
+  }
+  50% {
+    box-shadow:
+      var(--table-shadow-inner),
+      var(--table-shadow-main),
+      0 0 0 1px hsl(var(--el-primary, 200 100% 70%) / 0.75),
+      0 0 28px hsl(var(--el-primary, 200 100% 70%) / 0.38),
+      0 0 60px hsl(var(--el-primary, 200 100% 70%) / 0.18);
+  }
+}
+
+.stateTrackerCard--active {
+  border-color: hsl(var(--el-primary, 200 100% 70%) / 0.55);
+  animation: activeCardPulse 3.2s ease-in-out infinite;
+}
+
+/* ===== Card Header ===== */
+
+.stateTrackerHeader {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  background: var(--table-header-bg);
+  box-shadow: var(--table-header-inset);
+  border-bottom: 1px solid var(--table-border);
+  overflow: hidden;
+}
+
+.stateTrackerCharIcon {
+  width: var(--table-icon-size);
+  height: var(--table-icon-size);
+  border-radius: var(--table-icon-shape);
+  background: var(--table-icon-bg);
+  padding: var(--table-icon-padding);
+  opacity: var(--table-icon-opacity);
+  object-fit: contain;
+  cursor: pointer;
+  border: 1px solid var(--table-border);
+  box-shadow:
+    0 4px 10px rgba(0, 0, 0, 0.25),
+    inset 0 1px 0 rgba(255, 255, 255, var(--table-icon-box-strength));
+  transition:
+    transform var(--table-icon-animation-speed) ease,
+    box-shadow var(--table-icon-animation-speed) ease,
+    opacity var(--table-icon-animation-speed) ease;
+}
+
+.stateTrackerCharIcon:hover,
+.stateTrackerCharIcon:focus {
+  transform: translateY(var(--table-icon-hover-y-jump)) scale(var(--table-icon-hover-size));
+  box-shadow:
+    0 8px 18px rgba(0, 0, 0, 0.32),
+    inset 0 1px 0 rgba(255, 255, 255, var(--table-icon-hover-box-strength));
+  opacity: var(--table-icon-hover-opacity);
+}
+
+.stateTrackerCharIcon:active {
+  transform: scale(var(--table-icon-clicked-size));
+}
+
+.stateTrackerCharName {
+  font-size: 0.9rem;
+  font-weight: var(--group-text-weight);
+  color: var(--table-text);
+  letter-spacing: 0.04em;
+}
+
+/* ===== Nametag Header ===== */
+
+.stateTrackerNametag {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  pointer-events: none;
+}
+
+.stateTrackerNametagImg {
+  width: 100%;
+  height: 85px;
+  object-fit: contain;
+  opacity: 0.85;
+  pointer-events: auto;
+  cursor: pointer;
+  margin-top: -10px;
+  margin-bottom: -10px;
+  filter: drop-shadow(0 2px 6px rgba(0, 0, 0, 0.4));
+  transition:
+    opacity var(--table-icon-animation-speed) ease,
+    filter var(--table-icon-animation-speed) ease,
+    transform var(--table-icon-animation-speed) ease;
+}
+
+.stateTrackerNametagImg:hover {
+  opacity: 1;
+  transform: scale(1.04);
+  filter: drop-shadow(0 0 10px rgba(255, 255, 255, 0.25)) drop-shadow(0 4px 12px rgba(0, 0, 0, 0.5));
+}
+
+.stateTrackerNametagImg:active {
+  transform: scale(0.97);
+  opacity: 0.75;
+}
+
+.stateTrackerNametagLabel {
+  position: absolute;
+  font-size: 0.9rem;
+  font-weight: 700;
+  color: var(--table-text);
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  text-shadow: 0 1px 4px rgba(0, 0, 0, 0.7);
+  pointer-events: none;
+  transition: text-shadow var(--table-icon-animation-speed) ease;
+}
+
+.stateTrackerNametagImg:hover ~ .stateTrackerNametagLabel {
+  text-shadow:
+    0 0 8px rgba(255, 255, 255, 0.5),
+    0 1px 4px rgba(0, 0, 0, 0.8);
+}
+

@@ -1,3 +1,4 @@
+// Hiyuki — Present Self form: Liberation "Foreclaiming: Inward Vision" (enters Foreclaimed Self).
 import type { Action } from '../../../../../types/action'
 import * as values from '../../values'
 import { liberation_s6_crit_dmg } from '../../../../modifiers/hiyuki'

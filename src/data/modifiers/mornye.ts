@@ -1,5 +1,6 @@
+// Mornye — Syntony Field modifiers (base + S2) shared by Heavy Attack and Intro.
 import type { DamageModifier } from '../../types/modifiers'
-import { always, ownerAtLeast } from '../../utils/conditions/damageModifierConditions'
+import { always, ownerAtLeast } from '../helpers/modifierConditions'
 
 // ========== Syntony Field ====================================================================================================
 

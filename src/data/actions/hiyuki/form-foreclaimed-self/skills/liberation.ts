@@ -1,6 +1,7 @@
+// Hiyuki — Foreclaimed Self form: Liberation "Foreclaiming: Blade Liberation".
 import type { Action } from '../../../../../types/action'
 import { liberation_s6_crit_dmg } from '../../../../modifiers/hiyuki'
-import { loadSettings } from '../../../../../hooks/useSettings'
+import { loadSettings } from '../../../../../persistence/settingsStorage'
 import * as values from '../../values'
 
 const hiyuki_foreclaimed_liberation: Action = {

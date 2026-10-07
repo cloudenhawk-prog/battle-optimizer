@@ -1,6 +1,7 @@
-import type { EchoSet } from '../../types/gear'
+// Echo set registry: 2-/5-piece milestone bonuses applied from the equipped echoes' set counts, plus computeEchoSetCounts().
+import type { EchoSet, EchoSlots } from '../../types/gear'
 import type { DamageModifier } from '../../types/modifiers'
-import { always } from '../../utils/conditions/damageModifierConditions'
+import { always } from '../helpers/modifierConditions'
 
 // ========== Echo Set Registry ================================================================================================
 //
@@ -254,8 +255,6 @@ export const echoSetRegistry: Readonly<Record<string, EchoSet>> = {
 }
 
 // ========== Helper: count echoes per set =====================================================================================
-
-import type { EchoSlots } from '../../types/gear'
 
 /** Returns a map from set name to the number of equipped echoes belonging to that set. */
 export function computeEchoSetCounts(slots: EchoSlots): Record<string, number> {

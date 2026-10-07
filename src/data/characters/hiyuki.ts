@@ -1,3 +1,4 @@
+// Hiyuki (Glacio) — character definition: kit, forms, sequence modifiers / side effects, gear.
 import type { Character } from '../../types/character'
 import { all_actions } from '../actions/hiyuki/actions'
 import { form_present_self, form_foreclaimed_self } from '../forms/hiyuki'

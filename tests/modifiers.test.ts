@@ -104,7 +104,7 @@
 
 import type { DamageModifier, ModifierInAction } from '../src/types/modifiers'
 import type { StepContext } from '../src/types/stepContext'
-import { collectAllModifiers, activateModifiers, updateModifiersForTime, updateModifiersForSwap, filterApplicableModifiers, applyStackMultiplier } from '../src/utils/hooks/modifierHelpers'
+import { collectAllModifiers, activateModifiers, updateModifiersForTime, updateModifiersForSwap, filterApplicableModifiers, applyStackMultiplier } from '../src/engine/modifiers/modifierHelpers'
 import { createMockCharacter, createMockAction, createMockEnemy, createMockSnapshot, createMockActiveNegativeStatus, createMockNegativeStatus } from './testUtils'
 
 // ========== Test Helpers =====================================================================================================

@@ -1,4 +1,5 @@
-﻿import type { Action } from '../../../../../types/action'
+// Hiyuki — Foreclaimed Self form: Mid-air Attack 2 and 2-3 (default / swap cancel).
+import type { Action } from '../../../../../types/action'
 import * as values from '../../values'
 import { s1_foreclaimed_basic_multiplier } from '../../../../modifiers/hiyuki'
 
@@ -85,7 +86,6 @@ const hiyuki_foreclaimed_midair_2_cancel_with_swap: Action = {
   groupName: 'Foreclaimed: Mid-air Attack 2',
   variantName: 'Cancel With Swap',
 }
-
 
 // ========== MA2-3 ============================================================================================================
 

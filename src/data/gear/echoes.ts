@@ -1,3 +1,4 @@
+// Legacy per-cost echo stat tables. Not used by the app (echoStats.ts drives the picker); only the golden test snapshots them.
 import type { CharacterStats } from '../../types/stats'
 
 // ========== Echo Cost Base Data ==============================================================================================

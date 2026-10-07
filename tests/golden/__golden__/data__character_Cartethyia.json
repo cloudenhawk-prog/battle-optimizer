@@ -1,0 +1,6410 @@
+{
+ "base": {
+  "actions": [
+   {
+    "attemptFollowUp": {
+     "actionName": "Resonance Skill"
+    },
+    "castConditions": {
+     "endState": "GROUND",
+     "requiredForms": [
+      "Cartethyia"
+     ],
+     "startState": "GROUND"
+    },
+    "castTime": 2.32,
+    "category": "Basics",
+    "cooldown": 0,
+    "damageModifiers": [],
+    "displayName": "Basic Attack 1-4 (skill cancel)",
+    "dmgTypes": [
+     "BASIC"
+    ],
+    "elements": [
+     "AERO"
+    ],
+    "energyCost": [],
+    "energyGenerated": [
+     {
+      "amount": 7.37,
+      "energyType": "energy",
+      "scalingStat": "energyPercent",
+      "share": 0.5
+     },
+     {
+      "amount": 10.31,
+      "energyType": "concerto",
+      "share": 0
+     },
+     {
+      "amount": 1,
+      "energyType": "forte_divinity",
+      "share": 0
+     }
+    ],
+    "groupName": "Basic Attack 1-4",
+    "multiplier": 0.75195,
+    "name": "Basic Attack 1-4 (skill cancel)",
+    "offtune": 2.34,
+    "scaling": "HP",
+    "sideEffects": [],
+    "statusModifications": [
+     {
+      "stackChange": 1,
+      "targetName": "Aero Erosion",
+      "type": "negativeStatus"
+     }
+    ],
+    "tags": [
+     "BASIC_ATTACK"
+    ],
+    "variantName": "Cancel With Skill"
+   },
+   {
+    "castConditions": {
+     "endState": "GROUND",
+     "persistenceTime": 100,
+     "requiredForms": [
+      "Cartethyia"
+     ],
+     "requiresSwapOut": true,
+     "startState": "GROUND",
+     "swapOutState": "GROUND"
+    },
+    "castTime": 2.26,
+    "category": "Basics",
+    "cooldown": 0,
+    "damageModifiers": [],
+    "displayName": "Basic Attack 1-4 (swap cancel)",
+    "dmgTypes": [
+     "BASIC"
+    ],
+    "elements": [
+     "AERO"
+    ],
+    "energyCost": [],
+    "energyGenerated": [
+     {
+      "amount": 7.37,
+      "energyType": "energy",
+      "scalingStat": "energyPercent",
+      "share": 0.5
+     },
+     {
+      "amount": 10.31,
+      "energyType": "concerto",
+      "share": 0
+     },
+     {
+      "amount": 1,
+      "energyType": "forte_divinity",
+      "share": 0
+     }
+    ],
+    "groupName": "Basic Attack 1-4",
+    "multiplier": 0.75195,
+    "name": "Basic Attack 1-4 (swap cancel)",
+    "offtune": 2.34,
+    "scaling": "HP",
+    "sideEffects": [],
+    "statusModifications": [
+     {
+      "stackChange": 1,
+      "targetName": "Aero Erosion",
+      "type": "negativeStatus"
+     }
+    ],
+    "tags": [
+     "BASIC_ATTACK"
+    ],
+    "variantName": "Cancel With Swap"
+   },
+   {
+    "castConditions": {
+     "endState": "GROUND",
+     "requiredForms": [
+      "Cartethyia"
+     ],
+     "requiresSwapIn": true,
+     "startState": "GROUND"
+    },
+    "castTime": 1.85,
+    "category": "Basics",
+    "cooldown": 0,
+    "damageModifiers": [],
+    "displayName": "Basic Attack 2-4",
+    "dmgTypes": [
+     "BASIC"
+    ],
+    "elements": [
+     "AERO"
+    ],
+    "energyCost": [],
+    "energyGenerated": [
+     {
+      "amount": 6.67,
+      "energyType": "energy",
+      "scalingStat": "energyPercent",
+      "share": 0.5
+     },
+     {
+      "amount": 9.33,
+      "energyType": "concerto",
+      "share": 0
+     },
+     {
+      "amount": 1,
+      "energyType": "forte_divinity",
+      "share": 0
+     }
+    ],
+    "groupName": "Basic Attack 2-4",
+    "multiplier": 0.68025,
+    "name": "Basic Attack 2-4",
+    "offtune": 2.12,
+    "scaling": "HP",
+    "sideEffects": [],
+    "statusModifications": [
+     {
+      "stackChange": 1,
+      "targetName": "Aero Erosion",
+      "type": "negativeStatus"
+     }
+    ],
+    "tags": [
+     "BASIC_ATTACK"
+    ],
+    "toolTip": "Can be cast after intro",
+    "variantName": "Default"
+   },
+   {
+    "castConditions": {
+     "endState": "AIR",
+     "requiredForms": [
+      "Cartethyia"
+     ],
+     "requiresSwapIn": true,
+     "startState": "GROUND"
+    },
+    "castTime": 2.15,
+    "category": "Basics",
+    "cooldown": 0,
+    "damageModifiers": [],
+    "displayName": "Basic Attack 2-4 (jump cancel)",
+    "dmgTypes": [
+     "BASIC"
+    ],
+    "elements": [
+     "AERO"
+    ],
+    "energyCost": [],
+    "energyGenerated": [
+     {
+      "amount": 6.67,
+      "energyType": "energy",
+      "scalingStat": "energyPercent",
+      "share": 0.5
+     },
+     {
+      "amount": 9.33,
+      "energyType": "concerto",
+      "share": 0
+     },
+     {
+      "amount": 1,
+      "energyType": "forte_divinity",
+      "share": 0
+     }
+    ],
+    "groupName": "Basic Attack 2-4",
+    "multiplier": 0.68025,
+    "name": "Basic Attack 2-4 (jump cancel)",
+    "offtune": 2.12,
+    "scaling": "HP",
+    "sideEffects": [],
+    "statusModifications": [
+     {
+      "stackChange": 1,
+      "targetName": "Aero Erosion",
+      "type": "negativeStatus"
+     }
+    ],
+    "tags": [
+     "BASIC_ATTACK"
+    ],
+    "toolTip": "Can be cast after intro",
+    "variantName": "Cancel With Jump"
+   },
+   {
+    "castConditions": {
+     "endState": "GROUND",
+     "persistenceTime": 100,
+     "requiredForms": [
+      "Cartethyia"
+     ],
+     "requiresSwapIn": true,
+     "requiresSwapOut": true,
+     "startState": "GROUND",
+     "swapOutState": "GROUND"
+    },
+    "castTime": 1.92,
+    "category": "Basics",
+    "cooldown": 0,
+    "damageModifiers": [],
+    "displayName": "Basic Attack 2-4 (swap cancel)",
+    "dmgTypes": [
+     "BASIC"
+    ],
+    "elements": [
+     "AERO"
+    ],
+    "energyCost": [],
+    "energyGenerated": [
+     {
+      "amount": 6.67,
+      "energyType": "energy",
+      "scalingStat": "energyPercent",
+      "share": 0.5
+     },
+     {
+      "amount": 9.33,
+      "energyType": "concerto",
+      "share": 0
+     },
+     {
+      "amount": 1,
+      "energyType": "forte_divinity",
+      "share": 0
+     }
+    ],
+    "groupName": "Basic Attack 2-4",
+    "multiplier": 0.68025,
+    "name": "Basic Attack 2-4 (swap cancel)",
+    "offtune": 2.12,
+    "scaling": "HP",
+    "sideEffects": [],
+    "statusModifications": [
+     {
+      "stackChange": 1,
+      "targetName": "Aero Erosion",
+      "type": "negativeStatus"
+     }
+    ],
+    "tags": [
+     "BASIC_ATTACK"
+    ],
+    "toolTip": "Can be cast after intro",
+    "variantName": "Cancel With Swap"
+   },
+   {
+    "castConditions": {
+     "endState": "PRESERVE",
+     "requiredForms": [
+      "Cartethyia"
+     ],
+     "startState": "ANY"
+    },
+    "castTime": 1,
+    "category": "Basics",
+    "cooldown": 0,
+    "damageModifiers": [],
+    "displayName": "Heavy Attack",
+    "dmgTypes": [
+     "BASIC"
+    ],
+    "elements": [
+     "AERO"
+    ],
+    "energyCost": [],
+    "energyGenerated": [
+     {
+      "amount": 2.51,
+      "energyType": "energy",
+      "scalingStat": "energyPercent",
+      "share": 0.5
+     },
+     {
+      "amount": 3.52,
+      "energyType": "concerto",
+      "share": 0
+     },
+     {
+      "amount": 1,
+      "energyType": "forte_discord",
+      "share": 0
+     }
+    ],
+    "groupName": "Heavy Attack",
+    "multiplier": 0.1872,
+    "name": "Heavy Attack",
+    "offtune": 0.79,
+    "scaling": "HP",
+    "sideEffects": [],
+    "statusModifications": [],
+    "tags": [
+     "HEAVY_ATTACK"
+    ],
+    "variantName": "Default"
+   },
+   {
+    "castConditions": {
+     "endState": "PRESERVE",
+     "persistenceTime": 100,
+     "requiredForms": [
+      "Cartethyia"
+     ],
+     "requiresSwapOut": true,
+     "startState": "ANY",
+     "swapOutState": "PRESERVE"
+    },
+    "castTime": 0.12,
+    "category": "Basics",
+    "cooldown": 0,
+    "damageModifiers": [],
+    "displayName": "Heavy Attack (swap cancel)",
+    "dmgTypes": [
+     "BASIC"
+    ],
+    "elements": [
+     "AERO"
+    ],
+    "energyCost": [],
+    "energyGenerated": [
+     {
+      "amount": 2.51,
+      "energyType": "energy",
+      "scalingStat": "energyPercent",
+      "share": 0.5
+     },
+     {
+      "amount": 3.52,
+      "energyType": "concerto",
+      "share": 0
+     },
+     {
+      "amount": 1,
+      "energyType": "forte_discord",
+      "share": 0
+     }
+    ],
+    "groupName": "Heavy Attack",
+    "multiplier": 0.1872,
+    "name": "Heavy Attack (swap cancel)",
+    "offtune": 0.79,
+    "scaling": "HP",
+    "sideEffects": [],
+    "statusModifications": [],
+    "tags": [
+     "HEAVY_ATTACK"
+    ],
+    "variantName": "Cancel With Swap"
+   },
+   {
+    "castConditions": {
+     "endState": "GROUND",
+     "requiredForms": [
+      "Cartethyia"
+     ],
+     "startState": "AIR"
+    },
+    "castTime": 1,
+    "category": "Basics",
+    "cooldown": 0,
+    "damageModifiers": [],
+    "displayName": "Plunge Attack",
+    "dmgTypes": [
+     "BASIC"
+    ],
+    "elements": [
+     "AERO"
+    ],
+    "energyCost": [],
+    "energyGenerated": [],
+    "groupName": "Plunge Attack",
+    "multiplier": 0,
+    "name": "Plunge Attack",
+    "offtune": 0,
+    "resolveVariant": "[Function]",
+    "scaling": "HP",
+    "sideEffects": [],
+    "statusModifications": [],
+    "tags": [
+     "BASIC_ATTACK"
+    ],
+    "variantName": "Default"
+   },
+   {
+    "castConditions": {
+     "endState": "GROUND",
+     "persistenceTime": 100,
+     "requiredForms": [
+      "Cartethyia"
+     ],
+     "requiresSwapOut": true,
+     "startState": "AIR",
+     "swapOutState": "AIR"
+    },
+    "castTime": 0.33,
+    "category": "Basics",
+    "cooldown": 0,
+    "damageModifiers": [],
+    "displayName": "Plunge Attack (swap cancel)",
+    "dmgTypes": [
+     "BASIC"
+    ],
+    "elements": [
+     "AERO"
+    ],
+    "energyCost": [],
+    "energyGenerated": [],
+    "groupName": "Plunge Attack",
+    "multiplier": 0,
+    "name": "Plunge Attack (swap cancel)",
+    "offtune": 0,
+    "resolveVariant": "[Function]",
+    "scaling": "HP",
+    "sideEffects": [],
+    "statusModifications": [],
+    "tags": [
+     "BASIC_ATTACK"
+    ],
+    "variantName": "Cancel With Swap"
+   },
+   {
+    "castConditions": {
+     "endState": "AIR",
+     "requiredForms": [
+      "Cartethyia"
+     ],
+     "startState": "ANY"
+    },
+    "castTime": 1,
+    "category": "Skills",
+    "cooldown": 14,
+    "damageModifiers": [],
+    "displayName": "Sword to Bear Their Names",
+    "dmgTypes": [
+     "BASIC"
+    ],
+    "elements": [
+     "AERO"
+    ],
+    "energyCost": [],
+    "energyGenerated": [
+     {
+      "amount": 16.28,
+      "energyType": "energy",
+      "scalingStat": "energyPercent",
+      "share": 0.5
+     },
+     {
+      "amount": 10,
+      "energyType": "concerto",
+      "share": 0
+     },
+     {
+      "amount": 1,
+      "energyType": "forte_virtue",
+      "share": 0
+     }
+    ],
+    "groupName": "Resonance Skill",
+    "multiplier": 0.2953,
+    "name": "Resonance Skill",
+    "offtune": 0.73,
+    "scaling": "HP",
+    "sideEffects": [],
+    "statusModifications": [
+     {
+      "stackChange": 2,
+      "targetName": "Aero Erosion",
+      "type": "negativeStatus"
+     }
+    ],
+    "tags": [
+     "SKILL"
+    ],
+    "variantName": "Default"
+   },
+   {
+    "castConditions": {
+     "endState": "AIR",
+     "persistenceTime": 1.05,
+     "requiredForms": [
+      "Cartethyia"
+     ],
+     "requiresSwapOut": true,
+     "startState": "ANY",
+     "swapOutState": "PRESERVE"
+    },
+    "castTime": 0.09,
+    "category": "Skills",
+    "cooldown": 14,
+    "damageModifiers": [],
+    "displayName": "Sword to Bear Their Names (swap cancel)",
+    "dmgTypes": [
+     "BASIC"
+    ],
+    "elements": [
+     "AERO"
+    ],
+    "energyCost": [],
+    "energyGenerated": [
+     {
+      "amount": 16.28,
+      "energyType": "energy",
+      "scalingStat": "energyPercent",
+      "share": 0.5
+     },
+     {
+      "amount": 10,
+      "energyType": "concerto",
+      "share": 0
+     },
+     {
+      "amount": 1,
+      "energyType": "forte_virtue",
+      "share": 0
+     }
+    ],
+    "groupName": "Resonance Skill",
+    "multiplier": 0.2953,
+    "name": "Resonance Skill (swap cancel)",
+    "offtune": 0.73,
+    "scaling": "HP",
+    "sideEffects": [],
+    "statusModifications": [
+     {
+      "stackChange": 2,
+      "targetName": "Aero Erosion",
+      "type": "negativeStatus"
+     }
+    ],
+    "tags": [
+     "SKILL"
+    ],
+    "variantName": "Cancel With Swap"
+   },
+   {
+    "castConditions": {
+     "endState": "PRESERVE",
+     "requiredForms": [
+      "Cartethyia"
+     ],
+     "startState": "ANY"
+    },
+    "castTime": 0.16,
+    "category": "Skills",
+    "cooldown": 25,
+    "damageModifiers": [
+     {
+      "clearsForteGrantsOnExpiry": true,
+      "color": "#1e90ff",
+      "condition": "[Function]",
+      "contributionGroup": "Cartethyia: Mandate",
+      "displayName": "Mandate",
+      "durationStrategy": {
+       "timeDuration": 12,
+       "type": "limited"
+      },
+      "ownerCharacter": "Cartethyia",
+      "source": "Cartethyia: Mandate",
+      "stackingStrategy": {
+       "maxStacks": 1,
+       "resetTimerOnApplication": true,
+       "stacksRemovedEachTime": 1
+      },
+      "targetStrategy": "self",
+      "type": "buff"
+     },
+     {
+      "characterStats": {
+       "aeroErosionAmplifyDMG": 0.5
+      },
+      "color": "#ff8c00",
+      "condition": "[Function]",
+      "contributionGroup": "Cartethyia: Mandate",
+      "displayName": "Mandate of Divinity",
+      "durationStrategy": {
+       "timeDuration": 12,
+       "type": "limited"
+      },
+      "negativeStatusEffects": [
+       {
+        "property": "frequency",
+        "targetStatus": "Aero Erosion",
+        "value": -0.5
+       }
+      ],
+      "ownerCharacter": "Cartethyia",
+      "source": "Cartethyia: Mandate of Divinity",
+      "stackingStrategy": {
+       "maxStacks": 1,
+       "resetTimerOnApplication": true,
+       "stacksRemovedEachTime": 1
+      },
+      "targetStrategy": "self",
+      "type": "buff"
+     },
+     {
+      "color": "#5a00a8",
+      "condition": "[Function]",
+      "contributionGroup": "Cartethyia: Mandate",
+      "displayName": "Power of Discord",
+      "durationStrategy": {
+       "timeDuration": 12,
+       "type": "limited"
+      },
+      "ownerCharacter": "Cartethyia",
+      "source": "Cartethyia: Power of Discord",
+      "stackingStrategy": {
+       "maxStacks": 1,
+       "resetTimerOnApplication": true,
+       "stacksRemovedEachTime": 1
+      },
+      "targetStrategy": "self",
+      "type": "buff"
+     },
+     {
+      "color": "#b6f0ff",
+      "condition": "[Function]",
+      "contributionGroup": "Cartethyia: Mandate",
+      "displayName": "Blade Broken by Tempest",
+      "durationStrategy": {
+       "timeDuration": 100000,
+       "type": "limited"
+      },
+      "negativeStatusEffects": [
+       {
+        "property": "maxStacks",
+        "targetStatus": "Aero Erosion",
+        "value": 3
+       }
+      ],
+      "ownerCharacter": "Cartethyia",
+      "source": "Cartethyia S2",
+      "stackingStrategy": {
+       "maxStacks": 1,
+       "resetTimerOnApplication": true,
+       "stacksRemovedEachTime": 1
+      },
+      "targetStrategy": "self",
+      "type": "buff"
+     }
+    ],
+    "displayName": "A Knights Heartfelt Prayers",
+    "dmgTypes": [
+     ""
+    ],
+    "elements": [
+     ""
+    ],
+    "energyCost": [
+     {
+      "amount": 125,
+      "energyType": "energy"
+     }
+    ],
+    "energyGenerated": [
+     {
+      "amount": 0,
+      "energyType": "energy",
+      "scalingStat": "energyPercent",
+      "share": 0.5
+     },
+     {
+      "amount": 20,
+      "energyType": "concerto",
+      "share": 0
+     }
+    ],
+    "formChange": "Fleurdelys",
+    "multiplier": 0,
+    "name": "To Fleurdelys Form",
+    "offtune": 0,
+    "scaling": "HP",
+    "sideEffects": [],
+    "statusModifications": []
+   },
+   {
+    "castConditions": {
+     "endState": "GROUND",
+     "requiredForms": [
+      "Fleurdelys"
+     ],
+     "startState": "GROUND"
+    },
+    "castTime": 3.4,
+    "category": "Basics",
+    "cooldown": 0,
+    "damageModifiers": [],
+    "displayName": "Basic 1-5",
+    "dmgTypes": [
+     "BASIC"
+    ],
+    "elements": [
+     "AERO"
+    ],
+    "energyCost": [],
+    "energyGenerated": [
+     {
+      "amount": 9.18,
+      "energyType": "energy",
+      "scalingStat": "energyPercent",
+      "share": 0.5
+     },
+     {
+      "amount": 12.82,
+      "energyType": "concerto",
+      "share": 0
+     },
+     {
+      "amount": 45,
+      "energyType": "conviction",
+      "share": 0
+     }
+    ],
+    "groupName": "Basic 1-5",
+    "multiplier": 0.7593,
+    "name": "Basic 1-5",
+    "offtune": 3.86,
+    "scaling": "HP",
+    "sideEffects": [
+     {
+      "damageDealt": "[Function]",
+      "name": "Aero Erosion Explosion",
+      "statusModifications": [
+       {
+        "stackChange": -1,
+        "targetName": "Aero Erosion",
+        "type": "negativeStatus"
+       }
+      ]
+     }
+    ],
+    "statusModifications": [
+     {
+      "stackChange": 2,
+      "targetName": "Aero Erosion",
+      "type": "negativeStatus"
+     }
+    ],
+    "tags": [
+     "BASIC_ATTACK"
+    ],
+    "variantName": "Default"
+   },
+   {
+    "castConditions": {
+     "endState": "GROUND",
+     "persistenceTime": 100,
+     "requiredForms": [
+      "Fleurdelys"
+     ],
+     "requiresSwapOut": true,
+     "startState": "GROUND",
+     "swapOutState": "GROUND"
+    },
+    "castTime": 3.4,
+    "category": "Basics",
+    "cooldown": 0,
+    "damageModifiers": [],
+    "displayName": "Basic 1-5 (swap cancel)",
+    "dmgTypes": [
+     "BASIC"
+    ],
+    "elements": [
+     "AERO"
+    ],
+    "energyCost": [],
+    "energyGenerated": [
+     {
+      "amount": 9.18,
+      "energyType": "energy",
+      "scalingStat": "energyPercent",
+      "share": 0.5
+     },
+     {
+      "amount": 12.82,
+      "energyType": "concerto",
+      "share": 0
+     },
+     {
+      "amount": 45,
+      "energyType": "conviction",
+      "share": 0
+     }
+    ],
+    "groupName": "Basic 1-5",
+    "multiplier": 0.7593,
+    "name": "Basic 1-5 (swap cancel)",
+    "offtune": 3.86,
+    "scaling": "HP",
+    "sideEffects": [
+     {
+      "damageDealt": "[Function]",
+      "name": "Aero Erosion Explosion",
+      "statusModifications": [
+       {
+        "stackChange": -1,
+        "targetName": "Aero Erosion",
+        "type": "negativeStatus"
+       }
+      ]
+     }
+    ],
+    "statusModifications": [
+     {
+      "stackChange": 2,
+      "targetName": "Aero Erosion",
+      "type": "negativeStatus"
+     }
+    ],
+    "tags": [
+     "BASIC_ATTACK"
+    ],
+    "variantName": "Cancel With Swap"
+   },
+   {
+    "castConditions": {
+     "endState": "GROUND",
+     "requiredForms": [
+      "Fleurdelys"
+     ],
+     "requiresSwapIn": true,
+     "startState": "GROUND"
+    },
+    "castTime": 2.67,
+    "category": "Basics",
+    "cooldown": 0,
+    "damageModifiers": [],
+    "displayName": "Basic 3-5",
+    "dmgTypes": [
+     "BASIC"
+    ],
+    "elements": [
+     "AERO"
+    ],
+    "energyCost": [],
+    "energyGenerated": [
+     {
+      "amount": 6.49,
+      "energyType": "energy",
+      "scalingStat": "energyPercent",
+      "share": 0.5
+     },
+     {
+      "amount": 9.08,
+      "energyType": "concerto",
+      "share": 0
+     },
+     {
+      "amount": 36.67,
+      "energyType": "conviction",
+      "share": 0
+     }
+    ],
+    "groupName": "Basic 3-5",
+    "multiplier": 0.6035,
+    "name": "Basic 3-5",
+    "offtune": 3.02,
+    "scaling": "HP",
+    "sideEffects": [
+     {
+      "damageDealt": "[Function]",
+      "name": "Aero Erosion Explosion",
+      "statusModifications": [
+       {
+        "stackChange": -1,
+        "targetName": "Aero Erosion",
+        "type": "negativeStatus"
+       }
+      ]
+     }
+    ],
+    "statusModifications": [
+     {
+      "stackChange": 2,
+      "targetName": "Aero Erosion",
+      "type": "negativeStatus"
+     }
+    ],
+    "tags": [
+     "BASIC_ATTACK"
+    ],
+    "toolTip": "Can be cast when quick swapped in without intro",
+    "variantName": "Default"
+   },
+   {
+    "castConditions": {
+     "endState": "GROUND",
+     "persistenceTime": 100,
+     "requiredForms": [
+      "Fleurdelys"
+     ],
+     "requiresSwapIn": true,
+     "requiresSwapOut": true,
+     "startState": "GROUND",
+     "swapOutState": "GROUND"
+    },
+    "castTime": 2.67,
+    "category": "Basics",
+    "cooldown": 0,
+    "damageModifiers": [],
+    "displayName": "Basic 3-5 (swap cancel)",
+    "dmgTypes": [
+     "BASIC"
+    ],
+    "elements": [
+     "AERO"
+    ],
+    "energyCost": [],
+    "energyGenerated": [
+     {
+      "amount": 6.49,
+      "energyType": "energy",
+      "scalingStat": "energyPercent",
+      "share": 0.5
+     },
+     {
+      "amount": 9.08,
+      "energyType": "concerto",
+      "share": 0
+     },
+     {
+      "amount": 36.67,
+      "energyType": "conviction",
+      "share": 0
+     }
+    ],
+    "groupName": "Basic 3-5",
+    "multiplier": 0.6035,
+    "name": "Basic 3-5 (swap cancel)",
+    "offtune": 3.02,
+    "scaling": "HP",
+    "sideEffects": [
+     {
+      "damageDealt": "[Function]",
+      "name": "Aero Erosion Explosion",
+      "statusModifications": [
+       {
+        "stackChange": -1,
+        "targetName": "Aero Erosion",
+        "type": "negativeStatus"
+       }
+      ]
+     }
+    ],
+    "statusModifications": [
+     {
+      "stackChange": 2,
+      "targetName": "Aero Erosion",
+      "type": "negativeStatus"
+     }
+    ],
+    "tags": [
+     "BASIC_ATTACK"
+    ],
+    "toolTip": "Can be cast when quick swapped in without intro",
+    "variantName": "Cancel With Swap"
+   },
+   {
+    "castConditions": {
+     "endState": "GROUND",
+     "requiredForms": [
+      "Fleurdelys"
+     ],
+     "startState": "GROUND"
+    },
+    "castTime": 0.65,
+    "category": "Basics",
+    "cooldown": 0,
+    "damageModifiers": [],
+    "displayName": "Heavy Attack 1",
+    "dmgTypes": [
+     "BASIC"
+    ],
+    "elements": [
+     "AERO"
+    ],
+    "energyCost": [],
+    "energyGenerated": [
+     {
+      "amount": 1.76,
+      "energyType": "energy",
+      "scalingStat": "energyPercent",
+      "share": 0.5
+     },
+     {
+      "amount": 2.46,
+      "energyType": "concerto",
+      "share": 0
+     },
+     {
+      "amount": 10,
+      "energyType": "conviction",
+      "share": 0
+     }
+    ],
+    "groupName": "Heavy Attack 1",
+    "multiplier": 0.1425,
+    "name": "Heavy Attack 1",
+    "offtune": 0.56,
+    "scaling": "HP",
+    "sideEffects": [],
+    "statusModifications": [],
+    "tags": [
+     "HEAVY_ATTACK"
+    ],
+    "variantName": "Default"
+   },
+   {
+    "castConditions": {
+     "endState": "GROUND",
+     "persistenceTime": 100,
+     "requiredForms": [
+      "Fleurdelys"
+     ],
+     "requiresSwapOut": true,
+     "startState": "GROUND",
+     "swapOutState": "GROUND"
+    },
+    "castTime": 0.65,
+    "category": "Basics",
+    "cooldown": 0,
+    "damageModifiers": [],
+    "displayName": "Heavy Attack 1 (swap cancel)",
+    "dmgTypes": [
+     "BASIC"
+    ],
+    "elements": [
+     "AERO"
+    ],
+    "energyCost": [],
+    "energyGenerated": [
+     {
+      "amount": 1.76,
+      "energyType": "energy",
+      "scalingStat": "energyPercent",
+      "share": 0.5
+     },
+     {
+      "amount": 2.46,
+      "energyType": "concerto",
+      "share": 0
+     },
+     {
+      "amount": 10,
+      "energyType": "conviction",
+      "share": 0
+     }
+    ],
+    "groupName": "Heavy Attack 1",
+    "multiplier": 0.1425,
+    "name": "Heavy Attack 1 (swap cancel)",
+    "offtune": 0.56,
+    "scaling": "HP",
+    "sideEffects": [],
+    "statusModifications": [],
+    "tags": [
+     "HEAVY_ATTACK"
+    ],
+    "variantName": "Cancel With Swap"
+   },
+   {
+    "castConditions": {
+     "endState": "GROUND",
+     "previousActions": [
+      {
+       "castConditions": {
+        "endState": "GROUND",
+        "startState": "GROUND"
+       },
+       "castTime": 0.65,
+       "category": "Basics",
+       "cooldown": 0,
+       "damageModifiers": [],
+       "displayName": "Heavy Attack 1",
+       "dmgTypes": [
+        "BASIC"
+       ],
+       "elements": [
+        "AERO"
+       ],
+       "energyCost": [],
+       "energyGenerated": [
+        {
+         "amount": 1.76,
+         "energyType": "energy",
+         "scalingStat": "energyPercent",
+         "share": 0.5
+        },
+        {
+         "amount": 2.46,
+         "energyType": "concerto",
+         "share": 0
+        },
+        {
+         "amount": 10,
+         "energyType": "conviction",
+         "share": 0
+        }
+       ],
+       "groupName": "Heavy Attack 1",
+       "multiplier": 0.1425,
+       "name": "Heavy Attack 1",
+       "offtune": 0.56,
+       "scaling": "HP",
+       "sideEffects": [],
+       "statusModifications": [],
+       "tags": [
+        "HEAVY_ATTACK"
+       ],
+       "variantName": "Default"
+      },
+      {
+       "castConditions": {
+        "endState": "GROUND",
+        "persistenceTime": 100,
+        "requiresSwapOut": true,
+        "startState": "GROUND",
+        "swapOutState": "GROUND"
+       },
+       "castTime": 0.65,
+       "category": "Basics",
+       "cooldown": 0,
+       "damageModifiers": [],
+       "displayName": "Heavy Attack 1 (swap cancel)",
+       "dmgTypes": [
+        "BASIC"
+       ],
+       "elements": [
+        "AERO"
+       ],
+       "energyCost": [],
+       "energyGenerated": [
+        {
+         "amount": 1.76,
+         "energyType": "energy",
+         "scalingStat": "energyPercent",
+         "share": 0.5
+        },
+        {
+         "amount": 2.46,
+         "energyType": "concerto",
+         "share": 0
+        },
+        {
+         "amount": 10,
+         "energyType": "conviction",
+         "share": 0
+        }
+       ],
+       "groupName": "Heavy Attack 1",
+       "multiplier": 0.1425,
+       "name": "Heavy Attack 1 (swap cancel)",
+       "offtune": 0.56,
+       "scaling": "HP",
+       "sideEffects": [],
+       "statusModifications": [],
+       "tags": [
+        "HEAVY_ATTACK"
+       ],
+       "variantName": "Cancel With Swap"
+      }
+     ],
+     "requiredForms": [
+      "Fleurdelys"
+     ],
+     "startState": "GROUND"
+    },
+    "castTime": 0.73,
+    "category": "Basics",
+    "cooldown": 0,
+    "damageModifiers": [],
+    "displayName": "Heavy Attack 2",
+    "dmgTypes": [
+     "BASIC"
+    ],
+    "elements": [
+     "AERO"
+    ],
+    "energyCost": [],
+    "energyGenerated": [
+     {
+      "amount": 2.4,
+      "energyType": "energy",
+      "scalingStat": "energyPercent",
+      "share": 0.5
+     },
+     {
+      "amount": 3.38,
+      "energyType": "concerto",
+      "share": 0
+     },
+     {
+      "amount": 13.33,
+      "energyType": "conviction",
+      "share": 0
+     }
+    ],
+    "groupName": "Heavy Attack 2",
+    "multiplier": 0.1945,
+    "name": "Enhanced Heavy Attack",
+    "offtune": 1.08,
+    "scaling": "HP",
+    "sideEffects": [],
+    "statusModifications": [
+     {
+      "stackChange": 2,
+      "targetName": "Aero Erosion",
+      "type": "negativeStatus"
+     }
+    ],
+    "tags": [
+     "HEAVY_ATTACK"
+    ],
+    "variantName": "Default"
+   },
+   {
+    "castConditions": {
+     "endState": "GROUND",
+     "persistenceTime": 100,
+     "previousActions": [
+      {
+       "castConditions": {
+        "endState": "GROUND",
+        "startState": "GROUND"
+       },
+       "castTime": 0.65,
+       "category": "Basics",
+       "cooldown": 0,
+       "damageModifiers": [],
+       "displayName": "Heavy Attack 1",
+       "dmgTypes": [
+        "BASIC"
+       ],
+       "elements": [
+        "AERO"
+       ],
+       "energyCost": [],
+       "energyGenerated": [
+        {
+         "amount": 1.76,
+         "energyType": "energy",
+         "scalingStat": "energyPercent",
+         "share": 0.5
+        },
+        {
+         "amount": 2.46,
+         "energyType": "concerto",
+         "share": 0
+        },
+        {
+         "amount": 10,
+         "energyType": "conviction",
+         "share": 0
+        }
+       ],
+       "groupName": "Heavy Attack 1",
+       "multiplier": 0.1425,
+       "name": "Heavy Attack 1",
+       "offtune": 0.56,
+       "scaling": "HP",
+       "sideEffects": [],
+       "statusModifications": [],
+       "tags": [
+        "HEAVY_ATTACK"
+       ],
+       "variantName": "Default"
+      },
+      {
+       "castConditions": {
+        "endState": "GROUND",
+        "persistenceTime": 100,
+        "requiresSwapOut": true,
+        "startState": "GROUND",
+        "swapOutState": "GROUND"
+       },
+       "castTime": 0.65,
+       "category": "Basics",
+       "cooldown": 0,
+       "damageModifiers": [],
+       "displayName": "Heavy Attack 1 (swap cancel)",
+       "dmgTypes": [
+        "BASIC"
+       ],
+       "elements": [
+        "AERO"
+       ],
+       "energyCost": [],
+       "energyGenerated": [
+        {
+         "amount": 1.76,
+         "energyType": "energy",
+         "scalingStat": "energyPercent",
+         "share": 0.5
+        },
+        {
+         "amount": 2.46,
+         "energyType": "concerto",
+         "share": 0
+        },
+        {
+         "amount": 10,
+         "energyType": "conviction",
+         "share": 0
+        }
+       ],
+       "groupName": "Heavy Attack 1",
+       "multiplier": 0.1425,
+       "name": "Heavy Attack 1 (swap cancel)",
+       "offtune": 0.56,
+       "scaling": "HP",
+       "sideEffects": [],
+       "statusModifications": [],
+       "tags": [
+        "HEAVY_ATTACK"
+       ],
+       "variantName": "Cancel With Swap"
+      }
+     ],
+     "requiredForms": [
+      "Fleurdelys"
+     ],
+     "requiresSwapOut": true,
+     "startState": "GROUND",
+     "swapOutState": "GROUND"
+    },
+    "castTime": 0.73,
+    "category": "Basics",
+    "cooldown": 0,
+    "damageModifiers": [],
+    "displayName": "Heavy Attack 2 (swap cancel)",
+    "dmgTypes": [
+     "BASIC"
+    ],
+    "elements": [
+     "AERO"
+    ],
+    "energyCost": [],
+    "energyGenerated": [
+     {
+      "amount": 2.4,
+      "energyType": "energy",
+      "scalingStat": "energyPercent",
+      "share": 0.5
+     },
+     {
+      "amount": 3.38,
+      "energyType": "concerto",
+      "share": 0
+     },
+     {
+      "amount": 13.33,
+      "energyType": "conviction",
+      "share": 0
+     }
+    ],
+    "groupName": "Heavy Attack 2",
+    "multiplier": 0.1945,
+    "name": "Enhanced Heavy Attack (swap cancel)",
+    "offtune": 1.08,
+    "scaling": "HP",
+    "sideEffects": [],
+    "statusModifications": [
+     {
+      "stackChange": 2,
+      "targetName": "Aero Erosion",
+      "type": "negativeStatus"
+     }
+    ],
+    "tags": [
+     "HEAVY_ATTACK"
+    ],
+    "variantName": "Cancel With Swap"
+   },
+   {
+    "castConditions": {
+     "endState": "GROUND",
+     "requiredForms": [
+      "Fleurdelys"
+     ],
+     "startState": "AIR"
+    },
+    "castTime": 2.47,
+    "category": "Basics",
+    "cooldown": 0,
+    "damageModifiers": [],
+    "displayName": "Mid-air Attack 1-3",
+    "dmgTypes": [
+     "BASIC"
+    ],
+    "elements": [
+     "AERO"
+    ],
+    "energyCost": [],
+    "energyGenerated": [
+     {
+      "amount": 4.55,
+      "energyType": "energy",
+      "scalingStat": "energyPercent",
+      "share": 0.5
+     },
+     {
+      "amount": 5.96,
+      "energyType": "concerto",
+      "share": 0
+     },
+     {
+      "amount": 25,
+      "energyType": "conviction",
+      "share": 0
+     }
+    ],
+    "groupName": "Mid-air Attack 1-3",
+    "multiplier": 0.4081,
+    "name": "Mid-air Attack 1-3",
+    "offtune": 1.44,
+    "scaling": "HP",
+    "sideEffects": [
+     {
+      "damageDealt": "[Function]",
+      "name": "Aero Erosion Explosion",
+      "statusModifications": [
+       {
+        "stackChange": -1,
+        "targetName": "Aero Erosion",
+        "type": "negativeStatus"
+       }
+      ]
+     }
+    ],
+    "statusModifications": [
+     {
+      "stackChange": 2,
+      "targetName": "Aero Erosion",
+      "type": "negativeStatus"
+     }
+    ],
+    "tags": [
+     "BASIC_ATTACK"
+    ],
+    "variantName": "Default"
+   },
+   {
+    "castConditions": {
+     "endState": "GROUND",
+     "persistenceTime": 100,
+     "requiredForms": [
+      "Fleurdelys"
+     ],
+     "requiresSwapOut": true,
+     "startState": "AIR",
+     "swapOutState": "AIR"
+    },
+    "castTime": 2.47,
+    "category": "Basics",
+    "cooldown": 0,
+    "damageModifiers": [],
+    "displayName": "Mid-air Attack 1-3 (swap cancel)",
+    "dmgTypes": [
+     "BASIC"
+    ],
+    "elements": [
+     "AERO"
+    ],
+    "energyCost": [],
+    "energyGenerated": [
+     {
+      "amount": 4.55,
+      "energyType": "energy",
+      "scalingStat": "energyPercent",
+      "share": 0.5
+     },
+     {
+      "amount": 5.96,
+      "energyType": "concerto",
+      "share": 0
+     },
+     {
+      "amount": 25,
+      "energyType": "conviction",
+      "share": 0
+     }
+    ],
+    "groupName": "Mid-air Attack 1-3",
+    "multiplier": 0.4081,
+    "name": "Mid-air Attack 1-3 (swap cancel)",
+    "offtune": 1.44,
+    "scaling": "HP",
+    "sideEffects": [
+     {
+      "damageDealt": "[Function]",
+      "name": "Aero Erosion Explosion",
+      "statusModifications": [
+       {
+        "stackChange": -1,
+        "targetName": "Aero Erosion",
+        "type": "negativeStatus"
+       }
+      ]
+     }
+    ],
+    "statusModifications": [
+     {
+      "stackChange": 2,
+      "targetName": "Aero Erosion",
+      "type": "negativeStatus"
+     }
+    ],
+    "tags": [
+     "BASIC_ATTACK"
+    ],
+    "variantName": "Cancel With Swap"
+   },
+   {
+    "castConditions": {
+     "endState": "AIR",
+     "requiredForms": [
+      "Fleurdelys"
+     ],
+     "startState": "AIR"
+    },
+    "castTime": 1.63,
+    "category": "Basics",
+    "cooldown": 0,
+    "damageModifiers": [],
+    "displayName": "Mid-air Attack 1-2",
+    "dmgTypes": [
+     "BASIC"
+    ],
+    "elements": [
+     "AERO"
+    ],
+    "energyCost": [],
+    "energyGenerated": [
+     {
+      "amount": 4.07,
+      "energyType": "energy",
+      "scalingStat": "energyPercent",
+      "share": 0.5
+     },
+     {
+      "amount": 5.29,
+      "energyType": "concerto",
+      "share": 0
+     },
+     {
+      "amount": 20,
+      "energyType": "conviction",
+      "share": 0
+     }
+    ],
+    "groupName": "Mid-air Attack 1-2",
+    "multiplier": 0.3861,
+    "name": "Mid-air Attack 1-2",
+    "offtune": 1.29,
+    "scaling": "HP",
+    "sideEffects": [
+     {
+      "damageDealt": "[Function]",
+      "name": "Aero Erosion Explosion",
+      "statusModifications": [
+       {
+        "stackChange": -1,
+        "targetName": "Aero Erosion",
+        "type": "negativeStatus"
+       }
+      ]
+     }
+    ],
+    "statusModifications": [
+     {
+      "stackChange": 2,
+      "targetName": "Aero Erosion",
+      "type": "negativeStatus"
+     }
+    ],
+    "tags": [
+     "BASIC_ATTACK"
+    ],
+    "variantName": "Default"
+   },
+   {
+    "castConditions": {
+     "endState": "AIR",
+     "persistenceTime": 100,
+     "requiredForms": [
+      "Fleurdelys"
+     ],
+     "requiresSwapOut": true,
+     "startState": "AIR",
+     "swapOutState": "AIR"
+    },
+    "castTime": 1.63,
+    "category": "Basics",
+    "cooldown": 0,
+    "damageModifiers": [],
+    "displayName": "Mid-air Attack 1-2 (swap cancel)",
+    "dmgTypes": [
+     "BASIC"
+    ],
+    "elements": [
+     "AERO"
+    ],
+    "energyCost": [],
+    "energyGenerated": [
+     {
+      "amount": 4.07,
+      "energyType": "energy",
+      "scalingStat": "energyPercent",
+      "share": 0.5
+     },
+     {
+      "amount": 5.29,
+      "energyType": "concerto",
+      "share": 0
+     },
+     {
+      "amount": 20,
+      "energyType": "conviction",
+      "share": 0
+     }
+    ],
+    "groupName": "Mid-air Attack 1-2",
+    "multiplier": 0.3861,
+    "name": "Mid-air Attack 1-2 (swap cancel)",
+    "offtune": 1.29,
+    "scaling": "HP",
+    "sideEffects": [
+     {
+      "damageDealt": "[Function]",
+      "name": "Aero Erosion Explosion",
+      "statusModifications": [
+       {
+        "stackChange": -1,
+        "targetName": "Aero Erosion",
+        "type": "negativeStatus"
+       }
+      ]
+     }
+    ],
+    "statusModifications": [
+     {
+      "stackChange": 2,
+      "targetName": "Aero Erosion",
+      "type": "negativeStatus"
+     }
+    ],
+    "tags": [
+     "BASIC_ATTACK"
+    ],
+    "variantName": "Cancel With Swap"
+   },
+   {
+    "castConditions": {
+     "endState": "AIR",
+     "requiredForms": [
+      "Fleurdelys"
+     ],
+     "startState": "ANY"
+    },
+    "castTime": 0.9,
+    "category": "Skills",
+    "cooldown": 14,
+    "damageModifiers": [],
+    "displayName": "Sword to Answer Waves Call",
+    "dmgTypes": [
+     "SKILL"
+    ],
+    "elements": [
+     "AERO"
+    ],
+    "energyCost": [],
+    "energyGenerated": [
+     {
+      "amount": 2.33,
+      "energyType": "energy",
+      "scalingStat": "energyPercent",
+      "share": 0.5
+     },
+     {
+      "amount": 10,
+      "energyType": "concerto",
+      "share": 0
+     },
+     {
+      "amount": 13.34,
+      "energyType": "conviction",
+      "share": 0
+     }
+    ],
+    "groupName": "Resonance Skill 1",
+    "multiplier": 0.248,
+    "name": "Resonance Skill 1",
+    "offtune": 0.75,
+    "scaling": "HP",
+    "sideEffects": [],
+    "statusModifications": [
+     {
+      "stackChange": 2,
+      "targetName": "Aero Erosion",
+      "type": "negativeStatus"
+     }
+    ],
+    "tags": [
+     "SKILL"
+    ],
+    "variantName": "Default"
+   },
+   {
+    "castConditions": {
+     "endState": "AIR",
+     "persistenceTime": 100,
+     "requiredForms": [
+      "Fleurdelys"
+     ],
+     "requiresSwapOut": true,
+     "startState": "ANY",
+     "swapOutState": "GROUND"
+    },
+    "castTime": 0.9,
+    "category": "Skills",
+    "cooldown": 14,
+    "damageModifiers": [],
+    "displayName": "Sword to Answer Waves Call (swap cancel)",
+    "dmgTypes": [
+     "SKILL"
+    ],
+    "elements": [
+     "AERO"
+    ],
+    "energyCost": [],
+    "energyGenerated": [
+     {
+      "amount": 2.33,
+      "energyType": "energy",
+      "scalingStat": "energyPercent",
+      "share": 0.5
+     },
+     {
+      "amount": 10,
+      "energyType": "concerto",
+      "share": 0
+     },
+     {
+      "amount": 13.34,
+      "energyType": "conviction",
+      "share": 0
+     }
+    ],
+    "groupName": "Resonance Skill 1",
+    "multiplier": 0.248,
+    "name": "Resonance Skill 1 (swap cancel)",
+    "offtune": 0.75,
+    "scaling": "HP",
+    "sideEffects": [],
+    "statusModifications": [
+     {
+      "stackChange": 2,
+      "targetName": "Aero Erosion",
+      "type": "negativeStatus"
+     }
+    ],
+    "tags": [
+     "SKILL"
+    ],
+    "variantName": "Cancel With Swap"
+   },
+   {
+    "castConditions": {
+     "comboWindow": {
+      "crashesOnFormChange": true,
+      "crashesOnSwap": true,
+      "maxTimeSincePrevious": 10,
+      "previousActions": [
+       {
+        "castConditions": {
+         "endState": "AIR",
+         "startState": "ANY"
+        },
+        "castTime": 0.9,
+        "category": "Skills",
+        "cooldown": 14,
+        "damageModifiers": [],
+        "displayName": "Sword to Answer Waves Call",
+        "dmgTypes": [
+         "SKILL"
+        ],
+        "elements": [
+         "AERO"
+        ],
+        "energyCost": [],
+        "energyGenerated": [
+         {
+          "amount": 2.33,
+          "energyType": "energy",
+          "scalingStat": "energyPercent",
+          "share": 0.5
+         },
+         {
+          "amount": 10,
+          "energyType": "concerto",
+          "share": 0
+         },
+         {
+          "amount": 13.34,
+          "energyType": "conviction",
+          "share": 0
+         }
+        ],
+        "groupName": "Resonance Skill 1",
+        "multiplier": 0.248,
+        "name": "Resonance Skill 1",
+        "offtune": 0.75,
+        "scaling": "HP",
+        "sideEffects": [],
+        "statusModifications": [
+         {
+          "stackChange": 2,
+          "targetName": "Aero Erosion",
+          "type": "negativeStatus"
+         }
+        ],
+        "tags": [
+         "SKILL"
+        ],
+        "variantName": "Default"
+       },
+       {
+        "castConditions": {
+         "endState": "AIR",
+         "persistenceTime": 100,
+         "requiresSwapOut": true,
+         "startState": "ANY",
+         "swapOutState": "GROUND"
+        },
+        "castTime": 0.9,
+        "category": "Skills",
+        "cooldown": 14,
+        "damageModifiers": [],
+        "displayName": "Sword to Answer Waves Call (swap cancel)",
+        "dmgTypes": [
+         "SKILL"
+        ],
+        "elements": [
+         "AERO"
+        ],
+        "energyCost": [],
+        "energyGenerated": [
+         {
+          "amount": 2.33,
+          "energyType": "energy",
+          "scalingStat": "energyPercent",
+          "share": 0.5
+         },
+         {
+          "amount": 10,
+          "energyType": "concerto",
+          "share": 0
+         },
+         {
+          "amount": 13.34,
+          "energyType": "conviction",
+          "share": 0
+         }
+        ],
+        "groupName": "Resonance Skill 1",
+        "multiplier": 0.248,
+        "name": "Resonance Skill 1 (swap cancel)",
+        "offtune": 0.75,
+        "scaling": "HP",
+        "sideEffects": [],
+        "statusModifications": [
+         {
+          "stackChange": 2,
+          "targetName": "Aero Erosion",
+          "type": "negativeStatus"
+         }
+        ],
+        "tags": [
+         "SKILL"
+        ],
+        "variantName": "Cancel With Swap"
+       }
+      ],
+      "timerStartsAt": "cast"
+     },
+     "endState": "GROUND",
+     "requiredForms": [
+      "Fleurdelys"
+     ],
+     "startState": "ANY"
+    },
+    "castTime": 1.53,
+    "category": "Skills",
+    "cooldown": 14,
+    "damageModifiers": [],
+    "displayName": "May Tempest Break the Tides",
+    "dmgTypes": [
+     "SKILL"
+    ],
+    "elements": [
+     "AERO"
+    ],
+    "energyCost": [],
+    "energyGenerated": [
+     {
+      "amount": 8.82,
+      "energyType": "energy",
+      "scalingStat": "energyPercent",
+      "share": 0.5
+     },
+     {
+      "amount": 10,
+      "energyType": "concerto",
+      "share": 0
+     },
+     {
+      "amount": 26.67,
+      "energyType": "conviction",
+      "share": 0
+     }
+    ],
+    "groupName": "Resonance Skill 2",
+    "multiplier": 0.2481,
+    "name": "Resonance Skill 2",
+    "offtune": 0.75,
+    "scaling": "HP",
+    "sideEffects": [
+     {
+      "damageDealt": "[Function]",
+      "name": "Aero Erosion Explosion",
+      "statusModifications": [
+       {
+        "stackChange": -1,
+        "targetName": "Aero Erosion",
+        "type": "negativeStatus"
+       }
+      ]
+     }
+    ],
+    "statusModifications": [
+     {
+      "stackChange": 2,
+      "targetName": "Aero Erosion",
+      "type": "negativeStatus"
+     }
+    ],
+    "tags": [
+     "SKILL"
+    ],
+    "variantName": "Default"
+   },
+   {
+    "castConditions": {
+     "comboWindow": {
+      "crashesOnFormChange": true,
+      "crashesOnSwap": true,
+      "maxTimeSincePrevious": 10,
+      "previousActions": [
+       {
+        "castConditions": {
+         "endState": "AIR",
+         "startState": "ANY"
+        },
+        "castTime": 0.9,
+        "category": "Skills",
+        "cooldown": 14,
+        "damageModifiers": [],
+        "displayName": "Sword to Answer Waves Call",
+        "dmgTypes": [
+         "SKILL"
+        ],
+        "elements": [
+         "AERO"
+        ],
+        "energyCost": [],
+        "energyGenerated": [
+         {
+          "amount": 2.33,
+          "energyType": "energy",
+          "scalingStat": "energyPercent",
+          "share": 0.5
+         },
+         {
+          "amount": 10,
+          "energyType": "concerto",
+          "share": 0
+         },
+         {
+          "amount": 13.34,
+          "energyType": "conviction",
+          "share": 0
+         }
+        ],
+        "groupName": "Resonance Skill 1",
+        "multiplier": 0.248,
+        "name": "Resonance Skill 1",
+        "offtune": 0.75,
+        "scaling": "HP",
+        "sideEffects": [],
+        "statusModifications": [
+         {
+          "stackChange": 2,
+          "targetName": "Aero Erosion",
+          "type": "negativeStatus"
+         }
+        ],
+        "tags": [
+         "SKILL"
+        ],
+        "variantName": "Default"
+       },
+       {
+        "castConditions": {
+         "endState": "AIR",
+         "persistenceTime": 100,
+         "requiresSwapOut": true,
+         "startState": "ANY",
+         "swapOutState": "GROUND"
+        },
+        "castTime": 0.9,
+        "category": "Skills",
+        "cooldown": 14,
+        "damageModifiers": [],
+        "displayName": "Sword to Answer Waves Call (swap cancel)",
+        "dmgTypes": [
+         "SKILL"
+        ],
+        "elements": [
+         "AERO"
+        ],
+        "energyCost": [],
+        "energyGenerated": [
+         {
+          "amount": 2.33,
+          "energyType": "energy",
+          "scalingStat": "energyPercent",
+          "share": 0.5
+         },
+         {
+          "amount": 10,
+          "energyType": "concerto",
+          "share": 0
+         },
+         {
+          "amount": 13.34,
+          "energyType": "conviction",
+          "share": 0
+         }
+        ],
+        "groupName": "Resonance Skill 1",
+        "multiplier": 0.248,
+        "name": "Resonance Skill 1 (swap cancel)",
+        "offtune": 0.75,
+        "scaling": "HP",
+        "sideEffects": [],
+        "statusModifications": [
+         {
+          "stackChange": 2,
+          "targetName": "Aero Erosion",
+          "type": "negativeStatus"
+         }
+        ],
+        "tags": [
+         "SKILL"
+        ],
+        "variantName": "Cancel With Swap"
+       }
+      ],
+      "timerStartsAt": "cast"
+     },
+     "endState": "GROUND",
+     "persistenceTime": 100,
+     "requiredForms": [
+      "Fleurdelys"
+     ],
+     "requiresSwapOut": true,
+     "startState": "ANY",
+     "swapOutState": "AIR"
+    },
+    "castTime": 1.53,
+    "category": "Skills",
+    "cooldown": 14,
+    "damageModifiers": [],
+    "displayName": "May Tempest Break the Tides (swap cancel)",
+    "dmgTypes": [
+     "SKILL"
+    ],
+    "elements": [
+     "AERO"
+    ],
+    "energyCost": [],
+    "energyGenerated": [
+     {
+      "amount": 8.82,
+      "energyType": "energy",
+      "scalingStat": "energyPercent",
+      "share": 0.5
+     },
+     {
+      "amount": 10,
+      "energyType": "concerto",
+      "share": 0
+     },
+     {
+      "amount": 26.67,
+      "energyType": "conviction",
+      "share": 0
+     }
+    ],
+    "groupName": "Resonance Skill 2",
+    "multiplier": 0.2481,
+    "name": "Resonance Skill 2 (swap cancel)",
+    "offtune": 0.75,
+    "scaling": "HP",
+    "sideEffects": [
+     {
+      "damageDealt": "[Function]",
+      "name": "Aero Erosion Explosion",
+      "statusModifications": [
+       {
+        "stackChange": -1,
+        "targetName": "Aero Erosion",
+        "type": "negativeStatus"
+       }
+      ]
+     }
+    ],
+    "statusModifications": [
+     {
+      "stackChange": 2,
+      "targetName": "Aero Erosion",
+      "type": "negativeStatus"
+     }
+    ],
+    "tags": [
+     "SKILL"
+    ],
+    "variantName": "Cancel With Swap"
+   },
+   {
+    "castConditions": {
+     "endState": "GROUND",
+     "requiredForms": [
+      "Fleurdelys"
+     ],
+     "startState": "ANY"
+    },
+    "castTime": 0.03,
+    "category": "Skills",
+    "cooldown": 25,
+    "damageModifiers": [],
+    "displayName": "Blade of Howling Squall",
+    "dmgTypes": [
+     "LIBERATION"
+    ],
+    "elements": [
+     "AERO"
+    ],
+    "energyCost": [
+     {
+      "amount": 120,
+      "energyType": "conviction"
+     }
+    ],
+    "energyGenerated": [
+     {
+      "amount": 0,
+      "energyType": "energy",
+      "scalingStat": "energyPercent",
+      "share": 0.5
+     },
+     {
+      "amount": 20,
+      "energyType": "concerto",
+      "share": 0
+     }
+    ],
+    "formChange": "Cartethyia",
+    "inherentModifiers": [
+     {
+      "characterStats": {
+       "liberationTotalMultiplierDMG": 1
+      },
+      "condition": "[Function]",
+      "displayName": "Liberation Aero Erosion Stacks"
+     }
+    ],
+    "multiplier": 1.8368,
+    "name": "Liberation (Fleurdelys)",
+    "offtune": 16.8,
+    "scaling": "HP",
+    "sideEffects": [],
+    "statusModifications": [
+     {
+      "stackChange": -100,
+      "targetName": "Aero Erosion",
+      "type": "negativeStatus"
+     },
+     {
+      "stackChange": -1,
+      "targetName": "Mandate",
+      "type": "buff"
+     },
+     {
+      "stackChange": -1,
+      "targetName": "Power of Discord",
+      "type": "buff"
+     },
+     {
+      "stackChange": -100,
+      "targetName": "Fleurdelys's Conviction",
+      "type": "buff"
+     }
+    ],
+    "tags": [
+     "LIBERATION"
+    ]
+   },
+   {
+    "castConditions": {
+     "endState": "PRESERVE",
+     "startState": "ANY"
+    },
+    "castTime": 0.05,
+    "category": "Testing",
+    "cooldown": 0,
+    "damageModifiers": [],
+    "displayName": "Wait 0.05s",
+    "dmgTypes": [
+     ""
+    ],
+    "elements": [
+     ""
+    ],
+    "energyCost": [],
+    "energyGenerated": [],
+    "multiplier": 0,
+    "name": "Wait 0.05s",
+    "offtune": 0,
+    "scaling": "HP",
+    "sideEffects": [],
+    "statusModifications": []
+   },
+   {
+    "castConditions": {
+     "customCanCast": "[Function]",
+     "endState": "PRESERVE",
+     "startState": "ANY"
+    },
+    "castTime": 0,
+    "category": "Other",
+    "cooldown": 0,
+    "damageModifiers": [],
+    "displayName": "Wait Until Next Swap Is Available",
+    "dmgTypes": [
+     ""
+    ],
+    "elements": [
+     ""
+    ],
+    "energyCost": [],
+    "energyGenerated": [],
+    "multiplier": 0,
+    "name": "Wait Until Next Swap Is Available",
+    "offtune": 0,
+    "resolveVariant": "[Function]",
+    "scaling": "HP",
+    "sideEffects": [],
+    "statusModifications": []
+   },
+   {
+    "castConditions": {
+     "customCanCast": "[Function]",
+     "endState": "PRESERVE",
+     "startState": "ANY"
+    },
+    "castTime": 0,
+    "category": "Other",
+    "cooldown": 0,
+    "damageModifiers": [],
+    "displayName": "Wait Until Next Cooldown",
+    "dmgTypes": [
+     ""
+    ],
+    "elements": [
+     ""
+    ],
+    "energyCost": [],
+    "energyGenerated": [],
+    "multiplier": 0,
+    "name": "Wait Until Next Cooldown",
+    "offtune": 0,
+    "resolveVariant": "[Function]",
+    "scaling": "HP",
+    "sideEffects": [],
+    "statusModifications": []
+   },
+   {
+    "castConditions": {
+     "endState": "PRESERVE",
+     "startState": "ANY"
+    },
+    "castTime": 0,
+    "category": "Testing",
+    "cooldown": 0,
+    "damageModifiers": [],
+    "displayName": "Energy Up",
+    "dmgTypes": [
+     ""
+    ],
+    "elements": [
+     ""
+    ],
+    "energyCost": [],
+    "energyGenerated": [
+     {
+      "amount": 1000,
+      "energyType": "energy",
+      "share": 0
+     }
+    ],
+    "multiplier": 0,
+    "name": "Energy Up",
+    "offtune": 0,
+    "scaling": "HP",
+    "sideEffects": [],
+    "statusModifications": []
+   },
+   {
+    "castConditions": {
+     "endState": "PRESERVE",
+     "startState": "ANY"
+    },
+    "castTime": 0,
+    "category": "Testing",
+    "cooldown": 0,
+    "damageModifiers": [],
+    "displayName": "Concerto Up",
+    "dmgTypes": [
+     ""
+    ],
+    "elements": [
+     ""
+    ],
+    "energyCost": [],
+    "energyGenerated": [
+     {
+      "amount": 1000,
+      "energyType": "concerto",
+      "share": 0
+     }
+    ],
+    "multiplier": 0,
+    "name": "Concerto Up",
+    "offtune": 0,
+    "scaling": "HP",
+    "sideEffects": [],
+    "statusModifications": []
+   },
+   {
+    "castConditions": {
+     "endState": "PRESERVE",
+     "startState": "ANY"
+    },
+    "castTime": 0,
+    "category": "Testing",
+    "cooldown": 0,
+    "damageModifiers": [],
+    "displayName": "Forte Up",
+    "dmgTypes": [
+     ""
+    ],
+    "elements": [
+     ""
+    ],
+    "energyCost": [],
+    "energyGenerated": [
+     {
+      "amount": 1000,
+      "energyType": "forte_divinity",
+      "share": 0
+     },
+     {
+      "amount": 1000,
+      "energyType": "forte_discord",
+      "share": 0
+     },
+     {
+      "amount": 1000,
+      "energyType": "forte_virtue",
+      "share": 0
+     }
+    ],
+    "multiplier": 0,
+    "name": "Forte Up",
+    "offtune": 0,
+    "scaling": "HP",
+    "sideEffects": [],
+    "statusModifications": []
+   },
+   {
+    "castConditions": {
+     "endState": "PRESERVE",
+     "startState": "ANY"
+    },
+    "castTime": 0,
+    "category": "Testing",
+    "cooldown": 0,
+    "damageModifiers": [],
+    "displayName": "Conviction Up",
+    "dmgTypes": [
+     ""
+    ],
+    "elements": [
+     ""
+    ],
+    "energyCost": [],
+    "energyGenerated": [
+     {
+      "amount": 1000,
+      "energyType": "conviction",
+      "share": 0
+     }
+    ],
+    "multiplier": 0,
+    "name": "Conviction Up",
+    "offtune": 0,
+    "scaling": "HP",
+    "sideEffects": [],
+    "statusModifications": []
+   },
+   {
+    "castConditions": {
+     "endState": "GROUND",
+     "startState": "ANY"
+    },
+    "castTime": 0.92,
+    "category": "Other",
+    "cooldown": 0,
+    "damageModifiers": [],
+    "displayName": "Sword to Mark Tides Trace",
+    "dmgTypes": [
+     "INTRO"
+    ],
+    "elements": [
+     "AERO"
+    ],
+    "energyCost": [],
+    "energyGenerated": [
+     {
+      "amount": 10.01,
+      "energyType": "energy",
+      "scalingStat": "energyPercent",
+      "share": 0.5
+     },
+     {
+      "amount": 10,
+      "energyType": "concerto",
+      "share": 0
+     },
+     {
+      "amount": 1,
+      "energyType": "forte_discord",
+      "share": 0
+     }
+    ],
+    "multiplier": 0.1872,
+    "name": "Cartethyia Intro",
+    "offtune": 0.71,
+    "scaling": "HP",
+    "sideEffects": [],
+    "statusModifications": [],
+    "tags": [
+     "INTRO_ACTION"
+    ]
+   },
+   {
+    "castConditions": {
+     "endState": "PRESERVE",
+     "startState": "ANY"
+    },
+    "castTime": 0,
+    "category": "Other",
+    "cooldown": 0,
+    "damageModifiers": [
+     {
+      "characterStats": {
+       "aeroAmplifyDMG": 0.175
+      },
+      "color": "#1ae070",
+      "condition": "[Function]",
+      "displayName": "Wind's Divine Blessing",
+      "durationStrategy": {
+       "timeDuration": 20,
+       "type": "limited"
+      },
+      "ownerCharacter": "Cartethyia",
+      "source": "Cartethyia Outro Buff",
+      "stackingStrategy": {
+       "maxStacks": 1,
+       "resetTimerOnApplication": true,
+       "stacksRemovedEachTime": 1
+      },
+      "targetStrategy": "activeAlly",
+      "type": "buff"
+     }
+    ],
+    "displayName": "Winds Divine Blessing",
+    "dmgTypes": [
+     "OUTRO"
+    ],
+    "elements": [
+     "AERO"
+    ],
+    "energyCost": [],
+    "energyGenerated": [],
+    "multiplier": 0,
+    "name": "Outro",
+    "offtune": 0,
+    "scaling": "HP",
+    "sideEffects": [],
+    "statusModifications": [],
+    "tags": [
+     "OUTRO_ACTION"
+    ]
+   },
+   {
+    "castConditions": {
+     "endState": "GROUND",
+     "startState": "ANY"
+    },
+    "castTime": 0.92,
+    "category": "Other",
+    "cooldown": 0,
+    "damageModifiers": [],
+    "displayName": "Sword to Mark Tides Trace",
+    "dmgTypes": [
+     "INTRO"
+    ],
+    "elements": [
+     "AERO"
+    ],
+    "energyCost": [],
+    "energyGenerated": [
+     {
+      "amount": 10.01,
+      "energyType": "energy",
+      "scalingStat": "energyPercent",
+      "share": 0.5
+     },
+     {
+      "amount": 10,
+      "energyType": "concerto",
+      "share": 0
+     },
+     {
+      "amount": 1,
+      "energyType": "forte_discord",
+      "share": 0
+     }
+    ],
+    "multiplier": 0.3744,
+    "name": "Fleurdelys Intro",
+    "offtune": 0.71,
+    "scaling": "HP",
+    "sideEffects": [],
+    "statusModifications": []
+   }
+  ],
+  "damageModifiers": [
+   {
+    "characterStats": {
+     "bonusDMG": 0.1
+    },
+    "condition": "[Function]",
+    "displayName": "Wind's Indelible Imprint",
+    "durationStrategy": {
+     "type": "permanent"
+    },
+    "ownerCharacter": "Cartethyia",
+    "source": "Inherent Skill",
+    "stackingStrategy": {
+     "maxStacks": 1,
+     "resetTimerOnApplication": false,
+     "stacksRemovedEachTime": 1
+    },
+    "targetStrategy": "self",
+    "type": "buff"
+   }
+  ],
+  "defaultForm": "Cartethyia",
+  "element": "AERO",
+  "forms": [
+   {
+    "displayName": "Cartethyia",
+    "introAction": {
+     "castConditions": {
+      "endState": "GROUND",
+      "startState": "ANY"
+     },
+     "castTime": 0.92,
+     "category": "Other",
+     "cooldown": 0,
+     "damageModifiers": [],
+     "displayName": "Sword to Mark Tides Trace",
+     "dmgTypes": [
+      "INTRO"
+     ],
+     "elements": [
+      "AERO"
+     ],
+     "energyCost": [],
+     "energyGenerated": [
+      {
+       "amount": 10.01,
+       "energyType": "energy",
+       "scalingStat": "energyPercent",
+       "share": 0.5
+      },
+      {
+       "amount": 10,
+       "energyType": "concerto",
+       "share": 0
+      },
+      {
+       "amount": 1,
+       "energyType": "forte_discord",
+       "share": 0
+      }
+     ],
+     "multiplier": 0.1872,
+     "name": "Cartethyia Intro",
+     "offtune": 0.71,
+     "scaling": "HP",
+     "sideEffects": [],
+     "statusModifications": [],
+     "tags": [
+      "INTRO_ACTION"
+     ]
+    },
+    "name": "Cartethyia",
+    "outroAction": {
+     "castConditions": {
+      "endState": "PRESERVE",
+      "startState": "ANY"
+     },
+     "castTime": 0,
+     "category": "Other",
+     "cooldown": 0,
+     "damageModifiers": [
+      {
+       "characterStats": {
+        "aeroAmplifyDMG": 0.175
+       },
+       "color": "#1ae070",
+       "condition": "[Function]",
+       "displayName": "Wind's Divine Blessing",
+       "durationStrategy": {
+        "timeDuration": 20,
+        "type": "limited"
+       },
+       "ownerCharacter": "Cartethyia",
+       "source": "Cartethyia Outro Buff",
+       "stackingStrategy": {
+        "maxStacks": 1,
+        "resetTimerOnApplication": true,
+        "stacksRemovedEachTime": 1
+       },
+       "targetStrategy": "activeAlly",
+       "type": "buff"
+      }
+     ],
+     "displayName": "Winds Divine Blessing",
+     "dmgTypes": [
+      "OUTRO"
+     ],
+     "elements": [
+      "AERO"
+     ],
+     "energyCost": [],
+     "energyGenerated": [],
+     "multiplier": 0,
+     "name": "Outro",
+     "offtune": 0,
+     "scaling": "HP",
+     "sideEffects": [],
+     "statusModifications": [],
+     "tags": [
+      "OUTRO_ACTION"
+     ]
+    }
+   },
+   {
+    "displayName": "Fleurdelys",
+    "introAction": {
+     "castConditions": {
+      "endState": "GROUND",
+      "startState": "ANY"
+     },
+     "castTime": 0.92,
+     "category": "Other",
+     "cooldown": 0,
+     "damageModifiers": [],
+     "displayName": "Sword to Mark Tides Trace",
+     "dmgTypes": [
+      "INTRO"
+     ],
+     "elements": [
+      "AERO"
+     ],
+     "energyCost": [],
+     "energyGenerated": [
+      {
+       "amount": 10.01,
+       "energyType": "energy",
+       "scalingStat": "energyPercent",
+       "share": 0.5
+      },
+      {
+       "amount": 10,
+       "energyType": "concerto",
+       "share": 0
+      },
+      {
+       "amount": 1,
+       "energyType": "forte_discord",
+       "share": 0
+      }
+     ],
+     "multiplier": 0.3744,
+     "name": "Fleurdelys Intro",
+     "offtune": 0.71,
+     "scaling": "HP",
+     "sideEffects": [],
+     "statusModifications": []
+    },
+    "name": "Fleurdelys"
+   }
+  ],
+  "gear": {
+   "echoSlots": {
+    "1": {
+     "baseStats": {
+      "critDamage": 0.44,
+      "flatATK": 150
+     },
+     "conditionalStats": {
+      "condition": "[Function]",
+      "stats": {
+       "aeroBonusDMG": 0.1
+      }
+     },
+     "cost": 4,
+     "echoSkill": {
+      "castConditions": {
+       "endState": "PRESERVE",
+       "startState": "ANY"
+      },
+      "castTime": 0,
+      "category": "Echo Skill",
+      "cooldown": 20,
+      "damageModifiers": [],
+      "displayName": "Reminiscence: Fleurdelys (Active)",
+      "dmgTypes": [
+       "ECHO"
+      ],
+      "elements": [
+       "AERO"
+      ],
+      "energyCost": [],
+      "energyGenerated": [
+       {
+        "amount": 4.94,
+        "energyType": "energy",
+        "scalingStat": "energyPercent",
+        "share": 0.5
+       }
+      ],
+      "multiplier": 3.5568,
+      "name": "Reminiscence: Fleurdelys (Active)",
+      "offtune": 0,
+      "scaling": "ATK",
+      "sideEffects": [],
+      "statusModifications": []
+     },
+     "firstSlotStats": {
+      "aeroBonusDMG": 0.1
+     },
+     "icon": "assets/gear/echoes/reminiscence_fleurdelys.png",
+     "info": "The Resonator with this Echo equipped in the main slot gains 10.00% Aero DMG Bonus. When Resonator: Aero Rover or Cartethyia equips this Echo, they gain 10.00% more Aero DMG Bonus.",
+     "info_icon": "assets/gear/echoes/info_reminiscence_fleurdelys.png",
+     "name": "Reminiscence: Fleurdelys",
+     "setName": "Windward Pilgrimage",
+     "subStats": {
+      "bonusHP": 0.079,
+      "critDamage": 0.15,
+      "critRate": 0.075
+     }
+    },
+    "2": {
+     "baseStats": {
+      "critRate": 0.22,
+      "flatATK": 150
+     },
+     "cost": 4,
+     "icon": "assets/gear/echoes/nightmare_kelpie.png",
+     "info": "The Resonator with this Echo equipped in the main slot gains 12.00% Glacio DMG Bonus and 12.00% Aero DMG Bonus. Switching out the Resonator with Outro Skill summons Nightmare: Kelpie to deal 405.00% Aero DMG.",
+     "info_icon": "assets/gear/echoes/info_nightmare_kelpie.png",
+     "name": "Nightmare: Kelpie",
+     "setName": "Windward Pilgrimage",
+     "subStats": {
+      "bonusHP": 0.079,
+      "critDamage": 0.15,
+      "critRate": 0.075
+     }
+    },
+    "3": {
+     "baseStats": {
+      "bonusHP": 0.228,
+      "flatHP": 2280
+     },
+     "cost": 1,
+     "icon": "assets/gear/echoes/spectro_drake.png",
+     "info_icon": "assets/gear/echoes/info_spectro_drake.png",
+     "name": "Spectro Drake",
+     "setName": "Windward Pilgrimage",
+     "subStats": {
+      "bonusHP": 0.079,
+      "critDamage": 0.15,
+      "critRate": 0.075
+     }
+    },
+    "4": {
+     "baseStats": {
+      "bonusHP": 0.228,
+      "flatHP": 2280
+     },
+     "cost": 1,
+     "icon": "assets/gear/echoes/sacerdos.png",
+     "info_icon": "assets/gear/echoes/info_sacerdos.png",
+     "name": "Sacerdos",
+     "setName": "Windward Pilgrimage",
+     "subStats": {
+      "bonusHP": 0.079,
+      "critDamage": 0.15,
+      "critRate": 0.075
+     }
+    },
+    "5": {
+     "baseStats": {
+      "bonusHP": 0.228,
+      "flatHP": 2280
+     },
+     "cost": 1,
+     "icon": "assets/gear/echoes/devotee's_flesh.png",
+     "info_icon": "assets/gear/echoes/info_devotee's_flesh.png",
+     "name": "Devotee's Flesh",
+     "setName": "Windward Pilgrimage",
+     "subStats": {
+      "bonusHP": 0.079,
+      "critDamage": 0.15,
+      "critRate": 0.075
+     }
+    }
+   },
+   "setBonus": {
+    "icon": "assets/gear/set-bonuses/windward_pilgrimage.png",
+    "info": {
+     "2-piece": "Aero DMG + 10%",
+     "5-piece": "Hitting a target with Aero Erosion increases Crit. Rate by 10% and grants 30% Aero DMG Bonus, lasting for 10s."
+    },
+    "injectedModifiers": [
+     {
+      "modifiers": [
+       {
+        "characterStats": {
+         "aeroBonusDMG": 0.3,
+         "critRate": 0.1
+        },
+        "condition": "[Function]",
+        "displayName": "Windward Pilgrimage (Set Bonus)",
+        "durationStrategy": {
+         "type": "permanent"
+        },
+        "ownerCharacter": "Cartethyia",
+        "source": "Cartethyia",
+        "stackingStrategy": {
+         "maxStacks": 1,
+         "resetTimerOnApplication": false,
+         "stacksRemovedEachTime": 0
+        },
+        "targetStrategy": "self",
+        "type": "buff"
+       }
+      ],
+      "targets": [
+       "character"
+      ]
+     }
+    ],
+    "name": "Windward Pilgrimage",
+    "stats": {
+     "aeroBonusDMG": 0.1
+    }
+   },
+   "weapon": {
+    "icon": "assets/gear/weapons/defier's_thorn.png",
+    "info": "Max HP is increased by 12%/15%/18%/21%/24%. 15s after casting Intro Skill or Basic Attacks, ignore 8%/10%/12%/14%/16% of the target's DEF when dealing damage. If the target has at least 1 stack of Aero Erosion, the DMG taken by the target is Amplified by 20%/25%/30%/35%/40%.",
+    "injectedModifiers": [
+     {
+      "modifiers": [
+       {
+        "characterStats": {
+         "bonusHP": 0.12
+        },
+        "condition": "[Function]",
+        "displayName": "A Free Knight's Tarantella (HP)",
+        "durationStrategy": {
+         "type": "permanent"
+        },
+        "ownerCharacter": "Cartethyia",
+        "source": "Defier's Thorn",
+        "stackingStrategy": {
+         "maxStacks": 1,
+         "resetTimerOnApplication": false,
+         "stacksRemovedEachTime": 0
+        },
+        "targetStrategy": "self",
+        "type": "buff"
+       },
+       {
+        "characterStats": {
+         "defIgnore": 0.08
+        },
+        "condition": "[Function]",
+        "displayName": "A Free Knight's Tarantella (1)",
+        "durationStrategy": {
+         "type": "permanent"
+        },
+        "ownerCharacter": "Cartethyia",
+        "source": "Defier's Thorn",
+        "stackingStrategy": {
+         "maxStacks": 1,
+         "resetTimerOnApplication": false,
+         "stacksRemovedEachTime": 0
+        },
+        "targetStrategy": "self",
+        "type": "buff"
+       },
+       {
+        "characterStats": {
+         "amplifyDMG": 0.2
+        },
+        "condition": "[Function]",
+        "displayName": "A Free Knight's Tarantella (2)",
+        "durationStrategy": {
+         "type": "permanent"
+        },
+        "ownerCharacter": "Cartethyia",
+        "source": "Defier's Thorn",
+        "stackingStrategy": {
+         "maxStacks": 1,
+         "resetTimerOnApplication": false,
+         "stacksRemovedEachTime": 0
+        },
+        "targetStrategy": "self",
+        "type": "buff"
+       }
+      ],
+      "targets": [
+       "character"
+      ]
+     }
+    ],
+    "name": "Defier's Thorn",
+    "rank": 1,
+    "stats": {
+     "baseATK": 412.5,
+     "bonusHP": 0.7223
+    },
+    "weaponType": "Sword"
+   }
+  },
+  "image": "/assets/characters/cartethyia.png",
+  "inherentStats": {
+   "bonusHP": 0.12,
+   "critRate": 0.08
+  },
+  "maxEnergies": {
+   "concerto": 100,
+   "conviction": 120,
+   "energy": 125,
+   "forte_discord": 1,
+   "forte_divinity": 1,
+   "forte_virtue": 1
+  },
+  "name": "Cartethyia",
+  "resourceMilestones": [
+   {
+    "milestones": [
+     30,
+     60,
+     90,
+     120
+    ],
+    "modifier": {
+     "characterStats": {
+      "critDamage": 0.25
+     },
+     "color": "#17191a",
+     "condition": "[Function]",
+     "contributionGroup": "Cartethyia: Mandate",
+     "displayName": "Fleurdelys's Conviction",
+     "durationStrategy": {
+      "timeDuration": 15,
+      "type": "limited"
+     },
+     "ownerCharacter": "Cartethyia",
+     "source": "Cartethyia S1: Conviction Milestone",
+     "stackingStrategy": {
+      "maxStacks": 4,
+      "resetTimerOnApplication": false,
+      "stacksRemovedEachTime": 4
+     },
+     "targetStrategy": "self",
+     "type": "buff"
+    },
+    "resourceType": "conviction"
+   }
+  ],
+  "sequence": 3,
+  "sequence_nodes": [
+   "Gain Zeal that lasts for 10s when Cartethyia's or Fleurdelys's attacks directly damage and defeat targets inflicted with Aero Erosion. In the Zeal state, upon defeating enemies, the next move that directly damages targets raises the Aero Erosion stacks on the targets to the highest count among the targets defeated. This will not exceed the current max Aero Erosion stack limit. Zeal is removed afterward and enters a 1s cooldown. When Fleurdelys's Conviction hits 30/60/90/120, Fleurdelys's Crit. DMG is increased by 25% for 15s, up to 4 stacks. The duration of this effect does not reset upon gaining new stacks. After casting Resonance Liberation - Blade of Howling Squall, the increased Crit. DMG is removed.",
+   "Casting Resonance Liberation - A Knight's Heartfelt Prayers increases the max stack limit of Aero Erosion on targets within a certain range by 3 stacks. The next attack that directly damages the target inflicts 3 stack of Aero Erosion on all targets within a certain range and immediately triggers the Aero Erosion DMG on the targets hit once without consuming the Aero Erosion stacks. The DMG Multipliers of Cartethyia's Basic Attack, Heavy Attack, Dodge Counter, and Intro Skill are increased by 50% and the DMG Multiplier of her Mid-air Attack is increased by 200%. After casting Mid-air Attack - Cartethyia, every 1 type of Sword Shadow recalled reduces the cooldown of Resonance Skill - Cartethyia by 1s.",
+   "Basic Attack - Fleurdelys Stage 5, Mid-air Attack - Fleurdelys Stage 2, Enhanced Heavy Attack - Fleurdelys, and Resonance Skill - May Tempest Break the Tides now inflict 2 stacks of Aero Erosion on the targets hit. The DMG Multiplier of Resonance Liberation - Blade of Howling Squall is increased by 100%.",
+   "After Resonators in the team inflict Havoc Bane, Fusion Burst, Spectro Frazzle, Electro Flare, Glacio Chafe, orAero Erosion, all Resonators in the team gain 20% DMG Bonus for all Attributes for 20s.",
+   "When Cartethyia or Fleurdelys takes a fatal blow, they will not be downed by this instance of damage, but instead gain a Shield equal to 20% of Cartethyia's Max HP for 10s. This effect can be triggered once every 10 min. The HP cost for casting Resonance Liberation - A Knight's Heartfelt Prayers is reduced to 25% of Max HP.",
+   "After casting Resonance Liberation - Blade of Howling Squall, raise the Aero Erosion stacks on the target hit to max. Casting Resonance Liberation - Blade of Howling Squall no longer removes the Aero Erosion stacks on the target. Within 30s after casting Intro Skill - Sword to Mark Tide's Trace, Intro Skill - Sword to Call for Freedom, Resonance Liberation - A Knight's Heartfelt Prayers, and Resonance Liberation - Blade of Howling Squall, when any Resonator in the team inflicts Aero Erosion on the targets with max stacks of Aero Erosion, immediately trigger the Aero Erosion DMG once. The targets take 40% more DMG from Fleurdelys."
+  ],
+  "sequence_nodes_icons": [
+   "assets/characters/sequences/cartethyia_1.png",
+   "assets/characters/sequences/cartethyia_2.png",
+   "assets/characters/sequences/cartethyia_3.png",
+   "assets/characters/sequences/cartethyia_4.png",
+   "assets/characters/sequences/cartethyia_5.png",
+   "assets/characters/sequences/cartethyia_6.png"
+  ],
+  "stats": {
+   "baseATK": 312,
+   "baseDEF": 611,
+   "baseHP": 14800
+  },
+  "weaponType": "Sword"
+ },
+ "resolved": {
+  "actions": [
+   {
+    "attemptFollowUp": {
+     "actionName": "Resonance Skill"
+    },
+    "castConditions": {
+     "endState": "GROUND",
+     "requiredForms": [
+      "Cartethyia"
+     ],
+     "startState": "GROUND"
+    },
+    "castTime": 2.32,
+    "category": "Basics",
+    "cooldown": 0,
+    "damageModifiers": [],
+    "displayName": "Basic Attack 1-4 (skill cancel)",
+    "dmgTypes": [
+     "BASIC"
+    ],
+    "elements": [
+     "AERO"
+    ],
+    "energyCost": [],
+    "energyGenerated": [
+     {
+      "amount": 7.37,
+      "energyType": "energy",
+      "scalingStat": "energyPercent",
+      "share": 0.5
+     },
+     {
+      "amount": 10.31,
+      "energyType": "concerto",
+      "share": 0
+     },
+     {
+      "amount": 1,
+      "energyType": "forte_divinity",
+      "share": 0
+     }
+    ],
+    "groupName": "Basic Attack 1-4",
+    "multiplier": 0.75195,
+    "name": "Basic Attack 1-4 (skill cancel)",
+    "offtune": 2.34,
+    "scaling": "HP",
+    "sideEffects": [],
+    "statusModifications": [
+     {
+      "stackChange": 1,
+      "targetName": "Aero Erosion",
+      "type": "negativeStatus"
+     }
+    ],
+    "tags": [
+     "BASIC_ATTACK"
+    ],
+    "variantName": "Cancel With Skill"
+   },
+   {
+    "castConditions": {
+     "endState": "GROUND",
+     "persistenceTime": 100,
+     "requiredForms": [
+      "Cartethyia"
+     ],
+     "requiresSwapOut": true,
+     "startState": "GROUND",
+     "swapOutState": "GROUND"
+    },
+    "castTime": 2.26,
+    "category": "Basics",
+    "cooldown": 0,
+    "damageModifiers": [],
+    "displayName": "Basic Attack 1-4 (swap cancel)",
+    "dmgTypes": [
+     "BASIC"
+    ],
+    "elements": [
+     "AERO"
+    ],
+    "energyCost": [],
+    "energyGenerated": [
+     {
+      "amount": 7.37,
+      "energyType": "energy",
+      "scalingStat": "energyPercent",
+      "share": 0.5
+     },
+     {
+      "amount": 10.31,
+      "energyType": "concerto",
+      "share": 0
+     },
+     {
+      "amount": 1,
+      "energyType": "forte_divinity",
+      "share": 0
+     }
+    ],
+    "groupName": "Basic Attack 1-4",
+    "multiplier": 0.75195,
+    "name": "Basic Attack 1-4 (swap cancel)",
+    "offtune": 2.34,
+    "scaling": "HP",
+    "sideEffects": [],
+    "statusModifications": [
+     {
+      "stackChange": 1,
+      "targetName": "Aero Erosion",
+      "type": "negativeStatus"
+     }
+    ],
+    "tags": [
+     "BASIC_ATTACK"
+    ],
+    "variantName": "Cancel With Swap"
+   },
+   {
+    "castConditions": {
+     "endState": "GROUND",
+     "requiredForms": [
+      "Cartethyia"
+     ],
+     "requiresSwapIn": true,
+     "startState": "GROUND"
+    },
+    "castTime": 1.85,
+    "category": "Basics",
+    "cooldown": 0,
+    "damageModifiers": [],
+    "displayName": "Basic Attack 2-4",
+    "dmgTypes": [
+     "BASIC"
+    ],
+    "elements": [
+     "AERO"
+    ],
+    "energyCost": [],
+    "energyGenerated": [
+     {
+      "amount": 6.67,
+      "energyType": "energy",
+      "scalingStat": "energyPercent",
+      "share": 0.5
+     },
+     {
+      "amount": 9.33,
+      "energyType": "concerto",
+      "share": 0
+     },
+     {
+      "amount": 1,
+      "energyType": "forte_divinity",
+      "share": 0
+     }
+    ],
+    "groupName": "Basic Attack 2-4",
+    "multiplier": 0.68025,
+    "name": "Basic Attack 2-4",
+    "offtune": 2.12,
+    "scaling": "HP",
+    "sideEffects": [],
+    "statusModifications": [
+     {
+      "stackChange": 1,
+      "targetName": "Aero Erosion",
+      "type": "negativeStatus"
+     }
+    ],
+    "tags": [
+     "BASIC_ATTACK"
+    ],
+    "toolTip": "Can be cast after intro",
+    "variantName": "Default"
+   },
+   {
+    "castConditions": {
+     "endState": "AIR",
+     "requiredForms": [
+      "Cartethyia"
+     ],
+     "requiresSwapIn": true,
+     "startState": "GROUND"
+    },
+    "castTime": 2.15,
+    "category": "Basics",
+    "cooldown": 0,
+    "damageModifiers": [],
+    "displayName": "Basic Attack 2-4 (jump cancel)",
+    "dmgTypes": [
+     "BASIC"
+    ],
+    "elements": [
+     "AERO"
+    ],
+    "energyCost": [],
+    "energyGenerated": [
+     {
+      "amount": 6.67,
+      "energyType": "energy",
+      "scalingStat": "energyPercent",
+      "share": 0.5
+     },
+     {
+      "amount": 9.33,
+      "energyType": "concerto",
+      "share": 0
+     },
+     {
+      "amount": 1,
+      "energyType": "forte_divinity",
+      "share": 0
+     }
+    ],
+    "groupName": "Basic Attack 2-4",
+    "multiplier": 0.68025,
+    "name": "Basic Attack 2-4 (jump cancel)",
+    "offtune": 2.12,
+    "scaling": "HP",
+    "sideEffects": [],
+    "statusModifications": [
+     {
+      "stackChange": 1,
+      "targetName": "Aero Erosion",
+      "type": "negativeStatus"
+     }
+    ],
+    "tags": [
+     "BASIC_ATTACK"
+    ],
+    "toolTip": "Can be cast after intro",
+    "variantName": "Cancel With Jump"
+   },
+   {
+    "castConditions": {
+     "endState": "GROUND",
+     "persistenceTime": 100,
+     "requiredForms": [
+      "Cartethyia"
+     ],
+     "requiresSwapIn": true,
+     "requiresSwapOut": true,
+     "startState": "GROUND",
+     "swapOutState": "GROUND"
+    },
+    "castTime": 1.92,
+    "category": "Basics",
+    "cooldown": 0,
+    "damageModifiers": [],
+    "displayName": "Basic Attack 2-4 (swap cancel)",
+    "dmgTypes": [
+     "BASIC"
+    ],
+    "elements": [
+     "AERO"
+    ],
+    "energyCost": [],
+    "energyGenerated": [
+     {
+      "amount": 6.67,
+      "energyType": "energy",
+      "scalingStat": "energyPercent",
+      "share": 0.5
+     },
+     {
+      "amount": 9.33,
+      "energyType": "concerto",
+      "share": 0
+     },
+     {
+      "amount": 1,
+      "energyType": "forte_divinity",
+      "share": 0
+     }
+    ],
+    "groupName": "Basic Attack 2-4",
+    "multiplier": 0.68025,
+    "name": "Basic Attack 2-4 (swap cancel)",
+    "offtune": 2.12,
+    "scaling": "HP",
+    "sideEffects": [],
+    "statusModifications": [
+     {
+      "stackChange": 1,
+      "targetName": "Aero Erosion",
+      "type": "negativeStatus"
+     }
+    ],
+    "tags": [
+     "BASIC_ATTACK"
+    ],
+    "toolTip": "Can be cast after intro",
+    "variantName": "Cancel With Swap"
+   },
+   {
+    "castConditions": {
+     "endState": "PRESERVE",
+     "requiredForms": [
+      "Cartethyia"
+     ],
+     "startState": "ANY"
+    },
+    "castTime": 1,
+    "category": "Basics",
+    "cooldown": 0,
+    "damageModifiers": [],
+    "displayName": "Heavy Attack",
+    "dmgTypes": [
+     "BASIC"
+    ],
+    "elements": [
+     "AERO"
+    ],
+    "energyCost": [],
+    "energyGenerated": [
+     {
+      "amount": 2.51,
+      "energyType": "energy",
+      "scalingStat": "energyPercent",
+      "share": 0.5
+     },
+     {
+      "amount": 3.52,
+      "energyType": "concerto",
+      "share": 0
+     },
+     {
+      "amount": 1,
+      "energyType": "forte_discord",
+      "share": 0
+     }
+    ],
+    "groupName": "Heavy Attack",
+    "multiplier": 0.1872,
+    "name": "Heavy Attack",
+    "offtune": 0.79,
+    "scaling": "HP",
+    "sideEffects": [],
+    "statusModifications": [],
+    "tags": [
+     "HEAVY_ATTACK"
+    ],
+    "variantName": "Default"
+   },
+   {
+    "castConditions": {
+     "endState": "PRESERVE",
+     "persistenceTime": 100,
+     "requiredForms": [
+      "Cartethyia"
+     ],
+     "requiresSwapOut": true,
+     "startState": "ANY",
+     "swapOutState": "PRESERVE"
+    },
+    "castTime": 0.12,
+    "category": "Basics",
+    "cooldown": 0,
+    "damageModifiers": [],
+    "displayName": "Heavy Attack (swap cancel)",
+    "dmgTypes": [
+     "BASIC"
+    ],
+    "elements": [
+     "AERO"
+    ],
+    "energyCost": [],
+    "energyGenerated": [
+     {
+      "amount": 2.51,
+      "energyType": "energy",
+      "scalingStat": "energyPercent",
+      "share": 0.5
+     },
+     {
+      "amount": 3.52,
+      "energyType": "concerto",
+      "share": 0
+     },
+     {
+      "amount": 1,
+      "energyType": "forte_discord",
+      "share": 0
+     }
+    ],
+    "groupName": "Heavy Attack",
+    "multiplier": 0.1872,
+    "name": "Heavy Attack (swap cancel)",
+    "offtune": 0.79,
+    "scaling": "HP",
+    "sideEffects": [],
+    "statusModifications": [],
+    "tags": [
+     "HEAVY_ATTACK"
+    ],
+    "variantName": "Cancel With Swap"
+   },
+   {
+    "castConditions": {
+     "endState": "GROUND",
+     "requiredForms": [
+      "Cartethyia"
+     ],
+     "startState": "AIR"
+    },
+    "castTime": 1,
+    "category": "Basics",
+    "cooldown": 0,
+    "damageModifiers": [],
+    "displayName": "Plunge Attack",
+    "dmgTypes": [
+     "BASIC"
+    ],
+    "elements": [
+     "AERO"
+    ],
+    "energyCost": [],
+    "energyGenerated": [],
+    "groupName": "Plunge Attack",
+    "multiplier": 0,
+    "name": "Plunge Attack",
+    "offtune": 0,
+    "resolveVariant": "[Function]",
+    "scaling": "HP",
+    "sideEffects": [],
+    "statusModifications": [],
+    "tags": [
+     "BASIC_ATTACK"
+    ],
+    "variantName": "Default"
+   },
+   {
+    "castConditions": {
+     "endState": "GROUND",
+     "persistenceTime": 100,
+     "requiredForms": [
+      "Cartethyia"
+     ],
+     "requiresSwapOut": true,
+     "startState": "AIR",
+     "swapOutState": "AIR"
+    },
+    "castTime": 0.33,
+    "category": "Basics",
+    "cooldown": 0,
+    "damageModifiers": [],
+    "displayName": "Plunge Attack (swap cancel)",
+    "dmgTypes": [
+     "BASIC"
+    ],
+    "elements": [
+     "AERO"
+    ],
+    "energyCost": [],
+    "energyGenerated": [],
+    "groupName": "Plunge Attack",
+    "multiplier": 0,
+    "name": "Plunge Attack (swap cancel)",
+    "offtune": 0,
+    "resolveVariant": "[Function]",
+    "scaling": "HP",
+    "sideEffects": [],
+    "statusModifications": [],
+    "tags": [
+     "BASIC_ATTACK"
+    ],
+    "variantName": "Cancel With Swap"
+   },
+   {
+    "castConditions": {
+     "endState": "AIR",
+     "requiredForms": [
+      "Cartethyia"
+     ],
+     "startState": "ANY"
+    },
+    "castTime": 1,
+    "category": "Skills",
+    "cooldown": 14,
+    "damageModifiers": [],
+    "displayName": "Sword to Bear Their Names",
+    "dmgTypes": [
+     "BASIC"
+    ],
+    "elements": [
+     "AERO"
+    ],
+    "energyCost": [],
+    "energyGenerated": [
+     {
+      "amount": 16.28,
+      "energyType": "energy",
+      "scalingStat": "energyPercent",
+      "share": 0.5
+     },
+     {
+      "amount": 10,
+      "energyType": "concerto",
+      "share": 0
+     },
+     {
+      "amount": 1,
+      "energyType": "forte_virtue",
+      "share": 0
+     }
+    ],
+    "groupName": "Resonance Skill",
+    "multiplier": 0.2953,
+    "name": "Resonance Skill",
+    "offtune": 0.73,
+    "scaling": "HP",
+    "sideEffects": [],
+    "statusModifications": [
+     {
+      "stackChange": 2,
+      "targetName": "Aero Erosion",
+      "type": "negativeStatus"
+     }
+    ],
+    "tags": [
+     "SKILL"
+    ],
+    "variantName": "Default"
+   },
+   {
+    "castConditions": {
+     "endState": "AIR",
+     "persistenceTime": 1.05,
+     "requiredForms": [
+      "Cartethyia"
+     ],
+     "requiresSwapOut": true,
+     "startState": "ANY",
+     "swapOutState": "PRESERVE"
+    },
+    "castTime": 0.09,
+    "category": "Skills",
+    "cooldown": 14,
+    "damageModifiers": [],
+    "displayName": "Sword to Bear Their Names (swap cancel)",
+    "dmgTypes": [
+     "BASIC"
+    ],
+    "elements": [
+     "AERO"
+    ],
+    "energyCost": [],
+    "energyGenerated": [
+     {
+      "amount": 16.28,
+      "energyType": "energy",
+      "scalingStat": "energyPercent",
+      "share": 0.5
+     },
+     {
+      "amount": 10,
+      "energyType": "concerto",
+      "share": 0
+     },
+     {
+      "amount": 1,
+      "energyType": "forte_virtue",
+      "share": 0
+     }
+    ],
+    "groupName": "Resonance Skill",
+    "multiplier": 0.2953,
+    "name": "Resonance Skill (swap cancel)",
+    "offtune": 0.73,
+    "scaling": "HP",
+    "sideEffects": [],
+    "statusModifications": [
+     {
+      "stackChange": 2,
+      "targetName": "Aero Erosion",
+      "type": "negativeStatus"
+     }
+    ],
+    "tags": [
+     "SKILL"
+    ],
+    "variantName": "Cancel With Swap"
+   },
+   {
+    "castConditions": {
+     "endState": "PRESERVE",
+     "requiredForms": [
+      "Cartethyia"
+     ],
+     "startState": "ANY"
+    },
+    "castTime": 0.16,
+    "category": "Skills",
+    "cooldown": 25,
+    "damageModifiers": [
+     {
+      "clearsForteGrantsOnExpiry": true,
+      "color": "#1e90ff",
+      "condition": "[Function]",
+      "contributionGroup": "Cartethyia: Mandate",
+      "displayName": "Mandate",
+      "durationStrategy": {
+       "timeDuration": 12,
+       "type": "limited"
+      },
+      "ownerCharacter": "Cartethyia",
+      "source": "Cartethyia: Mandate",
+      "stackingStrategy": {
+       "maxStacks": 1,
+       "resetTimerOnApplication": true,
+       "stacksRemovedEachTime": 1
+      },
+      "targetStrategy": "self",
+      "type": "buff"
+     },
+     {
+      "characterStats": {
+       "aeroErosionAmplifyDMG": 0.5
+      },
+      "color": "#ff8c00",
+      "condition": "[Function]",
+      "contributionGroup": "Cartethyia: Mandate",
+      "displayName": "Mandate of Divinity",
+      "durationStrategy": {
+       "timeDuration": 12,
+       "type": "limited"
+      },
+      "negativeStatusEffects": [
+       {
+        "property": "frequency",
+        "targetStatus": "Aero Erosion",
+        "value": -0.5
+       }
+      ],
+      "ownerCharacter": "Cartethyia",
+      "source": "Cartethyia: Mandate of Divinity",
+      "stackingStrategy": {
+       "maxStacks": 1,
+       "resetTimerOnApplication": true,
+       "stacksRemovedEachTime": 1
+      },
+      "targetStrategy": "self",
+      "type": "buff"
+     },
+     {
+      "color": "#5a00a8",
+      "condition": "[Function]",
+      "contributionGroup": "Cartethyia: Mandate",
+      "displayName": "Power of Discord",
+      "durationStrategy": {
+       "timeDuration": 12,
+       "type": "limited"
+      },
+      "ownerCharacter": "Cartethyia",
+      "source": "Cartethyia: Power of Discord",
+      "stackingStrategy": {
+       "maxStacks": 1,
+       "resetTimerOnApplication": true,
+       "stacksRemovedEachTime": 1
+      },
+      "targetStrategy": "self",
+      "type": "buff"
+     },
+     {
+      "color": "#b6f0ff",
+      "condition": "[Function]",
+      "contributionGroup": "Cartethyia: Mandate",
+      "displayName": "Blade Broken by Tempest",
+      "durationStrategy": {
+       "timeDuration": 100000,
+       "type": "limited"
+      },
+      "negativeStatusEffects": [
+       {
+        "property": "maxStacks",
+        "targetStatus": "Aero Erosion",
+        "value": 3
+       }
+      ],
+      "ownerCharacter": "Cartethyia",
+      "source": "Cartethyia S2",
+      "stackingStrategy": {
+       "maxStacks": 1,
+       "resetTimerOnApplication": true,
+       "stacksRemovedEachTime": 1
+      },
+      "targetStrategy": "self",
+      "type": "buff"
+     }
+    ],
+    "displayName": "A Knights Heartfelt Prayers",
+    "dmgTypes": [
+     ""
+    ],
+    "elements": [
+     ""
+    ],
+    "energyCost": [
+     {
+      "amount": 125,
+      "energyType": "energy"
+     }
+    ],
+    "energyGenerated": [
+     {
+      "amount": 0,
+      "energyType": "energy",
+      "scalingStat": "energyPercent",
+      "share": 0.5
+     },
+     {
+      "amount": 20,
+      "energyType": "concerto",
+      "share": 0
+     }
+    ],
+    "formChange": "Fleurdelys",
+    "multiplier": 0,
+    "name": "To Fleurdelys Form",
+    "offtune": 0,
+    "scaling": "HP",
+    "sideEffects": [],
+    "statusModifications": []
+   },
+   {
+    "castConditions": {
+     "endState": "GROUND",
+     "requiredForms": [
+      "Fleurdelys"
+     ],
+     "startState": "GROUND"
+    },
+    "castTime": 3.4,
+    "category": "Basics",
+    "cooldown": 0,
+    "damageModifiers": [],
+    "displayName": "Basic 1-5",
+    "dmgTypes": [
+     "BASIC"
+    ],
+    "elements": [
+     "AERO"
+    ],
+    "energyCost": [],
+    "energyGenerated": [
+     {
+      "amount": 9.18,
+      "energyType": "energy",
+      "scalingStat": "energyPercent",
+      "share": 0.5
+     },
+     {
+      "amount": 12.82,
+      "energyType": "concerto",
+      "share": 0
+     },
+     {
+      "amount": 45,
+      "energyType": "conviction",
+      "share": 0
+     }
+    ],
+    "groupName": "Basic 1-5",
+    "multiplier": 0.7593,
+    "name": "Basic 1-5",
+    "offtune": 3.86,
+    "scaling": "HP",
+    "sideEffects": [
+     {
+      "damageDealt": "[Function]",
+      "name": "Aero Erosion Explosion",
+      "statusModifications": [
+       {
+        "stackChange": -1,
+        "targetName": "Aero Erosion",
+        "type": "negativeStatus"
+       }
+      ]
+     }
+    ],
+    "statusModifications": [
+     {
+      "stackChange": 2,
+      "targetName": "Aero Erosion",
+      "type": "negativeStatus"
+     }
+    ],
+    "tags": [
+     "BASIC_ATTACK"
+    ],
+    "variantName": "Default"
+   },
+   {
+    "castConditions": {
+     "endState": "GROUND",
+     "persistenceTime": 100,
+     "requiredForms": [
+      "Fleurdelys"
+     ],
+     "requiresSwapOut": true,
+     "startState": "GROUND",
+     "swapOutState": "GROUND"
+    },
+    "castTime": 3.4,
+    "category": "Basics",
+    "cooldown": 0,
+    "damageModifiers": [],
+    "displayName": "Basic 1-5 (swap cancel)",
+    "dmgTypes": [
+     "BASIC"
+    ],
+    "elements": [
+     "AERO"
+    ],
+    "energyCost": [],
+    "energyGenerated": [
+     {
+      "amount": 9.18,
+      "energyType": "energy",
+      "scalingStat": "energyPercent",
+      "share": 0.5
+     },
+     {
+      "amount": 12.82,
+      "energyType": "concerto",
+      "share": 0
+     },
+     {
+      "amount": 45,
+      "energyType": "conviction",
+      "share": 0
+     }
+    ],
+    "groupName": "Basic 1-5",
+    "multiplier": 0.7593,
+    "name": "Basic 1-5 (swap cancel)",
+    "offtune": 3.86,
+    "scaling": "HP",
+    "sideEffects": [
+     {
+      "damageDealt": "[Function]",
+      "name": "Aero Erosion Explosion",
+      "statusModifications": [
+       {
+        "stackChange": -1,
+        "targetName": "Aero Erosion",
+        "type": "negativeStatus"
+       }
+      ]
+     }
+    ],
+    "statusModifications": [
+     {
+      "stackChange": 2,
+      "targetName": "Aero Erosion",
+      "type": "negativeStatus"
+     }
+    ],
+    "tags": [
+     "BASIC_ATTACK"
+    ],
+    "variantName": "Cancel With Swap"
+   },
+   {
+    "castConditions": {
+     "endState": "GROUND",
+     "requiredForms": [
+      "Fleurdelys"
+     ],
+     "requiresSwapIn": true,
+     "startState": "GROUND"
+    },
+    "castTime": 2.67,
+    "category": "Basics",
+    "cooldown": 0,
+    "damageModifiers": [],
+    "displayName": "Basic 3-5",
+    "dmgTypes": [
+     "BASIC"
+    ],
+    "elements": [
+     "AERO"
+    ],
+    "energyCost": [],
+    "energyGenerated": [
+     {
+      "amount": 6.49,
+      "energyType": "energy",
+      "scalingStat": "energyPercent",
+      "share": 0.5
+     },
+     {
+      "amount": 9.08,
+      "energyType": "concerto",
+      "share": 0
+     },
+     {
+      "amount": 36.67,
+      "energyType": "conviction",
+      "share": 0
+     }
+    ],
+    "groupName": "Basic 3-5",
+    "multiplier": 0.6035,
+    "name": "Basic 3-5",
+    "offtune": 3.02,
+    "scaling": "HP",
+    "sideEffects": [
+     {
+      "damageDealt": "[Function]",
+      "name": "Aero Erosion Explosion",
+      "statusModifications": [
+       {
+        "stackChange": -1,
+        "targetName": "Aero Erosion",
+        "type": "negativeStatus"
+       }
+      ]
+     }
+    ],
+    "statusModifications": [
+     {
+      "stackChange": 2,
+      "targetName": "Aero Erosion",
+      "type": "negativeStatus"
+     }
+    ],
+    "tags": [
+     "BASIC_ATTACK"
+    ],
+    "toolTip": "Can be cast when quick swapped in without intro",
+    "variantName": "Default"
+   },
+   {
+    "castConditions": {
+     "endState": "GROUND",
+     "persistenceTime": 100,
+     "requiredForms": [
+      "Fleurdelys"
+     ],
+     "requiresSwapIn": true,
+     "requiresSwapOut": true,
+     "startState": "GROUND",
+     "swapOutState": "GROUND"
+    },
+    "castTime": 2.67,
+    "category": "Basics",
+    "cooldown": 0,
+    "damageModifiers": [],
+    "displayName": "Basic 3-5 (swap cancel)",
+    "dmgTypes": [
+     "BASIC"
+    ],
+    "elements": [
+     "AERO"
+    ],
+    "energyCost": [],
+    "energyGenerated": [
+     {
+      "amount": 6.49,
+      "energyType": "energy",
+      "scalingStat": "energyPercent",
+      "share": 0.5
+     },
+     {
+      "amount": 9.08,
+      "energyType": "concerto",
+      "share": 0
+     },
+     {
+      "amount": 36.67,
+      "energyType": "conviction",
+      "share": 0
+     }
+    ],
+    "groupName": "Basic 3-5",
+    "multiplier": 0.6035,
+    "name": "Basic 3-5 (swap cancel)",
+    "offtune": 3.02,
+    "scaling": "HP",
+    "sideEffects": [
+     {
+      "damageDealt": "[Function]",
+      "name": "Aero Erosion Explosion",
+      "statusModifications": [
+       {
+        "stackChange": -1,
+        "targetName": "Aero Erosion",
+        "type": "negativeStatus"
+       }
+      ]
+     }
+    ],
+    "statusModifications": [
+     {
+      "stackChange": 2,
+      "targetName": "Aero Erosion",
+      "type": "negativeStatus"
+     }
+    ],
+    "tags": [
+     "BASIC_ATTACK"
+    ],
+    "toolTip": "Can be cast when quick swapped in without intro",
+    "variantName": "Cancel With Swap"
+   },
+   {
+    "castConditions": {
+     "endState": "GROUND",
+     "requiredForms": [
+      "Fleurdelys"
+     ],
+     "startState": "GROUND"
+    },
+    "castTime": 0.65,
+    "category": "Basics",
+    "cooldown": 0,
+    "damageModifiers": [],
+    "displayName": "Heavy Attack 1",
+    "dmgTypes": [
+     "BASIC"
+    ],
+    "elements": [
+     "AERO"
+    ],
+    "energyCost": [],
+    "energyGenerated": [
+     {
+      "amount": 1.76,
+      "energyType": "energy",
+      "scalingStat": "energyPercent",
+      "share": 0.5
+     },
+     {
+      "amount": 2.46,
+      "energyType": "concerto",
+      "share": 0
+     },
+     {
+      "amount": 10,
+      "energyType": "conviction",
+      "share": 0
+     }
+    ],
+    "groupName": "Heavy Attack 1",
+    "multiplier": 0.1425,
+    "name": "Heavy Attack 1",
+    "offtune": 0.56,
+    "scaling": "HP",
+    "sideEffects": [],
+    "statusModifications": [],
+    "tags": [
+     "HEAVY_ATTACK"
+    ],
+    "variantName": "Default"
+   },
+   {
+    "castConditions": {
+     "endState": "GROUND",
+     "persistenceTime": 100,
+     "requiredForms": [
+      "Fleurdelys"
+     ],
+     "requiresSwapOut": true,
+     "startState": "GROUND",
+     "swapOutState": "GROUND"
+    },
+    "castTime": 0.65,
+    "category": "Basics",
+    "cooldown": 0,
+    "damageModifiers": [],
+    "displayName": "Heavy Attack 1 (swap cancel)",
+    "dmgTypes": [
+     "BASIC"
+    ],
+    "elements": [
+     "AERO"
+    ],
+    "energyCost": [],
+    "energyGenerated": [
+     {
+      "amount": 1.76,
+      "energyType": "energy",
+      "scalingStat": "energyPercent",
+      "share": 0.5
+     },
+     {
+      "amount": 2.46,
+      "energyType": "concerto",
+      "share": 0
+     },
+     {
+      "amount": 10,
+      "energyType": "conviction",
+      "share": 0
+     }
+    ],
+    "groupName": "Heavy Attack 1",
+    "multiplier": 0.1425,
+    "name": "Heavy Attack 1 (swap cancel)",
+    "offtune": 0.56,
+    "scaling": "HP",
+    "sideEffects": [],
+    "statusModifications": [],
+    "tags": [
+     "HEAVY_ATTACK"
+    ],
+    "variantName": "Cancel With Swap"
+   },
+   {
+    "castConditions": {
+     "endState": "GROUND",
+     "previousActions": [
+      {
+       "castConditions": {
+        "endState": "GROUND",
+        "startState": "GROUND"
+       },
+       "castTime": 0.65,
+       "category": "Basics",
+       "cooldown": 0,
+       "damageModifiers": [],
+       "displayName": "Heavy Attack 1",
+       "dmgTypes": [
+        "BASIC"
+       ],
+       "elements": [
+        "AERO"
+       ],
+       "energyCost": [],
+       "energyGenerated": [
+        {
+         "amount": 1.76,
+         "energyType": "energy",
+         "scalingStat": "energyPercent",
+         "share": 0.5
+        },
+        {
+         "amount": 2.46,
+         "energyType": "concerto",
+         "share": 0
+        },
+        {
+         "amount": 10,
+         "energyType": "conviction",
+         "share": 0
+        }
+       ],
+       "groupName": "Heavy Attack 1",
+       "multiplier": 0.1425,
+       "name": "Heavy Attack 1",
+       "offtune": 0.56,
+       "scaling": "HP",
+       "sideEffects": [],
+       "statusModifications": [],
+       "tags": [
+        "HEAVY_ATTACK"
+       ],
+       "variantName": "Default"
+      },
+      {
+       "castConditions": {
+        "endState": "GROUND",
+        "persistenceTime": 100,
+        "requiresSwapOut": true,
+        "startState": "GROUND",
+        "swapOutState": "GROUND"
+       },
+       "castTime": 0.65,
+       "category": "Basics",
+       "cooldown": 0,
+       "damageModifiers": [],
+       "displayName": "Heavy Attack 1 (swap cancel)",
+       "dmgTypes": [
+        "BASIC"
+       ],
+       "elements": [
+        "AERO"
+       ],
+       "energyCost": [],
+       "energyGenerated": [
+        {
+         "amount": 1.76,
+         "energyType": "energy",
+         "scalingStat": "energyPercent",
+         "share": 0.5
+        },
+        {
+         "amount": 2.46,
+         "energyType": "concerto",
+         "share": 0
+        },
+        {
+         "amount": 10,
+         "energyType": "conviction",
+         "share": 0
+        }
+       ],
+       "groupName": "Heavy Attack 1",
+       "multiplier": 0.1425,
+       "name": "Heavy Attack 1 (swap cancel)",
+       "offtune": 0.56,
+       "scaling": "HP",
+       "sideEffects": [],
+       "statusModifications": [],
+       "tags": [
+        "HEAVY_ATTACK"
+       ],
+       "variantName": "Cancel With Swap"
+      }
+     ],
+     "requiredForms": [
+      "Fleurdelys"
+     ],
+     "startState": "GROUND"
+    },
+    "castTime": 0.73,
+    "category": "Basics",
+    "cooldown": 0,
+    "damageModifiers": [],
+    "displayName": "Heavy Attack 2",
+    "dmgTypes": [
+     "BASIC"
+    ],
+    "elements": [
+     "AERO"
+    ],
+    "energyCost": [],
+    "energyGenerated": [
+     {
+      "amount": 2.4,
+      "energyType": "energy",
+      "scalingStat": "energyPercent",
+      "share": 0.5
+     },
+     {
+      "amount": 3.38,
+      "energyType": "concerto",
+      "share": 0
+     },
+     {
+      "amount": 13.33,
+      "energyType": "conviction",
+      "share": 0
+     }
+    ],
+    "groupName": "Heavy Attack 2",
+    "multiplier": 0.1945,
+    "name": "Enhanced Heavy Attack",
+    "offtune": 1.08,
+    "scaling": "HP",
+    "sideEffects": [],
+    "statusModifications": [
+     {
+      "stackChange": 2,
+      "targetName": "Aero Erosion",
+      "type": "negativeStatus"
+     }
+    ],
+    "tags": [
+     "HEAVY_ATTACK"
+    ],
+    "variantName": "Default"
+   },
+   {
+    "castConditions": {
+     "endState": "GROUND",
+     "persistenceTime": 100,
+     "previousActions": [
+      {
+       "castConditions": {
+        "endState": "GROUND",
+        "startState": "GROUND"
+       },
+       "castTime": 0.65,
+       "category": "Basics",
+       "cooldown": 0,
+       "damageModifiers": [],
+       "displayName": "Heavy Attack 1",
+       "dmgTypes": [
+        "BASIC"
+       ],
+       "elements": [
+        "AERO"
+       ],
+       "energyCost": [],
+       "energyGenerated": [
+        {
+         "amount": 1.76,
+         "energyType": "energy",
+         "scalingStat": "energyPercent",
+         "share": 0.5
+        },
+        {
+         "amount": 2.46,
+         "energyType": "concerto",
+         "share": 0
+        },
+        {
+         "amount": 10,
+         "energyType": "conviction",
+         "share": 0
+        }
+       ],
+       "groupName": "Heavy Attack 1",
+       "multiplier": 0.1425,
+       "name": "Heavy Attack 1",
+       "offtune": 0.56,
+       "scaling": "HP",
+       "sideEffects": [],
+       "statusModifications": [],
+       "tags": [
+        "HEAVY_ATTACK"
+       ],
+       "variantName": "Default"
+      },
+      {
+       "castConditions": {
+        "endState": "GROUND",
+        "persistenceTime": 100,
+        "requiresSwapOut": true,
+        "startState": "GROUND",
+        "swapOutState": "GROUND"
+       },
+       "castTime": 0.65,
+       "category": "Basics",
+       "cooldown": 0,
+       "damageModifiers": [],
+       "displayName": "Heavy Attack 1 (swap cancel)",
+       "dmgTypes": [
+        "BASIC"
+       ],
+       "elements": [
+        "AERO"
+       ],
+       "energyCost": [],
+       "energyGenerated": [
+        {
+         "amount": 1.76,
+         "energyType": "energy",
+         "scalingStat": "energyPercent",
+         "share": 0.5
+        },
+        {
+         "amount": 2.46,
+         "energyType": "concerto",
+         "share": 0
+        },
+        {
+         "amount": 10,
+         "energyType": "conviction",
+         "share": 0
+        }
+       ],
+       "groupName": "Heavy Attack 1",
+       "multiplier": 0.1425,
+       "name": "Heavy Attack 1 (swap cancel)",
+       "offtune": 0.56,
+       "scaling": "HP",
+       "sideEffects": [],
+       "statusModifications": [],
+       "tags": [
+        "HEAVY_ATTACK"
+       ],
+       "variantName": "Cancel With Swap"
+      }
+     ],
+     "requiredForms": [
+      "Fleurdelys"
+     ],
+     "requiresSwapOut": true,
+     "startState": "GROUND",
+     "swapOutState": "GROUND"
+    },
+    "castTime": 0.73,
+    "category": "Basics",
+    "cooldown": 0,
+    "damageModifiers": [],
+    "displayName": "Heavy Attack 2 (swap cancel)",
+    "dmgTypes": [
+     "BASIC"
+    ],
+    "elements": [
+     "AERO"
+    ],
+    "energyCost": [],
+    "energyGenerated": [
+     {
+      "amount": 2.4,
+      "energyType": "energy",
+      "scalingStat": "energyPercent",
+      "share": 0.5
+     },
+     {
+      "amount": 3.38,
+      "energyType": "concerto",
+      "share": 0
+     },
+     {
+      "amount": 13.33,
+      "energyType": "conviction",
+      "share": 0
+     }
+    ],
+    "groupName": "Heavy Attack 2",
+    "multiplier": 0.1945,
+    "name": "Enhanced Heavy Attack (swap cancel)",
+    "offtune": 1.08,
+    "scaling": "HP",
+    "sideEffects": [],
+    "statusModifications": [
+     {
+      "stackChange": 2,
+      "targetName": "Aero Erosion",
+      "type": "negativeStatus"
+     }
+    ],
+    "tags": [
+     "HEAVY_ATTACK"
+    ],
+    "variantName": "Cancel With Swap"
+   },
+   {
+    "castConditions": {
+     "endState": "GROUND",
+     "requiredForms": [
+      "Fleurdelys"
+     ],
+     "startState": "AIR"
+    },
+    "castTime": 2.47,
+    "category": "Basics",
+    "cooldown": 0,
+    "damageModifiers": [],
+    "displayName": "Mid-air Attack 1-3",
+    "dmgTypes": [
+     "BASIC"
+    ],
+    "elements": [
+     "AERO"
+    ],
+    "energyCost": [],
+    "energyGenerated": [
+     {
+      "amount": 4.55,
+      "energyType": "energy",
+      "scalingStat": "energyPercent",
+      "share": 0.5
+     },
+     {
+      "amount": 5.96,
+      "energyType": "concerto",
+      "share": 0
+     },
+     {
+      "amount": 25,
+      "energyType": "conviction",
+      "share": 0
+     }
+    ],
+    "groupName": "Mid-air Attack 1-3",
+    "multiplier": 0.4081,
+    "name": "Mid-air Attack 1-3",
+    "offtune": 1.44,
+    "scaling": "HP",
+    "sideEffects": [
+     {
+      "damageDealt": "[Function]",
+      "name": "Aero Erosion Explosion",
+      "statusModifications": [
+       {
+        "stackChange": -1,
+        "targetName": "Aero Erosion",
+        "type": "negativeStatus"
+       }
+      ]
+     }
+    ],
+    "statusModifications": [
+     {
+      "stackChange": 2,
+      "targetName": "Aero Erosion",
+      "type": "negativeStatus"
+     }
+    ],
+    "tags": [
+     "BASIC_ATTACK"
+    ],
+    "variantName": "Default"
+   },
+   {
+    "castConditions": {
+     "endState": "GROUND",
+     "persistenceTime": 100,
+     "requiredForms": [
+      "Fleurdelys"
+     ],
+     "requiresSwapOut": true,
+     "startState": "AIR",
+     "swapOutState": "AIR"
+    },
+    "castTime": 2.47,
+    "category": "Basics",
+    "cooldown": 0,
+    "damageModifiers": [],
+    "displayName": "Mid-air Attack 1-3 (swap cancel)",
+    "dmgTypes": [
+     "BASIC"
+    ],
+    "elements": [
+     "AERO"
+    ],
+    "energyCost": [],
+    "energyGenerated": [
+     {
+      "amount": 4.55,
+      "energyType": "energy",
+      "scalingStat": "energyPercent",
+      "share": 0.5
+     },
+     {
+      "amount": 5.96,
+      "energyType": "concerto",
+      "share": 0
+     },
+     {
+      "amount": 25,
+      "energyType": "conviction",
+      "share": 0
+     }
+    ],
+    "groupName": "Mid-air Attack 1-3",
+    "multiplier": 0.4081,
+    "name": "Mid-air Attack 1-3 (swap cancel)",
+    "offtune": 1.44,
+    "scaling": "HP",
+    "sideEffects": [
+     {
+      "damageDealt": "[Function]",
+      "name": "Aero Erosion Explosion",
+      "statusModifications": [
+       {
+        "stackChange": -1,
+        "targetName": "Aero Erosion",
+        "type": "negativeStatus"
+       }
+      ]
+     }
+    ],
+    "statusModifications": [
+     {
+      "stackChange": 2,
+      "targetName": "Aero Erosion",
+      "type": "negativeStatus"
+     }
+    ],
+    "tags": [
+     "BASIC_ATTACK"
+    ],
+    "variantName": "Cancel With Swap"
+   },
+   {
+    "castConditions": {
+     "endState": "AIR",
+     "requiredForms": [
+      "Fleurdelys"
+     ],
+     "startState": "AIR"
+    },
+    "castTime": 1.63,
+    "category": "Basics",
+    "cooldown": 0,
+    "damageModifiers": [],
+    "displayName": "Mid-air Attack 1-2",
+    "dmgTypes": [
+     "BASIC"
+    ],
+    "elements": [
+     "AERO"
+    ],
+    "energyCost": [],
+    "energyGenerated": [
+     {
+      "amount": 4.07,
+      "energyType": "energy",
+      "scalingStat": "energyPercent",
+      "share": 0.5
+     },
+     {
+      "amount": 5.29,
+      "energyType": "concerto",
+      "share": 0
+     },
+     {
+      "amount": 20,
+      "energyType": "conviction",
+      "share": 0
+     }
+    ],
+    "groupName": "Mid-air Attack 1-2",
+    "multiplier": 0.3861,
+    "name": "Mid-air Attack 1-2",
+    "offtune": 1.29,
+    "scaling": "HP",
+    "sideEffects": [
+     {
+      "damageDealt": "[Function]",
+      "name": "Aero Erosion Explosion",
+      "statusModifications": [
+       {
+        "stackChange": -1,
+        "targetName": "Aero Erosion",
+        "type": "negativeStatus"
+       }
+      ]
+     }
+    ],
+    "statusModifications": [
+     {
+      "stackChange": 2,
+      "targetName": "Aero Erosion",
+      "type": "negativeStatus"
+     }
+    ],
+    "tags": [
+     "BASIC_ATTACK"
+    ],
+    "variantName": "Default"
+   },
+   {
+    "castConditions": {
+     "endState": "AIR",
+     "persistenceTime": 100,
+     "requiredForms": [
+      "Fleurdelys"
+     ],
+     "requiresSwapOut": true,
+     "startState": "AIR",
+     "swapOutState": "AIR"
+    },
+    "castTime": 1.63,
+    "category": "Basics",
+    "cooldown": 0,
+    "damageModifiers": [],
+    "displayName": "Mid-air Attack 1-2 (swap cancel)",
+    "dmgTypes": [
+     "BASIC"
+    ],
+    "elements": [
+     "AERO"
+    ],
+    "energyCost": [],
+    "energyGenerated": [
+     {
+      "amount": 4.07,
+      "energyType": "energy",
+      "scalingStat": "energyPercent",
+      "share": 0.5
+     },
+     {
+      "amount": 5.29,
+      "energyType": "concerto",
+      "share": 0
+     },
+     {
+      "amount": 20,
+      "energyType": "conviction",
+      "share": 0
+     }
+    ],
+    "groupName": "Mid-air Attack 1-2",
+    "multiplier": 0.3861,
+    "name": "Mid-air Attack 1-2 (swap cancel)",
+    "offtune": 1.29,
+    "scaling": "HP",
+    "sideEffects": [
+     {
+      "damageDealt": "[Function]",
+      "name": "Aero Erosion Explosion",
+      "statusModifications": [
+       {
+        "stackChange": -1,
+        "targetName": "Aero Erosion",
+        "type": "negativeStatus"
+       }
+      ]
+     }
+    ],
+    "statusModifications": [
+     {
+      "stackChange": 2,
+      "targetName": "Aero Erosion",
+      "type": "negativeStatus"
+     }
+    ],
+    "tags": [
+     "BASIC_ATTACK"
+    ],
+    "variantName": "Cancel With Swap"
+   },
+   {
+    "castConditions": {
+     "endState": "AIR",
+     "requiredForms": [
+      "Fleurdelys"
+     ],
+     "startState": "ANY"
+    },
+    "castTime": 0.9,
+    "category": "Skills",
+    "cooldown": 14,
+    "damageModifiers": [],
+    "displayName": "Sword to Answer Waves Call",
+    "dmgTypes": [
+     "SKILL"
+    ],
+    "elements": [
+     "AERO"
+    ],
+    "energyCost": [],
+    "energyGenerated": [
+     {
+      "amount": 2.33,
+      "energyType": "energy",
+      "scalingStat": "energyPercent",
+      "share": 0.5
+     },
+     {
+      "amount": 10,
+      "energyType": "concerto",
+      "share": 0
+     },
+     {
+      "amount": 13.34,
+      "energyType": "conviction",
+      "share": 0
+     }
+    ],
+    "groupName": "Resonance Skill 1",
+    "multiplier": 0.248,
+    "name": "Resonance Skill 1",
+    "offtune": 0.75,
+    "scaling": "HP",
+    "sideEffects": [],
+    "statusModifications": [
+     {
+      "stackChange": 2,
+      "targetName": "Aero Erosion",
+      "type": "negativeStatus"
+     }
+    ],
+    "tags": [
+     "SKILL"
+    ],
+    "variantName": "Default"
+   },
+   {
+    "castConditions": {
+     "endState": "AIR",
+     "persistenceTime": 100,
+     "requiredForms": [
+      "Fleurdelys"
+     ],
+     "requiresSwapOut": true,
+     "startState": "ANY",
+     "swapOutState": "GROUND"
+    },
+    "castTime": 0.9,
+    "category": "Skills",
+    "cooldown": 14,
+    "damageModifiers": [],
+    "displayName": "Sword to Answer Waves Call (swap cancel)",
+    "dmgTypes": [
+     "SKILL"
+    ],
+    "elements": [
+     "AERO"
+    ],
+    "energyCost": [],
+    "energyGenerated": [
+     {
+      "amount": 2.33,
+      "energyType": "energy",
+      "scalingStat": "energyPercent",
+      "share": 0.5
+     },
+     {
+      "amount": 10,
+      "energyType": "concerto",
+      "share": 0
+     },
+     {
+      "amount": 13.34,
+      "energyType": "conviction",
+      "share": 0
+     }
+    ],
+    "groupName": "Resonance Skill 1",
+    "multiplier": 0.248,
+    "name": "Resonance Skill 1 (swap cancel)",
+    "offtune": 0.75,
+    "scaling": "HP",
+    "sideEffects": [],
+    "statusModifications": [
+     {
+      "stackChange": 2,
+      "targetName": "Aero Erosion",
+      "type": "negativeStatus"
+     }
+    ],
+    "tags": [
+     "SKILL"
+    ],
+    "variantName": "Cancel With Swap"
+   },
+   {
+    "castConditions": {
+     "comboWindow": {
+      "crashesOnFormChange": true,
+      "crashesOnSwap": true,
+      "maxTimeSincePrevious": 10,
+      "previousActions": [
+       {
+        "castConditions": {
+         "endState": "AIR",
+         "startState": "ANY"
+        },
+        "castTime": 0.9,
+        "category": "Skills",
+        "cooldown": 14,
+        "damageModifiers": [],
+        "displayName": "Sword to Answer Waves Call",
+        "dmgTypes": [
+         "SKILL"
+        ],
+        "elements": [
+         "AERO"
+        ],
+        "energyCost": [],
+        "energyGenerated": [
+         {
+          "amount": 2.33,
+          "energyType": "energy",
+          "scalingStat": "energyPercent",
+          "share": 0.5
+         },
+         {
+          "amount": 10,
+          "energyType": "concerto",
+          "share": 0
+         },
+         {
+          "amount": 13.34,
+          "energyType": "conviction",
+          "share": 0
+         }
+        ],
+        "groupName": "Resonance Skill 1",
+        "multiplier": 0.248,
+        "name": "Resonance Skill 1",
+        "offtune": 0.75,
+        "scaling": "HP",
+        "sideEffects": [],
+        "statusModifications": [
+         {
+          "stackChange": 2,
+          "targetName": "Aero Erosion",
+          "type": "negativeStatus"
+         }
+        ],
+        "tags": [
+         "SKILL"
+        ],
+        "variantName": "Default"
+       },
+       {
+        "castConditions": {
+         "endState": "AIR",
+         "persistenceTime": 100,
+         "requiresSwapOut": true,
+         "startState": "ANY",
+         "swapOutState": "GROUND"
+        },
+        "castTime": 0.9,
+        "category": "Skills",
+        "cooldown": 14,
+        "damageModifiers": [],
+        "displayName": "Sword to Answer Waves Call (swap cancel)",
+        "dmgTypes": [
+         "SKILL"
+        ],
+        "elements": [
+         "AERO"
+        ],
+        "energyCost": [],
+        "energyGenerated": [
+         {
+          "amount": 2.33,
+          "energyType": "energy",
+          "scalingStat": "energyPercent",
+          "share": 0.5
+         },
+         {
+          "amount": 10,
+          "energyType": "concerto",
+          "share": 0
+         },
+         {
+          "amount": 13.34,
+          "energyType": "conviction",
+          "share": 0
+         }
+        ],
+        "groupName": "Resonance Skill 1",
+        "multiplier": 0.248,
+        "name": "Resonance Skill 1 (swap cancel)",
+        "offtune": 0.75,
+        "scaling": "HP",
+        "sideEffects": [],
+        "statusModifications": [
+         {
+          "stackChange": 2,
+          "targetName": "Aero Erosion",
+          "type": "negativeStatus"
+         }
+        ],
+        "tags": [
+         "SKILL"
+        ],
+        "variantName": "Cancel With Swap"
+       }
+      ],
+      "timerStartsAt": "cast"
+     },
+     "endState": "GROUND",
+     "requiredForms": [
+      "Fleurdelys"
+     ],
+     "startState": "ANY"
+    },
+    "castTime": 1.53,
+    "category": "Skills",
+    "cooldown": 14,
+    "damageModifiers": [],
+    "displayName": "May Tempest Break the Tides",
+    "dmgTypes": [
+     "SKILL"
+    ],
+    "elements": [
+     "AERO"
+    ],
+    "energyCost": [],
+    "energyGenerated": [
+     {
+      "amount": 8.82,
+      "energyType": "energy",
+      "scalingStat": "energyPercent",
+      "share": 0.5
+     },
+     {
+      "amount": 10,
+      "energyType": "concerto",
+      "share": 0
+     },
+     {
+      "amount": 26.67,
+      "energyType": "conviction",
+      "share": 0
+     }
+    ],
+    "groupName": "Resonance Skill 2",
+    "multiplier": 0.2481,
+    "name": "Resonance Skill 2",
+    "offtune": 0.75,
+    "scaling": "HP",
+    "sideEffects": [
+     {
+      "damageDealt": "[Function]",
+      "name": "Aero Erosion Explosion",
+      "statusModifications": [
+       {
+        "stackChange": -1,
+        "targetName": "Aero Erosion",
+        "type": "negativeStatus"
+       }
+      ]
+     }
+    ],
+    "statusModifications": [
+     {
+      "stackChange": 2,
+      "targetName": "Aero Erosion",
+      "type": "negativeStatus"
+     }
+    ],
+    "tags": [
+     "SKILL"
+    ],
+    "variantName": "Default"
+   },
+   {
+    "castConditions": {
+     "comboWindow": {
+      "crashesOnFormChange": true,
+      "crashesOnSwap": true,
+      "maxTimeSincePrevious": 10,
+      "previousActions": [
+       {
+        "castConditions": {
+         "endState": "AIR",
+         "startState": "ANY"
+        },
+        "castTime": 0.9,
+        "category": "Skills",
+        "cooldown": 14,
+        "damageModifiers": [],
+        "displayName": "Sword to Answer Waves Call",
+        "dmgTypes": [
+         "SKILL"
+        ],
+        "elements": [
+         "AERO"
+        ],
+        "energyCost": [],
+        "energyGenerated": [
+         {
+          "amount": 2.33,
+          "energyType": "energy",
+          "scalingStat": "energyPercent",
+          "share": 0.5
+         },
+         {
+          "amount": 10,
+          "energyType": "concerto",
+          "share": 0
+         },
+         {
+          "amount": 13.34,
+          "energyType": "conviction",
+          "share": 0
+         }
+        ],
+        "groupName": "Resonance Skill 1",
+        "multiplier": 0.248,
+        "name": "Resonance Skill 1",
+        "offtune": 0.75,
+        "scaling": "HP",
+        "sideEffects": [],
+        "statusModifications": [
+         {
+          "stackChange": 2,
+          "targetName": "Aero Erosion",
+          "type": "negativeStatus"
+         }
+        ],
+        "tags": [
+         "SKILL"
+        ],
+        "variantName": "Default"
+       },
+       {
+        "castConditions": {
+         "endState": "AIR",
+         "persistenceTime": 100,
+         "requiresSwapOut": true,
+         "startState": "ANY",
+         "swapOutState": "GROUND"
+        },
+        "castTime": 0.9,
+        "category": "Skills",
+        "cooldown": 14,
+        "damageModifiers": [],
+        "displayName": "Sword to Answer Waves Call (swap cancel)",
+        "dmgTypes": [
+         "SKILL"
+        ],
+        "elements": [
+         "AERO"
+        ],
+        "energyCost": [],
+        "energyGenerated": [
+         {
+          "amount": 2.33,
+          "energyType": "energy",
+          "scalingStat": "energyPercent",
+          "share": 0.5
+         },
+         {
+          "amount": 10,
+          "energyType": "concerto",
+          "share": 0
+         },
+         {
+          "amount": 13.34,
+          "energyType": "conviction",
+          "share": 0
+         }
+        ],
+        "groupName": "Resonance Skill 1",
+        "multiplier": 0.248,
+        "name": "Resonance Skill 1 (swap cancel)",
+        "offtune": 0.75,
+        "scaling": "HP",
+        "sideEffects": [],
+        "statusModifications": [
+         {
+          "stackChange": 2,
+          "targetName": "Aero Erosion",
+          "type": "negativeStatus"
+         }
+        ],
+        "tags": [
+         "SKILL"
+        ],
+        "variantName": "Cancel With Swap"
+       }
+      ],
+      "timerStartsAt": "cast"
+     },
+     "endState": "GROUND",
+     "persistenceTime": 100,
+     "requiredForms": [
+      "Fleurdelys"
+     ],
+     "requiresSwapOut": true,
+     "startState": "ANY",
+     "swapOutState": "AIR"
+    },
+    "castTime": 1.53,
+    "category": "Skills",
+    "cooldown": 14,
+    "damageModifiers": [],
+    "displayName": "May Tempest Break the Tides (swap cancel)",
+    "dmgTypes": [
+     "SKILL"
+    ],
+    "elements": [
+     "AERO"
+    ],
+    "energyCost": [],
+    "energyGenerated": [
+     {
+      "amount": 8.82,
+      "energyType": "energy",
+      "scalingStat": "energyPercent",
+      "share": 0.5
+     },
+     {
+      "amount": 10,
+      "energyType": "concerto",
+      "share": 0
+     },
+     {
+      "amount": 26.67,
+      "energyType": "conviction",
+      "share": 0
+     }
+    ],
+    "groupName": "Resonance Skill 2",
+    "multiplier": 0.2481,
+    "name": "Resonance Skill 2 (swap cancel)",
+    "offtune": 0.75,
+    "scaling": "HP",
+    "sideEffects": [
+     {
+      "damageDealt": "[Function]",
+      "name": "Aero Erosion Explosion",
+      "statusModifications": [
+       {
+        "stackChange": -1,
+        "targetName": "Aero Erosion",
+        "type": "negativeStatus"
+       }
+      ]
+     }
+    ],
+    "statusModifications": [
+     {
+      "stackChange": 2,
+      "targetName": "Aero Erosion",
+      "type": "negativeStatus"
+     }
+    ],
+    "tags": [
+     "SKILL"
+    ],
+    "variantName": "Cancel With Swap"
+   },
+   {
+    "castConditions": {
+     "endState": "GROUND",
+     "requiredForms": [
+      "Fleurdelys"
+     ],
+     "startState": "ANY"
+    },
+    "castTime": 0.03,
+    "category": "Skills",
+    "cooldown": 25,
+    "damageModifiers": [],
+    "displayName": "Blade of Howling Squall",
+    "dmgTypes": [
+     "LIBERATION"
+    ],
+    "elements": [
+     "AERO"
+    ],
+    "energyCost": [
+     {
+      "amount": 120,
+      "energyType": "conviction"
+     }
+    ],
+    "energyGenerated": [
+     {
+      "amount": 0,
+      "energyType": "energy",
+      "scalingStat": "energyPercent",
+      "share": 0.5
+     },
+     {
+      "amount": 20,
+      "energyType": "concerto",
+      "share": 0
+     }
+    ],
+    "formChange": "Cartethyia",
+    "inherentModifiers": [
+     {
+      "characterStats": {
+       "liberationTotalMultiplierDMG": 1
+      },
+      "condition": "[Function]",
+      "displayName": "Liberation Aero Erosion Stacks"
+     }
+    ],
+    "multiplier": 1.8368,
+    "name": "Liberation (Fleurdelys)",
+    "offtune": 16.8,
+    "scaling": "HP",
+    "sideEffects": [],
+    "statusModifications": [
+     {
+      "stackChange": -100,
+      "targetName": "Aero Erosion",
+      "type": "negativeStatus"
+     },
+     {
+      "stackChange": -1,
+      "targetName": "Mandate",
+      "type": "buff"
+     },
+     {
+      "stackChange": -1,
+      "targetName": "Power of Discord",
+      "type": "buff"
+     },
+     {
+      "stackChange": -100,
+      "targetName": "Fleurdelys's Conviction",
+      "type": "buff"
+     }
+    ],
+    "tags": [
+     "LIBERATION"
+    ]
+   },
+   {
+    "castConditions": {
+     "endState": "PRESERVE",
+     "startState": "ANY"
+    },
+    "castTime": 0.05,
+    "category": "Testing",
+    "cooldown": 0,
+    "damageModifiers": [],
+    "displayName": "Wait 0.05s",
+    "dmgTypes": [
+     ""
+    ],
+    "elements": [
+     ""
+    ],
+    "energyCost": [],
+    "energyGenerated": [],
+    "multiplier": 0,
+    "name": "Wait 0.05s",
+    "offtune": 0,
+    "scaling": "HP",
+    "sideEffects": [],
+    "statusModifications": []
+   },
+   {
+    "castConditions": {
+     "customCanCast": "[Function]",
+     "endState": "PRESERVE",
+     "startState": "ANY"
+    },
+    "castTime": 0,
+    "category": "Other",
+    "cooldown": 0,
+    "damageModifiers": [],
+    "displayName": "Wait Until Next Swap Is Available",
+    "dmgTypes": [
+     ""
+    ],
+    "elements": [
+     ""
+    ],
+    "energyCost": [],
+    "energyGenerated": [],
+    "multiplier": 0,
+    "name": "Wait Until Next Swap Is Available",
+    "offtune": 0,
+    "resolveVariant": "[Function]",
+    "scaling": "HP",
+    "sideEffects": [],
+    "statusModifications": []
+   },
+   {
+    "castConditions": {
+     "customCanCast": "[Function]",
+     "endState": "PRESERVE",
+     "startState": "ANY"
+    },
+    "castTime": 0,
+    "category": "Other",
+    "cooldown": 0,
+    "damageModifiers": [],
+    "displayName": "Wait Until Next Cooldown",
+    "dmgTypes": [
+     ""
+    ],
+    "elements": [
+     ""
+    ],
+    "energyCost": [],
+    "energyGenerated": [],
+    "multiplier": 0,
+    "name": "Wait Until Next Cooldown",
+    "offtune": 0,
+    "resolveVariant": "[Function]",
+    "scaling": "HP",
+    "sideEffects": [],
+    "statusModifications": []
+   },
+   {
+    "castConditions": {
+     "endState": "PRESERVE",
+     "startState": "ANY"
+    },
+    "castTime": 0,
+    "category": "Testing",
+    "cooldown": 0,
+    "damageModifiers": [],
+    "displayName": "Energy Up",
+    "dmgTypes": [
+     ""
+    ],
+    "elements": [
+     ""
+    ],
+    "energyCost": [],
+    "energyGenerated": [
+     {
+      "amount": 1000,
+      "energyType": "energy",
+      "share": 0
+     }
+    ],
+    "multiplier": 0,
+    "name": "Energy Up",
+    "offtune": 0,
+    "scaling": "HP",
+    "sideEffects": [],
+    "statusModifications": []
+   },
+   {
+    "castConditions": {
+     "endState": "PRESERVE",
+     "startState": "ANY"
+    },
+    "castTime": 0,
+    "category": "Testing",
+    "cooldown": 0,
+    "damageModifiers": [],
+    "displayName": "Concerto Up",
+    "dmgTypes": [
+     ""
+    ],
+    "elements": [
+     ""
+    ],
+    "energyCost": [],
+    "energyGenerated": [
+     {
+      "amount": 1000,
+      "energyType": "concerto",
+      "share": 0
+     }
+    ],
+    "multiplier": 0,
+    "name": "Concerto Up",
+    "offtune": 0,
+    "scaling": "HP",
+    "sideEffects": [],
+    "statusModifications": []
+   },
+   {
+    "castConditions": {
+     "endState": "PRESERVE",
+     "startState": "ANY"
+    },
+    "castTime": 0,
+    "category": "Testing",
+    "cooldown": 0,
+    "damageModifiers": [],
+    "displayName": "Forte Up",
+    "dmgTypes": [
+     ""
+    ],
+    "elements": [
+     ""
+    ],
+    "energyCost": [],
+    "energyGenerated": [
+     {
+      "amount": 1000,
+      "energyType": "forte_divinity",
+      "share": 0
+     },
+     {
+      "amount": 1000,
+      "energyType": "forte_discord",
+      "share": 0
+     },
+     {
+      "amount": 1000,
+      "energyType": "forte_virtue",
+      "share": 0
+     }
+    ],
+    "multiplier": 0,
+    "name": "Forte Up",
+    "offtune": 0,
+    "scaling": "HP",
+    "sideEffects": [],
+    "statusModifications": []
+   },
+   {
+    "castConditions": {
+     "endState": "PRESERVE",
+     "startState": "ANY"
+    },
+    "castTime": 0,
+    "category": "Testing",
+    "cooldown": 0,
+    "damageModifiers": [],
+    "displayName": "Conviction Up",
+    "dmgTypes": [
+     ""
+    ],
+    "elements": [
+     ""
+    ],
+    "energyCost": [],
+    "energyGenerated": [
+     {
+      "amount": 1000,
+      "energyType": "conviction",
+      "share": 0
+     }
+    ],
+    "multiplier": 0,
+    "name": "Conviction Up",
+    "offtune": 0,
+    "scaling": "HP",
+    "sideEffects": [],
+    "statusModifications": []
+   },
+   {
+    "castConditions": {
+     "endState": "GROUND",
+     "startState": "ANY"
+    },
+    "castTime": 0.92,
+    "category": "Other",
+    "cooldown": 0,
+    "damageModifiers": [],
+    "displayName": "Sword to Mark Tides Trace",
+    "dmgTypes": [
+     "INTRO"
+    ],
+    "elements": [
+     "AERO"
+    ],
+    "energyCost": [],
+    "energyGenerated": [
+     {
+      "amount": 10.01,
+      "energyType": "energy",
+      "scalingStat": "energyPercent",
+      "share": 0.5
+     },
+     {
+      "amount": 10,
+      "energyType": "concerto",
+      "share": 0
+     },
+     {
+      "amount": 1,
+      "energyType": "forte_discord",
+      "share": 0
+     }
+    ],
+    "multiplier": 0.1872,
+    "name": "Cartethyia Intro",
+    "offtune": 0.71,
+    "scaling": "HP",
+    "sideEffects": [],
+    "statusModifications": [],
+    "tags": [
+     "INTRO_ACTION"
+    ]
+   },
+   {
+    "castConditions": {
+     "endState": "PRESERVE",
+     "startState": "ANY"
+    },
+    "castTime": 0,
+    "category": "Other",
+    "cooldown": 0,
+    "damageModifiers": [
+     {
+      "characterStats": {
+       "aeroAmplifyDMG": 0.175
+      },
+      "color": "#1ae070",
+      "condition": "[Function]",
+      "displayName": "Wind's Divine Blessing",
+      "durationStrategy": {
+       "timeDuration": 20,
+       "type": "limited"
+      },
+      "ownerCharacter": "Cartethyia",
+      "source": "Cartethyia Outro Buff",
+      "stackingStrategy": {
+       "maxStacks": 1,
+       "resetTimerOnApplication": true,
+       "stacksRemovedEachTime": 1
+      },
+      "targetStrategy": "activeAlly",
+      "type": "buff"
+     }
+    ],
+    "displayName": "Winds Divine Blessing",
+    "dmgTypes": [
+     "OUTRO"
+    ],
+    "elements": [
+     "AERO"
+    ],
+    "energyCost": [],
+    "energyGenerated": [],
+    "multiplier": 0,
+    "name": "Outro",
+    "offtune": 0,
+    "scaling": "HP",
+    "sideEffects": [],
+    "statusModifications": [],
+    "tags": [
+     "OUTRO_ACTION"
+    ]
+   },
+   {
+    "castConditions": {
+     "endState": "GROUND",
+     "startState": "ANY"
+    },
+    "castTime": 0.92,
+    "category": "Other",
+    "cooldown": 0,
+    "damageModifiers": [],
+    "displayName": "Sword to Mark Tides Trace",
+    "dmgTypes": [
+     "INTRO"
+    ],
+    "elements": [
+     "AERO"
+    ],
+    "energyCost": [],
+    "energyGenerated": [
+     {
+      "amount": 10.01,
+      "energyType": "energy",
+      "scalingStat": "energyPercent",
+      "share": 0.5
+     },
+     {
+      "amount": 10,
+      "energyType": "concerto",
+      "share": 0
+     },
+     {
+      "amount": 1,
+      "energyType": "forte_discord",
+      "share": 0
+     }
+    ],
+    "multiplier": 0.3744,
+    "name": "Fleurdelys Intro",
+    "offtune": 0.71,
+    "scaling": "HP",
+    "sideEffects": [],
+    "statusModifications": []
+   },
+   {
+    "castConditions": {
+     "endState": "PRESERVE",
+     "startState": "ANY"
+    },
+    "castTime": 0,
+    "category": "Echo Skill",
+    "cooldown": 20,
+    "damageModifiers": [],
+    "displayName": "Reminiscence: Fleurdelys (Active)",
+    "dmgTypes": [
+     "ECHO"
+    ],
+    "elements": [
+     "AERO"
+    ],
+    "energyCost": [],
+    "energyGenerated": [
+     {
+      "amount": 4.94,
+      "energyType": "energy",
+      "scalingStat": "energyPercent",
+      "share": 0.5
+     }
+    ],
+    "multiplier": 3.5568,
+    "name": "Reminiscence: Fleurdelys (Active)",
+    "offtune": 0,
+    "scaling": "ATK",
+    "sideEffects": [],
+    "statusModifications": []
+   }
+  ],
+  "damageModifiers": [
+   {
+    "characterStats": {
+     "bonusDMG": 0.1
+    },
+    "condition": "[Function]",
+    "displayName": "Wind's Indelible Imprint",
+    "durationStrategy": {
+     "type": "permanent"
+    },
+    "ownerCharacter": "Cartethyia",
+    "source": "Inherent Skill",
+    "stackingStrategy": {
+     "maxStacks": 1,
+     "resetTimerOnApplication": false,
+     "stacksRemovedEachTime": 1
+    },
+    "targetStrategy": "self",
+    "type": "buff"
+   },
+   {
+    "characterStats": {
+     "amplifyDMG": 0.2
+    },
+    "condition": "[Function]",
+    "displayName": "A Free Knight's Tarantella (2)",
+    "durationStrategy": {
+     "type": "permanent"
+    },
+    "ownerCharacter": "Cartethyia",
+    "source": "Defier's Thorn",
+    "stackingStrategy": {
+     "maxStacks": 1,
+     "resetTimerOnApplication": false,
+     "stacksRemovedEachTime": 0
+    },
+    "targetStrategy": "self",
+    "type": "buff"
+   }
+  ],
+  "defaultForm": "Cartethyia",
+  "element": "AERO",
+  "flattenedPassiveModifiers": [
+   {
+    "characterStats": {
+     "bonusHP": 0.12
+    },
+    "condition": "[Function]",
+    "displayName": "A Free Knight's Tarantella (HP)",
+    "durationStrategy": {
+     "type": "permanent"
+    },
+    "ownerCharacter": "Cartethyia",
+    "source": "Defier's Thorn",
+    "stackingStrategy": {
+     "maxStacks": 1,
+     "resetTimerOnApplication": false,
+     "stacksRemovedEachTime": 0
+    },
+    "targetStrategy": "self",
+    "type": "buff"
+   },
+   {
+    "characterStats": {
+     "defIgnore": 0.08
+    },
+    "condition": "[Function]",
+    "displayName": "A Free Knight's Tarantella (1)",
+    "durationStrategy": {
+     "type": "permanent"
+    },
+    "ownerCharacter": "Cartethyia",
+    "source": "Defier's Thorn",
+    "stackingStrategy": {
+     "maxStacks": 1,
+     "resetTimerOnApplication": false,
+     "stacksRemovedEachTime": 0
+    },
+    "targetStrategy": "self",
+    "type": "buff"
+   },
+   {
+    "characterStats": {
+     "aeroBonusDMG": 0.3,
+     "critRate": 0.1
+    },
+    "condition": "[Function]",
+    "displayName": "Windward Pilgrimage (Set Bonus)",
+    "durationStrategy": {
+     "type": "permanent"
+    },
+    "ownerCharacter": "Cartethyia",
+    "source": "Cartethyia",
+    "stackingStrategy": {
+     "maxStacks": 1,
+     "resetTimerOnApplication": false,
+     "stacksRemovedEachTime": 0
+    },
+    "targetStrategy": "self",
+    "type": "buff"
+   }
+  ],
+  "forms": [
+   {
+    "displayName": "Cartethyia",
+    "introAction": {
+     "castConditions": {
+      "endState": "GROUND",
+      "startState": "ANY"
+     },
+     "castTime": 0.92,
+     "category": "Other",
+     "cooldown": 0,
+     "damageModifiers": [],
+     "displayName": "Sword to Mark Tides Trace",
+     "dmgTypes": [
+      "INTRO"
+     ],
+     "elements": [
+      "AERO"
+     ],
+     "energyCost": [],
+     "energyGenerated": [
+      {
+       "amount": 10.01,
+       "energyType": "energy",
+       "scalingStat": "energyPercent",
+       "share": 0.5
+      },
+      {
+       "amount": 10,
+       "energyType": "concerto",
+       "share": 0
+      },
+      {
+       "amount": 1,
+       "energyType": "forte_discord",
+       "share": 0
+      }
+     ],
+     "multiplier": 0.1872,
+     "name": "Cartethyia Intro",
+     "offtune": 0.71,
+     "scaling": "HP",
+     "sideEffects": [],
+     "statusModifications": [],
+     "tags": [
+      "INTRO_ACTION"
+     ]
+    },
+    "name": "Cartethyia",
+    "outroAction": {
+     "castConditions": {
+      "endState": "PRESERVE",
+      "startState": "ANY"
+     },
+     "castTime": 0,
+     "category": "Other",
+     "cooldown": 0,
+     "damageModifiers": [
+      {
+       "characterStats": {
+        "aeroAmplifyDMG": 0.175
+       },
+       "color": "#1ae070",
+       "condition": "[Function]",
+       "displayName": "Wind's Divine Blessing",
+       "durationStrategy": {
+        "timeDuration": 20,
+        "type": "limited"
+       },
+       "ownerCharacter": "Cartethyia",
+       "source": "Cartethyia Outro Buff",
+       "stackingStrategy": {
+        "maxStacks": 1,
+        "resetTimerOnApplication": true,
+        "stacksRemovedEachTime": 1
+       },
+       "targetStrategy": "activeAlly",
+       "type": "buff"
+      }
+     ],
+     "displayName": "Winds Divine Blessing",
+     "dmgTypes": [
+      "OUTRO"
+     ],
+     "elements": [
+      "AERO"
+     ],
+     "energyCost": [],
+     "energyGenerated": [],
+     "multiplier": 0,
+     "name": "Outro",
+     "offtune": 0,
+     "scaling": "HP",
+     "sideEffects": [],
+     "statusModifications": [],
+     "tags": [
+      "OUTRO_ACTION"
+     ]
+    }
+   },
+   {
+    "displayName": "Fleurdelys",
+    "introAction": {
+     "castConditions": {
+      "endState": "GROUND",
+      "startState": "ANY"
+     },
+     "castTime": 0.92,
+     "category": "Other",
+     "cooldown": 0,
+     "damageModifiers": [],
+     "displayName": "Sword to Mark Tides Trace",
+     "dmgTypes": [
+      "INTRO"
+     ],
+     "elements": [
+      "AERO"
+     ],
+     "energyCost": [],
+     "energyGenerated": [
+      {
+       "amount": 10.01,
+       "energyType": "energy",
+       "scalingStat": "energyPercent",
+       "share": 0.5
+      },
+      {
+       "amount": 10,
+       "energyType": "concerto",
+       "share": 0
+      },
+      {
+       "amount": 1,
+       "energyType": "forte_discord",
+       "share": 0
+      }
+     ],
+     "multiplier": 0.3744,
+     "name": "Fleurdelys Intro",
+     "offtune": 0.71,
+     "scaling": "HP",
+     "sideEffects": [],
+     "statusModifications": []
+    },
+    "name": "Fleurdelys"
+   }
+  ],
+  "gear": {
+   "echoSlots": {
+    "1": {
+     "baseStats": {
+      "critDamage": 0.44,
+      "flatATK": 150
+     },
+     "conditionalStats": {
+      "condition": "[Function]",
+      "stats": {
+       "aeroBonusDMG": 0.1
+      }
+     },
+     "cost": 4,
+     "echoSkill": {
+      "castConditions": {
+       "endState": "PRESERVE",
+       "startState": "ANY"
+      },
+      "castTime": 0,
+      "category": "Echo Skill",
+      "cooldown": 20,
+      "damageModifiers": [],
+      "displayName": "Reminiscence: Fleurdelys (Active)",
+      "dmgTypes": [
+       "ECHO"
+      ],
+      "elements": [
+       "AERO"
+      ],
+      "energyCost": [],
+      "energyGenerated": [
+       {
+        "amount": 4.94,
+        "energyType": "energy",
+        "scalingStat": "energyPercent",
+        "share": 0.5
+       }
+      ],
+      "multiplier": 3.5568,
+      "name": "Reminiscence: Fleurdelys (Active)",
+      "offtune": 0,
+      "scaling": "ATK",
+      "sideEffects": [],
+      "statusModifications": []
+     },
+     "firstSlotStats": {
+      "aeroBonusDMG": 0.1
+     },
+     "icon": "assets/gear/echoes/reminiscence_fleurdelys.png",
+     "info": "The Resonator with this Echo equipped in the main slot gains 10.00% Aero DMG Bonus. When Resonator: Aero Rover or Cartethyia equips this Echo, they gain 10.00% more Aero DMG Bonus.",
+     "info_icon": "assets/gear/echoes/info_reminiscence_fleurdelys.png",
+     "name": "Reminiscence: Fleurdelys",
+     "setName": "Windward Pilgrimage",
+     "subStats": {
+      "bonusHP": 0.079,
+      "critDamage": 0.15,
+      "critRate": 0.075
+     }
+    },
+    "2": {
+     "baseStats": {
+      "critRate": 0.22,
+      "flatATK": 150
+     },
+     "cost": 4,
+     "icon": "assets/gear/echoes/nightmare_kelpie.png",
+     "info": "The Resonator with this Echo equipped in the main slot gains 12.00% Glacio DMG Bonus and 12.00% Aero DMG Bonus. Switching out the Resonator with Outro Skill summons Nightmare: Kelpie to deal 405.00% Aero DMG.",
+     "info_icon": "assets/gear/echoes/info_nightmare_kelpie.png",
+     "name": "Nightmare: Kelpie",
+     "setName": "Windward Pilgrimage",
+     "subStats": {
+      "bonusHP": 0.079,
+      "critDamage": 0.15,
+      "critRate": 0.075
+     }
+    },
+    "3": {
+     "baseStats": {
+      "bonusHP": 0.228,
+      "flatHP": 2280
+     },
+     "cost": 1,
+     "icon": "assets/gear/echoes/spectro_drake.png",
+     "info_icon": "assets/gear/echoes/info_spectro_drake.png",
+     "name": "Spectro Drake",
+     "setName": "Windward Pilgrimage",
+     "subStats": {
+      "bonusHP": 0.079,
+      "critDamage": 0.15,
+      "critRate": 0.075
+     }
+    },
+    "4": {
+     "baseStats": {
+      "bonusHP": 0.228,
+      "flatHP": 2280
+     },
+     "cost": 1,
+     "icon": "assets/gear/echoes/sacerdos.png",
+     "info_icon": "assets/gear/echoes/info_sacerdos.png",
+     "name": "Sacerdos",
+     "setName": "Windward Pilgrimage",
+     "subStats": {
+      "bonusHP": 0.079,
+      "critDamage": 0.15,
+      "critRate": 0.075
+     }
+    },
+    "5": {
+     "baseStats": {
+      "bonusHP": 0.228,
+      "flatHP": 2280
+     },
+     "cost": 1,
+     "icon": "assets/gear/echoes/devotee's_flesh.png",
+     "info_icon": "assets/gear/echoes/info_devotee's_flesh.png",
+     "name": "Devotee's Flesh",
+     "setName": "Windward Pilgrimage",
+     "subStats": {
+      "bonusHP": 0.079,
+      "critDamage": 0.15,
+      "critRate": 0.075
+     }
+    }
+   },
+   "setBonus": {
+    "icon": "assets/gear/set-bonuses/windward_pilgrimage.png",
+    "info": {
+     "2-piece": "Aero DMG + 10%",
+     "5-piece": "Hitting a target with Aero Erosion increases Crit. Rate by 10% and grants 30% Aero DMG Bonus, lasting for 10s."
+    },
+    "injectedModifiers": [
+     {
+      "modifiers": [
+       {
+        "characterStats": {
+         "aeroBonusDMG": 0.3,
+         "critRate": 0.1
+        },
+        "condition": "[Function]",
+        "displayName": "Windward Pilgrimage (Set Bonus)",
+        "durationStrategy": {
+         "type": "permanent"
+        },
+        "ownerCharacter": "Cartethyia",
+        "source": "Cartethyia",
+        "stackingStrategy": {
+         "maxStacks": 1,
+         "resetTimerOnApplication": false,
+         "stacksRemovedEachTime": 0
+        },
+        "targetStrategy": "self",
+        "type": "buff"
+       }
+      ],
+      "targets": [
+       "character"
+      ]
+     }
+    ],
+    "name": "Windward Pilgrimage",
+    "stats": {
+     "aeroBonusDMG": 0.1
+    }
+   },
+   "weapon": {
+    "icon": "assets/gear/weapons/defier's_thorn.png",
+    "info": "Max HP is increased by 12%/15%/18%/21%/24%. 15s after casting Intro Skill or Basic Attacks, ignore 8%/10%/12%/14%/16% of the target's DEF when dealing damage. If the target has at least 1 stack of Aero Erosion, the DMG taken by the target is Amplified by 20%/25%/30%/35%/40%.",
+    "injectedModifiers": [
+     {
+      "modifiers": [
+       {
+        "characterStats": {
+         "bonusHP": 0.12
+        },
+        "condition": "[Function]",
+        "displayName": "A Free Knight's Tarantella (HP)",
+        "durationStrategy": {
+         "type": "permanent"
+        },
+        "ownerCharacter": "Cartethyia",
+        "source": "Defier's Thorn",
+        "stackingStrategy": {
+         "maxStacks": 1,
+         "resetTimerOnApplication": false,
+         "stacksRemovedEachTime": 0
+        },
+        "targetStrategy": "self",
+        "type": "buff"
+       },
+       {
+        "characterStats": {
+         "defIgnore": 0.08
+        },
+        "condition": "[Function]",
+        "displayName": "A Free Knight's Tarantella (1)",
+        "durationStrategy": {
+         "type": "permanent"
+        },
+        "ownerCharacter": "Cartethyia",
+        "source": "Defier's Thorn",
+        "stackingStrategy": {
+         "maxStacks": 1,
+         "resetTimerOnApplication": false,
+         "stacksRemovedEachTime": 0
+        },
+        "targetStrategy": "self",
+        "type": "buff"
+       },
+       {
+        "characterStats": {
+         "amplifyDMG": 0.2
+        },
+        "condition": "[Function]",
+        "displayName": "A Free Knight's Tarantella (2)",
+        "durationStrategy": {
+         "type": "permanent"
+        },
+        "ownerCharacter": "Cartethyia",
+        "source": "Defier's Thorn",
+        "stackingStrategy": {
+         "maxStacks": 1,
+         "resetTimerOnApplication": false,
+         "stacksRemovedEachTime": 0
+        },
+        "targetStrategy": "self",
+        "type": "buff"
+       }
+      ],
+      "targets": [
+       "character"
+      ]
+     }
+    ],
+    "name": "Defier's Thorn",
+    "rank": 1,
+    "stats": {
+     "baseATK": 412.5,
+     "bonusHP": 0.7223
+    },
+    "weaponType": "Sword"
+   }
+  },
+  "image": "/assets/characters/cartethyia.png",
+  "inherentStats": {
+   "bonusHP": 0.12,
+   "critRate": 0.08
+  },
+  "maxEnergies": {
+   "concerto": 100,
+   "conviction": 120,
+   "energy": 125,
+   "forte_discord": 1,
+   "forte_divinity": 1,
+   "forte_virtue": 1
+  },
+  "name": "Cartethyia",
+  "resourceMilestones": [
+   {
+    "milestones": [
+     30,
+     60,
+     90,
+     120
+    ],
+    "modifier": {
+     "characterStats": {
+      "critDamage": 0.25
+     },
+     "color": "#17191a",
+     "condition": "[Function]",
+     "contributionGroup": "Cartethyia: Mandate",
+     "displayName": "Fleurdelys's Conviction",
+     "durationStrategy": {
+      "timeDuration": 15,
+      "type": "limited"
+     },
+     "ownerCharacter": "Cartethyia",
+     "source": "Cartethyia S1: Conviction Milestone",
+     "stackingStrategy": {
+      "maxStacks": 4,
+      "resetTimerOnApplication": false,
+      "stacksRemovedEachTime": 4
+     },
+     "targetStrategy": "self",
+     "type": "buff"
+    },
+    "resourceType": "conviction"
+   }
+  ],
+  "sequence": 3,
+  "sequence_nodes": [
+   "Gain Zeal that lasts for 10s when Cartethyia's or Fleurdelys's attacks directly damage and defeat targets inflicted with Aero Erosion. In the Zeal state, upon defeating enemies, the next move that directly damages targets raises the Aero Erosion stacks on the targets to the highest count among the targets defeated. This will not exceed the current max Aero Erosion stack limit. Zeal is removed afterward and enters a 1s cooldown. When Fleurdelys's Conviction hits 30/60/90/120, Fleurdelys's Crit. DMG is increased by 25% for 15s, up to 4 stacks. The duration of this effect does not reset upon gaining new stacks. After casting Resonance Liberation - Blade of Howling Squall, the increased Crit. DMG is removed.",
+   "Casting Resonance Liberation - A Knight's Heartfelt Prayers increases the max stack limit of Aero Erosion on targets within a certain range by 3 stacks. The next attack that directly damages the target inflicts 3 stack of Aero Erosion on all targets within a certain range and immediately triggers the Aero Erosion DMG on the targets hit once without consuming the Aero Erosion stacks. The DMG Multipliers of Cartethyia's Basic Attack, Heavy Attack, Dodge Counter, and Intro Skill are increased by 50% and the DMG Multiplier of her Mid-air Attack is increased by 200%. After casting Mid-air Attack - Cartethyia, every 1 type of Sword Shadow recalled reduces the cooldown of Resonance Skill - Cartethyia by 1s.",
+   "Basic Attack - Fleurdelys Stage 5, Mid-air Attack - Fleurdelys Stage 2, Enhanced Heavy Attack - Fleurdelys, and Resonance Skill - May Tempest Break the Tides now inflict 2 stacks of Aero Erosion on the targets hit. The DMG Multiplier of Resonance Liberation - Blade of Howling Squall is increased by 100%.",
+   "After Resonators in the team inflict Havoc Bane, Fusion Burst, Spectro Frazzle, Electro Flare, Glacio Chafe, orAero Erosion, all Resonators in the team gain 20% DMG Bonus for all Attributes for 20s.",
+   "When Cartethyia or Fleurdelys takes a fatal blow, they will not be downed by this instance of damage, but instead gain a Shield equal to 20% of Cartethyia's Max HP for 10s. This effect can be triggered once every 10 min. The HP cost for casting Resonance Liberation - A Knight's Heartfelt Prayers is reduced to 25% of Max HP.",
+   "After casting Resonance Liberation - Blade of Howling Squall, raise the Aero Erosion stacks on the target hit to max. Casting Resonance Liberation - Blade of Howling Squall no longer removes the Aero Erosion stacks on the target. Within 30s after casting Intro Skill - Sword to Mark Tide's Trace, Intro Skill - Sword to Call for Freedom, Resonance Liberation - A Knight's Heartfelt Prayers, and Resonance Liberation - Blade of Howling Squall, when any Resonator in the team inflicts Aero Erosion on the targets with max stacks of Aero Erosion, immediately trigger the Aero Erosion DMG once. The targets take 40% more DMG from Fleurdelys."
+  ],
+  "sequence_nodes_icons": [
+   "assets/characters/sequences/cartethyia_1.png",
+   "assets/characters/sequences/cartethyia_2.png",
+   "assets/characters/sequences/cartethyia_3.png",
+   "assets/characters/sequences/cartethyia_4.png",
+   "assets/characters/sequences/cartethyia_5.png",
+   "assets/characters/sequences/cartethyia_6.png"
+  ],
+  "stats": {
+   "aeroAmplifyDMG": 0,
+   "aeroBonusDMG": 0.6,
+   "aeroErosionAmplifyDMG": 0,
+   "aeroErosionBonusDMG": 0,
+   "aeroErosionTotalMultiplierDMG": 1,
+   "aeroTotalMultiplierDMG": 1,
+   "amplifyATK": 0,
+   "amplifyDEF": 0,
+   "amplifyDMG": 0,
+   "amplifyHP": 0,
+   "baseATK": 724.5,
+   "baseDEF": 611,
+   "baseHP": 14800,
+   "basicAmplifyDMG": 0,
+   "basicBonusDMG": 0,
+   "basicTotalMultiplierDMG": 1,
+   "bonusATK": 0,
+   "bonusDEF": 0,
+   "bonusDMG": 0,
+   "bonusHP": 2.0413,
+   "coordinatedAmplifyDMG": 0,
+   "coordinatedBonusDMG": 0,
+   "coordinatedTotalMultiplierDMG": 1,
+   "critDamage": 2.69,
+   "critRate": 0.825,
+   "defIgnore": 0.08,
+   "echoAmplifyDMG": 0,
+   "echoBonusDMG": 0,
+   "echoTotalMultiplierDMG": 1,
+   "electroAmplifyDMG": 0,
+   "electroBonusDMG": 0,
+   "electroFlareAmplifyDMG": 0,
+   "electroFlareBonusDMG": 0,
+   "electroFlareTotalMultiplierDMG": 1,
+   "electroTotalMultiplierDMG": 1,
+   "elementalResPEN": 0,
+   "energyPercent": 1,
+   "flatATK": 300,
+   "flatDEF": 0,
+   "flatHP": 6840,
+   "fusionAmplifyDMG": 0,
+   "fusionBonusDMG": 0,
+   "fusionBurstAmplifyDMG": 0,
+   "fusionBurstBonusDMG": 0,
+   "fusionBurstTotalMultiplierDMG": 1,
+   "fusionTotalMultiplierDMG": 1,
+   "glacioAmplifyDMG": 0,
+   "glacioBonusDMG": 0,
+   "glacioChafeAmplifyDMG": 0,
+   "glacioChafeBonusDMG": 0,
+   "glacioChafeTotalMultiplierDMG": 1,
+   "glacioTotalMultiplierDMG": 1,
+   "havocAmplifyDMG": 0,
+   "havocBaneAmplifyDMG": 0,
+   "havocBaneBonusDMG": 0,
+   "havocBaneTotalMultiplierDMG": 1,
+   "havocBonusDMG": 0,
+   "havocTotalMultiplierDMG": 1,
+   "healingBonus": 0,
+   "heavyAmplifyDMG": 0,
+   "heavyBonusDMG": 0,
+   "heavyTotalMultiplierDMG": 1,
+   "introAmplifyDMG": 0,
+   "introBonusDMG": 0,
+   "introTotalMultiplierDMG": 1,
+   "level": 90,
+   "liberationAmplifyDMG": 0,
+   "liberationBonusDMG": 0,
+   "liberationTotalMultiplierDMG": 1,
+   "offtuneBuildupRate": 1,
+   "outroAmplifyDMG": 0,
+   "outroBonusDMG": 0,
+   "outroTotalMultiplierDMG": 1,
+   "resistancePEN": 0,
+   "skillAmplifyDMG": 0,
+   "skillBonusDMG": 0,
+   "skillTotalMultiplierDMG": 1,
+   "spectroAmplifyDMG": 0,
+   "spectroBonusDMG": 0,
+   "spectroFrazzleAmplifyDMG": 0,
+   "spectroFrazzleBonusDMG": 0,
+   "spectroFrazzleTotalMultiplierDMG": 1,
+   "spectroTotalMultiplierDMG": 1,
+   "totalMultiplierATK": 1,
+   "totalMultiplierDEF": 1,
+   "totalMultiplierDMG": 1,
+   "totalMultiplierHP": 1,
+   "tuneBreakBoost": 0
+  },
+  "weaponType": "Sword"
+ }
+}

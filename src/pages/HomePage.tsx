@@ -1,3 +1,4 @@
+// Home page (placeholder).
 // ========== Main Home Page ===================================================================================================
 
 export default function HomePage() {

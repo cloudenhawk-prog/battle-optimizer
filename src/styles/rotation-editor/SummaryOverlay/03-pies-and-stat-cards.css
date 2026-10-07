@@ -1,0 +1,271 @@
+/* Summary overlay: donut chart, centre readout, legend, key stats and field-time/energy stat cards */
+/* ═══════════════════════════════════════════════════════════
+   LEFT PANEL — PIE CHART
+   ═══════════════════════════════════════════════════════════ */
+
+.summaryPieWrap {
+  position: relative;
+  width: 100%;
+  max-width: 275px;
+  aspect-ratio: 1;
+  align-self: center;
+  flex-shrink: 0;
+}
+
+.summaryPieSvg {
+  width: 100%;
+  height: 100%;
+  display: block;
+}
+
+/* Centre overlay — sits over the donut hole */
+.summaryPieCenter {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 1px;
+  pointer-events: none;
+  text-align: center;
+  width: 110px;
+}
+
+.summaryPieCenterLabel {
+  font-family: 'Share Tech Mono', monospace;
+  font-size: var(--sum-pie-center-label-fs);
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: rgba(255, 255, 255, 0.3);
+}
+
+.summaryPieCenterName {
+  font-family: 'Rajdhani', sans-serif;
+  font-size: 14px;
+  font-weight: 600;
+  color: rgba(255, 255, 255, 0.6);
+  letter-spacing: 0.04em;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  max-width: 100%;
+}
+
+.summaryPieCenterBig {
+  font-family: 'Orbitron', monospace;
+  font-size: var(--sum-pie-center-value-fs);
+  font-weight: 700;
+  color: rgba(255, 255, 255, 0.88);
+  letter-spacing: 0.03em;
+  line-height: 1.1;
+}
+
+.summaryPieCenterPct {
+  font-family: 'Share Tech Mono', monospace;
+  font-size: var(--sum-pie-center-pct-fs);
+  color: rgba(255, 255, 255, 0.4);
+  margin-top: 1px;
+}
+
+/* ── Legend ──────────────────────────────────────────────── */
+.summaryPieLegend {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  flex-shrink: 0;
+  margin-top: -10px;
+}
+
+.summaryPieLegendRow {
+  display: flex;
+  align-items: center;
+  gap: 9px;
+  padding: 5px 8px;
+  border-radius: 6px;
+  border: 1px solid transparent;
+  cursor: default;
+  transition: background 0.15s, border-color 0.15s;
+}
+
+.summaryPieLegendRow.active,
+.summaryPieLegendRow:hover {
+  background: rgba(255, 255, 255, 0.04);
+  border-color: rgba(255, 255, 255, 0.07);
+}
+
+.summaryPieLegendDot {
+  width: var(--sum-legend-dot-size);
+  height: var(--sum-legend-dot-size);
+  border-radius: 50%;
+  flex-shrink: 0;
+}
+
+.summaryPieLegendName {
+  flex: 1;
+  font-family: 'Rajdhani', sans-serif;
+  font-size: var(--sum-legend-name-fs);
+  font-weight: 500;
+  color: rgba(255, 255, 255, 0.65);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.summaryPieLegendValue {
+  font-family: 'Share Tech Mono', monospace;
+  font-size: var(--sum-legend-value-fs);
+  color: rgba(255, 255, 255, 0.5);
+  flex-shrink: 0;
+}
+
+.summaryPieLegendPct {
+  font-family: 'Share Tech Mono', monospace;
+  font-size: var(--sum-legend-pct-fs);
+  font-weight: 700;
+  flex-shrink: 0;
+  min-width: 46px;
+  text-align: right;
+}
+
+/* ── Key stats row ───────────────────────────────────────── */
+.summaryKeyStats {
+  display: flex;
+  gap: 10px;
+  flex-wrap: wrap;
+  flex-shrink: 0;
+}
+
+.summaryKeyStat {
+  flex: 1;
+  min-width: 80px;
+  background: rgba(255, 255, 255, 0.035);
+  border: 1px solid rgba(255, 255, 255, 0.07);
+  border-radius: 8px;
+  padding: 8px 12px;
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+}
+
+.summaryKeyStatLabel {
+  font-family: 'Share Tech Mono', monospace;
+  font-size: 11px;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: rgba(255, 255, 255, 0.28);
+}
+
+.summaryKeyStatValue {
+  font-family: 'Orbitron', monospace;
+  font-size: 20px;
+  font-weight: 700;
+  color: rgba(255, 255, 255, 0.8);
+  letter-spacing: 0.03em;
+  line-height: 1;
+}
+
+/* ── Field time bars ─────────────────────────────────────── */
+
+/* ── Shared stat-card layout (Field Time + Energy Generation) ── */
+.summaryStatCards {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.summaryStatCard {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+  padding-left: 10px;
+  border-left: 2px solid var(--card-color, rgba(100, 200, 255, 0.5));
+}
+
+.summaryStatCardTop {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 8px;
+}
+
+.summaryStatCardName {
+  font-family: 'Rajdhani', sans-serif;
+  font-size: var(--sum-field-name-fs);
+  font-weight: 600;
+  color: var(--card-color, rgba(255, 255, 255, 0.75));
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  flex: 1;
+  min-width: 0;
+}
+
+.summaryStatCardPrimary {
+  font-family: 'Share Tech Mono', monospace;
+  font-size: var(--sum-field-val-fs);
+  font-weight: 700;
+  color: rgba(255, 255, 255, 0.88);
+  flex-shrink: 0;
+  letter-spacing: 0.02em;
+}
+
+.summaryStatCardBars {
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+}
+
+.summaryStatCardBar {
+  height: 3px;
+  background: rgba(255, 255, 255, 0.07);
+  border-radius: 2px;
+  overflow: hidden;
+}
+
+.summaryStatCardBarAlt .summaryStatCardBarFill {
+  opacity: 0.3;
+  box-shadow: none;
+}
+
+.summaryStatCardBarFill {
+  height: 100%;
+  border-radius: 2px;
+  background: var(--card-color, rgba(100, 200, 255, 0.6));
+  box-shadow: 0 0 6px var(--card-glow, rgba(100, 200, 255, 0.3));
+  transition: width 0.4s ease-out;
+  min-width: 2px;
+}
+
+.summaryStatCardSecondary {
+  font-family: 'Share Tech Mono', monospace;
+  font-size: 15px;
+  color: rgba(255, 255, 255, 0.35);
+  letter-spacing: 0.03em;
+}
+
+.summaryStatCardTotalRow {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 7px 0 0 10px;
+  border-top: 1px solid rgba(255, 255, 255, 0.06);
+  margin-top: 2px;
+}
+
+.summaryStatCardTotalLabel {
+  font-family: 'Share Tech Mono', monospace;
+  font-size: 11px;
+  letter-spacing: 0.07em;
+  text-transform: uppercase;
+  color: rgba(255, 255, 255, 0.22);
+}
+
+.summaryStatCardTotalValue {
+  font-family: 'Share Tech Mono', monospace;
+  font-size: 13px;
+  color: rgba(255, 255, 255, 0.45);
+}
+

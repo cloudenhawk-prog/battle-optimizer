@@ -1,0 +1,156 @@
+{
+ "available": [
+  [
+   "Wait 0.05s",
+   "Wait Until Next Cooldown",
+   "Energy Up",
+   "Concerto Up",
+   "Dedication Up",
+   "Foreclaiming Up",
+   "Frostharden Iai Up",
+   "Frostheart Up",
+   "Whiteout Bitterfrost Up",
+   "Snowforged Blade Up",
+   "Snow Rust Up",
+   "S1 Enhanced BA1 Up",
+   "S1 Enhanced BA2 Up",
+   "S2 Frostheart Token Up"
+  ],
+  [
+   "Wait 0.05s",
+   "Energy Up",
+   "Concerto Up",
+   "Rest Mass Energy",
+   "Relative Momentum",
+   "Echo Skill"
+  ],
+  [
+   "Energy Up",
+   "Concerto Up",
+   "Cheat Buff",
+   "Glacio Chafe ×26"
+  ]
+ ],
+ "steps": [
+  {
+   "action": "Basic Attack 1-2",
+   "character": "Lucila"
+  },
+  {
+   "action": "Echo Skill",
+   "character": "Lucila"
+  },
+  {
+   "action": "Basic Attack 1-3 (into heavy)",
+   "character": "Mornye"
+  },
+  {
+   "action": "Echo Skill",
+   "character": "Mornye"
+  },
+  {
+   "action": "Echo Skill",
+   "character": "Hiyuki"
+  },
+  {
+   "action": "Wait Until Next Cooldown",
+   "character": "Mornye"
+  },
+  {
+   "action": "Echo Skill",
+   "character": "Mornye"
+  },
+  {
+   "action": "Echo Skill",
+   "character": "Hiyuki"
+  },
+  {
+   "action": "Wait Until Next Cooldown",
+   "character": "Mornye"
+  },
+  {
+   "action": "Echo Skill",
+   "character": "Lucila"
+  },
+  {
+   "action": "Echo Skill",
+   "character": "Mornye"
+  },
+  {
+   "action": "Wait Until Next Swap Is Available",
+   "character": "Hiyuki"
+  },
+  {
+   "action": "Wait Until Next Swap Is Available",
+   "character": "Mornye"
+  },
+  {
+   "action": "Wait Until Next Swap Is Available",
+   "character": "Hiyuki"
+  },
+  {
+   "action": "Wait Until Next Swap Is Available",
+   "character": "Mornye"
+  },
+  {
+   "action": "Wait Until Next Swap Is Available",
+   "character": "Hiyuki"
+  },
+  {
+   "action": "Wait Until Next Cooldown",
+   "character": "Mornye"
+  },
+  {
+   "action": "Echo Skill",
+   "character": "Hiyuki"
+  },
+  {
+   "action": "Wait Until Next Swap Is Available",
+   "character": "Mornye"
+  },
+  {
+   "action": "Wait Until Next Cooldown",
+   "character": "Hiyuki"
+  },
+  {
+   "action": "Echo Skill",
+   "character": "Lucila"
+  },
+  {
+   "action": "Echo Skill",
+   "character": "Mornye"
+  },
+  {
+   "action": "Wait Until Next Swap Is Available",
+   "character": "Hiyuki"
+  },
+  {
+   "action": "Wait Until Next Cooldown",
+   "character": "Mornye"
+  },
+  {
+   "action": "Echo Skill",
+   "character": "Hiyuki"
+  },
+  {
+   "action": "Echo Skill",
+   "character": "Mornye"
+  },
+  {
+   "action": "Wait Until Next Cooldown",
+   "character": "Hiyuki"
+  },
+  {
+   "action": "Wait Until Next Cooldown",
+   "character": "Mornye"
+  },
+  {
+   "action": "Echo Skill",
+   "character": "Hiyuki"
+  },
+  {
+   "action": "Echo Skill",
+   "character": "Lucila"
+  }
+ ]
+}

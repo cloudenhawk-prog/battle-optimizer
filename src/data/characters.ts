@@ -1,7 +1,8 @@
+// Character roster: base (unresolved) definitions and their gear-resolved versions used at startup.
 import type { ResolvedCharacter } from '../types/character'
 import type { Character } from '../types/character'
 import { mornye } from './characters/mornye'
-import { resolveCharacter } from '../utils/gear/resolveCharacter'
+import { resolveCharacter } from '../engine/gear/resolveCharacter'
 import { hiyuki } from './characters/hiyuki'
 import { lucila } from './characters/lucila'
 
