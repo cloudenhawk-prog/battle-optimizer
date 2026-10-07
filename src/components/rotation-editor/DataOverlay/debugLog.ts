@@ -25,7 +25,7 @@ export function logDataOverlayDiagnostics(snapshot: Snapshot | null, damageEvent
       const rePrefix = reEvalOk ? '  ' : '⚠️REEVAL avg>crit'
       console.log(
         rePrefix,
-        `  reEval(allContribs) avg:`, Math.round(reEval.avg),
+          '  reEval(allContribs) avg:', Math.round(reEval.avg),
         '| normal:', Math.round(reEval.normal),
         '| crit:', Math.round(reEval.crit),
       )

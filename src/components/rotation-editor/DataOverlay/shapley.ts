@@ -87,7 +87,6 @@ export function computeModifierShapley(
     const perm = [...nonNullKeys]
     for (let s = 0; s < SAMPLES; s++) {
       for (let i = perm.length - 1; i > 0; i--) {
-        // eslint-disable-next-line react-hooks/purity
         const j = Math.floor(Math.random() * (i + 1))
         ;[perm[i], perm[j]] = [perm[j], perm[i]]
       }

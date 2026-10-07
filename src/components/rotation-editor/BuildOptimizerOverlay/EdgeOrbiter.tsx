@@ -16,7 +16,7 @@ function roundedRectPath(x: number, y: number, w: number, h: number, r: number):
     `A ${cr} ${cr} 0 0 1 ${x} ${y + h - cr}`,
     `V ${y + cr}`,
     `A ${cr} ${cr} 0 0 1 ${x + cr} ${y}`,
-    `Z`,
+    'Z',
   ].join(' ')
 }
 

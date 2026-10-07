@@ -1,5 +1,5 @@
 // Per-row data overlay ("Resonance Field Analysis"): energy deltas, stats, damage pie/sources and modifier contributions
-import { useState, useMemo, useRef } from 'react'
+import { useState, useMemo, useRef, useEffect } from 'react'
 import { createPortal } from 'react-dom'
 import '../../../styles/rotation-editor/DataOverlay.css'
 import type { Snapshot } from '../../../types/snapshot'
@@ -120,12 +120,14 @@ export default function DataOverlay({ snapshot, previousSnapshot = null, startWi
 
   // ── DEBUG: dump event diagnostics when overlay opens ─────────────────────────────────────────────
   const _dbgPrevOpen = useRef(false)
-  if (open !== _dbgPrevOpen.current) {
-    _dbgPrevOpen.current = open
-    if (open && damageEvents.length > 0) {
-      logDataOverlayDiagnostics(snapshot, damageEvents, contribGroupKeys)
+  useEffect(() => {
+    if (open !== _dbgPrevOpen.current) {
+      _dbgPrevOpen.current = open
+      if (open && damageEvents.length > 0) {
+        logDataOverlayDiagnostics(snapshot, damageEvents, contribGroupKeys)
+      }
     }
-  }
+  }, [open, snapshot, damageEvents, contribGroupKeys])
   // ─────────────────────────────────────────────────────────────────────────────────────────────────
 
   if (!open || !snapshot) return null
