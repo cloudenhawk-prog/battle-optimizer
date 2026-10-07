@@ -1,0 +1,90 @@
+[
+ [
+  "<div class=\"actionSelectWrapper\">",
+  "<button class=\"actionSelectButton\" type=\"button\">",
+  "<span>Echo Skill</span>",
+  "<span class=\"actionSelectArrow\">▼</span>",
+  "</button>",
+  "</div>"
+ ],
+ [
+  "<div class=\"actionSelectWrapper\">",
+  "<button class=\"actionSelectButton\" type=\"button\">",
+  "<span>Echo Skill</span>",
+  "<span class=\"actionSelectArrow\">▼</span>",
+  "</button>",
+  "</div>"
+ ],
+ [
+  "<div class=\"actionSelectWrapper\">",
+  "<button class=\"actionSelectButton\" type=\"button\">",
+  "<span>Echo Skill</span>",
+  "<span class=\"actionSelectArrow\">▼</span>",
+  "</button>",
+  "</div>"
+ ],
+ [
+  "<div class=\"actionSelectWrapper\">",
+  "<button class=\"actionSelectButton\" type=\"button\">",
+  "<span>Echo Skill</span>",
+  "<span class=\"actionSelectArrow\">▼</span>",
+  "</button>",
+  "</div>"
+ ],
+ [
+  "<div class=\"actionSelectWrapper\">",
+  "<button class=\"actionSelectButton\" type=\"button\">",
+  "<span>Wait Until Next Swap Is Available</span>",
+  "<span class=\"actionSelectArrow\">▼</span>",
+  "</button>",
+  "</div>"
+ ],
+ [
+  "<div class=\"actionSelectWrapper\">",
+  "<button class=\"actionSelectButton\" type=\"button\">",
+  "<span>Wait Until Next Swap Is Available</span>",
+  "<span class=\"actionSelectArrow\">▼</span>",
+  "</button>",
+  "</div>"
+ ],
+ [
+  "<div class=\"actionSelectWrapper\">",
+  "<button class=\"actionSelectButton\" type=\"button\">",
+  "<span>Wait Until Next Swap Is Available</span>",
+  "<span class=\"actionSelectArrow\">▼</span>",
+  "</button>",
+  "</div>"
+ ],
+ [
+  "<div class=\"actionSelectWrapper\">",
+  "<button class=\"actionSelectButton\" type=\"button\">",
+  "<span>Echo Skill</span>",
+  "<span class=\"actionSelectArrow\">▼</span>",
+  "</button>",
+  "</div>"
+ ],
+ [
+  "<div class=\"actionSelectWrapper\">",
+  "<button class=\"actionSelectButton\" type=\"button\">",
+  "<span>Echo Skill</span>",
+  "<span class=\"actionSelectArrow\">▼</span>",
+  "</button>",
+  "</div>"
+ ],
+ [
+  "<div class=\"actionSelectWrapper\">",
+  "<button class=\"actionSelectButton\" type=\"button\">",
+  "<span>Wait Until Next Cooldown</span>",
+  "<span class=\"actionSelectArrow\">▼</span>",
+  "</button>",
+  "</div>"
+ ],
+ [
+  "<div class=\"actionSelectWrapper\">",
+  "<button class=\"actionSelectButton\" type=\"button\">",
+  "<span>-- Select Action --</span>",
+  "<span class=\"actionSelectArrow\">▼</span>",
+  "</button>",
+  "</div>"
+ ]
+]

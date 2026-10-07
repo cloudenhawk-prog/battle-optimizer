@@ -1,8 +1,8 @@
 import type { ModifierInAction } from '../src/types/modifiers'
 import type { DamageModifier } from '../src/types/modifiers'
 import type { SideEffect } from '../src/types/sideEffect'
-import { buildStepContext, resolveSideEffectsAndStatuses, resolveModifierState, resolveDamageModifiers } from '../src/utils/hooks/resolvers'
-import { calculateGlacioChafeProcDamage, calculateGlacioChafeDominionDamage } from '../src/utils/calculators/sideEffectCalculators'
+import { buildStepContext, resolveSideEffectsAndStatuses, resolveModifierState, resolveDamageModifiers } from '../src/engine/resolvers'
+import { calculateGlacioChafeProcDamage, calculateGlacioChafeDominionDamage } from '../src/engine/damage/sideEffectCalculators'
 import { createMockSnapshot, createMockCharacter, createMockCharacterStats, createMockAction, createMockEnemy, createMockDamageModifier } from './testUtils'
 
 // ========== Local Helpers ====================================================================================================

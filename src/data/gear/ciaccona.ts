@@ -1,5 +1,6 @@
+// Ciaccona's default gear (legacy hand-written echoes): Static Mist R3, Gusts of Welkin 5pc.
 import type { Echo, EchoSetBonus } from '../../types/gear'
-import { always } from '../../utils/conditions/damageModifierConditions'
+import { always } from '../helpers/modifierConditions'
 import { nightmareKelpieOutroTrigger } from '../sideEffects/sideEffects'
 import { weaponCatalog, buildWeapon } from './weaponCatalog'
 
@@ -68,6 +69,7 @@ const ciaccona_cost_3_echo_2: Echo = {
   info_icon: 'assets/gear/echoes/info_hurriclaw.png'
 }
 
+// NOTE: named 'Sacerdos' but uses Sagittario icons — likely meant to be Sagittario.
 const ciaccona_cost_1_echo_1: Echo = {
   name: 'Sacerdos',
   setName: 'Gusts of Welkin',

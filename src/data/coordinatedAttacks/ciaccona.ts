@@ -1,3 +1,4 @@
+// Ciaccona — coordinated attack summoned by her Liberation (hits periodically until she is swapped back in).
 import type { CoordinatedAttack } from '../../types/coordinatedAttack'
 
 export const ciaccona_singers_triple_cadenza_coordinated: CoordinatedAttack = {

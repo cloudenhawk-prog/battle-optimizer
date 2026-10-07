@@ -1,5 +1,6 @@
+// Lucila — shared modifiers: Clear As Day Basic ATK buff, Slow Motion Glacio RES debuff, Montage outro buff.
 import type { DamageModifier } from '../../types/modifiers'
-import { always } from '../../utils/conditions/damageModifierConditions'
+import { always } from '../helpers/modifierConditions'
 
 // ========== Liberation: Basic Attack DMG Buff (Clear As Day) =================================================================
 

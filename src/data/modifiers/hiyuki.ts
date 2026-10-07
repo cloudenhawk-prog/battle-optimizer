@@ -1,5 +1,6 @@
+// Hiyuki — shared modifiers (sequence buffs, outro buff, Snow Rust, inherent multipliers) referenced by her actions.
 import type { DamageModifier, InherentModifier } from '../../types/modifiers'
-import { always, atLeastOneStackOf, ownerAtLeast } from '../../utils/conditions/damageModifierConditions'
+import { always, atLeastOneStackOf, ownerAtLeast } from '../helpers/modifierConditions'
 
 // ========== S6 Liberation Inherent Modifier =================================================================================
 
@@ -13,7 +14,8 @@ export const liberation_s6_crit_dmg: InherentModifier = {
 // ========== S1 Basic Attack Multiplier ======================================================================================
 
 // S1: DMG Multipliers of Basic Attack - Foreclaimed Self are increased by 120%.
-// Modelled as a ×1.2 total multiplier since all Foreclaimed Self basic attacks
+// Modelled as a ×2.2 total DMG multiplier (1 + 120%), attached as an inherent modifier to every
+// Foreclaimed Self basic attack; the condition returns 0 (inactive) below S1.
 export const s1_foreclaimed_basic_multiplier: InherentModifier = {
   displayName: 'Foreclaimed BA: S1 Multiplier',
   characterStats: { totalMultiplierDMG: 2.2 },

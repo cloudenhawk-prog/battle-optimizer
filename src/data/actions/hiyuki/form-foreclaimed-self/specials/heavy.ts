@@ -1,3 +1,4 @@
+// Hiyuki — Foreclaimed Self form: Enhanced Heavy Attack "Bitterfrost: Foreclaimed Self".
 import type { Action } from '../../../../../types/action'
 import * as values from '../../values'
 

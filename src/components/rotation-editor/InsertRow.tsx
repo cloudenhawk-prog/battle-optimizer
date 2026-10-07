@@ -1,3 +1,4 @@
+// Edit Mode "+ Insert Step" slot between rotation rows.
 import '../../styles/rotation-editor/InsertRow.css'
 
 // ========== Component: Insert Row ============================================================================================

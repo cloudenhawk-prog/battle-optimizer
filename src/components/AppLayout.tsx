@@ -1,3 +1,4 @@
+// App shell: background layer, collapsible sidebar with its toggle button, and the main content column.
 import { useState, type ReactNode } from 'react'
 import Sidebar from './sidebar/Sidebar'
 import SidebarButton from './sidebar/SidebarButton'

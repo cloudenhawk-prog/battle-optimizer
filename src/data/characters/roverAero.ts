@@ -1,5 +1,6 @@
+// Rover (Aero) — character definition: kit, gear, sequences.
 import type { Character } from '../../types/character'
-import * as roverAeroActions from '../actions/roverAero'
+import * as roverAeroActions from '../actions/roverAero/actions'
 import { roverAero_cost_1_echo_1, roverAero_cost_1_echo_2, roverAero_cost_3_echo_1, roverAero_cost_3_echo_2, roverAero_cost_4_echo_1, roverAero_set_bonus, roverAero_weapon } from '../gear/roverAero'
 import { roverAero_inherentStats, roverAeroStats } from '../stats/roverAero'
 

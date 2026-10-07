@@ -1,5 +1,6 @@
+// Cartethyia forms: Cartethyia (base) and Fleurdelys (after Liberation), with their intro/outro actions.
 import type { Form } from '../../types/form'
-import { cartethyia_intro_outro_actions, fleurdelys_intro_outro_actions } from '../actions/cartethyia'
+import { cartethyia_intro_outro_actions, fleurdelys_intro_outro_actions } from '../actions/cartethyia/actions'
 
 export const form_cartethyia: Form = {
   name: 'Cartethyia',

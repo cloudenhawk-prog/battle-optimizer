@@ -1,3 +1,4 @@
+// Lucila — testing action that applies 26 Glacio Chafe instances at once.
 import type { Action } from '../../../../types/action'
 
 // Applies 26 independent instances of Glacio Chafe (stackChange: 26, applicationCount: 26).

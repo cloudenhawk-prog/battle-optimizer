@@ -1,3 +1,4 @@
+// Lucila — Default Form: Basic Attack "Snapshot" Stage 2.
 import type { Action } from '../../../../../types/action'
 import * as values from '../../values'
 

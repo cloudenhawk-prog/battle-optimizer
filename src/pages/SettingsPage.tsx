@@ -1,7 +1,8 @@
-// ========== Main Settings Page ===============================================================================================
-
+// Settings page: toggles for gameplay and debug settings, persisted via useSettings.
 import '../styles/SettingsPage.css'
 import { useSettings } from '../hooks/useSettings'
+
+// ========== Main Settings Page ===============================================================================================
 
 export default function SettingsPage() {
   const { settings, updateSetting } = useSettings()

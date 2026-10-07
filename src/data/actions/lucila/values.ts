@@ -1,3 +1,4 @@
+// Lucila — numeric kit constants (multipliers, energy, concerto, offtune, Traces / Film Roll, cast times).
 // ========== Default Form =====================================================================================================
 
 // BA Stage 1

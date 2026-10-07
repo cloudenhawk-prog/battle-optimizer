@@ -1,3 +1,4 @@
+// Hiyuki's default gear: Frostburn R5 and a Wishes of Quiet Snowfall echo set built from the catalogs.
 import { weaponCatalog, buildWeapon } from './weaponCatalog'
 import { buildEcho } from './echoCatalog'
 

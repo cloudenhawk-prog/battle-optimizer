@@ -1,4 +1,4 @@
-import { calculateDamage, mergeStats, mergeEnemyStats, calculateScalingStat, calculateBonusMultiplier, calculateAmplifyMultiplier, calculateTotalMultiplier } from '../src/utils/calculators/damageCalculator'
+import { calculateDamage, mergeStats, mergeEnemyStats, calculateScalingStat, calculateBonusMultiplier, calculateAmplifyMultiplier, calculateTotalMultiplier } from '../src/engine/damage/damageCalculator'
 import type { CharacterStats, EnemyStats } from '../src/types/stats'
 import { createMockCharacterStats, createMockEnemyStats, createMockAction, createMockEnemy, createMockDamageModifier, createMockDamageModifierList, buildAggregatedFromModifiers, buildAggregatedWithoutModifier, assertContributionMatches } from './testUtils'
 

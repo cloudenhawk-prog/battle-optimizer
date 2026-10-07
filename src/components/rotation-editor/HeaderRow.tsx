@@ -1,3 +1,4 @@
+// Rotation table column labels; clicking a column header hides that column.
 import '../../styles/rotation-editor/HeaderRow.css'
 import type { TableConfig, ColumnVisibility } from '../../types/tableDefinitions'
 

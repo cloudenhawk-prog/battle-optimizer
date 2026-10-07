@@ -1,3 +1,4 @@
+// Lucila — Default Form: Liberation "Clear As Day" (enters Reminiscence).
 import type { Action } from '../../../../../types/action'
 import * as values from '../../values'
 import { liberation_ba_dmg_buff } from '../../../../modifiers/lucila'

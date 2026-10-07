@@ -1,6 +1,7 @@
+// Side effects: extra damage/status procs fired by actions, triggers and echoes (Aero Erosion, Kelpie, Hiyuki, Lucila).
 import type { SideEffect } from '../../types/sideEffect'
-import { calculateAeroErosionSideEffectDamage, calculateGlacioChafeProcDamage, calculateGlacioChafeDominionDamage, calculateLucilaOblivionDamage } from '../../utils/calculators/sideEffectCalculators'
-import { removeNegativeStatusStacks } from '../../utils/modifications/statusModificationHelpers'
+import { calculateAeroErosionSideEffectDamage, calculateGlacioChafeProcDamage, calculateGlacioChafeDominionDamage, calculateLucilaOblivionDamage } from '../../engine/damage/sideEffectCalculators'
+import { removeNegativeStatusStacks } from '../helpers/statusModifications'
 
 // ========== Side Effects =====================================================================================================
 

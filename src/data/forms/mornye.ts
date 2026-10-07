@@ -1,5 +1,6 @@
+// Mornye forms: Baseline Mode and Wide Field Observation Mode (reset, with Relative Momentum, on swap-out).
 import type { Form } from '../../types/form'
-import { mornye_intro_outro_actions } from '../actions/mornye'
+import { mornye_intro_outro_actions } from '../actions/mornye/actions'
 
 export const form_baseline_mode: Form = {
   name: 'Baseline Mode',

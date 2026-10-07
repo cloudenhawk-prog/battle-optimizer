@@ -1,8 +1,4 @@
-/**
- * Static definitions for echo main stat options and substat pools.
- * Used by the echo picker to populate the stat editor when creating a custom echo.
- */
-
+// Echo main-stat options and substat pools used by the echo picker, plus buildBaseStats() for custom echoes.
 import type { CharacterStats } from '../../types/stats'
 
 // ========== Types ============================================================================================================

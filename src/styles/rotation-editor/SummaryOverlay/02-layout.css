@@ -1,0 +1,142 @@
+/* Summary overlay: 3-column layout, shared scrollbar, panel section headers and section groups */
+/* ═══════════════════════════════════════════════════════════
+   3-COLUMN LAYOUT
+   ═══════════════════════════════════════════════════════════ */
+
+.summaryColumns {
+  flex: 1;
+  min-height: 0;
+  display: flex;
+  flex-direction: row;
+  overflow: hidden;
+  position: relative;
+}
+
+.summaryColDivider {
+  width: 1px;
+  flex-shrink: 0;
+  background: rgba(255, 255, 255, 0.06);
+  align-self: stretch;
+}
+
+/* Shared scrollbar style */
+.summaryLeftPanel,
+.summaryCenterPanel,
+.summaryRightPanel {
+  overflow-y: auto;
+  scrollbar-width: thin;
+  scrollbar-color: rgba(100, 160, 255, 0.2) transparent;
+}
+.summaryLeftPanel::-webkit-scrollbar,
+.summaryCenterPanel::-webkit-scrollbar,
+.summaryRightPanel::-webkit-scrollbar { width: 4px; }
+.summaryLeftPanel::-webkit-scrollbar-thumb,
+.summaryCenterPanel::-webkit-scrollbar-thumb,
+.summaryRightPanel::-webkit-scrollbar-thumb { background: rgba(100, 160, 255, 0.2); border-radius: 2px; }
+
+/* ── Left panel ──────────────────────────────────────────── */
+.summaryLeftPanel {
+  width: var(--sum-side-col-width);
+  flex-shrink: 0;
+  padding: 0 22px;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  gap: 0;
+}
+
+/* Each half takes ~50% of the panel height, content anchored to the top */
+.summaryLeftHalf {
+  flex: 1;
+  min-height: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  padding: 22px 0 16px;
+  overflow-y: auto;
+  scrollbar-width: thin;
+  scrollbar-color: rgba(100, 160, 255, 0.2) transparent;
+}
+.summaryLeftHalf::-webkit-scrollbar { width: 4px; }
+.summaryLeftHalf::-webkit-scrollbar-thumb { background: rgba(100, 160, 255, 0.2); border-radius: 2px; }
+
+.summaryLeftHalfDivider {
+  flex-shrink: 0;
+  height: 1px;
+  background: rgba(255, 255, 255, 0.06);
+  margin: 0 -22px;
+}
+
+/* ── Center panel ────────────────────────────────────────── */
+.summaryCenterPanel {
+  flex: 1;
+  min-width: 0;
+  padding: 22px 24px 56px;
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
+}
+
+/* ── Right panel ─────────────────────────────────────────── */
+.summaryRightPanel {
+  width: var(--sum-side-col-width);
+  flex-shrink: 0;
+  padding: 24px 22px 56px;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+  gap: 0;
+}
+
+/* ── Panel section header — controls ALL 7 section labels ──
+       (DPS Efficiency, Damage Share, Contribution, Resonator
+       Breakdown, Field Time, Buff Coverage, Energy Generation) */
+.summaryPanelHeader {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-family: 'Orbitron', 'Courier New', monospace;
+  font-size: var(--sum-section-header-fs);
+  font-weight: 600;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  flex-shrink: 0;
+}
+
+.summaryPanelHeader.cyan   { color: rgba(100, 220, 255, 0.65); }
+.summaryPanelHeader.purple { color: rgba(180, 120, 255, 0.65); }
+.summaryPanelHeader.amber  { color: rgba(255, 190,  60, 0.70); }
+
+.summaryPanelHeaderDot {
+  width: var(--sum-section-dot-size);
+  height: var(--sum-section-dot-size);
+  border-radius: 50%;
+  flex-shrink: 0;
+}
+.summaryPanelHeaderDot.cyan   { background: rgba(100, 220, 255, 0.8); box-shadow: 0 0 6px rgba(100, 220, 255, 0.5); }
+.summaryPanelHeaderDot.purple { background: rgba(180, 120, 255, 0.8); box-shadow: 0 0 6px rgba(180, 120, 255, 0.5); }
+.summaryPanelHeaderDot.amber  { background: rgba(255, 190,  60, 0.8); box-shadow: 0 0 6px rgba(255, 190,  60, 0.5); }
+
+.summaryPanelHeaderLabel {
+  flex-shrink: 0;
+}
+
+.summaryPanelHeaderLine {
+  flex: 1;
+  height: 1px;
+  background: linear-gradient(to right, rgba(255, 255, 255, 0.07), transparent);
+}
+
+/* ── Section groups + flex spacer (side panels) ─────────── */
+.summarySectionGroup {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  flex-shrink: 0;
+}
+
+.summaryFlexSpacer {
+  flex: 1;
+  min-height: 12px;
+}
+

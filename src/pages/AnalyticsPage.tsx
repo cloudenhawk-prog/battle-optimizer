@@ -1,3 +1,4 @@
+// Analytics page (placeholder).
 // ========== Main Analytics Page ==============================================================================================
 
 export default function AnalyticsPage() {

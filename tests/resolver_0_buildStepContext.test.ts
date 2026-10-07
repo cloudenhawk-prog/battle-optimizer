@@ -1,4 +1,4 @@
-import { buildStepContext } from '../src/utils/hooks/resolvers'
+import { buildStepContext } from '../src/engine/resolvers'
 import { createMockSnapshot, createMockCharacter, createMockAction, createMockEnemy, createMockNegativeStatuses } from './testUtils'
 
 /**

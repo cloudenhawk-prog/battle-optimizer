@@ -1,3 +1,4 @@
+// Hiyuki — Present Self form: Enhanced Heavy Attack "Frost Splinter: Present Self" (spends Dedication).
 import type { Action } from '../../../../../types/action'
 import * as values from '../../values'
 

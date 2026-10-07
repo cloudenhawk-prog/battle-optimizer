@@ -1,3 +1,4 @@
+// Edit Mode "+ NEW STEP" row: character/action selects for a step pending insertion.
 import '../../styles/rotation-editor/EditModeRow.css'
 import type { EditModeEntry } from '../../types/editMode'
 import type { ResolvedCharacter } from '../../types/character'

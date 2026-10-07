@@ -1,3 +1,4 @@
+// Negative status definitions (Aero Erosion, Spectro Frazzle, Glacio Chafe): duration, stack caps and per-stack damage tables.
 import type { NegativeStatus } from '../types/negativeStatus'
 
 // ========== Negative Statuses ================================================================================================

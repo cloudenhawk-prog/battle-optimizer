@@ -1,4 +1,4 @@
-﻿
+// Hiyuki — Foreclaimed Self form: Basic Attack chains starting at stage 3 (BA3, BA3-4, BA3-5 and their cancels).
 import type { Action } from '../../../../../types/action'
 import * as values from '../../values'
 import { s1_foreclaimed_basic_multiplier } from '../../../../modifiers/hiyuki'
@@ -303,7 +303,6 @@ const hiyuki_foreclaimed_BA_3_4_cancel_with_swap: Action = {
   groupName: 'Foreclaimed: Basic Attack 3-4',
   variantName: 'Cancel With Swap',
 }
-
 
 // ========== BA3-5 ============================================================================================================
 

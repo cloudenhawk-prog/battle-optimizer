@@ -1,3 +1,4 @@
+// Floating button that toggles the topbar (currently not rendered anywhere).
 import '../../styles/topbar/TopbarButton.css'
 
 // ========== Component: Topbar Button =========================================================================================
