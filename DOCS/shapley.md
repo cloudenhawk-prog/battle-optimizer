@@ -1,3 +1,57 @@
+# Shapley Attribution
+
+## Implementation status — IMPORTANT: hybrid model, not full Shapley
+
+The spec further down describes a **full Shapley** game where base damage is not pre-assigned to anyone.
+The implementation (`splitEventByCharacter` in `src/engine/damage/contributionAttribution.ts`, used by the
+Rotation Summary "Contribution" pie and the per-character "Damage origin") does **not** do that. It is a
+**hybrid attribution model**:
+
+- Per damage event, the **caster is not a player**. They are pre-assigned the base damage `v(∅)`: the event
+  with no teammate buffs, but including the caster's own self buffs and inherent modifiers.
+- The players are the **external buffer characters** (all of one character's buffs grouped as one player).
+- **Shapley values split only the bonus** `v(N) − v(∅)` among those buffers. Efficiency still holds:
+  caster share + Σ buffer shares = event damage.
+- There is no `O` (environment) player; non-character dealers keep their own damage and are pooled as "Other".
+
+Worked example — base 100, B and C each a ×1.5 all-damage multiplier, total 100 × 1.5 × 1.5 = 225:
+
+| Model | A (dealer) | B (buff) | C (buff) |
+|---|---|---|---|
+| Hybrid (implemented) | 100 → 44.44% | 62.5 → 27.78% | 62.5 → 27.78% |
+| Full Shapley (spec below) | 158.3 → 70.37% | 33.3 → 14.81% | 33.3 → 14.81% |
+
+Hybrid answers *"who dealt the original damage, and who created the extra damage through buffs?"*.
+Full Shapley answers *"who deserves credit for the whole output, including synergy?"*.
+
+Note: the row detail's "Modifier Contributions" panel (`DataOverlay/shapley.ts`) is a different game again:
+players are individual modifiers (inherent and self buffs included), the base is "no modifiers at all", and
+percentages are relative to that base. Its numbers are not comparable to the summary pie.
+
+### Consideration: should we move to full Shapley?
+
+Open question, not decided. Points to weigh:
+
+- **What full Shapley does here.** The dealer is a veto player: without them the event deals 0, so every buff
+  is worthless alone. Full Shapley therefore hands the dealer a share of every buff's gain *and* of the
+  synergy between buffs. Supports shrink a lot (27.8% → 14.8% in the example), and the gap grows with more
+  buffers and more multiplicative stacking.
+- **For hybrid.** It matches how players reason about supports ("this buff added X damage"). Synergy between
+  buffers (the extra 25 above 50 + 50 in the example) is still split fairly among the buffers. The dealer's
+  number is a stable, intuitive "what they do on their own kit".
+- **For full Shapley.** It is the textbook fair allocation, symmetric in all characters, and matches the spec
+  below (including a first-class `O` player). It credits the dealer for enabling buff value, which hybrid
+  ignores entirely.
+- **Cost.** Compute is not a concern (≤ 3 characters + `O` = 16 coalitions per event). The real cost is
+  semantics: `v(S)` must be defined when the caster is absent (0 for their own events), the "Damage origin"
+  self % would rise sharply, and the summary UI goldens would change.
+- **Middle ground.** Keep hybrid as the default and offer full Shapley as a toggle on the Contribution pie,
+  labelled with the question each one answers, rather than replacing one with the other.
+
+---
+
+## Original spec (full Shapley)
+
 SHAPLEY ATTRIBUTION PROMPT (COMBAT SYSTEM)
 
 You are given a cooperative game modeling a single combat event involving up to 3 characters plus a fourth non-character entity representing environmental/system effects.

@@ -1,55 +1,34 @@
-/* Rotation table body rows: elemental tint, locked labels, delete button, highlight. */
+/* Rotation table body rows: character accent edge, portrait + name, action label, numbers, delete button, highlight. */
 /* ─── Row ─────────────────────────────────────────────────────── */
 
-/* Per-row elemental tint. Only on locked (non-last) rows.
-   Layered gradients:
-   1. left-edge accent — a narrow vivid streak on the far left
-   2. left-fade       — elemental color bleeds in ~30% then vanishes
-   3. top-shine       — very faint white highlight on the top edge (depth)
-   4. flat base tint  — uniform low-alpha backdrop */
+/* Locked rows: a 3px accent edge on the left plus a soft accent wash that fades out by ~40% of the width.
+   --ui-accent-raw is the character's team accent (set inline by BodyRow). */
 tr.tableBody:not(.lastRowClass) {
   background-image:
-    linear-gradient(90deg,
-      hsl(var(--el-primary, 0 0% 0%) / 0.30) 0px,
-      hsl(var(--el-primary, 0 0% 0%) / 0.30) 2px,
-      transparent 2px
-    ),
-    linear-gradient(90deg,
-      hsl(var(--el-primary, 0 0% 0%) / 0.13) 0%,
-      hsl(var(--el-primary, 0 0% 0%) / 0.06) 35%,
-      transparent 65%
-    ),
-    linear-gradient(180deg,
-      rgba(255,255,255, 0.025) 0%,
-      transparent 60%
-    ),
-    linear-gradient(
-      hsl(var(--el-primary, 0 0% 0%) / 0.06),
-      hsl(var(--el-primary, 0 0% 0%) / 0.06)
-    );
+    linear-gradient(90deg, hsl(var(--ui-accent-raw) / 0.75) 0 3px, transparent 3px),
+    linear-gradient(90deg, hsl(var(--ui-accent-raw) / 0.10), hsl(var(--ui-accent-raw) / 0.03) 40%, transparent 70%);
+  transition: background-color 0.12s;
+}
+
+tr.tableBody:not(.lastRowClass) td {
+  border-bottom: 1px solid var(--ui-row-line);
 }
 
 tr.tableBody:hover {
-  background: var(--tbl-row-hover-bg);
+  background-color: hsl(var(--ui-accent-raw) / 0.08);
   cursor: pointer;
 }
 
+/* Sticky selector row at the bottom */
 tr.lastRowClass td {
   position: sticky;
   bottom: 0;
   z-index: 2;
   background-color: var(--table-bg-solid);
-  /* Specular bottom shine — light source from below */
-  background-image:
-    linear-gradient(0deg,
-      rgba(255,255,255, 0.09) 0%,
-      rgba(255,255,255, 0.03) 50%,
-      transparent 100%
-    ),
-    linear-gradient(var(--tbl-last-row-bg), var(--tbl-last-row-bg));
-  box-shadow:
-    inset 0 -1px 0 rgba(255,255,255, 0.16),
-    inset 0  1px 0 var(--tbl-border);
+  background-image: linear-gradient(rgba(255, 255, 255, 0.03), rgba(255, 255, 255, 0.03));
+  border-top: 1px solid hsl(var(--ui-accent-raw) / 0.2);
+  padding-top: 10px;
+  padding-bottom: 10px;
 }
 
 
@@ -60,8 +39,8 @@ tr.lastRowClass td {
 }
 
 @keyframes highlightRow {
-  0%   { background-color: rgba(180, 255, 200, 0.12); }
-  60%  { background-color: rgba(200, 255, 215, 0.12); }
+  0%   { background-color: hsl(var(--ui-accent-raw) / 0.22); }
+  60%  { background-color: hsl(var(--ui-accent-raw) / 0.12); }
   100% { background-color: transparent; }
 }
 
@@ -70,36 +49,56 @@ tr.lastRowClass td {
 
 .tableCellBody {
   padding: var(--tbl-cell-pad);
-  font-size: var(--tbl-cell-size);
-  color: var(--tbl-cell-color);
   text-align: center;
   white-space: nowrap;
   position: relative;
+  font-family: var(--ui-font-number);
+  font-size: 0.9rem;
+  font-weight: 500;
+  font-variant-numeric: tabular-nums;
+  color: var(--ui-text-soft);
+}
+
+/* Character: portrait ring + name in the character's accent */
+.rowCharacter {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.rowCharacterName {
+  font-family: var(--ui-font-body);
+  font-size: 1.02rem;
+  font-weight: 700;
+  letter-spacing: 0.03em;
+  color: hsl(var(--ui-accent-raw));
+}
+
+.rowAction {
+  font-family: var(--ui-font-body);
+  font-size: 1rem;
+  font-weight: 600;
+  letter-spacing: 0.02em;
+  color: var(--ui-text);
 }
 
 
-/* ─── Selectors ────────────────────────────────────────────────── */
+/* ─── Selectors (character <select> / action dropdown button) ──── */
 
 .selectInput {
-  background: var(--tbl-sel-bg);
-  border: 1px solid var(--tbl-sel-border);
-  border-radius: var(--tbl-sel-radius);
+  background: var(--ui-well-bg);
+  border: 1px solid rgba(100, 120, 170, 0.25);
+  border-radius: 6px;
   padding: var(--tbl-sel-pad);
-  font-size: var(--tbl-sel-size);
-  color: var(--tbl-cell-color);
+  font-family: var(--ui-font-body);
+  font-size: 0.95rem;
+  font-weight: 600;
+  color: var(--ui-text);
 }
 
 .selectInput option {
-  color: var(--tbl-cell-color);
+  color: var(--ui-text);
   background-color: rgb(30, 30, 40);
-}
-
-.lockedSelectorText {
-  font-size: var(--tbl-sel-size);
-  color: var(--tbl-cell-color);
-  opacity: 0.65;
-  text-align: center;
-  white-space: nowrap;
 }
 
 

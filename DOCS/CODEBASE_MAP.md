@@ -187,7 +187,7 @@
 | `CharacterStateTracker.tsx` | Per-character card row above the table: shows portrait, active form badge, swap cooldown, energy bars, and clickable column-visibility toggles. Clicking a character portrait opens `CharacterProfileOverlay`. |
 | `CharacterProfileOverlay.tsx` | Full character stat sheet overlay. Shows resolved final stats with a per-source breakdown (base / weapon / echo / set bonus / passive modifiers / active runtime buffs). Uses `computeStatBreakdown.ts`. Renders via `createPortal`. |
 | `StatusTag.tsx` / `StatusTagGroup.tsx` | Individual status indicator chips (buff, debuff, negative-status icons with stack counts) and their grouped container used in `CurrentStateRow` and `BodyRow`. |
-| `DataOverlay.tsx` | Full-screen overlay opened when clicking a resolved row. Shows a pie-chart damage breakdown by event/type, per-modifier contribution table (normal / crit / average), and a combat overview panel. Renders via `createPortal`. |
+| `DataOverlay.tsx` | Full-screen overlay opened when clicking a resolved row. Left: energy-flow gauges + the acting character's stat tiles. Centre: impact dial beside the source ledger (by event or type), hit profile and per-hit log. Right: per-modifier Shapley contributions tinted by owner, with toggles that re-evaluate damage. Renders via `createPortal`. |
 | `StatusDetailPanel.tsx` | Expandable status detail panel inside `DataOverlay`; shows per-modifier contribution rows. |
 | `DamageTimeline.tsx` | Dual-view damage visualization below the table. **Timeline view**: action blocks and damage-event squares on horizontal character tracks. **Chart view**: line/area graph of cumulative damage or DPS over time. |
 
@@ -238,6 +238,22 @@
 
 ---
 
+## `src/styles/theme/` + `src/components/shared/ui/` — Shared look
+
+The visual language is taken from the Character Profile overlay; new panels should be built from these pieces
+instead of their own one-off styles.
+
+| File | Holds |
+|---|---|
+| `styles/theme/tokens.css` | Fonts, text tones, row/column hairlines, surfaces, and `--ui-accent-raw` (HSL triplet every primitive tints from) |
+| `styles/theme/primitives.css` | `ui-*` classes: overlay shell/header/columns, section header, stat rows, cards, chips, segmented toggle, header tabs, panel button, bars, readouts, portrait ring, tooltip, ring chart, tacet mark, plate (accent-spine feature card) |
+| `shared/ui/` | React wrappers: `SectionHeader`, `SegmentedToggle`, `HeaderTabs`, `Readout`, `PortraitRing`, `OrbitRings`, `RingChart` (concentric donut + bezel + centre slot), `TacetMark` (seeded mirror-symmetric crest; seed = character name so each resonator keeps one mark), `CornerAccents`, `CloseButton`, `accentVar()` |
+| `shared/elementColors.ts` | Element themes + `buildTeamAccents` / `getTeamAccent`: one colour per character, used by table, tracker, row detail and summary |
+
+Set the accent per panel with `style={accentVar(raw)}` (e.g. the acting character's team accent).
+
+---
+
 ## `src/styles/rotation-editor/` — Component CSS
 
 One CSS file per component. All scoped to the rotation editor page.
@@ -252,7 +268,8 @@ One CSS file per component. All scoped to the rotation editor page.
 | `CharacterSelect.css` | Character picker dropdown |
 | `ActionSelect.css` | Action picker dropdown and variant popup |
 | `CharacterStateTracker.css` | Character card row above table (also used by `CharacterProfileOverlay`) |
-| `DataOverlay.css` | Full-screen data overlay |
+| `DataOverlay.css` | Row data overlay (energy gauges, stat tiles, impact dial + source ledger, hit log, owner-tinted contributions) |
+| `SummaryOverlay/` | Rotation summary tabs: shell, overview dial + ledger, resonator plates, field-presence timeline, buff coverage groups |
 | `StatusDetailPanel.css` | Contribution panel inside `DataOverlay` |
 | `StatusTag.css` / `StatusTagGroup.css` | Status chip components |
 | `DamageTimeline.css` | Timeline/chart visualization |

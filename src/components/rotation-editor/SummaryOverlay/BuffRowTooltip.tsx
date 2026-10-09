@@ -4,6 +4,7 @@ import type { BuffUptimeEntry, ModifierDisplayInfo } from './summaryTypes'
 import { getElementColor } from './theme'
 import type { CharColor } from './theme'
 import { buffIconPath, formatDamage, formatTime } from './format'
+import { accentVar } from '../../shared/ui'
 
 // DamageModifier.targetStrategy → readable label
 const STRATEGY_LABELS: Record<string, string> = {
@@ -23,7 +24,6 @@ export function renderBuffRowTooltip(
   const ownerTheme = (entry.ownerCharacter ? charColorMap.get(entry.ownerCharacter) : null) ?? getElementColor(entry.ownerElement)
   const iconPath = buffIconPath(entry.displayName)
   const info = modifierInfoMap.get(entry.displayName)
-  const accentColor = ownerTheme.primary
 
   // Open upward when the row is in the bottom 40% of the viewport to stay visible
   const openUpward = rect.bottom > window.innerHeight * 0.6
@@ -32,54 +32,42 @@ export function renderBuffRowTooltip(
     : { top: `${rect.bottom + 6}px`, bottom: 'auto' }
 
   return createPortal(
-    <div
-      className="summaryBuffRowTooltip"
-      style={{
-        position: 'fixed',
-        right: `${window.innerWidth - rect.right}px`,
-        opacity: 1,
-        visibility: 'visible',
-        transform: 'none',
-        zIndex: 9999,
-        '--buff-tooltip-accent': accentColor,
-        ...posStyle,
-      } as React.CSSProperties}
-    >
+    <div className="ui-tooltip" style={{ position: 'fixed', right: `${window.innerWidth - rect.right}px`, zIndex: 9999, ...accentVar(ownerTheme.raw), ...posStyle }}>
       <div className="summaryBuffRowTooltipHeader">
         <img key={entry.key} src={iconPath} alt="" className="summaryBuffRowTooltipIcon" onError={e => { (e.currentTarget as HTMLImageElement).style.display = 'none' }} />
-        <span className="summaryBuffRowTooltipLabel" style={{ color: accentColor }}>{entry.displayName}</span>
+        <span className="ui-tooltip-title">{entry.displayName}</span>
       </div>
       <div className="summaryBuffRowTooltipCoverage">
         {entry.ownerCharacter && (
           <div className="summaryBuffRowTooltipStat">
             <span className="summaryBuffRowTooltipStatKey">Source</span>
-            <span className="summaryBuffRowTooltipStatVal" style={{ color: ownerTheme.primary }}>{entry.ownerCharacter}</span>
+            <span className="summaryBuffRowTooltipStatVal">{entry.ownerCharacter}</span>
           </div>
         )}
         {info?.targetStrategy && (
           <div className="summaryBuffRowTooltipStat">
             <span className="summaryBuffRowTooltipStatKey">Targets</span>
-            <span className="summaryBuffRowTooltipStatVal" style={{ color: accentColor }}>{STRATEGY_LABELS[info.targetStrategy] ?? info.targetStrategy}</span>
+            <span className="summaryBuffRowTooltipStatVal">{STRATEGY_LABELS[info.targetStrategy] ?? info.targetStrategy}</span>
           </div>
         )}
         <div className="summaryBuffRowTooltipStat">
           <span className="summaryBuffRowTooltipStatKey">Damage covered</span>
-          <span className="summaryBuffRowTooltipStatVal" style={{ color: accentColor }}>{formatDamage(entry.coveredDamage)}</span>
+          <span className="summaryBuffRowTooltipStatVal">{formatDamage(entry.coveredDamage)}</span>
         </div>
         <div className="summaryBuffRowTooltipStat">
           <span className="summaryBuffRowTooltipStatKey">First applied</span>
-          <span className="summaryBuffRowTooltipStatVal" style={{ color: accentColor }}>{formatTime(entry.firstAppliedAt)}</span>
+          <span className="summaryBuffRowTooltipStatVal">{formatTime(entry.firstAppliedAt)}</span>
         </div>
       </div>
       <div className="summaryBuffRowTooltipDivider" />
       <div className="summaryBuffRowTooltipStats">
         <div className="summaryBuffRowTooltipStat">
           <span className="summaryBuffRowTooltipStatKey">Coverage</span>
-          <span className="summaryBuffRowTooltipStatVal" style={{ color: accentColor }}>{entry.coveragePct.toFixed(1)}%</span>
+          <span className="summaryBuffRowTooltipStatVal">{entry.coveragePct.toFixed(1)}%</span>
         </div>
         <div className="summaryBuffRowTooltipStat">
           <span className="summaryBuffRowTooltipStatKey">Uptime</span>
-          <span className="summaryBuffRowTooltipStatVal" style={{ color: accentColor }}>{entry.timeUptimePct.toFixed(1)}%</span>
+          <span className="summaryBuffRowTooltipStatVal">{entry.timeUptimePct.toFixed(1)}%</span>
         </div>
       </div>
     </div>,

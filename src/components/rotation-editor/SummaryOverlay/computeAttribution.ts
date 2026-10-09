@@ -11,6 +11,8 @@ import { getBaseChar } from './rotationStats'
 /**
  * Computes per-character attributed damage for the Contribution pie (Pie 2).
  * See splitEventByCharacter (contributionAttribution.ts) for the Shapley algorithm details.
+ * IMPORTANT: hybrid model — each dealer keeps their unbuffed base damage and only the buff bonus is split by
+ * Shapley among buffers; it is not a full Shapley allocation across all characters.
  * Efficiency: Σ attributedDamage = grandTotal exactly.
  */
 export function computeContributionData(

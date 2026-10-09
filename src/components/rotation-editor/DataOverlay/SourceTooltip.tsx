@@ -1,5 +1,5 @@
 // Hover/pin tooltip for a damage-source row: hit count, dealer/target, per-hit and normal/crit split, or type share
-import { PIE_CHART_COLORS } from './damageMath'
+import { PIE_CHART_COLORS, formatDmgType } from './damageMath'
 import type { DisplayItem } from './DamageSourcesSection'
 
 export function SourceTooltip({ hoveredItem, view, totalDamage }: { hoveredItem: DisplayItem; view: 'events' | 'types'; totalDamage: number }) {
@@ -9,7 +9,7 @@ export function SourceTooltip({ hoveredItem, view, totalDamage }: { hoveredItem:
       style={{ '--tooltip-color': PIE_CHART_COLORS[hoveredItem.index % PIE_CHART_COLORS.length] } as React.CSSProperties}>
       <div className="dataTooltipAccent" style={{ background: `linear-gradient(to right, ${PIE_CHART_COLORS[hoveredItem.index % PIE_CHART_COLORS.length]}, transparent)` }} />
       <div className="dataTooltipTitle" style={{ color: PIE_CHART_COLORS[hoveredItem.index % PIE_CHART_COLORS.length] }}>
-        {hoveredItem.name}
+        {view === 'types' ? formatDmgType(hoveredItem.name) : hoveredItem.name}
       </div>
       <div className="dataTooltipDivider" />
       {view === 'events' &&

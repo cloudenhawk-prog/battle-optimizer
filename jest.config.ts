@@ -12,7 +12,7 @@ const config: Config = {
   moduleFileExtensions: ['ts', 'tsx', 'js', 'jsx'],
   moduleNameMapper: {
     '^@/(.*)$': '<rootDir>/src/$1',
-    '\\.css$': '<rootDir>/tests/stubs/styleStub.js',
+    '\\.css$': '<rootDir>/tests/stubs/styleStub.ts',
   },
   transform: {
     '^.+\\.tsx?$': ['ts-jest', { tsconfig: '<rootDir>/tests/tsconfig.jest.json' }],

@@ -110,38 +110,29 @@ thead.tableHeader {
 
 thead.tableHeader th,
 thead.tableHeader td {
-  /* Layer the semi-transparent overlay on top of the opaque card base so that    */
-  /* body rows scrolling behind the sticky header are fully occluded.             */
+  /* Opaque base so body rows scrolling behind the sticky header are fully occluded */
   background-color: var(--table-bg-solid);
-  background-image: linear-gradient(var(--tbl-header-bg), var(--tbl-header-bg));
-  box-shadow: var(--table-header-inset);
 }
 
-/* Shadow strip hanging below the sticky thead — the gradient div sits at the
-   bottom edge of the thead and paints into the scrollable tbody area.         */
+/* Soft shadow below the sticky header — only visible once rows scroll under it */
 thead.tableHeader::after {
   content: '';
   display: block;
   position: absolute;
   left: 0;
   right: 0;
-  bottom: -24px;
-  height: 24px;
-  background: linear-gradient(180deg,
-    rgba(0,0,0, 0.55) 0%,
-    rgba(0,0,0, 0.20) 60%,
-    transparent 100%
-  );
+  bottom: -14px;
+  height: 14px;
+  background: linear-gradient(180deg, rgba(0, 0, 0, 0.35), transparent);
   pointer-events: none;
   z-index: 3;
 }
 
 
-/* ─── Group separators (left border on first col of each group) ── */
+/* ─── Group separators (left hairline on the first column of each group, every row) ── */
 
 .charGroupHeader,
 .charGroupBody,
 .charGroupCell {
-  border-left: 1px solid var(--tbl-group-border);
+  border-left: 1px solid var(--ui-row-line);
 }
-

@@ -24,7 +24,6 @@ import '../../../styles/rotation-editor/CharacterStateTracker/02-state-badges.cs
 import '../../../styles/rotation-editor/CharacterStateTracker/03-energies.css'
 import '../../../styles/rotation-editor/CharacterStateTracker/04-gear-and-stats.css'
 import '../../../styles/rotation-editor/CharacterStateTracker/05-breakdown.css'
-import '../../../styles/rotation-editor/DataOverlay.css'
 import '../../../styles/rotation-editor/CharacterProfileOverlay/01-shell.css'
 import '../../../styles/rotation-editor/CharacterProfileOverlay/02-columns.css'
 import '../../../styles/rotation-editor/CharacterProfileOverlay/03-breakdown.css'
@@ -114,6 +113,7 @@ export function CharacterProfileOverlay({ characterName, character, snapshot, al
         aria-labelledby="charProfileTitle"
         style={{
           '--cpo-el-raw': elTheme.primary,
+          '--ui-accent-raw': elTheme.primary,
           boxShadow: `var(--table-shadow-inner), var(--table-shadow-main), var(--table-shadow-glow), 0 0 60px hsl(${elTheme.primary} / 0.1)`,
           border: `1px solid hsl(${elTheme.primary} / 0.2)`,
         } as React.CSSProperties}>

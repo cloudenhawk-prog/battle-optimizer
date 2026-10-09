@@ -1,0 +1,709 @@
+/* Shared UI primitives (ui-*): overlay shell, section headers, hairlines, stat rows, cards, chips, toggles, bars, readouts. */
+
+/* ===== Primitives ====================================================================================
+ *
+ *   ┌─ .ui-overlay-panel ─────────────────────────────── accent hairline ─┐
+ *   │ .ui-overlay-header   TITLE    readout │ readout │ readout       [x]  │
+ *   ├────────────┬────────────────────────────────────────┬──────────────┤
+ *   │ .ui-col    │  ───────── SECTION LABEL ─────────     │ .ui-col      │
+ *   │ stat rows  │  .ui-card / .ui-bar / .ui-segmented    │              │
+ *   └────────────┴────────────────────────────────────────┴──────────────┘
+ *
+ *  Everything tints from `--ui-accent-raw` (see tokens.css).
+ * ================================================================================================= */
+
+/* ═════════════════════════════════════════════════════════════
+ *  OVERLAY SHELL
+ * ═════════════════════════════════════════════════════════════ */
+
+.ui-overlay-backdrop {
+  position: fixed;
+  inset: 0;
+  z-index: 200;
+  background: rgba(25, 25, 30, 0.75);
+  backdrop-filter: blur(12px);
+}
+
+.ui-overlay-panel {
+  position: fixed;
+  inset: var(--ui-panel-inset);
+  z-index: 201;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  border-radius: var(--table-corner-radius);
+  background: var(--table-bg);
+  backdrop-filter: blur(12px);
+  border: 1px solid hsl(var(--ui-accent-raw) / 0.2);
+  box-shadow:
+    var(--table-shadow-inner),
+    var(--table-shadow-main),
+    0 0 60px hsl(var(--ui-accent-raw) / 0.1);
+  color: var(--ui-text);
+  user-select: none;
+  cursor: default;
+}
+
+/* Accent hairlines along the top and bottom edge */
+.ui-overlay-panel::before,
+.ui-overlay-panel::after {
+  content: '';
+  position: absolute;
+  left: 0;
+  right: 0;
+  height: 1px;
+  pointer-events: none;
+  z-index: 5;
+}
+.ui-overlay-panel::before { top: 0;    background: linear-gradient(90deg, transparent, hsl(var(--ui-accent-raw) / 0.6), transparent); }
+.ui-overlay-panel::after  { bottom: 0; background: linear-gradient(90deg, transparent, hsl(var(--ui-accent-raw) / 0.3), transparent); }
+
+.ui-overlay-header {
+  display: flex;
+  align-items: center;
+  gap: 28px;
+  padding: 14px 18px 14px 28px;
+  flex-shrink: 0;
+  background: linear-gradient(90deg, transparent, hsl(var(--ui-accent-raw) / 0.04));
+  border-bottom: 1px solid hsl(var(--ui-accent-raw) / 0.1);
+}
+
+.ui-overlay-title {
+  margin: 0;
+  font-family: var(--ui-font-display);
+  font-size: 1.15rem;
+  font-weight: 700;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  white-space: nowrap;
+  color: hsl(var(--ui-accent-raw));
+  text-shadow: 0 0 22px hsl(var(--ui-accent-raw) / 0.35);
+}
+
+.ui-overlay-header-end {
+  margin-left: auto;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.ui-overlay-body {
+  flex: 1;
+  min-height: 0;
+  display: flex;
+  overflow: hidden;
+  position: relative;
+}
+
+/* A panel column; consecutive columns get the accent divider */
+.ui-col {
+  display: flex;
+  flex-direction: column;
+  min-height: 0;
+  overflow-y: auto;
+  overflow-x: hidden;
+  padding: 26px 22px 30px;
+  gap: 26px;
+}
+.ui-col + .ui-col { border-left: 1px solid var(--ui-col-line); }
+
+/* ═════════════════════════════════════════════════════════════
+ *  ICON BUTTON (close / prev / next)
+ * ═════════════════════════════════════════════════════════════ */
+
+.ui-icon-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  background: transparent;
+  border: none;
+  border-radius: 4px;
+  padding: 4px 8px;
+  cursor: pointer;
+  line-height: 1;
+  color: hsl(var(--ui-accent-raw) / 0.7);
+  transition: background 0.2s, color 0.2s, opacity 0.2s;
+}
+.ui-icon-btn:hover:not(:disabled) { background: rgba(255, 255, 255, 0.07); color: hsl(var(--ui-accent-raw)); }
+.ui-icon-btn:disabled { opacity: 0.2; cursor: default; }
+.ui-icon-btn img { width: 22px; height: 22px; display: block; }
+
+.ui-pager {
+  display: inline-flex;
+  align-items: center;
+  gap: 2px;
+}
+.ui-pager-count {
+  min-width: 44px;
+  text-align: center;
+  font-family: var(--ui-font-mono);
+  font-size: 0.72rem;
+  letter-spacing: 0.06em;
+  color: hsl(var(--ui-accent-raw) / 0.55);
+}
+
+/* ═════════════════════════════════════════════════════════════
+ *  SECTION HEADER  ───── LABEL ─────
+ * ═════════════════════════════════════════════════════════════ */
+
+.ui-section-header {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  flex-shrink: 0;
+}
+
+.ui-section-header-line { flex: 1; height: 1px; }
+.ui-section-header-line:first-child { background: linear-gradient(90deg, hsl(var(--ui-accent-raw) / 0.3), transparent); }
+.ui-section-header-line:last-child  { background: linear-gradient(90deg, transparent, hsl(var(--ui-accent-raw) / 0.3)); }
+
+.ui-section-header-label {
+  font-family: var(--ui-font-display);
+  font-size: 0.82rem;
+  font-weight: 700;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  white-space: nowrap;
+  color: var(--ui-text-muted);
+}
+
+.ui-section-hint {
+  margin: -14px 0 0;
+  text-align: center;
+  font-family: var(--ui-font-body);
+  font-size: 0.9rem;
+  color: var(--ui-text-faint);
+}
+
+/* A section = header + body with consistent rhythm */
+.ui-section {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  flex-shrink: 0;
+}
+
+/* ═════════════════════════════════════════════════════════════
+ *  HAIRLINE
+ * ═════════════════════════════════════════════════════════════ */
+
+.ui-hairline {
+  height: 1px;
+  flex-shrink: 0;
+  border: none;
+  margin: 0;
+  background: linear-gradient(90deg, transparent, hsl(var(--ui-accent-raw) / 0.25), transparent);
+}
+
+/* ═════════════════════════════════════════════════════════════
+ *  STAT ROWS   LABEL ········· VALUE
+ * ═════════════════════════════════════════════════════════════ */
+
+.ui-stat-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 5px 0;
+  border-bottom: 1px solid var(--ui-row-line);
+}
+.ui-stat-row:last-child { border-bottom: none; }
+
+.ui-stat-label {
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  font-family: var(--ui-font-body);
+  font-size: 0.98rem;
+  font-weight: 500;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  color: var(--ui-text-muted);
+}
+
+.ui-stat-value {
+  flex-shrink: 0;
+  font-family: var(--ui-font-number);
+  font-size: 0.98rem;
+  font-weight: 650;
+  font-variant-numeric: tabular-nums;
+  letter-spacing: 0.01em;
+  color: hsl(var(--ui-accent-raw) / 0.9);
+}
+.ui-stat-value--plain { color: var(--ui-text); }
+.ui-stat-value--gain  { color: hsl(150 65% 62%); }
+.ui-stat-value--cost  { color: hsl(5 80% 66%); }
+
+/* Small uppercase sub-group label inside a list of stat rows */
+.ui-group-label {
+  margin-top: 6px;
+  padding-bottom: 3px;
+  font-family: var(--ui-font-display);
+  font-size: 0.62rem;
+  font-weight: 700;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: hsl(var(--ui-accent-raw) / 0.55);
+}
+
+/* ═════════════════════════════════════════════════════════════
+ *  CARDS
+ * ═════════════════════════════════════════════════════════════ */
+
+.ui-card {
+  position: relative;
+  border-radius: var(--ui-card-radius);
+  padding: 12px 14px;
+  background: hsl(var(--ui-accent-raw) / 0.04);
+  border: 1px solid hsl(var(--ui-accent-raw) / 0.12);
+}
+
+.ui-card--quiet {
+  background: rgba(20, 24, 36, 0.4);
+  border-color: rgba(60, 70, 90, 0.3);
+}
+
+/* ═════════════════════════════════════════════════════════════
+ *  CHIPS
+ * ═════════════════════════════════════════════════════════════ */
+
+.ui-chip {
+  display: inline-block;
+  padding: 1px 9px;
+  border-radius: 99px;
+  white-space: nowrap;
+  font-family: var(--ui-font-body);
+  font-size: 0.82rem;
+  font-weight: 600;
+  letter-spacing: 0.04em;
+  color: hsl(var(--ui-accent-raw));
+  background: hsl(var(--ui-accent-raw) / 0.12);
+  border: 1px solid hsl(var(--ui-accent-raw) / 0.35);
+}
+
+.ui-chip--muted {
+  color: var(--ui-text-muted);
+  background: rgba(30, 40, 60, 0.7);
+  border-color: rgba(80, 90, 110, 0.3);
+}
+
+/* ═════════════════════════════════════════════════════════════
+ *  SEGMENTED TOGGLE  [ A | B | C ]
+ * ═════════════════════════════════════════════════════════════ */
+
+.ui-segmented {
+  display: inline-flex;
+  gap: 2px;
+  padding: 2px;
+  border-radius: 6px;
+  background: var(--ui-well-bg);
+  border: 1px solid hsl(var(--ui-accent-raw) / 0.18);
+  flex-shrink: 0;
+}
+
+.ui-segmented-btn,
+.ui-toggle {
+  font-family: var(--ui-font-display);
+  font-size: 0.58rem;
+  font-weight: 700;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  padding: 5px 10px;
+  border-radius: 4px;
+  cursor: pointer;
+  white-space: nowrap;
+  transition: background 0.15s, color 0.15s, border-color 0.15s;
+}
+
+.ui-segmented-btn {
+  border: none;
+  background: transparent;
+  color: var(--ui-text-muted);
+}
+.ui-segmented-btn:hover { color: var(--ui-text); }
+.ui-segmented-btn.is-active {
+  background: hsl(var(--ui-accent-raw) / 0.16);
+  color: hsl(var(--ui-accent-raw));
+}
+
+/* Stand-alone on/off pill (e.g. "Zeros") */
+.ui-toggle {
+  background: transparent;
+  color: var(--ui-text-muted);
+  border: 1px solid rgba(80, 90, 110, 0.35);
+}
+.ui-toggle:hover { color: var(--ui-text); }
+.ui-toggle.is-active {
+  color: hsl(var(--ui-accent-raw));
+  background: hsl(var(--ui-accent-raw) / 0.1);
+  border-color: hsl(var(--ui-accent-raw) / 0.4);
+}
+
+/* Row of toggles under a section header */
+.ui-toolbar {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+
+/* Full-width accent button that opens / expands a panel (profile "Active Buffs", card "Action breakdown") */
+.ui-panel-btn {
+  width: 100%;
+  padding: 8px 0;
+  border-radius: 6px;
+  cursor: pointer;
+  font-family: var(--ui-font-display);
+  font-size: 0.62rem;
+  font-weight: 700;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: hsl(var(--ui-accent-raw) / 0.85);
+  background: hsl(var(--ui-accent-raw) / 0.07);
+  border: 1px solid hsl(var(--ui-accent-raw) / 0.25);
+  transition: background 0.15s, border-color 0.15s;
+}
+.ui-panel-btn:hover {
+  background: hsl(var(--ui-accent-raw) / 0.14);
+  border-color: hsl(var(--ui-accent-raw) / 0.45);
+}
+
+/* ═════════════════════════════════════════════════════════════
+ *  BARS
+ * ═════════════════════════════════════════════════════════════ */
+
+.ui-bar {
+  position: relative;
+  height: 4px;
+  border-radius: 99px;
+  overflow: hidden;
+  background: rgba(50, 65, 90, 0.4);
+}
+
+.ui-bar-fill {
+  height: 100%;
+  min-width: 2px;
+  border-radius: 99px;
+  background: hsl(var(--ui-accent-raw));
+  box-shadow: 0 0 6px hsl(var(--ui-accent-raw) / 0.4);
+  transition: width 0.3s ease;
+}
+
+/* ═════════════════════════════════════════════════════════════
+ *  READOUTS   LABEL / big value  (header strips, metric rows)
+ * ═════════════════════════════════════════════════════════════ */
+
+.ui-readouts {
+  display: flex;
+  align-items: stretch;
+  flex-wrap: wrap;
+  row-gap: 8px;
+}
+
+.ui-readout {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  gap: 3px;
+  padding: 0 22px;
+  min-width: 0;
+}
+.ui-readout:first-child { padding-left: 0; }
+.ui-readout + .ui-readout { border-left: 1px solid hsl(var(--ui-accent-raw) / 0.14); }
+
+.ui-readout-label {
+  font-family: var(--ui-font-display);
+  font-size: 0.56rem;
+  font-weight: 700;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  white-space: nowrap;
+  color: var(--ui-text-muted);
+}
+
+.ui-readout-value {
+  font-family: var(--ui-font-number);
+  font-size: 1.3rem;
+  font-weight: 700;
+  font-variant-numeric: tabular-nums;
+  line-height: 1.1;
+  white-space: nowrap;
+  color: var(--ui-text);
+}
+.ui-readout--accent .ui-readout-value {
+  color: hsl(var(--ui-accent-raw));
+  text-shadow: 0 0 18px hsl(var(--ui-accent-raw) / 0.3);
+}
+
+.ui-readout-unit {
+  margin-left: 2px;
+  font-size: 0.6em;
+  font-weight: 600;
+  letter-spacing: 0.04em;
+  color: var(--ui-text-muted);
+}
+
+/* ═════════════════════════════════════════════════════════════
+ *  PORTRAIT RING  (small circular character portrait)
+ * ═════════════════════════════════════════════════════════════ */
+
+.ui-portrait {
+  flex-shrink: 0;
+  width: var(--ui-portrait-size, 40px);
+  height: var(--ui-portrait-size, 40px);
+  border-radius: 50%;
+  object-fit: cover;
+  object-position: top;
+  background: hsl(var(--ui-accent-raw) / 0.06);
+  border: 1.5px solid hsl(var(--ui-accent-raw) / 0.45);
+  box-shadow: 0 0 14px hsl(var(--ui-accent-raw) / 0.18);
+}
+
+.ui-portrait--fallback {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  font-family: var(--ui-font-display);
+  font-size: calc(var(--ui-portrait-size, 40px) * 0.3);
+  font-weight: 700;
+  color: hsl(var(--ui-accent-raw));
+}
+
+/* ═════════════════════════════════════════════════════════════
+ *  ORBIT RINGS  (decorative concentric circles behind a centrepiece)
+ * ═════════════════════════════════════════════════════════════ */
+
+.ui-orbit-rings {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  overflow: visible;
+  pointer-events: none;
+}
+
+/* ═════════════════════════════════════════════════════════════
+ *  MISC
+ * ═════════════════════════════════════════════════════════════ */
+
+.ui-empty {
+  padding: 18px 8px;
+  text-align: center;
+  font-family: var(--ui-font-mono);
+  font-size: 0.72rem;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--ui-text-faint);
+}
+
+.ui-scroll {
+  overflow-y: auto;
+  scrollbar-width: thin;
+  scrollbar-color: rgba(80, 100, 130, 0.3) transparent;
+}
+
+/* ═════════════════════════════════════════════════════════════
+ *  TOOLTIP  (floating card; same look as the profile tooltip)
+ * ═════════════════════════════════════════════════════════════ */
+
+.ui-tooltip {
+  z-index: 300;
+  pointer-events: none;
+  min-width: 200px;
+  max-width: 340px;
+  padding: 10px 12px;
+  border-radius: 8px;
+  background: hsl(222 28% 9%);
+  border: 1px solid rgba(100, 120, 170, 0.28);
+  border-top: 2px solid hsl(var(--ui-accent-raw) / 0.7);
+  box-shadow: 0 8px 28px rgba(0, 0, 0, 0.75);
+  color: var(--ui-text);
+  font-family: var(--ui-font-body);
+  font-size: 0.95rem;
+  line-height: 1.45;
+}
+
+.ui-tooltip-title {
+  font-family: var(--ui-font-body);
+  font-size: 1.05rem;
+  font-weight: 700;
+  color: hsl(var(--ui-accent-raw));
+}
+
+/* ═════════════════════════════════════════════════════════════
+ *  HEADER TABS   OVERVIEW   FIELD PRESENCE   BUFF COVERAGE
+ *                ════◆════
+ * ═════════════════════════════════════════════════════════════ */
+
+.ui-tabs {
+  display: inline-flex;
+  align-items: stretch;
+  gap: 4px;
+  align-self: stretch;
+  margin: -14px 0;            /* reach the header edges so the underline sits on the divider */
+}
+
+.ui-tab {
+  position: relative;
+  padding: 0 16px;
+  border: none;
+  background: transparent;
+  cursor: pointer;
+  font-family: var(--ui-font-display);
+  font-size: 0.66rem;
+  font-weight: 700;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  white-space: nowrap;
+  color: var(--ui-text-muted);
+  transition: color 0.15s;
+}
+.ui-tab:hover { color: var(--ui-text); }
+
+.ui-tab::after {
+  content: '';
+  position: absolute;
+  left: 12px;
+  right: 12px;
+  bottom: -1px;
+  height: 2px;
+  background: linear-gradient(90deg, transparent, hsl(var(--ui-accent-raw)), transparent);
+  box-shadow: 0 0 10px hsl(var(--ui-accent-raw) / 0.6);
+  opacity: 0;
+  transform: scaleX(0.4);
+  transition: opacity 0.2s, transform 0.25s;
+}
+
+.ui-tab::before {
+  content: '';
+  position: absolute;
+  left: 50%;
+  bottom: -4px;
+  width: 6px;
+  height: 6px;
+  background: hsl(var(--ui-accent-raw));
+  transform: translateX(-50%) rotate(45deg) scale(0);
+  transition: transform 0.25s;
+  z-index: 1;
+}
+
+.ui-tab.is-active { color: hsl(var(--ui-accent-raw)); text-shadow: 0 0 14px hsl(var(--ui-accent-raw) / 0.45); }
+.ui-tab.is-active::after { opacity: 1; transform: scaleX(1); }
+.ui-tab.is-active::before { transform: translateX(-50%) rotate(45deg) scale(1); }
+
+/* ═════════════════════════════════════════════════════════════
+ *  TACET MARK  (seeded crest sigil, drawn in the accent)
+ * ═════════════════════════════════════════════════════════════ */
+
+.ui-tacet {
+  display: block;
+  flex-shrink: 0;
+  overflow: visible;
+  pointer-events: none;
+}
+
+.ui-tacet-spin {
+  transform-origin: 0 0;
+  animation: uiTacetSpin 60s linear infinite;
+}
+
+@keyframes uiTacetSpin {
+  to { transform: rotate(360deg); }
+}
+
+/* ═════════════════════════════════════════════════════════════
+ *  RING CHART  (concentric donuts + bezel + centre slot)
+ * ═════════════════════════════════════════════════════════════ */
+
+.ui-ring {
+  position: relative;
+  flex-shrink: 0;
+}
+
+.ui-ring-svg {
+  display: block;
+  overflow: visible;
+}
+
+.ui-ring-track {
+  fill: rgba(50, 65, 90, 0.18);
+}
+
+.ui-ring-tick {
+  stroke: hsl(var(--ui-accent-raw) / 0.14);
+  stroke-width: 1;
+}
+.ui-ring-tick.is-major { stroke: hsl(var(--ui-accent-raw) / 0.4); }
+
+.ui-ring-seg {
+  fill-opacity: 0.85;
+  stroke: rgba(8, 10, 18, 0.9);
+  stroke-width: 1;
+  cursor: pointer;
+  transition: fill-opacity 0.15s, d 0.2s ease;
+  animation: uiRingIn 0.6s ease both;
+}
+.ui-ring-seg.is-dim    { fill-opacity: 0.32; }
+.ui-ring-seg.is-active { fill-opacity: 1; filter: drop-shadow(0 0 8px currentColor); }
+
+@keyframes uiRingIn {
+  from { opacity: 0; }
+  to   { opacity: 1; }
+}
+
+.ui-ring-center {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  pointer-events: none;
+}
+
+/* ═════════════════════════════════════════════════════════════
+ *  PLATE  (feature card: accent spine on the left, clipped corner, faint sheen)
+ * ═════════════════════════════════════════════════════════════ */
+
+.ui-plate {
+  position: relative;
+  overflow: hidden;
+  padding: 16px 18px 16px 22px;
+  border-radius: 4px 18px 4px 4px;
+  background:
+    linear-gradient(115deg, hsl(var(--ui-accent-raw) / 0.09), transparent 42%),
+    rgba(14, 18, 28, 0.55);
+  border: 1px solid hsl(var(--ui-accent-raw) / 0.16);
+}
+
+.ui-plate::before {
+  content: '';
+  position: absolute;
+  left: 0;
+  top: 14px;
+  bottom: 14px;
+  width: 2px;
+  background: linear-gradient(180deg, transparent, hsl(var(--ui-accent-raw)), transparent);
+  box-shadow: 0 0 8px hsl(var(--ui-accent-raw) / 0.6);
+}
+
+/* Large faint crest in the plate's corner (put a TacetMark with this class inside) */
+.ui-plate-watermark {
+  position: absolute;
+  right: -34px;
+  top: 50%;
+  transform: translateY(-50%);
+  opacity: 0.16;
+}
+
+/* Small diamond bullet used in legends and labels */
+.ui-diamond {
+  display: inline-block;
+  flex-shrink: 0;
+  width: 7px;
+  height: 7px;
+  transform: rotate(45deg);
+  background: hsl(var(--ui-accent-raw));
+  box-shadow: 0 0 6px hsl(var(--ui-accent-raw) / 0.6);
+}

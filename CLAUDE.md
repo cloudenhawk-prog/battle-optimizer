@@ -34,6 +34,8 @@ types/                                Domain types only.
 - **Splitting a module**: `foo.ts` → `foo/` with focused files plus `foo/index.ts` re-exporting the
   public API, so importers don't change. Pure logic leaves components into sibling `.ts` files.
 - **Sections**: `// ========== Name ====...` separators (existing style). Style: no semicolons, single quotes.
+- **UI look**: build panels from `styles/theme/` (`ui-*` classes) and `components/shared/ui/`; tint with
+  `--ui-accent-raw`; character colours come from `getTeamAccent` (see CODEBASE_MAP "Shared look").
 
 ## Verify every change
 

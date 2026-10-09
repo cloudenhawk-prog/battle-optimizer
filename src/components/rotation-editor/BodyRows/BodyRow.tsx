@@ -3,7 +3,8 @@ import '../../../styles/rotation-editor/BodyRows.css'
 import type { Character } from '../../../types/character'
 import type { TableConfig, ColumnVisibility } from '../../../types/tableDefinitions'
 import type { Snapshot } from '../../../types/snapshot'
-import { getElementPrimary } from '../../shared/elementColors'
+import { getTeamAccent } from '../../shared/elementColors'
+import { PortraitRing } from '../../shared/ui'
 import { CharacterSelect } from '../CharacterSelect'
 import { ActionSelect } from '../ActionSelect'
 import { getLockedCharacters } from './lockedCharacters'
@@ -34,14 +35,10 @@ export function BodyRow({ snapshot, previousSnapshot, charactersInBattle, tableC
   // Only the last row is editable once a row has both a character and an action
   const isLocked = !isLastRow && !!character && !!action
 
-  // Elemental theming: derive the character's element and slot index, expose as CSS custom props
-  const charElement = character
-    ? charactersInBattle.find(c => c.name === character)?.element ?? null
-    : null
-  const charSlotIdx = character ? charactersInBattle.findIndex(c => c.name === character) : 0
-  const elPrimary = getElementPrimary(charElement, charSlotIdx)
-  const elStyle = charElement
-    ? ({ '--el-primary': elPrimary } as React.CSSProperties)
+  // Elemental theming: the character's team accent, exposed as CSS custom props for the row tint
+  const charData = character ? charactersInBattle.find(c => c.name === character) : undefined
+  const elStyle = charData
+    ? ({ '--el-primary': getTeamAccent(charactersInBattle, character), '--ui-accent-raw': getTeamAccent(charactersInBattle, character) } as React.CSSProperties)
     : undefined
 
   const lockedCharacters = getLockedCharacters(previousSnapshot, charactersInBattle, sandboxMode)
@@ -76,7 +73,10 @@ export function BodyRow({ snapshot, previousSnapshot, charactersInBattle, tableC
           </button>
         )}
         {isLocked ? (
-          <div className="lockedSelectorText">{character}</div>
+          <div className="rowCharacter">
+            <PortraitRing name={character} src={charData?.image} size={26} />
+            <span className="rowCharacterName">{character}</span>
+          </div>
         ) : (
           <CharacterSelect
             value={character}
@@ -92,7 +92,7 @@ export function BodyRow({ snapshot, previousSnapshot, charactersInBattle, tableC
       {/* Action select */}
       <td className="tableCellBody">
         {isLocked ? (
-          <div className="lockedSelectorText">{snapshot.resolvedDisplayName ?? charactersInBattle.find(c => c.name === character)?.actions.find(a => a.name === action)?.displayName ?? action}</div>
+          <div className="rowAction">{snapshot.resolvedDisplayName ?? charData?.actions.find(a => a.name === action)?.displayName ?? action}</div>
         ) : (
           <ActionSelect
             value={action}

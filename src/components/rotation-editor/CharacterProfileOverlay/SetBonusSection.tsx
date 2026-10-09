@@ -2,7 +2,7 @@
 import { motion } from 'framer-motion'
 import type { EchoSlots } from '../../../types/gear'
 import { computeEchoSetCounts, echoSetRegistry } from '../../../data/gear/echoSets'
-import { SectionHeader } from './Decorations'
+import { SectionHeader } from '../../shared/ui'
 import { assetPath, MUTED, FONT_MONO } from './theme'
 import { colorizeText } from './colorizeText'
 
@@ -21,7 +21,7 @@ export function SetBonusSection({ echoSlots, elColor }: { echoSlots: EchoSlots; 
     <div style={{ flex: 1, minHeight: 0, overflow: 'hidden auto', display: 'flex', flexDirection: 'column', paddingBottom: 0 }}>
       {activeSets.length > 0 ? (
         <motion.div initial={{ opacity: 0, x: 10 }} animate={{ opacity: 1, x: 0 }} transition={{ delay: 0.7 }} style={{ display: 'flex', flexDirection: 'column', gap: 16 }}>
-          <SectionHeader label="Set Bonus" elColor={elColor} />
+          <SectionHeader label="Set Bonus" />
 
           {activeSets.map(({ setName, count, registry }) => (
             <div key={setName} style={{ display: 'flex', flexDirection: 'column', gap: 6 }}>

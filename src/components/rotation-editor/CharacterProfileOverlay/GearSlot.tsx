@@ -1,6 +1,6 @@
 // One orbit slot (weapon or echo): icon/placeholder, hover glow, scan-frame brackets and type label
 import { motion, AnimatePresence } from 'framer-motion'
-import { CornerAccents } from './Decorations'
+import { CornerAccents } from '../../shared/ui'
 import { MUTED, FONT_DISPLAY, FONT_BODY } from './theme'
 
 // ========== Sub-component: Gear Slot (shared for weapon & echo) ==============================================================
@@ -61,7 +61,7 @@ export function GearSlot({ icon, primaryLabel, secondaryLabel, elColor, size, de
       </div>
 
       {/* Corner accents */}
-      {isClickable && <CornerAccents elColor={elColor} />}
+      {isClickable && <CornerAccents />}
 
       {/* Scan frame — targeting brackets animate in when the orbital particle passes this slot */}
       <AnimatePresence>

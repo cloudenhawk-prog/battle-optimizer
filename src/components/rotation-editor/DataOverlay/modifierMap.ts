@@ -46,14 +46,14 @@ export function buildModifierMap(characters: ResolvedCharacter[]): Map<string, M
 
 // ========== Contribution Metadata =============================================================================================
 
-export type ContribMeta = { source: string; displayName?: string; isInherent?: boolean }
+export type ContribMeta = { source: string; displayName?: string; isInherent?: boolean; ownerCharacter?: string | null }
 
 /** Contribution key → metadata, first occurrence wins. Built from ALL events so entries stay stable when sources toggle. */
 export function collectContribMeta(damageEvents: DamageEvent[]): Record<string, ContribMeta> {
   const metaMap: Record<string, ContribMeta> = {}
   for (const event of damageEvents) {
     for (const [key, contrib] of Object.entries(event.contributions)) {
-      if (!metaMap[key]) metaMap[key] = { source: contrib.source, displayName: contrib.displayName, isInherent: contrib.isInherent }
+      if (!metaMap[key]) metaMap[key] = { source: contrib.source, displayName: contrib.displayName, isInherent: contrib.isInherent, ownerCharacter: contrib.ownerCharacter }
     }
   }
   return metaMap

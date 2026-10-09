@@ -1,4 +1,4 @@
-// Data overlay final-stats panel: acting character's stats under the active buffs, plus enemy debuffs
+// Data overlay final-stats panel: acting character's stats under the active buffs as a tile grid, plus enemy debuffs
 import { useState, useMemo } from 'react'
 import type { Snapshot } from '../../../types/snapshot'
 import type { DamageEvent } from '../../../types/events'
@@ -8,6 +8,7 @@ import {
   ENEMY_DEBUFF_KEYS, FINAL_STAT_GROUPS, computeDisplayedStats,
   formatFinalStatLabel, formatFinalStatValue, getFinalStatValue, isFinalStatZero,
 } from './finalStats'
+import { SectionHeader } from '../../shared/ui'
 
 export function ActiveStatsSection({ damageEvents, activeContribs, contribGroupKeys, characters, snapshot }: {
   damageEvents: DamageEvent[]
@@ -45,19 +46,13 @@ export function ActiveStatsSection({ damageEvents, activeContribs, contribGroupK
   const visibleEnemyKeys = ENEMY_DEBUFF_KEYS.filter(key => !hideZero || (enemyDebuffStats[key] ?? 0) !== 0)
 
   return (
-    <div className="dataSectionGroup">
-      <div className="dataPanelHeader silver">
-        <div className="dataPanelHeaderDot silver" />
-        <span className="dataPanelHeaderLabel">
-          {actingChar ? `${actingChar.name} Stats` : 'Final Stats'}
-        </span>
-        <div className="dataPanelHeaderLine" />
-      </div>
+    <section className="ui-section">
+      <SectionHeader label={actingChar ? `${actingChar.name} Stats` : 'Final Stats'} />
 
-      <div className="dataContribFilterBar">
-        <span className="dataContribFilterLabel">Show:</span>
+      <div className="ui-toolbar">
         <button
-          className={`dataContribFilterBtn${!hideZero ? ' active cyan' : ''}`}
+          type="button"
+          className={`ui-toggle${!hideZero ? ' is-active' : ''}`}
           onClick={() => setHideZero(p => !p)}
           title={hideZero ? 'Show zero-value stats' : 'Hide zero-value stats'}>
           Zeros
@@ -65,40 +60,38 @@ export function ActiveStatsSection({ damageEvents, activeContribs, contribGroupK
       </div>
 
       {!finalStats ? (
-        <p className="dataEmptyMsg">No character stats available</p>
+        <div className="ui-empty">No character stats</div>
       ) : (
         <>
           {visibleCharGroups.map(group => (
-            <div key={group.label} className="dataActiveStatGroup">
-              <div className="dataActiveStatGroupLabel">{group.label}</div>
-              {group.keys.map(key => {
-                const val = getFinalStatValue(key, finalStats)
-                return (
-                  <div key={key} className="dataActiveStatRow">
-                    <span className="dataActiveStatLabel">{formatFinalStatLabel(key)}</span>
-                    <span className="dataActiveStatValue">{formatFinalStatValue(key, val)}</span>
+            <div key={group.label}>
+              <div className="ui-group-label">{group.label}</div>
+              <div className="dataStatGrid">
+                {group.keys.map(key => (
+                  <div key={key} className="dataStatTile">
+                    <span className="dataStatLabel">{formatFinalStatLabel(key)}</span>
+                    <span className="dataStatValue">{formatFinalStatValue(key, getFinalStatValue(key, finalStats))}</span>
                   </div>
-                )
-              })}
+                ))}
+              </div>
             </div>
           ))}
 
           {visibleEnemyKeys.length > 0 && (
-            <div className="dataActiveStatGroup">
-              <div className="dataActiveStatGroupLabel">Enemy Debuffs</div>
-              {visibleEnemyKeys.map(key => {
-                const val = enemyDebuffStats[key] ?? 0
-                return (
-                  <div key={key} className="dataActiveStatRow">
-                    <span className="dataActiveStatLabel">{formatFinalStatLabel(key)}</span>
-                    <span className="dataActiveStatValue coral">{(val * 100).toFixed(1)}%</span>
+            <div>
+              <div className="ui-group-label">Enemy Debuffs</div>
+              <div className="dataStatGrid">
+                {visibleEnemyKeys.map(key => (
+                  <div key={key} className="dataStatTile dataStatTile--debuff">
+                    <span className="dataStatLabel">{formatFinalStatLabel(key)}</span>
+                    <span className="dataStatValue">{((enemyDebuffStats[key] ?? 0) * 100).toFixed(1)}%</span>
                   </div>
-                )
-              })}
+                ))}
+              </div>
             </div>
           )}
         </>
       )}
-    </div>
+    </section>
   )
 }

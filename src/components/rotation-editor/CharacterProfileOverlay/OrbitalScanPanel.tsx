@@ -2,7 +2,7 @@
 import { motion, AnimatePresence } from 'framer-motion'
 import type { Echo, Weapon } from '../../../types/gear'
 import type { OrbitalScanItem } from './EquipmentOrbit'
-import { SectionHeader } from './Decorations'
+import { SectionHeader } from '../../shared/ui'
 import { assetPath, MUTED, FONT_MONO } from './theme'
 import { formatGearStats } from './statDisplay'
 import { colorizeText } from './colorizeText'
@@ -109,7 +109,7 @@ function EchoInfo({ echo, slot, elColor }: { echo: Echo; slot: number; elColor: 
 export function OrbitalScanPanel({ item, elColor }: { item: OrbitalScanItem | null; elColor: string }) {
   return (
     <div>
-      <SectionHeader label="Orbital Scan" elColor={elColor} />
+      <SectionHeader label="Orbital Scan" />
       <AnimatePresence mode="wait">
         {item === null ? (
           <motion.div

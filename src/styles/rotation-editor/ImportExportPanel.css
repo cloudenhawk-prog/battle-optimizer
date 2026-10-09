@@ -17,13 +17,14 @@
 
 /* ── Panel ───────────────────────────────────────────────── */
 .iePanel {
+  position: relative;
   background: var(--table-bg);
-  border: 1px solid var(--table-border);
+  border: 1px solid hsl(var(--ui-accent-raw) / 0.2);
   border-radius: var(--table-corner-radius);
   box-shadow:
     var(--table-shadow-inner),
     var(--table-shadow-main),
-    var(--table-shadow-glow);
+    0 0 60px hsl(var(--ui-accent-raw) / 0.1);
   width: min(480px, calc(100vw - 32px));
   max-height: calc(100vh - 64px);
   display: flex;
@@ -32,28 +33,43 @@
   user-select: none;
 }
 
+/* Accent hairline along the top edge (same as .ui-overlay-panel) */
+.iePanel::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 1px;
+  background: linear-gradient(90deg, transparent, hsl(var(--ui-accent-raw) / 0.6), transparent);
+  pointer-events: none;
+}
+
 /* ── Header ──────────────────────────────────────────────── */
 .ieHeader {
   display: flex;
   align-items: center;
   justify-content: space-between;
   padding: 16px 20px 14px;
-  border-bottom: 1px solid var(--table-border);
+  background: linear-gradient(90deg, transparent, hsl(var(--ui-accent-raw) / 0.04));
+  border-bottom: 1px solid hsl(var(--ui-accent-raw) / 0.1);
   flex-shrink: 0;
 }
 
 .ieTitle {
-  font-size: 0.78rem;
-  font-weight: 600;
-  letter-spacing: 0.12em;
-  color: var(--table-text-dim);
+  font-family: var(--ui-font-display);
+  font-size: 0.95rem;
+  font-weight: 700;
+  letter-spacing: 0.14em;
+  color: hsl(var(--ui-accent-raw));
+  text-shadow: 0 0 22px hsl(var(--ui-accent-raw) / 0.35);
   text-transform: uppercase;
 }
 
 .ieCloseBtn {
   background: none;
   border: none;
-  color: var(--table-text-subtle);
+  color: hsl(var(--ui-accent-raw) / 0.7);
   cursor: pointer;
   font-size: 0.85rem;
   padding: 2px 6px;
@@ -114,7 +130,7 @@
 /* ── Tab Strip ───────────────────────────────────────────── */
 .ieTabStrip {
   display: flex;
-  border-bottom: 1px solid var(--table-border);
+  border-bottom: 1px solid var(--ui-row-line);
   flex-shrink: 0;
 }
 
@@ -123,10 +139,11 @@
   background: none;
   border: none;
   border-bottom: 2px solid transparent;
-  color: var(--table-text-subtle);
-  font-size: 0.74rem;
-  font-weight: 500;
-  letter-spacing: 0.06em;
+  color: var(--ui-text-muted);
+  font-family: var(--ui-font-display);
+  font-size: 0.6rem;
+  font-weight: 700;
+  letter-spacing: 0.14em;
   padding: 9px 0;
   cursor: pointer;
   transition: color 0.15s, border-color 0.15s;
@@ -138,14 +155,15 @@
 }
 
 .ieTabActive {
-  color: var(--table-text);
-  border-bottom-color: rgba(100, 180, 255, 0.6);
+  color: hsl(var(--ui-accent-raw));
+  border-bottom-color: hsl(var(--ui-accent-raw) / 0.7);
 }
 
 /* ── Snippet Hint ────────────────────────────────────────── */
 .ieSnippetHint {
-  font-size: 0.72rem;
-  color: var(--table-text-subtle);
+  font-family: var(--ui-font-body);
+  font-size: 0.9rem;
+  color: var(--ui-text-faint);
   padding: 10px 20px 4px;
   line-height: 1.5;
   flex-shrink: 0;
@@ -162,16 +180,25 @@
   border-color: rgba(180, 140, 255, 0.5);
 }
 
-/* ── Section Labels ──────────────────────────────────────── */
+/* ── Section Labels ──  ───── LABEL ─────  (same as .ui-section-header) */
 .ieSectionLabel {
-  font-size: 0.65rem;
-  font-weight: 600;
-  letter-spacing: 0.1em;
-  color: var(--table-text-subtle);
-  padding: 12px 20px 6px;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  font-family: var(--ui-font-display);
+  font-size: 0.66rem;
+  font-weight: 700;
+  letter-spacing: 0.2em;
+  color: var(--ui-text-muted);
+  padding: 16px 20px 8px;
   text-transform: uppercase;
+  white-space: nowrap;
   flex-shrink: 0;
 }
+.ieSectionLabel::before,
+.ieSectionLabel::after { content: ''; flex: 1; height: 1px; }
+.ieSectionLabel::before { background: linear-gradient(90deg, hsl(var(--ui-accent-raw) / 0.3), transparent); }
+.ieSectionLabel::after  { background: linear-gradient(90deg, transparent, hsl(var(--ui-accent-raw) / 0.3)); }
 
 /* ── Saved List ──────────────────────────────────────────── */
 .ieSavedList {
@@ -205,8 +232,11 @@
 }
 
 .ieEmptyState {
-  font-size: 0.75rem;
-  color: var(--table-text-subtle);
+  font-family: var(--ui-font-mono);
+  font-size: 0.72rem;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--ui-text-faint);
   text-align: center;
   padding: 20px 0;
 }
@@ -223,8 +253,8 @@
 }
 
 .ieSavedItem:hover {
-  background: var(--table-hover-bg);
-  border-color: var(--table-border);
+  background: hsl(var(--ui-accent-raw) / 0.05);
+  border-color: hsl(var(--ui-accent-raw) / 0.15);
 }
 
 .ieSavedItemInfo {
@@ -235,16 +265,19 @@
 }
 
 .ieSavedName {
-  font-size: 0.82rem;
-  color: var(--table-text);
+  font-family: var(--ui-font-body);
+  font-size: 1.02rem;
+  font-weight: 700;
+  color: var(--ui-text);
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
 }
 
 .ieSavedMeta {
-  font-size: 0.68rem;
-  color: var(--table-text-subtle);
+  font-family: var(--ui-font-body);
+  font-size: 0.85rem;
+  color: var(--ui-text-muted);
 }
 
 .ieSavedActions {
@@ -263,11 +296,13 @@
 
 .ieSaveInput {
   flex: 1;
-  background: rgba(255, 255, 255, 0.05);
-  border: 1px solid var(--table-border);
+  background: var(--ui-well-bg);
+  border: 1px solid rgba(100, 120, 170, 0.25);
   border-radius: 6px;
-  color: var(--table-text);
-  font-size: 0.8rem;
+  color: var(--ui-text);
+  font-family: var(--ui-font-body);
+  font-size: 0.95rem;
+  font-weight: 600;
   padding: 6px 10px;
   outline: none;
   transition: border-color 0.15s;
@@ -278,7 +313,8 @@
 }
 
 .ieSaveInput:focus {
-  border-color: rgba(255, 255, 255, 0.22);
+  border-color: hsl(var(--ui-accent-raw) / 0.6);
+  box-shadow: 0 0 0 2px hsl(var(--ui-accent-raw) / 0.15);
 }
 
 /* ── File Row ────────────────────────────────────────────── */
@@ -290,15 +326,18 @@
 }
 
 /* ── Action Buttons ──────────────────────────────────────── */
+/* Same family as .ui-panel-btn: small Orbitron caps, tinted border */
 .ieActionBtn {
-  font-size: 0.74rem;
-  font-weight: 500;
-  letter-spacing: 0.03em;
-  padding: 5px 12px;
-  border-radius: 5px;
-  border: 1px solid var(--table-border);
-  background: rgba(255, 255, 255, 0.05);
-  color: var(--table-text-dim);
+  font-family: var(--ui-font-display);
+  font-size: 0.56rem;
+  font-weight: 700;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  padding: 7px 12px;
+  border-radius: 6px;
+  border: 1px solid rgba(100, 120, 170, 0.3);
+  background: rgba(255, 255, 255, 0.03);
+  color: var(--ui-text-soft);
   cursor: pointer;
   transition: background 0.13s, border-color 0.13s, color 0.13s;
   white-space: nowrap;
@@ -314,14 +353,17 @@
   cursor: not-allowed;
 }
 
-.ieActionBtnLoad {
-  border-color: rgba(100, 180, 255, 0.3);
-  color: hsl(210 80% 72%);
+.ieActionBtnLoad,
+.ieActionBtnFile {
+  border-color: hsl(var(--ui-accent-raw) / 0.25);
+  background: hsl(var(--ui-accent-raw) / 0.07);
+  color: hsl(var(--ui-accent-raw) / 0.85);
 }
 
-.ieActionBtnLoad:hover {
-  background: rgba(100, 180, 255, 0.1);
-  border-color: rgba(100, 180, 255, 0.5);
+.ieActionBtnLoad:hover,
+.ieActionBtnFile:hover:not(:disabled) {
+  background: hsl(var(--ui-accent-raw) / 0.14);
+  border-color: hsl(var(--ui-accent-raw) / 0.45);
 }
 
 .ieActionBtnSave {
@@ -365,6 +407,7 @@
 
 /* ── Ignore Cast Conditions Toggle ───────────────────── */
 .ieIgnoreConditionsRow {
+  font-family: var(--ui-font-body);
   display: flex;
   align-items: center;
   gap: 8px;

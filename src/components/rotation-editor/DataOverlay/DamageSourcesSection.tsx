@@ -1,10 +1,10 @@
-// Data overlay source list: per-action (or per-type) damage rows with pie cross-highlight, pinning and toggles
+// Data overlay source ledger: per-action (or per-type) damage rows with dial cross-highlight, pinning and swatch toggles
 import { useState, useRef } from 'react'
 import type { DamageEvent } from '../../../types/events'
-import { PIE_CHART_COLORS, aggregateDamageByType, aggregateEventsByName } from './damageMath'
+import { PIE_CHART_COLORS, aggregateDamageByType, aggregateEventsByName, formatDmgType } from './damageMath'
 import type { DamageMode } from './damageMath'
-import { DataRow } from './DataRow'
 import { SourceTooltip } from './SourceTooltip'
+import { SectionHeader } from '../../shared/ui'
 
 /** A source row; `index` is its position in the aggregated list (shared with the pie for highlighting). */
 export type DisplayItem = { name: string; damage: number; index: number; count?: number; events?: DamageEvent[]; event?: DamageEvent }
@@ -82,16 +82,12 @@ export function DamageSourcesSection({
   const displayedTotal = displayData.filter(item => isItemActive(item.name)).reduce((sum, item) => sum + item.damage, 0)
 
   return (
-    <div className="dataSectionGroup dataSourcesSection" onClick={handleClickAway}>
-      <div className="dataPanelHeader silver">
-        <div className="dataPanelHeaderDot silver" />
-        <span className="dataPanelHeaderLabel">{view === 'events' ? 'Damage Sources' : 'Damage Types'}</span>
-        <div className="dataPanelHeaderLine" />
-      </div>
+    <section className="ui-section dataSourcesSection" onClick={handleClickAway}>
+      <SectionHeader label={view === 'events' ? 'Damage Sources' : 'Damage Types'} />
 
       <div className="dataSourceRows">
         {damageEvents.length === 0 ? (
-          <p className="dataEmptyMsg">No damage sources detected</p>
+          <div className="ui-empty">No damage sources</div>
         ) : (
           displayData.map((item, index) => {
             const pct = displayedTotal > 0 ? (item.damage / displayedTotal) * 100 : 0
@@ -99,40 +95,38 @@ export function DamageSourcesSection({
             const isPinned = pinnedItem && pinnedItem.name === item.name && pinnedItem.index === index
             const isExternallyHighlighted = externalHighlightedIndex === index && hoveredItem?.index !== index && pinnedItem?.index !== index
             const count = 'count' in item ? item.count : undefined
-            const label = (
-              <>
-                {item.name}
-                {count !== undefined && count > 1 && <span className="dataCountBadge">×{count}</span>}
-              </>
-            )
+            const active = isItemActive(item.name)
+            // The swatch is the on/off switch: events → excluded from modifier contributions, types → hidden from the dial
+            const onToggle = view === 'events' ? onToggleSource : onToggleType
+            const toggleTitle = view === 'events'
+              ? (active ? 'Exclude from modifier contributions' : 'Include in modifier contributions')
+              : (active ? 'Hide this type from the dial' : 'Show this type in the dial')
             return (
               <div
                 key={index}
-                className={`dataSourceRow${isPinned ? ' pinned' : ''}${isExternallyHighlighted ? ' externalHighlight' : ''}${!isItemActive(item.name) ? ' inactive' : ''}`}
+                className={`dataSourceRow${isPinned ? ' pinned' : ''}${isExternallyHighlighted ? ' externalHighlight' : ''}${!active ? ' inactive' : ''}`}
+                style={{ '--source-color': pieColor } as React.CSSProperties}
                 onMouseEnter={() => handleMouseEnter({ ...item, index })}
                 onMouseLeave={handleMouseLeave}
                 onClick={e => {
                   e.stopPropagation()
                   handleClick({ ...item, index })
                 }}>
-                <div className="dataSourceRowInner">
-                  <DataRow label={label} value={`${item.damage.toFixed(0)} (${pct.toFixed(1)}%)`} barPct={pct} customColor={pieColor} />
-                  {view === 'events' && activeSources && onToggleSource && (
-                    <button
-                      className={`dataSourceToggle${activeSources.has(item.name) ? ' active' : ''}`}
-                      style={{ '--toggle-color': pieColor } as React.CSSProperties}
-                      title={activeSources.has(item.name) ? 'Exclude from buff contributions' : 'Include in buff contributions'}
-                      onClick={e => { e.stopPropagation(); onToggleSource(item.name) }}
-                    />
-                  )}
-                  {view === 'types' && activeTypes && onToggleType && (
-                    <button
-                      className={`dataSourceToggle${activeTypes.has(item.name) ? ' active' : ''}`}
-                      style={{ '--toggle-color': pieColor } as React.CSSProperties}
-                      title={activeTypes.has(item.name) ? 'Hide this type from pie chart' : 'Show this type in pie chart'}
-                      onClick={e => { e.stopPropagation(); onToggleType(item.name) }}
-                    />
-                  )}
+                <button
+                  type="button"
+                  className={`dataSourceSwatch${active ? ' active' : ''}`}
+                  title={toggleTitle}
+                  disabled={!onToggle}
+                  onClick={e => { e.stopPropagation(); onToggle?.(item.name) }}
+                />
+                <span className="dataSourceName">
+                  {view === 'types' ? formatDmgType(item.name) : item.name}
+                  {count !== undefined && count > 1 && <span className="dataCountBadge">×{count}</span>}
+                </span>
+                <span className="dataSourceValue">{Math.round(item.damage).toLocaleString('en-US')}</span>
+                <span className="dataSourcePct">{pct.toFixed(1)}%</span>
+                <div className="ui-bar dataSourceBar">
+                  <div className="ui-bar-fill" style={{ width: `${Math.min(pct, 100)}%`, background: pieColor, boxShadow: `0 0 6px ${pieColor}` }} />
                 </div>
               </div>
             )
@@ -144,6 +138,6 @@ export function DamageSourcesSection({
       {hoveredItem && showTooltip && (
         <SourceTooltip hoveredItem={hoveredItem} view={view} totalDamage={totalDamage} />
       )}
-    </div>
+    </section>
   )
 }

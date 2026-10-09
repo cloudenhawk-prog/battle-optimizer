@@ -53,24 +53,9 @@
  *  SECTION HEADER
  * ═════════════════════════════════════════════════════════════ */
 
-.cpo-section-header {
-  display: flex;
-  align-items: center;
-  gap: 12px;
-  margin-bottom: 16px;
-  flex-shrink: 0;
-}
-
-.cpo-section-header-line { flex: 1; height: 1px; }
-
-.cpo-section-header-label {
-  font-family: 'Orbitron', sans-serif;
-  font-size: var(--cpo-section-header-size);
-  font-weight: 700;
-  text-transform: uppercase;
-  letter-spacing: 0.2em;
-  color: hsl(210 15% 50%);
-}
+/* Shared .ui-section-header, sized for the profile */
+.charProfilePanel .ui-section-header { margin-bottom: 16px; }
+.charProfilePanel .ui-section-header-label { font-size: var(--cpo-section-header-size); }
 
 /* ═════════════════════════════════════════════════════════════
  *  STAT ROWS

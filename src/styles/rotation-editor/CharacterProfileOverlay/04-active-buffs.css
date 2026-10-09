@@ -7,7 +7,7 @@
 .abp { background: hsl(222 25% 9%); }
 
 .abp .charStatBreakdownTitle   { font-size: var(--abp-header-size); }
-.abp .cpo-section-header-label { font-size: var(--abp-subheader-size); }
+.abp .ui-section-header-label { font-size: var(--abp-subheader-size); }
 
 /* ═════════════════════════════════════════════════════════════
  *  ABP — LAYOUT

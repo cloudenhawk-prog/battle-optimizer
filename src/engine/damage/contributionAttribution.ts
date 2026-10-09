@@ -11,6 +11,13 @@ import type { DamageEvent } from '../../types/events'
  * - Fallback (no calcParams): sums pre-computed per-modifier average_damage_contributed values.
  *
  * Efficiency property: casterShare + Σ externalByOwner = event.average exactly.
+ *
+ * IMPORTANT — this is a HYBRID attribution model, not a full Shapley allocation across all characters.
+ * The caster is not a player: they are pre-assigned the base damage v(∅) (incl. their own self/inherent buffs),
+ * and Shapley values only split the bonus v(N) − v(∅) among the external buffers.
+ * Example: base 100, B and C each ×1.5 → 225 total. Hybrid: A 100 / B 62.5 / C 62.5 (44.4% / 27.8% / 27.8%).
+ * Full Shapley (caster as a player) would give A 158.3 / B 33.3 / C 33.3 (70.4% / 14.8% / 14.8%).
+ * Whether to move to full Shapley is an open question — see DOCS/shapley.md "Implementation status".
  */
 export function splitEventByCharacter(
   event: DamageEvent,

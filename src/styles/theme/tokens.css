@@ -1,0 +1,46 @@
+/* Design tokens shared by every panel: fonts, text tones, hairlines, surfaces and the accent hook. */
+
+@import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@400;500;600;700;900&family=Rajdhani:wght@300;400;500;600;700&family=Share+Tech+Mono&display=swap');
+
+/* ===== Theme Tokens ==================================================================================
+ *
+ *  The look is distilled from the Character Profile overlay: a calm dark-navy glass panel, ONE accent
+ *  colour (the element of whoever the panel is about), 1px hairlines that fade out at both ends,
+ *  centred Orbitron section labels and Rajdhani text with bold tabular numbers.
+ *
+ *  Accent: set `--ui-accent-raw` (space-separated HSL, e.g. `200 100% 70%`) on any container and
+ *  every primitive inside it (headers, cards, bars, toggles) re-tints. Use it as
+ *  `hsl(var(--ui-accent-raw) / <alpha>)`.
+ *
+ * ================================================================================================= */
+
+:root {
+  /* ══ ACCENT ═══════════════════════════════════════════════════ */
+  --ui-accent-raw:        205 80% 68%;      /* neutral team accent; overlays override per element */
+
+  /* ══ FONTS ════════════════════════════════════════════════════ */
+  --ui-font-display:      'Orbitron', sans-serif;               /* titles, section labels, toggles   */
+  --ui-font-body:         'Rajdhani', 'Segoe UI', sans-serif;   /* labels, names, descriptions       */
+  --ui-font-mono:         'Share Tech Mono', monospace;         /* tiny meta only (counters, ids)    */
+  --ui-font-number:       system-ui, -apple-system, 'Segoe UI', sans-serif;  /* stat values       */
+
+  /* ══ TEXT TONES ═══════════════════════════════════════════════ */
+  --ui-text:              hsl(220 30% 92%);
+  --ui-text-soft:         rgba(175, 185, 210, 0.85);   /* descriptions, secondary values          */
+  --ui-text-label:        rgba(140, 155, 190, 0.85);   /* row labels                              */
+  --ui-text-muted:        hsl(210 15% 50%);            /* section labels, units                   */
+  --ui-text-faint:        rgba(130, 145, 175, 0.5);    /* hints, empty states                     */
+
+  /* ══ LINES ════════════════════════════════════════════════════ */
+  --ui-row-line:          rgba(50, 70, 100, 0.2);      /* divider between stat rows               */
+  --ui-col-line:          hsl(var(--ui-accent-raw) / 0.1);  /* divider between panel columns      */
+
+  /* ══ SURFACES ═════════════════════════════════════════════════ */
+  --ui-well-bg:           rgba(8, 11, 20, 0.45);       /* inset areas (bar tracks, inputs)        */
+  --ui-card-radius:       8px;
+  --ui-panel-inset:       40px;                         /* overlay distance from viewport edge     */
+}
+
+@media (max-width: 1023px) {
+  :root { --ui-panel-inset: 16px; }
+}

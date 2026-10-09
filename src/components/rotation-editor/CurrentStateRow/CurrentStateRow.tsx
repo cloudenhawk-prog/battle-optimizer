@@ -21,11 +21,10 @@ export function CurrentStateRow({ snapshot, firstFromTime, tableConfig, columnVi
 
   return (
     <tr className="currentStateRow">
-        {/* Character */}
-        <td className="currentStateCell"></td>
-
-        {/* Action */}
-        <td className="currentStateCell"></td>
+        {/* Character + Action: row label */}
+        <td className="currentStateCell currentStateLabelCell" colSpan={2}>
+          <span className="currentStateLabel">Rotation total</span>
+        </td>
 
         {/* Basic columns */}
         {tableConfig.basic.columns.map(col => {

@@ -1,11 +1,11 @@
-// Pure damage math for the data overlay: per-mode event damage, totals, name/type aggregation and pie slice paths
+// Pure damage math for the data overlay: per-mode event damage, totals and name/type aggregation
 import type { DamageEvent } from '../../../types/events'
 import type { Snapshot } from '../../../types/snapshot'
 
 /** Which damage figure the overlay displays. */
 export type DamageMode = 'average' | 'normal' | 'crit'
 
-// Pie chart colors — tuned to match the cyan/amber/purple palette of the SummaryOverlay
+// Source colours (impact dial, source ledger, hit log) — cyan/amber/violet/teal/coral
 export const PIE_CHART_COLORS = [
   'rgba(100, 220, 255, 0.75)', // cyan
   'rgba(255, 190,  60, 0.75)', // amber
@@ -13,6 +13,11 @@ export const PIE_CHART_COLORS = [
   'rgba(100, 220, 175, 0.75)', // teal
   'rgba(255, 130, 100, 0.75)', // coral
 ]
+
+/** Damage types are stored as SCREAMING_SNAKE ids; "NEGATIVE_STATUS" → "Negative Status". */
+export function formatDmgType(type: string): string {
+  return type.replace(/_/g, ' ').toLowerCase().replace(/\b\w/g, c => c.toUpperCase())
+}
 
 // ========== Event Damage ====================================================================================================
 
@@ -69,34 +74,4 @@ export function aggregateDamageByType(damageEvents: DamageEvent[], mode: DamageM
   return Array.from(typeMap.entries())
     .map(([type, damage]) => ({ name: type, damage }))
     .sort((a, b) => b.damage - a.damage)
-}
-
-// ========== Pie Slices ======================================================================================================
-
-/** Classic pie wedges (centre 100,100, radius 90), starting at 12 o'clock and going clockwise. */
-export function calculatePieSlices(damageValues: number[], colors: string[]) {
-  const total = damageValues.reduce((sum, val) => sum + val, 0)
-  let cumulativePercent = 0
-
-  return damageValues.map((damage, index) => {
-    const percent = (damage / total) * 100
-    const angle = (percent / 100) * 360
-    const startAngle = (cumulativePercent / 100) * 360
-    const rad = (deg: number) => (deg * Math.PI) / 180
-
-    const x1 = 100 + 90 * Math.cos(rad(startAngle - 90))
-    const y1 = 100 + 90 * Math.sin(rad(startAngle - 90))
-    const x2 = 100 + 90 * Math.cos(rad(startAngle + angle - 90))
-    const y2 = 100 + 90 * Math.sin(rad(startAngle + angle - 90))
-    const largeArc = angle > 180 ? 1 : 0
-
-    const path = `M 100 100 L ${x1} ${y1} A 90 90 0 ${largeArc} 1 ${x2} ${y2} Z`
-
-    cumulativePercent += percent
-
-    return {
-      path,
-      color: colors[index % colors.length],
-    }
-  })
 }

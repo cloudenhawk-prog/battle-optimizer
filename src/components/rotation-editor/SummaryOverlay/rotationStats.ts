@@ -44,3 +44,19 @@ export function countLiberations(characters: Character[], snapshots: Snapshot[])
   }
   return libCountMap
 }
+
+export type FieldSegment = { character: string; action: string; from: number; to: number }
+
+/** One segment per action row (who was on field, doing what, when), timed from the first action's start. */
+export function computeFieldSegments(snapshots: Snapshot[]): FieldSegment[] {
+  const first = snapshots.find(s => s.action)
+  if (!first) return []
+  return snapshots
+    .filter(s => s.character && s.action)
+    .map(s => ({
+      character: s.character!,
+      action: s.resolvedDisplayName ?? s.action!,
+      from: s.fromTime - first.fromTime,
+      to: s.toTime - first.fromTime,
+    }))
+}

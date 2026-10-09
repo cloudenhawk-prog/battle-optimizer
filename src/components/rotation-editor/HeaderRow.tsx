@@ -19,7 +19,7 @@ export function HeaderRow({ tableConfig, columnVisibility, setColumnVisibility }
         <th className="tableCellHeader">
           <div className="header-cell-content">
             <IconRenderer icon={'assets/table/character.png'} alt={'Character'} />
-            <span>Character</span>
+            <span className="header-label">Character</span>
           </div>
         </th>
 
@@ -27,7 +27,7 @@ export function HeaderRow({ tableConfig, columnVisibility, setColumnVisibility }
         <th className="tableCellHeader">
           <div className="header-cell-content">
             <IconRenderer icon={'assets/table/action.png'} alt={'Action'} />
-            <span>Action</span>
+            <span className="header-label">Action</span>
           </div>
         </th>
 
@@ -38,7 +38,7 @@ export function HeaderRow({ tableConfig, columnVisibility, setColumnVisibility }
             <th key={col.key} className="tableCellHeader" onClick={() => setColumnVisibility(prev => ({ ...prev, [col.key]: !prev[col.key] }))}>
               <div className="header-cell-content">
                 <IconRenderer icon={col.icon} alt={col.label} />
-                <span>{col.label}</span>
+                <span className="header-label">{col.label}</span>
               </div>
             </th>
           )
@@ -78,7 +78,7 @@ function renderColumns(
         <th key={col.key} className={className} onClick={() => setColumnVisibility(prev => ({ ...prev, [col.key]: !prev[col.key] }))}>
           <div className="header-cell-content">
             <IconRenderer icon={col.icon} alt={col.label} />
-            <span>{col.label}</span>
+            <span className="header-label">{col.label}</span>
           </div>
         </th>
       )

@@ -1,68 +1,37 @@
 // Summary overlay colour themes: element colours, per-character colour variants and damage-type palettes
 import { negativeStatuses } from '../../../data/negativeStatuses'
 import type { Character } from '../../../types/character'
+import { buildTeamAccents } from '../../shared/elementColors'
+
+/** `raw` is the bare HSL triplet, for `--ui-accent-raw`. */
+export type CharColor = { primary: string; glow: string; bg: string; label: string; raw: string }
 
 // ========== Element Themes ==================================================================================================
 
-const ELEMENT_COLORS: Record<string, { primary: string; glow: string; bg: string; label: string }> = {
-  AERO:     { primary: 'hsl(160 80% 55%)',  glow: 'hsl(160 80% 55% / 0.35)', bg: 'hsl(160 40% 8%)',  label: 'Aero'    },
-  SPECTRO:  { primary: 'hsl(45 90% 62%)',   glow: 'hsl(45 90% 62% / 0.35)',  bg: 'hsl(45 50% 8%)',   label: 'Spectro' },
-  HAVOC:    { primary: 'hsl(270 80% 65%)',  glow: 'hsl(270 80% 65% / 0.35)', bg: 'hsl(270 40% 8%)',  label: 'Havoc'   },
-  ELECTRO:  { primary: 'hsl(292 82% 70%)',  glow: 'hsl(292 82% 70% / 0.35)', bg: 'hsl(292 50% 8%)',  label: 'Electro' },
-  GLACIO:   { primary: 'hsl(200 80% 67%)',  glow: 'hsl(200 80% 67% / 0.35)', bg: 'hsl(200 50% 8%)',  label: 'Glacio'  },
-  FUSION:   { primary: 'hsl(15 90% 62%)',   glow: 'hsl(15 90% 62% / 0.35)',  bg: 'hsl(15 50% 8%)',   label: 'Fusion'  },
-  '':       { primary: 'hsl(220 15% 60%)',  glow: 'hsl(220 15% 60% / 0.3)',  bg: 'hsl(220 15% 8%)',  label: '—'       },
+const ELEMENT_COLORS: Record<string, CharColor> = {
+  AERO:     { primary: 'hsl(160 80% 55%)',  glow: 'hsl(160 80% 55% / 0.35)', bg: 'hsl(160 40% 8%)',  label: 'Aero', raw: '160 80% 55%'    },
+  SPECTRO:  { primary: 'hsl(45 90% 62%)',   glow: 'hsl(45 90% 62% / 0.35)',  bg: 'hsl(45 50% 8%)',   label: 'Spectro', raw: '45 90% 62%' },
+  HAVOC:    { primary: 'hsl(270 80% 65%)',  glow: 'hsl(270 80% 65% / 0.35)', bg: 'hsl(270 40% 8%)',  label: 'Havoc', raw: '270 80% 65%'   },
+  ELECTRO:  { primary: 'hsl(292 82% 70%)',  glow: 'hsl(292 82% 70% / 0.35)', bg: 'hsl(292 50% 8%)',  label: 'Electro', raw: '292 82% 70%' },
+  GLACIO:   { primary: 'hsl(200 80% 67%)',  glow: 'hsl(200 80% 67% / 0.35)', bg: 'hsl(200 50% 8%)',  label: 'Glacio', raw: '200 80% 67%'  },
+  FUSION:   { primary: 'hsl(15 90% 62%)',   glow: 'hsl(15 90% 62% / 0.35)',  bg: 'hsl(15 50% 8%)',   label: 'Fusion', raw: '15 90% 62%'  },
+  '':       { primary: 'hsl(220 15% 60%)',  glow: 'hsl(220 15% 60% / 0.3)',  bg: 'hsl(220 15% 8%)',  label: '—', raw: '220 15% 60%'       },
 }
 
 export function getElementColor(element: string) {
   return ELEMENT_COLORS[element] ?? ELEMENT_COLORS['']
 }
 
-export type CharColor = { primary: string; glow: string; bg: string; label: string }
-
-// Same hues as ELEMENT_COLORS, as numbers so per-character variants can shift saturation/lightness
-const ELEMENT_HSL: Record<string, { h: number; s: number; l: number }> = {
-  AERO:     { h: 160, s: 80, l: 55 },
-  SPECTRO:  { h: 45,  s: 90, l: 62 },
-  HAVOC:    { h: 270, s: 80, l: 65 },
-  ELECTRO:  { h: 292, s: 82, l: 70 },
-  GLACIO:   { h: 200, s: 80, l: 67 },
-  FUSION:   { h: 15,  s: 90, l: 62 },
-  '':       { h: 220, s: 15, l: 60 },
-}
-
-/** Lightness & saturation offsets for each character slot sharing an element (up to 3). */
-const CHAR_VARIANTS = [
-  { lOff: 0,   sOff: 0   },  // first: base color
-  { lOff: +22, sOff: -18 },  // second: noticeably lighter, less saturated (pastel-ish)
-  { lOff: -20, sOff: +12 },  // third: noticeably darker, more vivid
-]
-
 /**
- * Builds a per-character color map so characters sharing an element get
- * visually distinct but hue-consistent colors across every panel.
+ * Per-character colour map built from the shared team accents, so a character has the same colour here as in
+ * the table, tracker and row detail (same-element teammates get distinct variants).
  */
 export function buildCharacterColorMap(characters: Character[]): Map<string, CharColor> {
   const map = new Map<string, CharColor>()
-  const elementGroups = new Map<string, string[]>()
-  for (const char of characters) {
-    const el = char.element ?? ''
-    if (!elementGroups.has(el)) elementGroups.set(el, [])
-    elementGroups.get(el)!.push(char.name)
-  }
-  for (const [element, names] of elementGroups) {
-    const base = ELEMENT_HSL[element] ?? ELEMENT_HSL['']
-    names.forEach((name, i) => {
-      // 4th+ character of the same element wraps around the variant list
-      const v = CHAR_VARIANTS[i] ?? CHAR_VARIANTS[i % CHAR_VARIANTS.length]
-      const l = Math.min(84, Math.max(30, base.l + v.lOff))
-      const s = Math.min(95, Math.max(10, base.s + v.sOff))
-      const primary = `hsl(${base.h} ${s}% ${l}%)`
-      const glow    = `hsl(${base.h} ${s}% ${l}% / 0.35)`
-      const bg      = `hsl(${base.h} ${Math.round(s * 0.5)}% 8%)`
-      const label   = ELEMENT_COLORS[element]?.label ?? '—'
-      map.set(name, { primary, glow, bg, label })
-    })
+  for (const [name, raw] of buildTeamAccents(characters)) {
+    const element = characters.find(c => c.name === name)?.element ?? ''
+    const hue = raw.split(' ')[0]
+    map.set(name, { primary: `hsl(${raw})`, glow: `hsl(${raw} / 0.35)`, bg: `hsl(${hue} 40% 8%)`, label: ELEMENT_COLORS[element]?.label ?? '—', raw })
   }
   return map
 }

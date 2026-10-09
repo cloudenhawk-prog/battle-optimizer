@@ -1,35 +1,31 @@
-// Data overlay "Energy Delta": per-character energy changes on this row (acting character first) + off-field triggers
+// Data overlay "Energy Flow": per-character energy gauges for this row (before → after, change highlighted) + off-field triggers
 import type { Snapshot } from '../../../types/snapshot'
 import type { ResolvedCharacter } from '../../../types/character'
+import { buildTeamAccents } from '../../shared/elementColors'
+import { PortraitRing, SectionHeader, accentVar } from '../../shared/ui'
 
 const ENERGY_LABEL: Record<string, string> = {
-  energy:            'RESONANCE',
-  concerto:          'CONCERTO',
-  forte:             'FORTE',
-  forte_divinity:    'FORTE (DIV.)',
-  forte_discord:     'FORTE (DISC.)',
-  forte_virtue:      'FORTE (VIRT.)',
-  relative_momentum: 'REL. MOMENTUM',
-  conviction:        'CONVICTION',
-  mind:              'MIND',
-  chill:             'CHILL',
+  energy:            'Resonance',
+  concerto:          'Concerto',
+  forte:             'Forte',
+  forte_divinity:    'Forte (Div.)',
+  forte_discord:     'Forte (Disc.)',
+  forte_virtue:      'Forte (Virt.)',
+  relative_momentum: 'Rel. Momentum',
+  conviction:        'Conviction',
+  mind:              'Mind',
+  chill:             'Chill',
 }
 
-const CHAR_ELEMENT_COLORS: Record<string, string> = {
-  AERO:    'hsl(160 80% 55%)',
-  SPECTRO: 'hsl(45 90% 62%)',
-  HAVOC:   'hsl(270 80% 65%)',
-  ELECTRO: 'hsl(292 82% 70%)',
-  GLACIO:  'hsl(200 80% 67%)',
-  FUSION:  'hsl(15 90% 62%)',
-  '':      'hsl(220 15% 60%)',
-}
+const fmt = (v: number) => (Math.abs(v % 1) < 0.05 ? v.toFixed(0) : v.toFixed(1))
 
 function formatEnergyDelta(delta: number): string {
   const rounded = Math.round(delta * 10) / 10
-  const sign = rounded >= 0 ? '+' : ''
-  return `${sign}${rounded % 1 === 0 ? rounded.toFixed(0) : rounded.toFixed(1)}`
+  return `${rounded >= 0 ? '+' : ''}${fmt(rounded)}`
 }
+
+type Gauge = { energyType: string; before: number; after: number; max: number }
+type CharFlow = { charName: string; image?: string; accent: string; isActing: boolean; gauges: Gauge[] }
 
 export function EnergySection({ snapshot, previousSnapshot, startWithFullEnergy, characters }: {
   snapshot: Snapshot
@@ -38,10 +34,9 @@ export function EnergySection({ snapshot, previousSnapshot, startWithFullEnergy,
   characters: ResolvedCharacter[]
 }) {
   const actingCharacter = snapshot.character
+  const accents = buildTeamAccents(characters)
 
-  type CharDelta = { charName: string; element: string; isActing: boolean; deltas: { energyType: string; delta: number }[] }
-
-  const charDeltas: CharDelta[] = characters
+  const flows: CharFlow[] = characters
     .map(char => {
       // First row has no previous snapshot: diff against the starting energies (0, or full resonance energy)
       const prevEnergies: Record<string, number> = previousSnapshot
@@ -51,15 +46,15 @@ export function EnergySection({ snapshot, previousSnapshot, startWithFullEnergy,
             et === 'energy' && startWithFullEnergy ? (char.maxEnergies.energy ?? 0) : 0,
           ]))
       const currEnergies = (snapshot.charactersEnergies?.[char.name] ?? {}) as Record<string, number>
-      const energyTypes = Object.keys(char.maxEnergies)
+      const maxes = char.maxEnergies as Record<string, number | undefined>
 
-      const deltas = energyTypes
-        .map(et => ({ energyType: et, delta: (currEnergies[et] ?? 0) - (prevEnergies[et] ?? 0) }))
-        .filter(d => Math.abs(d.delta) >= 0.05)  // hide negligible changes
+      const gauges = Object.keys(char.maxEnergies)
+        .map(et => ({ energyType: et, before: prevEnergies[et] ?? 0, after: currEnergies[et] ?? 0, max: maxes[et] ?? 0 }))
+        .filter(g => Math.abs(g.after - g.before) >= 0.05)  // hide negligible changes
 
-      return { charName: char.name, element: char.element as string, isActing: char.name === actingCharacter, deltas }
+      return { charName: char.name, image: char.image, accent: accents.get(char.name) ?? '', isActing: char.name === actingCharacter, gauges }
     })
-    .filter(c => c.deltas.length > 0)
+    .filter(c => c.gauges.length > 0)
     .sort((a, b) => {
       if (a.isActing && !b.isActing) return -1
       if (!a.isActing && b.isActing) return 1
@@ -67,43 +62,54 @@ export function EnergySection({ snapshot, previousSnapshot, startWithFullEnergy,
     })
 
   return (
-    <div className="dataSectionGroup">
-      <div className="dataPanelHeader amber">
-        <div className="dataPanelHeaderDot amber" />
-        <span className="dataPanelHeaderLabel">Energy Delta</span>
-        <div className="dataPanelHeaderLine" />
-      </div>
-      {charDeltas.length === 0 ? (
-        <p className="dataEmptyMsg">No energy changes</p>
+    <section className="ui-section">
+      <SectionHeader label="Energy Flow" />
+      {flows.length === 0 ? (
+        <div className="ui-empty">No energy changes</div>
       ) : (
-        charDeltas.map(({ charName, element, isActing, deltas }) => {
-          const color = CHAR_ELEMENT_COLORS[element] ?? CHAR_ELEMENT_COLORS['']
+        flows.map(({ charName, image, accent, isActing, gauges }) => {
           const triggerEvents = snapshot.offFieldTriggerEvents?.[charName] ?? []
           return (
-            <div key={charName} className="dataEnergyCharBlock">
-              <div className="dataEnergyCharHeader">
-                <span className="dataEnergyCharName" style={{ color, textShadow: `0 0 8px ${color}` }}>
-                  {charName}
-                </span>
-                {isActing && <span className="dataEnergyActingBadge">acting</span>}
+            <div key={charName} className="dataEnergyBlock" style={accentVar(accent)}>
+              <div className="dataEnergyHead">
+                <PortraitRing name={charName} src={image} size={28} />
+                <span className="dataEnergyName">{charName}</span>
+                {isActing && <span className="ui-chip">Acting</span>}
               </div>
-              {deltas.map(({ energyType, delta }) => (
-                <div key={energyType} className="dataEnergyRow">
-                  <span className="dataEnergyLabel">{ENERGY_LABEL[energyType] ?? energyType.toUpperCase()}</span>
-                  <span className={`dataEnergyDelta ${delta >= 0 ? 'gain' : 'cost'}`}>
-                    {formatEnergyDelta(delta)}
-                  </span>
-                </div>
-              ))}
+              {gauges.map(g => <EnergyGauge key={g.energyType} gauge={g} />)}
               {triggerEvents.map((desc, i) => (
-                <div key={`trigger-${i}`} className="dataEnergyTriggerNote">
-                  ⚡ {desc}
+                <div key={`trigger-${i}`} className="dataEnergyTrigger">
+                  <i className="ui-diamond" /> {desc}
                 </div>
               ))}
             </div>
           )
         })
       )}
+    </section>
+  )
+}
+
+/** Track scaled to the energy's max (or the larger value when uncapped); the changed span glows green or red. */
+function EnergyGauge({ gauge }: { gauge: Gauge }) {
+  const { energyType, before, after, max } = gauge
+  const scale = Math.max(max, before, after, 1)
+  const lo = (Math.min(before, after) / scale) * 100
+  const hi = (Math.max(before, after) / scale) * 100
+  const gain = after >= before
+  return (
+    <div className="dataGauge">
+      <div className="dataGaugeTop">
+        <span className="ui-stat-label">{ENERGY_LABEL[energyType] ?? energyType.replace(/_/g, ' ')}</span>
+        <span className="dataGaugeFlow">
+          {fmt(before)} → <b>{fmt(after)}</b>{max > 0 && <span className="dataGaugeMax"> / {fmt(max)}</span>}
+        </span>
+        <span className={`ui-stat-value ${gain ? 'ui-stat-value--gain' : 'ui-stat-value--cost'}`}>{formatEnergyDelta(after - before)}</span>
+      </div>
+      <div className="dataGaugeTrack">
+        <div className="dataGaugeBase" style={{ width: `${lo}%` }} />
+        <div className={`dataGaugeDelta ${gain ? 'is-gain' : 'is-cost'}`} style={{ left: `${lo}%`, width: `max(2px, ${hi - lo}%)` }} />
+      </div>
     </div>
   )
 }

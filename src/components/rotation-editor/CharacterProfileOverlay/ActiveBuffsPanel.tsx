@@ -5,7 +5,7 @@ import type { CharacterStats } from '../../../types/stats'
 import type { ActiveModifierBreakdown, NamedStatContribution } from '../../../engine/gear/computeStatBreakdown'
 import { STAT_GROUPS, formatFinalStat, formatStatKeyLabel } from './statDisplay'
 import { buildModInfoMap } from './modifierInfo'
-import { SectionHeader } from './Decorations'
+import { SectionHeader } from '../../shared/ui'
 import { MUTED, FONT_MONO } from './theme'
 import { colorizeText } from './colorizeText'
 
@@ -75,7 +75,7 @@ export function ActiveBuffsPanel({ activeBreakdown, finalStats, allCharacters, e
         {/* Left: Current Stats */}
         <div className="abp-left" style={{ borderRight: `1px solid hsl(${elColor} / 0.12)` }}>
           <div className="abp-stats-header">
-            <span className="cpo-section-header-label" style={{ color: `hsl(${elColor} / 0.6)`, letterSpacing: '0.2em' }}>CURRENT STATS</span>
+            <span className="ui-section-header-label" style={{ color: `hsl(${elColor} / 0.6)`, letterSpacing: '0.2em' }}>CURRENT STATS</span>
             <button
               className="abp-toggle-btn"
               onClick={() => setHideZero(p => !p)}
@@ -127,7 +127,7 @@ export function ActiveBuffsPanel({ activeBreakdown, finalStats, allCharacters, e
         {/* Right: Active Buffs */}
         <div className="abp-right">
           <div>
-            <SectionHeader label="Self Buffs" elColor={elColor} />
+            <SectionHeader label="Self Buffs" />
             {selfItems.length === 0 ? (
               <div style={{ color: MUTED, fontSize: '0.78rem', fontFamily: FONT_MONO, padding: '4px 0' }}>None</div>
             ) : (
@@ -135,7 +135,7 @@ export function ActiveBuffsPanel({ activeBreakdown, finalStats, allCharacters, e
             )}
           </div>
           <div>
-            <SectionHeader label="Team Buffs" elColor={elColor} />
+            <SectionHeader label="Team Buffs" />
             {teamItems.length === 0 ? (
               <div style={{ color: MUTED, fontSize: '0.78rem', fontFamily: FONT_MONO, padding: '4px 0' }}>None</div>
             ) : (

@@ -3,6 +3,8 @@ import ReactDOM from 'react-dom/client'
 import { BrowserRouter } from 'react-router-dom'
 import App from './App'
 import './styles/main.css'
+import './styles/theme/tokens.css'
+import './styles/theme/primitives.css'
 import { verifyData, checkAssets } from './data/validation/verifyData'
 
 // ========== Data Verification ================================================================================================

@@ -1,24 +1,12 @@
-/* Rotation table column header cells and icons. */
+/* Rotation table column header cells: icon over a small Orbitron label. */
 /* ─── Column header cells ─────────────────────────────────────── */
 
 .tableCellHeader {
-  padding: var(--tbl-header-pad);
+  padding: 14px 12px 10px;
   text-align: center;
-  font-size: var(--tbl-header-label-size);
-  letter-spacing: var(--tbl-header-label-spacing);
-  font-weight: var(--tbl-header-label-weight);
-  color: var(--tbl-header-label-color);
   white-space: nowrap;
-  background-color: var(--table-bg);
-  /* Specular top-edge highlight — renders inside the cell so it's never clipped */
-  background-image:
-    linear-gradient(180deg,
-      rgba(255,255,255, 0.10) 0%,
-      rgba(255,255,255, 0.04) 50%,
-      transparent 100%
-    ),
-    linear-gradient(var(--tbl-header-bg), var(--tbl-header-bg));
-  box-shadow: inset 0 1px 0 rgba(255,255,255, 0.18);
+  cursor: pointer;
+  background-image: linear-gradient(180deg, rgba(255, 255, 255, 0.05), rgba(255, 255, 255, 0.02));
 }
 
 .header-cell-content {
@@ -28,16 +16,28 @@
   gap: 0;
 }
 
+.header-label {
+  font-family: var(--ui-font-display);
+  font-size: 0.6rem;
+  font-weight: 700;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: var(--ui-text-muted);
+  transition: color 0.15s;
+}
+
+.tableCellHeader:hover .header-label { color: var(--ui-text); }
+
 
 /* ─── Icons ───────────────────────────────────────────────────── */
 
 .header-icon {
-  width: var(--table-icon-size);    
+  width: var(--table-icon-size);
   height: var(--table-icon-size);
   display: block;
   object-fit: contain;
 
-  margin: var(--table-icon-top) auto var(--table-icon-bottom);
+  margin: var(--table-icon-top) auto 9px;
   opacity: var(--table-icon-opacity);
   cursor: pointer;
 

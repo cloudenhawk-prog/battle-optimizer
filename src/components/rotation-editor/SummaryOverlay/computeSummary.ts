@@ -45,6 +45,8 @@ export function computeRotationSummary(
   }
 }
 
+export type RotationSummary = ReturnType<typeof computeRotationSummary>
+
 // ========== Damage Totals ===================================================================================================
 
 /** True when the event was dealt by `name` directly or by one of its `name: ...` sources. */

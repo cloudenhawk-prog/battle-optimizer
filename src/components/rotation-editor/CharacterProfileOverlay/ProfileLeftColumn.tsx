@@ -7,42 +7,17 @@ import { assetPath, FONT_DISPLAY } from './theme'
 import { PORTRAIT_SIZE_PX, PORTRAIT_ARC_DEG, PORTRAIT_OVERFLOW_PX, portraitClipPath } from './portraitGeometry'
 import { STAT_DISPLAY, formatStatValue, getStatDisplayValue } from './statDisplay'
 import type { TooltipData } from './tooltip'
-import { SectionHeader } from './Decorations'
+import { SectionHeader } from '../../shared/ui'
 import { PortraitSequenceDisplay } from './PortraitSequenceDisplay'
 import { PortraitLeftArc } from './PortraitLeftArc'
 
 // ========== Sub-component: Panel Button ======================================================================================
 
 // Full-width button that opens one of the body-covering panels (Active Buffs / Action DPS)
-function PanelButton({ label, delay, marginTop, elColor, onClick }: { label: string; delay: number; marginTop: number; elColor: string; onClick: () => void }) {
+function PanelButton({ label, delay, marginTop, onClick }: { label: string; delay: number; marginTop: number; onClick: () => void }) {
   return (
     <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay }} style={{ marginTop, flexShrink: 0 }}>
-      <button
-        type="button"
-        onClick={onClick}
-        style={{
-          width: '100%',
-          padding: '8px 0',
-          background: `hsl(${elColor} / 0.07)`,
-          border: `1px solid hsl(${elColor} / 0.25)`,
-          borderRadius: 6,
-          cursor: 'pointer',
-          color: `hsl(${elColor} / 0.85)`,
-          fontFamily: FONT_DISPLAY,
-          fontSize: '0.62rem',
-          fontWeight: 700,
-          letterSpacing: '0.12em',
-          textTransform: 'uppercase',
-          transition: 'background 0.15s, border-color 0.15s',
-        }}
-        onMouseEnter={e => {
-          ;(e.currentTarget as HTMLButtonElement).style.background = `hsl(${elColor} / 0.14)`
-          ;(e.currentTarget as HTMLButtonElement).style.borderColor = `hsl(${elColor} / 0.45)`
-        }}
-        onMouseLeave={e => {
-          ;(e.currentTarget as HTMLButtonElement).style.background = `hsl(${elColor} / 0.07)`
-          ;(e.currentTarget as HTMLButtonElement).style.borderColor = `hsl(${elColor} / 0.25)`
-        }}>
+      <button type="button" className="ui-panel-btn" onClick={onClick}>
         {label}
       </button>
     </motion.div>
@@ -127,7 +102,7 @@ export function ProfileLeftColumn({ character, elTheme, finalStats, sequence, pr
         </div>
       )}
 
-      <SectionHeader label="Total Stats" elColor={elTheme.primary} />
+      <SectionHeader label="Total Stats" />
 
       {STAT_DISPLAY.map((stat, i) => (
         <motion.div key={stat.key} className="cpo-stat-row" initial={{ opacity: 0, x: -8 }} animate={{ opacity: 1, x: 0 }} transition={{ delay: 0.3 + i * 0.025, duration: 0.25 }}>
@@ -157,10 +132,10 @@ export function ProfileLeftColumn({ character, elTheme, finalStats, sequence, pr
       ))}
 
       {/* Active Buffs Button */}
-      <PanelButton label="Active Buffs" delay={0.6} marginTop={14} elColor={elTheme.primary} onClick={onOpenActiveBuffs} />
+      <PanelButton label="Active Buffs" delay={0.6} marginTop={14} onClick={onOpenActiveBuffs} />
 
       {/* Action DPS Button */}
-      <PanelButton label="Action DPS" delay={0.65} marginTop={6} elColor={elTheme.primary} onClick={onOpenActionDps} />
+      <PanelButton label="Action DPS" delay={0.65} marginTop={6} onClick={onOpenActionDps} />
     </div>
   )
 }
