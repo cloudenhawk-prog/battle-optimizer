@@ -614,6 +614,152 @@
 }
 
 /* ═════════════════════════════════════════════════════════════
+ *  TACET MARK ALIVE  (layered animated variant)
+ * ═════════════════════════════════════════════════════════════ */
+
+.ui-tacet-alive {
+  display: block;
+  overflow: visible;
+  pointer-events: none;
+}
+
+.ui-tacet-alive__halo {
+  fill: none;
+  stroke: hsl(var(--ui-accent-raw) / 0.17);
+  stroke-width: 0.9;
+}
+
+.ui-tacet-alive__outer {
+  transform-origin: center;
+  animation: uiTacetAliveSpin 17s linear infinite;
+}
+
+.ui-tacet-alive__outer-arc {
+  fill: none;
+  stroke: hsl(var(--ui-accent-raw) / 0.72);
+  stroke-width: 1.55;
+  stroke-linecap: round;
+}
+
+.ui-tacet-alive__dot {
+  fill: hsl(var(--ui-accent-raw) / 0.88);
+}
+
+.ui-tacet-alive__counter {
+  transform-origin: center;
+  animation: uiTacetAliveCounterSpin 22s linear infinite;
+}
+
+.ui-tacet-alive__counter-ring {
+  fill: none;
+  stroke: hsl(var(--ui-accent-raw) / 0.22);
+  stroke-width: 0.85;
+}
+
+.ui-tacet-alive__counter-slice {
+  fill: none;
+  stroke: hsl(var(--ui-accent-raw) / 0.52);
+  stroke-width: 1.25;
+  stroke-linecap: round;
+}
+
+.ui-tacet-alive__tick {
+  stroke: hsl(var(--ui-accent-raw) / 0.46);
+  stroke-width: 0.95;
+}
+
+.ui-tacet-alive__spine {
+  stroke: hsl(var(--ui-accent-raw) / 0.62);
+  stroke-width: 1;
+}
+
+.ui-tacet-alive__wings {
+  transform-origin: center;
+  animation: uiTacetAliveWingDrift 7s ease-in-out infinite;
+}
+
+.ui-tacet-alive__wing {
+  fill: none;
+  stroke: hsl(var(--ui-accent-raw) / 0.9);
+  stroke-width: 1.65;
+  stroke-linecap: round;
+}
+
+.ui-tacet-alive__crown {
+  fill: none;
+  stroke: hsl(var(--ui-accent-raw) / 0.64);
+  stroke-width: 1.1;
+  stroke-linecap: round;
+}
+
+.ui-tacet-alive__scan {
+  transform-origin: center;
+  animation: uiTacetAliveScan 4.8s cubic-bezier(0.45, 0.03, 0.42, 0.98) infinite;
+}
+
+.ui-tacet-alive__pulse {
+  transform-origin: center;
+  animation: uiTacetAlivePulse 3.1s ease-in-out infinite;
+}
+
+.ui-tacet-alive__core-outline {
+  fill: none;
+  stroke: hsl(var(--ui-accent-raw) / 0.94);
+  stroke-width: 1.45;
+}
+
+.ui-tacet-alive__core-fill {
+  fill: hsl(var(--ui-accent-raw) / 0.95);
+}
+
+@keyframes uiTacetAliveSpin {
+  to { transform: rotate(360deg); }
+}
+
+@keyframes uiTacetAliveCounterSpin {
+  to { transform: rotate(-360deg); }
+}
+
+@keyframes uiTacetAliveWingDrift {
+  0%,
+  100% { transform: translateY(0); }
+  50% { transform: translateY(-0.8px); }
+}
+
+@keyframes uiTacetAliveScan {
+  0% {
+    transform: rotate(15deg);
+    opacity: 0;
+  }
+  14% { opacity: 0.82; }
+  48% { opacity: 0.38; }
+  75% {
+    transform: rotate(350deg);
+    opacity: 0;
+  }
+  100% {
+    transform: rotate(375deg);
+    opacity: 0;
+  }
+}
+
+@keyframes uiTacetAlivePulse {
+  0%,
+  100% { transform: scale(0.98); }
+  50% { transform: scale(1.04); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .ui-tacet-alive__outer,
+  .ui-tacet-alive__counter,
+  .ui-tacet-alive__wings,
+  .ui-tacet-alive__scan,
+  .ui-tacet-alive__pulse {
+    animation: none;
+  }
+}
+
+/* ═════════════════════════════════════════════════════════════
  *  RING CHART  (concentric donuts + bezel + centre slot)
  * ═════════════════════════════════════════════════════════════ */
 

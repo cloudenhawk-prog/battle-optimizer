@@ -6,7 +6,7 @@
 
 export { roverAero_skill_1, roverAero_skill_1_cancel_with_swap } from './skills/resonance1'
 export { roverAero_skill_2, roverAero_skill_2_cancel_with_swap } from './skills/resonance2'
-export { roverAero_skill_3, roverAero_skill_3_cancel_with_swap_1, roverAero_skill_3_cancel_with_swap_2 } from './skills/resonance3'
+export { roverAero_skill_3, roverAero_skill_3_cancel_with_swap } from './skills/resonance3'
 export { roverAero_liberation } from './skills/liberation'
 export { roverAero_midair_1_2, roverAero_midair_1_2_cancel_with_swap } from './basics/MA1_2'
 export { roverAero_plunge, roverAero_plunge_cancel_with_swap } from './basics/plunge'

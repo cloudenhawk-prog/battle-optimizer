@@ -11,9 +11,11 @@ import type { TableConfig } from '../../types/tableDefinitions'
 import type { Settings } from '../../types/settings'
 import { useRef } from 'react'
 import { copySnapshots } from '../../engine/state/snapshotHelpers'
-import { engineStep } from '../../engine/simulation/step'
 import { initEngineState } from '../../engine/simulation/engineState'
 import { shouldTriggerOutroIntro, handleOutroIntroFlow } from '../../engine/simulation/outroIntro'
+import { createEmptySnapshot } from '../../engine/state/createEmptySnapshot'
+import { extractSteps } from '../../engine/simulation/rotationSteps'
+import { runImportSteps } from '../../engine/simulation/runRotation'
 import { deriveGlobalColumns, energyColumnsFromTableConfig } from '../../tableConfig/engineColumns'
 
 // ========== Hook: useCharacterActions ========================================================================================
@@ -81,31 +83,43 @@ export function useCharacterActions({ setSnapshots, charactersInBattle, enemy, t
 
   const handleActionSelect = (snapshotId: number, actionName: string) => {
     setSnapshots(prevSnapshots => {
-      const result = engineStep({
-        snapshots: copySnapshots(prevSnapshots),
-        snapshotId,
-        actionName,
-        engineState: {
-          negativeStatusesInAction: negativeStatusesInAction.current,
-          modifiersInAction: modifiersInAction.current,
-          coordinatedAttacksInAction: coordinatedAttacksInAction.current,
-        },
+      const rowIndex = prevSnapshots.findIndex(s => Number(s.id) === snapshotId)
+      if (rowIndex === -1) return prevSnapshots
+
+      const updatedSnapshots = copySnapshots(prevSnapshots).map(s =>
+        Number(s.id) === snapshotId ? { ...s, action: actionName } : s,
+      )
+
+      // Keep the edited prefix + one blank row, then replay with auto-variant inference.
+      const truncated = updatedSnapshots.slice(0, rowIndex + 2)
+      const steps = extractSteps(truncated)
+
+      const replay = runImportSteps({
+        steps,
+        initialSnapshot: createEmptySnapshot(
+          charactersMap,
+          characterColumnsMap,
+          globalColumns,
+          tableConfig,
+          settings.startWithFullEnergy,
+        ),
         charactersMap,
         characterColumnsMap,
         globalColumns,
         enemy,
-        autocastFollowUps: settings.autocastFollowUps,
+        settings,
+        ignoreCastConditions: false,
       })
 
-      if (result.damageEvents.length > 0) {
-        setDamageEvents(prev => [...prev, ...result.damageEvents])
-      }
+      setDamageEvents(replay.damageEvents)
 
-      negativeStatusesInAction.current = result.engineState.negativeStatusesInAction
-      modifiersInAction.current = result.engineState.modifiersInAction
-      coordinatedAttacksInAction.current = result.engineState.coordinatedAttacksInAction
+      negativeStatusesInAction.current = replay.finalNegativeStatuses
+      modifiersInAction.current = replay.finalModifiers
+      coordinatedAttacksInAction.current = replay.finalCoordinatedAttacks
 
-      return result.snapshots
+      // If a row becomes invalid after replay, keep the previous timeline untouched.
+      if (replay.error) return prevSnapshots
+      return replay.snapshots
     })
   }
 

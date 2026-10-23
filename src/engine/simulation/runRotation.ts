@@ -10,7 +10,7 @@ import type { CoordinatedAttackInAction } from '../../types/coordinatedAttack'
 import type { Settings } from '../../types/settings'
 import type { RotationStep, ImportRunResult } from '../../types/rotation'
 import { initEngineState, type EngineState } from './engineState'
-import { getActionFromCharacter } from '../state/actionHelpers'
+import { getActionFromCharacter, inferActionNameForStep } from '../state/actionHelpers'
 import { assignCharacterToRow } from '../state/snapshotHelpers'
 import { getActionFailureReason } from '../castRules/actionFailureReason'
 import { updateSnapshotsWithAction } from './resolveAction'
@@ -116,7 +116,14 @@ export function runImportSteps(params: ImportRunParams): FullImportRunResult {
     // Resolve the action variant (e.g. plunge tier selection)
     const targetIdx = snapshots.findIndex(s => Number(s.id) === snapshotId)
     const prevSnapshot = targetIdx > 0 ? snapshots[targetIdx - 1] : undefined
-    const resolvedAction = getActionFromCharacter(charactersMap, step.character, step.action, prevSnapshot)
+    const nextStep = steps[stepIdx + 1]
+    const inferredActionName = inferActionNameForStep(
+      charactersMap,
+      step.character,
+      step.action,
+      nextStep?.character,
+    )
+    const resolvedAction = getActionFromCharacter(charactersMap, step.character, inferredActionName, prevSnapshot)
 
     if (!resolvedAction) {
       return fail(stepIdx, step, `Action "${step.action}" not found for ${step.character}`)
@@ -129,7 +136,7 @@ export function runImportSteps(params: ImportRunParams): FullImportRunResult {
     }
 
     // Apply the action through the full resolver pipeline
-    const actionResult = updateSnapshotsWithAction({ ...baseEngineParams, ...engineState, snapshots, snapshotId, actionName: step.action })
+    const actionResult = updateSnapshotsWithAction({ ...baseEngineParams, ...engineState, snapshots, snapshotId, actionName: inferredActionName })
     snapshots = actionResult.snapshots
     localDamageEvents = [...localDamageEvents, ...actionResult.damageEvents]
     engineState = {

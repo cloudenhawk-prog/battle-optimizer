@@ -27,7 +27,7 @@ type ActionSelectProps = {
 export function ActionSelect({ value, actions, character, currentEnergies, previousSnapshot, onChange, disabled = false, sandboxMode = false }: ActionSelectProps) {
   const [isOpen, setIsOpen] = useState(false)
   const [expandedGroup, setExpandedGroup] = useState<string | null>(null)
-  const [variantPopupPosition, setVariantPopupPosition] = useState({ top: 0, left: 0 })
+  const [variantPopupPosition] = useState({ top: 0, left: 0 })
   const dropdownRef = useRef<HTMLDivElement>(null)
   const variantPopupRef = useRef<HTMLDivElement>(null)
   const buttonRef = useRef<HTMLButtonElement>(null)
@@ -109,20 +109,8 @@ export function ActionSelect({ value, actions, character, currentEnergies, previ
   // Groups toggle the variant popup (anchored right of the dropdown, level with the row); single actions select
   const handleGroupClick = (groupKey: string, group: ActionGroup) => {
     if (group.isGroup) {
-      if (expandedGroup === groupKey) {
-        setExpandedGroup(null)
-      } else {
-        setExpandedGroup(groupKey)
-        const groupRow = groupRowRefs.current.get(groupKey)
-        if (groupRow && dropdownRef.current) {
-          const rowRect = groupRow.getBoundingClientRect()
-          const dropdownRect = dropdownRef.current.getBoundingClientRect()
-          setVariantPopupPosition({
-            top: rowRect.top,
-            left: dropdownRect.right + 8,
-          })
-        }
-      }
+      // Group rows now select the normalized group key; variant resolution is automatic.
+      handleSelect(groupKey)
     } else {
       handleSelect(group.variants[0].action.name)
     }

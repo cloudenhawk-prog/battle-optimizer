@@ -5,7 +5,7 @@ import type { DamageEvent } from '../../types/events'
 import type { GlobalColumns } from '../../types/tableDefinitions'
 import type { RotationStep } from '../../types/rotation'
 import { initEngineState, type EngineState } from './engineState'
-import { getActionFromCharacter } from '../state/actionHelpers'
+import { getActionFromCharacter, inferActionNameForStep } from '../state/actionHelpers'
 import { assignCharacterToRow } from '../state/snapshotHelpers'
 import { updateSnapshotsWithAction } from './resolveAction'
 import { shouldTriggerOutroIntro, handleOutroIntroFlow } from './outroIntro'
@@ -52,7 +52,8 @@ export function replaySteps(params: ReplayStepsParams): ReplayStepsResult {
 
   const baseParams = { charactersMap, characterColumnsMap, globalColumns, enemy }
 
-  for (const step of steps) {
+  for (let stepIdx = 0; stepIdx < steps.length; stepIdx++) {
+    const step = steps[stepIdx]
     if (!charactersMap[step.character]) return { snapshots, damageEvents: allDamageEvents, engineState, valid: false }
 
     const lastIdx = snapshots.length - 1
@@ -82,12 +83,19 @@ export function replaySteps(params: ReplayStepsParams): ReplayStepsResult {
     }
 
     const prevSnapshot = snapshots.length > 1 ? snapshots[snapshots.findIndex(s => Number(s.id) === snapshotId) - 1] : undefined
-    const resolvedAction = getActionFromCharacter(charactersMap, step.character, step.action, prevSnapshot)
+    const nextStep = steps[stepIdx + 1]
+    const inferredActionName = inferActionNameForStep(
+      charactersMap,
+      step.character,
+      step.action,
+      nextStep?.character,
+    )
+    const resolvedAction = getActionFromCharacter(charactersMap, step.character, inferredActionName, prevSnapshot)
     if (!resolvedAction) return { snapshots, damageEvents: allDamageEvents, engineState, valid: false }
 
     try {
       const actionResult = updateSnapshotsWithAction({
-        ...baseParams, snapshots, snapshotId, actionName: step.action,
+        ...baseParams, snapshots, snapshotId, actionName: inferredActionName,
         negativeStatusesInAction: engineState.negativeStatusesInAction,
         modifiersInAction: engineState.modifiersInAction,
         coordinatedAttacksInAction: engineState.coordinatedAttacksInAction,
