@@ -1,0 +1,164 @@
+/* Summary "Field Presence" tab: swimlane timeline (lanes, gridlines, axis) and resonator field plates */
+
+/* ── Timeline ────────────────────────────────────────────── */
+.summaryTimeline {
+  --lane-id-width: 170px;
+  --lane-total-width: 70px;
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  padding: 14px 18px;
+  border-radius: var(--ui-card-radius);
+  background: var(--ui-well-bg);
+  border: 1px solid hsl(var(--ui-accent-raw) / 0.1);
+}
+
+.summaryLane,
+.summaryAxis {
+  display: grid;
+  grid-template-columns: var(--lane-id-width) minmax(0, 1fr) var(--lane-total-width);
+  align-items: center;
+  column-gap: 16px;
+}
+
+.summaryLaneId {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  min-width: 0;
+}
+
+.summaryLaneName {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  font-family: var(--ui-font-body);
+  font-size: 1.05rem;
+  font-weight: 700;
+  color: hsl(var(--ui-accent-raw));
+}
+
+.summaryLaneTrack {
+  position: relative;
+  height: 32px;
+  border-radius: 3px;
+  background: rgba(50, 65, 90, 0.16);
+}
+
+.summaryLaneSeg {
+  position: absolute;
+  top: 3px;
+  bottom: 3px;
+  border-radius: 2px;
+  background: linear-gradient(180deg, hsl(var(--ui-accent-raw) / 0.95), hsl(var(--ui-accent-raw) / 0.65));
+  box-shadow: 0 0 8px hsl(var(--ui-accent-raw) / 0.35);
+  overflow: hidden;
+  transition: filter 0.15s;
+}
+/* Action name inside the segment; clipped when the segment is narrow */
+.summaryLaneSeg span {
+  display: block;
+  padding: 0 6px;
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: clip;
+  font-family: var(--ui-font-body);
+  font-size: 0.8rem;
+  font-weight: 700;
+  line-height: 26px;
+  color: rgba(8, 12, 20, 0.85);
+}
+.summaryLaneSeg + .summaryLaneSeg { border-left: 1px solid rgba(8, 12, 20, 0.6); }
+.summaryLaneSeg:hover { filter: brightness(1.35); }
+
+.summaryLaneTotal {
+  text-align: right;
+  font-family: var(--ui-font-number);
+  font-size: 0.95rem;
+  font-weight: 650;
+  font-variant-numeric: tabular-nums;
+  color: var(--ui-text);
+}
+
+/* Combined lane sits under a divider and reads as the summary of the lanes above */
+.summaryLane--combined {
+  margin-top: 6px;
+  padding-top: 10px;
+  border-top: 1px solid hsl(var(--ui-accent-raw) / 0.12);
+}
+.summaryLane--combined .summaryLaneName {
+  font-family: var(--ui-font-display);
+  font-size: 0.6rem;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--ui-text-muted);
+}
+.summaryLane--combined .summaryLaneTrack { height: 10px; }
+.summaryLane--combined .summaryLaneSeg { top: 0; bottom: 0; border-radius: 0; box-shadow: none; border-left: none; }
+
+/* Gridlines: positioned over the track column only */
+.summaryTimelineGrid {
+  position: absolute;
+  top: 14px;
+  bottom: 30px;
+  left: calc(18px + var(--lane-id-width) + 16px);
+  right: calc(18px + var(--lane-total-width) + 16px);
+  pointer-events: none;
+}
+.summaryTimelineGrid i {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  width: 1px;
+  background: hsl(var(--ui-accent-raw) / 0.07);
+}
+
+.summaryAxisTrack {
+  position: relative;
+  height: 16px;
+}
+.summaryAxisTrack span {
+  position: absolute;
+  top: 2px;
+  transform: translateX(-50%);
+  font-family: var(--ui-font-mono);
+  font-size: 0.7rem;
+  letter-spacing: 0.04em;
+  color: var(--ui-text-faint);
+}
+
+/* ── Resonator field plates ──────────────────────────────── */
+.summaryRoster {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(380px, 1fr));
+  gap: 16px;
+}
+
+.summaryRosterPlate {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.summaryRosterTop {
+  position: relative;
+  display: flex;
+  align-items: center;
+  gap: 16px;
+}
+
+.summaryRosterTop .ui-portrait { border-width: 0; box-shadow: none; }
+
+.summaryRosterStats {
+  position: relative;
+  columns: 2 220px;
+  column-gap: 28px;
+}
+.summaryRosterStats .ui-stat-row { break-inside: avoid; }
+
+.summaryRosterId {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}

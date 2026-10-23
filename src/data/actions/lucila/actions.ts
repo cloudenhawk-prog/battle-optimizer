@@ -1,3 +1,8 @@
+// Lucila — assembles every action into all_actions; Object.values() of each module, so file export order = action order.
+//
+// Layout: form-default/ (Default Form) and form-reminiscence/ (entered via Liberation "Clear As Day"), each split
+// into basics/ (BA = basic attack stage; tracingBA = Tracing Forms stage), skills/ and specials/.
+// others/ = intro/outro, testing/ = resource top-ups and debug actions, values.ts = numbers. kit.md = kit notes.
 import type { Action } from '../../../types/action'
 
 // Default Form — basics

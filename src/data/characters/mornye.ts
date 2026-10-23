@@ -1,5 +1,6 @@
+// Mornye (Fusion) — character definition: kit, forms, gear, sequences.
 import type { Character } from '../../types/character'
-import { all_actions } from '../actions/mornye'
+import { all_actions } from '../actions/mornye/actions'
 import { form_baseline_mode, form_wide_field_observation_mode } from '../forms/mornye'
 import { mornye_cost_1_echo_1, mornye_cost_1_echo_2, mornye_cost_3_echo_1, mornye_cost_3_echo_2, mornye_cost_4_echo_1, mornye_weapon } from '../gear/mornye'
 import { mornye_inherentStats, mornye_stats } from '../stats/mornye'

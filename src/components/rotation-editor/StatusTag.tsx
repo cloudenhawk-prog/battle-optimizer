@@ -1,3 +1,4 @@
+// Single status icon chip with hover tooltip; click opens the StatusDetailPanel modal
 import { useState } from 'react'
 import type { CSSProperties } from 'react'
 import '../../styles/rotation-editor/StatusTag.css'
@@ -44,7 +45,7 @@ export function StatusTag({ icon, label, value, maxStacks, type, color, statusKe
 
   const typeClass = type ? `statusTag-${type}` : ''
 
-  // If a custom color is provided, use inline styles to override
+  // If a custom color is provided, use inline styles to override (alpha suffixes assume a #RRGGBB color)
   const customStyle = color
     ? {
         backgroundColor: `${color}26`, // 15% opacity (26 in hex)

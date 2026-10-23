@@ -1,3 +1,4 @@
+// Per-character placement of the sidebar background image.
 // ========== Sidebar Character Image Config ===================================================================================
 // Controls the background image displayed in the sidebar for each character.
 // All fields are optional — omitted fields fall back to the CSS defaults.

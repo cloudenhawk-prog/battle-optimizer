@@ -1,0 +1,215 @@
+/* Build optimizer: color tokens, backdrop, panel wrap, slide-in drawers, panel, decorative layers, edge orbiter */
+
+/* =====================================================================================
+   BUILD OPTIMIZER OVERLAY
+   Visual design: dark gold-accented panel with cogwheel motifs.
+   Layout: 3-column grid (left | center | right) between absolute header and footer.
+   Inspired by the Tacet Forge visual language.
+   ===================================================================================== */
+
+/* ╔══════════════════════════════════════════════════════════════════════════════════╗
+   ║  Color palette — all tokens scoped to .buildOptOverlay                          ║
+   ╚══════════════════════════════════════════════════════════════════════════════════╝ */
+.buildOptOverlay {
+  --bo-gold:       oklch(0.86 0.13 88);
+  --bo-gold-soft:  oklch(0.80 0.09 88);
+  --bo-gold-dim:   oklch(0.75 0.08 88 / 0.6);
+  --bo-bg:         oklch(0.13 0.012 80);
+  --bo-panel:      oklch(0.18 0.012 80);
+  --bo-panel-2:    oklch(0.22 0.014 80);
+  --bo-edge:       oklch(0.30 0.015 80);
+  --bo-ink:        oklch(0.92 0.012 80);
+  --bo-ink-dim:    oklch(0.58 0.010 80);
+}
+
+/* ========== Backdrop ================================================================================ */
+
+.buildOptOverlay {
+  position: fixed;
+  inset: 0;
+  z-index: 1000;
+  background: rgba(0, 0, 0, 0.85);
+  backdrop-filter: blur(4px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 24px;
+  color: var(--bo-ink);
+}
+
+/* ========== Panel wrap (holds panel + orbiter SVG as siblings) ====================================== */
+
+.buildOptPanelWrap {
+  position: relative;
+  width: min(80vw, calc(90vh * 5 / 4));
+  max-width: 1180px;
+  aspect-ratio: 5 / 4;
+}
+
+/* ========== Config Drawer =========================================================================== */
+/* Slides in from the right inside the panel wrap. Shares the panel's border-radius clip.             */
+
+.buildOptDrawer {
+  position: absolute;
+  inset: 0;
+  z-index: 20;
+  border-radius: 28px;
+  overflow: hidden;
+  pointer-events: none;
+}
+
+.buildOptDrawer.open {
+  pointer-events: auto;
+}
+
+/* Frosted backdrop — only visible when open */
+.buildOptDrawer::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: oklch(0.10 0.010 80 / 0.60);
+  backdrop-filter: blur(6px);
+  opacity: 0;
+  transition: opacity 0.25s ease;
+  border-radius: 28px;
+}
+
+.buildOptDrawer.open::before {
+  opacity: 1;
+}
+
+.buildOptDrawerInner {
+  position: absolute;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  width: 72%;
+  max-width: 640px;
+  background: oklch(0.16 0.014 80);
+  border-left: 1px solid oklch(0.86 0.13 88 / 0.18);
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  transform: translateX(100%);
+  transition: transform 0.28s cubic-bezier(0.22, 1, 0.36, 1);
+  overflow: hidden;
+}
+
+.buildOptDrawer.open .buildOptDrawerInner {
+  transform: translateX(0);
+}
+
+.buildOptDrawerHead {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 24px;
+  height: 64px;
+  border-bottom: 1px solid oklch(0.86 0.13 88 / 0.12);
+  flex-shrink: 0;
+}
+
+.buildOptDrawerTitle {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-size: 13px;
+  letter-spacing: 0.20em;
+  text-transform: uppercase;
+  color: var(--bo-ink);
+}
+
+.buildOptConfigSection {
+  padding: 16px 24px;
+  border-bottom: 1px solid oklch(0.86 0.13 88 / 0.08);
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.buildOptConfigSection.buildOptEchoConfig {
+  flex: 1;
+  overflow-y: auto;
+  border-bottom: none;
+  min-height: 0;
+  padding-bottom: 24px;
+}
+
+.buildOptConfigSectionLabel {
+  font-size: 9.5px;
+  text-transform: uppercase;
+  letter-spacing: 0.28em;
+  color: var(--bo-ink-dim);
+}
+
+/* ========== Panel ================================================================================== */
+
+.buildOptPanel {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  border-radius: 28px;
+  overflow: hidden;
+  background: radial-gradient(
+    120% 80% at 50% 0%,
+    oklch(0.30 0.018 80) 0%,
+    oklch(0.18 0.012 80) 60%,
+    oklch(0.13 0.012 80) 100%
+  );
+  box-shadow:
+    0 0 0 1px oklch(0.86 0.13 88 / 0.22),
+    0 0 60px oklch(0.86 0.13 88 / 0.07),
+    0 24px 80px rgba(0, 0, 0, 0.80);
+}
+
+/* ========== Decorative bg layers =================================================================== */
+
+.buildOptGridOverlay {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  z-index: 0;
+  background-image:
+    linear-gradient(oklch(0.86 0.13 88 / 0.03) 1px, transparent 1px),
+    linear-gradient(90deg, oklch(0.86 0.13 88 / 0.03) 1px, transparent 1px);
+  background-size: 40px 40px;
+  opacity: 0.35;
+}
+
+.buildOptDecoCogBL {
+  position: absolute;
+  left: -192px;
+  bottom: -192px;
+  color: oklch(0.86 0.13 88 / 0.06);
+  pointer-events: none;
+  z-index: 0;
+  animation: bo-cog-spin 45s linear infinite;
+}
+
+.buildOptDecoCogBR {
+  position: absolute;
+  right: -112px;
+  bottom: -112px;
+  color: oklch(0.86 0.13 88 / 0.05);
+  pointer-events: none;
+  z-index: 0;
+}
+
+/* ========== Edge orbiter =========================================================================== */
+/* Sits on the WRAPPER (outside panel's overflow:hidden).                                             */
+/* ViewBox is 112×92 with panel region at 6..106 × 6..86.                                            */
+/* Cog center rides at x/y=3 (R=3 outside panel border), teeth graze the panel border inward.        */
+/*   Horizontal overhang: 6 SVG units = 6% of wrapper width  → left/right: -6%                       */
+/*   Vertical overhang:   6 SVG units = 6% of wrapper width  = 7.5% of wrapper height → top/bottom: -7.5% */
+
+.buildOptEdgeOrbiter {
+  pointer-events: none;
+  position: absolute;
+  left: -6%;
+  right: -6%;
+  top: -7.5%;
+  bottom: -7.5%;
+  z-index: 2;
+  overflow: visible;
+}
+

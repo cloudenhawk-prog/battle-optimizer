@@ -1,0 +1,167 @@
+/* Character profile overlay: layout diagram, controller vars, close/nav buttons, body shell */
+
+/* ===== Character Profile Overlay ===================================================================
+ *
+ *    ┌──────────────┬──────────────────────────┬──────────────┐
+ *    │  LEFT COL    │      CENTER (gear)       │  RIGHT COL   │
+ *    │  (portrait   │      orbit fills         │  (set bonus) │
+ *    │   + stats)   │      all space here      │              │
+ *    │              ├──────────────────────────┤              │
+ *    │              │    CHAIN STRIP (bottom)  │              │
+ *    └──────────────┴──────────────────────────┴──────────────┘
+ *
+ * ================================================================================================= */
+
+/* ═════════════════════════════════════════════════════════════
+ *  CONTROLLER
+ * ═════════════════════════════════════════════════════════════ */
+
+.charProfilePanel {
+
+  /* ══ COLUMNS ══════════════════════════════════════════════════ */
+  --cpo-left-width:              415px;
+  --cpo-right-width:             415px;
+  --cpo-col-pad-x:                22px;
+  --cpo-col-pad-y:                35px;
+
+  /* ══ PORTRAIT ═════════════════════════════════════════════════ */
+  --cpo-portrait-size:           250px;   /* circle diameter */
+  --cpo-portrait-gap:             70px;   /* gap below portrait */
+  --cpo-identity-margin:          60px;   /* gap below identity block */
+  --cpo-title-offset:             -6px;   /* vertical nudge on the character name (negative = up) */
+
+  /* ══ CHAIN STRIP ══════════════════════════════════════════════ */
+  --cpo-chain-height:             68px; /* doesnt seem to do anything! */
+
+  /* ══ CLOSE BUTTON ═════════════════════════════════════════════ */
+  --cpo-close-btn-icon-size:      22px;
+  --cpo-close-btn-padding:    4px 10px;
+  --cpo-close-btn-radius:          4px; /* doesnt seem to do anything! */
+  --cpo-close-btn-time:           0.2s;
+
+  /* ══ NAV BUTTONS ══════════════════════════════════════════════ */
+  --cpo-nav-btn-size:             20px;
+  --cpo-nav-btn-padding:       5px 7px;
+  --cpo-nav-btn-radius:            4px; /* doesnt seem to do anything! */
+  --cpo-nav-btn-time:             0.2s;
+  --cpo-nav-btn-color:   rgba(255, 255, 255, 0.35);
+  --cpo-nav-btn-hover-bg: rgba(255, 255, 255, 0.07);
+
+  /* ══ STAT ROWS ════════════════════════════════════════════════ */
+  --cpo-stat-icon-size:           25px;
+  --cpo-stat-label-size:        1.05rem;
+  --cpo-stat-value-size:       1.05rem;
+
+  /* ══ SECTION HEADERS ══════════════════════════════════════════ */
+  --cpo-section-header-size:    0.9rem;   /* TOTAL STATS / SET BONUS / ORBITAL SCAN */
+
+  /* ══ ELEMENT ICON TARGETS ═════════════════════════════════════ */
+  /* Glacio ~#3FD1C2  ·  Fusion ~#FF7A3C  ·  Electro ~#9B6BFF    */
+  /* Aero ~#58D68D    ·  Spectro ~#FFD84D  ·  Havoc ~#C14B8A      */
+  /* Tune per-element: hue-rotate (hue), saturate (vivid), brightness (lightness) */
+
+  /* ══ SET BONUS CARDS ══════════════════════════════════════════ */
+  --cpo-set-name-size:         1.30rem;
+  --cpo-set-key-size:          0.90rem;
+  --cpo-set-desc-size:         1.00rem;
+  --cpo-set-padding:              13px;
+
+  /* ══ BREAKDOWN HEADER ═════════════════════════════════════════ */
+  --cpo-breakdown-header-bg:     var(--table-header-bg);
+  --cpo-breakdown-border-color:  var(--table-border);
+  --cpo-breakdown-title-size:    0.95rem;
+  --cpo-breakdown-title-color:   var(--table-text);
+
+  /* ══ ORBITAL SCAN BOX ═════════════════════════════════════════ */
+  --cpo-scan-name-size:          1.15rem;   /* item name */
+  --cpo-scan-meta-size:          0.90rem;   /* rank / type / set subheading */
+  --cpo-scan-stat-size:          0.90rem;   /* stat rows */
+  --cpo-scan-section-label-size: 0.95rem;   /* "Main" / "Sub" labels */
+  --cpo-scan-desc-size:          0.90rem;   /* description text */
+
+  /* ══ ABP PANEL ════════════════════════════════════════════════ */
+  --abp-left-width:              600px;
+  --abp-header-size:           1.25rem;   /* panel title */
+  --abp-subheader-size:         1.00rem;   /* "Self Buffs" / "Team Buffs" headers */
+  --abp-toggle-size:            0.6rem;   /* "Hide Zeros" toggle */
+  --abp-toggle-padding:        5px 10px;
+  --abp-group-label-size:      0.80rem;   /* stat category headings */
+  --abp-stat-label-size:       1.00rem;
+  --abp-stat-value-size:       1.00rem;
+  --abp-buff-name-size:         1.15rem;
+  --abp-buff-icon-size:           45px;
+  --abp-buff-desc-size:        1.00rem;
+  --abp-buff-stat-size:        0.95rem;
+  --abp-buff-card-time:             0.35s;            /* glow fade in / out */
+  --abp-buff-card-orbit-speed:      7.0s;             /* one full orbit rotation */
+  --abp-buff-card-glow-blur:          7px;            /* edge glow softness */
+  --abp-buff-card-glow-opacity:       1.0;            /* peak glow intensity (rotating spots) */
+  --abp-buff-card-base-opacity:       0.25;           /* static base glow always visible on hover */
+
+}
+
+/* ═════════════════════════════════════════════════════════════
+ *  CLOSE BUTTON
+ * ═════════════════════════════════════════════════════════════ */
+
+.cpo-close-btn {
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  padding: var(--cpo-close-btn-padding);
+  transition: all var(--cpo-close-btn-time);
+  border-radius: var(--cpo-close-btn-radius);
+}
+
+.cpo-close-btn:hover {
+  color: var(--table-text);
+  background: var(--table-select-bg);
+}
+
+/* ═════════════════════════════════════════════════════════════
+ *  NAV BUTTONS
+ * ═════════════════════════════════════════════════════════════ */
+
+.cpo-nav-btn {
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  font-size: var(--cpo-nav-btn-size);
+  padding: var(--cpo-nav-btn-padding);
+  border-radius: var(--cpo-nav-btn-radius);
+  transition: all var(--cpo-nav-btn-time);
+  color: var(--cpo-nav-btn-color);
+  line-height: 1;
+}
+
+.cpo-nav-btn:hover:not(:disabled) {
+  background: var(--cpo-nav-btn-hover-bg);
+  color: inherit;
+  filter: brightness(1.4);
+}
+
+.cpo-nav-btn:disabled {
+  opacity: 0.2;
+  cursor: default;
+}
+
+/* ═════════════════════════════════════════════════════════════
+ *  BODY SHELL
+ * ═════════════════════════════════════════════════════════════ */
+
+.cpo-content {
+  flex: 1;
+  min-height: 0;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+}
+
+.cpo-body {
+  flex: 1;
+  display: flex;
+  flex-direction: row;
+  overflow: hidden;
+  position: relative;
+}
+

@@ -1,0 +1,418 @@
+{
+ "config": {
+  "basic": {
+   "columns": [
+    {
+     "icon": "assets/table/fromTime.png",
+     "key": "fromTime",
+     "label": "From Time",
+     "render": "[Function]"
+    },
+    {
+     "icon": "assets/table/toTime.png",
+     "key": "toTime",
+     "label": "To Time",
+     "render": "[Function]"
+    },
+    {
+     "icon": "assets/table/damage.png",
+     "key": "damage",
+     "label": "Damage",
+     "render": "[Function]"
+    },
+    {
+     "icon": "assets/table/dps.png",
+     "key": "dps",
+     "label": "DPS",
+     "render": "[Function]"
+    }
+   ],
+   "icon": "assets/table/basic.png",
+   "label": "General Information"
+  },
+  "characters": [
+   {
+    "columns": [
+     {
+      "description": "Used to cast Foreclaimed: Liberation.",
+      "icon": "/assets/energy/energy.png",
+      "key": "Hiyuki_energy",
+      "label": "Energy",
+      "render": "[Function]"
+     },
+     {
+      "description": "Used to cast Outro Skill and trigger Intro Skills",
+      "icon": "/assets/energy/concerto.png",
+      "key": "Hiyuki_concerto",
+      "label": "Concerto",
+      "render": "[Function]"
+     },
+     {
+      "description": "Spent on Enhanced Heavy Attack. Gained from Basic Attacks and Intro.",
+      "icon": "/assets/energy/dedication.png",
+      "key": "Hiyuki_dedication",
+      "label": "Dedication",
+      "render": "[Function]"
+     },
+     {
+      "description": "Charges used to empower Iai when cast: grants 1 Whiteout Bitterfrost and inflicts Glacio Chafe.",
+      "icon": "/assets/energy/frostharden_iai.png",
+      "key": "Hiyuki_frostharden_iai",
+      "label": "Frostharden Iai",
+      "render": "[Function]"
+     },
+     {
+      "description": "Required to cast Iai. Gained from Foreclaimed: BA, MA and Resonance Skill.",
+      "icon": "/assets/energy/frostheart.png",
+      "key": "Hiyuki_frostheart",
+      "label": "Frostheart",
+      "render": "[Function]"
+     },
+     {
+      "description": "Required to cast Foreclaimed: Enhanced Heavy Attack. Gained from empowered Iai.",
+      "icon": "/assets/energy/whiteout_bitterfrost.png",
+      "key": "Hiyuki_whiteout_bitterfrost",
+      "label": "Whiteout Bitterfrost",
+      "render": "[Function]"
+     },
+     {
+      "description": "Empowers Foreclaiming: Blade Liberation. Gained from Foreclaimed: Enhanced Heavy Attack.",
+      "icon": "/assets/energy/snowforged_blade.png",
+      "key": "Hiyuki_snowforged_blade",
+      "label": "Snowforged Blade",
+      "render": "[Function]"
+     },
+     {
+      "description": "Passive amplification resource. Enables Fine Snow procs and buffs when at 1/2/3 stacks.",
+      "icon": "/assets/energy/snow_rust.png",
+      "key": "Hiyuki_snow_rust",
+      "label": "Snow Rust",
+      "render": "[Function]"
+     }
+    ],
+    "icon": "/assets/characters/character_hiyuki.png",
+    "label": "Hiyuki",
+    "nametag": "/assets/characters/nametag_hiyuki.png"
+   },
+   {
+    "columns": [
+     {
+      "icon": "/assets/energy/energy.png",
+      "key": "Mornye_energy",
+      "label": "Energy",
+      "render": "[Function]"
+     },
+     {
+      "icon": "/assets/energy/concerto.png",
+      "key": "Mornye_concerto",
+      "label": "Concerto",
+      "render": "[Function]"
+     },
+     {
+      "icon": "/assets/energy/rest_mass_energy.png",
+      "key": "Mornye_rest_mass_energy",
+      "label": "Rest Mass Energy",
+      "render": "[Function]"
+     },
+     {
+      "icon": "/assets/energy/relative_momentum.png",
+      "key": "Mornye_relative_momentum",
+      "label": "Relative Momentum",
+      "render": "[Function]"
+     }
+    ],
+    "icon": "/assets/characters/character_mornye.png",
+    "label": "Mornye",
+    "nametag": "/assets/characters/nametag_mornye.png"
+   },
+   {
+    "columns": [
+     {
+      "description": "Used to cast Resonance Liberation - Clear As Day.",
+      "icon": "/assets/energy/energy.png",
+      "key": "Lucila_energy",
+      "label": "Energy",
+      "render": "[Function]"
+     },
+     {
+      "description": "Used to cast Outro Skill and trigger Intro Skills.",
+      "icon": "/assets/energy/concerto.png",
+      "key": "Lucila_concerto",
+      "label": "Concerto",
+      "render": "[Function]"
+     },
+     {
+      "description": "Forte resource. Every 50 Traces = 1 Photo (max 3). Consumed by Tracing Forms Stage 3 to fire Oblivion.",
+      "icon": "/assets/energy/traces.png",
+      "key": "Lucila_traces",
+      "label": "Traces",
+      "render": "[Function]"
+     },
+     {
+      "description": "Gained when consuming Photos (2 per photo). When teammates inflict Glacio Chafe, consumes 1 Film Roll to inflict Glacio Chafe 2 times.",
+      "icon": "/assets/energy/film_roll.png",
+      "key": "Lucila_film_roll",
+      "label": "Film Roll",
+      "render": "[Function]"
+     }
+    ],
+    "icon": "/assets/characters/character_lucila.png",
+    "label": "Lucila",
+    "nametag": "/assets/characters/nametag_lucila.png"
+   }
+  ],
+  "other": null,
+  "statusEffects": {
+   "columns": [
+    {
+     "icon": "assets/table/negativeStatuses.png",
+     "key": "negativeStatuses",
+     "label": "Negative Statuses",
+     "render": "[Function]",
+     "statusMetadata": [
+      {
+       "color": "#66ccff",
+       "icon": "/assets/negative-statuses/glacio_chafe.png",
+       "key": "Glacio Chafe",
+       "label": "Glacio Chafe",
+       "maxStacks": 10
+      }
+     ]
+    },
+    {
+     "icon": "assets/table/buffs.png",
+     "key": "buffs",
+     "label": "Buffs",
+     "render": "[Function]",
+     "statusMetadata": [
+      {
+       "color": "#FF2E3A",
+       "description": "When applying Glacio Chafe, Glacio DMG is Amplified by 56% for 20 seconds.",
+       "icon": "/assets/modifiers/frostburn_glacio_buff.png",
+       "key": "Frostburn:GlacioBuff",
+       "label": "Frostburn: Glacio Buff",
+       "maxStacks": 1
+      },
+      {
+       "color": "#FF2E3A",
+       "description": "When applying Glacio Chafe, Liberation DMG ignore 20% DEF for 20 seconds.",
+       "icon": "/assets/modifiers/frostburn_liberation_buff.png",
+       "key": "Frostburn:LiberationBuff",
+       "label": "Frostburn: Liberation Buff",
+       "maxStacks": 1
+      },
+      {
+       "color": "#6EC1F2",
+       "description": "Inflicting Glacio Chafe on enemies increases Glacio DMG dealt by 10% for 15s.",
+       "icon": "/assets/modifiers/wishes_of_quiet_snowfall_glacio_buff.png",
+       "key": "WishesofQuietSnowfall:GlacioBuff",
+       "label": "Wishes of Quiet Snowfall: Glacio Buff",
+       "maxStacks": 1
+      },
+      {
+       "color": "#6EC1F2",
+       "icon": "/assets/modifiers/wishes_of_quiet_snowfall_snowfall.png",
+       "key": "WishesofQuietSnowfall:Snowfall",
+       "label": "Wishes of Quiet Snowfall: Snowfall",
+       "maxStacks": 1
+      },
+      {
+       "color": "#6EC1F2",
+       "description": "Dealing Resonance Liberation DMG removes Snowfall and increases the Resonator's Crit. Rate by 25% for 6s",
+       "icon": "/assets/modifiers/wishes_of_quiet_snowfall_crit_rate.png",
+       "key": "WishesofQuietSnowfall:CritRate",
+       "label": "Wishes of Quiet Snowfall: Crit Rate",
+       "maxStacks": 1
+      },
+      {
+       "color": "#FFD700",
+       "description": "For 20 seconds: all Resonators except Hiyuki gain 20% Glacio DMG Amplification against targets affected by Glacio Chafe.",
+       "icon": "/assets/modifiers/snowlight_blessing.png",
+       "key": "SnowlightBlessing",
+       "label": "Snowlight Blessing",
+       "maxStacks": 1,
+       "showStats": true
+      },
+      {
+       "color": "#6EC1F2",
+       "icon": "/assets/modifiers/wishes_of_quiet_snowfall_incoming_glacio_buff.png",
+       "key": "WishesofQuietSnowfall:IncomingGlacioBuff",
+       "label": "Wishes of Quiet Snowfall: Incoming Glacio Buff",
+       "maxStacks": 1
+      },
+      {
+       "color": "#FFC247",
+       "description": "For 25 seconds: increases the Offtune Buildup Rate of all Resonators by 50%. Every 3 seconds, heals the active resonator.",
+       "icon": "/assets/modifiers/syntony_field.png",
+       "key": "SyntonyField",
+       "label": "Syntony Field",
+       "maxStacks": 1,
+       "showStats": true
+      },
+      {
+       "color": "#FFC247",
+       "description": "Syntony Field grants an additional 20% Offtune Buildup Rate to all Resonators",
+       "icon": "/assets/modifiers/syntony_field_(s2).png",
+       "key": "SyntonyField(S2)",
+       "label": "Syntony Field (S2)",
+       "maxStacks": 1,
+       "showStats": true
+      },
+      {
+       "color": "#FF9B5E",
+       "description": "When the wielder heals Resonators, increases Crit. DMG of all nearby Resonators in the team by 20% for 4s.",
+       "icon": "/assets/modifiers/starfield_calibrator_heal_buff.png",
+       "key": "StarfieldCalibrator:HealBuff",
+       "label": "Starfield Calibrator: Heal Buff",
+       "maxStacks": 1
+      },
+      {
+       "color": "#82DC8C",
+       "description": "When healing a Resonator in the team, every 1% of Off-Tune Buildup Rate grants a 0.2% ATK increase to all Resonators in the team for 4s, up to 25%.",
+       "icon": "/assets/modifiers/halo_of_starry_radiance_(active).png",
+       "key": "HaloofStarryRadiance(Active)",
+       "label": "Halo of Starry Radiance (Active)",
+       "maxStacks": 1,
+       "showStats": true
+      },
+      {
+       "color": "#B87EFF",
+       "description": "For 20 seconds: Every 1 % of Mornye's Energy Regen over 100 % grants 0.25% Damage Bonus to all Resonators, up to 40%.",
+       "icon": "/assets/modifiers/interfered_marker.png",
+       "key": "InterferedMarker",
+       "label": "Interfered Marker",
+       "maxStacks": 1,
+       "showStats": true
+      },
+      {
+       "color": "#B87EFF",
+       "description": "For 20 seconds: Every 1 % of Mornye's Energy Regen over 100 % grants 0.2% Crit DMG to all Resonators, up to 32%.",
+       "icon": "/assets/modifiers/interfered_marker_(s2).png",
+       "key": "InterferedMarker(S2)",
+       "label": "Interfered Marker (S2)",
+       "maxStacks": 1,
+       "showStats": true
+      },
+      {
+       "color": "#FF2E3A",
+       "description": "For 25 seconds: increases the DEF of all Resonators by 20% and Offtune Buildup Rate by 50%. Every 3 seconds, heals the active resonator.",
+       "icon": "/assets/modifiers/high_syntony_field.png",
+       "key": "HighSyntonyField",
+       "label": "High Syntony Field",
+       "maxStacks": 1,
+       "showStats": true
+      },
+      {
+       "color": "#FF2E3A",
+       "description": "High Syntony Field grants an additional 20% Offtune Buildup Rate to all Resonators",
+       "icon": "/assets/modifiers/high_syntony_field_(s2).png",
+       "key": "HighSyntonyField(S2)",
+       "label": "High Syntony Field (S2)",
+       "maxStacks": 1,
+       "showStats": true
+      },
+      {
+       "color": "#FFD700",
+       "description": "For 30 seconds: all Resonators gain 25% All DMG Amplification.",
+       "icon": "/assets/modifiers/recursion.png",
+       "key": "Recursion",
+       "label": "Recursion",
+       "maxStacks": 1,
+       "showStats": true
+      },
+      {
+       "description": "After inflicting Glacio Chafe, Glacio DMG Bonus +30% for 12s.",
+       "icon": "/assets/modifiers/freeze_frame_glacio_dmg_bonus.png",
+       "key": "FreezeFrame:GlacioDMGBonus",
+       "label": "Freeze Frame: Glacio DMG Bonus",
+       "maxStacks": 1
+      },
+      {
+       "description": "After inflicting Glacio Chafe, ATK of all Resonators in the team +24% for 30s.",
+       "icon": "/assets/modifiers/freeze_frame_team_atk.png",
+       "key": "FreezeFrame:TeamATK",
+       "label": "Freeze Frame: Team ATK",
+       "maxStacks": 1
+      },
+      {
+       "color": "#c5e8ff",
+       "description": "Casting Clear As Day increases Lucila's Basic Attack DMG Bonus by 30% for 10s.",
+       "icon": "/assets/modifiers/clear_as_day_basic_atk_bonus.png",
+       "key": "ClearAsDay:BasicATKBonus",
+       "label": "Clear As Day: Basic ATK Bonus",
+       "maxStacks": 1,
+       "showStats": true
+      },
+      {
+       "color": "#b8e0ff",
+       "description": "Outro Skill - Montage: whole team gains +60% Glacio Chafe DMG Bonus for 30s.",
+       "icon": "/assets/modifiers/montage.png",
+       "key": "Montage",
+       "label": "Montage",
+       "maxStacks": 1,
+       "showStats": true
+      },
+      {
+       "description": "Outro Skill within 15s of Glommoth active: incoming Resonator gains 12% Glacio DMG Bonus for 15s.",
+       "icon": "/assets/modifiers/glommoth_glacio_dmg_bonus.png",
+       "key": "Glommoth:GlacioDMGBonus",
+       "label": "Glommoth: Glacio DMG Bonus",
+       "maxStacks": 1
+      },
+      {
+       "color": "#6EC1F2",
+       "icon": "/assets/modifiers/lucila_cheat_buff.png",
+       "key": "LucilaCheatBuff",
+       "label": "Lucila Cheat Buff",
+       "maxStacks": 1
+      }
+     ]
+    },
+    {
+     "icon": "assets/table/debuffs.png",
+     "key": "debuffs",
+     "label": "Debuffs",
+     "render": "[Function]",
+     "statusMetadata": [
+      {
+       "color": "#a3d4f7",
+       "description": "Phantom Frame (Perfect Focus): Glacio RES reduced by 8% for 30s.",
+       "icon": "/assets/modifiers/slow_motion_glacio_res_down.png",
+       "key": "SlowMotion:GlacioRESDown",
+       "label": "Slow Motion: Glacio RES Down",
+       "maxStacks": 1,
+       "showStats": true
+      }
+     ]
+    }
+   ],
+   "icon": "assets/table/statuses.png",
+   "label": "Status Effects"
+  }
+ },
+ "flat": [
+  "fromTime",
+  "toTime",
+  "damage",
+  "dps",
+  "Hiyuki_energy",
+  "Hiyuki_concerto",
+  "Hiyuki_dedication",
+  "Hiyuki_frostharden_iai",
+  "Hiyuki_frostheart",
+  "Hiyuki_whiteout_bitterfrost",
+  "Hiyuki_snowforged_blade",
+  "Hiyuki_snow_rust",
+  "Mornye_energy",
+  "Mornye_concerto",
+  "Mornye_rest_mass_energy",
+  "Mornye_relative_momentum",
+  "Lucila_energy",
+  "Lucila_concerto",
+  "Lucila_traces",
+  "Lucila_film_roll",
+  "negativeStatuses",
+  "buffs",
+  "debuffs"
+ ]
+}

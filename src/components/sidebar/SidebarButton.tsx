@@ -1,3 +1,4 @@
+// Floating button that collapses/expands the sidebar.
 import '../../styles/sidebar/SidebarButton.css'
 
 // ========== Component: Sidebar Button ========================================================================================

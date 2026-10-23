@@ -46,6 +46,15 @@ export type ResolveVariantOwner = {
 
 export type ActionCategory = 'Basics' | 'Skills' | 'Echo Skill' | 'Other' | 'Testing'
 
+export type ActionVariantIntent =
+  | 'DEFAULT'
+  | 'SWAP_CANCEL'
+  | 'SKILL_CANCEL'
+  | 'HEAVY_CANCEL'
+  | 'DASH_CANCEL'
+  | 'JUMP_CANCEL'
+  | 'OTHER'
+
 export type Action = {
   name: string
   displayName: string
@@ -91,6 +100,12 @@ export type Action = {
 
   groupName?: string
   variantName?: string
+  /** Normalized semantic intent of this variant.
+   *  Optional: when omitted, the engine infers it from castConditions + variantName. */
+  variantIntent?: ActionVariantIntent
+  /** True when this variant should only be auto-picked in constrained contexts.
+   *  Optional: when omitted, swap-cancel variants are treated as limited by default. */
+  autoVariantLimited?: boolean
 
   /** If specified, casting this action changes the character's form to the specified form name.
    *  The form must exist in the character's forms array. */

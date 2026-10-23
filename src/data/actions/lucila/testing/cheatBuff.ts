@@ -1,5 +1,6 @@
+// Lucila — testing action that applies a 1000s team-wide stat buff (stand-in for external buffs).
 import type { Action } from '../../../../types/action'
-import { always } from '../../../../utils/conditions/damageModifierConditions'
+import { always } from '../../../helpers/modifierConditions'
 
 const lucila_cheat_buff: Action = {
   tags: ['SKILL'],
@@ -28,7 +29,7 @@ const lucila_cheat_buff: Action = {
         glacioChafeBonusDMG: 0.60,
         bonusATK: 0.24
       },
-      enemyStats: { 
+      enemyStats: {
         glacioRES: -0.08,
       },
       condition: always(),

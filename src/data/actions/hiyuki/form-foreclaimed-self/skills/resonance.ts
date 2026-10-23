@@ -1,3 +1,4 @@
+// Hiyuki — Foreclaimed Self form: Resonance Skill 1 and 2 (default / swap cancel).
 import type { Action } from '../../../../../types/action'
 import { s4_skill_buff } from '../../../../modifiers/hiyuki'
 import * as values from '../../values'

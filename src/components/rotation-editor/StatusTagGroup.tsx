@@ -1,3 +1,4 @@
+// Row of StatusTags for a table cell, showing only statuses with a positive value ("-" when none)
 import '../../styles/rotation-editor/StatusTagGroup.css'
 import { StatusTag } from './StatusTag'
 import type { CharacterStats } from '../../types/stats'

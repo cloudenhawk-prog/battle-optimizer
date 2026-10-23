@@ -1,3 +1,4 @@
+// Hiyuki — Present Self form: Resonance Skill (default / swap cancel).
 import type { Action } from '../../../../../types/action'
 import { s4_skill_buff } from '../../../../modifiers/hiyuki'
 import * as values from '../../values'

@@ -1,3 +1,4 @@
+// Enemy roster (level + elemental resistances) used as the damage target.
 import type { Enemy } from '../types/enemy'
 
 // ========== Enemies ==========================================================================================================
@@ -6,7 +7,7 @@ export const enemies: Enemy[] = [
   {
     name: 'Birdy',
     stats: {
-      level: 100, // Bird is level 85
+      level: 100, // NOTE: the in-game bird is level 85; 100 is used here
       aeroRES: 0.1,
       spectroRES: 0.1,
       havocRES: 0.4,

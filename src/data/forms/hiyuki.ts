@@ -1,3 +1,4 @@
+// Hiyuki forms: Present Self (base) and Foreclaimed Self (after Liberation; kept on swap-out).
 import type { Form } from '../../types/form'
 import { intro_outro_actions } from '../actions/hiyuki/actions'
 

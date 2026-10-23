@@ -1,3 +1,4 @@
+// Sidebar: navigation, plus rotation-page view/tool buttons driven by RotationPageContext.
 import { useLocation } from 'react-router-dom'
 import NavItem from './NavItem'
 import '../../styles/sidebar/Sidebar.css'

@@ -1,4 +1,5 @@
-﻿import type { Action } from '../../../../types/action'
+// Hiyuki — Intro "Frostedge" and Outro skills.
+import type { Action } from '../../../../types/action'
 import { outro_buff } from '../../../modifiers/hiyuki'
 import * as values from '../values'
 

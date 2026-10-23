@@ -1,3 +1,4 @@
+// Animated canvas background of drifting particles joined by "tether" lines (unused while USE_IMAGE_BG is true).
 import { useEffect, useRef } from 'react'
 
 const TetherBackground = () => {

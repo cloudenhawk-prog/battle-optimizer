@@ -1,0 +1,5227 @@
+{
+ "base": {
+  "actions": [
+   {
+    "castConditions": {
+     "blockedComboTags": [
+      "BA1",
+      "BA2",
+      "BA3"
+     ],
+     "endState": "GROUND",
+     "persistenceTime": 1.4,
+     "requiredForms": [
+      "Baseline Mode"
+     ],
+     "requiresSwapOut": true,
+     "startState": "GROUND",
+     "swapOutState": "GROUND"
+    },
+    "castTime": 0.09,
+    "category": "Basics",
+    "comboChainTags": [
+     "BA1"
+    ],
+    "cooldown": 0,
+    "coordinatedAttacks": [],
+    "damageModifiers": [],
+    "displayName": "Basic Attack 1 (swap cancel)",
+    "dmgTypes": [
+     "BASIC"
+    ],
+    "elements": [
+     "FUSION"
+    ],
+    "energyCost": [],
+    "energyGenerated": [
+     {
+      "amount": 0.89,
+      "energyType": "energy",
+      "scalingStat": "energyPercent",
+      "share": 0.5
+     },
+     {
+      "amount": 2.8,
+      "energyType": "concerto",
+      "share": 0
+     },
+     {
+      "amount": 20,
+      "energyType": "rest_mass_energy",
+      "share": 0
+     }
+    ],
+    "groupName": "Basic Attack 1",
+    "hideWhenNotCastable": true,
+    "multiplier": 0.5569,
+    "name": "Basic Attack 1 (swap cancel)",
+    "offtune": 0.27,
+    "scaling": "ATK",
+    "sideEffects": [],
+    "statusModifications": [],
+    "tags": [
+     "BASIC_ATTACK"
+    ],
+    "variantName": "Cancel With Swap"
+   },
+   {
+    "castConditions": {
+     "blockedComboTags": [
+      "BA1",
+      "BA2",
+      "BA3"
+     ],
+     "endState": "GROUND",
+     "persistenceTime": 2.551,
+     "requiredForms": [
+      "Baseline Mode"
+     ],
+     "requiresSwapOut": true,
+     "startState": "GROUND",
+     "swapOutState": "GROUND"
+    },
+    "castTime": 0.47,
+    "category": "Basics",
+    "comboChainTags": [
+     "BA2"
+    ],
+    "cooldown": 0,
+    "coordinatedAttacks": [],
+    "damageModifiers": [],
+    "displayName": "Basic Attack 1-2 (swap cancel)",
+    "dmgTypes": [
+     "BASIC"
+    ],
+    "elements": [
+     "FUSION"
+    ],
+    "energyCost": [],
+    "energyGenerated": [
+     {
+      "amount": 2.81,
+      "energyType": "energy",
+      "scalingStat": "energyPercent",
+      "share": 0.5
+     },
+     {
+      "amount": 8.8,
+      "energyType": "concerto",
+      "share": 0
+     },
+     {
+      "amount": 60,
+      "energyType": "rest_mass_energy",
+      "share": 0
+     }
+    ],
+    "groupName": "Basic Attack 1-2",
+    "hideWhenNotCastable": true,
+    "multiplier": 1.7501,
+    "name": "Basic Attack 1-2 (swap cancel)",
+    "offtune": 0.69,
+    "scaling": "ATK",
+    "sideEffects": [],
+    "statusModifications": [],
+    "tags": [
+     "BASIC_ATTACK"
+    ],
+    "variantName": "Cancel With Swap"
+   },
+   {
+    "attemptFollowUp": {
+     "actionName": "Heavy Attack",
+     "must": true
+    },
+    "castConditions": {
+     "blockedComboTags": [
+      "BA1",
+      "BA2",
+      "BA3"
+     ],
+     "endState": "GROUND",
+     "preventsSwapOut": true,
+     "requiredForms": [
+      "Baseline Mode"
+     ],
+     "startState": "GROUND"
+    },
+    "castTime": 1.83,
+    "category": "Basics",
+    "comboChainTags": [
+     "BA3"
+    ],
+    "cooldown": 0,
+    "coordinatedAttacks": [],
+    "damageModifiers": [],
+    "displayName": "Basic Attack 1-3 (into heavy)",
+    "dmgTypes": [
+     "BASIC"
+    ],
+    "elements": [
+     "FUSION"
+    ],
+    "energyCost": [],
+    "energyGenerated": [
+     {
+      "amount": 4.48,
+      "energyType": "energy",
+      "scalingStat": "energyPercent",
+      "share": 0.5
+     },
+     {
+      "amount": 14,
+      "energyType": "concerto",
+      "share": 0
+     },
+     {
+      "amount": 100,
+      "energyType": "rest_mass_energy",
+      "share": 0
+     }
+    ],
+    "groupName": "Basic Attack 1-3",
+    "hideWhenNotCastable": true,
+    "multiplier": 2.7841,
+    "name": "Basic Attack 1-3 (into heavy)",
+    "offtune": 1.2,
+    "scaling": "ATK",
+    "sideEffects": [],
+    "statusModifications": [],
+    "tags": [
+     "BASIC_ATTACK"
+    ],
+    "variantName": "Into Heavy Attack"
+   },
+   {
+    "castConditions": {
+     "blockedComboTags": [
+      "BA1",
+      "BA2",
+      "BA3"
+     ],
+     "endState": "GROUND",
+     "persistenceTime": 2.92,
+     "requiredForms": [
+      "Baseline Mode"
+     ],
+     "requiresSwapOut": true,
+     "startState": "GROUND",
+     "swapOutState": "GROUND"
+    },
+    "castTime": 1.34,
+    "category": "Basics",
+    "comboChainTags": [
+     "BA3"
+    ],
+    "cooldown": 0,
+    "coordinatedAttacks": [],
+    "damageModifiers": [],
+    "displayName": "Basic Attack 1-3 (swap cancel)",
+    "dmgTypes": [
+     "BASIC"
+    ],
+    "elements": [
+     "FUSION"
+    ],
+    "energyCost": [],
+    "energyGenerated": [
+     {
+      "amount": 4.48,
+      "energyType": "energy",
+      "scalingStat": "energyPercent",
+      "share": 0.5
+     },
+     {
+      "amount": 14,
+      "energyType": "concerto",
+      "share": 0
+     },
+     {
+      "amount": 100,
+      "energyType": "rest_mass_energy",
+      "share": 0
+     }
+    ],
+    "groupName": "Basic Attack 1-3",
+    "hideWhenNotCastable": true,
+    "multiplier": 2.7841,
+    "name": "Basic Attack 1-3 (swap cancel)",
+    "offtune": 1.2,
+    "scaling": "ATK",
+    "sideEffects": [],
+    "statusModifications": [],
+    "tags": [
+     "BASIC_ATTACK"
+    ],
+    "variantName": "Cancel With Swap"
+   },
+   {
+    "castConditions": {
+     "blockedComboTags": [
+      "BA2",
+      "BA3"
+     ],
+     "endState": "GROUND",
+     "persistenceTime": 2.551,
+     "requiredComboTags": [
+      "BA1"
+     ],
+     "requiredForms": [
+      "Baseline Mode"
+     ],
+     "requiresSwapOut": true,
+     "startState": "GROUND",
+     "swapOutState": "GROUND"
+    },
+    "castTime": 0.09,
+    "category": "Basics",
+    "comboChainTags": [
+     "BA2"
+    ],
+    "cooldown": 0,
+    "coordinatedAttacks": [],
+    "damageModifiers": [],
+    "displayName": "Basic Attack 2 (swap cancel)",
+    "dmgTypes": [
+     "BASIC"
+    ],
+    "elements": [
+     "FUSION"
+    ],
+    "energyCost": [],
+    "energyGenerated": [
+     {
+      "amount": 1.92,
+      "energyType": "energy",
+      "scalingStat": "energyPercent",
+      "share": 0.5
+     },
+     {
+      "amount": 6,
+      "energyType": "concerto",
+      "share": 0
+     },
+     {
+      "amount": 40,
+      "energyType": "rest_mass_energy",
+      "share": 0
+     }
+    ],
+    "groupName": "Basic Attack 2",
+    "hideWhenNotCastable": true,
+    "multiplier": 1.1932,
+    "name": "Basic Attack 2 (swap cancel)",
+    "offtune": 0.42,
+    "scaling": "ATK",
+    "sideEffects": [],
+    "statusModifications": [],
+    "tags": [
+     "BASIC_ATTACK"
+    ],
+    "variantName": "Cancel With Swap"
+   },
+   {
+    "attemptFollowUp": {
+     "actionName": "Heavy Attack",
+     "must": true
+    },
+    "castConditions": {
+     "blockedComboTags": [
+      "BA2",
+      "BA3"
+     ],
+     "endState": "GROUND",
+     "preventsSwapOut": true,
+     "requiredComboTags": [
+      "BA1"
+     ],
+     "requiredForms": [
+      "Baseline Mode"
+     ],
+     "startState": "GROUND"
+    },
+    "castTime": 1.59,
+    "category": "Basics",
+    "comboChainTags": [
+     "BA3"
+    ],
+    "cooldown": 0,
+    "coordinatedAttacks": [],
+    "damageModifiers": [],
+    "displayName": "Basic Attack 2-3 (into heavy)",
+    "dmgTypes": [
+     "BASIC"
+    ],
+    "elements": [
+     "FUSION"
+    ],
+    "energyCost": [],
+    "energyGenerated": [
+     {
+      "amount": 3.59,
+      "energyType": "energy",
+      "scalingStat": "energyPercent",
+      "share": 0.5
+     },
+     {
+      "amount": 11.2,
+      "energyType": "concerto",
+      "share": 0
+     },
+     {
+      "amount": 80,
+      "energyType": "rest_mass_energy",
+      "share": 0
+     }
+    ],
+    "groupName": "Basic Attack 2-3",
+    "hideWhenNotCastable": true,
+    "multiplier": 2.2272,
+    "name": "Basic Attack 2-3 (into heavy)",
+    "offtune": 0.93,
+    "scaling": "ATK",
+    "sideEffects": [],
+    "statusModifications": [],
+    "tags": [
+     "BASIC_ATTACK"
+    ],
+    "variantName": "Into Heavy"
+   },
+   {
+    "castConditions": {
+     "blockedComboTags": [
+      "BA2",
+      "BA3"
+     ],
+     "endState": "GROUND",
+     "persistenceTime": 2.92,
+     "requiredComboTags": [
+      "BA1"
+     ],
+     "requiredForms": [
+      "Baseline Mode"
+     ],
+     "requiresSwapOut": true,
+     "startState": "GROUND",
+     "swapOutState": "GROUND"
+    },
+    "castTime": 1.1,
+    "category": "Basics",
+    "comboChainTags": [
+     "BA3"
+    ],
+    "cooldown": 0,
+    "coordinatedAttacks": [],
+    "damageModifiers": [],
+    "displayName": "Basic Attack 2-3 (swap cancel)",
+    "dmgTypes": [
+     "BASIC"
+    ],
+    "elements": [
+     "FUSION"
+    ],
+    "energyCost": [],
+    "energyGenerated": [
+     {
+      "amount": 3.59,
+      "energyType": "energy",
+      "scalingStat": "energyPercent",
+      "share": 0.5
+     },
+     {
+      "amount": 11.2,
+      "energyType": "concerto",
+      "share": 0
+     },
+     {
+      "amount": 80,
+      "energyType": "rest_mass_energy",
+      "share": 0
+     }
+    ],
+    "groupName": "Basic Attack 2-3",
+    "hideWhenNotCastable": true,
+    "multiplier": 2.2272,
+    "name": "Basic Attack 2-3 (swap cancel)",
+    "offtune": 0.93,
+    "scaling": "ATK",
+    "sideEffects": [],
+    "statusModifications": [],
+    "tags": [
+     "BASIC_ATTACK"
+    ],
+    "variantName": "Cancel With Swap"
+   },
+   {
+    "attemptFollowUp": {
+     "actionName": "Heavy Attack",
+     "must": true
+    },
+    "castConditions": {
+     "blockedComboTags": [
+      "BA1",
+      "BA3"
+     ],
+     "endState": "GROUND",
+     "preventsSwapOut": true,
+     "requiredComboTags": [
+      "BA2"
+     ],
+     "requiredForms": [
+      "Baseline Mode"
+     ],
+     "startState": "GROUND"
+    },
+    "castTime": 0.58,
+    "category": "Basics",
+    "comboChainTags": [
+     "BA3"
+    ],
+    "cooldown": 0,
+    "coordinatedAttacks": [],
+    "damageModifiers": [],
+    "displayName": "Basic Attack 3 (into heavy)",
+    "dmgTypes": [
+     "BASIC"
+    ],
+    "elements": [
+     "FUSION"
+    ],
+    "energyCost": [],
+    "energyGenerated": [
+     {
+      "amount": 1.67,
+      "energyType": "energy",
+      "scalingStat": "energyPercent",
+      "share": 0.5
+     },
+     {
+      "amount": 5.2,
+      "energyType": "concerto",
+      "share": 0
+     },
+     {
+      "amount": 40,
+      "energyType": "rest_mass_energy",
+      "share": 0
+     }
+    ],
+    "groupName": "Basic Attack 3",
+    "hideWhenNotCastable": true,
+    "multiplier": 1.034,
+    "name": "Basic Attack 3 (into heavy)",
+    "offtune": 0.51,
+    "scaling": "ATK",
+    "sideEffects": [],
+    "statusModifications": [],
+    "tags": [
+     "BASIC_ATTACK"
+    ],
+    "variantName": "Into Heavy"
+   },
+   {
+    "castConditions": {
+     "blockedComboTags": [
+      "BA1",
+      "BA3"
+     ],
+     "endState": "GROUND",
+     "persistenceTime": 2.92,
+     "requiredComboTags": [
+      "BA2"
+     ],
+     "requiredForms": [
+      "Baseline Mode"
+     ],
+     "requiresSwapOut": true,
+     "startState": "GROUND",
+     "swapOutState": "GROUND"
+    },
+    "castTime": 0.09,
+    "category": "Basics",
+    "comboChainTags": [
+     "BA3"
+    ],
+    "cooldown": 0,
+    "coordinatedAttacks": [],
+    "damageModifiers": [],
+    "displayName": "Basic Attack 3 (swap cancel)",
+    "dmgTypes": [
+     "BASIC"
+    ],
+    "elements": [
+     "FUSION"
+    ],
+    "energyCost": [],
+    "energyGenerated": [
+     {
+      "amount": 1.67,
+      "energyType": "energy",
+      "scalingStat": "energyPercent",
+      "share": 0.5
+     },
+     {
+      "amount": 5.2,
+      "energyType": "concerto",
+      "share": 0
+     },
+     {
+      "amount": 40,
+      "energyType": "rest_mass_energy",
+      "share": 0
+     }
+    ],
+    "groupName": "Basic Attack 3",
+    "hideWhenNotCastable": true,
+    "multiplier": 1.034,
+    "name": "Basic Attack 3 (swap cancel)",
+    "offtune": 0.51,
+    "scaling": "ATK",
+    "sideEffects": [],
+    "statusModifications": [],
+    "tags": [
+     "BASIC_ATTACK"
+    ],
+    "variantName": "Cancel With Swap"
+   },
+   {
+    "attemptFollowUp": {
+     "actionName": "Resonance Skill",
+     "must": true
+    },
+    "castConditions": {
+     "blockedComboTags": [
+      "BA1",
+      "BA3"
+     ],
+     "endState": "GROUND",
+     "requiredComboTags": [
+      "BA2"
+     ],
+     "requiredForms": [
+      "Baseline Mode"
+     ],
+     "startState": "GROUND"
+    },
+    "castTime": 0.04,
+    "category": "Basics",
+    "comboChainTags": [
+     "BA3"
+    ],
+    "cooldown": 0,
+    "coordinatedAttacks": [],
+    "damageModifiers": [],
+    "displayName": "Basic Attack 3 (skill cancel)",
+    "dmgTypes": [
+     "BASIC"
+    ],
+    "elements": [
+     "FUSION"
+    ],
+    "energyCost": [],
+    "energyGenerated": [
+     {
+      "amount": 0,
+      "energyType": "energy",
+      "scalingStat": "energyPercent",
+      "share": 0.5
+     },
+     {
+      "amount": 0,
+      "energyType": "concerto",
+      "share": 0
+     },
+     {
+      "amount": 40,
+      "energyType": "rest_mass_energy",
+      "share": 0
+     }
+    ],
+    "groupName": "Basic Attack 3",
+    "hideWhenNotCastable": true,
+    "multiplier": 0,
+    "name": "Basic Attack 3 (skill cancel)",
+    "offtune": 0,
+    "scaling": "ATK",
+    "sideEffects": [],
+    "statusModifications": [],
+    "tags": [
+     "BASIC_ATTACK"
+    ],
+    "variantName": "Cancel With Skill"
+   },
+   {
+    "attemptFollowUp": {
+     "actionName": "Mode: Basic Attack 1-3"
+    },
+    "castConditions": {
+     "endState": "AIR",
+     "preventsSwapOut": true,
+     "requiredForms": [
+      "Baseline Mode"
+     ],
+     "startState": "GROUND"
+    },
+    "castTime": 1.15,
+    "category": "Basics",
+    "cooldown": 0,
+    "coordinatedAttacks": [],
+    "damageModifiers": [
+     {
+      "characterStats": {
+       "offtuneBuildupRate": 0.5
+      },
+      "color": "#FFC247",
+      "condition": "[Function]",
+      "description": "For 25 seconds: increases the Offtune Buildup Rate of all Resonators by 50%. Every 3 seconds, heals the active resonator.",
+      "displayName": "Syntony Field",
+      "durationStrategy": {
+       "timeDuration": 25,
+       "type": "limited"
+      },
+      "healProc": {
+       "frequency": 3,
+       "procModifiers": [],
+       "procTag": "HEAL_PROC"
+      },
+      "ownerCharacter": "Mornye",
+      "showStats": true,
+      "source": "Mornye: Syntony Field",
+      "stackingStrategy": {
+       "maxStacks": 1,
+       "resetTimerOnApplication": true,
+       "stacksRemovedEachTime": 1
+      },
+      "targetStrategy": "all",
+      "type": "buff"
+     },
+     {
+      "characterStats": {
+       "offtuneBuildupRate": 0.2
+      },
+      "color": "#FFC247",
+      "condition": "[Function]",
+      "contributionGroup": "Mornye: Syntony Field",
+      "description": "Syntony Field grants an additional 20% Offtune Buildup Rate to all Resonators",
+      "displayName": "Syntony Field (S2)",
+      "durationStrategy": {
+       "timeDuration": 25,
+       "type": "limited"
+      },
+      "ownerCharacter": "Mornye",
+      "showStats": true,
+      "source": "Mornye: Syntony Field",
+      "stackingStrategy": {
+       "maxStacks": 1,
+       "resetTimerOnApplication": true,
+       "stacksRemovedEachTime": 1
+      },
+      "targetStrategy": "all",
+      "type": "buff"
+     }
+    ],
+    "displayName": "Heavy Attack",
+    "dmgTypes": [
+     "HEAVY"
+    ],
+    "elements": [
+     "FUSION"
+    ],
+    "energyCost": [
+     {
+      "amount": 100,
+      "energyType": "rest_mass_energy"
+     }
+    ],
+    "energyGenerated": [
+     {
+      "amount": 3.01,
+      "energyType": "energy",
+      "scalingStat": "energyPercent",
+      "share": 0.5
+     },
+     {
+      "amount": 9.61,
+      "energyType": "concerto",
+      "share": 0
+     }
+    ],
+    "formChange": "Wide Field Observation Mode",
+    "multiplier": 1.4316,
+    "name": "Heavy Attack",
+    "offtune": 0.96,
+    "scaling": "ATK",
+    "sideEffects": [],
+    "statusModifications": [],
+    "tags": [
+     "HEAVY_ATTACK",
+     "HEAL_PROC"
+    ]
+   },
+   {
+    "attemptFollowUp": {
+     "actionName": "Mode: Basic Attack 1-3"
+    },
+    "castConditions": {
+     "endState": "AIR",
+     "preventsSwapOut": true,
+     "requiredForms": [
+      "Baseline Mode"
+     ],
+     "startState": "GROUND"
+    },
+    "castTime": 1.5,
+    "category": "Basics",
+    "cooldown": 0,
+    "coordinatedAttacks": [],
+    "damageModifiers": [
+     {
+      "characterStats": {
+       "offtuneBuildupRate": 0.5
+      },
+      "color": "#FFC247",
+      "condition": "[Function]",
+      "description": "For 25 seconds: increases the Offtune Buildup Rate of all Resonators by 50%. Every 3 seconds, heals the active resonator.",
+      "displayName": "Syntony Field",
+      "durationStrategy": {
+       "timeDuration": 25,
+       "type": "limited"
+      },
+      "healProc": {
+       "frequency": 3,
+       "procModifiers": [],
+       "procTag": "HEAL_PROC"
+      },
+      "ownerCharacter": "Mornye",
+      "showStats": true,
+      "source": "Mornye: Syntony Field",
+      "stackingStrategy": {
+       "maxStacks": 1,
+       "resetTimerOnApplication": true,
+       "stacksRemovedEachTime": 1
+      },
+      "targetStrategy": "all",
+      "type": "buff"
+     },
+     {
+      "characterStats": {
+       "offtuneBuildupRate": 0.2
+      },
+      "color": "#FFC247",
+      "condition": "[Function]",
+      "contributionGroup": "Mornye: Syntony Field",
+      "description": "Syntony Field grants an additional 20% Offtune Buildup Rate to all Resonators",
+      "displayName": "Syntony Field (S2)",
+      "durationStrategy": {
+       "timeDuration": 25,
+       "type": "limited"
+      },
+      "ownerCharacter": "Mornye",
+      "showStats": true,
+      "source": "Mornye: Syntony Field",
+      "stackingStrategy": {
+       "maxStacks": 1,
+       "resetTimerOnApplication": true,
+       "stacksRemovedEachTime": 1
+      },
+      "targetStrategy": "all",
+      "type": "buff"
+     }
+    ],
+    "displayName": "Heavy Attack",
+    "dmgTypes": [
+     "HEAVY"
+    ],
+    "elements": [
+     "FUSION"
+    ],
+    "energyCost": [
+     {
+      "amount": 100,
+      "energyType": "rest_mass_energy"
+     }
+    ],
+    "energyGenerated": [
+     {
+      "amount": 3.01,
+      "energyType": "energy",
+      "scalingStat": "energyPercent",
+      "share": 0.5
+     },
+     {
+      "amount": 9.61,
+      "energyType": "concerto",
+      "share": 0
+     }
+    ],
+    "formChange": "Wide Field Observation Mode",
+    "multiplier": 1.4316,
+    "name": "Heavy Attack (Swap In)",
+    "offtune": 0.96,
+    "scaling": "ATK",
+    "sideEffects": [],
+    "statusModifications": [],
+    "tags": [
+     "HEAVY_ATTACK",
+     "HEAL_PROC"
+    ]
+   },
+   {
+    "attemptFollowUp": {
+     "actionName": "Heavy Attack",
+     "must": true
+    },
+    "castConditions": {
+     "endState": "GROUND",
+     "preventsSwapOut": true,
+     "previousActions": [
+      {
+       "attemptFollowUp": {
+        "actionName": "Resonance Skill",
+        "must": true
+       },
+       "castConditions": {
+        "blockedComboTags": [
+         "BA1",
+         "BA2",
+         "BA3"
+        ],
+        "endState": "GROUND",
+        "preventsSwapOut": true,
+        "requiredForms": [
+         "Baseline Mode"
+        ],
+        "startState": "GROUND"
+       },
+       "castTime": 0.8,
+       "category": "Basics",
+       "comboChainTags": [
+        "BA3"
+       ],
+       "cooldown": 0,
+       "coordinatedAttacks": [],
+       "damageModifiers": [],
+       "displayName": "Basic Attack 1-3 (skill cancel)",
+       "dmgTypes": [
+        "BASIC"
+       ],
+       "elements": [
+        "FUSION"
+       ],
+       "energyCost": [],
+       "energyGenerated": [
+        {
+         "amount": 2.81,
+         "energyType": "energy",
+         "scalingStat": "energyPercent",
+         "share": 0.5
+        },
+        {
+         "amount": 8.8,
+         "energyType": "concerto",
+         "share": 0
+        },
+        {
+         "amount": 100,
+         "energyType": "rest_mass_energy",
+         "share": 0
+        }
+       ],
+       "groupName": "Basic Attack 1-3",
+       "hideWhenNotCastable": true,
+       "multiplier": 1.7501,
+       "name": "Basic Attack 1-3 (skill cancel)",
+       "offtune": 1.2,
+       "scaling": "ATK",
+       "sideEffects": [],
+       "statusModifications": [],
+       "tags": [
+        "BASIC_ATTACK"
+       ],
+       "variantName": "Cancel With Skill"
+      },
+      {
+       "attemptFollowUp": {
+        "actionName": "Resonance Skill",
+        "must": true
+       },
+       "castConditions": {
+        "blockedComboTags": [
+         "BA2",
+         "BA3"
+        ],
+        "endState": "GROUND",
+        "preventsSwapOut": true,
+        "requiredComboTags": [
+         "BA1"
+        ],
+        "requiredForms": [
+         "Baseline Mode"
+        ],
+        "startState": "GROUND"
+       },
+       "castTime": 0.56,
+       "category": "Basics",
+       "comboChainTags": [
+        "BA3"
+       ],
+       "cooldown": 0,
+       "coordinatedAttacks": [],
+       "damageModifiers": [],
+       "displayName": "Basic Attack 2-3 (skill cancel)",
+       "dmgTypes": [
+        "BASIC"
+       ],
+       "elements": [
+        "FUSION"
+       ],
+       "energyCost": [],
+       "energyGenerated": [
+        {
+         "amount": 1.92,
+         "energyType": "energy",
+         "scalingStat": "energyPercent",
+         "share": 0.5
+        },
+        {
+         "amount": 6,
+         "energyType": "concerto",
+         "share": 0
+        },
+        {
+         "amount": 80,
+         "energyType": "rest_mass_energy",
+         "share": 0
+        }
+       ],
+       "groupName": "Basic Attack 2-3",
+       "hideWhenNotCastable": true,
+       "multiplier": 1.1932,
+       "name": "Basic Attack 2-3 (skill cancel)",
+       "offtune": 0.93,
+       "scaling": "ATK",
+       "sideEffects": [],
+       "statusModifications": [],
+       "tags": [
+        "BASIC_ATTACK"
+       ],
+       "variantName": "Cancel With Skill"
+      },
+      {
+       "attemptFollowUp": {
+        "actionName": "Resonance Skill",
+        "must": true
+       },
+       "castConditions": {
+        "blockedComboTags": [
+         "BA1",
+         "BA3"
+        ],
+        "endState": "GROUND",
+        "requiredComboTags": [
+         "BA2"
+        ],
+        "requiredForms": [
+         "Baseline Mode"
+        ],
+        "startState": "GROUND"
+       },
+       "castTime": 0.04,
+       "category": "Basics",
+       "comboChainTags": [
+        "BA3"
+       ],
+       "cooldown": 0,
+       "coordinatedAttacks": [],
+       "damageModifiers": [],
+       "displayName": "Basic Attack 3 (skill cancel)",
+       "dmgTypes": [
+        "BASIC"
+       ],
+       "elements": [
+        "FUSION"
+       ],
+       "energyCost": [],
+       "energyGenerated": [
+        {
+         "amount": 0,
+         "energyType": "energy",
+         "scalingStat": "energyPercent",
+         "share": 0.5
+        },
+        {
+         "amount": 0,
+         "energyType": "concerto",
+         "share": 0
+        },
+        {
+         "amount": 40,
+         "energyType": "rest_mass_energy",
+         "share": 0
+        }
+       ],
+       "groupName": "Basic Attack 3",
+       "hideWhenNotCastable": true,
+       "multiplier": 0,
+       "name": "Basic Attack 3 (skill cancel)",
+       "offtune": 0,
+       "scaling": "ATK",
+       "sideEffects": [],
+       "statusModifications": [],
+       "tags": [
+        "BASIC_ATTACK"
+       ],
+       "variantName": "Cancel With Skill"
+      }
+     ],
+     "requiredForms": [
+      "Baseline Mode"
+     ],
+     "startState": "GROUND"
+    },
+    "castTime": 0.36,
+    "category": "Skills",
+    "comboChainTags": [
+     "BA1"
+    ],
+    "cooldown": 5,
+    "coordinatedAttacks": [],
+    "damageModifiers": [],
+    "displayName": "Expectation Error",
+    "dmgTypes": [
+     "SKILL"
+    ],
+    "elements": [
+     "FUSION"
+    ],
+    "energyCost": [],
+    "energyGenerated": [],
+    "groupName": "Resonance Skill",
+    "multiplier": 0,
+    "name": "Resonance Skill",
+    "offtune": 0,
+    "scaling": "ATK",
+    "sideEffects": [],
+    "statusModifications": [],
+    "tags": [
+     "SKILL"
+    ],
+    "variantName": "Default"
+   },
+   {
+    "attemptFollowUp": {
+     "actionName": "Mode: Resonance Skill",
+     "must": true
+    },
+    "castConditions": {
+     "endState": "AIR",
+     "preventsSwapOut": true,
+     "requiredForms": [
+      "Wide Field Observation Mode"
+     ],
+     "startState": "AIR"
+    },
+    "castTime": 1.51,
+    "category": "Basics",
+    "cooldown": 0,
+    "coordinatedAttacks": [],
+    "damageModifiers": [],
+    "displayName": "Mode: Basic Attack 1-3",
+    "dmgTypes": [
+     "BASIC"
+    ],
+    "elements": [
+     "FUSION"
+    ],
+    "energyCost": [],
+    "energyGenerated": [
+     {
+      "amount": 4.16,
+      "energyType": "energy",
+      "scalingStat": "energyPercent",
+      "share": 0.5
+     },
+     {
+      "amount": 6.52,
+      "energyType": "concerto",
+      "share": 0
+     },
+     {
+      "amount": 40,
+      "energyType": "relative_momentum",
+      "share": 0
+     }
+    ],
+    "multiplier": 2.625,
+    "name": "Mode: Basic Attack 1-3",
+    "offtune": 1.34,
+    "resolveVariant": "[Function]",
+    "scaling": "ATK",
+    "sideEffects": [],
+    "statusModifications": [],
+    "tags": [
+     "BASIC_ATTACK"
+    ]
+   },
+   {
+    "attemptFollowUp": {
+     "actionName": "Mode: Heavy Attack",
+     "must": true
+    },
+    "castConditions": {
+     "endState": "AIR",
+     "preventsSwapOut": true,
+     "requiredForms": [
+      "Wide Field Observation Mode"
+     ],
+     "startState": "AIR"
+    },
+    "castTime": 1.05,
+    "category": "Skills",
+    "cooldown": 16,
+    "coordinatedAttacks": [],
+    "damageModifiers": [],
+    "displayName": "Distributed Array",
+    "dmgTypes": [
+     "SKILL"
+    ],
+    "elements": [
+     "FUSION"
+    ],
+    "energyCost": [],
+    "energyGenerated": [
+     {
+      "amount": 18.52,
+      "energyType": "energy",
+      "scalingStat": "energyPercent",
+      "share": 0.5
+     },
+     {
+      "amount": 10,
+      "energyType": "concerto",
+      "share": 0
+     },
+     {
+      "amount": 60,
+      "energyType": "relative_momentum",
+      "share": 0
+     }
+    ],
+    "multiplier": 1.5908,
+    "name": "Mode: Resonance Skill",
+    "offtune": 0.8,
+    "resolveVariant": "[Function]",
+    "scaling": "ATK",
+    "sideEffects": [],
+    "statusModifications": [],
+    "tags": [
+     "SKILL",
+     "HEAL_PROC"
+    ]
+   },
+   {
+    "attemptFollowUp": {
+     "actionName": "Liberation",
+     "must": true
+    },
+    "castConditions": {
+     "endState": "AIR",
+     "preventsSwapOut": true,
+     "requiredForms": [
+      "Wide Field Observation Mode"
+     ],
+     "startState": "AIR"
+    },
+    "castTime": 1.32,
+    "category": "Basics",
+    "cooldown": 0,
+    "coordinatedAttacks": [],
+    "damageModifiers": [
+     {
+      "characterStats": {
+       "bonusDMG": 0
+      },
+      "color": "#B87EFF",
+      "condition": "[Function]",
+      "description": "For 20 seconds: Every 1 % of Mornye's Energy Regen over 100 % grants 0.25% Damage Bonus to all Resonators, up to 40%.",
+      "displayName": "Interfered Marker",
+      "durationStrategy": {
+       "timeDuration": 30,
+       "type": "limited"
+      },
+      "ownerCharacter": "Mornye",
+      "showStats": true,
+      "source": "Mornye: Interfered Marker",
+      "stackingStrategy": {
+       "maxStacks": 1,
+       "resetTimerOnApplication": true,
+       "stacksRemovedEachTime": 1
+      },
+      "statsOnActivation": "[Function]",
+      "targetStrategy": "all",
+      "type": "buff"
+     },
+     {
+      "characterStats": {
+       "critDamage": 0
+      },
+      "color": "#B87EFF",
+      "condition": "[Function]",
+      "description": "For 20 seconds: Every 1 % of Mornye's Energy Regen over 100 % grants 0.2% Crit DMG to all Resonators, up to 32%.",
+      "displayName": "Interfered Marker (S2)",
+      "durationStrategy": {
+       "timeDuration": 30,
+       "type": "limited"
+      },
+      "ownerCharacter": "Mornye",
+      "showStats": true,
+      "source": "Mornye: Interfered Marker (S2)",
+      "stackingStrategy": {
+       "maxStacks": 1,
+       "resetTimerOnApplication": true,
+       "stacksRemovedEachTime": 1
+      },
+      "statsOnActivation": "[Function]",
+      "targetStrategy": "all",
+      "type": "buff"
+     }
+    ],
+    "displayName": "Mode: Heavy Attack",
+    "dmgTypes": [
+     "HEAVY"
+    ],
+    "elements": [
+     "FUSION"
+    ],
+    "energyCost": [
+     {
+      "amount": 100,
+      "energyType": "relative_momentum"
+     }
+    ],
+    "energyGenerated": [
+     {
+      "amount": 3.25,
+      "energyType": "energy",
+      "scalingStat": "energyPercent",
+      "share": 0.5
+     },
+     {
+      "amount": 11.96,
+      "energyType": "concerto",
+      "share": 0
+     }
+    ],
+    "multiplier": 2.5846,
+    "name": "Mode: Heavy Attack",
+    "offtune": 1.04,
+    "scaling": "ATK",
+    "sideEffects": [],
+    "statusModifications": [],
+    "tags": [
+     "HEAVY_ATTACK"
+    ]
+   },
+   {
+    "attemptFollowUp": {
+     "actionName": "Echo Skill",
+     "must": true
+    },
+    "castConditions": {
+     "endState": "PRESERVE",
+     "previousActions": [
+      {
+       "attemptFollowUp": {
+        "actionName": "Liberation",
+        "must": true
+       },
+       "castConditions": {
+        "endState": "AIR",
+        "preventsSwapOut": true,
+        "requiredForms": [
+         "Wide Field Observation Mode"
+        ],
+        "startState": "AIR"
+       },
+       "castTime": 1.32,
+       "category": "Basics",
+       "cooldown": 0,
+       "coordinatedAttacks": [],
+       "damageModifiers": [
+        {
+         "characterStats": {
+          "bonusDMG": 0
+         },
+         "color": "#B87EFF",
+         "condition": "[Function]",
+         "description": "For 20 seconds: Every 1 % of Mornye's Energy Regen over 100 % grants 0.25% Damage Bonus to all Resonators, up to 40%.",
+         "displayName": "Interfered Marker",
+         "durationStrategy": {
+          "timeDuration": 30,
+          "type": "limited"
+         },
+         "ownerCharacter": "Mornye",
+         "showStats": true,
+         "source": "Mornye: Interfered Marker",
+         "stackingStrategy": {
+          "maxStacks": 1,
+          "resetTimerOnApplication": true,
+          "stacksRemovedEachTime": 1
+         },
+         "statsOnActivation": "[Function]",
+         "targetStrategy": "all",
+         "type": "buff"
+        },
+        {
+         "characterStats": {
+          "critDamage": 0
+         },
+         "color": "#B87EFF",
+         "condition": "[Function]",
+         "description": "For 20 seconds: Every 1 % of Mornye's Energy Regen over 100 % grants 0.2% Crit DMG to all Resonators, up to 32%.",
+         "displayName": "Interfered Marker (S2)",
+         "durationStrategy": {
+          "timeDuration": 30,
+          "type": "limited"
+         },
+         "ownerCharacter": "Mornye",
+         "showStats": true,
+         "source": "Mornye: Interfered Marker (S2)",
+         "stackingStrategy": {
+          "maxStacks": 1,
+          "resetTimerOnApplication": true,
+          "stacksRemovedEachTime": 1
+         },
+         "statsOnActivation": "[Function]",
+         "targetStrategy": "all",
+         "type": "buff"
+        }
+       ],
+       "displayName": "Mode: Heavy Attack",
+       "dmgTypes": [
+        "HEAVY"
+       ],
+       "elements": [
+        "FUSION"
+       ],
+       "energyCost": [
+        {
+         "amount": 100,
+         "energyType": "relative_momentum"
+        }
+       ],
+       "energyGenerated": [
+        {
+         "amount": 3.25,
+         "energyType": "energy",
+         "scalingStat": "energyPercent",
+         "share": 0.5
+        },
+        {
+         "amount": 11.96,
+         "energyType": "concerto",
+         "share": 0
+        }
+       ],
+       "multiplier": 2.5846,
+       "name": "Mode: Heavy Attack",
+       "offtune": 1.04,
+       "scaling": "ATK",
+       "sideEffects": [],
+       "statusModifications": [],
+       "tags": [
+        "HEAVY_ATTACK"
+       ]
+      }
+     ],
+     "requiredForms": [
+      "Wide Field Observation Mode"
+     ],
+     "startState": "ANY"
+    },
+    "castTime": 0.01,
+    "category": "Skills",
+    "cooldown": 25,
+    "coordinatedAttacks": [],
+    "damageModifiers": [
+     {
+      "activationCondition": "[Function]",
+      "characterStats": {
+       "bonusDEF": 0.2,
+       "offtuneBuildupRate": 0.5
+      },
+      "color": "#FF2E3A",
+      "condition": "[Function]",
+      "description": "For 25 seconds: increases the DEF of all Resonators by 20% and Offtune Buildup Rate by 50%. Every 3 seconds, heals the active resonator.",
+      "displayName": "High Syntony Field",
+      "durationStrategy": {
+       "timeDuration": 25,
+       "type": "limited"
+      },
+      "healProc": {
+       "frequency": 3,
+       "procModifiers": [],
+       "procTag": "HEAL_PROC"
+      },
+      "ownerCharacter": "Mornye",
+      "removesModifierSourceOnActivation": "Mornye: Syntony Field",
+      "showStats": true,
+      "source": "Mornye: High Syntony Field",
+      "stackingStrategy": {
+       "maxStacks": 1,
+       "resetTimerOnApplication": true,
+       "stacksRemovedEachTime": 1
+      },
+      "targetStrategy": "all",
+      "type": "buff"
+     },
+     {
+      "activationCondition": "[Function]",
+      "characterStats": {
+       "offtuneBuildupRate": 0.2
+      },
+      "color": "#FF2E3A",
+      "condition": "[Function]",
+      "contributionGroup": "Mornye: High Syntony Field",
+      "description": "High Syntony Field grants an additional 20% Offtune Buildup Rate to all Resonators",
+      "displayName": "High Syntony Field (S2)",
+      "durationStrategy": {
+       "timeDuration": 25,
+       "type": "limited"
+      },
+      "ownerCharacter": "Mornye",
+      "showStats": true,
+      "source": "Mornye: High Syntony Field",
+      "stackingStrategy": {
+       "maxStacks": 1,
+       "resetTimerOnApplication": true,
+       "stacksRemovedEachTime": 1
+      },
+      "targetStrategy": "all",
+      "type": "buff"
+     }
+    ],
+    "displayName": "Critical Protocol",
+    "dmgTypes": [
+     "LIBERATION"
+    ],
+    "elements": [
+     "FUSION"
+    ],
+    "energyCost": [
+     {
+      "amount": 175,
+      "energyType": "energy"
+     }
+    ],
+    "energyGenerated": [
+     {
+      "amount": 20,
+      "energyType": "concerto",
+      "share": 0
+     },
+     {
+      "amount": 8,
+      "cooldownDuration": 20,
+      "cooldownKey": "Starfield Calibrator: Liberation Energy",
+      "energyType": "concerto",
+      "share": 0
+     },
+     {
+      "amount": 8,
+      "cooldownDuration": 20,
+      "cooldownKey": "Starfield Calibrator: Liberation Energy",
+      "energyType": "concerto",
+      "share": 0
+     }
+    ],
+    "inherentModifiers": [
+     {
+      "characterStats": {
+       "critDamage": 0.01,
+       "critRate": 0.005
+      },
+      "condition": "[Function]",
+      "displayName": "Liberation Crit Scaling"
+     }
+    ],
+    "multiplier": 5.2233,
+    "name": "Liberation",
+    "offtune": 7.2,
+    "resolveVariant": "[Function]",
+    "scaling": "DEF",
+    "sideEffects": [],
+    "statusModifications": [],
+    "tags": [
+     "LIBERATION",
+     "HEAL_PROC"
+    ]
+   },
+   {
+    "castConditions": {
+     "endState": "AIR",
+     "startState": "ANY"
+    },
+    "castTime": 1.7,
+    "category": "Other",
+    "cooldown": 0,
+    "damageModifiers": [
+     {
+      "characterStats": {
+       "offtuneBuildupRate": 0.5
+      },
+      "color": "#FFC247",
+      "condition": "[Function]",
+      "description": "For 25 seconds: increases the Offtune Buildup Rate of all Resonators by 50%. Every 3 seconds, heals the active resonator.",
+      "displayName": "Syntony Field",
+      "durationStrategy": {
+       "timeDuration": 25,
+       "type": "limited"
+      },
+      "healProc": {
+       "frequency": 3,
+       "procModifiers": [],
+       "procTag": "HEAL_PROC"
+      },
+      "ownerCharacter": "Mornye",
+      "showStats": true,
+      "source": "Mornye: Syntony Field",
+      "stackingStrategy": {
+       "maxStacks": 1,
+       "resetTimerOnApplication": true,
+       "stacksRemovedEachTime": 1
+      },
+      "targetStrategy": "all",
+      "type": "buff"
+     },
+     {
+      "characterStats": {
+       "offtuneBuildupRate": 0.2
+      },
+      "color": "#FFC247",
+      "condition": "[Function]",
+      "contributionGroup": "Mornye: Syntony Field",
+      "description": "Syntony Field grants an additional 20% Offtune Buildup Rate to all Resonators",
+      "displayName": "Syntony Field (S2)",
+      "durationStrategy": {
+       "timeDuration": 25,
+       "type": "limited"
+      },
+      "ownerCharacter": "Mornye",
+      "showStats": true,
+      "source": "Mornye: Syntony Field",
+      "stackingStrategy": {
+       "maxStacks": 1,
+       "resetTimerOnApplication": true,
+       "stacksRemovedEachTime": 1
+      },
+      "targetStrategy": "all",
+      "type": "buff"
+     }
+    ],
+    "displayName": "Convergence",
+    "dmgTypes": [
+     "INTRO"
+    ],
+    "elements": [
+     "FUSION"
+    ],
+    "energyCost": [],
+    "energyGenerated": [
+     {
+      "amount": 10,
+      "energyType": "energy",
+      "scalingStat": "energyPercent",
+      "share": 0.5
+     },
+     {
+      "amount": 10,
+      "energyType": "concerto",
+      "share": 0
+     }
+    ],
+    "formChange": "Wide Field Observation Mode",
+    "multiplier": 2.0279,
+    "name": "Mornye Intro",
+    "offtune": 1.36,
+    "resolveVariant": "[Function]",
+    "scaling": "ATK",
+    "sideEffects": [],
+    "statusModifications": [],
+    "tags": [
+     "INTRO_ACTION",
+     "HEAL_PROC"
+    ]
+   },
+   {
+    "castConditions": {
+     "endState": "PRESERVE",
+     "startState": "ANY"
+    },
+    "castTime": 0,
+    "category": "Other",
+    "cooldown": 0,
+    "damageModifiers": [
+     {
+      "characterStats": {
+       "amplifyDMG": 0.25
+      },
+      "color": "#FFD700",
+      "condition": "[Function]",
+      "description": "For 30 seconds: all Resonators gain 25% All DMG Amplification.",
+      "displayName": "Recursion",
+      "durationStrategy": {
+       "timeDuration": 30,
+       "type": "limited"
+      },
+      "ownerCharacter": "Mornye",
+      "showStats": true,
+      "source": "Mornye Outro Buff",
+      "stackingStrategy": {
+       "maxStacks": 1,
+       "resetTimerOnApplication": true,
+       "stacksRemovedEachTime": 1
+      },
+      "targetStrategy": "all",
+      "type": "buff"
+     }
+    ],
+    "displayName": "Recursion",
+    "dmgTypes": [
+     "OUTRO"
+    ],
+    "elements": [
+     "FUSION"
+    ],
+    "energyCost": [],
+    "energyGenerated": [],
+    "multiplier": 0,
+    "name": "Outro",
+    "offtune": 0,
+    "scaling": "ATK",
+    "sideEffects": [],
+    "statusModifications": [],
+    "tags": [
+     "OUTRO_ACTION"
+    ]
+   },
+   {
+    "castConditions": {
+     "endState": "PRESERVE",
+     "preventsSwapOut": true,
+     "startState": "ANY"
+    },
+    "castTime": 0.05,
+    "category": "Testing",
+    "cooldown": 0,
+    "damageModifiers": [],
+    "displayName": "Wait 0.05s",
+    "dmgTypes": [
+     ""
+    ],
+    "elements": [
+     ""
+    ],
+    "energyCost": [],
+    "energyGenerated": [],
+    "multiplier": 0,
+    "name": "Wait 0.05s",
+    "offtune": 0,
+    "scaling": "HP",
+    "sideEffects": [],
+    "statusModifications": []
+   },
+   {
+    "castConditions": {
+     "customCanCast": "[Function]",
+     "endState": "PRESERVE",
+     "persistenceTime": 0,
+     "requiresSwapOut": true,
+     "startState": "ANY",
+     "swapOutState": "PRESERVE"
+    },
+    "castTime": 0,
+    "category": "Other",
+    "cooldown": 0,
+    "damageModifiers": [],
+    "displayName": "Wait Until Next Swap Is Available",
+    "dmgTypes": [
+     ""
+    ],
+    "elements": [
+     ""
+    ],
+    "energyCost": [],
+    "energyGenerated": [],
+    "multiplier": 0,
+    "name": "Wait Until Next Swap Is Available",
+    "offtune": 0,
+    "resolveVariant": "[Function]",
+    "scaling": "HP",
+    "sideEffects": [],
+    "statusModifications": []
+   },
+   {
+    "castConditions": {
+     "customCanCast": "[Function]",
+     "endState": "PRESERVE",
+     "startState": "ANY"
+    },
+    "castTime": 0,
+    "category": "Other",
+    "cooldown": 0,
+    "damageModifiers": [],
+    "displayName": "Wait Until Next Cooldown",
+    "dmgTypes": [
+     ""
+    ],
+    "elements": [
+     ""
+    ],
+    "energyCost": [],
+    "energyGenerated": [],
+    "multiplier": 0,
+    "name": "Wait Until Next Cooldown",
+    "offtune": 0,
+    "resolveVariant": "[Function]",
+    "scaling": "DEF",
+    "sideEffects": [],
+    "statusModifications": []
+   },
+   {
+    "castConditions": {
+     "endState": "PRESERVE",
+     "startState": "ANY"
+    },
+    "castTime": 0,
+    "category": "Testing",
+    "cooldown": 0,
+    "damageModifiers": [],
+    "displayName": "Energy Up",
+    "dmgTypes": [
+     ""
+    ],
+    "elements": [
+     ""
+    ],
+    "energyCost": [],
+    "energyGenerated": [
+     {
+      "amount": 1000,
+      "energyType": "energy",
+      "share": 0
+     }
+    ],
+    "multiplier": 0,
+    "name": "Energy Up",
+    "offtune": 0,
+    "scaling": "HP",
+    "sideEffects": [],
+    "statusModifications": []
+   },
+   {
+    "castConditions": {
+     "endState": "PRESERVE",
+     "startState": "ANY"
+    },
+    "castTime": 0,
+    "category": "Testing",
+    "cooldown": 0,
+    "damageModifiers": [],
+    "displayName": "Concerto Up",
+    "dmgTypes": [
+     ""
+    ],
+    "elements": [
+     ""
+    ],
+    "energyCost": [],
+    "energyGenerated": [
+     {
+      "amount": 1000,
+      "energyType": "concerto",
+      "share": 0
+     }
+    ],
+    "multiplier": 0,
+    "name": "Concerto Up",
+    "offtune": 0,
+    "scaling": "HP",
+    "sideEffects": [],
+    "statusModifications": []
+   },
+   {
+    "castConditions": {
+     "endState": "PRESERVE",
+     "startState": "ANY"
+    },
+    "castTime": 0,
+    "category": "Testing",
+    "cooldown": 0,
+    "damageModifiers": [],
+    "displayName": "Rest Mass Energy",
+    "dmgTypes": [
+     ""
+    ],
+    "elements": [
+     ""
+    ],
+    "energyCost": [],
+    "energyGenerated": [
+     {
+      "amount": 1000,
+      "energyType": "rest_mass_energy",
+      "share": 0
+     }
+    ],
+    "multiplier": 0,
+    "name": "Rest Mass Energy",
+    "offtune": 0,
+    "scaling": "HP",
+    "sideEffects": [],
+    "statusModifications": []
+   },
+   {
+    "castConditions": {
+     "endState": "PRESERVE",
+     "startState": "ANY"
+    },
+    "castTime": 0,
+    "category": "Testing",
+    "cooldown": 0,
+    "damageModifiers": [],
+    "displayName": "Relative Momentum",
+    "dmgTypes": [
+     ""
+    ],
+    "elements": [
+     ""
+    ],
+    "energyCost": [],
+    "energyGenerated": [
+     {
+      "amount": 1000,
+      "energyType": "relative_momentum",
+      "share": 0
+     }
+    ],
+    "multiplier": 0,
+    "name": "Relative Momentum",
+    "offtune": 0,
+    "scaling": "HP",
+    "sideEffects": [],
+    "statusModifications": []
+   }
+  ],
+  "damageModifiers": [],
+  "defaultForm": "Baseline Mode",
+  "element": "FUSION",
+  "forms": [
+   {
+    "displayName": "Baseline Mode",
+    "introAction": {
+     "castConditions": {
+      "endState": "AIR",
+      "startState": "ANY"
+     },
+     "castTime": 1.7,
+     "category": "Other",
+     "cooldown": 0,
+     "damageModifiers": [
+      {
+       "characterStats": {
+        "offtuneBuildupRate": 0.5
+       },
+       "color": "#FFC247",
+       "condition": "[Function]",
+       "description": "For 25 seconds: increases the Offtune Buildup Rate of all Resonators by 50%. Every 3 seconds, heals the active resonator.",
+       "displayName": "Syntony Field",
+       "durationStrategy": {
+        "timeDuration": 25,
+        "type": "limited"
+       },
+       "healProc": {
+        "frequency": 3,
+        "procModifiers": [],
+        "procTag": "HEAL_PROC"
+       },
+       "ownerCharacter": "Mornye",
+       "showStats": true,
+       "source": "Mornye: Syntony Field",
+       "stackingStrategy": {
+        "maxStacks": 1,
+        "resetTimerOnApplication": true,
+        "stacksRemovedEachTime": 1
+       },
+       "targetStrategy": "all",
+       "type": "buff"
+      },
+      {
+       "characterStats": {
+        "offtuneBuildupRate": 0.2
+       },
+       "color": "#FFC247",
+       "condition": "[Function]",
+       "contributionGroup": "Mornye: Syntony Field",
+       "description": "Syntony Field grants an additional 20% Offtune Buildup Rate to all Resonators",
+       "displayName": "Syntony Field (S2)",
+       "durationStrategy": {
+        "timeDuration": 25,
+        "type": "limited"
+       },
+       "ownerCharacter": "Mornye",
+       "showStats": true,
+       "source": "Mornye: Syntony Field",
+       "stackingStrategy": {
+        "maxStacks": 1,
+        "resetTimerOnApplication": true,
+        "stacksRemovedEachTime": 1
+       },
+       "targetStrategy": "all",
+       "type": "buff"
+      }
+     ],
+     "displayName": "Convergence",
+     "dmgTypes": [
+      "INTRO"
+     ],
+     "elements": [
+      "FUSION"
+     ],
+     "energyCost": [],
+     "energyGenerated": [
+      {
+       "amount": 10,
+       "energyType": "energy",
+       "scalingStat": "energyPercent",
+       "share": 0.5
+      },
+      {
+       "amount": 10,
+       "energyType": "concerto",
+       "share": 0
+      }
+     ],
+     "formChange": "Wide Field Observation Mode",
+     "multiplier": 2.0279,
+     "name": "Mornye Intro",
+     "offtune": 1.36,
+     "resolveVariant": "[Function]",
+     "scaling": "ATK",
+     "sideEffects": [],
+     "statusModifications": [],
+     "tags": [
+      "INTRO_ACTION",
+      "HEAL_PROC"
+     ]
+    },
+    "name": "Baseline Mode",
+    "outroAction": {
+     "castConditions": {
+      "endState": "PRESERVE",
+      "startState": "ANY"
+     },
+     "castTime": 0,
+     "category": "Other",
+     "cooldown": 0,
+     "damageModifiers": [
+      {
+       "characterStats": {
+        "amplifyDMG": 0.25
+       },
+       "color": "#FFD700",
+       "condition": "[Function]",
+       "description": "For 30 seconds: all Resonators gain 25% All DMG Amplification.",
+       "displayName": "Recursion",
+       "durationStrategy": {
+        "timeDuration": 30,
+        "type": "limited"
+       },
+       "ownerCharacter": "Mornye",
+       "showStats": true,
+       "source": "Mornye Outro Buff",
+       "stackingStrategy": {
+        "maxStacks": 1,
+        "resetTimerOnApplication": true,
+        "stacksRemovedEachTime": 1
+       },
+       "targetStrategy": "all",
+       "type": "buff"
+      }
+     ],
+     "displayName": "Recursion",
+     "dmgTypes": [
+      "OUTRO"
+     ],
+     "elements": [
+      "FUSION"
+     ],
+     "energyCost": [],
+     "energyGenerated": [],
+     "multiplier": 0,
+     "name": "Outro",
+     "offtune": 0,
+     "scaling": "ATK",
+     "sideEffects": [],
+     "statusModifications": [],
+     "tags": [
+      "OUTRO_ACTION"
+     ]
+    }
+   },
+   {
+    "displayName": "Wide Field Observation Mode",
+    "name": "Wide Field Observation Mode",
+    "resetEnergiesOnSwapOut": [
+     "relative_momentum"
+    ],
+    "resetFormOnSwapOut": true
+   }
+  ],
+  "gear": {
+   "echoSlots": {
+    "1": {
+     "baseStats": {
+      "bonusDEF": 0.415,
+      "flatATK": 150
+     },
+     "cost": 4,
+     "echoSkill": {
+      "castConditions": {
+       "endState": "GROUND",
+       "persistenceTime": 0.09,
+       "requiresSwapOut": true,
+       "startState": "ANY",
+       "swapOutState": "PRESERVE"
+      },
+      "castTime": 0.09,
+      "category": "Echo Skill",
+      "cooldown": 20,
+      "damageModifiers": [],
+      "displayName": "Reactor Husk (Active)",
+      "dmgTypes": [
+       "ECHO"
+      ],
+      "elements": [
+       "FUSION"
+      ],
+      "energyCost": [],
+      "energyGenerated": [
+       {
+        "amount": 4.87,
+        "energyType": "energy",
+        "scalingStat": "energyPercent",
+        "share": 0.5
+       }
+      ],
+      "multiplier": 3.51,
+      "name": "Echo Skill",
+      "offtune": 0,
+      "scaling": "ATK",
+      "sideEffects": [],
+      "statusModifications": []
+     },
+     "firstSlotStats": {
+      "energyPercent": 0.1
+     },
+     "icon": "assets/gear/echoes/reactor_husk.png",
+     "info": "The Resonator with this Echo equipped in their main slot gains 10.00% Energy Regen.",
+     "info_icon": "assets/gear/echoes/info_reactor_husk.png",
+     "name": "Reactor Husk",
+     "setName": "Halo of Starry Radiance",
+     "subStats": {
+      "critDamage": 0.15,
+      "energyPercent": 0.084,
+      "liberationBonusDMG": 0.079
+     }
+    },
+    "2": {
+     "baseStats": {
+      "energyPercent": 0.32,
+      "flatATK": 100
+     },
+     "cost": 3,
+     "icon": "assets/gear/echoes/sabercat_prowler.png",
+     "info": "",
+     "info_icon": "assets/gear/echoes/info_sabercat_prowler.png",
+     "name": "Sabercat Prowler",
+     "setName": "Halo of Starry Radiance",
+     "subStats": {
+      "critDamage": 0.15,
+      "energyPercent": 0.084,
+      "liberationBonusDMG": 0.079
+     }
+    },
+    "3": {
+     "baseStats": {
+      "flatATK": 100,
+      "fusionBonusDMG": 0.3
+     },
+     "cost": 3,
+     "icon": "assets/gear/echoes/spacetrek_explorer.png",
+     "info": "",
+     "info_icon": "assets/gear/echoes/info_spacetrek_explorer.png",
+     "name": "Spacetrek Explorer",
+     "setName": "Halo of Starry Radiance",
+     "subStats": {
+      "critDamage": 0.15,
+      "energyPercent": 0.084,
+      "liberationBonusDMG": 0.079
+     }
+    },
+    "4": {
+     "baseStats": {
+      "bonusDEF": 0.18,
+      "flatHP": 2280
+     },
+     "cost": 1,
+     "icon": "assets/gear/echoes/geospider_s4.png",
+     "info": "",
+     "info_icon": "assets/gear/echoes/info_geospider_s4.png",
+     "name": "Geospider S4",
+     "setName": "Halo of Starry Radiance",
+     "subStats": {
+      "critDamage": 0.15,
+      "energyPercent": 0.084,
+      "liberationBonusDMG": 0.079
+     }
+    },
+    "5": {
+     "baseStats": {
+      "bonusDEF": 0.18,
+      "flatHP": 2280
+     },
+     "cost": 1,
+     "icon": "assets/gear/echoes/mining_drone.png",
+     "info": "",
+     "info_icon": "assets/gear/echoes/info_mining_drone.png",
+     "name": "Mining Drone",
+     "setName": "Halo of Starry Radiance",
+     "subStats": {
+      "critDamage": 0.15,
+      "energyPercent": 0.084,
+      "liberationBonusDMG": 0.079
+     }
+    }
+   },
+   "setBonus": null,
+   "weapon": {
+    "icon": "assets/gear/weapons/starfield_calibrator.png",
+    "info": "Increases DEF by 16%/20%/24%/28%/32%. Casting Resonance Liberation restores 8/10/12/14/16 points of Concerto Energy. This effect can be triggered 1 time every 20s. When the wielder heals Resonators, increases Crit. DMG of all nearby Resonators in the team by 20%/25%/30%/35%/40% for 4s. Effects of the same name cannot be stacked.",
+    "injectedModifiers": [
+     {
+      "modifiers": [
+       {
+        "characterStats": {
+         "bonusDEF": 0.16
+        },
+        "condition": "[Function]",
+        "description": "Increases DEF by 16%.",
+        "displayName": "Starfield Calibrator: Passive DEF",
+        "durationStrategy": {
+         "type": "permanent"
+        },
+        "ownerCharacter": "Mornye",
+        "source": "Starfield Calibrator",
+        "stackingStrategy": {
+         "maxStacks": 1,
+         "resetTimerOnApplication": false,
+         "stacksRemovedEachTime": 0
+        },
+        "targetStrategy": "self",
+        "type": "buff"
+       }
+      ],
+      "targets": [
+       "character"
+      ]
+     },
+     {
+      "energyGeneration": [
+       {
+        "amount": 8,
+        "cooldownDuration": 20,
+        "cooldownKey": "Starfield Calibrator: Liberation Energy",
+        "energyType": "concerto",
+        "share": 0
+       }
+      ],
+      "modifiers": [],
+      "targets": [
+       {
+        "tag": "LIBERATION"
+       }
+      ]
+     },
+     {
+      "modifiers": [
+       {
+        "characterStats": {
+         "critDamage": 0.2
+        },
+        "color": "#FF9B5E",
+        "condition": "[Function]",
+        "description": "When the wielder heals Resonators, increases Crit. DMG of all nearby Resonators in the team by 20% for 4s.",
+        "displayName": "Starfield Calibrator: Heal Buff",
+        "durationStrategy": {
+         "timeDuration": 4,
+         "type": "limited"
+        },
+        "ownerCharacter": "Mornye",
+        "source": "Starfield Calibrator",
+        "stackingStrategy": {
+         "maxStacks": 1,
+         "resetTimerOnApplication": true,
+         "stacksRemovedEachTime": 1
+        },
+        "targetStrategy": "all",
+        "type": "buff"
+       }
+      ],
+      "targets": [
+       {
+        "tag": "HEAL_PROC"
+       }
+      ]
+     }
+    ],
+    "name": "Starfield Calibrator",
+    "rank": 1,
+    "stats": {
+     "baseATK": 412.5,
+     "energyPercent": 0.7704
+    },
+    "weaponType": "Broadblade"
+   }
+  },
+  "image": "/assets/characters/mornye.png",
+  "inherentStats": {
+   "bonusDEF": 0.152,
+   "healingBonus": 0.12
+  },
+  "maxEnergies": {
+   "concerto": 100,
+   "energy": 175,
+   "relative_momentum": 100,
+   "rest_mass_energy": 100
+  },
+  "name": "Mornye",
+  "sequence": 2,
+  "sequence_nodes": [
+   "Basic Attack – Wide Field Observation Mode becomes immune to interruption. The duration of Interfered Marker is extended by 150%. Interfered Marker now grants DMG increase even when the target is not affected by Tune Rupture - Interfered or Tune Strain - Interfered. When Mornye applies Observation Marker on a target, she also inflicts Interfered Marker.",
+   "All nearby Resonators in the team gain Crit. DMG increase against targets with Interfered Marker: Every 1% of Mornye's Energy Regen over 100% grants 0.2% Crit. DMG increase, up to 32%. Syntony Field and High Syntony Field further increase the Off-Tune Buildup Rate of all nearby Resonators in the team by 20%.",
+   "Casting Resonance Skill - Distributed Array additionally restores 25 points of Concerto Energy and 100 Relative Momentum, triggered once every 25s.",
+   "The healing of High Syntony Field is increased by 30%.",
+   "The DMG Multiplier of Resonance Liberation - Critical Protocol is increased by 40%. The DMG Multiplier of Tune Rupture Response - Particle Jet is increased by 160%.",
+   "Resonance Liberation - Critical Protocol deals 400% more DMG. If Mornye has not engaged in combat for over 4s, she restores Resonance Energy equal to 10% of her Max Resonance Energy every 0.2s."
+  ],
+  "sequence_nodes_icons": [
+   "assets/characters/sequences/mornye_1.png",
+   "assets/characters/sequences/mornye_2.png",
+   "assets/characters/sequences/mornye_3.png",
+   "assets/characters/sequences/mornye_4.png",
+   "assets/characters/sequences/mornye_5.png",
+   "assets/characters/sequences/mornye_6.png"
+  ],
+  "stats": {
+   "baseATK": 287,
+   "baseDEF": 1356,
+   "baseHP": 15375,
+   "energyPercent": 0.1,
+   "tuneBreakBoost": 0.1
+  },
+  "weaponType": "Broadblade"
+ },
+ "resolved": {
+  "actions": [
+   {
+    "castConditions": {
+     "blockedComboTags": [
+      "BA1",
+      "BA2",
+      "BA3"
+     ],
+     "endState": "GROUND",
+     "persistenceTime": 1.4,
+     "requiredForms": [
+      "Baseline Mode"
+     ],
+     "requiresSwapOut": true,
+     "startState": "GROUND",
+     "swapOutState": "GROUND"
+    },
+    "castTime": 0.09,
+    "category": "Basics",
+    "comboChainTags": [
+     "BA1"
+    ],
+    "cooldown": 0,
+    "coordinatedAttacks": [],
+    "damageModifiers": [],
+    "displayName": "Basic Attack 1 (swap cancel)",
+    "dmgTypes": [
+     "BASIC"
+    ],
+    "elements": [
+     "FUSION"
+    ],
+    "energyCost": [],
+    "energyGenerated": [
+     {
+      "amount": 0.89,
+      "energyType": "energy",
+      "scalingStat": "energyPercent",
+      "share": 0.5
+     },
+     {
+      "amount": 2.8,
+      "energyType": "concerto",
+      "share": 0
+     },
+     {
+      "amount": 20,
+      "energyType": "rest_mass_energy",
+      "share": 0
+     }
+    ],
+    "groupName": "Basic Attack 1",
+    "hideWhenNotCastable": true,
+    "multiplier": 0.5569,
+    "name": "Basic Attack 1 (swap cancel)",
+    "offtune": 0.27,
+    "scaling": "ATK",
+    "sideEffects": [],
+    "statusModifications": [],
+    "tags": [
+     "BASIC_ATTACK"
+    ],
+    "variantName": "Cancel With Swap"
+   },
+   {
+    "castConditions": {
+     "blockedComboTags": [
+      "BA1",
+      "BA2",
+      "BA3"
+     ],
+     "endState": "GROUND",
+     "persistenceTime": 2.551,
+     "requiredForms": [
+      "Baseline Mode"
+     ],
+     "requiresSwapOut": true,
+     "startState": "GROUND",
+     "swapOutState": "GROUND"
+    },
+    "castTime": 0.47,
+    "category": "Basics",
+    "comboChainTags": [
+     "BA2"
+    ],
+    "cooldown": 0,
+    "coordinatedAttacks": [],
+    "damageModifiers": [],
+    "displayName": "Basic Attack 1-2 (swap cancel)",
+    "dmgTypes": [
+     "BASIC"
+    ],
+    "elements": [
+     "FUSION"
+    ],
+    "energyCost": [],
+    "energyGenerated": [
+     {
+      "amount": 2.81,
+      "energyType": "energy",
+      "scalingStat": "energyPercent",
+      "share": 0.5
+     },
+     {
+      "amount": 8.8,
+      "energyType": "concerto",
+      "share": 0
+     },
+     {
+      "amount": 60,
+      "energyType": "rest_mass_energy",
+      "share": 0
+     }
+    ],
+    "groupName": "Basic Attack 1-2",
+    "hideWhenNotCastable": true,
+    "multiplier": 1.7501,
+    "name": "Basic Attack 1-2 (swap cancel)",
+    "offtune": 0.69,
+    "scaling": "ATK",
+    "sideEffects": [],
+    "statusModifications": [],
+    "tags": [
+     "BASIC_ATTACK"
+    ],
+    "variantName": "Cancel With Swap"
+   },
+   {
+    "attemptFollowUp": {
+     "actionName": "Heavy Attack",
+     "must": true
+    },
+    "castConditions": {
+     "blockedComboTags": [
+      "BA1",
+      "BA2",
+      "BA3"
+     ],
+     "endState": "GROUND",
+     "preventsSwapOut": true,
+     "requiredForms": [
+      "Baseline Mode"
+     ],
+     "startState": "GROUND"
+    },
+    "castTime": 1.83,
+    "category": "Basics",
+    "comboChainTags": [
+     "BA3"
+    ],
+    "cooldown": 0,
+    "coordinatedAttacks": [],
+    "damageModifiers": [],
+    "displayName": "Basic Attack 1-3 (into heavy)",
+    "dmgTypes": [
+     "BASIC"
+    ],
+    "elements": [
+     "FUSION"
+    ],
+    "energyCost": [],
+    "energyGenerated": [
+     {
+      "amount": 4.48,
+      "energyType": "energy",
+      "scalingStat": "energyPercent",
+      "share": 0.5
+     },
+     {
+      "amount": 14,
+      "energyType": "concerto",
+      "share": 0
+     },
+     {
+      "amount": 100,
+      "energyType": "rest_mass_energy",
+      "share": 0
+     }
+    ],
+    "groupName": "Basic Attack 1-3",
+    "hideWhenNotCastable": true,
+    "multiplier": 2.7841,
+    "name": "Basic Attack 1-3 (into heavy)",
+    "offtune": 1.2,
+    "scaling": "ATK",
+    "sideEffects": [],
+    "statusModifications": [],
+    "tags": [
+     "BASIC_ATTACK"
+    ],
+    "variantName": "Into Heavy Attack"
+   },
+   {
+    "castConditions": {
+     "blockedComboTags": [
+      "BA1",
+      "BA2",
+      "BA3"
+     ],
+     "endState": "GROUND",
+     "persistenceTime": 2.92,
+     "requiredForms": [
+      "Baseline Mode"
+     ],
+     "requiresSwapOut": true,
+     "startState": "GROUND",
+     "swapOutState": "GROUND"
+    },
+    "castTime": 1.34,
+    "category": "Basics",
+    "comboChainTags": [
+     "BA3"
+    ],
+    "cooldown": 0,
+    "coordinatedAttacks": [],
+    "damageModifiers": [],
+    "displayName": "Basic Attack 1-3 (swap cancel)",
+    "dmgTypes": [
+     "BASIC"
+    ],
+    "elements": [
+     "FUSION"
+    ],
+    "energyCost": [],
+    "energyGenerated": [
+     {
+      "amount": 4.48,
+      "energyType": "energy",
+      "scalingStat": "energyPercent",
+      "share": 0.5
+     },
+     {
+      "amount": 14,
+      "energyType": "concerto",
+      "share": 0
+     },
+     {
+      "amount": 100,
+      "energyType": "rest_mass_energy",
+      "share": 0
+     }
+    ],
+    "groupName": "Basic Attack 1-3",
+    "hideWhenNotCastable": true,
+    "multiplier": 2.7841,
+    "name": "Basic Attack 1-3 (swap cancel)",
+    "offtune": 1.2,
+    "scaling": "ATK",
+    "sideEffects": [],
+    "statusModifications": [],
+    "tags": [
+     "BASIC_ATTACK"
+    ],
+    "variantName": "Cancel With Swap"
+   },
+   {
+    "castConditions": {
+     "blockedComboTags": [
+      "BA2",
+      "BA3"
+     ],
+     "endState": "GROUND",
+     "persistenceTime": 2.551,
+     "requiredComboTags": [
+      "BA1"
+     ],
+     "requiredForms": [
+      "Baseline Mode"
+     ],
+     "requiresSwapOut": true,
+     "startState": "GROUND",
+     "swapOutState": "GROUND"
+    },
+    "castTime": 0.09,
+    "category": "Basics",
+    "comboChainTags": [
+     "BA2"
+    ],
+    "cooldown": 0,
+    "coordinatedAttacks": [],
+    "damageModifiers": [],
+    "displayName": "Basic Attack 2 (swap cancel)",
+    "dmgTypes": [
+     "BASIC"
+    ],
+    "elements": [
+     "FUSION"
+    ],
+    "energyCost": [],
+    "energyGenerated": [
+     {
+      "amount": 1.92,
+      "energyType": "energy",
+      "scalingStat": "energyPercent",
+      "share": 0.5
+     },
+     {
+      "amount": 6,
+      "energyType": "concerto",
+      "share": 0
+     },
+     {
+      "amount": 40,
+      "energyType": "rest_mass_energy",
+      "share": 0
+     }
+    ],
+    "groupName": "Basic Attack 2",
+    "hideWhenNotCastable": true,
+    "multiplier": 1.1932,
+    "name": "Basic Attack 2 (swap cancel)",
+    "offtune": 0.42,
+    "scaling": "ATK",
+    "sideEffects": [],
+    "statusModifications": [],
+    "tags": [
+     "BASIC_ATTACK"
+    ],
+    "variantName": "Cancel With Swap"
+   },
+   {
+    "attemptFollowUp": {
+     "actionName": "Heavy Attack",
+     "must": true
+    },
+    "castConditions": {
+     "blockedComboTags": [
+      "BA2",
+      "BA3"
+     ],
+     "endState": "GROUND",
+     "preventsSwapOut": true,
+     "requiredComboTags": [
+      "BA1"
+     ],
+     "requiredForms": [
+      "Baseline Mode"
+     ],
+     "startState": "GROUND"
+    },
+    "castTime": 1.59,
+    "category": "Basics",
+    "comboChainTags": [
+     "BA3"
+    ],
+    "cooldown": 0,
+    "coordinatedAttacks": [],
+    "damageModifiers": [],
+    "displayName": "Basic Attack 2-3 (into heavy)",
+    "dmgTypes": [
+     "BASIC"
+    ],
+    "elements": [
+     "FUSION"
+    ],
+    "energyCost": [],
+    "energyGenerated": [
+     {
+      "amount": 3.59,
+      "energyType": "energy",
+      "scalingStat": "energyPercent",
+      "share": 0.5
+     },
+     {
+      "amount": 11.2,
+      "energyType": "concerto",
+      "share": 0
+     },
+     {
+      "amount": 80,
+      "energyType": "rest_mass_energy",
+      "share": 0
+     }
+    ],
+    "groupName": "Basic Attack 2-3",
+    "hideWhenNotCastable": true,
+    "multiplier": 2.2272,
+    "name": "Basic Attack 2-3 (into heavy)",
+    "offtune": 0.93,
+    "scaling": "ATK",
+    "sideEffects": [],
+    "statusModifications": [],
+    "tags": [
+     "BASIC_ATTACK"
+    ],
+    "variantName": "Into Heavy"
+   },
+   {
+    "castConditions": {
+     "blockedComboTags": [
+      "BA2",
+      "BA3"
+     ],
+     "endState": "GROUND",
+     "persistenceTime": 2.92,
+     "requiredComboTags": [
+      "BA1"
+     ],
+     "requiredForms": [
+      "Baseline Mode"
+     ],
+     "requiresSwapOut": true,
+     "startState": "GROUND",
+     "swapOutState": "GROUND"
+    },
+    "castTime": 1.1,
+    "category": "Basics",
+    "comboChainTags": [
+     "BA3"
+    ],
+    "cooldown": 0,
+    "coordinatedAttacks": [],
+    "damageModifiers": [],
+    "displayName": "Basic Attack 2-3 (swap cancel)",
+    "dmgTypes": [
+     "BASIC"
+    ],
+    "elements": [
+     "FUSION"
+    ],
+    "energyCost": [],
+    "energyGenerated": [
+     {
+      "amount": 3.59,
+      "energyType": "energy",
+      "scalingStat": "energyPercent",
+      "share": 0.5
+     },
+     {
+      "amount": 11.2,
+      "energyType": "concerto",
+      "share": 0
+     },
+     {
+      "amount": 80,
+      "energyType": "rest_mass_energy",
+      "share": 0
+     }
+    ],
+    "groupName": "Basic Attack 2-3",
+    "hideWhenNotCastable": true,
+    "multiplier": 2.2272,
+    "name": "Basic Attack 2-3 (swap cancel)",
+    "offtune": 0.93,
+    "scaling": "ATK",
+    "sideEffects": [],
+    "statusModifications": [],
+    "tags": [
+     "BASIC_ATTACK"
+    ],
+    "variantName": "Cancel With Swap"
+   },
+   {
+    "attemptFollowUp": {
+     "actionName": "Heavy Attack",
+     "must": true
+    },
+    "castConditions": {
+     "blockedComboTags": [
+      "BA1",
+      "BA3"
+     ],
+     "endState": "GROUND",
+     "preventsSwapOut": true,
+     "requiredComboTags": [
+      "BA2"
+     ],
+     "requiredForms": [
+      "Baseline Mode"
+     ],
+     "startState": "GROUND"
+    },
+    "castTime": 0.58,
+    "category": "Basics",
+    "comboChainTags": [
+     "BA3"
+    ],
+    "cooldown": 0,
+    "coordinatedAttacks": [],
+    "damageModifiers": [],
+    "displayName": "Basic Attack 3 (into heavy)",
+    "dmgTypes": [
+     "BASIC"
+    ],
+    "elements": [
+     "FUSION"
+    ],
+    "energyCost": [],
+    "energyGenerated": [
+     {
+      "amount": 1.67,
+      "energyType": "energy",
+      "scalingStat": "energyPercent",
+      "share": 0.5
+     },
+     {
+      "amount": 5.2,
+      "energyType": "concerto",
+      "share": 0
+     },
+     {
+      "amount": 40,
+      "energyType": "rest_mass_energy",
+      "share": 0
+     }
+    ],
+    "groupName": "Basic Attack 3",
+    "hideWhenNotCastable": true,
+    "multiplier": 1.034,
+    "name": "Basic Attack 3 (into heavy)",
+    "offtune": 0.51,
+    "scaling": "ATK",
+    "sideEffects": [],
+    "statusModifications": [],
+    "tags": [
+     "BASIC_ATTACK"
+    ],
+    "variantName": "Into Heavy"
+   },
+   {
+    "castConditions": {
+     "blockedComboTags": [
+      "BA1",
+      "BA3"
+     ],
+     "endState": "GROUND",
+     "persistenceTime": 2.92,
+     "requiredComboTags": [
+      "BA2"
+     ],
+     "requiredForms": [
+      "Baseline Mode"
+     ],
+     "requiresSwapOut": true,
+     "startState": "GROUND",
+     "swapOutState": "GROUND"
+    },
+    "castTime": 0.09,
+    "category": "Basics",
+    "comboChainTags": [
+     "BA3"
+    ],
+    "cooldown": 0,
+    "coordinatedAttacks": [],
+    "damageModifiers": [],
+    "displayName": "Basic Attack 3 (swap cancel)",
+    "dmgTypes": [
+     "BASIC"
+    ],
+    "elements": [
+     "FUSION"
+    ],
+    "energyCost": [],
+    "energyGenerated": [
+     {
+      "amount": 1.67,
+      "energyType": "energy",
+      "scalingStat": "energyPercent",
+      "share": 0.5
+     },
+     {
+      "amount": 5.2,
+      "energyType": "concerto",
+      "share": 0
+     },
+     {
+      "amount": 40,
+      "energyType": "rest_mass_energy",
+      "share": 0
+     }
+    ],
+    "groupName": "Basic Attack 3",
+    "hideWhenNotCastable": true,
+    "multiplier": 1.034,
+    "name": "Basic Attack 3 (swap cancel)",
+    "offtune": 0.51,
+    "scaling": "ATK",
+    "sideEffects": [],
+    "statusModifications": [],
+    "tags": [
+     "BASIC_ATTACK"
+    ],
+    "variantName": "Cancel With Swap"
+   },
+   {
+    "attemptFollowUp": {
+     "actionName": "Resonance Skill",
+     "must": true
+    },
+    "castConditions": {
+     "blockedComboTags": [
+      "BA1",
+      "BA3"
+     ],
+     "endState": "GROUND",
+     "requiredComboTags": [
+      "BA2"
+     ],
+     "requiredForms": [
+      "Baseline Mode"
+     ],
+     "startState": "GROUND"
+    },
+    "castTime": 0.04,
+    "category": "Basics",
+    "comboChainTags": [
+     "BA3"
+    ],
+    "cooldown": 0,
+    "coordinatedAttacks": [],
+    "damageModifiers": [],
+    "displayName": "Basic Attack 3 (skill cancel)",
+    "dmgTypes": [
+     "BASIC"
+    ],
+    "elements": [
+     "FUSION"
+    ],
+    "energyCost": [],
+    "energyGenerated": [
+     {
+      "amount": 0,
+      "energyType": "energy",
+      "scalingStat": "energyPercent",
+      "share": 0.5
+     },
+     {
+      "amount": 0,
+      "energyType": "concerto",
+      "share": 0
+     },
+     {
+      "amount": 40,
+      "energyType": "rest_mass_energy",
+      "share": 0
+     }
+    ],
+    "groupName": "Basic Attack 3",
+    "hideWhenNotCastable": true,
+    "multiplier": 0,
+    "name": "Basic Attack 3 (skill cancel)",
+    "offtune": 0,
+    "scaling": "ATK",
+    "sideEffects": [],
+    "statusModifications": [],
+    "tags": [
+     "BASIC_ATTACK"
+    ],
+    "variantName": "Cancel With Skill"
+   },
+   {
+    "attemptFollowUp": {
+     "actionName": "Mode: Basic Attack 1-3"
+    },
+    "castConditions": {
+     "endState": "AIR",
+     "preventsSwapOut": true,
+     "requiredForms": [
+      "Baseline Mode"
+     ],
+     "startState": "GROUND"
+    },
+    "castTime": 1.15,
+    "category": "Basics",
+    "cooldown": 0,
+    "coordinatedAttacks": [],
+    "damageModifiers": [
+     {
+      "characterStats": {
+       "offtuneBuildupRate": 0.5
+      },
+      "color": "#FFC247",
+      "condition": "[Function]",
+      "description": "For 25 seconds: increases the Offtune Buildup Rate of all Resonators by 50%. Every 3 seconds, heals the active resonator.",
+      "displayName": "Syntony Field",
+      "durationStrategy": {
+       "timeDuration": 25,
+       "type": "limited"
+      },
+      "healProc": {
+       "frequency": 3,
+       "procModifiers": [
+        {
+         "characterStats": {
+          "critDamage": 0.2
+         },
+         "color": "#FF9B5E",
+         "condition": "[Function]",
+         "description": "When the wielder heals Resonators, increases Crit. DMG of all nearby Resonators in the team by 20% for 4s.",
+         "displayName": "Starfield Calibrator: Heal Buff",
+         "durationStrategy": {
+          "timeDuration": 4,
+          "type": "limited"
+         },
+         "ownerCharacter": "Mornye",
+         "source": "Starfield Calibrator",
+         "stackingStrategy": {
+          "maxStacks": 1,
+          "resetTimerOnApplication": true,
+          "stacksRemovedEachTime": 1
+         },
+         "targetStrategy": "all",
+         "type": "buff"
+        },
+        {
+         "characterStats": {
+          "bonusATK": 0
+         },
+         "color": "#82DC8C",
+         "condition": "[Function]",
+         "description": "When healing a Resonator in the team, every 1% of Off-Tune Buildup Rate grants a 0.2% ATK increase to all Resonators in the team for 4s, up to 25%.",
+         "displayName": "Halo of Starry Radiance (Active)",
+         "durationStrategy": {
+          "timeDuration": 4,
+          "type": "limited"
+         },
+         "ownerCharacter": "Mornye",
+         "showStats": true,
+         "source": "Halo of Starry Radiance: 5pc",
+         "stackingStrategy": {
+          "maxStacks": 1,
+          "resetTimerOnApplication": true,
+          "stacksRemovedEachTime": 1
+         },
+         "statsOnActivation": "[Function]",
+         "targetStrategy": "all",
+         "type": "buff"
+        }
+       ],
+       "procTag": "HEAL_PROC"
+      },
+      "ownerCharacter": "Mornye",
+      "showStats": true,
+      "source": "Mornye: Syntony Field",
+      "stackingStrategy": {
+       "maxStacks": 1,
+       "resetTimerOnApplication": true,
+       "stacksRemovedEachTime": 1
+      },
+      "targetStrategy": "all",
+      "type": "buff"
+     },
+     {
+      "characterStats": {
+       "offtuneBuildupRate": 0.2
+      },
+      "color": "#FFC247",
+      "condition": "[Function]",
+      "contributionGroup": "Mornye: Syntony Field",
+      "description": "Syntony Field grants an additional 20% Offtune Buildup Rate to all Resonators",
+      "displayName": "Syntony Field (S2)",
+      "durationStrategy": {
+       "timeDuration": 25,
+       "type": "limited"
+      },
+      "ownerCharacter": "Mornye",
+      "showStats": true,
+      "source": "Mornye: Syntony Field",
+      "stackingStrategy": {
+       "maxStacks": 1,
+       "resetTimerOnApplication": true,
+       "stacksRemovedEachTime": 1
+      },
+      "targetStrategy": "all",
+      "type": "buff"
+     },
+     {
+      "characterStats": {
+       "critDamage": 0.2
+      },
+      "color": "#FF9B5E",
+      "condition": "[Function]",
+      "description": "When the wielder heals Resonators, increases Crit. DMG of all nearby Resonators in the team by 20% for 4s.",
+      "displayName": "Starfield Calibrator: Heal Buff",
+      "durationStrategy": {
+       "timeDuration": 4,
+       "type": "limited"
+      },
+      "ownerCharacter": "Mornye",
+      "source": "Starfield Calibrator",
+      "stackingStrategy": {
+       "maxStacks": 1,
+       "resetTimerOnApplication": true,
+       "stacksRemovedEachTime": 1
+      },
+      "targetStrategy": "all",
+      "type": "buff"
+     },
+     {
+      "characterStats": {
+       "bonusATK": 0
+      },
+      "color": "#82DC8C",
+      "condition": "[Function]",
+      "description": "When healing a Resonator in the team, every 1% of Off-Tune Buildup Rate grants a 0.2% ATK increase to all Resonators in the team for 4s, up to 25%.",
+      "displayName": "Halo of Starry Radiance (Active)",
+      "durationStrategy": {
+       "timeDuration": 4,
+       "type": "limited"
+      },
+      "ownerCharacter": "Mornye",
+      "showStats": true,
+      "source": "Halo of Starry Radiance: 5pc",
+      "stackingStrategy": {
+       "maxStacks": 1,
+       "resetTimerOnApplication": true,
+       "stacksRemovedEachTime": 1
+      },
+      "statsOnActivation": "[Function]",
+      "targetStrategy": "all",
+      "type": "buff"
+     }
+    ],
+    "displayName": "Heavy Attack",
+    "dmgTypes": [
+     "HEAVY"
+    ],
+    "elements": [
+     "FUSION"
+    ],
+    "energyCost": [
+     {
+      "amount": 100,
+      "energyType": "rest_mass_energy"
+     }
+    ],
+    "energyGenerated": [
+     {
+      "amount": 3.01,
+      "energyType": "energy",
+      "scalingStat": "energyPercent",
+      "share": 0.5
+     },
+     {
+      "amount": 9.61,
+      "energyType": "concerto",
+      "share": 0
+     }
+    ],
+    "formChange": "Wide Field Observation Mode",
+    "multiplier": 1.4316,
+    "name": "Heavy Attack",
+    "offtune": 0.96,
+    "scaling": "ATK",
+    "sideEffects": [],
+    "statusModifications": [],
+    "tags": [
+     "HEAVY_ATTACK",
+     "HEAL_PROC"
+    ]
+   },
+   {
+    "attemptFollowUp": {
+     "actionName": "Mode: Basic Attack 1-3"
+    },
+    "castConditions": {
+     "endState": "AIR",
+     "preventsSwapOut": true,
+     "requiredForms": [
+      "Baseline Mode"
+     ],
+     "startState": "GROUND"
+    },
+    "castTime": 1.5,
+    "category": "Basics",
+    "cooldown": 0,
+    "coordinatedAttacks": [],
+    "damageModifiers": [
+     {
+      "characterStats": {
+       "offtuneBuildupRate": 0.5
+      },
+      "color": "#FFC247",
+      "condition": "[Function]",
+      "description": "For 25 seconds: increases the Offtune Buildup Rate of all Resonators by 50%. Every 3 seconds, heals the active resonator.",
+      "displayName": "Syntony Field",
+      "durationStrategy": {
+       "timeDuration": 25,
+       "type": "limited"
+      },
+      "healProc": {
+       "frequency": 3,
+       "procModifiers": [
+        {
+         "characterStats": {
+          "critDamage": 0.2
+         },
+         "color": "#FF9B5E",
+         "condition": "[Function]",
+         "description": "When the wielder heals Resonators, increases Crit. DMG of all nearby Resonators in the team by 20% for 4s.",
+         "displayName": "Starfield Calibrator: Heal Buff",
+         "durationStrategy": {
+          "timeDuration": 4,
+          "type": "limited"
+         },
+         "ownerCharacter": "Mornye",
+         "source": "Starfield Calibrator",
+         "stackingStrategy": {
+          "maxStacks": 1,
+          "resetTimerOnApplication": true,
+          "stacksRemovedEachTime": 1
+         },
+         "targetStrategy": "all",
+         "type": "buff"
+        },
+        {
+         "characterStats": {
+          "bonusATK": 0
+         },
+         "color": "#82DC8C",
+         "condition": "[Function]",
+         "description": "When healing a Resonator in the team, every 1% of Off-Tune Buildup Rate grants a 0.2% ATK increase to all Resonators in the team for 4s, up to 25%.",
+         "displayName": "Halo of Starry Radiance (Active)",
+         "durationStrategy": {
+          "timeDuration": 4,
+          "type": "limited"
+         },
+         "ownerCharacter": "Mornye",
+         "showStats": true,
+         "source": "Halo of Starry Radiance: 5pc",
+         "stackingStrategy": {
+          "maxStacks": 1,
+          "resetTimerOnApplication": true,
+          "stacksRemovedEachTime": 1
+         },
+         "statsOnActivation": "[Function]",
+         "targetStrategy": "all",
+         "type": "buff"
+        }
+       ],
+       "procTag": "HEAL_PROC"
+      },
+      "ownerCharacter": "Mornye",
+      "showStats": true,
+      "source": "Mornye: Syntony Field",
+      "stackingStrategy": {
+       "maxStacks": 1,
+       "resetTimerOnApplication": true,
+       "stacksRemovedEachTime": 1
+      },
+      "targetStrategy": "all",
+      "type": "buff"
+     },
+     {
+      "characterStats": {
+       "offtuneBuildupRate": 0.2
+      },
+      "color": "#FFC247",
+      "condition": "[Function]",
+      "contributionGroup": "Mornye: Syntony Field",
+      "description": "Syntony Field grants an additional 20% Offtune Buildup Rate to all Resonators",
+      "displayName": "Syntony Field (S2)",
+      "durationStrategy": {
+       "timeDuration": 25,
+       "type": "limited"
+      },
+      "ownerCharacter": "Mornye",
+      "showStats": true,
+      "source": "Mornye: Syntony Field",
+      "stackingStrategy": {
+       "maxStacks": 1,
+       "resetTimerOnApplication": true,
+       "stacksRemovedEachTime": 1
+      },
+      "targetStrategy": "all",
+      "type": "buff"
+     },
+     {
+      "characterStats": {
+       "critDamage": 0.2
+      },
+      "color": "#FF9B5E",
+      "condition": "[Function]",
+      "description": "When the wielder heals Resonators, increases Crit. DMG of all nearby Resonators in the team by 20% for 4s.",
+      "displayName": "Starfield Calibrator: Heal Buff",
+      "durationStrategy": {
+       "timeDuration": 4,
+       "type": "limited"
+      },
+      "ownerCharacter": "Mornye",
+      "source": "Starfield Calibrator",
+      "stackingStrategy": {
+       "maxStacks": 1,
+       "resetTimerOnApplication": true,
+       "stacksRemovedEachTime": 1
+      },
+      "targetStrategy": "all",
+      "type": "buff"
+     },
+     {
+      "characterStats": {
+       "bonusATK": 0
+      },
+      "color": "#82DC8C",
+      "condition": "[Function]",
+      "description": "When healing a Resonator in the team, every 1% of Off-Tune Buildup Rate grants a 0.2% ATK increase to all Resonators in the team for 4s, up to 25%.",
+      "displayName": "Halo of Starry Radiance (Active)",
+      "durationStrategy": {
+       "timeDuration": 4,
+       "type": "limited"
+      },
+      "ownerCharacter": "Mornye",
+      "showStats": true,
+      "source": "Halo of Starry Radiance: 5pc",
+      "stackingStrategy": {
+       "maxStacks": 1,
+       "resetTimerOnApplication": true,
+       "stacksRemovedEachTime": 1
+      },
+      "statsOnActivation": "[Function]",
+      "targetStrategy": "all",
+      "type": "buff"
+     }
+    ],
+    "displayName": "Heavy Attack",
+    "dmgTypes": [
+     "HEAVY"
+    ],
+    "elements": [
+     "FUSION"
+    ],
+    "energyCost": [
+     {
+      "amount": 100,
+      "energyType": "rest_mass_energy"
+     }
+    ],
+    "energyGenerated": [
+     {
+      "amount": 3.01,
+      "energyType": "energy",
+      "scalingStat": "energyPercent",
+      "share": 0.5
+     },
+     {
+      "amount": 9.61,
+      "energyType": "concerto",
+      "share": 0
+     }
+    ],
+    "formChange": "Wide Field Observation Mode",
+    "multiplier": 1.4316,
+    "name": "Heavy Attack (Swap In)",
+    "offtune": 0.96,
+    "scaling": "ATK",
+    "sideEffects": [],
+    "statusModifications": [],
+    "tags": [
+     "HEAVY_ATTACK",
+     "HEAL_PROC"
+    ]
+   },
+   {
+    "attemptFollowUp": {
+     "actionName": "Heavy Attack",
+     "must": true
+    },
+    "castConditions": {
+     "endState": "GROUND",
+     "preventsSwapOut": true,
+     "previousActions": [
+      {
+       "attemptFollowUp": {
+        "actionName": "Resonance Skill",
+        "must": true
+       },
+       "castConditions": {
+        "blockedComboTags": [
+         "BA1",
+         "BA2",
+         "BA3"
+        ],
+        "endState": "GROUND",
+        "preventsSwapOut": true,
+        "requiredForms": [
+         "Baseline Mode"
+        ],
+        "startState": "GROUND"
+       },
+       "castTime": 0.8,
+       "category": "Basics",
+       "comboChainTags": [
+        "BA3"
+       ],
+       "cooldown": 0,
+       "coordinatedAttacks": [],
+       "damageModifiers": [],
+       "displayName": "Basic Attack 1-3 (skill cancel)",
+       "dmgTypes": [
+        "BASIC"
+       ],
+       "elements": [
+        "FUSION"
+       ],
+       "energyCost": [],
+       "energyGenerated": [
+        {
+         "amount": 2.81,
+         "energyType": "energy",
+         "scalingStat": "energyPercent",
+         "share": 0.5
+        },
+        {
+         "amount": 8.8,
+         "energyType": "concerto",
+         "share": 0
+        },
+        {
+         "amount": 100,
+         "energyType": "rest_mass_energy",
+         "share": 0
+        }
+       ],
+       "groupName": "Basic Attack 1-3",
+       "hideWhenNotCastable": true,
+       "multiplier": 1.7501,
+       "name": "Basic Attack 1-3 (skill cancel)",
+       "offtune": 1.2,
+       "scaling": "ATK",
+       "sideEffects": [],
+       "statusModifications": [],
+       "tags": [
+        "BASIC_ATTACK"
+       ],
+       "variantName": "Cancel With Skill"
+      },
+      {
+       "attemptFollowUp": {
+        "actionName": "Resonance Skill",
+        "must": true
+       },
+       "castConditions": {
+        "blockedComboTags": [
+         "BA2",
+         "BA3"
+        ],
+        "endState": "GROUND",
+        "preventsSwapOut": true,
+        "requiredComboTags": [
+         "BA1"
+        ],
+        "requiredForms": [
+         "Baseline Mode"
+        ],
+        "startState": "GROUND"
+       },
+       "castTime": 0.56,
+       "category": "Basics",
+       "comboChainTags": [
+        "BA3"
+       ],
+       "cooldown": 0,
+       "coordinatedAttacks": [],
+       "damageModifiers": [],
+       "displayName": "Basic Attack 2-3 (skill cancel)",
+       "dmgTypes": [
+        "BASIC"
+       ],
+       "elements": [
+        "FUSION"
+       ],
+       "energyCost": [],
+       "energyGenerated": [
+        {
+         "amount": 1.92,
+         "energyType": "energy",
+         "scalingStat": "energyPercent",
+         "share": 0.5
+        },
+        {
+         "amount": 6,
+         "energyType": "concerto",
+         "share": 0
+        },
+        {
+         "amount": 80,
+         "energyType": "rest_mass_energy",
+         "share": 0
+        }
+       ],
+       "groupName": "Basic Attack 2-3",
+       "hideWhenNotCastable": true,
+       "multiplier": 1.1932,
+       "name": "Basic Attack 2-3 (skill cancel)",
+       "offtune": 0.93,
+       "scaling": "ATK",
+       "sideEffects": [],
+       "statusModifications": [],
+       "tags": [
+        "BASIC_ATTACK"
+       ],
+       "variantName": "Cancel With Skill"
+      },
+      {
+       "attemptFollowUp": {
+        "actionName": "Resonance Skill",
+        "must": true
+       },
+       "castConditions": {
+        "blockedComboTags": [
+         "BA1",
+         "BA3"
+        ],
+        "endState": "GROUND",
+        "requiredComboTags": [
+         "BA2"
+        ],
+        "requiredForms": [
+         "Baseline Mode"
+        ],
+        "startState": "GROUND"
+       },
+       "castTime": 0.04,
+       "category": "Basics",
+       "comboChainTags": [
+        "BA3"
+       ],
+       "cooldown": 0,
+       "coordinatedAttacks": [],
+       "damageModifiers": [],
+       "displayName": "Basic Attack 3 (skill cancel)",
+       "dmgTypes": [
+        "BASIC"
+       ],
+       "elements": [
+        "FUSION"
+       ],
+       "energyCost": [],
+       "energyGenerated": [
+        {
+         "amount": 0,
+         "energyType": "energy",
+         "scalingStat": "energyPercent",
+         "share": 0.5
+        },
+        {
+         "amount": 0,
+         "energyType": "concerto",
+         "share": 0
+        },
+        {
+         "amount": 40,
+         "energyType": "rest_mass_energy",
+         "share": 0
+        }
+       ],
+       "groupName": "Basic Attack 3",
+       "hideWhenNotCastable": true,
+       "multiplier": 0,
+       "name": "Basic Attack 3 (skill cancel)",
+       "offtune": 0,
+       "scaling": "ATK",
+       "sideEffects": [],
+       "statusModifications": [],
+       "tags": [
+        "BASIC_ATTACK"
+       ],
+       "variantName": "Cancel With Skill"
+      }
+     ],
+     "requiredForms": [
+      "Baseline Mode"
+     ],
+     "startState": "GROUND"
+    },
+    "castTime": 0.36,
+    "category": "Skills",
+    "comboChainTags": [
+     "BA1"
+    ],
+    "cooldown": 5,
+    "coordinatedAttacks": [],
+    "damageModifiers": [],
+    "displayName": "Expectation Error",
+    "dmgTypes": [
+     "SKILL"
+    ],
+    "elements": [
+     "FUSION"
+    ],
+    "energyCost": [],
+    "energyGenerated": [],
+    "groupName": "Resonance Skill",
+    "multiplier": 0,
+    "name": "Resonance Skill",
+    "offtune": 0,
+    "scaling": "ATK",
+    "sideEffects": [],
+    "statusModifications": [],
+    "tags": [
+     "SKILL"
+    ],
+    "variantName": "Default"
+   },
+   {
+    "attemptFollowUp": {
+     "actionName": "Mode: Resonance Skill",
+     "must": true
+    },
+    "castConditions": {
+     "endState": "AIR",
+     "preventsSwapOut": true,
+     "requiredForms": [
+      "Wide Field Observation Mode"
+     ],
+     "startState": "AIR"
+    },
+    "castTime": 1.51,
+    "category": "Basics",
+    "cooldown": 0,
+    "coordinatedAttacks": [],
+    "damageModifiers": [],
+    "displayName": "Mode: Basic Attack 1-3",
+    "dmgTypes": [
+     "BASIC"
+    ],
+    "elements": [
+     "FUSION"
+    ],
+    "energyCost": [],
+    "energyGenerated": [
+     {
+      "amount": 4.16,
+      "energyType": "energy",
+      "scalingStat": "energyPercent",
+      "share": 0.5
+     },
+     {
+      "amount": 6.52,
+      "energyType": "concerto",
+      "share": 0
+     },
+     {
+      "amount": 40,
+      "energyType": "relative_momentum",
+      "share": 0
+     }
+    ],
+    "multiplier": 2.625,
+    "name": "Mode: Basic Attack 1-3",
+    "offtune": 1.34,
+    "resolveVariant": "[Function]",
+    "scaling": "ATK",
+    "sideEffects": [],
+    "statusModifications": [],
+    "tags": [
+     "BASIC_ATTACK"
+    ]
+   },
+   {
+    "attemptFollowUp": {
+     "actionName": "Mode: Heavy Attack",
+     "must": true
+    },
+    "castConditions": {
+     "endState": "AIR",
+     "preventsSwapOut": true,
+     "requiredForms": [
+      "Wide Field Observation Mode"
+     ],
+     "startState": "AIR"
+    },
+    "castTime": 1.05,
+    "category": "Skills",
+    "cooldown": 16,
+    "coordinatedAttacks": [],
+    "damageModifiers": [
+     {
+      "characterStats": {
+       "critDamage": 0.2
+      },
+      "color": "#FF9B5E",
+      "condition": "[Function]",
+      "description": "When the wielder heals Resonators, increases Crit. DMG of all nearby Resonators in the team by 20% for 4s.",
+      "displayName": "Starfield Calibrator: Heal Buff",
+      "durationStrategy": {
+       "timeDuration": 4,
+       "type": "limited"
+      },
+      "ownerCharacter": "Mornye",
+      "source": "Starfield Calibrator",
+      "stackingStrategy": {
+       "maxStacks": 1,
+       "resetTimerOnApplication": true,
+       "stacksRemovedEachTime": 1
+      },
+      "targetStrategy": "all",
+      "type": "buff"
+     },
+     {
+      "characterStats": {
+       "bonusATK": 0
+      },
+      "color": "#82DC8C",
+      "condition": "[Function]",
+      "description": "When healing a Resonator in the team, every 1% of Off-Tune Buildup Rate grants a 0.2% ATK increase to all Resonators in the team for 4s, up to 25%.",
+      "displayName": "Halo of Starry Radiance (Active)",
+      "durationStrategy": {
+       "timeDuration": 4,
+       "type": "limited"
+      },
+      "ownerCharacter": "Mornye",
+      "showStats": true,
+      "source": "Halo of Starry Radiance: 5pc",
+      "stackingStrategy": {
+       "maxStacks": 1,
+       "resetTimerOnApplication": true,
+       "stacksRemovedEachTime": 1
+      },
+      "statsOnActivation": "[Function]",
+      "targetStrategy": "all",
+      "type": "buff"
+     }
+    ],
+    "displayName": "Distributed Array",
+    "dmgTypes": [
+     "SKILL"
+    ],
+    "elements": [
+     "FUSION"
+    ],
+    "energyCost": [],
+    "energyGenerated": [
+     {
+      "amount": 18.52,
+      "energyType": "energy",
+      "scalingStat": "energyPercent",
+      "share": 0.5
+     },
+     {
+      "amount": 10,
+      "energyType": "concerto",
+      "share": 0
+     },
+     {
+      "amount": 60,
+      "energyType": "relative_momentum",
+      "share": 0
+     }
+    ],
+    "multiplier": 1.5908,
+    "name": "Mode: Resonance Skill",
+    "offtune": 0.8,
+    "resolveVariant": "[Function]",
+    "scaling": "ATK",
+    "sideEffects": [],
+    "statusModifications": [],
+    "tags": [
+     "SKILL",
+     "HEAL_PROC"
+    ]
+   },
+   {
+    "attemptFollowUp": {
+     "actionName": "Liberation",
+     "must": true
+    },
+    "castConditions": {
+     "endState": "AIR",
+     "preventsSwapOut": true,
+     "requiredForms": [
+      "Wide Field Observation Mode"
+     ],
+     "startState": "AIR"
+    },
+    "castTime": 1.32,
+    "category": "Basics",
+    "cooldown": 0,
+    "coordinatedAttacks": [],
+    "damageModifiers": [
+     {
+      "characterStats": {
+       "bonusDMG": 0
+      },
+      "color": "#B87EFF",
+      "condition": "[Function]",
+      "description": "For 20 seconds: Every 1 % of Mornye's Energy Regen over 100 % grants 0.25% Damage Bonus to all Resonators, up to 40%.",
+      "displayName": "Interfered Marker",
+      "durationStrategy": {
+       "timeDuration": 30,
+       "type": "limited"
+      },
+      "ownerCharacter": "Mornye",
+      "showStats": true,
+      "source": "Mornye: Interfered Marker",
+      "stackingStrategy": {
+       "maxStacks": 1,
+       "resetTimerOnApplication": true,
+       "stacksRemovedEachTime": 1
+      },
+      "statsOnActivation": "[Function]",
+      "targetStrategy": "all",
+      "type": "buff"
+     },
+     {
+      "characterStats": {
+       "critDamage": 0
+      },
+      "color": "#B87EFF",
+      "condition": "[Function]",
+      "description": "For 20 seconds: Every 1 % of Mornye's Energy Regen over 100 % grants 0.2% Crit DMG to all Resonators, up to 32%.",
+      "displayName": "Interfered Marker (S2)",
+      "durationStrategy": {
+       "timeDuration": 30,
+       "type": "limited"
+      },
+      "ownerCharacter": "Mornye",
+      "showStats": true,
+      "source": "Mornye: Interfered Marker (S2)",
+      "stackingStrategy": {
+       "maxStacks": 1,
+       "resetTimerOnApplication": true,
+       "stacksRemovedEachTime": 1
+      },
+      "statsOnActivation": "[Function]",
+      "targetStrategy": "all",
+      "type": "buff"
+     }
+    ],
+    "displayName": "Mode: Heavy Attack",
+    "dmgTypes": [
+     "HEAVY"
+    ],
+    "elements": [
+     "FUSION"
+    ],
+    "energyCost": [
+     {
+      "amount": 100,
+      "energyType": "relative_momentum"
+     }
+    ],
+    "energyGenerated": [
+     {
+      "amount": 3.25,
+      "energyType": "energy",
+      "scalingStat": "energyPercent",
+      "share": 0.5
+     },
+     {
+      "amount": 11.96,
+      "energyType": "concerto",
+      "share": 0
+     }
+    ],
+    "multiplier": 2.5846,
+    "name": "Mode: Heavy Attack",
+    "offtune": 1.04,
+    "scaling": "ATK",
+    "sideEffects": [],
+    "statusModifications": [],
+    "tags": [
+     "HEAVY_ATTACK"
+    ]
+   },
+   {
+    "attemptFollowUp": {
+     "actionName": "Echo Skill",
+     "must": true
+    },
+    "castConditions": {
+     "endState": "PRESERVE",
+     "previousActions": [
+      {
+       "attemptFollowUp": {
+        "actionName": "Liberation",
+        "must": true
+       },
+       "castConditions": {
+        "endState": "AIR",
+        "preventsSwapOut": true,
+        "requiredForms": [
+         "Wide Field Observation Mode"
+        ],
+        "startState": "AIR"
+       },
+       "castTime": 1.32,
+       "category": "Basics",
+       "cooldown": 0,
+       "coordinatedAttacks": [],
+       "damageModifiers": [
+        {
+         "characterStats": {
+          "bonusDMG": 0
+         },
+         "color": "#B87EFF",
+         "condition": "[Function]",
+         "description": "For 20 seconds: Every 1 % of Mornye's Energy Regen over 100 % grants 0.25% Damage Bonus to all Resonators, up to 40%.",
+         "displayName": "Interfered Marker",
+         "durationStrategy": {
+          "timeDuration": 30,
+          "type": "limited"
+         },
+         "ownerCharacter": "Mornye",
+         "showStats": true,
+         "source": "Mornye: Interfered Marker",
+         "stackingStrategy": {
+          "maxStacks": 1,
+          "resetTimerOnApplication": true,
+          "stacksRemovedEachTime": 1
+         },
+         "statsOnActivation": "[Function]",
+         "targetStrategy": "all",
+         "type": "buff"
+        },
+        {
+         "characterStats": {
+          "critDamage": 0
+         },
+         "color": "#B87EFF",
+         "condition": "[Function]",
+         "description": "For 20 seconds: Every 1 % of Mornye's Energy Regen over 100 % grants 0.2% Crit DMG to all Resonators, up to 32%.",
+         "displayName": "Interfered Marker (S2)",
+         "durationStrategy": {
+          "timeDuration": 30,
+          "type": "limited"
+         },
+         "ownerCharacter": "Mornye",
+         "showStats": true,
+         "source": "Mornye: Interfered Marker (S2)",
+         "stackingStrategy": {
+          "maxStacks": 1,
+          "resetTimerOnApplication": true,
+          "stacksRemovedEachTime": 1
+         },
+         "statsOnActivation": "[Function]",
+         "targetStrategy": "all",
+         "type": "buff"
+        }
+       ],
+       "displayName": "Mode: Heavy Attack",
+       "dmgTypes": [
+        "HEAVY"
+       ],
+       "elements": [
+        "FUSION"
+       ],
+       "energyCost": [
+        {
+         "amount": 100,
+         "energyType": "relative_momentum"
+        }
+       ],
+       "energyGenerated": [
+        {
+         "amount": 3.25,
+         "energyType": "energy",
+         "scalingStat": "energyPercent",
+         "share": 0.5
+        },
+        {
+         "amount": 11.96,
+         "energyType": "concerto",
+         "share": 0
+        }
+       ],
+       "multiplier": 2.5846,
+       "name": "Mode: Heavy Attack",
+       "offtune": 1.04,
+       "scaling": "ATK",
+       "sideEffects": [],
+       "statusModifications": [],
+       "tags": [
+        "HEAVY_ATTACK"
+       ]
+      }
+     ],
+     "requiredForms": [
+      "Wide Field Observation Mode"
+     ],
+     "startState": "ANY"
+    },
+    "castTime": 0.01,
+    "category": "Skills",
+    "cooldown": 25,
+    "coordinatedAttacks": [],
+    "damageModifiers": [
+     {
+      "activationCondition": "[Function]",
+      "characterStats": {
+       "bonusDEF": 0.2,
+       "offtuneBuildupRate": 0.5
+      },
+      "color": "#FF2E3A",
+      "condition": "[Function]",
+      "description": "For 25 seconds: increases the DEF of all Resonators by 20% and Offtune Buildup Rate by 50%. Every 3 seconds, heals the active resonator.",
+      "displayName": "High Syntony Field",
+      "durationStrategy": {
+       "timeDuration": 25,
+       "type": "limited"
+      },
+      "healProc": {
+       "frequency": 3,
+       "procModifiers": [
+        {
+         "characterStats": {
+          "critDamage": 0.2
+         },
+         "color": "#FF9B5E",
+         "condition": "[Function]",
+         "description": "When the wielder heals Resonators, increases Crit. DMG of all nearby Resonators in the team by 20% for 4s.",
+         "displayName": "Starfield Calibrator: Heal Buff",
+         "durationStrategy": {
+          "timeDuration": 4,
+          "type": "limited"
+         },
+         "ownerCharacter": "Mornye",
+         "source": "Starfield Calibrator",
+         "stackingStrategy": {
+          "maxStacks": 1,
+          "resetTimerOnApplication": true,
+          "stacksRemovedEachTime": 1
+         },
+         "targetStrategy": "all",
+         "type": "buff"
+        },
+        {
+         "characterStats": {
+          "bonusATK": 0
+         },
+         "color": "#82DC8C",
+         "condition": "[Function]",
+         "description": "When healing a Resonator in the team, every 1% of Off-Tune Buildup Rate grants a 0.2% ATK increase to all Resonators in the team for 4s, up to 25%.",
+         "displayName": "Halo of Starry Radiance (Active)",
+         "durationStrategy": {
+          "timeDuration": 4,
+          "type": "limited"
+         },
+         "ownerCharacter": "Mornye",
+         "showStats": true,
+         "source": "Halo of Starry Radiance: 5pc",
+         "stackingStrategy": {
+          "maxStacks": 1,
+          "resetTimerOnApplication": true,
+          "stacksRemovedEachTime": 1
+         },
+         "statsOnActivation": "[Function]",
+         "targetStrategy": "all",
+         "type": "buff"
+        }
+       ],
+       "procTag": "HEAL_PROC"
+      },
+      "ownerCharacter": "Mornye",
+      "removesModifierSourceOnActivation": "Mornye: Syntony Field",
+      "showStats": true,
+      "source": "Mornye: High Syntony Field",
+      "stackingStrategy": {
+       "maxStacks": 1,
+       "resetTimerOnApplication": true,
+       "stacksRemovedEachTime": 1
+      },
+      "targetStrategy": "all",
+      "type": "buff"
+     },
+     {
+      "activationCondition": "[Function]",
+      "characterStats": {
+       "offtuneBuildupRate": 0.2
+      },
+      "color": "#FF2E3A",
+      "condition": "[Function]",
+      "contributionGroup": "Mornye: High Syntony Field",
+      "description": "High Syntony Field grants an additional 20% Offtune Buildup Rate to all Resonators",
+      "displayName": "High Syntony Field (S2)",
+      "durationStrategy": {
+       "timeDuration": 25,
+       "type": "limited"
+      },
+      "ownerCharacter": "Mornye",
+      "showStats": true,
+      "source": "Mornye: High Syntony Field",
+      "stackingStrategy": {
+       "maxStacks": 1,
+       "resetTimerOnApplication": true,
+       "stacksRemovedEachTime": 1
+      },
+      "targetStrategy": "all",
+      "type": "buff"
+     },
+     {
+      "characterStats": {
+       "critDamage": 0.2
+      },
+      "color": "#FF9B5E",
+      "condition": "[Function]",
+      "description": "When the wielder heals Resonators, increases Crit. DMG of all nearby Resonators in the team by 20% for 4s.",
+      "displayName": "Starfield Calibrator: Heal Buff",
+      "durationStrategy": {
+       "timeDuration": 4,
+       "type": "limited"
+      },
+      "ownerCharacter": "Mornye",
+      "source": "Starfield Calibrator",
+      "stackingStrategy": {
+       "maxStacks": 1,
+       "resetTimerOnApplication": true,
+       "stacksRemovedEachTime": 1
+      },
+      "targetStrategy": "all",
+      "type": "buff"
+     },
+     {
+      "characterStats": {
+       "bonusATK": 0
+      },
+      "color": "#82DC8C",
+      "condition": "[Function]",
+      "description": "When healing a Resonator in the team, every 1% of Off-Tune Buildup Rate grants a 0.2% ATK increase to all Resonators in the team for 4s, up to 25%.",
+      "displayName": "Halo of Starry Radiance (Active)",
+      "durationStrategy": {
+       "timeDuration": 4,
+       "type": "limited"
+      },
+      "ownerCharacter": "Mornye",
+      "showStats": true,
+      "source": "Halo of Starry Radiance: 5pc",
+      "stackingStrategy": {
+       "maxStacks": 1,
+       "resetTimerOnApplication": true,
+       "stacksRemovedEachTime": 1
+      },
+      "statsOnActivation": "[Function]",
+      "targetStrategy": "all",
+      "type": "buff"
+     }
+    ],
+    "displayName": "Critical Protocol",
+    "dmgTypes": [
+     "LIBERATION"
+    ],
+    "elements": [
+     "FUSION"
+    ],
+    "energyCost": [
+     {
+      "amount": 175,
+      "energyType": "energy"
+     }
+    ],
+    "energyGenerated": [
+     {
+      "amount": 20,
+      "energyType": "concerto",
+      "share": 0
+     },
+     {
+      "amount": 8,
+      "cooldownDuration": 20,
+      "cooldownKey": "Starfield Calibrator: Liberation Energy",
+      "energyType": "concerto",
+      "share": 0
+     },
+     {
+      "amount": 8,
+      "cooldownDuration": 20,
+      "cooldownKey": "Starfield Calibrator: Liberation Energy",
+      "energyType": "concerto",
+      "share": 0
+     }
+    ],
+    "inherentModifiers": [
+     {
+      "characterStats": {
+       "critDamage": 0.01,
+       "critRate": 0.005
+      },
+      "condition": "[Function]",
+      "displayName": "Liberation Crit Scaling"
+     }
+    ],
+    "multiplier": 5.2233,
+    "name": "Liberation",
+    "offtune": 7.2,
+    "resolveVariant": "[Function]",
+    "scaling": "DEF",
+    "sideEffects": [],
+    "statusModifications": [],
+    "tags": [
+     "LIBERATION",
+     "HEAL_PROC"
+    ]
+   },
+   {
+    "castConditions": {
+     "endState": "AIR",
+     "startState": "ANY"
+    },
+    "castTime": 1.7,
+    "category": "Other",
+    "cooldown": 0,
+    "damageModifiers": [
+     {
+      "characterStats": {
+       "offtuneBuildupRate": 0.5
+      },
+      "color": "#FFC247",
+      "condition": "[Function]",
+      "description": "For 25 seconds: increases the Offtune Buildup Rate of all Resonators by 50%. Every 3 seconds, heals the active resonator.",
+      "displayName": "Syntony Field",
+      "durationStrategy": {
+       "timeDuration": 25,
+       "type": "limited"
+      },
+      "healProc": {
+       "frequency": 3,
+       "procModifiers": [
+        {
+         "characterStats": {
+          "critDamage": 0.2
+         },
+         "color": "#FF9B5E",
+         "condition": "[Function]",
+         "description": "When the wielder heals Resonators, increases Crit. DMG of all nearby Resonators in the team by 20% for 4s.",
+         "displayName": "Starfield Calibrator: Heal Buff",
+         "durationStrategy": {
+          "timeDuration": 4,
+          "type": "limited"
+         },
+         "ownerCharacter": "Mornye",
+         "source": "Starfield Calibrator",
+         "stackingStrategy": {
+          "maxStacks": 1,
+          "resetTimerOnApplication": true,
+          "stacksRemovedEachTime": 1
+         },
+         "targetStrategy": "all",
+         "type": "buff"
+        },
+        {
+         "characterStats": {
+          "bonusATK": 0
+         },
+         "color": "#82DC8C",
+         "condition": "[Function]",
+         "description": "When healing a Resonator in the team, every 1% of Off-Tune Buildup Rate grants a 0.2% ATK increase to all Resonators in the team for 4s, up to 25%.",
+         "displayName": "Halo of Starry Radiance (Active)",
+         "durationStrategy": {
+          "timeDuration": 4,
+          "type": "limited"
+         },
+         "ownerCharacter": "Mornye",
+         "showStats": true,
+         "source": "Halo of Starry Radiance: 5pc",
+         "stackingStrategy": {
+          "maxStacks": 1,
+          "resetTimerOnApplication": true,
+          "stacksRemovedEachTime": 1
+         },
+         "statsOnActivation": "[Function]",
+         "targetStrategy": "all",
+         "type": "buff"
+        }
+       ],
+       "procTag": "HEAL_PROC"
+      },
+      "ownerCharacter": "Mornye",
+      "showStats": true,
+      "source": "Mornye: Syntony Field",
+      "stackingStrategy": {
+       "maxStacks": 1,
+       "resetTimerOnApplication": true,
+       "stacksRemovedEachTime": 1
+      },
+      "targetStrategy": "all",
+      "type": "buff"
+     },
+     {
+      "characterStats": {
+       "offtuneBuildupRate": 0.2
+      },
+      "color": "#FFC247",
+      "condition": "[Function]",
+      "contributionGroup": "Mornye: Syntony Field",
+      "description": "Syntony Field grants an additional 20% Offtune Buildup Rate to all Resonators",
+      "displayName": "Syntony Field (S2)",
+      "durationStrategy": {
+       "timeDuration": 25,
+       "type": "limited"
+      },
+      "ownerCharacter": "Mornye",
+      "showStats": true,
+      "source": "Mornye: Syntony Field",
+      "stackingStrategy": {
+       "maxStacks": 1,
+       "resetTimerOnApplication": true,
+       "stacksRemovedEachTime": 1
+      },
+      "targetStrategy": "all",
+      "type": "buff"
+     },
+     {
+      "characterStats": {
+       "critDamage": 0.2
+      },
+      "color": "#FF9B5E",
+      "condition": "[Function]",
+      "description": "When the wielder heals Resonators, increases Crit. DMG of all nearby Resonators in the team by 20% for 4s.",
+      "displayName": "Starfield Calibrator: Heal Buff",
+      "durationStrategy": {
+       "timeDuration": 4,
+       "type": "limited"
+      },
+      "ownerCharacter": "Mornye",
+      "source": "Starfield Calibrator",
+      "stackingStrategy": {
+       "maxStacks": 1,
+       "resetTimerOnApplication": true,
+       "stacksRemovedEachTime": 1
+      },
+      "targetStrategy": "all",
+      "type": "buff"
+     },
+     {
+      "characterStats": {
+       "bonusATK": 0
+      },
+      "color": "#82DC8C",
+      "condition": "[Function]",
+      "description": "When healing a Resonator in the team, every 1% of Off-Tune Buildup Rate grants a 0.2% ATK increase to all Resonators in the team for 4s, up to 25%.",
+      "displayName": "Halo of Starry Radiance (Active)",
+      "durationStrategy": {
+       "timeDuration": 4,
+       "type": "limited"
+      },
+      "ownerCharacter": "Mornye",
+      "showStats": true,
+      "source": "Halo of Starry Radiance: 5pc",
+      "stackingStrategy": {
+       "maxStacks": 1,
+       "resetTimerOnApplication": true,
+       "stacksRemovedEachTime": 1
+      },
+      "statsOnActivation": "[Function]",
+      "targetStrategy": "all",
+      "type": "buff"
+     }
+    ],
+    "displayName": "Convergence",
+    "dmgTypes": [
+     "INTRO"
+    ],
+    "elements": [
+     "FUSION"
+    ],
+    "energyCost": [],
+    "energyGenerated": [
+     {
+      "amount": 10,
+      "energyType": "energy",
+      "scalingStat": "energyPercent",
+      "share": 0.5
+     },
+     {
+      "amount": 10,
+      "energyType": "concerto",
+      "share": 0
+     }
+    ],
+    "formChange": "Wide Field Observation Mode",
+    "multiplier": 2.0279,
+    "name": "Mornye Intro",
+    "offtune": 1.36,
+    "resolveVariant": "[Function]",
+    "scaling": "ATK",
+    "sideEffects": [],
+    "statusModifications": [],
+    "tags": [
+     "INTRO_ACTION",
+     "HEAL_PROC"
+    ]
+   },
+   {
+    "castConditions": {
+     "endState": "PRESERVE",
+     "startState": "ANY"
+    },
+    "castTime": 0,
+    "category": "Other",
+    "cooldown": 0,
+    "damageModifiers": [
+     {
+      "characterStats": {
+       "amplifyDMG": 0.25
+      },
+      "color": "#FFD700",
+      "condition": "[Function]",
+      "description": "For 30 seconds: all Resonators gain 25% All DMG Amplification.",
+      "displayName": "Recursion",
+      "durationStrategy": {
+       "timeDuration": 30,
+       "type": "limited"
+      },
+      "ownerCharacter": "Mornye",
+      "showStats": true,
+      "source": "Mornye Outro Buff",
+      "stackingStrategy": {
+       "maxStacks": 1,
+       "resetTimerOnApplication": true,
+       "stacksRemovedEachTime": 1
+      },
+      "targetStrategy": "all",
+      "type": "buff"
+     }
+    ],
+    "displayName": "Recursion",
+    "dmgTypes": [
+     "OUTRO"
+    ],
+    "elements": [
+     "FUSION"
+    ],
+    "energyCost": [],
+    "energyGenerated": [],
+    "multiplier": 0,
+    "name": "Outro",
+    "offtune": 0,
+    "scaling": "ATK",
+    "sideEffects": [],
+    "statusModifications": [],
+    "tags": [
+     "OUTRO_ACTION"
+    ]
+   },
+   {
+    "castConditions": {
+     "endState": "PRESERVE",
+     "preventsSwapOut": true,
+     "startState": "ANY"
+    },
+    "castTime": 0.05,
+    "category": "Testing",
+    "cooldown": 0,
+    "damageModifiers": [],
+    "displayName": "Wait 0.05s",
+    "dmgTypes": [
+     ""
+    ],
+    "elements": [
+     ""
+    ],
+    "energyCost": [],
+    "energyGenerated": [],
+    "multiplier": 0,
+    "name": "Wait 0.05s",
+    "offtune": 0,
+    "scaling": "HP",
+    "sideEffects": [],
+    "statusModifications": []
+   },
+   {
+    "castConditions": {
+     "customCanCast": "[Function]",
+     "endState": "PRESERVE",
+     "persistenceTime": 0,
+     "requiresSwapOut": true,
+     "startState": "ANY",
+     "swapOutState": "PRESERVE"
+    },
+    "castTime": 0,
+    "category": "Other",
+    "cooldown": 0,
+    "damageModifiers": [],
+    "displayName": "Wait Until Next Swap Is Available",
+    "dmgTypes": [
+     ""
+    ],
+    "elements": [
+     ""
+    ],
+    "energyCost": [],
+    "energyGenerated": [],
+    "multiplier": 0,
+    "name": "Wait Until Next Swap Is Available",
+    "offtune": 0,
+    "resolveVariant": "[Function]",
+    "scaling": "HP",
+    "sideEffects": [],
+    "statusModifications": []
+   },
+   {
+    "castConditions": {
+     "customCanCast": "[Function]",
+     "endState": "PRESERVE",
+     "startState": "ANY"
+    },
+    "castTime": 0,
+    "category": "Other",
+    "cooldown": 0,
+    "damageModifiers": [],
+    "displayName": "Wait Until Next Cooldown",
+    "dmgTypes": [
+     ""
+    ],
+    "elements": [
+     ""
+    ],
+    "energyCost": [],
+    "energyGenerated": [],
+    "multiplier": 0,
+    "name": "Wait Until Next Cooldown",
+    "offtune": 0,
+    "resolveVariant": "[Function]",
+    "scaling": "DEF",
+    "sideEffects": [],
+    "statusModifications": []
+   },
+   {
+    "castConditions": {
+     "endState": "PRESERVE",
+     "startState": "ANY"
+    },
+    "castTime": 0,
+    "category": "Testing",
+    "cooldown": 0,
+    "damageModifiers": [],
+    "displayName": "Energy Up",
+    "dmgTypes": [
+     ""
+    ],
+    "elements": [
+     ""
+    ],
+    "energyCost": [],
+    "energyGenerated": [
+     {
+      "amount": 1000,
+      "energyType": "energy",
+      "share": 0
+     }
+    ],
+    "multiplier": 0,
+    "name": "Energy Up",
+    "offtune": 0,
+    "scaling": "HP",
+    "sideEffects": [],
+    "statusModifications": []
+   },
+   {
+    "castConditions": {
+     "endState": "PRESERVE",
+     "startState": "ANY"
+    },
+    "castTime": 0,
+    "category": "Testing",
+    "cooldown": 0,
+    "damageModifiers": [],
+    "displayName": "Concerto Up",
+    "dmgTypes": [
+     ""
+    ],
+    "elements": [
+     ""
+    ],
+    "energyCost": [],
+    "energyGenerated": [
+     {
+      "amount": 1000,
+      "energyType": "concerto",
+      "share": 0
+     }
+    ],
+    "multiplier": 0,
+    "name": "Concerto Up",
+    "offtune": 0,
+    "scaling": "HP",
+    "sideEffects": [],
+    "statusModifications": []
+   },
+   {
+    "castConditions": {
+     "endState": "PRESERVE",
+     "startState": "ANY"
+    },
+    "castTime": 0,
+    "category": "Testing",
+    "cooldown": 0,
+    "damageModifiers": [],
+    "displayName": "Rest Mass Energy",
+    "dmgTypes": [
+     ""
+    ],
+    "elements": [
+     ""
+    ],
+    "energyCost": [],
+    "energyGenerated": [
+     {
+      "amount": 1000,
+      "energyType": "rest_mass_energy",
+      "share": 0
+     }
+    ],
+    "multiplier": 0,
+    "name": "Rest Mass Energy",
+    "offtune": 0,
+    "scaling": "HP",
+    "sideEffects": [],
+    "statusModifications": []
+   },
+   {
+    "castConditions": {
+     "endState": "PRESERVE",
+     "startState": "ANY"
+    },
+    "castTime": 0,
+    "category": "Testing",
+    "cooldown": 0,
+    "damageModifiers": [],
+    "displayName": "Relative Momentum",
+    "dmgTypes": [
+     ""
+    ],
+    "elements": [
+     ""
+    ],
+    "energyCost": [],
+    "energyGenerated": [
+     {
+      "amount": 1000,
+      "energyType": "relative_momentum",
+      "share": 0
+     }
+    ],
+    "multiplier": 0,
+    "name": "Relative Momentum",
+    "offtune": 0,
+    "scaling": "HP",
+    "sideEffects": [],
+    "statusModifications": []
+   },
+   {
+    "castConditions": {
+     "endState": "GROUND",
+     "persistenceTime": 0.09,
+     "requiresSwapOut": true,
+     "startState": "ANY",
+     "swapOutState": "PRESERVE"
+    },
+    "castTime": 0.09,
+    "category": "Echo Skill",
+    "cooldown": 20,
+    "damageModifiers": [],
+    "displayName": "Reactor Husk (Active)",
+    "dmgTypes": [
+     "ECHO"
+    ],
+    "elements": [
+     "FUSION"
+    ],
+    "energyCost": [],
+    "energyGenerated": [
+     {
+      "amount": 4.87,
+      "energyType": "energy",
+      "scalingStat": "energyPercent",
+      "share": 0.5
+     }
+    ],
+    "multiplier": 3.51,
+    "name": "Echo Skill",
+    "offtune": 0,
+    "scaling": "ATK",
+    "sideEffects": [],
+    "statusModifications": []
+   }
+  ],
+  "damageModifiers": [],
+  "defaultForm": "Baseline Mode",
+  "element": "FUSION",
+  "flattenedPassiveModifiers": [
+   {
+    "characterStats": {
+     "bonusDEF": 0.16
+    },
+    "condition": "[Function]",
+    "description": "Increases DEF by 16%.",
+    "displayName": "Starfield Calibrator: Passive DEF",
+    "durationStrategy": {
+     "type": "permanent"
+    },
+    "ownerCharacter": "Mornye",
+    "source": "Starfield Calibrator",
+    "stackingStrategy": {
+     "maxStacks": 1,
+     "resetTimerOnApplication": false,
+     "stacksRemovedEachTime": 0
+    },
+    "targetStrategy": "self",
+    "type": "buff"
+   }
+  ],
+  "forms": [
+   {
+    "displayName": "Baseline Mode",
+    "introAction": {
+     "castConditions": {
+      "endState": "AIR",
+      "startState": "ANY"
+     },
+     "castTime": 1.7,
+     "category": "Other",
+     "cooldown": 0,
+     "damageModifiers": [
+      {
+       "characterStats": {
+        "offtuneBuildupRate": 0.5
+       },
+       "color": "#FFC247",
+       "condition": "[Function]",
+       "description": "For 25 seconds: increases the Offtune Buildup Rate of all Resonators by 50%. Every 3 seconds, heals the active resonator.",
+       "displayName": "Syntony Field",
+       "durationStrategy": {
+        "timeDuration": 25,
+        "type": "limited"
+       },
+       "healProc": {
+        "frequency": 3,
+        "procModifiers": [],
+        "procTag": "HEAL_PROC"
+       },
+       "ownerCharacter": "Mornye",
+       "showStats": true,
+       "source": "Mornye: Syntony Field",
+       "stackingStrategy": {
+        "maxStacks": 1,
+        "resetTimerOnApplication": true,
+        "stacksRemovedEachTime": 1
+       },
+       "targetStrategy": "all",
+       "type": "buff"
+      },
+      {
+       "characterStats": {
+        "offtuneBuildupRate": 0.2
+       },
+       "color": "#FFC247",
+       "condition": "[Function]",
+       "contributionGroup": "Mornye: Syntony Field",
+       "description": "Syntony Field grants an additional 20% Offtune Buildup Rate to all Resonators",
+       "displayName": "Syntony Field (S2)",
+       "durationStrategy": {
+        "timeDuration": 25,
+        "type": "limited"
+       },
+       "ownerCharacter": "Mornye",
+       "showStats": true,
+       "source": "Mornye: Syntony Field",
+       "stackingStrategy": {
+        "maxStacks": 1,
+        "resetTimerOnApplication": true,
+        "stacksRemovedEachTime": 1
+       },
+       "targetStrategy": "all",
+       "type": "buff"
+      }
+     ],
+     "displayName": "Convergence",
+     "dmgTypes": [
+      "INTRO"
+     ],
+     "elements": [
+      "FUSION"
+     ],
+     "energyCost": [],
+     "energyGenerated": [
+      {
+       "amount": 10,
+       "energyType": "energy",
+       "scalingStat": "energyPercent",
+       "share": 0.5
+      },
+      {
+       "amount": 10,
+       "energyType": "concerto",
+       "share": 0
+      }
+     ],
+     "formChange": "Wide Field Observation Mode",
+     "multiplier": 2.0279,
+     "name": "Mornye Intro",
+     "offtune": 1.36,
+     "resolveVariant": "[Function]",
+     "scaling": "ATK",
+     "sideEffects": [],
+     "statusModifications": [],
+     "tags": [
+      "INTRO_ACTION",
+      "HEAL_PROC"
+     ]
+    },
+    "name": "Baseline Mode",
+    "outroAction": {
+     "castConditions": {
+      "endState": "PRESERVE",
+      "startState": "ANY"
+     },
+     "castTime": 0,
+     "category": "Other",
+     "cooldown": 0,
+     "damageModifiers": [
+      {
+       "characterStats": {
+        "amplifyDMG": 0.25
+       },
+       "color": "#FFD700",
+       "condition": "[Function]",
+       "description": "For 30 seconds: all Resonators gain 25% All DMG Amplification.",
+       "displayName": "Recursion",
+       "durationStrategy": {
+        "timeDuration": 30,
+        "type": "limited"
+       },
+       "ownerCharacter": "Mornye",
+       "showStats": true,
+       "source": "Mornye Outro Buff",
+       "stackingStrategy": {
+        "maxStacks": 1,
+        "resetTimerOnApplication": true,
+        "stacksRemovedEachTime": 1
+       },
+       "targetStrategy": "all",
+       "type": "buff"
+      }
+     ],
+     "displayName": "Recursion",
+     "dmgTypes": [
+      "OUTRO"
+     ],
+     "elements": [
+      "FUSION"
+     ],
+     "energyCost": [],
+     "energyGenerated": [],
+     "multiplier": 0,
+     "name": "Outro",
+     "offtune": 0,
+     "scaling": "ATK",
+     "sideEffects": [],
+     "statusModifications": [],
+     "tags": [
+      "OUTRO_ACTION"
+     ]
+    }
+   },
+   {
+    "displayName": "Wide Field Observation Mode",
+    "name": "Wide Field Observation Mode",
+    "resetEnergiesOnSwapOut": [
+     "relative_momentum"
+    ],
+    "resetFormOnSwapOut": true
+   }
+  ],
+  "gear": {
+   "echoSlots": {
+    "1": {
+     "baseStats": {
+      "bonusDEF": 0.415,
+      "flatATK": 150
+     },
+     "cost": 4,
+     "echoSkill": {
+      "castConditions": {
+       "endState": "GROUND",
+       "persistenceTime": 0.09,
+       "requiresSwapOut": true,
+       "startState": "ANY",
+       "swapOutState": "PRESERVE"
+      },
+      "castTime": 0.09,
+      "category": "Echo Skill",
+      "cooldown": 20,
+      "damageModifiers": [],
+      "displayName": "Reactor Husk (Active)",
+      "dmgTypes": [
+       "ECHO"
+      ],
+      "elements": [
+       "FUSION"
+      ],
+      "energyCost": [],
+      "energyGenerated": [
+       {
+        "amount": 4.87,
+        "energyType": "energy",
+        "scalingStat": "energyPercent",
+        "share": 0.5
+       }
+      ],
+      "multiplier": 3.51,
+      "name": "Echo Skill",
+      "offtune": 0,
+      "scaling": "ATK",
+      "sideEffects": [],
+      "statusModifications": []
+     },
+     "firstSlotStats": {
+      "energyPercent": 0.1
+     },
+     "icon": "assets/gear/echoes/reactor_husk.png",
+     "info": "The Resonator with this Echo equipped in their main slot gains 10.00% Energy Regen.",
+     "info_icon": "assets/gear/echoes/info_reactor_husk.png",
+     "name": "Reactor Husk",
+     "setName": "Halo of Starry Radiance",
+     "subStats": {
+      "critDamage": 0.15,
+      "energyPercent": 0.084,
+      "liberationBonusDMG": 0.079
+     }
+    },
+    "2": {
+     "baseStats": {
+      "energyPercent": 0.32,
+      "flatATK": 100
+     },
+     "cost": 3,
+     "icon": "assets/gear/echoes/sabercat_prowler.png",
+     "info": "",
+     "info_icon": "assets/gear/echoes/info_sabercat_prowler.png",
+     "name": "Sabercat Prowler",
+     "setName": "Halo of Starry Radiance",
+     "subStats": {
+      "critDamage": 0.15,
+      "energyPercent": 0.084,
+      "liberationBonusDMG": 0.079
+     }
+    },
+    "3": {
+     "baseStats": {
+      "flatATK": 100,
+      "fusionBonusDMG": 0.3
+     },
+     "cost": 3,
+     "icon": "assets/gear/echoes/spacetrek_explorer.png",
+     "info": "",
+     "info_icon": "assets/gear/echoes/info_spacetrek_explorer.png",
+     "name": "Spacetrek Explorer",
+     "setName": "Halo of Starry Radiance",
+     "subStats": {
+      "critDamage": 0.15,
+      "energyPercent": 0.084,
+      "liberationBonusDMG": 0.079
+     }
+    },
+    "4": {
+     "baseStats": {
+      "bonusDEF": 0.18,
+      "flatHP": 2280
+     },
+     "cost": 1,
+     "icon": "assets/gear/echoes/geospider_s4.png",
+     "info": "",
+     "info_icon": "assets/gear/echoes/info_geospider_s4.png",
+     "name": "Geospider S4",
+     "setName": "Halo of Starry Radiance",
+     "subStats": {
+      "critDamage": 0.15,
+      "energyPercent": 0.084,
+      "liberationBonusDMG": 0.079
+     }
+    },
+    "5": {
+     "baseStats": {
+      "bonusDEF": 0.18,
+      "flatHP": 2280
+     },
+     "cost": 1,
+     "icon": "assets/gear/echoes/mining_drone.png",
+     "info": "",
+     "info_icon": "assets/gear/echoes/info_mining_drone.png",
+     "name": "Mining Drone",
+     "setName": "Halo of Starry Radiance",
+     "subStats": {
+      "critDamage": 0.15,
+      "energyPercent": 0.084,
+      "liberationBonusDMG": 0.079
+     }
+    }
+   },
+   "setBonus": null,
+   "weapon": {
+    "icon": "assets/gear/weapons/starfield_calibrator.png",
+    "info": "Increases DEF by 16%/20%/24%/28%/32%. Casting Resonance Liberation restores 8/10/12/14/16 points of Concerto Energy. This effect can be triggered 1 time every 20s. When the wielder heals Resonators, increases Crit. DMG of all nearby Resonators in the team by 20%/25%/30%/35%/40% for 4s. Effects of the same name cannot be stacked.",
+    "injectedModifiers": [
+     {
+      "modifiers": [
+       {
+        "characterStats": {
+         "bonusDEF": 0.16
+        },
+        "condition": "[Function]",
+        "description": "Increases DEF by 16%.",
+        "displayName": "Starfield Calibrator: Passive DEF",
+        "durationStrategy": {
+         "type": "permanent"
+        },
+        "ownerCharacter": "Mornye",
+        "source": "Starfield Calibrator",
+        "stackingStrategy": {
+         "maxStacks": 1,
+         "resetTimerOnApplication": false,
+         "stacksRemovedEachTime": 0
+        },
+        "targetStrategy": "self",
+        "type": "buff"
+       }
+      ],
+      "targets": [
+       "character"
+      ]
+     },
+     {
+      "energyGeneration": [
+       {
+        "amount": 8,
+        "cooldownDuration": 20,
+        "cooldownKey": "Starfield Calibrator: Liberation Energy",
+        "energyType": "concerto",
+        "share": 0
+       }
+      ],
+      "modifiers": [],
+      "targets": [
+       {
+        "tag": "LIBERATION"
+       }
+      ]
+     },
+     {
+      "modifiers": [
+       {
+        "characterStats": {
+         "critDamage": 0.2
+        },
+        "color": "#FF9B5E",
+        "condition": "[Function]",
+        "description": "When the wielder heals Resonators, increases Crit. DMG of all nearby Resonators in the team by 20% for 4s.",
+        "displayName": "Starfield Calibrator: Heal Buff",
+        "durationStrategy": {
+         "timeDuration": 4,
+         "type": "limited"
+        },
+        "ownerCharacter": "Mornye",
+        "source": "Starfield Calibrator",
+        "stackingStrategy": {
+         "maxStacks": 1,
+         "resetTimerOnApplication": true,
+         "stacksRemovedEachTime": 1
+        },
+        "targetStrategy": "all",
+        "type": "buff"
+       }
+      ],
+      "targets": [
+       {
+        "tag": "HEAL_PROC"
+       }
+      ]
+     }
+    ],
+    "name": "Starfield Calibrator",
+    "rank": 1,
+    "stats": {
+     "baseATK": 412.5,
+     "energyPercent": 0.7704
+    },
+    "weaponType": "Broadblade"
+   }
+  },
+  "image": "/assets/characters/mornye.png",
+  "inherentStats": {
+   "bonusDEF": 0.152,
+   "healingBonus": 0.12
+  },
+  "maxEnergies": {
+   "concerto": 100,
+   "energy": 175,
+   "relative_momentum": 100,
+   "rest_mass_energy": 100
+  },
+  "name": "Mornye",
+  "sequence": 2,
+  "sequence_nodes": [
+   "Basic Attack – Wide Field Observation Mode becomes immune to interruption. The duration of Interfered Marker is extended by 150%. Interfered Marker now grants DMG increase even when the target is not affected by Tune Rupture - Interfered or Tune Strain - Interfered. When Mornye applies Observation Marker on a target, she also inflicts Interfered Marker.",
+   "All nearby Resonators in the team gain Crit. DMG increase against targets with Interfered Marker: Every 1% of Mornye's Energy Regen over 100% grants 0.2% Crit. DMG increase, up to 32%. Syntony Field and High Syntony Field further increase the Off-Tune Buildup Rate of all nearby Resonators in the team by 20%.",
+   "Casting Resonance Skill - Distributed Array additionally restores 25 points of Concerto Energy and 100 Relative Momentum, triggered once every 25s.",
+   "The healing of High Syntony Field is increased by 30%.",
+   "The DMG Multiplier of Resonance Liberation - Critical Protocol is increased by 40%. The DMG Multiplier of Tune Rupture Response - Particle Jet is increased by 160%.",
+   "Resonance Liberation - Critical Protocol deals 400% more DMG. If Mornye has not engaged in combat for over 4s, she restores Resonance Energy equal to 10% of her Max Resonance Energy every 0.2s."
+  ],
+  "sequence_nodes_icons": [
+   "assets/characters/sequences/mornye_1.png",
+   "assets/characters/sequences/mornye_2.png",
+   "assets/characters/sequences/mornye_3.png",
+   "assets/characters/sequences/mornye_4.png",
+   "assets/characters/sequences/mornye_5.png",
+   "assets/characters/sequences/mornye_6.png"
+  ],
+  "stats": {
+   "aeroAmplifyDMG": 0,
+   "aeroBonusDMG": 0,
+   "aeroErosionAmplifyDMG": 0,
+   "aeroErosionBonusDMG": 0,
+   "aeroErosionTotalMultiplierDMG": 1,
+   "aeroTotalMultiplierDMG": 1,
+   "amplifyATK": 0,
+   "amplifyDEF": 0,
+   "amplifyDMG": 0,
+   "amplifyHP": 0,
+   "baseATK": 699.5,
+   "baseDEF": 1356,
+   "baseHP": 15375,
+   "basicAmplifyDMG": 0,
+   "basicBonusDMG": 0,
+   "basicTotalMultiplierDMG": 1,
+   "bonusATK": 0,
+   "bonusDEF": 1.087,
+   "bonusDMG": 0,
+   "bonusHP": 0,
+   "coordinatedAmplifyDMG": 0,
+   "coordinatedBonusDMG": 0,
+   "coordinatedTotalMultiplierDMG": 1,
+   "critDamage": 2.25,
+   "critRate": 0.05,
+   "defIgnore": 0,
+   "echoAmplifyDMG": 0,
+   "echoBonusDMG": 0,
+   "echoTotalMultiplierDMG": 1,
+   "electroAmplifyDMG": 0,
+   "electroBonusDMG": 0,
+   "electroFlareAmplifyDMG": 0,
+   "electroFlareBonusDMG": 0,
+   "electroFlareTotalMultiplierDMG": 1,
+   "electroTotalMultiplierDMG": 1,
+   "elementalResPEN": 0,
+   "energyPercent": 2.7104,
+   "flatATK": 350,
+   "flatDEF": 0,
+   "flatHP": 4560,
+   "fusionAmplifyDMG": 0,
+   "fusionBonusDMG": 0.3,
+   "fusionBurstAmplifyDMG": 0,
+   "fusionBurstBonusDMG": 0,
+   "fusionBurstTotalMultiplierDMG": 1,
+   "fusionTotalMultiplierDMG": 1,
+   "glacioAmplifyDMG": 0,
+   "glacioBonusDMG": 0,
+   "glacioChafeAmplifyDMG": 0,
+   "glacioChafeBonusDMG": 0,
+   "glacioChafeTotalMultiplierDMG": 1,
+   "glacioTotalMultiplierDMG": 1,
+   "havocAmplifyDMG": 0,
+   "havocBaneAmplifyDMG": 0,
+   "havocBaneBonusDMG": 0,
+   "havocBaneTotalMultiplierDMG": 1,
+   "havocBonusDMG": 0,
+   "havocTotalMultiplierDMG": 1,
+   "healingBonus": 0.22,
+   "heavyAmplifyDMG": 0,
+   "heavyBonusDMG": 0,
+   "heavyTotalMultiplierDMG": 1,
+   "introAmplifyDMG": 0,
+   "introBonusDMG": 0,
+   "introTotalMultiplierDMG": 1,
+   "level": 90,
+   "liberationAmplifyDMG": 0,
+   "liberationBonusDMG": 0.395,
+   "liberationTotalMultiplierDMG": 1,
+   "offtuneBuildupRate": 1,
+   "outroAmplifyDMG": 0,
+   "outroBonusDMG": 0,
+   "outroTotalMultiplierDMG": 1,
+   "resistancePEN": 0,
+   "skillAmplifyDMG": 0,
+   "skillBonusDMG": 0,
+   "skillTotalMultiplierDMG": 1,
+   "spectroAmplifyDMG": 0,
+   "spectroBonusDMG": 0,
+   "spectroFrazzleAmplifyDMG": 0,
+   "spectroFrazzleBonusDMG": 0,
+   "spectroFrazzleTotalMultiplierDMG": 1,
+   "spectroTotalMultiplierDMG": 1,
+   "totalMultiplierATK": 1,
+   "totalMultiplierDEF": 1,
+   "totalMultiplierDMG": 1,
+   "totalMultiplierHP": 1,
+   "tuneBreakBoost": 0.1
+  },
+  "weaponType": "Broadblade"
+ }
+}

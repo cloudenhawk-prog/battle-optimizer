@@ -24,9 +24,9 @@
  *   Aero DMG Bonus:  60%    (+30% from Windward Pilgrimage flattened modifier)
  */
 
-import { calculateScalingStat } from '../src/utils/calculators/damageCalculator'
+import { calculateScalingStat } from '../src/engine/damage/damageCalculator'
 import { cartethyia } from '../src/data/characters/cartethyia'
-import { resolveCharacter } from '../src/utils/gear/resolveCharacter'
+import { resolveCharacter } from '../src/engine/gear/resolveCharacter'
 
 const resolved = resolveCharacter(cartethyia)
 

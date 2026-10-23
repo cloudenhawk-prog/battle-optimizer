@@ -1,7 +1,7 @@
 import type { ModifierInAction } from '../src/types/modifiers'
 import type { CoordinatedAttackInAction } from '../src/types/coordinatedAttack'
-import { activateCoordinatedAttacks, processCoordinatedAttacks, updateCoordinatedAttackSnapshot } from '../src/utils/hooks/coordinatedAttackHelpers'
-import { buildStepContext } from '../src/utils/hooks/resolvers'
+import { activateCoordinatedAttacks, processCoordinatedAttacks, updateCoordinatedAttackSnapshot } from '../src/engine/coordinatedAttacks/coordinatedAttackHelpers'
+import { buildStepContext } from '../src/engine/resolvers'
 import {
   createMockSnapshot,
   createMockCharacter,

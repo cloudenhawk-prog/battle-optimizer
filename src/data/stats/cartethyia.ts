@@ -1,3 +1,4 @@
+// Cartethyia — base stats (lvl 90) and inherent stat bonuses.
 import type { CharacterStats } from '../../types/stats'
 
 export const cartethyia_stats: Partial<CharacterStats> = {

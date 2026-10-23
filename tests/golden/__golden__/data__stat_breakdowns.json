@@ -1,0 +1,2258 @@
+[
+ {
+  "atRows": [
+   {
+    "active": {
+     "selfBuffs": {
+      "items": [
+       {
+        "name": "FineSnow:GlacioChafe",
+        "stats": {
+         "glacioChafeAmplifyDMG": 0.6
+        }
+       },
+       {
+        "name": "FineSnow:GlacioBite(Team)",
+        "stats": {
+         "glacioChafeTotalMultiplierDMG": 1.25
+        }
+       }
+      ],
+      "total": {
+       "glacioChafeAmplifyDMG": 0.6,
+       "glacioChafeTotalMultiplierDMG": 1.25
+      }
+     },
+     "teamBuffs": {
+      "items": [
+       {
+        "name": "LucilaCheatBuff",
+        "stats": {
+         "bonusATK": 0.24,
+         "glacioBonusDMG": 0.25,
+         "glacioChafeBonusDMG": 0.6
+        }
+       }
+      ],
+      "total": {
+       "bonusATK": 0.24,
+       "glacioBonusDMG": 0.25,
+       "glacioChafeBonusDMG": 0.6
+      }
+     }
+    },
+    "final": {
+     "aeroAmplifyDMG": 0,
+     "aeroBonusDMG": 0,
+     "aeroErosionAmplifyDMG": 0,
+     "aeroErosionBonusDMG": 0,
+     "aeroErosionTotalMultiplierDMG": 1,
+     "aeroTotalMultiplierDMG": 1,
+     "amplifyATK": 0,
+     "amplifyDEF": 0,
+     "amplifyDMG": 0,
+     "amplifyHP": 0,
+     "baseATK": 1050,
+     "baseDEF": 1112,
+     "baseHP": 10300,
+     "basicAmplifyDMG": 0,
+     "basicBonusDMG": 0,
+     "basicTotalMultiplierDMG": 1,
+     "bonusATK": 1.77,
+     "bonusDEF": 0,
+     "bonusDMG": 0,
+     "bonusHP": 0,
+     "coordinatedAmplifyDMG": 0,
+     "coordinatedBonusDMG": 0,
+     "coordinatedTotalMultiplierDMG": 1,
+     "critDamage": 2.418,
+     "critRate": 0.778,
+     "defIgnore": 0,
+     "echoAmplifyDMG": 0,
+     "echoBonusDMG": 0,
+     "echoTotalMultiplierDMG": 1,
+     "electroAmplifyDMG": 0,
+     "electroBonusDMG": 0,
+     "electroFlareAmplifyDMG": 0,
+     "electroFlareBonusDMG": 0,
+     "electroFlareTotalMultiplierDMG": 1,
+     "electroTotalMultiplierDMG": 1,
+     "elementalResPEN": 0,
+     "energyPercent": 1,
+     "flatATK": 410,
+     "flatDEF": 0,
+     "flatHP": 4560,
+     "fusionAmplifyDMG": 0,
+     "fusionBonusDMG": 0,
+     "fusionBurstAmplifyDMG": 0,
+     "fusionBurstBonusDMG": 0,
+     "fusionBurstTotalMultiplierDMG": 1,
+     "fusionTotalMultiplierDMG": 1,
+     "glacioAmplifyDMG": 0,
+     "glacioBonusDMG": 0.77,
+     "glacioChafeAmplifyDMG": 0.6,
+     "glacioChafeBonusDMG": 0.6,
+     "glacioChafeTotalMultiplierDMG": 1.25,
+     "glacioTotalMultiplierDMG": 1,
+     "havocAmplifyDMG": 0,
+     "havocBaneAmplifyDMG": 0,
+     "havocBaneBonusDMG": 0,
+     "havocBaneTotalMultiplierDMG": 1,
+     "havocBonusDMG": 0,
+     "havocTotalMultiplierDMG": 1,
+     "healingBonus": 0,
+     "heavyAmplifyDMG": 0,
+     "heavyBonusDMG": 0,
+     "heavyTotalMultiplierDMG": 1,
+     "introAmplifyDMG": 0,
+     "introBonusDMG": 0,
+     "introTotalMultiplierDMG": 1,
+     "level": 90,
+     "liberationAmplifyDMG": 0,
+     "liberationBonusDMG": 0.371,
+     "liberationTotalMultiplierDMG": 1,
+     "offtuneBuildupRate": 1,
+     "outroAmplifyDMG": 0,
+     "outroBonusDMG": 0,
+     "outroTotalMultiplierDMG": 1,
+     "resistancePEN": 0,
+     "skillAmplifyDMG": 0,
+     "skillBonusDMG": 0,
+     "skillTotalMultiplierDMG": 1,
+     "spectroAmplifyDMG": 0,
+     "spectroBonusDMG": 0,
+     "spectroFrazzleAmplifyDMG": 0,
+     "spectroFrazzleBonusDMG": 0,
+     "spectroFrazzleTotalMultiplierDMG": 1,
+     "spectroTotalMultiplierDMG": 1,
+     "totalMultiplierATK": 1,
+     "totalMultiplierDEF": 1,
+     "totalMultiplierDMG": 1,
+     "totalMultiplierHP": 1,
+     "tuneBreakBoost": 0
+    },
+    "row": 0
+   },
+   {
+    "active": {
+     "selfBuffs": {
+      "items": [
+       {
+        "name": "FineSnow:GlacioChafe",
+        "stats": {
+         "glacioChafeAmplifyDMG": 0.6
+        }
+       },
+       {
+        "name": "FineSnow:CritDMG(Self)",
+        "stats": {
+         "critDamage": 0.4
+        }
+       },
+       {
+        "name": "FineSnow:CritDMGS6(Self)",
+        "stats": {
+         "critDamage": 0.4
+        }
+       },
+       {
+        "name": "FineSnow:GlacioBite(Team)",
+        "stats": {
+         "glacioChafeTotalMultiplierDMG": 1.25
+        }
+       }
+      ],
+      "total": {
+       "critDamage": 0.8,
+       "glacioChafeAmplifyDMG": 0.6,
+       "glacioChafeTotalMultiplierDMG": 1.25
+      }
+     },
+     "teamBuffs": {
+      "items": [
+       {
+        "name": "LucilaCheatBuff",
+        "stats": {
+         "bonusATK": 0.24,
+         "glacioBonusDMG": 0.25,
+         "glacioChafeBonusDMG": 0.6
+        }
+       }
+      ],
+      "total": {
+       "bonusATK": 0.24,
+       "glacioBonusDMG": 0.25,
+       "glacioChafeBonusDMG": 0.6
+      }
+     }
+    },
+    "final": {
+     "aeroAmplifyDMG": 0,
+     "aeroBonusDMG": 0,
+     "aeroErosionAmplifyDMG": 0,
+     "aeroErosionBonusDMG": 0,
+     "aeroErosionTotalMultiplierDMG": 1,
+     "aeroTotalMultiplierDMG": 1,
+     "amplifyATK": 0,
+     "amplifyDEF": 0,
+     "amplifyDMG": 0,
+     "amplifyHP": 0,
+     "baseATK": 1050,
+     "baseDEF": 1112,
+     "baseHP": 10300,
+     "basicAmplifyDMG": 0,
+     "basicBonusDMG": 0,
+     "basicTotalMultiplierDMG": 1,
+     "bonusATK": 1.77,
+     "bonusDEF": 0,
+     "bonusDMG": 0,
+     "bonusHP": 0,
+     "coordinatedAmplifyDMG": 0,
+     "coordinatedBonusDMG": 0,
+     "coordinatedTotalMultiplierDMG": 1,
+     "critDamage": 3.218,
+     "critRate": 0.778,
+     "defIgnore": 0,
+     "echoAmplifyDMG": 0,
+     "echoBonusDMG": 0,
+     "echoTotalMultiplierDMG": 1,
+     "electroAmplifyDMG": 0,
+     "electroBonusDMG": 0,
+     "electroFlareAmplifyDMG": 0,
+     "electroFlareBonusDMG": 0,
+     "electroFlareTotalMultiplierDMG": 1,
+     "electroTotalMultiplierDMG": 1,
+     "elementalResPEN": 0,
+     "energyPercent": 1,
+     "flatATK": 410,
+     "flatDEF": 0,
+     "flatHP": 4560,
+     "fusionAmplifyDMG": 0,
+     "fusionBonusDMG": 0,
+     "fusionBurstAmplifyDMG": 0,
+     "fusionBurstBonusDMG": 0,
+     "fusionBurstTotalMultiplierDMG": 1,
+     "fusionTotalMultiplierDMG": 1,
+     "glacioAmplifyDMG": 0,
+     "glacioBonusDMG": 0.77,
+     "glacioChafeAmplifyDMG": 0.6,
+     "glacioChafeBonusDMG": 0.6,
+     "glacioChafeTotalMultiplierDMG": 1.25,
+     "glacioTotalMultiplierDMG": 1,
+     "havocAmplifyDMG": 0,
+     "havocBaneAmplifyDMG": 0,
+     "havocBaneBonusDMG": 0,
+     "havocBaneTotalMultiplierDMG": 1,
+     "havocBonusDMG": 0,
+     "havocTotalMultiplierDMG": 1,
+     "healingBonus": 0,
+     "heavyAmplifyDMG": 0,
+     "heavyBonusDMG": 0,
+     "heavyTotalMultiplierDMG": 1,
+     "introAmplifyDMG": 0,
+     "introBonusDMG": 0,
+     "introTotalMultiplierDMG": 1,
+     "level": 90,
+     "liberationAmplifyDMG": 0,
+     "liberationBonusDMG": 0.371,
+     "liberationTotalMultiplierDMG": 1,
+     "offtuneBuildupRate": 1,
+     "outroAmplifyDMG": 0,
+     "outroBonusDMG": 0,
+     "outroTotalMultiplierDMG": 1,
+     "resistancePEN": 0,
+     "skillAmplifyDMG": 0,
+     "skillBonusDMG": 0,
+     "skillTotalMultiplierDMG": 1,
+     "spectroAmplifyDMG": 0,
+     "spectroBonusDMG": 0,
+     "spectroFrazzleAmplifyDMG": 0,
+     "spectroFrazzleBonusDMG": 0,
+     "spectroFrazzleTotalMultiplierDMG": 1,
+     "spectroTotalMultiplierDMG": 1,
+     "totalMultiplierATK": 1,
+     "totalMultiplierDEF": 1,
+     "totalMultiplierDMG": 1,
+     "totalMultiplierHP": 1,
+     "tuneBreakBoost": 0
+    },
+    "row": 3
+   },
+   {
+    "active": {
+     "selfBuffs": {
+      "items": [
+       {
+        "name": "Frostburn:GlacioBuff",
+        "stats": {
+         "glacioAmplifyDMG": 0.56
+        }
+       },
+       {
+        "name": "Frostburn:LiberationBuff",
+        "stats": {
+         "defIgnore": 0.2
+        }
+       },
+       {
+        "name": "WishesofQuietSnowfall:GlacioBuff",
+        "stats": {
+         "glacioBonusDMG": 0.1
+        }
+       },
+       {
+        "name": "WishesofQuietSnowfall:CritRate",
+        "stats": {
+         "critRate": 0.25
+        }
+       },
+       {
+        "name": "WishesofQuietSnowfall:Snowfall",
+        "stats": {}
+       },
+       {
+        "name": "FineSnow:GlacioChafe",
+        "stats": {
+         "glacioChafeAmplifyDMG": 0.6
+        }
+       },
+       {
+        "name": "FineSnow:CritDMG(Self)",
+        "stats": {
+         "critDamage": 0.4
+        }
+       },
+       {
+        "name": "FineSnow:CritDMGS6(Self)",
+        "stats": {
+         "critDamage": 0.4
+        }
+       },
+       {
+        "name": "FineSnow:GlacioBite(Team)",
+        "stats": {
+         "glacioChafeTotalMultiplierDMG": 1.25
+        }
+       }
+      ],
+      "total": {
+       "critDamage": 0.8,
+       "critRate": 0.25,
+       "defIgnore": 0.2,
+       "glacioAmplifyDMG": 0.56,
+       "glacioBonusDMG": 0.1,
+       "glacioChafeAmplifyDMG": 0.6,
+       "glacioChafeTotalMultiplierDMG": 1.25
+      }
+     },
+     "teamBuffs": {
+      "items": [
+       {
+        "name": "LucilaCheatBuff",
+        "stats": {
+         "bonusATK": 0.24,
+         "glacioBonusDMG": 0.25,
+         "glacioChafeBonusDMG": 0.6
+        }
+       }
+      ],
+      "total": {
+       "bonusATK": 0.24,
+       "glacioBonusDMG": 0.25,
+       "glacioChafeBonusDMG": 0.6
+      }
+     }
+    },
+    "final": {
+     "aeroAmplifyDMG": 0,
+     "aeroBonusDMG": 0,
+     "aeroErosionAmplifyDMG": 0,
+     "aeroErosionBonusDMG": 0,
+     "aeroErosionTotalMultiplierDMG": 1,
+     "aeroTotalMultiplierDMG": 1,
+     "amplifyATK": 0,
+     "amplifyDEF": 0,
+     "amplifyDMG": 0,
+     "amplifyHP": 0,
+     "baseATK": 1050,
+     "baseDEF": 1112,
+     "baseHP": 10300,
+     "basicAmplifyDMG": 0,
+     "basicBonusDMG": 0,
+     "basicTotalMultiplierDMG": 1,
+     "bonusATK": 1.77,
+     "bonusDEF": 0,
+     "bonusDMG": 0,
+     "bonusHP": 0,
+     "coordinatedAmplifyDMG": 0,
+     "coordinatedBonusDMG": 0,
+     "coordinatedTotalMultiplierDMG": 1,
+     "critDamage": 3.218,
+     "critRate": 1.028,
+     "defIgnore": 0.2,
+     "echoAmplifyDMG": 0,
+     "echoBonusDMG": 0,
+     "echoTotalMultiplierDMG": 1,
+     "electroAmplifyDMG": 0,
+     "electroBonusDMG": 0,
+     "electroFlareAmplifyDMG": 0,
+     "electroFlareBonusDMG": 0,
+     "electroFlareTotalMultiplierDMG": 1,
+     "electroTotalMultiplierDMG": 1,
+     "elementalResPEN": 0,
+     "energyPercent": 1,
+     "flatATK": 410,
+     "flatDEF": 0,
+     "flatHP": 4560,
+     "fusionAmplifyDMG": 0,
+     "fusionBonusDMG": 0,
+     "fusionBurstAmplifyDMG": 0,
+     "fusionBurstBonusDMG": 0,
+     "fusionBurstTotalMultiplierDMG": 1,
+     "fusionTotalMultiplierDMG": 1,
+     "glacioAmplifyDMG": 0.56,
+     "glacioBonusDMG": 0.87,
+     "glacioChafeAmplifyDMG": 0.6,
+     "glacioChafeBonusDMG": 0.6,
+     "glacioChafeTotalMultiplierDMG": 1.25,
+     "glacioTotalMultiplierDMG": 1,
+     "havocAmplifyDMG": 0,
+     "havocBaneAmplifyDMG": 0,
+     "havocBaneBonusDMG": 0,
+     "havocBaneTotalMultiplierDMG": 1,
+     "havocBonusDMG": 0,
+     "havocTotalMultiplierDMG": 1,
+     "healingBonus": 0,
+     "heavyAmplifyDMG": 0,
+     "heavyBonusDMG": 0,
+     "heavyTotalMultiplierDMG": 1,
+     "introAmplifyDMG": 0,
+     "introBonusDMG": 0,
+     "introTotalMultiplierDMG": 1,
+     "level": 90,
+     "liberationAmplifyDMG": 0,
+     "liberationBonusDMG": 0.371,
+     "liberationTotalMultiplierDMG": 1,
+     "offtuneBuildupRate": 1,
+     "outroAmplifyDMG": 0,
+     "outroBonusDMG": 0,
+     "outroTotalMultiplierDMG": 1,
+     "resistancePEN": 0,
+     "skillAmplifyDMG": 0,
+     "skillBonusDMG": 0,
+     "skillTotalMultiplierDMG": 1,
+     "spectroAmplifyDMG": 0,
+     "spectroBonusDMG": 0,
+     "spectroFrazzleAmplifyDMG": 0,
+     "spectroFrazzleBonusDMG": 0,
+     "spectroFrazzleTotalMultiplierDMG": 1,
+     "spectroTotalMultiplierDMG": 1,
+     "totalMultiplierATK": 1,
+     "totalMultiplierDEF": 1,
+     "totalMultiplierDMG": 1,
+     "totalMultiplierHP": 1,
+     "tuneBreakBoost": 0
+    },
+    "row": 8
+   },
+   {
+    "active": {
+     "selfBuffs": {
+      "items": [
+       {
+        "name": "Frostburn:GlacioBuff",
+        "stats": {
+         "glacioAmplifyDMG": 0.56
+        }
+       },
+       {
+        "name": "Frostburn:LiberationBuff",
+        "stats": {
+         "defIgnore": 0.2
+        }
+       },
+       {
+        "name": "WishesofQuietSnowfall:GlacioBuff",
+        "stats": {
+         "glacioBonusDMG": 0.1
+        }
+       },
+       {
+        "name": "WishesofQuietSnowfall:CritRate",
+        "stats": {
+         "critRate": 0.25
+        }
+       },
+       {
+        "name": "FineSnow:GlacioChafe",
+        "stats": {
+         "glacioChafeAmplifyDMG": 0.6
+        }
+       },
+       {
+        "name": "FineSnow:CritDMG(Self)",
+        "stats": {
+         "critDamage": 0.4
+        }
+       },
+       {
+        "name": "FineSnow:CritDMGS6(Self)",
+        "stats": {
+         "critDamage": 0.4
+        }
+       },
+       {
+        "name": "FineSnow:GlacioBite(Team)",
+        "stats": {
+         "glacioChafeTotalMultiplierDMG": 1.25
+        }
+       }
+      ],
+      "total": {
+       "critDamage": 0.8,
+       "critRate": 0.25,
+       "defIgnore": 0.2,
+       "glacioAmplifyDMG": 0.56,
+       "glacioBonusDMG": 0.1,
+       "glacioChafeAmplifyDMG": 0.6,
+       "glacioChafeTotalMultiplierDMG": 1.25
+      }
+     },
+     "teamBuffs": {
+      "items": [
+       {
+        "name": "LucilaCheatBuff",
+        "stats": {
+         "bonusATK": 0.24,
+         "glacioBonusDMG": 0.25,
+         "glacioChafeBonusDMG": 0.6
+        }
+       }
+      ],
+      "total": {
+       "bonusATK": 0.24,
+       "glacioBonusDMG": 0.25,
+       "glacioChafeBonusDMG": 0.6
+      }
+     }
+    },
+    "final": {
+     "aeroAmplifyDMG": 0,
+     "aeroBonusDMG": 0,
+     "aeroErosionAmplifyDMG": 0,
+     "aeroErosionBonusDMG": 0,
+     "aeroErosionTotalMultiplierDMG": 1,
+     "aeroTotalMultiplierDMG": 1,
+     "amplifyATK": 0,
+     "amplifyDEF": 0,
+     "amplifyDMG": 0,
+     "amplifyHP": 0,
+     "baseATK": 1050,
+     "baseDEF": 1112,
+     "baseHP": 10300,
+     "basicAmplifyDMG": 0,
+     "basicBonusDMG": 0,
+     "basicTotalMultiplierDMG": 1,
+     "bonusATK": 1.77,
+     "bonusDEF": 0,
+     "bonusDMG": 0,
+     "bonusHP": 0,
+     "coordinatedAmplifyDMG": 0,
+     "coordinatedBonusDMG": 0,
+     "coordinatedTotalMultiplierDMG": 1,
+     "critDamage": 3.218,
+     "critRate": 1.028,
+     "defIgnore": 0.2,
+     "echoAmplifyDMG": 0,
+     "echoBonusDMG": 0,
+     "echoTotalMultiplierDMG": 1,
+     "electroAmplifyDMG": 0,
+     "electroBonusDMG": 0,
+     "electroFlareAmplifyDMG": 0,
+     "electroFlareBonusDMG": 0,
+     "electroFlareTotalMultiplierDMG": 1,
+     "electroTotalMultiplierDMG": 1,
+     "elementalResPEN": 0,
+     "energyPercent": 1,
+     "flatATK": 410,
+     "flatDEF": 0,
+     "flatHP": 4560,
+     "fusionAmplifyDMG": 0,
+     "fusionBonusDMG": 0,
+     "fusionBurstAmplifyDMG": 0,
+     "fusionBurstBonusDMG": 0,
+     "fusionBurstTotalMultiplierDMG": 1,
+     "fusionTotalMultiplierDMG": 1,
+     "glacioAmplifyDMG": 0.56,
+     "glacioBonusDMG": 0.87,
+     "glacioChafeAmplifyDMG": 0.6,
+     "glacioChafeBonusDMG": 0.6,
+     "glacioChafeTotalMultiplierDMG": 1.25,
+     "glacioTotalMultiplierDMG": 1,
+     "havocAmplifyDMG": 0,
+     "havocBaneAmplifyDMG": 0,
+     "havocBaneBonusDMG": 0,
+     "havocBaneTotalMultiplierDMG": 1,
+     "havocBonusDMG": 0,
+     "havocTotalMultiplierDMG": 1,
+     "healingBonus": 0,
+     "heavyAmplifyDMG": 0,
+     "heavyBonusDMG": 0,
+     "heavyTotalMultiplierDMG": 1,
+     "introAmplifyDMG": 0,
+     "introBonusDMG": 0,
+     "introTotalMultiplierDMG": 1,
+     "level": 90,
+     "liberationAmplifyDMG": 0,
+     "liberationBonusDMG": 0.371,
+     "liberationTotalMultiplierDMG": 1,
+     "offtuneBuildupRate": 1,
+     "outroAmplifyDMG": 0,
+     "outroBonusDMG": 0,
+     "outroTotalMultiplierDMG": 1,
+     "resistancePEN": 0,
+     "skillAmplifyDMG": 0,
+     "skillBonusDMG": 0,
+     "skillTotalMultiplierDMG": 1,
+     "spectroAmplifyDMG": 0,
+     "spectroBonusDMG": 0,
+     "spectroFrazzleAmplifyDMG": 0,
+     "spectroFrazzleBonusDMG": 0,
+     "spectroFrazzleTotalMultiplierDMG": 1,
+     "spectroTotalMultiplierDMG": 1,
+     "totalMultiplierATK": 1,
+     "totalMultiplierDEF": 1,
+     "totalMultiplierDMG": 1,
+     "totalMultiplierHP": 1,
+     "tuneBreakBoost": 0
+    },
+    "row": 14
+   }
+  ],
+  "gear": {
+   "echoes": {
+    "items": [
+     {
+      "name": "Aleph-1",
+      "stats": {
+       "bonusATK": 0.409,
+       "critDamage": 0.138,
+       "critRate": 0.063,
+       "flatATK": 150,
+       "glacioBonusDMG": 0.12,
+       "liberationBonusDMG": 0.191
+      }
+     },
+     {
+      "name": "Windlash Coleoid",
+      "stats": {
+       "bonusATK": 0.401,
+       "critDamage": 0.21,
+       "critRate": 0.069,
+       "flatATK": 100,
+       "liberationBonusDMG": 0.094
+      }
+     },
+     {
+      "name": "Tremor Warrior",
+      "stats": {
+       "critDamage": 0.15,
+       "critRate": 0.105,
+       "flatATK": 160,
+       "glacioBonusDMG": 0.3,
+       "liberationBonusDMG": 0.086
+      }
+     },
+     {
+      "name": "Shadow Stepper",
+      "stats": {
+       "bonusATK": 0.18,
+       "critDamage": 0.21,
+       "critRate": 0.099,
+       "flatHP": 2280
+      }
+     },
+     {
+      "name": "Iceglint Dancer",
+      "stats": {
+       "bonusATK": 0.18,
+       "critDamage": 0.21,
+       "critRate": 0.069,
+       "flatHP": 2280
+      }
+     }
+    ],
+    "total": {
+     "bonusATK": 1.17,
+     "critDamage": 0.918,
+     "critRate": 0.405,
+     "flatATK": 410,
+     "flatHP": 4560,
+     "glacioBonusDMG": 0.42,
+     "liberationBonusDMG": 0.371
+    }
+   },
+   "passiveMods": {
+    "items": [
+     {
+      "name": "Inherent Stats",
+      "stats": {
+       "bonusATK": 0.12,
+       "critRate": 0.08
+      }
+     },
+     {
+      "name": "Frostburn: Passive ATK",
+      "stats": {
+       "bonusATK": 0.24
+      }
+     }
+    ],
+    "total": {
+     "bonusATK": 0.36,
+     "critRate": 0.08
+    }
+   },
+   "setBonus": {
+    "name": "Wishes of Quiet Snowfall",
+    "total": {
+     "glacioBonusDMG": 0.1
+    }
+   },
+   "weapon": {
+    "name": "Frostburn",
+    "total": {
+     "baseATK": 587,
+     "critRate": 0.243
+    }
+   }
+  },
+  "name": "Hiyuki",
+  "noSnapshot": {
+   "aeroAmplifyDMG": 0,
+   "aeroBonusDMG": 0,
+   "aeroErosionAmplifyDMG": 0,
+   "aeroErosionBonusDMG": 0,
+   "aeroErosionTotalMultiplierDMG": 1,
+   "aeroTotalMultiplierDMG": 1,
+   "amplifyATK": 0,
+   "amplifyDEF": 0,
+   "amplifyDMG": 0,
+   "amplifyHP": 0,
+   "baseATK": 1050,
+   "baseDEF": 1112,
+   "baseHP": 10300,
+   "basicAmplifyDMG": 0,
+   "basicBonusDMG": 0,
+   "basicTotalMultiplierDMG": 1,
+   "bonusATK": 1.53,
+   "bonusDEF": 0,
+   "bonusDMG": 0,
+   "bonusHP": 0,
+   "coordinatedAmplifyDMG": 0,
+   "coordinatedBonusDMG": 0,
+   "coordinatedTotalMultiplierDMG": 1,
+   "critDamage": 2.418,
+   "critRate": 0.778,
+   "defIgnore": 0,
+   "echoAmplifyDMG": 0,
+   "echoBonusDMG": 0,
+   "echoTotalMultiplierDMG": 1,
+   "electroAmplifyDMG": 0,
+   "electroBonusDMG": 0,
+   "electroFlareAmplifyDMG": 0,
+   "electroFlareBonusDMG": 0,
+   "electroFlareTotalMultiplierDMG": 1,
+   "electroTotalMultiplierDMG": 1,
+   "elementalResPEN": 0,
+   "energyPercent": 1,
+   "flatATK": 410,
+   "flatDEF": 0,
+   "flatHP": 4560,
+   "fusionAmplifyDMG": 0,
+   "fusionBonusDMG": 0,
+   "fusionBurstAmplifyDMG": 0,
+   "fusionBurstBonusDMG": 0,
+   "fusionBurstTotalMultiplierDMG": 1,
+   "fusionTotalMultiplierDMG": 1,
+   "glacioAmplifyDMG": 0,
+   "glacioBonusDMG": 0.52,
+   "glacioChafeAmplifyDMG": 0,
+   "glacioChafeBonusDMG": 0,
+   "glacioChafeTotalMultiplierDMG": 1,
+   "glacioTotalMultiplierDMG": 1,
+   "havocAmplifyDMG": 0,
+   "havocBaneAmplifyDMG": 0,
+   "havocBaneBonusDMG": 0,
+   "havocBaneTotalMultiplierDMG": 1,
+   "havocBonusDMG": 0,
+   "havocTotalMultiplierDMG": 1,
+   "healingBonus": 0,
+   "heavyAmplifyDMG": 0,
+   "heavyBonusDMG": 0,
+   "heavyTotalMultiplierDMG": 1,
+   "introAmplifyDMG": 0,
+   "introBonusDMG": 0,
+   "introTotalMultiplierDMG": 1,
+   "level": 90,
+   "liberationAmplifyDMG": 0,
+   "liberationBonusDMG": 0.371,
+   "liberationTotalMultiplierDMG": 1,
+   "offtuneBuildupRate": 1,
+   "outroAmplifyDMG": 0,
+   "outroBonusDMG": 0,
+   "outroTotalMultiplierDMG": 1,
+   "resistancePEN": 0,
+   "skillAmplifyDMG": 0,
+   "skillBonusDMG": 0,
+   "skillTotalMultiplierDMG": 1,
+   "spectroAmplifyDMG": 0,
+   "spectroBonusDMG": 0,
+   "spectroFrazzleAmplifyDMG": 0,
+   "spectroFrazzleBonusDMG": 0,
+   "spectroFrazzleTotalMultiplierDMG": 1,
+   "spectroTotalMultiplierDMG": 1,
+   "totalMultiplierATK": 1,
+   "totalMultiplierDEF": 1,
+   "totalMultiplierDMG": 1,
+   "totalMultiplierHP": 1,
+   "tuneBreakBoost": 0
+  }
+ },
+ {
+  "atRows": [
+   {
+    "active": {
+     "selfBuffs": {
+      "items": [],
+      "total": {}
+     },
+     "teamBuffs": {
+      "items": [
+       {
+        "name": "LucilaCheatBuff",
+        "stats": {
+         "bonusATK": 0.24,
+         "glacioBonusDMG": 0.25,
+         "glacioChafeBonusDMG": 0.6
+        }
+       },
+       {
+        "name": "FineSnow:GlacioChafe",
+        "stats": {
+         "glacioChafeAmplifyDMG": 0.6
+        }
+       },
+       {
+        "name": "FineSnow:GlacioBite(Team)",
+        "stats": {
+         "glacioChafeTotalMultiplierDMG": 1.25
+        }
+       }
+      ],
+      "total": {
+       "bonusATK": 0.24,
+       "glacioBonusDMG": 0.25,
+       "glacioChafeAmplifyDMG": 0.6,
+       "glacioChafeBonusDMG": 0.6,
+       "glacioChafeTotalMultiplierDMG": 1.25
+      }
+     }
+    },
+    "final": {
+     "aeroAmplifyDMG": 0,
+     "aeroBonusDMG": 0,
+     "aeroErosionAmplifyDMG": 0,
+     "aeroErosionBonusDMG": 0,
+     "aeroErosionTotalMultiplierDMG": 1,
+     "aeroTotalMultiplierDMG": 1,
+     "amplifyATK": 0,
+     "amplifyDEF": 0,
+     "amplifyDMG": 0,
+     "amplifyHP": 0,
+     "baseATK": 699.5,
+     "baseDEF": 1356,
+     "baseHP": 15375,
+     "basicAmplifyDMG": 0,
+     "basicBonusDMG": 0,
+     "basicTotalMultiplierDMG": 1,
+     "bonusATK": 0.24,
+     "bonusDEF": 1.087,
+     "bonusDMG": 0,
+     "bonusHP": 0,
+     "coordinatedAmplifyDMG": 0,
+     "coordinatedBonusDMG": 0,
+     "coordinatedTotalMultiplierDMG": 1,
+     "critDamage": 2.25,
+     "critRate": 0.05,
+     "defIgnore": 0,
+     "echoAmplifyDMG": 0,
+     "echoBonusDMG": 0,
+     "echoTotalMultiplierDMG": 1,
+     "electroAmplifyDMG": 0,
+     "electroBonusDMG": 0,
+     "electroFlareAmplifyDMG": 0,
+     "electroFlareBonusDMG": 0,
+     "electroFlareTotalMultiplierDMG": 1,
+     "electroTotalMultiplierDMG": 1,
+     "elementalResPEN": 0,
+     "energyPercent": 2.7104,
+     "flatATK": 350,
+     "flatDEF": 0,
+     "flatHP": 4560,
+     "fusionAmplifyDMG": 0,
+     "fusionBonusDMG": 0.3,
+     "fusionBurstAmplifyDMG": 0,
+     "fusionBurstBonusDMG": 0,
+     "fusionBurstTotalMultiplierDMG": 1,
+     "fusionTotalMultiplierDMG": 1,
+     "glacioAmplifyDMG": 0,
+     "glacioBonusDMG": 0.25,
+     "glacioChafeAmplifyDMG": 0.6,
+     "glacioChafeBonusDMG": 0.6,
+     "glacioChafeTotalMultiplierDMG": 1.25,
+     "glacioTotalMultiplierDMG": 1,
+     "havocAmplifyDMG": 0,
+     "havocBaneAmplifyDMG": 0,
+     "havocBaneBonusDMG": 0,
+     "havocBaneTotalMultiplierDMG": 1,
+     "havocBonusDMG": 0,
+     "havocTotalMultiplierDMG": 1,
+     "healingBonus": 0.22,
+     "heavyAmplifyDMG": 0,
+     "heavyBonusDMG": 0,
+     "heavyTotalMultiplierDMG": 1,
+     "introAmplifyDMG": 0,
+     "introBonusDMG": 0,
+     "introTotalMultiplierDMG": 1,
+     "level": 90,
+     "liberationAmplifyDMG": 0,
+     "liberationBonusDMG": 0.395,
+     "liberationTotalMultiplierDMG": 1,
+     "offtuneBuildupRate": 1,
+     "outroAmplifyDMG": 0,
+     "outroBonusDMG": 0,
+     "outroTotalMultiplierDMG": 1,
+     "resistancePEN": 0,
+     "skillAmplifyDMG": 0,
+     "skillBonusDMG": 0,
+     "skillTotalMultiplierDMG": 1,
+     "spectroAmplifyDMG": 0,
+     "spectroBonusDMG": 0,
+     "spectroFrazzleAmplifyDMG": 0,
+     "spectroFrazzleBonusDMG": 0,
+     "spectroFrazzleTotalMultiplierDMG": 1,
+     "spectroTotalMultiplierDMG": 1,
+     "totalMultiplierATK": 1,
+     "totalMultiplierDEF": 1,
+     "totalMultiplierDMG": 1,
+     "totalMultiplierHP": 1,
+     "tuneBreakBoost": 0.1
+    },
+    "row": 0
+   },
+   {
+    "active": {
+     "selfBuffs": {
+      "items": [],
+      "total": {}
+     },
+     "teamBuffs": {
+      "items": [
+       {
+        "name": "LucilaCheatBuff",
+        "stats": {
+         "bonusATK": 0.24,
+         "glacioBonusDMG": 0.25,
+         "glacioChafeBonusDMG": 0.6
+        }
+       },
+       {
+        "name": "FineSnow:GlacioChafe",
+        "stats": {
+         "glacioChafeAmplifyDMG": 0.6
+        }
+       },
+       {
+        "name": "FineSnow:GlacioBite(Team)",
+        "stats": {
+         "glacioChafeTotalMultiplierDMG": 1.25
+        }
+       }
+      ],
+      "total": {
+       "bonusATK": 0.24,
+       "glacioBonusDMG": 0.25,
+       "glacioChafeAmplifyDMG": 0.6,
+       "glacioChafeBonusDMG": 0.6,
+       "glacioChafeTotalMultiplierDMG": 1.25
+      }
+     }
+    },
+    "final": {
+     "aeroAmplifyDMG": 0,
+     "aeroBonusDMG": 0,
+     "aeroErosionAmplifyDMG": 0,
+     "aeroErosionBonusDMG": 0,
+     "aeroErosionTotalMultiplierDMG": 1,
+     "aeroTotalMultiplierDMG": 1,
+     "amplifyATK": 0,
+     "amplifyDEF": 0,
+     "amplifyDMG": 0,
+     "amplifyHP": 0,
+     "baseATK": 699.5,
+     "baseDEF": 1356,
+     "baseHP": 15375,
+     "basicAmplifyDMG": 0,
+     "basicBonusDMG": 0,
+     "basicTotalMultiplierDMG": 1,
+     "bonusATK": 0.24,
+     "bonusDEF": 1.087,
+     "bonusDMG": 0,
+     "bonusHP": 0,
+     "coordinatedAmplifyDMG": 0,
+     "coordinatedBonusDMG": 0,
+     "coordinatedTotalMultiplierDMG": 1,
+     "critDamage": 2.25,
+     "critRate": 0.05,
+     "defIgnore": 0,
+     "echoAmplifyDMG": 0,
+     "echoBonusDMG": 0,
+     "echoTotalMultiplierDMG": 1,
+     "electroAmplifyDMG": 0,
+     "electroBonusDMG": 0,
+     "electroFlareAmplifyDMG": 0,
+     "electroFlareBonusDMG": 0,
+     "electroFlareTotalMultiplierDMG": 1,
+     "electroTotalMultiplierDMG": 1,
+     "elementalResPEN": 0,
+     "energyPercent": 2.7104,
+     "flatATK": 350,
+     "flatDEF": 0,
+     "flatHP": 4560,
+     "fusionAmplifyDMG": 0,
+     "fusionBonusDMG": 0.3,
+     "fusionBurstAmplifyDMG": 0,
+     "fusionBurstBonusDMG": 0,
+     "fusionBurstTotalMultiplierDMG": 1,
+     "fusionTotalMultiplierDMG": 1,
+     "glacioAmplifyDMG": 0,
+     "glacioBonusDMG": 0.25,
+     "glacioChafeAmplifyDMG": 0.6,
+     "glacioChafeBonusDMG": 0.6,
+     "glacioChafeTotalMultiplierDMG": 1.25,
+     "glacioTotalMultiplierDMG": 1,
+     "havocAmplifyDMG": 0,
+     "havocBaneAmplifyDMG": 0,
+     "havocBaneBonusDMG": 0,
+     "havocBaneTotalMultiplierDMG": 1,
+     "havocBonusDMG": 0,
+     "havocTotalMultiplierDMG": 1,
+     "healingBonus": 0.22,
+     "heavyAmplifyDMG": 0,
+     "heavyBonusDMG": 0,
+     "heavyTotalMultiplierDMG": 1,
+     "introAmplifyDMG": 0,
+     "introBonusDMG": 0,
+     "introTotalMultiplierDMG": 1,
+     "level": 90,
+     "liberationAmplifyDMG": 0,
+     "liberationBonusDMG": 0.395,
+     "liberationTotalMultiplierDMG": 1,
+     "offtuneBuildupRate": 1,
+     "outroAmplifyDMG": 0,
+     "outroBonusDMG": 0,
+     "outroTotalMultiplierDMG": 1,
+     "resistancePEN": 0,
+     "skillAmplifyDMG": 0,
+     "skillBonusDMG": 0,
+     "skillTotalMultiplierDMG": 1,
+     "spectroAmplifyDMG": 0,
+     "spectroBonusDMG": 0,
+     "spectroFrazzleAmplifyDMG": 0,
+     "spectroFrazzleBonusDMG": 0,
+     "spectroFrazzleTotalMultiplierDMG": 1,
+     "spectroTotalMultiplierDMG": 1,
+     "totalMultiplierATK": 1,
+     "totalMultiplierDEF": 1,
+     "totalMultiplierDMG": 1,
+     "totalMultiplierHP": 1,
+     "tuneBreakBoost": 0.1
+    },
+    "row": 3
+   },
+   {
+    "active": {
+     "selfBuffs": {
+      "items": [],
+      "total": {}
+     },
+     "teamBuffs": {
+      "items": [
+       {
+        "name": "LucilaCheatBuff",
+        "stats": {
+         "bonusATK": 0.24,
+         "glacioBonusDMG": 0.25,
+         "glacioChafeBonusDMG": 0.6
+        }
+       },
+       {
+        "name": "FineSnow:GlacioChafe",
+        "stats": {
+         "glacioChafeAmplifyDMG": 0.6
+        }
+       },
+       {
+        "name": "FineSnow:GlacioBite(Team)",
+        "stats": {
+         "glacioChafeTotalMultiplierDMG": 1.25
+        }
+       }
+      ],
+      "total": {
+       "bonusATK": 0.24,
+       "glacioBonusDMG": 0.25,
+       "glacioChafeAmplifyDMG": 0.6,
+       "glacioChafeBonusDMG": 0.6,
+       "glacioChafeTotalMultiplierDMG": 1.25
+      }
+     }
+    },
+    "final": {
+     "aeroAmplifyDMG": 0,
+     "aeroBonusDMG": 0,
+     "aeroErosionAmplifyDMG": 0,
+     "aeroErosionBonusDMG": 0,
+     "aeroErosionTotalMultiplierDMG": 1,
+     "aeroTotalMultiplierDMG": 1,
+     "amplifyATK": 0,
+     "amplifyDEF": 0,
+     "amplifyDMG": 0,
+     "amplifyHP": 0,
+     "baseATK": 699.5,
+     "baseDEF": 1356,
+     "baseHP": 15375,
+     "basicAmplifyDMG": 0,
+     "basicBonusDMG": 0,
+     "basicTotalMultiplierDMG": 1,
+     "bonusATK": 0.24,
+     "bonusDEF": 1.087,
+     "bonusDMG": 0,
+     "bonusHP": 0,
+     "coordinatedAmplifyDMG": 0,
+     "coordinatedBonusDMG": 0,
+     "coordinatedTotalMultiplierDMG": 1,
+     "critDamage": 2.25,
+     "critRate": 0.05,
+     "defIgnore": 0,
+     "echoAmplifyDMG": 0,
+     "echoBonusDMG": 0,
+     "echoTotalMultiplierDMG": 1,
+     "electroAmplifyDMG": 0,
+     "electroBonusDMG": 0,
+     "electroFlareAmplifyDMG": 0,
+     "electroFlareBonusDMG": 0,
+     "electroFlareTotalMultiplierDMG": 1,
+     "electroTotalMultiplierDMG": 1,
+     "elementalResPEN": 0,
+     "energyPercent": 2.7104,
+     "flatATK": 350,
+     "flatDEF": 0,
+     "flatHP": 4560,
+     "fusionAmplifyDMG": 0,
+     "fusionBonusDMG": 0.3,
+     "fusionBurstAmplifyDMG": 0,
+     "fusionBurstBonusDMG": 0,
+     "fusionBurstTotalMultiplierDMG": 1,
+     "fusionTotalMultiplierDMG": 1,
+     "glacioAmplifyDMG": 0,
+     "glacioBonusDMG": 0.25,
+     "glacioChafeAmplifyDMG": 0.6,
+     "glacioChafeBonusDMG": 0.6,
+     "glacioChafeTotalMultiplierDMG": 1.25,
+     "glacioTotalMultiplierDMG": 1,
+     "havocAmplifyDMG": 0,
+     "havocBaneAmplifyDMG": 0,
+     "havocBaneBonusDMG": 0,
+     "havocBaneTotalMultiplierDMG": 1,
+     "havocBonusDMG": 0,
+     "havocTotalMultiplierDMG": 1,
+     "healingBonus": 0.22,
+     "heavyAmplifyDMG": 0,
+     "heavyBonusDMG": 0,
+     "heavyTotalMultiplierDMG": 1,
+     "introAmplifyDMG": 0,
+     "introBonusDMG": 0,
+     "introTotalMultiplierDMG": 1,
+     "level": 90,
+     "liberationAmplifyDMG": 0,
+     "liberationBonusDMG": 0.395,
+     "liberationTotalMultiplierDMG": 1,
+     "offtuneBuildupRate": 1,
+     "outroAmplifyDMG": 0,
+     "outroBonusDMG": 0,
+     "outroTotalMultiplierDMG": 1,
+     "resistancePEN": 0,
+     "skillAmplifyDMG": 0,
+     "skillBonusDMG": 0,
+     "skillTotalMultiplierDMG": 1,
+     "spectroAmplifyDMG": 0,
+     "spectroBonusDMG": 0,
+     "spectroFrazzleAmplifyDMG": 0,
+     "spectroFrazzleBonusDMG": 0,
+     "spectroFrazzleTotalMultiplierDMG": 1,
+     "spectroTotalMultiplierDMG": 1,
+     "totalMultiplierATK": 1,
+     "totalMultiplierDEF": 1,
+     "totalMultiplierDMG": 1,
+     "totalMultiplierHP": 1,
+     "tuneBreakBoost": 0.1
+    },
+    "row": 8
+   },
+   {
+    "active": {
+     "selfBuffs": {
+      "items": [],
+      "total": {}
+     },
+     "teamBuffs": {
+      "items": [
+       {
+        "name": "LucilaCheatBuff",
+        "stats": {
+         "bonusATK": 0.24,
+         "glacioBonusDMG": 0.25,
+         "glacioChafeBonusDMG": 0.6
+        }
+       },
+       {
+        "name": "FineSnow:GlacioChafe",
+        "stats": {
+         "glacioChafeAmplifyDMG": 0.6
+        }
+       },
+       {
+        "name": "FineSnow:GlacioBite(Team)",
+        "stats": {
+         "glacioChafeTotalMultiplierDMG": 1.25
+        }
+       }
+      ],
+      "total": {
+       "bonusATK": 0.24,
+       "glacioBonusDMG": 0.25,
+       "glacioChafeAmplifyDMG": 0.6,
+       "glacioChafeBonusDMG": 0.6,
+       "glacioChafeTotalMultiplierDMG": 1.25
+      }
+     }
+    },
+    "final": {
+     "aeroAmplifyDMG": 0,
+     "aeroBonusDMG": 0,
+     "aeroErosionAmplifyDMG": 0,
+     "aeroErosionBonusDMG": 0,
+     "aeroErosionTotalMultiplierDMG": 1,
+     "aeroTotalMultiplierDMG": 1,
+     "amplifyATK": 0,
+     "amplifyDEF": 0,
+     "amplifyDMG": 0,
+     "amplifyHP": 0,
+     "baseATK": 699.5,
+     "baseDEF": 1356,
+     "baseHP": 15375,
+     "basicAmplifyDMG": 0,
+     "basicBonusDMG": 0,
+     "basicTotalMultiplierDMG": 1,
+     "bonusATK": 0.24,
+     "bonusDEF": 1.087,
+     "bonusDMG": 0,
+     "bonusHP": 0,
+     "coordinatedAmplifyDMG": 0,
+     "coordinatedBonusDMG": 0,
+     "coordinatedTotalMultiplierDMG": 1,
+     "critDamage": 2.25,
+     "critRate": 0.05,
+     "defIgnore": 0,
+     "echoAmplifyDMG": 0,
+     "echoBonusDMG": 0,
+     "echoTotalMultiplierDMG": 1,
+     "electroAmplifyDMG": 0,
+     "electroBonusDMG": 0,
+     "electroFlareAmplifyDMG": 0,
+     "electroFlareBonusDMG": 0,
+     "electroFlareTotalMultiplierDMG": 1,
+     "electroTotalMultiplierDMG": 1,
+     "elementalResPEN": 0,
+     "energyPercent": 2.7104,
+     "flatATK": 350,
+     "flatDEF": 0,
+     "flatHP": 4560,
+     "fusionAmplifyDMG": 0,
+     "fusionBonusDMG": 0.3,
+     "fusionBurstAmplifyDMG": 0,
+     "fusionBurstBonusDMG": 0,
+     "fusionBurstTotalMultiplierDMG": 1,
+     "fusionTotalMultiplierDMG": 1,
+     "glacioAmplifyDMG": 0,
+     "glacioBonusDMG": 0.25,
+     "glacioChafeAmplifyDMG": 0.6,
+     "glacioChafeBonusDMG": 0.6,
+     "glacioChafeTotalMultiplierDMG": 1.25,
+     "glacioTotalMultiplierDMG": 1,
+     "havocAmplifyDMG": 0,
+     "havocBaneAmplifyDMG": 0,
+     "havocBaneBonusDMG": 0,
+     "havocBaneTotalMultiplierDMG": 1,
+     "havocBonusDMG": 0,
+     "havocTotalMultiplierDMG": 1,
+     "healingBonus": 0.22,
+     "heavyAmplifyDMG": 0,
+     "heavyBonusDMG": 0,
+     "heavyTotalMultiplierDMG": 1,
+     "introAmplifyDMG": 0,
+     "introBonusDMG": 0,
+     "introTotalMultiplierDMG": 1,
+     "level": 90,
+     "liberationAmplifyDMG": 0,
+     "liberationBonusDMG": 0.395,
+     "liberationTotalMultiplierDMG": 1,
+     "offtuneBuildupRate": 1,
+     "outroAmplifyDMG": 0,
+     "outroBonusDMG": 0,
+     "outroTotalMultiplierDMG": 1,
+     "resistancePEN": 0,
+     "skillAmplifyDMG": 0,
+     "skillBonusDMG": 0,
+     "skillTotalMultiplierDMG": 1,
+     "spectroAmplifyDMG": 0,
+     "spectroBonusDMG": 0,
+     "spectroFrazzleAmplifyDMG": 0,
+     "spectroFrazzleBonusDMG": 0,
+     "spectroFrazzleTotalMultiplierDMG": 1,
+     "spectroTotalMultiplierDMG": 1,
+     "totalMultiplierATK": 1,
+     "totalMultiplierDEF": 1,
+     "totalMultiplierDMG": 1,
+     "totalMultiplierHP": 1,
+     "tuneBreakBoost": 0.1
+    },
+    "row": 14
+   }
+  ],
+  "gear": {
+   "echoes": {
+    "items": [
+     {
+      "name": "Reactor Husk",
+      "stats": {
+       "bonusDEF": 0.415,
+       "critDamage": 0.15,
+       "energyPercent": 0.184,
+       "flatATK": 150,
+       "liberationBonusDMG": 0.079
+      }
+     },
+     {
+      "name": "Sabercat Prowler",
+      "stats": {
+       "critDamage": 0.15,
+       "energyPercent": 0.404,
+       "flatATK": 100,
+       "liberationBonusDMG": 0.079
+      }
+     },
+     {
+      "name": "Spacetrek Explorer",
+      "stats": {
+       "critDamage": 0.15,
+       "energyPercent": 0.084,
+       "flatATK": 100,
+       "fusionBonusDMG": 0.3,
+       "liberationBonusDMG": 0.079
+      }
+     },
+     {
+      "name": "Geospider S4",
+      "stats": {
+       "bonusDEF": 0.18,
+       "critDamage": 0.15,
+       "energyPercent": 0.084,
+       "flatHP": 2280,
+       "liberationBonusDMG": 0.079
+      }
+     },
+     {
+      "name": "Mining Drone",
+      "stats": {
+       "bonusDEF": 0.18,
+       "critDamage": 0.15,
+       "energyPercent": 0.084,
+       "flatHP": 2280,
+       "liberationBonusDMG": 0.079
+      }
+     }
+    ],
+    "total": {
+     "bonusDEF": 0.775,
+     "critDamage": 0.75,
+     "energyPercent": 0.84,
+     "flatATK": 350,
+     "flatHP": 4560,
+     "fusionBonusDMG": 0.3,
+     "liberationBonusDMG": 0.395
+    }
+   },
+   "passiveMods": {
+    "items": [
+     {
+      "name": "Inherent Stats",
+      "stats": {
+       "bonusDEF": 0.152,
+       "healingBonus": 0.12
+      }
+     },
+     {
+      "name": "Starfield Calibrator: Passive DEF",
+      "stats": {
+       "bonusDEF": 0.16
+      }
+     }
+    ],
+    "total": {
+     "bonusDEF": 0.312,
+     "healingBonus": 0.12
+    }
+   },
+   "setBonus": {
+    "name": "Halo of Starry Radiance",
+    "total": {
+     "healingBonus": 0.1
+    }
+   },
+   "weapon": {
+    "name": "Starfield Calibrator",
+    "total": {
+     "baseATK": 412.5,
+     "energyPercent": 0.7704
+    }
+   }
+  },
+  "name": "Mornye",
+  "noSnapshot": {
+   "aeroAmplifyDMG": 0,
+   "aeroBonusDMG": 0,
+   "aeroErosionAmplifyDMG": 0,
+   "aeroErosionBonusDMG": 0,
+   "aeroErosionTotalMultiplierDMG": 1,
+   "aeroTotalMultiplierDMG": 1,
+   "amplifyATK": 0,
+   "amplifyDEF": 0,
+   "amplifyDMG": 0,
+   "amplifyHP": 0,
+   "baseATK": 699.5,
+   "baseDEF": 1356,
+   "baseHP": 15375,
+   "basicAmplifyDMG": 0,
+   "basicBonusDMG": 0,
+   "basicTotalMultiplierDMG": 1,
+   "bonusATK": 0,
+   "bonusDEF": 1.087,
+   "bonusDMG": 0,
+   "bonusHP": 0,
+   "coordinatedAmplifyDMG": 0,
+   "coordinatedBonusDMG": 0,
+   "coordinatedTotalMultiplierDMG": 1,
+   "critDamage": 2.25,
+   "critRate": 0.05,
+   "defIgnore": 0,
+   "echoAmplifyDMG": 0,
+   "echoBonusDMG": 0,
+   "echoTotalMultiplierDMG": 1,
+   "electroAmplifyDMG": 0,
+   "electroBonusDMG": 0,
+   "electroFlareAmplifyDMG": 0,
+   "electroFlareBonusDMG": 0,
+   "electroFlareTotalMultiplierDMG": 1,
+   "electroTotalMultiplierDMG": 1,
+   "elementalResPEN": 0,
+   "energyPercent": 2.7104,
+   "flatATK": 350,
+   "flatDEF": 0,
+   "flatHP": 4560,
+   "fusionAmplifyDMG": 0,
+   "fusionBonusDMG": 0.3,
+   "fusionBurstAmplifyDMG": 0,
+   "fusionBurstBonusDMG": 0,
+   "fusionBurstTotalMultiplierDMG": 1,
+   "fusionTotalMultiplierDMG": 1,
+   "glacioAmplifyDMG": 0,
+   "glacioBonusDMG": 0,
+   "glacioChafeAmplifyDMG": 0,
+   "glacioChafeBonusDMG": 0,
+   "glacioChafeTotalMultiplierDMG": 1,
+   "glacioTotalMultiplierDMG": 1,
+   "havocAmplifyDMG": 0,
+   "havocBaneAmplifyDMG": 0,
+   "havocBaneBonusDMG": 0,
+   "havocBaneTotalMultiplierDMG": 1,
+   "havocBonusDMG": 0,
+   "havocTotalMultiplierDMG": 1,
+   "healingBonus": 0.22,
+   "heavyAmplifyDMG": 0,
+   "heavyBonusDMG": 0,
+   "heavyTotalMultiplierDMG": 1,
+   "introAmplifyDMG": 0,
+   "introBonusDMG": 0,
+   "introTotalMultiplierDMG": 1,
+   "level": 90,
+   "liberationAmplifyDMG": 0,
+   "liberationBonusDMG": 0.395,
+   "liberationTotalMultiplierDMG": 1,
+   "offtuneBuildupRate": 1,
+   "outroAmplifyDMG": 0,
+   "outroBonusDMG": 0,
+   "outroTotalMultiplierDMG": 1,
+   "resistancePEN": 0,
+   "skillAmplifyDMG": 0,
+   "skillBonusDMG": 0,
+   "skillTotalMultiplierDMG": 1,
+   "spectroAmplifyDMG": 0,
+   "spectroBonusDMG": 0,
+   "spectroFrazzleAmplifyDMG": 0,
+   "spectroFrazzleBonusDMG": 0,
+   "spectroFrazzleTotalMultiplierDMG": 1,
+   "spectroTotalMultiplierDMG": 1,
+   "totalMultiplierATK": 1,
+   "totalMultiplierDEF": 1,
+   "totalMultiplierDMG": 1,
+   "totalMultiplierHP": 1,
+   "tuneBreakBoost": 0.1
+  }
+ },
+ {
+  "atRows": [
+   {
+    "active": {
+     "selfBuffs": {
+      "items": [
+       {
+        "name": "LucilaCheatBuff",
+        "stats": {
+         "bonusATK": 0.24,
+         "glacioBonusDMG": 0.25,
+         "glacioChafeBonusDMG": 0.6
+        }
+       }
+      ],
+      "total": {
+       "bonusATK": 0.24,
+       "glacioBonusDMG": 0.25,
+       "glacioChafeBonusDMG": 0.6
+      }
+     },
+     "teamBuffs": {
+      "items": [
+       {
+        "name": "FineSnow:GlacioChafe",
+        "stats": {
+         "glacioChafeAmplifyDMG": 0.6
+        }
+       },
+       {
+        "name": "FineSnow:GlacioBite(Team)",
+        "stats": {
+         "glacioChafeTotalMultiplierDMG": 1.25
+        }
+       }
+      ],
+      "total": {
+       "glacioChafeAmplifyDMG": 0.6,
+       "glacioChafeTotalMultiplierDMG": 1.25
+      }
+     }
+    },
+    "final": {
+     "aeroAmplifyDMG": 0,
+     "aeroBonusDMG": 0,
+     "aeroErosionAmplifyDMG": 0,
+     "aeroErosionBonusDMG": 0,
+     "aeroErosionTotalMultiplierDMG": 1,
+     "aeroTotalMultiplierDMG": 1,
+     "amplifyATK": 0,
+     "amplifyDEF": 0,
+     "amplifyDMG": 0,
+     "amplifyHP": 0,
+     "baseATK": 962.5,
+     "baseDEF": 1197,
+     "baseHP": 12237,
+     "basicAmplifyDMG": 0,
+     "basicBonusDMG": 0,
+     "basicTotalMultiplierDMG": 1,
+     "bonusATK": 1.099,
+     "bonusDEF": 0,
+     "bonusDMG": 0,
+     "bonusHP": 0,
+     "coordinatedAmplifyDMG": 0,
+     "coordinatedBonusDMG": 0,
+     "coordinatedTotalMultiplierDMG": 1,
+     "critDamage": 2.748,
+     "critRate": 0.778,
+     "defIgnore": 0,
+     "echoAmplifyDMG": 0,
+     "echoBonusDMG": 0,
+     "echoTotalMultiplierDMG": 1,
+     "electroAmplifyDMG": 0,
+     "electroBonusDMG": 0,
+     "electroFlareAmplifyDMG": 0,
+     "electroFlareBonusDMG": 0,
+     "electroFlareTotalMultiplierDMG": 1,
+     "electroTotalMultiplierDMG": 1,
+     "elementalResPEN": 0,
+     "energyPercent": 1.284,
+     "flatATK": 350,
+     "flatDEF": 0,
+     "flatHP": 4560,
+     "fusionAmplifyDMG": 0,
+     "fusionBonusDMG": 0,
+     "fusionBurstAmplifyDMG": 0,
+     "fusionBurstBonusDMG": 0,
+     "fusionBurstTotalMultiplierDMG": 1,
+     "fusionTotalMultiplierDMG": 1,
+     "glacioAmplifyDMG": 0,
+     "glacioBonusDMG": 0.95,
+     "glacioChafeAmplifyDMG": 0.6,
+     "glacioChafeBonusDMG": 0.6,
+     "glacioChafeTotalMultiplierDMG": 1.25,
+     "glacioTotalMultiplierDMG": 1,
+     "havocAmplifyDMG": 0,
+     "havocBaneAmplifyDMG": 0,
+     "havocBaneBonusDMG": 0,
+     "havocBaneTotalMultiplierDMG": 1,
+     "havocBonusDMG": 0,
+     "havocTotalMultiplierDMG": 1,
+     "healingBonus": 0,
+     "heavyAmplifyDMG": 0,
+     "heavyBonusDMG": 0,
+     "heavyTotalMultiplierDMG": 1,
+     "introAmplifyDMG": 0,
+     "introBonusDMG": 0,
+     "introTotalMultiplierDMG": 1,
+     "level": 90,
+     "liberationAmplifyDMG": 0,
+     "liberationBonusDMG": 0,
+     "liberationTotalMultiplierDMG": 1,
+     "offtuneBuildupRate": 1,
+     "outroAmplifyDMG": 0,
+     "outroBonusDMG": 0,
+     "outroTotalMultiplierDMG": 1,
+     "resistancePEN": 0,
+     "skillAmplifyDMG": 0,
+     "skillBonusDMG": 0,
+     "skillTotalMultiplierDMG": 1,
+     "spectroAmplifyDMG": 0,
+     "spectroBonusDMG": 0,
+     "spectroFrazzleAmplifyDMG": 0,
+     "spectroFrazzleBonusDMG": 0,
+     "spectroFrazzleTotalMultiplierDMG": 1,
+     "spectroTotalMultiplierDMG": 1,
+     "totalMultiplierATK": 1,
+     "totalMultiplierDEF": 1,
+     "totalMultiplierDMG": 1,
+     "totalMultiplierHP": 1,
+     "tuneBreakBoost": 0
+    },
+    "row": 0
+   },
+   {
+    "active": {
+     "selfBuffs": {
+      "items": [
+       {
+        "name": "LucilaCheatBuff",
+        "stats": {
+         "bonusATK": 0.24,
+         "glacioBonusDMG": 0.25,
+         "glacioChafeBonusDMG": 0.6
+        }
+       }
+      ],
+      "total": {
+       "bonusATK": 0.24,
+       "glacioBonusDMG": 0.25,
+       "glacioChafeBonusDMG": 0.6
+      }
+     },
+     "teamBuffs": {
+      "items": [
+       {
+        "name": "FineSnow:GlacioChafe",
+        "stats": {
+         "glacioChafeAmplifyDMG": 0.6
+        }
+       },
+       {
+        "name": "FineSnow:GlacioBite(Team)",
+        "stats": {
+         "glacioChafeTotalMultiplierDMG": 1.25
+        }
+       }
+      ],
+      "total": {
+       "glacioChafeAmplifyDMG": 0.6,
+       "glacioChafeTotalMultiplierDMG": 1.25
+      }
+     }
+    },
+    "final": {
+     "aeroAmplifyDMG": 0,
+     "aeroBonusDMG": 0,
+     "aeroErosionAmplifyDMG": 0,
+     "aeroErosionBonusDMG": 0,
+     "aeroErosionTotalMultiplierDMG": 1,
+     "aeroTotalMultiplierDMG": 1,
+     "amplifyATK": 0,
+     "amplifyDEF": 0,
+     "amplifyDMG": 0,
+     "amplifyHP": 0,
+     "baseATK": 962.5,
+     "baseDEF": 1197,
+     "baseHP": 12237,
+     "basicAmplifyDMG": 0,
+     "basicBonusDMG": 0,
+     "basicTotalMultiplierDMG": 1,
+     "bonusATK": 1.099,
+     "bonusDEF": 0,
+     "bonusDMG": 0,
+     "bonusHP": 0,
+     "coordinatedAmplifyDMG": 0,
+     "coordinatedBonusDMG": 0,
+     "coordinatedTotalMultiplierDMG": 1,
+     "critDamage": 2.748,
+     "critRate": 0.778,
+     "defIgnore": 0,
+     "echoAmplifyDMG": 0,
+     "echoBonusDMG": 0,
+     "echoTotalMultiplierDMG": 1,
+     "electroAmplifyDMG": 0,
+     "electroBonusDMG": 0,
+     "electroFlareAmplifyDMG": 0,
+     "electroFlareBonusDMG": 0,
+     "electroFlareTotalMultiplierDMG": 1,
+     "electroTotalMultiplierDMG": 1,
+     "elementalResPEN": 0,
+     "energyPercent": 1.284,
+     "flatATK": 350,
+     "flatDEF": 0,
+     "flatHP": 4560,
+     "fusionAmplifyDMG": 0,
+     "fusionBonusDMG": 0,
+     "fusionBurstAmplifyDMG": 0,
+     "fusionBurstBonusDMG": 0,
+     "fusionBurstTotalMultiplierDMG": 1,
+     "fusionTotalMultiplierDMG": 1,
+     "glacioAmplifyDMG": 0,
+     "glacioBonusDMG": 0.95,
+     "glacioChafeAmplifyDMG": 0.6,
+     "glacioChafeBonusDMG": 0.6,
+     "glacioChafeTotalMultiplierDMG": 1.25,
+     "glacioTotalMultiplierDMG": 1,
+     "havocAmplifyDMG": 0,
+     "havocBaneAmplifyDMG": 0,
+     "havocBaneBonusDMG": 0,
+     "havocBaneTotalMultiplierDMG": 1,
+     "havocBonusDMG": 0,
+     "havocTotalMultiplierDMG": 1,
+     "healingBonus": 0,
+     "heavyAmplifyDMG": 0,
+     "heavyBonusDMG": 0,
+     "heavyTotalMultiplierDMG": 1,
+     "introAmplifyDMG": 0,
+     "introBonusDMG": 0,
+     "introTotalMultiplierDMG": 1,
+     "level": 90,
+     "liberationAmplifyDMG": 0,
+     "liberationBonusDMG": 0,
+     "liberationTotalMultiplierDMG": 1,
+     "offtuneBuildupRate": 1,
+     "outroAmplifyDMG": 0,
+     "outroBonusDMG": 0,
+     "outroTotalMultiplierDMG": 1,
+     "resistancePEN": 0,
+     "skillAmplifyDMG": 0,
+     "skillBonusDMG": 0,
+     "skillTotalMultiplierDMG": 1,
+     "spectroAmplifyDMG": 0,
+     "spectroBonusDMG": 0,
+     "spectroFrazzleAmplifyDMG": 0,
+     "spectroFrazzleBonusDMG": 0,
+     "spectroFrazzleTotalMultiplierDMG": 1,
+     "spectroTotalMultiplierDMG": 1,
+     "totalMultiplierATK": 1,
+     "totalMultiplierDEF": 1,
+     "totalMultiplierDMG": 1,
+     "totalMultiplierHP": 1,
+     "tuneBreakBoost": 0
+    },
+    "row": 3
+   },
+   {
+    "active": {
+     "selfBuffs": {
+      "items": [
+       {
+        "name": "LucilaCheatBuff",
+        "stats": {
+         "bonusATK": 0.24,
+         "glacioBonusDMG": 0.25,
+         "glacioChafeBonusDMG": 0.6
+        }
+       }
+      ],
+      "total": {
+       "bonusATK": 0.24,
+       "glacioBonusDMG": 0.25,
+       "glacioChafeBonusDMG": 0.6
+      }
+     },
+     "teamBuffs": {
+      "items": [
+       {
+        "name": "FineSnow:GlacioChafe",
+        "stats": {
+         "glacioChafeAmplifyDMG": 0.6
+        }
+       },
+       {
+        "name": "FineSnow:GlacioBite(Team)",
+        "stats": {
+         "glacioChafeTotalMultiplierDMG": 1.25
+        }
+       }
+      ],
+      "total": {
+       "glacioChafeAmplifyDMG": 0.6,
+       "glacioChafeTotalMultiplierDMG": 1.25
+      }
+     }
+    },
+    "final": {
+     "aeroAmplifyDMG": 0,
+     "aeroBonusDMG": 0,
+     "aeroErosionAmplifyDMG": 0,
+     "aeroErosionBonusDMG": 0,
+     "aeroErosionTotalMultiplierDMG": 1,
+     "aeroTotalMultiplierDMG": 1,
+     "amplifyATK": 0,
+     "amplifyDEF": 0,
+     "amplifyDMG": 0,
+     "amplifyHP": 0,
+     "baseATK": 962.5,
+     "baseDEF": 1197,
+     "baseHP": 12237,
+     "basicAmplifyDMG": 0,
+     "basicBonusDMG": 0,
+     "basicTotalMultiplierDMG": 1,
+     "bonusATK": 1.099,
+     "bonusDEF": 0,
+     "bonusDMG": 0,
+     "bonusHP": 0,
+     "coordinatedAmplifyDMG": 0,
+     "coordinatedBonusDMG": 0,
+     "coordinatedTotalMultiplierDMG": 1,
+     "critDamage": 2.748,
+     "critRate": 0.778,
+     "defIgnore": 0,
+     "echoAmplifyDMG": 0,
+     "echoBonusDMG": 0,
+     "echoTotalMultiplierDMG": 1,
+     "electroAmplifyDMG": 0,
+     "electroBonusDMG": 0,
+     "electroFlareAmplifyDMG": 0,
+     "electroFlareBonusDMG": 0,
+     "electroFlareTotalMultiplierDMG": 1,
+     "electroTotalMultiplierDMG": 1,
+     "elementalResPEN": 0,
+     "energyPercent": 1.284,
+     "flatATK": 350,
+     "flatDEF": 0,
+     "flatHP": 4560,
+     "fusionAmplifyDMG": 0,
+     "fusionBonusDMG": 0,
+     "fusionBurstAmplifyDMG": 0,
+     "fusionBurstBonusDMG": 0,
+     "fusionBurstTotalMultiplierDMG": 1,
+     "fusionTotalMultiplierDMG": 1,
+     "glacioAmplifyDMG": 0,
+     "glacioBonusDMG": 0.95,
+     "glacioChafeAmplifyDMG": 0.6,
+     "glacioChafeBonusDMG": 0.6,
+     "glacioChafeTotalMultiplierDMG": 1.25,
+     "glacioTotalMultiplierDMG": 1,
+     "havocAmplifyDMG": 0,
+     "havocBaneAmplifyDMG": 0,
+     "havocBaneBonusDMG": 0,
+     "havocBaneTotalMultiplierDMG": 1,
+     "havocBonusDMG": 0,
+     "havocTotalMultiplierDMG": 1,
+     "healingBonus": 0,
+     "heavyAmplifyDMG": 0,
+     "heavyBonusDMG": 0,
+     "heavyTotalMultiplierDMG": 1,
+     "introAmplifyDMG": 0,
+     "introBonusDMG": 0,
+     "introTotalMultiplierDMG": 1,
+     "level": 90,
+     "liberationAmplifyDMG": 0,
+     "liberationBonusDMG": 0,
+     "liberationTotalMultiplierDMG": 1,
+     "offtuneBuildupRate": 1,
+     "outroAmplifyDMG": 0,
+     "outroBonusDMG": 0,
+     "outroTotalMultiplierDMG": 1,
+     "resistancePEN": 0,
+     "skillAmplifyDMG": 0,
+     "skillBonusDMG": 0,
+     "skillTotalMultiplierDMG": 1,
+     "spectroAmplifyDMG": 0,
+     "spectroBonusDMG": 0,
+     "spectroFrazzleAmplifyDMG": 0,
+     "spectroFrazzleBonusDMG": 0,
+     "spectroFrazzleTotalMultiplierDMG": 1,
+     "spectroTotalMultiplierDMG": 1,
+     "totalMultiplierATK": 1,
+     "totalMultiplierDEF": 1,
+     "totalMultiplierDMG": 1,
+     "totalMultiplierHP": 1,
+     "tuneBreakBoost": 0
+    },
+    "row": 8
+   },
+   {
+    "active": {
+     "selfBuffs": {
+      "items": [
+       {
+        "name": "LucilaCheatBuff",
+        "stats": {
+         "bonusATK": 0.24,
+         "glacioBonusDMG": 0.25,
+         "glacioChafeBonusDMG": 0.6
+        }
+       }
+      ],
+      "total": {
+       "bonusATK": 0.24,
+       "glacioBonusDMG": 0.25,
+       "glacioChafeBonusDMG": 0.6
+      }
+     },
+     "teamBuffs": {
+      "items": [
+       {
+        "name": "FineSnow:GlacioChafe",
+        "stats": {
+         "glacioChafeAmplifyDMG": 0.6
+        }
+       },
+       {
+        "name": "FineSnow:GlacioBite(Team)",
+        "stats": {
+         "glacioChafeTotalMultiplierDMG": 1.25
+        }
+       }
+      ],
+      "total": {
+       "glacioChafeAmplifyDMG": 0.6,
+       "glacioChafeTotalMultiplierDMG": 1.25
+      }
+     }
+    },
+    "final": {
+     "aeroAmplifyDMG": 0,
+     "aeroBonusDMG": 0,
+     "aeroErosionAmplifyDMG": 0,
+     "aeroErosionBonusDMG": 0,
+     "aeroErosionTotalMultiplierDMG": 1,
+     "aeroTotalMultiplierDMG": 1,
+     "amplifyATK": 0,
+     "amplifyDEF": 0,
+     "amplifyDMG": 0,
+     "amplifyHP": 0,
+     "baseATK": 962.5,
+     "baseDEF": 1197,
+     "baseHP": 12237,
+     "basicAmplifyDMG": 0,
+     "basicBonusDMG": 0,
+     "basicTotalMultiplierDMG": 1,
+     "bonusATK": 1.099,
+     "bonusDEF": 0,
+     "bonusDMG": 0,
+     "bonusHP": 0,
+     "coordinatedAmplifyDMG": 0,
+     "coordinatedBonusDMG": 0,
+     "coordinatedTotalMultiplierDMG": 1,
+     "critDamage": 2.748,
+     "critRate": 0.778,
+     "defIgnore": 0,
+     "echoAmplifyDMG": 0,
+     "echoBonusDMG": 0,
+     "echoTotalMultiplierDMG": 1,
+     "electroAmplifyDMG": 0,
+     "electroBonusDMG": 0,
+     "electroFlareAmplifyDMG": 0,
+     "electroFlareBonusDMG": 0,
+     "electroFlareTotalMultiplierDMG": 1,
+     "electroTotalMultiplierDMG": 1,
+     "elementalResPEN": 0,
+     "energyPercent": 1.284,
+     "flatATK": 350,
+     "flatDEF": 0,
+     "flatHP": 4560,
+     "fusionAmplifyDMG": 0,
+     "fusionBonusDMG": 0,
+     "fusionBurstAmplifyDMG": 0,
+     "fusionBurstBonusDMG": 0,
+     "fusionBurstTotalMultiplierDMG": 1,
+     "fusionTotalMultiplierDMG": 1,
+     "glacioAmplifyDMG": 0,
+     "glacioBonusDMG": 0.95,
+     "glacioChafeAmplifyDMG": 0.6,
+     "glacioChafeBonusDMG": 0.6,
+     "glacioChafeTotalMultiplierDMG": 1.25,
+     "glacioTotalMultiplierDMG": 1,
+     "havocAmplifyDMG": 0,
+     "havocBaneAmplifyDMG": 0,
+     "havocBaneBonusDMG": 0,
+     "havocBaneTotalMultiplierDMG": 1,
+     "havocBonusDMG": 0,
+     "havocTotalMultiplierDMG": 1,
+     "healingBonus": 0,
+     "heavyAmplifyDMG": 0,
+     "heavyBonusDMG": 0,
+     "heavyTotalMultiplierDMG": 1,
+     "introAmplifyDMG": 0,
+     "introBonusDMG": 0,
+     "introTotalMultiplierDMG": 1,
+     "level": 90,
+     "liberationAmplifyDMG": 0,
+     "liberationBonusDMG": 0,
+     "liberationTotalMultiplierDMG": 1,
+     "offtuneBuildupRate": 1,
+     "outroAmplifyDMG": 0,
+     "outroBonusDMG": 0,
+     "outroTotalMultiplierDMG": 1,
+     "resistancePEN": 0,
+     "skillAmplifyDMG": 0,
+     "skillBonusDMG": 0,
+     "skillTotalMultiplierDMG": 1,
+     "spectroAmplifyDMG": 0,
+     "spectroBonusDMG": 0,
+     "spectroFrazzleAmplifyDMG": 0,
+     "spectroFrazzleBonusDMG": 0,
+     "spectroFrazzleTotalMultiplierDMG": 1,
+     "spectroTotalMultiplierDMG": 1,
+     "totalMultiplierATK": 1,
+     "totalMultiplierDEF": 1,
+     "totalMultiplierDMG": 1,
+     "totalMultiplierHP": 1,
+     "tuneBreakBoost": 0
+    },
+    "row": 14
+   }
+  ],
+  "gear": {
+   "echoes": {
+    "items": [
+     {
+      "name": "Glommoth",
+      "stats": {
+       "bonusATK": 0.079,
+       "critDamage": 0.138,
+       "critRate": 0.063,
+       "energyPercent": 0.071,
+       "flatATK": 100,
+       "glacioBonusDMG": 0.3
+      }
+     },
+     {
+      "name": "Aleph-1",
+      "stats": {
+       "bonusATK": 0.101,
+       "critDamage": 0.54,
+       "critRate": 0.069,
+       "energyPercent": 0.071,
+       "flatATK": 150
+      }
+     },
+     {
+      "name": "Windlash Coleoid",
+      "stats": {
+       "bonusATK": 0.079,
+       "critDamage": 0.15,
+       "critRate": 0.105,
+       "flatATK": 100,
+       "glacioBonusDMG": 0.3
+      }
+     },
+     {
+      "name": "Shadow Stepper",
+      "stats": {
+       "bonusATK": 0.18,
+       "critDamage": 0.21,
+       "critRate": 0.099,
+       "energyPercent": 0.071,
+       "flatHP": 2280
+      }
+     },
+     {
+      "name": "Iceglint Dancer",
+      "stats": {
+       "bonusATK": 0.18,
+       "critDamage": 0.21,
+       "critRate": 0.069,
+       "energyPercent": 0.071,
+       "flatHP": 2280
+      }
+     }
+    ],
+    "total": {
+     "bonusATK": 0.619,
+     "critDamage": 1.248,
+     "critRate": 0.405,
+     "energyPercent": 0.284,
+     "flatATK": 350,
+     "flatHP": 4560,
+     "glacioBonusDMG": 0.6
+    }
+   },
+   "passiveMods": {
+    "items": [
+     {
+      "name": "Inherent Stats",
+      "stats": {
+       "bonusATK": 0.12,
+       "critRate": 0.08
+      }
+     },
+     {
+      "name": "Freeze Frame: Passive ATK",
+      "stats": {
+       "bonusATK": 0.12
+      }
+     }
+    ],
+    "total": {
+     "bonusATK": 0.24,
+     "critRate": 0.08
+    }
+   },
+   "setBonus": {
+    "name": "Wishes of Quiet Snowfall",
+    "total": {
+     "glacioBonusDMG": 0.1
+    }
+   },
+   "weapon": {
+    "name": "Freeze Frame",
+    "total": {
+     "baseATK": 587.5,
+     "critRate": 0.243
+    }
+   }
+  },
+  "name": "Lucila",
+  "noSnapshot": {
+   "aeroAmplifyDMG": 0,
+   "aeroBonusDMG": 0,
+   "aeroErosionAmplifyDMG": 0,
+   "aeroErosionBonusDMG": 0,
+   "aeroErosionTotalMultiplierDMG": 1,
+   "aeroTotalMultiplierDMG": 1,
+   "amplifyATK": 0,
+   "amplifyDEF": 0,
+   "amplifyDMG": 0,
+   "amplifyHP": 0,
+   "baseATK": 962.5,
+   "baseDEF": 1197,
+   "baseHP": 12237,
+   "basicAmplifyDMG": 0,
+   "basicBonusDMG": 0,
+   "basicTotalMultiplierDMG": 1,
+   "bonusATK": 0.859,
+   "bonusDEF": 0,
+   "bonusDMG": 0,
+   "bonusHP": 0,
+   "coordinatedAmplifyDMG": 0,
+   "coordinatedBonusDMG": 0,
+   "coordinatedTotalMultiplierDMG": 1,
+   "critDamage": 2.748,
+   "critRate": 0.778,
+   "defIgnore": 0,
+   "echoAmplifyDMG": 0,
+   "echoBonusDMG": 0,
+   "echoTotalMultiplierDMG": 1,
+   "electroAmplifyDMG": 0,
+   "electroBonusDMG": 0,
+   "electroFlareAmplifyDMG": 0,
+   "electroFlareBonusDMG": 0,
+   "electroFlareTotalMultiplierDMG": 1,
+   "electroTotalMultiplierDMG": 1,
+   "elementalResPEN": 0,
+   "energyPercent": 1.284,
+   "flatATK": 350,
+   "flatDEF": 0,
+   "flatHP": 4560,
+   "fusionAmplifyDMG": 0,
+   "fusionBonusDMG": 0,
+   "fusionBurstAmplifyDMG": 0,
+   "fusionBurstBonusDMG": 0,
+   "fusionBurstTotalMultiplierDMG": 1,
+   "fusionTotalMultiplierDMG": 1,
+   "glacioAmplifyDMG": 0,
+   "glacioBonusDMG": 0.7,
+   "glacioChafeAmplifyDMG": 0,
+   "glacioChafeBonusDMG": 0,
+   "glacioChafeTotalMultiplierDMG": 1,
+   "glacioTotalMultiplierDMG": 1,
+   "havocAmplifyDMG": 0,
+   "havocBaneAmplifyDMG": 0,
+   "havocBaneBonusDMG": 0,
+   "havocBaneTotalMultiplierDMG": 1,
+   "havocBonusDMG": 0,
+   "havocTotalMultiplierDMG": 1,
+   "healingBonus": 0,
+   "heavyAmplifyDMG": 0,
+   "heavyBonusDMG": 0,
+   "heavyTotalMultiplierDMG": 1,
+   "introAmplifyDMG": 0,
+   "introBonusDMG": 0,
+   "introTotalMultiplierDMG": 1,
+   "level": 90,
+   "liberationAmplifyDMG": 0,
+   "liberationBonusDMG": 0,
+   "liberationTotalMultiplierDMG": 1,
+   "offtuneBuildupRate": 1,
+   "outroAmplifyDMG": 0,
+   "outroBonusDMG": 0,
+   "outroTotalMultiplierDMG": 1,
+   "resistancePEN": 0,
+   "skillAmplifyDMG": 0,
+   "skillBonusDMG": 0,
+   "skillTotalMultiplierDMG": 1,
+   "spectroAmplifyDMG": 0,
+   "spectroBonusDMG": 0,
+   "spectroFrazzleAmplifyDMG": 0,
+   "spectroFrazzleBonusDMG": 0,
+   "spectroFrazzleTotalMultiplierDMG": 1,
+   "spectroTotalMultiplierDMG": 1,
+   "totalMultiplierATK": 1,
+   "totalMultiplierDEF": 1,
+   "totalMultiplierDMG": 1,
+   "totalMultiplierHP": 1,
+   "tuneBreakBoost": 0
+  }
+ }
+]

@@ -1,3 +1,4 @@
+// Template CharacterStats listing every stat key — copy when adding a new character.
 import type { CharacterStats } from '../../types/stats'
 
 export const blueprint: CharacterStats = {

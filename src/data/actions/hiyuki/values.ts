@@ -1,4 +1,5 @@
-﻿// ========== Present Self =====================================================================================================
+// Hiyuki — numeric kit constants (multipliers, energy, concerto, offtune, resources) and frame-based cast times.
+// ========== Present Self =====================================================================================================
 
 // BA1
 const BA1_multiplier = (37.72 + 37.72) / 100

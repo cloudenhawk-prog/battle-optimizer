@@ -1,3 +1,4 @@
+// Lucila — Default Form: Resonance Skill "Phantom Frame" + "Spotlight" (modelled as one action).
 import type { Action } from '../../../../../types/action'
 import * as values from '../../values'
 import { slow_motion_debuff } from '../../../../modifiers/lucila'

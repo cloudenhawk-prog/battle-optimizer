@@ -1,0 +1,1621 @@
+{
+ "completedSteps": 4,
+ "damageEvents": [
+  {
+   "actionName": "Cheat Buff",
+   "average": 0.522116490852,
+   "contributions": {
+    "Hiyuki: Fine Snow::Fine Snow: Glacio Bite (Team)": {
+     "average_damage_contributed": 0,
+     "average_percent_damage_contributed": 0,
+     "crit_damage_contributed": 0,
+     "crit_percent_damage_contributed": 0,
+     "displayName": "Fine Snow: Glacio Bite (Team)",
+     "normal_damage_contributed": 0,
+     "normal_percent_damage_contributed": 0,
+     "ownerCharacter": "Hiyuki",
+     "source": "Hiyuki: Fine Snow"
+    },
+    "Hiyuki: Fine Snow::Fine Snow: Glacio Chafe": {
+     "average_damage_contributed": 0,
+     "average_percent_damage_contributed": 0,
+     "crit_damage_contributed": 0,
+     "crit_percent_damage_contributed": 0,
+     "displayName": "Fine Snow: Glacio Chafe",
+     "normal_damage_contributed": 0,
+     "normal_percent_damage_contributed": 0,
+     "ownerCharacter": "Hiyuki",
+     "source": "Hiyuki: Fine Snow"
+    },
+    "Lucila Cheat Buff::Lucila Cheat Buff": {
+     "average_damage_contributed": 0.144834320656,
+     "average_percent_damage_contributed": 27.7398479447,
+     "crit_damage_contributed": 0.168650066766,
+     "crit_percent_damage_contributed": 27.7398479447,
+     "displayName": "Lucila Cheat Buff",
+     "normal_damage_contributed": 0.0613719311375,
+     "normal_percent_damage_contributed": 27.7398479447,
+     "ownerCharacter": "Lucila",
+     "source": "Lucila Cheat Buff"
+    }
+   },
+   "criticalStrike": 0.607970408137,
+   "dealer": "Lucila",
+   "dmgTypes": [
+    "SKILL"
+   ],
+   "elements": [
+    "GLACIO"
+   ],
+   "finalCharacterStats": {
+    "aeroAmplifyDMG": 0,
+    "aeroBonusDMG": 0,
+    "aeroErosionAmplifyDMG": 0,
+    "aeroErosionBonusDMG": 0,
+    "aeroErosionTotalMultiplierDMG": 1,
+    "aeroTotalMultiplierDMG": 1,
+    "amplifyATK": 0,
+    "amplifyDEF": 0,
+    "amplifyDMG": 0,
+    "amplifyHP": 0,
+    "baseATK": 962.5,
+    "baseDEF": 1197,
+    "baseHP": 12237,
+    "basicAmplifyDMG": 0,
+    "basicBonusDMG": 0,
+    "basicTotalMultiplierDMG": 1,
+    "bonusATK": 1.099,
+    "bonusDEF": 0,
+    "bonusDMG": 0,
+    "bonusHP": 0,
+    "coordinatedAmplifyDMG": 0,
+    "coordinatedBonusDMG": 0,
+    "coordinatedTotalMultiplierDMG": 1,
+    "critDamage": 2.748,
+    "critRate": 0.778,
+    "defIgnore": 0,
+    "echoAmplifyDMG": 0,
+    "echoBonusDMG": 0,
+    "echoTotalMultiplierDMG": 1,
+    "electroAmplifyDMG": 0,
+    "electroBonusDMG": 0,
+    "electroFlareAmplifyDMG": 0,
+    "electroFlareBonusDMG": 0,
+    "electroFlareTotalMultiplierDMG": 1,
+    "electroTotalMultiplierDMG": 1,
+    "elementalResPEN": 0,
+    "energyPercent": 1.284,
+    "flatATK": 350,
+    "flatDEF": 0,
+    "flatHP": 4560,
+    "fusionAmplifyDMG": 0,
+    "fusionBonusDMG": 0,
+    "fusionBurstAmplifyDMG": 0,
+    "fusionBurstBonusDMG": 0,
+    "fusionBurstTotalMultiplierDMG": 1,
+    "fusionTotalMultiplierDMG": 1,
+    "glacioAmplifyDMG": 0,
+    "glacioBonusDMG": 0.95,
+    "glacioChafeAmplifyDMG": 0.6,
+    "glacioChafeBonusDMG": 0.6,
+    "glacioChafeTotalMultiplierDMG": 1.25,
+    "glacioTotalMultiplierDMG": 1,
+    "havocAmplifyDMG": 0,
+    "havocBaneAmplifyDMG": 0,
+    "havocBaneBonusDMG": 0,
+    "havocBaneTotalMultiplierDMG": 1,
+    "havocBonusDMG": 0,
+    "havocTotalMultiplierDMG": 1,
+    "healingBonus": 0,
+    "heavyAmplifyDMG": 0,
+    "heavyBonusDMG": 0,
+    "heavyTotalMultiplierDMG": 1,
+    "introAmplifyDMG": 0,
+    "introBonusDMG": 0,
+    "introTotalMultiplierDMG": 1,
+    "level": 90,
+    "liberationAmplifyDMG": 0,
+    "liberationBonusDMG": 0,
+    "liberationTotalMultiplierDMG": 1,
+    "offtuneBuildupRate": 1,
+    "outroAmplifyDMG": 0,
+    "outroBonusDMG": 0,
+    "outroTotalMultiplierDMG": 1,
+    "resistancePEN": 0,
+    "skillAmplifyDMG": 0,
+    "skillBonusDMG": 0,
+    "skillTotalMultiplierDMG": 1,
+    "spectroAmplifyDMG": 0,
+    "spectroBonusDMG": 0,
+    "spectroFrazzleAmplifyDMG": 0,
+    "spectroFrazzleBonusDMG": 0,
+    "spectroFrazzleTotalMultiplierDMG": 1,
+    "spectroTotalMultiplierDMG": 1,
+    "totalMultiplierATK": 1,
+    "totalMultiplierDEF": 1,
+    "totalMultiplierDMG": 1,
+    "totalMultiplierHP": 1,
+    "tuneBreakBoost": 0
+   },
+   "normalStrike": 0.221241050996,
+   "reEvaluated": {
+    "all": {
+     "avg": 0.522116490852,
+     "crit": 0.607970408137,
+     "normal": 0.221241050996
+    },
+    "none": {
+     "avg": 0.377282170196,
+     "crit": 0.439320341371,
+     "normal": 0.159869119859
+    }
+   },
+   "scaling": "ATK",
+   "snapshotId": 0,
+   "target": "Birdy",
+   "timeStamp": 0
+  },
+  {
+   "actionName": "Basic Attack 1-3 (into heavy)",
+   "average": 2057.92618418,
+   "contributions": {
+    "Hiyuki: Fine Snow::Fine Snow: Glacio Bite (Team)": {
+     "average_damage_contributed": 0,
+     "average_percent_damage_contributed": 0,
+     "crit_damage_contributed": 0,
+     "crit_percent_damage_contributed": 0,
+     "displayName": "Fine Snow: Glacio Bite (Team)",
+     "normal_damage_contributed": 0,
+     "normal_percent_damage_contributed": 0,
+     "ownerCharacter": "Hiyuki",
+     "source": "Hiyuki: Fine Snow"
+    },
+    "Hiyuki: Fine Snow::Fine Snow: Glacio Chafe": {
+     "average_damage_contributed": 0,
+     "average_percent_damage_contributed": 0,
+     "crit_damage_contributed": 0,
+     "crit_percent_damage_contributed": 0,
+     "displayName": "Fine Snow: Glacio Chafe",
+     "normal_damage_contributed": 0,
+     "normal_percent_damage_contributed": 0,
+     "ownerCharacter": "Hiyuki",
+     "source": "Hiyuki: Fine Snow"
+    },
+    "Lucila Cheat Buff::Lucila Cheat Buff": {
+     "average_damage_contributed": 283.793595919,
+     "average_percent_damage_contributed": 13.7902709097,
+     "crit_damage_contributed": 600.974673712,
+     "crit_percent_damage_contributed": 13.7902709097,
+     "displayName": "Lucila Cheat Buff",
+     "normal_damage_contributed": 267.099854983,
+     "normal_percent_damage_contributed": 13.7902709097,
+     "ownerCharacter": "Lucila",
+     "source": "Lucila Cheat Buff"
+    }
+   },
+   "criticalStrike": 4357.96133121,
+   "dealer": "Mornye",
+   "dmgTypes": [
+    "BASIC"
+   ],
+   "elements": [
+    "FUSION"
+   ],
+   "finalCharacterStats": {
+    "aeroAmplifyDMG": 0,
+    "aeroBonusDMG": 0,
+    "aeroErosionAmplifyDMG": 0,
+    "aeroErosionBonusDMG": 0,
+    "aeroErosionTotalMultiplierDMG": 1,
+    "aeroTotalMultiplierDMG": 1,
+    "amplifyATK": 0,
+    "amplifyDEF": 0,
+    "amplifyDMG": 0,
+    "amplifyHP": 0,
+    "baseATK": 699.5,
+    "baseDEF": 1356,
+    "baseHP": 15375,
+    "basicAmplifyDMG": 0,
+    "basicBonusDMG": 0,
+    "basicTotalMultiplierDMG": 1,
+    "bonusATK": 0.24,
+    "bonusDEF": 1.087,
+    "bonusDMG": 0,
+    "bonusHP": 0,
+    "coordinatedAmplifyDMG": 0,
+    "coordinatedBonusDMG": 0,
+    "coordinatedTotalMultiplierDMG": 1,
+    "critDamage": 2.25,
+    "critRate": 0.05,
+    "defIgnore": 0,
+    "echoAmplifyDMG": 0,
+    "echoBonusDMG": 0,
+    "echoTotalMultiplierDMG": 1,
+    "electroAmplifyDMG": 0,
+    "electroBonusDMG": 0,
+    "electroFlareAmplifyDMG": 0,
+    "electroFlareBonusDMG": 0,
+    "electroFlareTotalMultiplierDMG": 1,
+    "electroTotalMultiplierDMG": 1,
+    "elementalResPEN": 0,
+    "energyPercent": 2.7104,
+    "flatATK": 350,
+    "flatDEF": 0,
+    "flatHP": 4560,
+    "fusionAmplifyDMG": 0,
+    "fusionBonusDMG": 0.3,
+    "fusionBurstAmplifyDMG": 0,
+    "fusionBurstBonusDMG": 0,
+    "fusionBurstTotalMultiplierDMG": 1,
+    "fusionTotalMultiplierDMG": 1,
+    "glacioAmplifyDMG": 0,
+    "glacioBonusDMG": 0.25,
+    "glacioChafeAmplifyDMG": 0.6,
+    "glacioChafeBonusDMG": 0.6,
+    "glacioChafeTotalMultiplierDMG": 1.25,
+    "glacioTotalMultiplierDMG": 1,
+    "havocAmplifyDMG": 0,
+    "havocBaneAmplifyDMG": 0,
+    "havocBaneBonusDMG": 0,
+    "havocBaneTotalMultiplierDMG": 1,
+    "havocBonusDMG": 0,
+    "havocTotalMultiplierDMG": 1,
+    "healingBonus": 0.22,
+    "heavyAmplifyDMG": 0,
+    "heavyBonusDMG": 0,
+    "heavyTotalMultiplierDMG": 1,
+    "introAmplifyDMG": 0,
+    "introBonusDMG": 0,
+    "introTotalMultiplierDMG": 1,
+    "level": 90,
+    "liberationAmplifyDMG": 0,
+    "liberationBonusDMG": 0.395,
+    "liberationTotalMultiplierDMG": 1,
+    "offtuneBuildupRate": 1,
+    "outroAmplifyDMG": 0,
+    "outroBonusDMG": 0,
+    "outroTotalMultiplierDMG": 1,
+    "resistancePEN": 0,
+    "skillAmplifyDMG": 0,
+    "skillBonusDMG": 0,
+    "skillTotalMultiplierDMG": 1,
+    "spectroAmplifyDMG": 0,
+    "spectroBonusDMG": 0,
+    "spectroFrazzleAmplifyDMG": 0,
+    "spectroFrazzleBonusDMG": 0,
+    "spectroFrazzleTotalMultiplierDMG": 1,
+    "spectroTotalMultiplierDMG": 1,
+    "totalMultiplierATK": 1,
+    "totalMultiplierDEF": 1,
+    "totalMultiplierDMG": 1,
+    "totalMultiplierHP": 1,
+    "tuneBreakBoost": 0.1
+   },
+   "normalStrike": 1936.87170276,
+   "reEvaluated": {
+    "all": {
+     "avg": 2057.92618418,
+     "crit": 4357.96133121,
+     "normal": 1936.87170276
+    },
+    "none": {
+     "avg": 1774.13258826,
+     "crit": 3756.9866575,
+     "normal": 1669.77184778
+    }
+   },
+   "scaling": "ATK",
+   "snapshotId": 1,
+   "target": "Birdy",
+   "timeStamp": 0
+  },
+  {
+   "actionName": "Energy Up",
+   "average": 0,
+   "contributions": {
+    "Hiyuki: Fine Snow::Fine Snow: Crit DMG (Self)": {
+     "average_damage_contributed": 0,
+     "average_percent_damage_contributed": 0,
+     "crit_damage_contributed": 0,
+     "crit_percent_damage_contributed": 0,
+     "displayName": "Fine Snow: Crit DMG (Self)",
+     "normal_damage_contributed": 0,
+     "normal_percent_damage_contributed": 0,
+     "ownerCharacter": "Hiyuki",
+     "source": "Hiyuki: Fine Snow"
+    },
+    "Hiyuki: Fine Snow::Fine Snow: Crit DMG S6 (Self)": {
+     "average_damage_contributed": 0,
+     "average_percent_damage_contributed": 0,
+     "crit_damage_contributed": 0,
+     "crit_percent_damage_contributed": 0,
+     "displayName": "Fine Snow: Crit DMG S6 (Self)",
+     "normal_damage_contributed": 0,
+     "normal_percent_damage_contributed": 0,
+     "ownerCharacter": "Hiyuki",
+     "source": "Hiyuki: Fine Snow"
+    },
+    "Hiyuki: Fine Snow::Fine Snow: Glacio Bite (Team)": {
+     "average_damage_contributed": 0,
+     "average_percent_damage_contributed": 0,
+     "crit_damage_contributed": 0,
+     "crit_percent_damage_contributed": 0,
+     "displayName": "Fine Snow: Glacio Bite (Team)",
+     "normal_damage_contributed": 0,
+     "normal_percent_damage_contributed": 0,
+     "ownerCharacter": "Hiyuki",
+     "source": "Hiyuki: Fine Snow"
+    },
+    "Hiyuki: Fine Snow::Fine Snow: Glacio Chafe": {
+     "average_damage_contributed": 0,
+     "average_percent_damage_contributed": 0,
+     "crit_damage_contributed": 0,
+     "crit_percent_damage_contributed": 0,
+     "displayName": "Fine Snow: Glacio Chafe",
+     "normal_damage_contributed": 0,
+     "normal_percent_damage_contributed": 0,
+     "ownerCharacter": "Hiyuki",
+     "source": "Hiyuki: Fine Snow"
+    },
+    "Lucila Cheat Buff::Lucila Cheat Buff": {
+     "average_damage_contributed": 0,
+     "average_percent_damage_contributed": 0,
+     "crit_damage_contributed": 0,
+     "crit_percent_damage_contributed": 0,
+     "displayName": "Lucila Cheat Buff",
+     "normal_damage_contributed": 0,
+     "normal_percent_damage_contributed": 0,
+     "ownerCharacter": "Lucila",
+     "source": "Lucila Cheat Buff"
+    }
+   },
+   "criticalStrike": 0,
+   "dealer": "Hiyuki",
+   "dmgTypes": [
+    ""
+   ],
+   "elements": [
+    ""
+   ],
+   "finalCharacterStats": {
+    "aeroAmplifyDMG": 0,
+    "aeroBonusDMG": 0,
+    "aeroErosionAmplifyDMG": 0,
+    "aeroErosionBonusDMG": 0,
+    "aeroErosionTotalMultiplierDMG": 1,
+    "aeroTotalMultiplierDMG": 1,
+    "amplifyATK": 0,
+    "amplifyDEF": 0,
+    "amplifyDMG": 0,
+    "amplifyHP": 0,
+    "baseATK": 1050,
+    "baseDEF": 1112,
+    "baseHP": 10300,
+    "basicAmplifyDMG": 0,
+    "basicBonusDMG": 0,
+    "basicTotalMultiplierDMG": 1,
+    "bonusATK": 1.77,
+    "bonusDEF": 0,
+    "bonusDMG": 0,
+    "bonusHP": 0,
+    "coordinatedAmplifyDMG": 0,
+    "coordinatedBonusDMG": 0,
+    "coordinatedTotalMultiplierDMG": 1,
+    "critDamage": 3.218,
+    "critRate": 0.778,
+    "defIgnore": 0,
+    "echoAmplifyDMG": 0,
+    "echoBonusDMG": 0,
+    "echoTotalMultiplierDMG": 1,
+    "electroAmplifyDMG": 0,
+    "electroBonusDMG": 0,
+    "electroFlareAmplifyDMG": 0,
+    "electroFlareBonusDMG": 0,
+    "electroFlareTotalMultiplierDMG": 1,
+    "electroTotalMultiplierDMG": 1,
+    "elementalResPEN": 0,
+    "energyPercent": 1,
+    "flatATK": 410,
+    "flatDEF": 0,
+    "flatHP": 4560,
+    "fusionAmplifyDMG": 0,
+    "fusionBonusDMG": 0,
+    "fusionBurstAmplifyDMG": 0,
+    "fusionBurstBonusDMG": 0,
+    "fusionBurstTotalMultiplierDMG": 1,
+    "fusionTotalMultiplierDMG": 1,
+    "glacioAmplifyDMG": 0,
+    "glacioBonusDMG": 0.77,
+    "glacioChafeAmplifyDMG": 0.6,
+    "glacioChafeBonusDMG": 0.6,
+    "glacioChafeTotalMultiplierDMG": 1.25,
+    "glacioTotalMultiplierDMG": 1,
+    "havocAmplifyDMG": 0,
+    "havocBaneAmplifyDMG": 0,
+    "havocBaneBonusDMG": 0,
+    "havocBaneTotalMultiplierDMG": 1,
+    "havocBonusDMG": 0,
+    "havocTotalMultiplierDMG": 1,
+    "healingBonus": 0,
+    "heavyAmplifyDMG": 0,
+    "heavyBonusDMG": 0,
+    "heavyTotalMultiplierDMG": 1,
+    "introAmplifyDMG": 0,
+    "introBonusDMG": 0,
+    "introTotalMultiplierDMG": 1,
+    "level": 90,
+    "liberationAmplifyDMG": 0,
+    "liberationBonusDMG": 0.371,
+    "liberationTotalMultiplierDMG": 1,
+    "offtuneBuildupRate": 1,
+    "outroAmplifyDMG": 0,
+    "outroBonusDMG": 0,
+    "outroTotalMultiplierDMG": 1,
+    "resistancePEN": 0,
+    "skillAmplifyDMG": 0,
+    "skillBonusDMG": 0,
+    "skillTotalMultiplierDMG": 1,
+    "spectroAmplifyDMG": 0,
+    "spectroBonusDMG": 0,
+    "spectroFrazzleAmplifyDMG": 0,
+    "spectroFrazzleBonusDMG": 0,
+    "spectroFrazzleTotalMultiplierDMG": 1,
+    "spectroTotalMultiplierDMG": 1,
+    "totalMultiplierATK": 1,
+    "totalMultiplierDEF": 1,
+    "totalMultiplierDMG": 1,
+    "totalMultiplierHP": 1,
+    "tuneBreakBoost": 0
+   },
+   "normalStrike": 0,
+   "reEvaluated": {
+    "all": {
+     "avg": 0,
+     "crit": 0,
+     "normal": 0
+    },
+    "none": {
+     "avg": 0,
+     "crit": 0,
+     "normal": 0
+    }
+   },
+   "scaling": "ATK",
+   "snapshotId": 2,
+   "target": "Birdy",
+   "timeStamp": 1.83
+  },
+  {
+   "actionName": "Resonance Skill",
+   "average": 30087.4332516,
+   "contributions": {
+    "Hiyuki: Fine Snow::Fine Snow: Crit DMG (Self)": {
+     "average_damage_contributed": 2904.55691698,
+     "average_percent_damage_contributed": 9.65372118215,
+     "crit_damage_contributed": 3733.3636465,
+     "crit_percent_damage_contributed": 10.5097375899,
+     "displayName": "Fine Snow: Crit DMG (Self)",
+     "normal_damage_contributed": 0,
+     "normal_percent_damage_contributed": 0,
+     "ownerCharacter": "Hiyuki",
+     "source": "Hiyuki: Fine Snow"
+    },
+    "Hiyuki: Fine Snow::Fine Snow: Crit DMG S6 (Self)": {
+     "average_damage_contributed": 2896.50527512,
+     "average_percent_damage_contributed": 9.62696036881,
+     "crit_damage_contributed": 3723.01449245,
+     "crit_percent_damage_contributed": 10.4806038371,
+     "displayName": "Fine Snow: Crit DMG S6 (Self)",
+     "normal_damage_contributed": 0,
+     "normal_percent_damage_contributed": 0,
+     "ownerCharacter": "Hiyuki",
+     "source": "Hiyuki: Fine Snow"
+    },
+    "Hiyuki: Fine Snow::Fine Snow: Glacio Bite (Team)": {
+     "average_damage_contributed": 0,
+     "average_percent_damage_contributed": 0,
+     "crit_damage_contributed": 0,
+     "crit_percent_damage_contributed": 0,
+     "displayName": "Fine Snow: Glacio Bite (Team)",
+     "normal_damage_contributed": 0,
+     "normal_percent_damage_contributed": 0,
+     "ownerCharacter": "Hiyuki",
+     "source": "Hiyuki: Fine Snow"
+    },
+    "Hiyuki: Fine Snow::Fine Snow: Glacio Chafe": {
+     "average_damage_contributed": 0,
+     "average_percent_damage_contributed": 0,
+     "crit_damage_contributed": 0,
+     "crit_percent_damage_contributed": 0,
+     "displayName": "Fine Snow: Glacio Chafe",
+     "normal_damage_contributed": 0,
+     "normal_percent_damage_contributed": 0,
+     "ownerCharacter": "Hiyuki",
+     "source": "Hiyuki: Fine Snow"
+    },
+    "Hiyuki: S4::Hiyuki S4 team buff": {
+     "average_damage_contributed": 2552.39961622,
+     "average_percent_damage_contributed": 8.483274711,
+     "crit_damage_contributed": 2981.74804233,
+     "crit_percent_damage_contributed": 8.39387545689,
+     "displayName": "Hiyuki S4 team buff",
+     "normal_damage_contributed": 1047.74612294,
+     "normal_percent_damage_contributed": 9.49147439661,
+     "ownerCharacter": "Hiyuki",
+     "source": "Hiyuki: S4"
+    },
+    "Lucila Cheat Buff::Lucila Cheat Buff": {
+     "average_damage_contributed": 6532.04161402,
+     "average_percent_damage_contributed": 21.7101989372,
+     "crit_damage_contributed": 7607.50348139,
+     "crit_percent_damage_contributed": 21.415772176,
+     "displayName": "Lucila Cheat Buff",
+     "normal_damage_contributed": 2763.08065542,
+     "normal_percent_damage_contributed": 25.0305954109,
+     "ownerCharacter": "Lucila",
+     "source": "Lucila Cheat Buff"
+    }
+   },
+   "criticalStrike": 35522.9006868,
+   "dealer": "Hiyuki",
+   "dmgTypes": [
+    "SKILL"
+   ],
+   "elements": [
+    "GLACIO"
+   ],
+   "finalCharacterStats": {
+    "aeroAmplifyDMG": 0,
+    "aeroBonusDMG": 0,
+    "aeroErosionAmplifyDMG": 0,
+    "aeroErosionBonusDMG": 0,
+    "aeroErosionTotalMultiplierDMG": 1,
+    "aeroTotalMultiplierDMG": 1,
+    "amplifyATK": 0,
+    "amplifyDEF": 0,
+    "amplifyDMG": 0,
+    "amplifyHP": 0,
+    "baseATK": 1050,
+    "baseDEF": 1112,
+    "baseHP": 10300,
+    "basicAmplifyDMG": 0,
+    "basicBonusDMG": 0,
+    "basicTotalMultiplierDMG": 1,
+    "bonusATK": 1.77,
+    "bonusDEF": 0,
+    "bonusDMG": 0.2,
+    "bonusHP": 0,
+    "coordinatedAmplifyDMG": 0,
+    "coordinatedBonusDMG": 0,
+    "coordinatedTotalMultiplierDMG": 1,
+    "critDamage": 3.218,
+    "critRate": 0.778,
+    "defIgnore": 0,
+    "echoAmplifyDMG": 0,
+    "echoBonusDMG": 0,
+    "echoTotalMultiplierDMG": 1,
+    "electroAmplifyDMG": 0,
+    "electroBonusDMG": 0,
+    "electroFlareAmplifyDMG": 0,
+    "electroFlareBonusDMG": 0,
+    "electroFlareTotalMultiplierDMG": 1,
+    "electroTotalMultiplierDMG": 1,
+    "elementalResPEN": 0,
+    "energyPercent": 1,
+    "flatATK": 410,
+    "flatDEF": 0,
+    "flatHP": 4560,
+    "fusionAmplifyDMG": 0,
+    "fusionBonusDMG": 0,
+    "fusionBurstAmplifyDMG": 0,
+    "fusionBurstBonusDMG": 0,
+    "fusionBurstTotalMultiplierDMG": 1,
+    "fusionTotalMultiplierDMG": 1,
+    "glacioAmplifyDMG": 0,
+    "glacioBonusDMG": 0.77,
+    "glacioChafeAmplifyDMG": 0.6,
+    "glacioChafeBonusDMG": 0.6,
+    "glacioChafeTotalMultiplierDMG": 1.25,
+    "glacioTotalMultiplierDMG": 1,
+    "havocAmplifyDMG": 0,
+    "havocBaneAmplifyDMG": 0,
+    "havocBaneBonusDMG": 0,
+    "havocBaneTotalMultiplierDMG": 1,
+    "havocBonusDMG": 0,
+    "havocTotalMultiplierDMG": 1,
+    "healingBonus": 0,
+    "heavyAmplifyDMG": 0,
+    "heavyBonusDMG": 0,
+    "heavyTotalMultiplierDMG": 1,
+    "introAmplifyDMG": 0,
+    "introBonusDMG": 0,
+    "introTotalMultiplierDMG": 1,
+    "level": 90,
+    "liberationAmplifyDMG": 0,
+    "liberationBonusDMG": 0.371,
+    "liberationTotalMultiplierDMG": 1,
+    "offtuneBuildupRate": 1,
+    "outroAmplifyDMG": 0,
+    "outroBonusDMG": 0,
+    "outroTotalMultiplierDMG": 1,
+    "resistancePEN": 0,
+    "skillAmplifyDMG": 0,
+    "skillBonusDMG": 0,
+    "skillTotalMultiplierDMG": 1,
+    "spectroAmplifyDMG": 0,
+    "spectroBonusDMG": 0,
+    "spectroFrazzleAmplifyDMG": 0,
+    "spectroFrazzleBonusDMG": 0,
+    "spectroFrazzleTotalMultiplierDMG": 1,
+    "spectroTotalMultiplierDMG": 1,
+    "totalMultiplierATK": 1,
+    "totalMultiplierDEF": 1,
+    "totalMultiplierDMG": 1,
+    "totalMultiplierHP": 1,
+    "tuneBreakBoost": 0
+   },
+   "normalStrike": 11038.8131407,
+   "reEvaluated": {
+    "all": {
+     "avg": 30087.4332516,
+     "crit": 35522.9006868,
+     "normal": 11038.8131407
+    },
+    "none": {
+     "avg": 15201.9298292,
+     "crit": 17477.2710242,
+     "normal": 7227.98636235
+    }
+   },
+   "scaling": "ATK",
+   "snapshotId": 3,
+   "target": "Birdy",
+   "timeStamp": 1.83
+  }
+ ],
+ "error": {
+  "action": "Enhanced Heavy Attack",
+  "character": "Hiyuki",
+  "reason": "Not enough dedication to cast \"Frost Splinter: Present Self\" (need 300, have 100)",
+  "stepIndex": 4
+ },
+ "finalCoordinatedAttacks": [],
+ "finalModifiers": [
+  {
+   "applicationTime": 0,
+   "currentStacks": 1,
+   "modifier": {
+    "characterStats": {
+     "bonusATK": 0.24,
+     "glacioBonusDMG": 0.25,
+     "glacioChafeBonusDMG": 0.6
+    },
+    "color": "#6EC1F2",
+    "displayName": "Lucila Cheat Buff",
+    "durationStrategy": {
+     "timeDuration": 1000,
+     "type": "limited"
+    },
+    "enemyStats": {
+     "glacioRES": -0.08
+    },
+    "ownerCharacter": "Lucila",
+    "source": "Lucila Cheat Buff",
+    "stackingStrategy": {
+     "maxStacks": 1,
+     "resetTimerOnApplication": true,
+     "stacksRemovedEachTime": 1
+    },
+    "targetStrategy": "all",
+    "type": "buff"
+   },
+   "swapsLeft": "Infinity",
+   "targetCharacter": null,
+   "timeLeft": 996.636666667
+  },
+  {
+   "applicationTime": 1.83,
+   "currentStacks": 1,
+   "modifier": {
+    "characterStats": {
+     "bonusDMG": 0.2
+    },
+    "color": "#dbe9ff",
+    "description": "[S4] Casting Resonance Skill: Present Self, Frostblight: Jade Cleave, or Frostblight: Petalfall increases the damage dealt by all nearby Resonators in the team by 20% for 30s.",
+    "displayName": "Hiyuki S4 team buff",
+    "durationStrategy": {
+     "timeDuration": 30,
+     "type": "limited"
+    },
+    "ownerCharacter": "Hiyuki",
+    "source": "Hiyuki: S4",
+    "stackingStrategy": {
+     "maxStacks": 1,
+     "resetTimerOnApplication": true,
+     "stacksRemovedEachTime": 1
+    },
+    "targetStrategy": "all",
+    "type": "buff"
+   },
+   "swapsLeft": "Infinity",
+   "targetCharacter": null,
+   "timeLeft": 30
+  }
+ ],
+ "finalNegativeStatuses": [
+  {
+   "applicationTime": -1,
+   "currentStacks": 0,
+   "lastDamageTime": 0,
+   "negativeStatus": {
+    "color": "#4db84d",
+    "damage": {
+     "1": 1654,
+     "2": 4134,
+     "3": 8268,
+     "4": 12402,
+     "5": 16536,
+     "6": 20670,
+     "7": 24804,
+     "8": 28938,
+     "9": 33072
+    },
+    "damageModifiers": [],
+    "duration": 15,
+    "element": "AERO",
+    "frequency": 3,
+    "maxStacksDefault": 3,
+    "name": "Aero Erosion",
+    "reductionStrategy": {
+     "resetTimerOnApplication": true,
+     "stackConsumption": 999,
+     "triggerDmgOnReduction": false
+    }
+   },
+   "timeLeft": 0
+  },
+  {
+   "applicationTime": -1,
+   "currentStacks": 0,
+   "lastDamageTime": 0,
+   "negativeStatus": {
+    "color": "#ffe066",
+    "damage": {
+     "1": 1225,
+     "2": 2223,
+     "3": 2896,
+     "4": 3792,
+     "5": 4688,
+     "6": 5584,
+     "7": 6480,
+     "8": 8196,
+     "9": 9192,
+     "10": 10188
+    },
+    "damageModifiers": [],
+    "duration": 12,
+    "element": "SPECTRO",
+    "frequency": 3,
+    "maxStacksDefault": 10,
+    "name": "Spectro Frazzle",
+    "reductionStrategy": {
+     "resetTimerOnApplication": false,
+     "stackConsumption": 1,
+     "triggerDmgOnReduction": true
+    }
+   },
+   "timeLeft": 0
+  },
+  {
+   "applicationTime": -1,
+   "currentStacks": 0,
+   "lastDamageTime": 0,
+   "negativeStatus": {
+    "color": "#66ccff",
+    "damage": {
+     "1": 900.13,
+     "2": 1631.9908,
+     "3": 2363.8516,
+     "4": 3095.7124,
+     "5": 3827.2058,
+     "6": 4559.0666,
+     "7": 5290.9274,
+     "8": 6022.7882,
+     "9": 6754.649,
+     "10": 7486.5098,
+     "11": 9981.8906,
+     "12": 12477.2714,
+     "13": 14972.6522
+    },
+    "damageModifiers": [],
+    "duration": 15,
+    "element": "GLACIO",
+    "frequency": 3,
+    "maxStacksDefault": 10,
+    "name": "Glacio Chafe",
+    "reductionStrategy": {
+     "resetTimerOnApplication": true,
+     "stackConsumption": 999,
+     "triggerDmgOnReduction": false
+    }
+   },
+   "timeLeft": 0
+  }
+ ],
+ "snapshots": [
+  {
+   "action": "Cheat Buff",
+   "buffs": {
+    "FineSnow:GlacioBite(Team)": 1,
+    "FineSnow:GlacioChafe": 1,
+    "LucilaCheatBuff": 1
+   },
+   "buffsActivationStats": {
+    "FineSnow:GlacioBite(Team)": {
+     "glacioChafeTotalMultiplierDMG": 1.25
+    },
+    "FineSnow:GlacioChafe": {
+     "glacioChafeAmplifyDMG": 0.6
+    },
+    "LucilaCheatBuff": {
+     "bonusATK": 0.24,
+     "glacioBonusDMG": 0.25,
+     "glacioChafeBonusDMG": 0.6
+    }
+   },
+   "buffsMaxStacks": {
+    "FineSnow:GlacioBite(Team)": 1,
+    "FineSnow:GlacioChafe": 1,
+    "LucilaCheatBuff": 1
+   },
+   "buffsSwapsLeft": {
+    "FineSnow:GlacioBite(Team)": "Infinity",
+    "FineSnow:GlacioChafe": "Infinity",
+    "LucilaCheatBuff": "Infinity"
+   },
+   "buffsTargetCharacter": {},
+   "buffsTimeLeft": {
+    "FineSnow:GlacioBite(Team)": "Infinity",
+    "FineSnow:GlacioChafe": "Infinity",
+    "LucilaCheatBuff": 1000
+   },
+   "character": "Lucila",
+   "charactersActionStacks": {},
+   "charactersActionStacksConfig": {},
+   "charactersAttemptFollowUp": {},
+   "charactersComboChainTags": {
+    "Lucila": []
+   },
+   "charactersComboWindows": {},
+   "charactersCooldowns": {
+    "Hiyuki": {},
+    "Lucila": {},
+    "Mornye": {}
+   },
+   "charactersEnergies": {
+    "Hiyuki": {
+     "concerto": 0,
+     "dedication": 0,
+     "energy": 0,
+     "foreclaiming": 0,
+     "frostharden_iai": 3,
+     "frostheart": 0,
+     "s1_enhanced_ba1": 0,
+     "s1_enhanced_ba2": 0,
+     "s2_frostheart_token": 2,
+     "snow_rust": 3,
+     "snowforged_blade": 3,
+     "whiteout_bitterfrost": 0
+    },
+    "Lucila": {
+     "concerto": 0,
+     "energy": 0,
+     "film_roll": 0,
+     "traces": 0
+    },
+    "Mornye": {
+     "concerto": 0,
+     "energy": 0,
+     "relative_momentum": 0,
+     "rest_mass_energy": 0
+    }
+   },
+   "charactersForms": {},
+   "charactersForteGrants": {},
+   "charactersLastAction": {
+    "Lucila": "Cheat Buff"
+   },
+   "charactersOffFieldSince": {},
+   "charactersPersistentUntil": {
+    "Lucila": 0
+   },
+   "charactersPositions": {
+    "Lucila": "GROUND"
+   },
+   "charactersRequiresSwapOut": {
+    "Lucila": false
+   },
+   "charactersRestrictNextTo": {},
+   "charactersSwapCooldownUntil": {},
+   "coordinatedAttacks": {},
+   "coordinatedAttacksSwapRequired": {},
+   "coordinatedAttacksTimeLeft": {},
+   "damage": 1,
+   "debuffs": {},
+   "debuffsMaxStacks": {},
+   "debuffsSwapsLeft": {},
+   "debuffsTimeLeft": {},
+   "dps": 0,
+   "fromTime": 0,
+   "id": "0",
+   "negativeStatuses": {
+    "Aero Erosion": 0,
+    "Glacio Chafe": 0,
+    "Spectro Frazzle": 0
+   },
+   "negativeStatusesMaxStacks": {},
+   "negativeStatusesTimeLeft": {
+    "Aero Erosion": 0,
+    "Glacio Chafe": 0,
+    "Spectro Frazzle": 0
+   },
+   "offFieldTriggerEvents": {},
+   "resolvedDisplayName": "Cheat Buff",
+   "toTime": 0
+  },
+  {
+   "action": "Basic Attack 1-3 (into heavy)",
+   "buffs": {
+    "FineSnow:GlacioBite(Team)": 1,
+    "FineSnow:GlacioChafe": 1,
+    "LucilaCheatBuff": 1
+   },
+   "buffsActivationStats": {
+    "FineSnow:GlacioBite(Team)": {
+     "glacioChafeTotalMultiplierDMG": 1.25
+    },
+    "FineSnow:GlacioChafe": {
+     "glacioChafeAmplifyDMG": 0.6
+    },
+    "LucilaCheatBuff": {
+     "bonusATK": 0.24,
+     "glacioBonusDMG": 0.25,
+     "glacioChafeBonusDMG": 0.6
+    }
+   },
+   "buffsMaxStacks": {
+    "FineSnow:GlacioBite(Team)": 1,
+    "FineSnow:GlacioChafe": 1,
+    "LucilaCheatBuff": 1
+   },
+   "buffsSwapsLeft": {
+    "FineSnow:GlacioBite(Team)": "Infinity",
+    "FineSnow:GlacioChafe": "Infinity",
+    "LucilaCheatBuff": "Infinity"
+   },
+   "buffsTargetCharacter": {},
+   "buffsTimeLeft": {
+    "FineSnow:GlacioBite(Team)": "Infinity",
+    "FineSnow:GlacioChafe": "Infinity",
+    "LucilaCheatBuff": 998.17
+   },
+   "character": "Mornye",
+   "charactersActionStacks": {},
+   "charactersActionStacksConfig": {},
+   "charactersAttemptFollowUp": {
+    "Mornye": {
+     "actionName": "Heavy Attack",
+     "must": true
+    }
+   },
+   "charactersComboChainTags": {
+    "Lucila": [],
+    "Mornye": [
+     "BA3"
+    ]
+   },
+   "charactersComboWindows": {},
+   "charactersCooldowns": {
+    "Hiyuki": {},
+    "Lucila": {},
+    "Mornye": {}
+   },
+   "charactersEnergies": {
+    "Hiyuki": {
+     "concerto": 0,
+     "dedication": 0,
+     "energy": 2.24,
+     "foreclaiming": 0,
+     "frostharden_iai": 3,
+     "frostheart": 0,
+     "s1_enhanced_ba1": 0,
+     "s1_enhanced_ba2": 0,
+     "s2_frostheart_token": 2,
+     "snow_rust": 3,
+     "snowforged_blade": 3,
+     "whiteout_bitterfrost": 0
+    },
+    "Lucila": {
+     "concerto": 0,
+     "energy": 2.87616,
+     "film_roll": 0,
+     "traces": 0
+    },
+    "Mornye": {
+     "concerto": 14,
+     "energy": 12.142592,
+     "relative_momentum": 0,
+     "rest_mass_energy": 100
+    }
+   },
+   "charactersForms": {},
+   "charactersForteGrants": {},
+   "charactersLastAction": {
+    "Lucila": "Cheat Buff",
+    "Mornye": "Basic Attack 1-3 (into heavy)"
+   },
+   "charactersOffFieldSince": {
+    "Lucila": 0,
+    "Mornye": null
+   },
+   "charactersPersistentUntil": {
+    "Lucila": 0,
+    "Mornye": 0
+   },
+   "charactersPositions": {
+    "Lucila": "GROUND",
+    "Mornye": "GROUND"
+   },
+   "charactersRequiresSwapOut": {
+    "Mornye": false
+   },
+   "charactersRestrictNextTo": {},
+   "charactersSwapCooldownUntil": {
+    "Lucila": 1
+   },
+   "coordinatedAttacks": {},
+   "coordinatedAttacksSwapRequired": {},
+   "coordinatedAttacksTimeLeft": {},
+   "damage": 2059,
+   "debuffs": {},
+   "debuffsMaxStacks": {},
+   "debuffsSwapsLeft": {},
+   "debuffsTimeLeft": {},
+   "dps": 1125.13661202,
+   "fromTime": 0,
+   "id": "1",
+   "negativeStatuses": {
+    "Aero Erosion": 0,
+    "Glacio Chafe": 0,
+    "Spectro Frazzle": 0
+   },
+   "negativeStatusesMaxStacks": {},
+   "negativeStatusesTimeLeft": {
+    "Aero Erosion": 0,
+    "Glacio Chafe": 0,
+    "Spectro Frazzle": 0
+   },
+   "offFieldTriggerEvents": {},
+   "resolvedDisplayName": "Basic Attack 1-3 (into heavy)",
+   "toTime": 1.83
+  },
+  {
+   "action": "Energy Up",
+   "buffs": {
+    "FineSnow:CritDMG(Self)": 1,
+    "FineSnow:CritDMGS6(Self)": 1,
+    "FineSnow:GlacioBite(Team)": 1,
+    "FineSnow:GlacioChafe": 1,
+    "LucilaCheatBuff": 1
+   },
+   "buffsActivationStats": {
+    "FineSnow:CritDMG(Self)": {
+     "critDamage": 0.4
+    },
+    "FineSnow:CritDMGS6(Self)": {
+     "critDamage": 0.4
+    },
+    "FineSnow:GlacioBite(Team)": {
+     "glacioChafeTotalMultiplierDMG": 1.25
+    },
+    "FineSnow:GlacioChafe": {
+     "glacioChafeAmplifyDMG": 0.6
+    },
+    "LucilaCheatBuff": {
+     "bonusATK": 0.24,
+     "glacioBonusDMG": 0.25,
+     "glacioChafeBonusDMG": 0.6
+    }
+   },
+   "buffsMaxStacks": {
+    "FineSnow:CritDMG(Self)": 1,
+    "FineSnow:CritDMGS6(Self)": 1,
+    "FineSnow:GlacioBite(Team)": 1,
+    "FineSnow:GlacioChafe": 1,
+    "LucilaCheatBuff": 1
+   },
+   "buffsSwapsLeft": {
+    "FineSnow:CritDMG(Self)": "Infinity",
+    "FineSnow:CritDMGS6(Self)": "Infinity",
+    "FineSnow:GlacioBite(Team)": "Infinity",
+    "FineSnow:GlacioChafe": "Infinity",
+    "LucilaCheatBuff": "Infinity"
+   },
+   "buffsTargetCharacter": {},
+   "buffsTimeLeft": {
+    "FineSnow:CritDMG(Self)": "Infinity",
+    "FineSnow:CritDMGS6(Self)": "Infinity",
+    "FineSnow:GlacioBite(Team)": "Infinity",
+    "FineSnow:GlacioChafe": "Infinity",
+    "LucilaCheatBuff": 998.17
+   },
+   "character": "Hiyuki",
+   "charactersActionStacks": {},
+   "charactersActionStacksConfig": {},
+   "charactersAttemptFollowUp": {},
+   "charactersComboChainTags": {
+    "Hiyuki": [],
+    "Lucila": [],
+    "Mornye": [
+     "BA3"
+    ]
+   },
+   "charactersComboWindows": {},
+   "charactersCooldowns": {
+    "Hiyuki": {},
+    "Lucila": {},
+    "Mornye": {}
+   },
+   "charactersEnergies": {
+    "Hiyuki": {
+     "concerto": 0,
+     "dedication": 0,
+     "energy": 125,
+     "foreclaiming": 0,
+     "frostharden_iai": 3,
+     "frostheart": 0,
+     "s1_enhanced_ba1": 0,
+     "s1_enhanced_ba2": 0,
+     "s2_frostheart_token": 2,
+     "snow_rust": 3,
+     "snowforged_blade": 3,
+     "whiteout_bitterfrost": 0
+    },
+    "Lucila": {
+     "concerto": 0,
+     "energy": 2.87616,
+     "film_roll": 0,
+     "traces": 0
+    },
+    "Mornye": {
+     "concerto": 14,
+     "energy": 12.142592,
+     "relative_momentum": 0,
+     "rest_mass_energy": 100
+    }
+   },
+   "charactersForms": {},
+   "charactersForteGrants": {},
+   "charactersLastAction": {
+    "Hiyuki": "Energy Up",
+    "Lucila": "Cheat Buff",
+    "Mornye": "Basic Attack 1-3 (into heavy)"
+   },
+   "charactersOffFieldSince": {
+    "Hiyuki": null,
+    "Lucila": 0,
+    "Mornye": 1.83
+   },
+   "charactersPersistentUntil": {
+    "Hiyuki": 0,
+    "Lucila": 0,
+    "Mornye": 0
+   },
+   "charactersPositions": {
+    "Hiyuki": "GROUND",
+    "Lucila": "GROUND",
+    "Mornye": "GROUND"
+   },
+   "charactersRequiresSwapOut": {
+    "Hiyuki": false
+   },
+   "charactersRestrictNextTo": {},
+   "charactersSwapCooldownUntil": {
+    "Lucila": 1,
+    "Mornye": 2.83
+   },
+   "coordinatedAttacks": {},
+   "coordinatedAttacksSwapRequired": {},
+   "coordinatedAttacksTimeLeft": {},
+   "damage": 2059,
+   "debuffs": {},
+   "debuffsMaxStacks": {},
+   "debuffsSwapsLeft": {},
+   "debuffsTimeLeft": {},
+   "dps": 1125.13661202,
+   "fromTime": 1.83,
+   "id": "2",
+   "negativeStatuses": {
+    "Aero Erosion": 0,
+    "Glacio Chafe": 0,
+    "Spectro Frazzle": 0
+   },
+   "negativeStatusesMaxStacks": {},
+   "negativeStatusesTimeLeft": {
+    "Aero Erosion": 0,
+    "Glacio Chafe": 0,
+    "Spectro Frazzle": 0
+   },
+   "offFieldTriggerEvents": {},
+   "resolvedDisplayName": "Energy Up",
+   "toTime": 1.83
+  },
+  {
+   "action": "Resonance Skill",
+   "buffs": {
+    "FineSnow:CritDMG(Self)": 1,
+    "FineSnow:CritDMGS6(Self)": 1,
+    "FineSnow:GlacioBite(Team)": 1,
+    "FineSnow:GlacioChafe": 1,
+    "HiyukiS4teambuff": 1,
+    "LucilaCheatBuff": 1
+   },
+   "buffsActivationStats": {
+    "FineSnow:CritDMG(Self)": {
+     "critDamage": 0.4
+    },
+    "FineSnow:CritDMGS6(Self)": {
+     "critDamage": 0.4
+    },
+    "FineSnow:GlacioBite(Team)": {
+     "glacioChafeTotalMultiplierDMG": 1.25
+    },
+    "FineSnow:GlacioChafe": {
+     "glacioChafeAmplifyDMG": 0.6
+    },
+    "HiyukiS4teambuff": {
+     "bonusDMG": 0.2
+    },
+    "LucilaCheatBuff": {
+     "bonusATK": 0.24,
+     "glacioBonusDMG": 0.25,
+     "glacioChafeBonusDMG": 0.6
+    }
+   },
+   "buffsMaxStacks": {
+    "FineSnow:CritDMG(Self)": 1,
+    "FineSnow:CritDMGS6(Self)": 1,
+    "FineSnow:GlacioBite(Team)": 1,
+    "FineSnow:GlacioChafe": 1,
+    "HiyukiS4teambuff": 1,
+    "LucilaCheatBuff": 1
+   },
+   "buffsSwapsLeft": {
+    "FineSnow:CritDMG(Self)": "Infinity",
+    "FineSnow:CritDMGS6(Self)": "Infinity",
+    "FineSnow:GlacioBite(Team)": "Infinity",
+    "FineSnow:GlacioChafe": "Infinity",
+    "HiyukiS4teambuff": "Infinity",
+    "LucilaCheatBuff": "Infinity"
+   },
+   "buffsTargetCharacter": {},
+   "buffsTimeLeft": {
+    "FineSnow:CritDMG(Self)": "Infinity",
+    "FineSnow:CritDMGS6(Self)": "Infinity",
+    "FineSnow:GlacioBite(Team)": "Infinity",
+    "FineSnow:GlacioChafe": "Infinity",
+    "HiyukiS4teambuff": 30,
+    "LucilaCheatBuff": 996.636666667
+   },
+   "character": "Hiyuki",
+   "charactersActionStacks": {},
+   "charactersActionStacksConfig": {},
+   "charactersAttemptFollowUp": {},
+   "charactersComboChainTags": {
+    "Hiyuki": [],
+    "Lucila": [],
+    "Mornye": [
+     "BA3"
+    ]
+   },
+   "charactersComboWindows": {},
+   "charactersCooldowns": {
+    "Hiyuki": {
+     "Resonance Skill": 20
+    },
+    "Lucila": {},
+    "Mornye": {}
+   },
+   "charactersEnergies": {
+    "Hiyuki": {
+     "concerto": 5.89,
+     "dedication": 100,
+     "energy": 125,
+     "foreclaiming": 0,
+     "frostharden_iai": 3,
+     "frostheart": 0,
+     "s1_enhanced_ba1": 0,
+     "s1_enhanced_ba2": 0,
+     "s2_frostheart_token": 2,
+     "snow_rust": 3,
+     "snowforged_blade": 3,
+     "whiteout_bitterfrost": 0
+    },
+    "Lucila": {
+     "concerto": 0,
+     "energy": 5.38638,
+     "film_roll": 0,
+     "traces": 0
+    },
+    "Mornye": {
+     "concerto": 14,
+     "energy": 17.441424,
+     "relative_momentum": 0,
+     "rest_mass_energy": 100
+    }
+   },
+   "charactersForms": {},
+   "charactersForteGrants": {},
+   "charactersLastAction": {
+    "Hiyuki": "Resonance Skill",
+    "Lucila": "Cheat Buff",
+    "Mornye": "Basic Attack 1-3 (into heavy)"
+   },
+   "charactersOffFieldSince": {
+    "Hiyuki": null,
+    "Lucila": 0,
+    "Mornye": 1.83
+   },
+   "charactersPersistentUntil": {
+    "Hiyuki": 0,
+    "Lucila": 0,
+    "Mornye": 0
+   },
+   "charactersPositions": {
+    "Hiyuki": "GROUND",
+    "Lucila": "GROUND",
+    "Mornye": "GROUND"
+   },
+   "charactersRequiresSwapOut": {
+    "Hiyuki": false
+   },
+   "charactersRestrictNextTo": {},
+   "charactersSwapCooldownUntil": {
+    "Lucila": 1,
+    "Mornye": 2.83
+   },
+   "coordinatedAttacks": {},
+   "coordinatedAttacksSwapRequired": {},
+   "coordinatedAttacksTimeLeft": {},
+   "damage": 32147,
+   "debuffs": {},
+   "debuffsMaxStacks": {},
+   "debuffsSwapsLeft": {},
+   "debuffsTimeLeft": {},
+   "dps": 9558.07730426,
+   "fromTime": 1.83,
+   "id": "3",
+   "negativeStatuses": {
+    "Aero Erosion": 0,
+    "Glacio Chafe": 0,
+    "Spectro Frazzle": 0
+   },
+   "negativeStatusesMaxStacks": {},
+   "negativeStatusesTimeLeft": {
+    "Aero Erosion": 0,
+    "Glacio Chafe": 0,
+    "Spectro Frazzle": 0
+   },
+   "offFieldTriggerEvents": {},
+   "resolvedDisplayName": "Frostblight",
+   "toTime": 3.36333333333
+  },
+  {
+   "action": "",
+   "buffs": {
+    "ClearAsDay:BasicATKBonus": 0,
+    "FreezeFrame:GlacioDMGBonus": 0,
+    "FreezeFrame:TeamATK": 0,
+    "Frostburn:GlacioBuff": 0,
+    "Frostburn:LiberationBuff": 0,
+    "Glommoth:GlacioDMGBonus": 0,
+    "HaloofStarryRadiance(Active)": 0,
+    "HighSyntonyField": 0,
+    "HighSyntonyField(S2)": 0,
+    "InterferedMarker": 0,
+    "InterferedMarker(S2)": 0,
+    "LucilaCheatBuff": 0,
+    "Montage": 0,
+    "Recursion": 0,
+    "SnowlightBlessing": 0,
+    "StarfieldCalibrator:HealBuff": 0,
+    "SyntonyField": 0,
+    "SyntonyField(S2)": 0,
+    "WishesofQuietSnowfall:CritRate": 0,
+    "WishesofQuietSnowfall:GlacioBuff": 0,
+    "WishesofQuietSnowfall:IncomingGlacioBuff": 0,
+    "WishesofQuietSnowfall:Snowfall": 0
+   },
+   "buffsActivationStats": {
+    "FineSnow:CritDMG(Self)": {
+     "critDamage": 0.4
+    },
+    "FineSnow:CritDMGS6(Self)": {
+     "critDamage": 0.4
+    },
+    "FineSnow:GlacioBite(Team)": {
+     "glacioChafeTotalMultiplierDMG": 1.25
+    },
+    "FineSnow:GlacioChafe": {
+     "glacioChafeAmplifyDMG": 0.6
+    },
+    "HiyukiS4teambuff": {
+     "bonusDMG": 0.2
+    },
+    "LucilaCheatBuff": {
+     "bonusATK": 0.24,
+     "glacioBonusDMG": 0.25,
+     "glacioChafeBonusDMG": 0.6
+    }
+   },
+   "buffsMaxStacks": {
+    "FineSnow:CritDMG(Self)": 1,
+    "FineSnow:CritDMGS6(Self)": 1,
+    "FineSnow:GlacioBite(Team)": 1,
+    "FineSnow:GlacioChafe": 1,
+    "HiyukiS4teambuff": 1,
+    "LucilaCheatBuff": 1
+   },
+   "buffsSwapsLeft": {
+    "ClearAsDay:BasicATKBonus": 0,
+    "FreezeFrame:GlacioDMGBonus": 0,
+    "FreezeFrame:TeamATK": 0,
+    "Frostburn:GlacioBuff": 0,
+    "Frostburn:LiberationBuff": 0,
+    "Glommoth:GlacioDMGBonus": 0,
+    "HaloofStarryRadiance(Active)": 0,
+    "HighSyntonyField": 0,
+    "HighSyntonyField(S2)": 0,
+    "InterferedMarker": 0,
+    "InterferedMarker(S2)": 0,
+    "LucilaCheatBuff": 0,
+    "Montage": 0,
+    "Recursion": 0,
+    "SnowlightBlessing": 0,
+    "StarfieldCalibrator:HealBuff": 0,
+    "SyntonyField": 0,
+    "SyntonyField(S2)": 0,
+    "WishesofQuietSnowfall:CritRate": 0,
+    "WishesofQuietSnowfall:GlacioBuff": 0,
+    "WishesofQuietSnowfall:IncomingGlacioBuff": 0,
+    "WishesofQuietSnowfall:Snowfall": 0
+   },
+   "buffsTargetCharacter": {},
+   "buffsTimeLeft": {
+    "ClearAsDay:BasicATKBonus": 0,
+    "FreezeFrame:GlacioDMGBonus": 0,
+    "FreezeFrame:TeamATK": 0,
+    "Frostburn:GlacioBuff": 0,
+    "Frostburn:LiberationBuff": 0,
+    "Glommoth:GlacioDMGBonus": 0,
+    "HaloofStarryRadiance(Active)": 0,
+    "HighSyntonyField": 0,
+    "HighSyntonyField(S2)": 0,
+    "InterferedMarker": 0,
+    "InterferedMarker(S2)": 0,
+    "LucilaCheatBuff": 0,
+    "Montage": 0,
+    "Recursion": 0,
+    "SnowlightBlessing": 0,
+    "StarfieldCalibrator:HealBuff": 0,
+    "SyntonyField": 0,
+    "SyntonyField(S2)": 0,
+    "WishesofQuietSnowfall:CritRate": 0,
+    "WishesofQuietSnowfall:GlacioBuff": 0,
+    "WishesofQuietSnowfall:IncomingGlacioBuff": 0,
+    "WishesofQuietSnowfall:Snowfall": 0
+   },
+   "character": "Hiyuki",
+   "charactersActionStacks": {},
+   "charactersActionStacksConfig": {},
+   "charactersAttemptFollowUp": {},
+   "charactersComboChainTags": {
+    "Hiyuki": [],
+    "Lucila": [],
+    "Mornye": [
+     "BA3"
+    ]
+   },
+   "charactersComboWindows": {},
+   "charactersCooldowns": {
+    "Hiyuki": {
+     "Resonance Skill": 20
+    },
+    "Lucila": {},
+    "Mornye": {}
+   },
+   "charactersEnergies": {
+    "Hiyuki": {
+     "concerto": 5.89,
+     "dedication": 100,
+     "energy": 125,
+     "foreclaiming": 0,
+     "frostharden_iai": 3,
+     "frostheart": 0,
+     "s1_enhanced_ba1": 0,
+     "s1_enhanced_ba2": 0,
+     "s2_frostheart_token": 2,
+     "snow_rust": 3,
+     "snowforged_blade": 3,
+     "whiteout_bitterfrost": 0
+    },
+    "Lucila": {
+     "concerto": 0,
+     "energy": 5.38638,
+     "film_roll": 0,
+     "traces": 0
+    },
+    "Mornye": {
+     "concerto": 14,
+     "energy": 17.441424,
+     "relative_momentum": 0,
+     "rest_mass_energy": 100
+    }
+   },
+   "charactersForms": {},
+   "charactersForteGrants": {},
+   "charactersLastAction": {
+    "Hiyuki": "Resonance Skill",
+    "Lucila": "Cheat Buff",
+    "Mornye": "Basic Attack 1-3 (into heavy)"
+   },
+   "charactersOffFieldSince": {
+    "Hiyuki": null,
+    "Lucila": 0,
+    "Mornye": 1.83
+   },
+   "charactersPersistentUntil": {
+    "Hiyuki": 0,
+    "Lucila": 0,
+    "Mornye": 0
+   },
+   "charactersPositions": {
+    "Hiyuki": "GROUND",
+    "Lucila": "GROUND",
+    "Mornye": "GROUND"
+   },
+   "charactersRequiresSwapOut": {},
+   "charactersRestrictNextTo": {},
+   "charactersSwapCooldownUntil": {
+    "Lucila": 1,
+    "Mornye": 2.83
+   },
+   "coordinatedAttacks": {},
+   "coordinatedAttacksSwapRequired": {},
+   "coordinatedAttacksTimeLeft": {},
+   "damage": 0,
+   "debuffs": {
+    "SlowMotion:GlacioRESDown": 0
+   },
+   "debuffsMaxStacks": {},
+   "debuffsSwapsLeft": {
+    "SlowMotion:GlacioRESDown": 0
+   },
+   "debuffsTimeLeft": {
+    "SlowMotion:GlacioRESDown": 0
+   },
+   "dps": 0,
+   "fromTime": 0,
+   "id": "4",
+   "negativeStatuses": {
+    "Glacio Chafe": 0
+   },
+   "negativeStatusesMaxStacks": {},
+   "negativeStatusesTimeLeft": {
+    "Glacio Chafe": 0
+   },
+   "offFieldTriggerEvents": {},
+   "toTime": 0
+  }
+ ]
+}

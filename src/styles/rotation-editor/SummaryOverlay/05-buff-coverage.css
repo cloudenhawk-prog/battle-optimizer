@@ -1,0 +1,163 @@
+/* Summary "Buff Coverage" tab: metric key, owner-grouped buff plates with coverage/uptime meters, hover tooltip */
+
+.summaryBuffKey {
+  display: flex;
+  justify-content: center;
+  flex-wrap: wrap;
+  gap: 6px 28px;
+  margin-top: -4px;
+  font-family: var(--ui-font-body);
+  font-size: 0.95rem;
+  color: var(--ui-text-faint);
+}
+.summaryBuffKey span { display: inline-flex; align-items: center; gap: 8px; }
+.summaryBuffKey b { color: var(--ui-text-soft); font-weight: 700; }
+
+.summaryBuffKeyBar {
+  width: 18px;
+  height: 4px;
+  border-radius: 99px;
+  background: hsl(var(--ui-accent-raw));
+}
+.summaryBuffKeyBar--uptime { background: var(--ui-text-muted); }
+
+.summaryBuffGroups {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(460px, 1fr));
+  gap: 16px;
+  align-items: start;
+}
+
+.summaryBuffGroup {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.summaryBuffWatermark { top: 70px; transform: none; opacity: 0.1; }
+
+.summaryBuffGroupHead {
+  position: relative;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+.summaryBuffGroupHead .ui-chip { margin-left: auto; }
+
+.summaryBuffRows {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+}
+
+.summaryBuffRow {
+  display: grid;
+  grid-template-columns: 34px minmax(0, 1fr) 150px;
+  align-items: center;
+  column-gap: 12px;
+  padding: 6px 6px;
+  border-bottom: 1px solid var(--ui-row-line);
+  border-radius: 4px;
+  cursor: default;
+  transition: background 0.15s;
+}
+.summaryBuffRow:last-child { border-bottom: none; }
+.summaryBuffRow:hover { background: hsl(var(--ui-accent-raw) / 0.07); }
+
+.summaryBuffIconBox {
+  width: 34px;
+  height: 34px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 6px;
+  background: hsl(var(--ui-accent-raw) / 0.08);
+  border: 1px solid hsl(var(--ui-accent-raw) / 0.35);
+}
+
+.summaryBuffIconImg {
+  width: 28px;
+  height: 28px;
+  object-fit: contain;
+}
+
+.summaryBuffName {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  font-family: var(--ui-font-body);
+  font-size: 1rem;
+  font-weight: 600;
+  color: var(--ui-text-soft);
+}
+
+.summaryBuffMeters {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.summaryBuffMeter {
+  display: grid;
+  grid-template-columns: 1fr 40px;
+  align-items: center;
+  column-gap: 8px;
+}
+.summaryBuffMeter span {
+  text-align: right;
+  font-family: var(--ui-font-number);
+  font-size: 0.85rem;
+  font-weight: 650;
+  font-variant-numeric: tabular-nums;
+  color: hsl(var(--ui-accent-raw) / 0.95);
+}
+.summaryBuffMeter--uptime .ui-bar-fill { background: var(--ui-text-muted); box-shadow: none; }
+.summaryBuffMeter--uptime span { color: var(--ui-text-muted); }
+
+/* ── Hover tooltip (portalled; base look from .ui-tooltip) ── */
+.summaryBuffRowTooltipHeader {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 8px;
+}
+
+.summaryBuffRowTooltipIcon {
+  width: 32px;
+  height: 32px;
+  object-fit: contain;
+  flex-shrink: 0;
+}
+
+.summaryBuffRowTooltipCoverage,
+.summaryBuffRowTooltipStats {
+  display: flex;
+  flex-direction: column;
+}
+
+.summaryBuffRowTooltipDivider {
+  height: 1px;
+  margin: 6px 0;
+  background: linear-gradient(90deg, transparent, hsl(var(--ui-accent-raw) / 0.25), transparent);
+}
+
+.summaryBuffRowTooltipStat {
+  display: flex;
+  justify-content: space-between;
+  gap: 16px;
+  padding: 2px 0;
+}
+
+.summaryBuffRowTooltipStatKey {
+  font-family: var(--ui-font-body);
+  font-size: 0.92rem;
+  color: var(--ui-text-label);
+}
+
+.summaryBuffRowTooltipStatVal {
+  font-family: var(--ui-font-number);
+  font-size: 0.92rem;
+  font-weight: 650;
+  font-variant-numeric: tabular-nums;
+  color: hsl(var(--ui-accent-raw));
+}

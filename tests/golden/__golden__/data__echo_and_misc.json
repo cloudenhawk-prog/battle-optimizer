@@ -1,0 +1,1446 @@
+{
+ "ECHO_COST_BASE_DATA": {
+  "1": {
+   "alwaysStats": {
+    "flatHP": 2280
+   },
+   "mainStatOptions": [
+    {
+     "bonusHP": 0.228
+    },
+    {
+     "bonusATK": 0.18
+    },
+    {
+     "bonusDEF": 0.18
+    }
+   ]
+  },
+  "3": {
+   "alwaysStats": {
+    "flatATK": 100
+   },
+   "mainStatOptions": [
+    {
+     "bonusHP": 0.3
+    },
+    {
+     "bonusATK": 0.3
+    },
+    {
+     "bonusDEF": 0.38
+    },
+    {
+     "glacioBonusDMG": 0.3
+    },
+    {
+     "fusionBonusDMG": 0.3
+    },
+    {
+     "electroBonusDMG": 0.3
+    },
+    {
+     "aeroBonusDMG": 0.3
+    },
+    {
+     "spectroBonusDMG": 0.3
+    },
+    {
+     "havocBonusDMG": 0.3
+    },
+    {
+     "energyPercent": 0.32
+    }
+   ]
+  },
+  "4": {
+   "alwaysStats": {
+    "flatATK": 150
+   },
+   "mainStatOptions": [
+    {
+     "bonusHP": 0.33
+    },
+    {
+     "bonusATK": 0.33
+    },
+    {
+     "bonusDEF": 0.415
+    },
+    {
+     "critRate": 0.22
+    },
+    {
+     "critDamage": 0.44
+    }
+   ]
+  }
+ },
+ "ECHO_SUBSTAT_VALUES": {
+  "basicBonusDMG": [
+   0.064,
+   0.071,
+   0.079,
+   0.086,
+   0.094,
+   0.101,
+   0.109,
+   0.116
+  ],
+  "bonusATK": [
+   0.064,
+   0.071,
+   0.079,
+   0.086,
+   0.094,
+   0.101,
+   0.109,
+   0.116
+  ],
+  "bonusDEF": [
+   0.081,
+   0.09,
+   0.1,
+   0.109,
+   0.118,
+   0.128,
+   0.138,
+   0.147
+  ],
+  "bonusHP": [
+   0.064,
+   0.071,
+   0.079,
+   0.086,
+   0.094,
+   0.101,
+   0.109,
+   0.116
+  ],
+  "critDamage": [
+   0.126,
+   0.138,
+   0.15,
+   0.162,
+   0.174,
+   0.186,
+   0.198,
+   0.21
+  ],
+  "critRate": [
+   0.063,
+   0.069,
+   0.075,
+   0.081,
+   0.087,
+   0.093,
+   0.099,
+   0.105
+  ],
+  "energyPercent": [
+   0.068,
+   0.076,
+   0.084,
+   0.092,
+   0.1,
+   0.108,
+   0.116,
+   0.124
+  ],
+  "flatATK": [
+   30,
+   40,
+   50,
+   60
+  ],
+  "flatDEF": [
+   40,
+   50,
+   60,
+   70
+  ],
+  "flatHP": [
+   320,
+   360,
+   390,
+   430,
+   470,
+   510,
+   540,
+   580
+  ],
+  "heavyBonusDMG": [
+   0.064,
+   0.071,
+   0.079,
+   0.086,
+   0.094,
+   0.101,
+   0.109,
+   0.116
+  ],
+  "liberationBonusDMG": [
+   0.064,
+   0.071,
+   0.079,
+   0.086,
+   0.094,
+   0.101,
+   0.109,
+   0.116
+  ],
+  "skillBonusDMG": [
+   0.064,
+   0.071,
+   0.079,
+   0.086,
+   0.094,
+   0.101,
+   0.109,
+   0.116
+  ]
+ },
+ "MAIN_STAT_OPTIONS": {
+  "1": [
+   {
+    "key": "bonusATK",
+    "label": "ATK%",
+    "value": 0.18
+   },
+   {
+    "key": "bonusHP",
+    "label": "HP%",
+    "value": 0.18
+   },
+   {
+    "key": "bonusDEF",
+    "label": "DEF%",
+    "value": 0.18
+   }
+  ],
+  "3": [
+   {
+    "key": "bonusATK",
+    "label": "ATK%",
+    "value": 0.3
+   },
+   {
+    "key": "bonusHP",
+    "label": "HP%",
+    "value": 0.3
+   },
+   {
+    "key": "bonusDEF",
+    "label": "DEF%",
+    "value": 0.3
+   },
+   {
+    "key": "energyPercent",
+    "label": "Energy Regen",
+    "value": 0.32
+   },
+   {
+    "key": "aeroBonusDMG",
+    "label": "Aero DMG",
+    "value": 0.3
+   },
+   {
+    "key": "spectroBonusDMG",
+    "label": "Spectro DMG",
+    "value": 0.3
+   },
+   {
+    "key": "glacioBonusDMG",
+    "label": "Glacio DMG",
+    "value": 0.3
+   },
+   {
+    "key": "fusionBonusDMG",
+    "label": "Fusion DMG",
+    "value": 0.3
+   },
+   {
+    "key": "electroBonusDMG",
+    "label": "Electro DMG",
+    "value": 0.3
+   },
+   {
+    "key": "havocBonusDMG",
+    "label": "Havoc DMG",
+    "value": 0.3
+   }
+  ],
+  "4": [
+   {
+    "key": "critRate",
+    "label": "Crit Rate",
+    "value": 0.22
+   },
+   {
+    "key": "critDamage",
+    "label": "Crit DMG",
+    "value": 0.44
+   },
+   {
+    "key": "bonusATK",
+    "label": "ATK%",
+    "value": 0.33
+   },
+   {
+    "key": "bonusHP",
+    "label": "HP%",
+    "value": 0.3
+   },
+   {
+    "key": "bonusDEF",
+    "label": "DEF%",
+    "value": 0.3
+   }
+  ]
+ },
+ "SUBSTAT_OPTIONS": [
+  {
+   "isPercent": true,
+   "key": "critRate",
+   "label": "Crit Rate",
+   "values": [
+    0.063,
+    0.069,
+    0.075,
+    0.081,
+    0.087,
+    0.093,
+    0.099,
+    0.105
+   ]
+  },
+  {
+   "isPercent": true,
+   "key": "critDamage",
+   "label": "Crit DMG",
+   "values": [
+    0.126,
+    0.138,
+    0.15,
+    0.162,
+    0.174,
+    0.186,
+    0.198,
+    0.21
+   ]
+  },
+  {
+   "isPercent": true,
+   "key": "bonusATK",
+   "label": "ATK%",
+   "values": [
+    0.064,
+    0.071,
+    0.079,
+    0.086,
+    0.094,
+    0.101,
+    0.109,
+    0.116
+   ]
+  },
+  {
+   "isPercent": true,
+   "key": "bonusHP",
+   "label": "HP%",
+   "values": [
+    0.064,
+    0.071,
+    0.079,
+    0.086,
+    0.094,
+    0.101,
+    0.109,
+    0.116
+   ]
+  },
+  {
+   "isPercent": true,
+   "key": "bonusDEF",
+   "label": "DEF%",
+   "values": [
+    0.081,
+    0.09,
+    0.1,
+    0.109,
+    0.118,
+    0.128,
+    0.138,
+    0.147
+   ]
+  },
+  {
+   "isPercent": false,
+   "key": "flatATK",
+   "label": "ATK",
+   "values": [
+    30,
+    40,
+    50,
+    60
+   ]
+  },
+  {
+   "isPercent": false,
+   "key": "flatHP",
+   "label": "HP",
+   "values": [
+    320,
+    360,
+    390,
+    430,
+    470,
+    510,
+    540,
+    580
+   ]
+  },
+  {
+   "isPercent": false,
+   "key": "flatDEF",
+   "label": "DEF",
+   "values": [
+    40,
+    50,
+    60,
+    70
+   ]
+  },
+  {
+   "isPercent": true,
+   "key": "energyPercent",
+   "label": "Energy Regen",
+   "values": [
+    0.068,
+    0.076,
+    0.084,
+    0.092,
+    0.1,
+    0.108,
+    0.116,
+    0.124
+   ]
+  },
+  {
+   "isPercent": true,
+   "key": "basicBonusDMG",
+   "label": "Basic ATK DMG",
+   "values": [
+    0.064,
+    0.071,
+    0.079,
+    0.086,
+    0.094,
+    0.101,
+    0.109,
+    0.116
+   ]
+  },
+  {
+   "isPercent": true,
+   "key": "heavyBonusDMG",
+   "label": "Heavy ATK DMG",
+   "values": [
+    0.064,
+    0.071,
+    0.079,
+    0.086,
+    0.094,
+    0.101,
+    0.109,
+    0.116
+   ]
+  },
+  {
+   "isPercent": true,
+   "key": "skillBonusDMG",
+   "label": "Skill DMG",
+   "values": [
+    0.064,
+    0.071,
+    0.079,
+    0.086,
+    0.094,
+    0.101,
+    0.109,
+    0.116
+   ]
+  },
+  {
+   "isPercent": true,
+   "key": "liberationBonusDMG",
+   "label": "Liberation DMG",
+   "values": [
+    0.064,
+    0.071,
+    0.079,
+    0.086,
+    0.094,
+    0.101,
+    0.109,
+    0.116
+   ]
+  }
+ ],
+ "echoCatalog": {
+  "Gusts of Welkin": [
+   {
+    "cost": 4,
+    "echoSkill": {
+     "castConditions": {
+      "endState": "AIR",
+      "startState": "GROUND"
+     },
+     "castTime": 0,
+     "category": "Echo Skill",
+     "cooldown": 25,
+     "damageModifiers": [],
+     "displayName": "Nightmare: Kelpie (Active)",
+     "dmgTypes": [
+      "ECHO"
+     ],
+     "elements": [
+      "GLACIO"
+     ],
+     "energyCost": [],
+     "energyGenerated": [
+      {
+       "amount": 2.81,
+       "energyType": "energy",
+       "scalingStat": "energyPercent",
+       "share": 0.5
+      }
+     ],
+     "multiplier": 4.05,
+     "name": "Echo Skill",
+     "offtune": 0,
+     "scaling": "ATK",
+     "sideEffects": [],
+     "statusModifications": []
+    },
+    "firstSlotStats": {
+     "aeroBonusDMG": 0.12,
+     "glacioBonusDMG": 0.12
+    },
+    "icon": "assets/gear/echoes/nightmare_kelpie.png",
+    "info": "The Resonator with this Echo equipped in the main slot gains 12.00% Glacio DMG Bonus and 12.00% Aero DMG Bonus. Switching out the Resonator with Outro Skill summons Nightmare: Kelpie to deal 405.00% Aero DMG.",
+    "info_icon": "assets/gear/echoes/info_nightmare_kelpie.png",
+    "injectedSideEffects": [
+     {
+      "sideEffects": [
+       {
+        "damageDealt": "[Function]",
+        "name": "Nightmare: Kelpie Outro Trigger",
+        "statusModifications": []
+       }
+      ],
+      "targets": [
+       {
+        "tag": "OUTRO_ACTION"
+       }
+      ]
+     }
+    ],
+    "name": "Nightmare: Kelpie",
+    "setName": "Gusts of Welkin"
+   },
+   {
+    "conditionalStats": {
+     "condition": "[Function]",
+     "stats": {
+      "aeroBonusDMG": 0.1
+     }
+    },
+    "cost": 4,
+    "echoSkill": {
+     "castConditions": {
+      "endState": "PRESERVE",
+      "startState": "ANY"
+     },
+     "castTime": 0,
+     "category": "Echo Skill",
+     "cooldown": 20,
+     "damageModifiers": [],
+     "displayName": "Reminiscence: Fleurdelys (Active)",
+     "dmgTypes": [
+      "ECHO"
+     ],
+     "elements": [
+      "AERO"
+     ],
+     "energyCost": [],
+     "energyGenerated": [
+      {
+       "amount": 4.94,
+       "energyType": "energy",
+       "scalingStat": "energyPercent",
+       "share": 0.5
+      }
+     ],
+     "multiplier": 3.5568,
+     "name": "Reminiscence: Fleurdelys (Active)",
+     "offtune": 0,
+     "scaling": "ATK",
+     "sideEffects": [],
+     "statusModifications": []
+    },
+    "firstSlotStats": {
+     "aeroBonusDMG": 0.1
+    },
+    "icon": "assets/gear/echoes/reminiscence_fleurdelys.png",
+    "info": "The Resonator with this Echo equipped in the main slot gains 10.00% Aero DMG Bonus. When Resonator: Aero Rover or Cartethyia equips this Echo, they gain 10.00% more Aero DMG Bonus.",
+    "info_icon": "assets/gear/echoes/info_reminiscence_fleurdelys.png",
+    "name": "Reminiscence: Fleurdelys",
+    "setName": "Gusts of Welkin"
+   },
+   {
+    "cost": 3,
+    "firstSlotStats": {
+     "heavyBonusDMG": 0.12,
+     "spectroBonusDMG": 0.12
+    },
+    "icon": "assets/gear/echoes/capitaneus.png",
+    "info": "The Resonator with this Echo equipped in their main slot gains 12.00% Spectro DMG Bonus and 12.00% Heavy Attack DMG Bonus.",
+    "info_icon": "assets/gear/echoes/info_capitaneus.png",
+    "name": "Capitaneus",
+    "setName": "Gusts of Welkin"
+   },
+   {
+    "cost": 3,
+    "icon": "assets/gear/echoes/hurriclaw.png",
+    "info": "",
+    "info_icon": "assets/gear/echoes/info_hurriclaw.png",
+    "name": "Hurriclaw",
+    "setName": "Gusts of Welkin"
+   },
+   {
+    "cost": 1,
+    "icon": "assets/gear/echoes/devotee's_flesh.png",
+    "info": "",
+    "info_icon": "assets/gear/echoes/info_devotee's_flesh.png",
+    "name": "Devotee's Flesh",
+    "setName": "Gusts of Welkin"
+   },
+   {
+    "cost": 1,
+    "icon": "assets/gear/echoes/sagittario.png",
+    "info": "",
+    "info_icon": "assets/gear/echoes/info_sagittario.png",
+    "name": "Sagittario",
+    "setName": "Gusts of Welkin"
+   },
+   {
+    "cost": 1,
+    "icon": "assets/gear/echoes/sacerdos.png",
+    "info": "",
+    "info_icon": "assets/gear/echoes/info_sacerdos.png",
+    "name": "Sacerdos",
+    "setName": "Gusts of Welkin"
+   }
+  ],
+  "Halo of Starry Radiance": [
+   {
+    "cost": 4,
+    "echoSkill": {
+     "castConditions": {
+      "endState": "GROUND",
+      "persistenceTime": 0.09,
+      "requiresSwapOut": true,
+      "startState": "ANY",
+      "swapOutState": "PRESERVE"
+     },
+     "castTime": 0.09,
+     "category": "Echo Skill",
+     "cooldown": 20,
+     "damageModifiers": [],
+     "displayName": "Reactor Husk (Active)",
+     "dmgTypes": [
+      "ECHO"
+     ],
+     "elements": [
+      "FUSION"
+     ],
+     "energyCost": [],
+     "energyGenerated": [
+      {
+       "amount": 4.87,
+       "energyType": "energy",
+       "scalingStat": "energyPercent",
+       "share": 0.5
+      }
+     ],
+     "multiplier": 3.51,
+     "name": "Echo Skill",
+     "offtune": 0,
+     "scaling": "ATK",
+     "sideEffects": [],
+     "statusModifications": []
+    },
+    "firstSlotStats": {
+     "energyPercent": 0.1
+    },
+    "icon": "assets/gear/echoes/reactor_husk.png",
+    "info": "The Resonator with this Echo equipped in their main slot gains 10.00% Energy Regen.",
+    "info_icon": "assets/gear/echoes/info_reactor_husk.png",
+    "name": "Reactor Husk",
+    "setName": "Halo of Starry Radiance"
+   },
+   {
+    "cost": 3,
+    "icon": "assets/gear/echoes/sabercat_prowler.png",
+    "info": "",
+    "info_icon": "assets/gear/echoes/info_sabercat_prowler.png",
+    "name": "Sabercat Prowler",
+    "setName": "Halo of Starry Radiance"
+   },
+   {
+    "cost": 3,
+    "icon": "assets/gear/echoes/spacetrek_explorer.png",
+    "info": "",
+    "info_icon": "assets/gear/echoes/info_spacetrek_explorer.png",
+    "name": "Spacetrek Explorer",
+    "setName": "Halo of Starry Radiance"
+   },
+   {
+    "cost": 1,
+    "icon": "assets/gear/echoes/geospider_s4.png",
+    "info": "",
+    "info_icon": "assets/gear/echoes/info_geospider_s4.png",
+    "name": "Geospider S4",
+    "setName": "Halo of Starry Radiance"
+   },
+   {
+    "cost": 1,
+    "icon": "assets/gear/echoes/mining_drone.png",
+    "info": "",
+    "info_icon": "assets/gear/echoes/info_mining_drone.png",
+    "name": "Mining Drone",
+    "setName": "Halo of Starry Radiance"
+   }
+  ],
+  "Windward Pilgrimage": [
+   {
+    "conditionalStats": {
+     "condition": "[Function]",
+     "stats": {
+      "aeroBonusDMG": 0.1
+     }
+    },
+    "cost": 4,
+    "echoSkill": {
+     "castConditions": {
+      "endState": "PRESERVE",
+      "startState": "ANY"
+     },
+     "castTime": 0,
+     "category": "Echo Skill",
+     "cooldown": 20,
+     "damageModifiers": [],
+     "displayName": "Reminiscence: Fleurdelys (Active)",
+     "dmgTypes": [
+      "ECHO"
+     ],
+     "elements": [
+      "AERO"
+     ],
+     "energyCost": [],
+     "energyGenerated": [
+      {
+       "amount": 4.94,
+       "energyType": "energy",
+       "scalingStat": "energyPercent",
+       "share": 0.5
+      }
+     ],
+     "multiplier": 3.5568,
+     "name": "Reminiscence: Fleurdelys (Active)",
+     "offtune": 0,
+     "scaling": "ATK",
+     "sideEffects": [],
+     "statusModifications": []
+    },
+    "firstSlotStats": {
+     "aeroBonusDMG": 0.1
+    },
+    "icon": "assets/gear/echoes/reminiscence_fleurdelys.png",
+    "info": "The Resonator with this Echo equipped in the main slot gains 10.00% Aero DMG Bonus. When Resonator: Aero Rover or Cartethyia equips this Echo, they gain 10.00% more Aero DMG Bonus.",
+    "info_icon": "assets/gear/echoes/info_reminiscence_fleurdelys.png",
+    "name": "Reminiscence: Fleurdelys",
+    "setName": "Windward Pilgrimage"
+   },
+   {
+    "cost": 4,
+    "echoSkill": {
+     "castConditions": {
+      "endState": "AIR",
+      "startState": "GROUND"
+     },
+     "castTime": 0,
+     "category": "Echo Skill",
+     "cooldown": 25,
+     "damageModifiers": [],
+     "displayName": "Nightmare: Kelpie (Active)",
+     "dmgTypes": [
+      "ECHO"
+     ],
+     "elements": [
+      "GLACIO"
+     ],
+     "energyCost": [],
+     "energyGenerated": [
+      {
+       "amount": 2.81,
+       "energyType": "energy",
+       "scalingStat": "energyPercent",
+       "share": 0.5
+      }
+     ],
+     "multiplier": 4.05,
+     "name": "Echo Skill",
+     "offtune": 0,
+     "scaling": "ATK",
+     "sideEffects": [],
+     "statusModifications": []
+    },
+    "firstSlotStats": {
+     "aeroBonusDMG": 0.12,
+     "glacioBonusDMG": 0.12
+    },
+    "icon": "assets/gear/echoes/nightmare_kelpie.png",
+    "info": "The Resonator with this Echo equipped in the main slot gains 12.00% Glacio DMG Bonus and 12.00% Aero DMG Bonus. Switching out the Resonator with Outro Skill summons Nightmare: Kelpie to deal 405.00% Aero DMG.",
+    "info_icon": "assets/gear/echoes/info_nightmare_kelpie.png",
+    "injectedSideEffects": [
+     {
+      "sideEffects": [
+       {
+        "damageDealt": "[Function]",
+        "name": "Nightmare: Kelpie Outro Trigger",
+        "statusModifications": []
+       }
+      ],
+      "targets": [
+       {
+        "tag": "OUTRO_ACTION"
+       }
+      ]
+     }
+    ],
+    "name": "Nightmare: Kelpie",
+    "setName": "Windward Pilgrimage"
+   },
+   {
+    "cost": 3,
+    "firstSlotStats": {
+     "heavyBonusDMG": 0.12,
+     "spectroBonusDMG": 0.12
+    },
+    "icon": "assets/gear/echoes/capitaneus.png",
+    "info": "The Resonator with this Echo equipped in their main slot gains 12.00% Spectro DMG Bonus and 12.00% Heavy Attack DMG Bonus.",
+    "info_icon": "assets/gear/echoes/info_capitaneus.png",
+    "name": "Capitaneus",
+    "setName": "Windward Pilgrimage"
+   },
+   {
+    "cost": 3,
+    "firstSlotStats": {
+     "aeroBonusDMG": 0.12,
+     "liberationBonusDMG": 0.12
+    },
+    "icon": "assets/gear/echoes/kerasaur.png",
+    "info": "The Resonator with this Echo equipped in the main slot gains 12.00% Aero DMG Bonus and 12.00% Resonance Liberation DMG Bonus.",
+    "info_icon": "assets/gear/echoes/info_kerasaur.png",
+    "name": "Kerasaur",
+    "setName": "Windward Pilgrimage"
+   },
+   {
+    "cost": 1,
+    "icon": "assets/gear/echoes/sacerdos.png",
+    "info": "",
+    "info_icon": "assets/gear/echoes/info_sacerdos.png",
+    "name": "Sacerdos",
+    "setName": "Windward Pilgrimage"
+   },
+   {
+    "cost": 1,
+    "icon": "assets/gear/echoes/devotee's_flesh.png",
+    "info": "",
+    "info_icon": "assets/gear/echoes/info_devotee's_flesh.png",
+    "name": "Devotee's Flesh",
+    "setName": "Windward Pilgrimage"
+   },
+   {
+    "cost": 1,
+    "icon": "assets/gear/echoes/spectro_drake.png",
+    "info": "",
+    "info_icon": "assets/gear/echoes/info_spectro_drake.png",
+    "name": "Spectro Drake",
+    "setName": "Windward Pilgrimage"
+   }
+  ],
+  "Wishes of Quiet Snowfall": [
+   {
+    "cost": 4,
+    "echoSkill": {
+     "castConditions": {
+      "endState": "PRESERVE",
+      "persistenceTime": 0.09,
+      "requiresSwapOut": true,
+      "startState": "ANY",
+      "swapOutState": "PRESERVE"
+     },
+     "castTime": 0.09,
+     "category": "Echo Skill",
+     "cooldown": 20,
+     "damageModifiers": [],
+     "displayName": "Aleph-1 (Active)",
+     "dmgTypes": [
+      "ECHO"
+     ],
+     "elements": [
+      "GLACIO"
+     ],
+     "energyCost": [],
+     "energyGenerated": [
+      {
+       "amount": 1.96,
+       "energyType": "energy",
+       "scalingStat": "energyPercent",
+       "share": 0.5
+      }
+     ],
+     "multiplier": 2.7356,
+     "name": "Echo Skill",
+     "offtune": 0,
+     "scaling": "ATK",
+     "sideEffects": [],
+     "statusModifications": []
+    },
+    "firstSlotStats": {
+     "glacioBonusDMG": 0.12,
+     "liberationBonusDMG": 0.12
+    },
+    "icon": "assets/gear/echoes/aleph-1.png",
+    "info": "The Resonator with this Echo equipped in the main slot gains 12.00% Glacio DMG Bonus and 12.00% Resonance Liberation DMG Bonus. Summon Aleph-1's Creation to deal 21.88% Glacio DMG 5 times and 164.16% Glacio DMG one time to enemies.",
+    "info_icon": "assets/gear/echoes/info_aleph-1.png",
+    "name": "Aleph-1",
+    "setName": "Wishes of Quiet Snowfall"
+   },
+   {
+    "cost": 3,
+    "icon": "assets/gear/echoes/tremor_warrior.png",
+    "info": "",
+    "info_icon": "assets/gear/echoes/info_tremor_warrior.png",
+    "name": "Tremor Warrior",
+    "setName": "Wishes of Quiet Snowfall"
+   },
+   {
+    "cost": 3,
+    "icon": "assets/gear/echoes/ironhoof.png",
+    "info": "",
+    "info_icon": "assets/gear/echoes/info_ironhoof.png",
+    "name": "Ironhoof",
+    "setName": "Wishes of Quiet Snowfall"
+   },
+   {
+    "cost": 3,
+    "icon": "assets/gear/echoes/frostbite_coleoid.png",
+    "info": "",
+    "info_icon": "assets/gear/echoes/info_frostbite_coleoid.png",
+    "name": "Frostbite Coleoid",
+    "setName": "Wishes of Quiet Snowfall"
+   },
+   {
+    "cost": 3,
+    "echoSkill": {
+     "castConditions": {
+      "endState": "PRESERVE",
+      "startState": "ANY"
+     },
+     "castTime": 1,
+     "category": "Echo Skill",
+     "cooldown": 20,
+     "damageModifiers": [],
+     "displayName": "Glommoth (Active)",
+     "dmgTypes": [
+      "ECHO"
+     ],
+     "elements": [
+      "GLACIO"
+     ],
+     "energyCost": [],
+     "energyGenerated": [
+      {
+       "amount": 1.9,
+       "energyType": "energy",
+       "scalingStat": "energyPercent",
+       "share": 0.5
+      }
+     ],
+     "multiplier": 2.736,
+     "name": "Echo Skill",
+     "offtune": 0,
+     "scaling": "ATK",
+     "sideEffects": [],
+     "statusModifications": []
+    },
+    "icon": "assets/gear/echoes/glommoth.png",
+    "info": "Summon a Glommoth to stomp enemies, dealing 273.60% Glacio DMG. Casting Outro Skill within 15s after summoning Glommoth grants 12.00% Glacio DMG Bonus to the incoming Resonator for 15s. CD: 20s.",
+    "info_icon": "assets/gear/echoes/info_glommoth.png",
+    "injectedModifiers": [
+     {
+      "modifiers": [
+       {
+        "characterStats": {
+         "glacioBonusDMG": 0.12
+        },
+        "condition": "[Function]",
+        "description": "Outro Skill within 15s of Glommoth active: incoming Resonator gains 12% Glacio DMG Bonus for 15s.",
+        "displayName": "Glommoth: Glacio DMG Bonus",
+        "durationStrategy": {
+         "timeDuration": 15,
+         "type": "limited"
+        },
+        "ownerCharacter": null,
+        "source": "Glommoth",
+        "stackingStrategy": {
+         "maxStacks": 1,
+         "resetTimerOnApplication": true,
+         "stacksRemovedEachTime": 1
+        },
+        "targetStrategy": "nextSwap",
+        "type": "buff"
+       }
+      ],
+      "targets": [
+       {
+        "tag": "OUTRO_ACTION"
+       }
+      ]
+     }
+    ],
+    "name": "Glommoth",
+    "setName": "Wishes of Quiet Snowfall"
+   },
+   {
+    "cost": 3,
+    "icon": "assets/gear/echoes/windlash_coleoid.png",
+    "info": "",
+    "info_icon": "assets/gear/echoes/info_windlash_coleoid.png",
+    "name": "Windlash Coleoid",
+    "setName": "Wishes of Quiet Snowfall"
+   },
+   {
+    "cost": 1,
+    "icon": "assets/gear/echoes/iceglint_dancer.png",
+    "info": "",
+    "info_icon": "assets/gear/echoes/info_iceglint_dancer.png",
+    "name": "Iceglint Dancer",
+    "setName": "Wishes of Quiet Snowfall"
+   },
+   {
+    "cost": 1,
+    "icon": "assets/gear/echoes/shadow_stepper.png",
+    "info": "",
+    "info_icon": "assets/gear/echoes/info_shadow_stepper.png",
+    "name": "Shadow Stepper",
+    "setName": "Wishes of Quiet Snowfall"
+   }
+  ]
+ },
+ "echoSetRegistry": {
+  "Gusts of Welkin": {
+   "icon": "assets/gear/set-bonuses/gusts_of_welkin.png",
+   "info": {
+    "2": "Aero DMG + 10%",
+    "5": "Inflicting Aero Erosion upon enemies increases Aero DMG for all Resonators in the team by 15%, and for the Resonator triggering this effect by an additional 15%, lasting for 20s."
+   },
+   "milestones": {
+    "2": {
+     "stats": {
+      "aeroBonusDMG": 0.1
+     }
+    }
+   },
+   "name": "Gusts of Welkin"
+  },
+  "Halo of Starry Radiance": {
+   "icon": "assets/gear/set-bonuses/halo_of_starry_radiance.png",
+   "info": {
+    "2": "Healing Bonus + 10%",
+    "5": "When healing a Resonator in the team, every 1% of Off-Tune Buildup Rate grants a 0.2% ATK increase to all Resonators in the team for 4s, up to 25%."
+   },
+   "milestones": {
+    "2": {
+     "stats": {
+      "healingBonus": 0.1
+     }
+    },
+    "5": {
+     "injectedModifiers": [
+      {
+       "modifiers": [
+        {
+         "characterStats": {
+          "bonusATK": 0
+         },
+         "color": "#82DC8C",
+         "condition": "[Function]",
+         "description": "When healing a Resonator in the team, every 1% of Off-Tune Buildup Rate grants a 0.2% ATK increase to all Resonators in the team for 4s, up to 25%.",
+         "displayName": "Halo of Starry Radiance (Active)",
+         "durationStrategy": {
+          "timeDuration": 4,
+          "type": "limited"
+         },
+         "ownerCharacter": null,
+         "showStats": true,
+         "source": "Halo of Starry Radiance: 5pc",
+         "stackingStrategy": {
+          "maxStacks": 1,
+          "resetTimerOnApplication": true,
+          "stacksRemovedEachTime": 1
+         },
+         "statsOnActivation": "[Function]",
+         "targetStrategy": "all",
+         "type": "buff"
+        }
+       ],
+       "targets": [
+        {
+         "tag": "HEAL_PROC"
+        }
+       ]
+      }
+     ]
+    }
+   },
+   "name": "Halo of Starry Radiance"
+  },
+  "Windward Pilgrimage": {
+   "icon": "assets/gear/set-bonuses/windward_pilgrimage.png",
+   "info": {
+    "2": "Aero DMG + 10%",
+    "5": "Hitting a target with Aero Erosion increases Crit. Rate by 10% and grants 30% Aero DMG Bonus, lasting for 10s."
+   },
+   "milestones": {
+    "2": {
+     "stats": {
+      "aeroBonusDMG": 0.1
+     }
+    }
+   },
+   "name": "Windward Pilgrimage"
+  },
+  "Wishes of Quiet Snowfall": {
+   "icon": "assets/gear/set-bonuses/wishes_of_quiet_snowfall.png",
+   "info": {
+    "2": "Glacio DMG + 10%",
+    "5": "Inflicting Glacio Chafe on enemies increases Glacio DMG dealt by 10% for 15s. The Resonator gains the Snowfall effect, which can be triggered once every 25s. While Snowfall is active: Dealing Resonance Liberation DMG removes Snowfall and increases the Resonator's Crit. Rate by 25% for 30s. Casting Outro Skill removes Snowfall and grants 25% Glacio DMG Bonus to the incoming Resonator for 30s. When Snowfall is removed, only one of the effects above can be triggered."
+   },
+   "milestones": {
+    "2": {
+     "stats": {
+      "glacioBonusDMG": 0.1
+     }
+    },
+    "5": {
+     "injectedModifiers": [
+      {
+       "modifiers": [
+        {
+         "characterStats": {
+          "glacioBonusDMG": 0.1
+         },
+         "color": "#6EC1F2",
+         "condition": "[Function]",
+         "description": "Inflicting Glacio Chafe on enemies increases Glacio DMG dealt by 10% for 15s.",
+         "displayName": "Wishes of Quiet Snowfall: Glacio Buff",
+         "durationStrategy": {
+          "timeDuration": 15,
+          "type": "limited"
+         },
+         "ownerCharacter": null,
+         "source": "Wishes of Quiet Snowfall: Glacio DMG Buff",
+         "stackingStrategy": {
+          "maxStacks": 1,
+          "resetTimerOnApplication": true,
+          "stacksRemovedEachTime": 1
+         },
+         "targetStrategy": "self",
+         "type": "buff"
+        }
+       ],
+       "targets": [
+        {
+         "tag": "GLACIO_CHAFE_APPLIER"
+        }
+       ]
+      },
+      {
+       "modifiers": [
+        {
+         "characterStats": {},
+         "color": "#6EC1F2",
+         "condition": "[Function]",
+         "displayName": "Wishes of Quiet Snowfall: Snowfall",
+         "durationStrategy": {
+          "timeDuration": 25,
+          "type": "limited"
+         },
+         "ownerCharacter": null,
+         "source": "Wishes of Quiet Snowfall: Snowfall",
+         "stackingStrategy": {
+          "maxStacks": 1,
+          "resetTimerOnApplication": false,
+          "stacksRemovedEachTime": 1
+         },
+         "targetStrategy": "self",
+         "trackerOnly": true,
+         "type": "buff"
+        }
+       ],
+       "targets": [
+        {
+         "tag": "GLACIO_CHAFE_APPLIER"
+        }
+       ]
+      },
+      {
+       "modifiers": [
+        {
+         "activationCondition": "[Function]",
+         "characterStats": {
+          "critRate": 0.25
+         },
+         "color": "#6EC1F2",
+         "condition": "[Function]",
+         "description": "Dealing Resonance Liberation DMG removes Snowfall and increases the Resonator's Crit. Rate by 25% for 6s",
+         "displayName": "Wishes of Quiet Snowfall: Crit Rate",
+         "durationStrategy": {
+          "timeDuration": 6,
+          "type": "limited"
+         },
+         "ownerCharacter": null,
+         "removesModifierSourceOnActivation": "Wishes of Quiet Snowfall: Snowfall",
+         "source": "Wishes of Quiet Snowfall: Crit Rate",
+         "stackingStrategy": {
+          "maxStacks": 1,
+          "resetTimerOnApplication": true,
+          "stacksRemovedEachTime": 1
+         },
+         "targetStrategy": "self",
+         "type": "buff"
+        }
+       ],
+       "targets": [
+        {
+         "dmgType": "LIBERATION"
+        }
+       ]
+      },
+      {
+       "modifiers": [
+        {
+         "activationCondition": "[Function]",
+         "characterStats": {
+          "critRate": 0.25
+         },
+         "color": "#6EC1F2",
+         "condition": "[Function]",
+         "description": "Dealing Resonance Liberation DMG removes Snowfall and increases the Resonator's Crit. Rate by 25% for 6s",
+         "displayName": "Wishes of Quiet Snowfall: Crit Rate",
+         "durationStrategy": {
+          "timeDuration": 30,
+          "type": "limited"
+         },
+         "ownerCharacter": null,
+         "removesModifierSourceOnActivation": "Wishes of Quiet Snowfall: Incoming Glacio",
+         "source": "Wishes of Quiet Snowfall: Crit Rate",
+         "stackingStrategy": {
+          "maxStacks": 1,
+          "resetTimerOnApplication": true,
+          "stacksRemovedEachTime": 1
+         },
+         "targetStrategy": "self",
+         "type": "buff"
+        }
+       ],
+       "targets": [
+        {
+         "dmgType": "LIBERATION"
+        }
+       ]
+      },
+      {
+       "modifiers": [
+        {
+         "activationCondition": "[Function]",
+         "characterStats": {
+          "glacioBonusDMG": 0.25
+         },
+         "color": "#6EC1F2",
+         "condition": "[Function]",
+         "displayName": "Wishes of Quiet Snowfall: Incoming Glacio Buff",
+         "durationStrategy": {
+          "timeDuration": 15,
+          "type": "limited"
+         },
+         "ownerCharacter": null,
+         "removesModifierSourceOnActivation": "Wishes of Quiet Snowfall: Snowfall",
+         "source": "Wishes of Quiet Snowfall: Incoming Glacio",
+         "stackingStrategy": {
+          "maxStacks": 1,
+          "resetTimerOnApplication": true,
+          "stacksRemovedEachTime": 1
+         },
+         "targetStrategy": "nextSwap",
+         "type": "buff"
+        }
+       ],
+       "targets": [
+        {
+         "tag": "OUTRO_ACTION"
+        }
+       ]
+      },
+      {
+       "modifiers": [
+        {
+         "activationCondition": "[Function]",
+         "characterStats": {
+          "glacioBonusDMG": 0.25
+         },
+         "color": "#6EC1F2",
+         "condition": "[Function]",
+         "displayName": "Wishes of Quiet Snowfall: Incoming Glacio Buff",
+         "durationStrategy": {
+          "timeDuration": 15,
+          "type": "limited"
+         },
+         "ownerCharacter": null,
+         "removesModifierSourceOnActivation": "Wishes of Quiet Snowfall: Crit Rate",
+         "source": "Wishes of Quiet Snowfall: Incoming Glacio",
+         "stackingStrategy": {
+          "maxStacks": 1,
+          "resetTimerOnApplication": true,
+          "stacksRemovedEachTime": 1
+         },
+         "targetStrategy": "nextSwap",
+         "type": "buff"
+        }
+       ],
+       "targets": [
+        {
+         "tag": "OUTRO_ACTION"
+        }
+       ]
+      }
+     ]
+    }
+   },
+   "name": "Wishes of Quiet Snowfall"
+  }
+ },
+ "enemies": [
+  {
+   "name": "Birdy",
+   "stats": {
+    "aeroRES": 0.1,
+    "damageReduction": 0,
+    "electroRES": 0.1,
+    "fusionRES": 0.1,
+    "glacioRES": 0.1,
+    "havocRES": 0.4,
+    "level": 100,
+    "resistance": 0,
+    "spectroRES": 0.1
+   }
+  }
+ ],
+ "negativeStatuses": {
+  "aeroErosion": {
+   "color": "#4db84d",
+   "damage": {
+    "1": 1654,
+    "2": 4134,
+    "3": 8268,
+    "4": 12402,
+    "5": 16536,
+    "6": 20670,
+    "7": 24804,
+    "8": 28938,
+    "9": 33072
+   },
+   "damageModifiers": [],
+   "duration": 15,
+   "element": "AERO",
+   "frequency": 3,
+   "maxStacksDefault": 3,
+   "name": "Aero Erosion",
+   "reductionStrategy": {
+    "resetTimerOnApplication": true,
+    "stackConsumption": 999,
+    "triggerDmgOnReduction": false
+   }
+  },
+  "glacioChafe": {
+   "color": "#66ccff",
+   "damage": {
+    "1": 900.13,
+    "2": 1631.9908,
+    "3": 2363.8516,
+    "4": 3095.7124,
+    "5": 3827.2058,
+    "6": 4559.0666,
+    "7": 5290.9274,
+    "8": 6022.7882,
+    "9": 6754.649,
+    "10": 7486.5098,
+    "11": 9981.8906,
+    "12": 12477.2714,
+    "13": 14972.6522
+   },
+   "damageModifiers": [],
+   "duration": 15,
+   "element": "GLACIO",
+   "frequency": 3,
+   "maxStacksDefault": 10,
+   "name": "Glacio Chafe",
+   "reductionStrategy": {
+    "resetTimerOnApplication": true,
+    "stackConsumption": 999,
+    "triggerDmgOnReduction": false
+   }
+  },
+  "spectroFrazzle": {
+   "color": "#ffe066",
+   "damage": {
+    "1": 1225,
+    "2": 2223,
+    "3": 2896,
+    "4": 3792,
+    "5": 4688,
+    "6": 5584,
+    "7": 6480,
+    "8": 8196,
+    "9": 9192,
+    "10": 10188
+   },
+   "damageModifiers": [],
+   "duration": 12,
+   "element": "SPECTRO",
+   "frequency": 3,
+   "maxStacksDefault": 10,
+   "name": "Spectro Frazzle",
+   "reductionStrategy": {
+    "resetTimerOnApplication": false,
+    "stackConsumption": 1,
+    "triggerDmgOnReduction": true
+   }
+  }
+ }
+}

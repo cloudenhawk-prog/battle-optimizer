@@ -1,3 +1,4 @@
+// Template Character listing every field — copy when adding a new character.
 import type { Character } from '../../types/character'
 
 export const blueprint: Character = {

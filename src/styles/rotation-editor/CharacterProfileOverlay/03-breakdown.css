@@ -1,0 +1,67 @@
+/* Character profile overlay: stat breakdown modal shell + element stat icon animations */
+
+/* ═════════════════════════════════════════════════════════════
+ *  BREAKDOWN MODAL
+ * ═════════════════════════════════════════════════════════════ */
+
+.cpo-breakdown-overlay {
+  position: absolute;
+  inset: 0;
+  z-index: 10;
+}
+
+/* ═════════════════════════════════════════════════════════════
+ *  BREAKDOWN HEADER
+ * ═════════════════════════════════════════════════════════════ */
+
+.charProfilePanel .charStatBreakdownHeader {
+  position: relative;
+  background: linear-gradient(90deg, transparent, hsl(var(--cpo-el-raw) / 0.04));
+  border-bottom: 1px solid hsl(var(--cpo-el-raw) / 0.15);
+}
+
+/* Accent line at the top — mirrors the 1px gradient at the very top of the overlay */
+.charProfilePanel .charStatBreakdownHeader::before {
+  content: '';
+  position: absolute;
+  top: 0; left: 0; right: 0;
+  height: 1px;
+  background: linear-gradient(90deg, transparent, hsl(var(--cpo-el-raw) / 0.6), transparent);
+  pointer-events: none;
+}
+
+.charProfilePanel .charStatBreakdownTitle {
+  font-size: var(--cpo-breakdown-title-size);
+  color: hsl(var(--cpo-el-raw) / 0.85);
+}
+
+.abp .charStatBreakdownHeader {
+  padding-right: 14px;
+}
+
+.charProfilePanel .overlayCloseButton {
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  font-size: var(--cpo-close-btn-icon-size);
+  padding: var(--cpo-close-btn-padding);
+  transition: all var(--cpo-close-btn-time);
+  border-radius: var(--cpo-close-btn-radius);
+}
+
+.charProfilePanel .overlayCloseButton:hover {
+  color: var(--table-text);
+  background: var(--table-select-bg);
+}
+
+/* ═════════════════════════════════════════════════════════════
+ *  ELEMENT STAT ICONS
+ * ═════════════════════════════════════════════════════════════ */
+
+.cpo-stat-icon--glacio  { filter: brightness(0) invert(1) brightness(0.6) sepia(1) hue-rotate(138deg) saturate(300%) brightness(0.85); }
+.cpo-stat-icon--fusion  { filter: brightness(0) invert(1) brightness(0.6) sepia(1) hue-rotate(342deg) saturate(500%) brightness(1.0);  }
+.cpo-stat-icon--electro { filter: brightness(0) invert(1) brightness(0.6) sepia(1) hue-rotate(226deg) saturate(300%) brightness(1.05); }
+.cpo-stat-icon--aero    { filter: brightness(0) invert(1) brightness(0.6) sepia(1) hue-rotate(107deg) saturate(300%) brightness(0.95); }
+.cpo-stat-icon--spectro { filter: brightness(0) invert(1) brightness(0.6) sepia(1) hue-rotate(9deg)   saturate(500%) brightness(1.15); }
+.cpo-stat-icon--havoc   { filter: brightness(0) invert(1) brightness(0.6) sepia(1) hue-rotate(287deg) saturate(400%) brightness(0.9);  }
+

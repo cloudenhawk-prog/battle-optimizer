@@ -1,0 +1,141 @@
+/* Home page hero panel with a signature Tacet animation showcase. */
+
+.home-page {
+  flex: 1;
+  min-height: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: clamp(14px, 2.2vw, 34px) clamp(8px, 1.8vw, 22px);
+}
+
+.home-hero {
+  width: min(1180px, 100%);
+  min-height: min(72vh, 720px);
+  display: grid;
+  grid-template-columns: minmax(340px, 1.1fr) minmax(320px, 0.9fr);
+  gap: clamp(18px, 3vw, 54px);
+  align-items: center;
+  padding: clamp(24px, 4vw, 58px);
+  border-radius: 8px 28px 8px 8px;
+}
+
+.home-hero-copy {
+  max-width: 640px;
+  z-index: 1;
+}
+
+.home-hero-kicker {
+  margin: 0 0 10px;
+  font-family: var(--ui-font-display);
+  font-size: 0.72rem;
+  font-weight: 700;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: hsl(var(--ui-accent-raw) / 0.74);
+}
+
+.home-hero-title {
+  margin: 0;
+  font-family: var(--ui-font-display);
+  font-size: clamp(2rem, 4.1vw, 4.3rem);
+  font-weight: 800;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: hsl(var(--ui-accent-raw) / 0.96);
+  text-shadow: 0 0 26px hsl(var(--ui-accent-raw) / 0.28);
+}
+
+.home-hero-body {
+  margin: clamp(10px, 1.8vw, 18px) 0 0;
+  font-family: var(--ui-font-body);
+  font-size: clamp(1rem, 1.25vw, 1.2rem);
+  line-height: 1.48;
+  letter-spacing: 0.02em;
+  color: var(--ui-text-soft);
+}
+
+.home-hero-actions {
+  margin-top: clamp(18px, 3vw, 34px);
+}
+
+.home-hero-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 44px;
+  padding: 0 18px;
+  border-radius: 6px;
+  border: 1px solid hsl(var(--ui-accent-raw) / 0.48);
+  background: linear-gradient(160deg, hsl(var(--ui-accent-raw) / 0.2), hsl(var(--ui-accent-raw) / 0.08));
+  box-shadow: 0 0 22px hsl(var(--ui-accent-raw) / 0.16), inset 0 0 0 1px hsl(var(--ui-accent-raw) / 0.15);
+  font-family: var(--ui-font-display);
+  font-size: 0.72rem;
+  font-weight: 700;
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+  color: hsl(var(--ui-accent-raw) / 0.98);
+  text-decoration: none;
+  transition: transform 0.2s ease, box-shadow 0.2s ease, border-color 0.2s ease;
+}
+
+.home-hero-btn:hover {
+  transform: translateY(-1px);
+  border-color: hsl(var(--ui-accent-raw) / 0.72);
+  box-shadow: 0 0 30px hsl(var(--ui-accent-raw) / 0.25), inset 0 0 0 1px hsl(var(--ui-accent-raw) / 0.24);
+}
+
+.home-hero-mark-wrap {
+  position: relative;
+  min-height: min(58vh, 520px);
+  display: grid;
+  place-items: center;
+}
+
+.home-hero-mark-wrap::before {
+  content: '';
+  position: absolute;
+  width: min(65vw, 500px);
+  aspect-ratio: 1;
+  border-radius: 50%;
+  background: radial-gradient(circle, hsl(var(--ui-accent-raw) / 0.19), hsl(var(--ui-accent-raw) / 0));
+  filter: blur(10px);
+}
+
+.home-hero-mark {
+  width: min(64vw, 430px);
+  height: auto;
+  max-width: 100%;
+}
+
+@media (max-width: 980px) {
+  .home-page {
+    align-items: stretch;
+  }
+
+  .home-hero {
+    min-height: 0;
+    grid-template-columns: 1fr;
+    gap: 16px;
+    padding: 22px 16px 20px;
+  }
+
+  .home-hero-copy {
+    max-width: 100%;
+    text-align: center;
+  }
+
+  .home-hero-actions {
+    display: flex;
+    justify-content: center;
+  }
+
+  .home-hero-mark-wrap {
+    min-height: 280px;
+    order: -1;
+  }
+
+  .home-hero-mark {
+    width: min(82vw, 360px);
+  }
+}

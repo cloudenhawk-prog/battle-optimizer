@@ -1,7 +1,7 @@
 import { useState, useRef } from 'react'
 import { createPortal } from 'react-dom'
 import '../../styles/rotation-editor/ImportExportPanel.css'
-import type { SavedRotation } from '../../utils/importExport'
+import type { SavedRotation } from '../../types/rotation'
 
 // ========== Component: ImportExportPanel =====================================================================================
 

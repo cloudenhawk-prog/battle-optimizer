@@ -1,4 +1,5 @@
-﻿import type { Action } from '../../../../types/action'
+// Lucila — Intro "Clip It" / "Clip It: Hard Cut" (picked per form) and Outro.
+import type { Action } from '../../../../types/action'
 import * as values from '../values'
 import { montage_outro_buff } from '../../../modifiers/lucila'
 

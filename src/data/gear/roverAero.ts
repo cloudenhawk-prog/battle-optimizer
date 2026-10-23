@@ -1,6 +1,6 @@
+// Rover: Aero's default gear (legacy, hand-written weapon and echoes): Bloodpact's Pledge R5, Windward Pilgrimage 5pc.
 import type { Echo, EchoSetBonus, Weapon } from '../../types/gear'
-import { always } from '../../utils/conditions/damageModifierConditions'
-
+import { always } from '../helpers/modifierConditions'
 
 // ========== Weapon ===========================================================================================================
 const roverAero_weapon: Weapon = {
@@ -135,6 +135,7 @@ const roverAero_set_bonus: EchoSetBonus = {
       targets: ['character'],
       modifiers: [
         {
+          // NOTE: copy-pasted from Cartethyia — source/ownerCharacter should probably be Rover.
           source: 'Cartethyia',
           displayName: 'Windward Pilgrimage (Set Bonus)',
           type: 'buff',

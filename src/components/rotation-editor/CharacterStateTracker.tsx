@@ -1,7 +1,12 @@
+// Character state tracker: per-character cards (position, form, combo, swap CD, energy bars) above the rotation table
 import { useState } from 'react'
-import '../../styles/rotation-editor/CharacterStateTracker.css'
+import '../../styles/rotation-editor/CharacterStateTracker/01-cards.css'
+import '../../styles/rotation-editor/CharacterStateTracker/02-state-badges.css'
+import '../../styles/rotation-editor/CharacterStateTracker/03-energies.css'
+import '../../styles/rotation-editor/CharacterStateTracker/04-gear-and-stats.css'
+import '../../styles/rotation-editor/CharacterStateTracker/05-breakdown.css'
 import { CharacterProfileOverlay } from './CharacterProfileOverlay'
-import { getElementPrimary } from '../../utils/elementColors'
+import { getTeamAccent } from '../shared/elementColors'
 import type { Snapshot } from '../../types/snapshot'
 import type { Character } from '../../types/character'
 import type { TableConfig, ColumnVisibility } from '../../types/tableDefinitions'
@@ -114,12 +119,12 @@ export function CharacterStateTracker({
   return (
     <>
       <div className="stateTracker">
-        {tableConfig.characters.map((group, charIdx) => {
+        {tableConfig.characters.map(group => {
           const character = charactersInBattle.find(c => c.name === group.label)
           if (!character) return null
 
           const visibleColumns = group.columns.filter(col => columnVisibility[col.key])
-          const elPrimary = getElementPrimary(character.element, charIdx)
+          const elPrimary = getTeamAccent(charactersInBattle, character.name)
 
           // ========== Derived Data ===========================================================================================
 

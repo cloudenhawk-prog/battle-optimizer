@@ -1,51 +1,11 @@
+// React hook exposing the editor settings and a setter that persists every change.
 import { useState } from 'react'
-
-// ========== Types ============================================================================================================
-
-export type Settings = {
-  autocastFollowUps: boolean
-  startWithFullEnergy: boolean
-  sandboxMode: boolean
-  rowDeletionMode: boolean
-  useFixedStacks: boolean
-  triggerOutroIntroOnCharacterSelect: boolean
-}
-
-// ========== Defaults & Persistence ===========================================================================================
-
-const SETTINGS_KEY = 'battle-optimizer-settings'
-
-function getDefaultSettings(): Settings {
-  return {
-    autocastFollowUps: false,
-    startWithFullEnergy: false,
-    sandboxMode: false,
-    rowDeletionMode: false,
-    useFixedStacks: false,
-    triggerOutroIntroOnCharacterSelect: false,
-  }
-}
-
-export function loadSettings(): Settings {
-  try {
-    const raw = localStorage.getItem(SETTINGS_KEY)
-    if (raw) return { ...getDefaultSettings(), ...JSON.parse(raw) }
-  } catch {
-    // ignore parse errors
-  }
-  return getDefaultSettings()
-}
-
-function saveSettings(settings: Settings): void {
-  try {
-    localStorage.setItem(SETTINGS_KEY, JSON.stringify(settings))
-  } catch {
-    // ignore write errors
-  }
-}
+import type { Settings } from '../types/settings'
+import { loadSettings, saveSettings } from '../persistence/settingsStorage'
 
 // ========== Hook: useSettings ================================================================================================
 
+// NOTE: state is per hook instance — callers don't see each other's updates until they remount (reload from storage).
 export function useSettings() {
   const [settings, setSettings] = useState<Settings>(loadSettings)
 

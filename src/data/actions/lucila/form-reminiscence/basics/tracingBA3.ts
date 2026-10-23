@@ -1,3 +1,4 @@
+// Lucila — Reminiscence form: Tracing Forms Stage 3 (converts Traces into Photos / Oblivion hits).
 import type { Action } from '../../../../../types/action'
 import * as values from '../../values'
 import { lucila_oblivion } from '../../../../sideEffects/sideEffects'

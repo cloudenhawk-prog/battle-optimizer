@@ -1,0 +1,60 @@
+/* Summary overlay: tabbed shell on the shared ui-overlay primitives, column widths and the empty state */
+
+/* ===== Rotation Summary =============================================================================
+ *
+ *   ┌─ header: ROTATION SUMMARY   TOTAL │ DPS │ TIME │ N      OVERVIEW  FIELD PRESENCE  BUFFS [x] ─┐
+ *   ├─────────────────────────────┬────────────────────────────────────────────────────────────────┤
+ *   │ DAMAGE DISTRIBUTION         │ RESONATOR BREAKDOWN                                             │
+ *   │ [ Damage | DPS ]            │ ┃ (o) Name  99.4%   │ damage origin ▬▬▬▬▬▬▬▬▬               ⟡   │
+ *   │     ◯ dual-ring dial        │ ┃ S6 · R5 weapon    │ damage types  ▬▬▬  ▬▬                      │
+ *   │ ledger: dealt │ enabled     │ ┃ ...                                                            │
+ *   └─────────────────────────────┴────────────────────────────────────────────────────────────────┘
+ *
+ *   Field Presence = swimlane timeline + resonator plates; Buff Coverage = buffs grouped by owner.
+ * ================================================================================================= */
+
+.summaryDialCol {
+  width: 560px;
+  flex-shrink: 0;
+  gap: 18px;
+}
+
+.summaryPlatesCol,
+.summaryFieldCol,
+.summaryBuffCol {
+  flex: 1;
+  min-width: 0;
+  padding-left: 28px;
+  padding-right: 28px;
+}
+
+.summaryPanel .ui-col {
+  scrollbar-width: thin;
+  scrollbar-color: rgba(80, 100, 130, 0.3) transparent;
+}
+
+/* ── Empty state ─────────────────────────────────────────── */
+.summaryEmpty {
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+}
+
+.summaryEmptyHint {
+  font-family: var(--ui-font-body);
+  font-size: 0.95rem;
+  color: var(--ui-text-faint);
+}
+
+/* ── Responsive ──────────────────────────────────────────── */
+@media (max-width: 1400px) {
+  .summaryPanel .ui-overlay-header { flex-wrap: wrap; row-gap: 10px; }
+  .summaryDialCol { width: 480px; }
+}
+
+@media (max-width: 1100px) {
+  .summaryPanel .ui-overlay-body { flex-direction: column; overflow-y: auto; }
+  .summaryPanel .ui-col { width: auto; overflow: visible; }
+  .summaryPanel .ui-col + .ui-col { border-left: none; border-top: 1px solid var(--ui-col-line); }
+}

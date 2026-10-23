@@ -1,3 +1,4 @@
+// Template Action listing every field (required and optional) — copy when authoring a new action.
 import type { Action } from '../../types/action'
 
 export const blueprint: Action = {

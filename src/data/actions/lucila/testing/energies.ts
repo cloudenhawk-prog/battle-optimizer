@@ -1,3 +1,4 @@
+// Lucila — testing actions that top up each of her resources (built by makeEnergyUpAction).
 import type { Action } from '../../../../types/action'
 import type { EnergyType } from '../../../../types/baseTypes'
 

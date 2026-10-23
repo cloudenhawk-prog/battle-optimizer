@@ -1,0 +1,197 @@
+/* Build optimizer: center leaderboard rows, bars, deltas and expandable detail lines */
+
+/* ========== CENTER: Leaderboard ==================================================================== */
+
+.buildOptLeaderboard {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  min-height: 0;
+}
+
+.buildOptLeaderHead {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 10px 16px;
+  border-bottom: 1px solid oklch(0.86 0.13 88 / 0.08);
+  flex-shrink: 0;
+}
+
+.buildOptLeaderHeadLeft {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  color: var(--bo-gold-soft);
+}
+
+.buildOptLeaderHeadIcon {
+  color: var(--bo-gold-soft);
+}
+
+.buildOptLeaderHeadLabel {
+  font-size: 11px;
+  text-transform: uppercase;
+  letter-spacing: 0.30em;
+  color: var(--bo-ink-dim);
+}
+
+.buildOptLeaderHeadRight {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  font-size: 10px;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--bo-ink-dim);
+}
+
+.buildOptLeaderHeadDivider {
+  display: block;
+  width: 1px;
+  height: 12px;
+  background: var(--bo-edge);
+}
+
+.buildOptLeaderBody {
+  flex: 1;
+  overflow-y: auto;
+}
+
+.buildOptLeaderEmpty {
+  padding: 24px 16px;
+  font-size: 12px;
+  color: var(--bo-ink-dim);
+  font-style: italic;
+}
+
+.buildOptLeaderRow {
+  display: grid;
+  grid-template-columns: 28px 1fr 80px 88px 60px;
+  align-items: center;
+  gap: 8px;
+  padding: 9px 16px;
+  border-bottom: 1px solid oklch(0.86 0.13 88 / 0.05);
+  font-size: 12.5px;
+  transition: background 0.1s;
+}
+
+.buildOptLeaderRow:last-child {
+  border-bottom: none;
+}
+
+.buildOptLeaderRow:hover {
+  background: oklch(0.86 0.13 88 / 0.04);
+}
+
+.buildOptLeaderRow.current {
+  background: oklch(0.86 0.13 88 / 0.06);
+}
+
+.buildOptLeaderRow.best:not(.current) {
+  background: oklch(0.86 0.13 88 / 0.08);
+}
+
+.buildOptLeaderRank {
+  font-family: Georgia, 'Times New Roman', serif;
+  font-size: 11px;
+  color: var(--bo-gold-soft);
+  font-variant-numeric: tabular-nums;
+}
+
+.buildOptLeaderRow.best .buildOptLeaderRank {
+  color: var(--bo-gold);
+}
+
+.buildOptLeaderName {
+  color: var(--bo-ink);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.buildOptLeaderStar {
+  font-size: 10px;
+  color: var(--bo-gold);
+}
+
+.buildOptLeaderCurrent {
+  font-size: 9px;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: oklch(0.70 0.07 220);
+}
+
+.buildOptLeaderBarWrap {
+  height: 6px;
+  border-radius: 9999px;
+  background: oklch(0.13 0.012 80 / 0.60);
+  overflow: hidden;
+}
+
+.buildOptLeaderBarFill {
+  height: 100%;
+  background: linear-gradient(to right, var(--bo-gold), oklch(0.80 0.09 88 / 0.40));
+  border-radius: 9999px;
+}
+
+.buildOptLeaderDps {
+  text-align: right;
+  font-variant-numeric: tabular-nums;
+  color: var(--bo-ink);
+}
+
+.buildOptLeaderRow.best .buildOptLeaderDps {
+  color: var(--bo-gold);
+  font-weight: 600;
+}
+
+.buildOptLeaderDelta {
+  text-align: right;
+  font-size: 11px;
+  font-variant-numeric: tabular-nums;
+}
+
+.buildOptLeaderDelta.pos { color: hsl(135 65% 55%); }
+.buildOptLeaderDelta.neg { color: hsl(0 65% 58%); }
+.buildOptLeaderDelta.neu { color: var(--bo-ink-dim); }
+
+.buildOptLeaderExpandBtn {
+  flex-shrink: 0;
+  width: 18px;
+  height: 18px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  background: none;
+  border: 1px solid var(--bo-edge);
+  border-radius: 3px;
+  color: var(--bo-ink-dim);
+  font-size: 14px;
+  line-height: 1;
+  cursor: pointer;
+  padding: 0;
+  transition: color 0.15s, border-color 0.15s, transform 0.15s;
+}
+.buildOptLeaderExpandBtn:hover { color: var(--bo-gold); border-color: var(--bo-gold); }
+.buildOptLeaderExpandBtn.open { transform: rotate(90deg); color: var(--bo-gold); border-color: var(--bo-gold); }
+
+.buildOptLeaderDetail {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px 10px;
+  padding: 5px 10px 7px 32px;
+  background: oklch(0.13 0.01 240 / 0.5);
+  border-bottom: 1px solid var(--bo-edge);
+}
+
+.buildOptLeaderDetailLine {
+  font-size: 10px;
+  font-family: ui-monospace, monospace;
+  color: var(--bo-ink);
+  opacity: 0.75;
+  white-space: nowrap;
+}
+

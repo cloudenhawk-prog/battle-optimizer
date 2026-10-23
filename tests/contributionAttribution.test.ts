@@ -1,4 +1,4 @@
-import { splitEventByCharacter } from '../src/utils/calculators/contributionAttribution'
+import { splitEventByCharacter } from '../src/engine/damage/contributionAttribution'
 import type { DamageEvent } from '../src/types/events'
 
 // ========== Helpers ==========================================================================================================

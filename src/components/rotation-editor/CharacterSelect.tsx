@@ -1,3 +1,4 @@
+// Character <select> for a rotation row; locked characters are shown disabled.
 import '../../styles/rotation-editor/CharacterSelect.css'
 import type { Character } from '../../types/character'
 

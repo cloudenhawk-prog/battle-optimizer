@@ -1,5 +1,6 @@
+// Cartethyia's default gear (legacy hand-written echoes): Defier's Thorn R1, Windward Pilgrimage 5pc.
 import type { Echo, EchoSetBonus } from '../../types/gear'
-import { always } from '../../utils/conditions/damageModifierConditions'
+import { always } from '../helpers/modifierConditions'
 import { weaponCatalog, buildWeapon } from './weaponCatalog'
 
 const SUBS = { critRate: 0.075, critDamage: 0.15, bonusHP: 0.079 }

@@ -1,9 +1,10 @@
+// Context shared by the Sidebar and the rotation page: tool actions, panel open-state, active character.
 import { createContext, useContext } from 'react'
 import type React from 'react'
 
 // ========== Context: Rotation Page ===========================================================================================
 // Provider lives in App.tsx so both Sidebar and RotationEditorPage are descendants.
-// Carries the three sidebar actions and the panel state needed by RotationEditorPage.
+// Carries the sidebar tool actions and the panel state needed by RotationEditorPage.
 
 export interface RotationPageContextValue {
   // Sidebar actions

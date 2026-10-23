@@ -1,3 +1,12 @@
+// Hiyuki — assembles every action into all_actions; Object.values() of each module, so file export order = action order.
+//
+// Layout: form-present-self/ and form-foreclaimed-self/ (entered via Liberation), each split into
+//   basics/   BA = basic attack chain (BA1_3 / hiyuki_..._BA_1_3 = stages 1-3), MA = mid-air attack, heavy
+//   skills/   resonance skill, liberation
+//   specials/ enhanced heavy attack, Iai
+// others/ = intro/outro + wait utilities, testing/ = resource top-ups, values.ts = numbers + cast times.
+// Variant suffixes: _cancel_with_swap|skill|heavy|dash = same hits, animation cut short by that input.
+
 // TODO: When Foreclaiming: Inward Vision or Iai hits a target, if the target has no fewer than 10 stacks of Glacio Bite, consume 10 stacks and trigger Frostbind once.
 // TODO: On status modification: refreshDuration: true or false?
 

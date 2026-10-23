@@ -1,3 +1,4 @@
+// Topbar of column-visibility toggle buttons, one group per column group.
 import '../../styles/topbar/Topbar.css'
 import type { ColumnVisibility, ColumnDef, TableConfig, ColumnGroup } from '../../types/tableDefinitions'
 import React from 'react'
@@ -42,6 +43,8 @@ export default function Topbar({ tableConfig, columnVisibility, setColumnVisibil
 
 // ========== Helper Functions =================================================================================================
 
+// 'is-hidden' hides the button itself (its column is visible); hidden columns show a clickable icon to restore them.
+// Columns are hidden by clicking their table header (HeaderRow).
 function renderGroupButtons(group: ColumnGroup, columnVisibility: ColumnVisibility, toggleColumn: (key: string) => void) {
   return group.columns.map(col => (
     <button key={col.key} className={`topbarColumnButton ${columnVisibility[col.key] ? 'is-hidden' : 'is-visible'}`} onClick={() => toggleColumn(col.key)} title={col.label}>

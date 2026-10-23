@@ -1,3 +1,4 @@
+// Lucila (Glacio) — character definition: kit, forms, Film Roll side effect, gear.
 import type { Character } from '../../types/character'
 import { all_actions } from '../actions/lucila/actions'
 import { lucila_inherentStats, lucila_stats } from '../stats/lucila'
@@ -50,12 +51,12 @@ Resonance Skill - Spotlight and Basic Attack - Tracing Forms Stage 3 are immune 
 - When in Resonance Mode - Glacio Chafe, nearby targets takes 120% Amplified damage from Glacio Chafe for 30s.
 - When in Resonance Mode - Echo, grant 80% Echo Skill DMG Amplification to the incoming Resonator for 14s or until the Resonator is switched out.`,
     // S3
-    `The DMG Multiplier of Letting It Go is increased by 100%.`,
+    'The DMG Multiplier of Letting It Go is increased by 100%.',
     // S4
     `Oblivion pulls in nearby targets upon hit. While casting Oblivion, Lucila's ATK is increased by 10% for 6s, stacking up 3 times. All stacks are removed when the duration ends.
 While casting Basic Attack - Tracing Forms Stage 3, Lucila takes 30% less DMG.`,
     // S5
-    `The DMG Multiplier of Oblivion is increased by 50%.`,
+    'The DMG Multiplier of Oblivion is increased by 50%.',
     // S6
     `When in Reminiscence, each time Lucila consumes Photo she gains 1 Remembrance, stacking up 3 times. Each stack of Remembrance increases Letting It Go's damage dealt to the target by 30%. Casting Letting It Go removes all stacks of Remembrance.
 Defeating a target with Letting It Go grants Lucila Longing: When not in combat, consume Longing, restoring 100% Resonance Energy and 150 Traces.`,

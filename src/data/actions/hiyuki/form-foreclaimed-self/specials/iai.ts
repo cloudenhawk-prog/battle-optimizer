@@ -1,7 +1,6 @@
-
+// Hiyuki — Foreclaimed Self form: Iai (spends 100 Frostheart; default / swap cancel).
 import type { Action } from '../../../../../types/action'
 import * as values from '../../values'
-
 
 // Default
 const hiyuki_foreclaimed_iai: Action = {

@@ -1,5 +1,5 @@
-import { calculateDamage } from '../src/utils/calculators/damageCalculator'
-import { resolveGear } from '../src/utils/gear/resolveGear'
+import { calculateDamage } from '../src/engine/damage/damageCalculator'
+import { resolveGear } from '../src/engine/gear/resolveGear'
 import { weaponCatalog, buildWeapon } from '../src/data/gear/weaponCatalog'
 import { createMockAction, createMockCharacterStats, createMockEnemy } from './testUtils'
 import type { Gear } from '../src/types/gear'

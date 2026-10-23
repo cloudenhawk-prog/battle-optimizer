@@ -1,7 +1,7 @@
+// Hiyuki — Present Self form: Basic Attack 3, normal and enhanced (after Resonance Skill), default / swap cancel.
 import type { Action } from '../../../../../types/action'
 import * as values from '../../values'
-import { hiyuki_skill, hiyuki_skill_cancel_with_swap,  } from '../skills/resonance'
-import { hiyuki_intro } from '../../others/introOutro'
+import { hiyuki_skill, hiyuki_skill_cancel_with_swap } from '../skills/resonance'
 
 // ========== Normal ===========================================================================================================
 // TODO: Try cancel with dodge

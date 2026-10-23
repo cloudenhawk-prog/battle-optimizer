@@ -1,3 +1,4 @@
+// Mornye — base stats (lvl 90) and inherent stat bonuses.
 import type { CharacterStats } from '../../types/stats'
 
 export const mornye_stats: Partial<CharacterStats> = {
